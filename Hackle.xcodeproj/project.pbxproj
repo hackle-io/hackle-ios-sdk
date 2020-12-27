@@ -1,563 +1,847 @@
 // !$*UTF8*$!
 {
-   archiveVersion = "1";
-   objectVersion = "46";
-   objects = {
-      "Hackle::Hackle" = {
-         isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_18";
-         buildPhases = (
-            "OBJ_21",
-            "OBJ_23"
-         );
-         dependencies = (
-         );
-         name = "Hackle";
-         productName = "Hackle";
-         productReference = "Hackle::Hackle::Product";
-         productType = "com.apple.product-type.framework";
-      };
-      "Hackle::Hackle::Product" = {
-         isa = "PBXFileReference";
-         path = "Hackle.framework";
-         sourceTree = "BUILT_PRODUCTS_DIR";
-      };
-      "Hackle::HacklePackageTests::ProductTarget" = {
-         isa = "PBXAggregateTarget";
-         buildConfigurationList = "OBJ_31";
-         buildPhases = (
-         );
-         dependencies = (
-            "OBJ_34"
-         );
-         name = "HacklePackageTests";
-         productName = "HacklePackageTests";
-      };
-      "Hackle::HackleTests" = {
-         isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_36";
-         buildPhases = (
-            "OBJ_39",
-            "OBJ_42"
-         );
-         dependencies = (
-            "OBJ_44"
-         );
-         name = "HackleTests";
-         productName = "HackleTests";
-         productReference = "Hackle::HackleTests::Product";
-         productType = "com.apple.product-type.bundle.unit-test";
-      };
-      "Hackle::HackleTests::Product" = {
-         isa = "PBXFileReference";
-         path = "HackleTests.xctest";
-         sourceTree = "BUILT_PRODUCTS_DIR";
-      };
-      "Hackle::SwiftPMPackageDescription" = {
-         isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_25";
-         buildPhases = (
-            "OBJ_28"
-         );
-         dependencies = (
-         );
-         name = "HacklePackageDescription";
-         productName = "HacklePackageDescription";
-         productType = "com.apple.product-type.framework";
-      };
-      "OBJ_1" = {
-         isa = "PBXProject";
-         attributes = {
-            LastSwiftMigration = "9999";
-            LastUpgradeCheck = "9999";
-         };
-         buildConfigurationList = "OBJ_2";
-         compatibilityVersion = "Xcode 3.2";
-         developmentRegion = "en";
-         hasScannedForEncodings = "0";
-         knownRegions = (
-            "en"
-         );
-         mainGroup = "OBJ_5";
-         productRefGroup = "OBJ_14";
-         projectDirPath = ".";
-         targets = (
-            "Hackle::Hackle",
-            "Hackle::SwiftPMPackageDescription",
-            "Hackle::HacklePackageTests::ProductTarget",
-            "Hackle::HackleTests"
-         );
-      };
-      "OBJ_10" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_11"
-         );
-         name = "Tests";
-         path = "";
-         sourceTree = "SOURCE_ROOT";
-      };
-      "OBJ_11" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_12",
-            "OBJ_13"
-         );
-         name = "HackleTests";
-         path = "Tests/HackleTests";
-         sourceTree = "SOURCE_ROOT";
-      };
-      "OBJ_12" = {
-         isa = "PBXFileReference";
-         path = "HackleTests.swift";
-         sourceTree = "<group>";
-      };
-      "OBJ_13" = {
-         isa = "PBXFileReference";
-         path = "XCTestManifests.swift";
-         sourceTree = "<group>";
-      };
-      "OBJ_14" = {
-         isa = "PBXGroup";
-         children = (
-            "Hackle::HackleTests::Product",
-            "Hackle::Hackle::Product"
-         );
-         name = "Products";
-         path = "";
-         sourceTree = "BUILT_PRODUCTS_DIR";
-      };
-      "OBJ_18" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_19",
-            "OBJ_20"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_19" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "Hackle.xcodeproj/Hackle_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "9.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.10";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "Hackle";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "Hackle";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Debug";
-      };
-      "OBJ_2" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_3",
-            "OBJ_4"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_20" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "Hackle.xcodeproj/Hackle_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "9.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.10";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "Hackle";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "Hackle";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Release";
-      };
-      "OBJ_21" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_22"
-         );
-      };
-      "OBJ_22" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_9";
-      };
-      "OBJ_23" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-         );
-      };
-      "OBJ_25" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_26",
-            "OBJ_27"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_26" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            LD = "/usr/bin/true";
-            OTHER_SWIFT_FLAGS = (
-               "-swift-version",
-               "5",
-               "-I",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
-               "-sdk",
-               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk",
-               "-package-description-version",
-               "5.3.0"
-            );
-            SWIFT_VERSION = "5.0";
-         };
-         name = "Debug";
-      };
-      "OBJ_27" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            LD = "/usr/bin/true";
-            OTHER_SWIFT_FLAGS = (
-               "-swift-version",
-               "5",
-               "-I",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
-               "-sdk",
-               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk",
-               "-package-description-version",
-               "5.3.0"
-            );
-            SWIFT_VERSION = "5.0";
-         };
-         name = "Release";
-      };
-      "OBJ_28" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_29"
-         );
-      };
-      "OBJ_29" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_6";
-      };
-      "OBJ_3" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_OBJC_ARC = "YES";
-            COMBINE_HIDPI_IMAGES = "YES";
-            COPY_PHASE_STRIP = "NO";
-            DEBUG_INFORMATION_FORMAT = "dwarf";
-            DYLIB_INSTALL_NAME_BASE = "@rpath";
-            ENABLE_NS_ASSERTIONS = "YES";
-            GCC_OPTIMIZATION_LEVEL = "0";
-            GCC_PREPROCESSOR_DEFINITIONS = (
-               "$(inherited)",
-               "SWIFT_PACKAGE=1",
-               "DEBUG=1"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.10";
-            ONLY_ACTIVE_ARCH = "YES";
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)",
-               "-DXcode"
-            );
-            PRODUCT_NAME = "$(TARGET_NAME)";
-            SDKROOT = "macosx";
-            SUPPORTED_PLATFORMS = (
-               "macosx",
-               "iphoneos",
-               "iphonesimulator",
-               "appletvos",
-               "appletvsimulator",
-               "watchos",
-               "watchsimulator"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)",
-               "SWIFT_PACKAGE",
-               "DEBUG"
-            );
-            SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-            USE_HEADERMAP = "NO";
-         };
-         name = "Debug";
-      };
-      "OBJ_31" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_32",
-            "OBJ_33"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_32" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-         };
-         name = "Debug";
-      };
-      "OBJ_33" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-         };
-         name = "Release";
-      };
-      "OBJ_34" = {
-         isa = "PBXTargetDependency";
-         target = "Hackle::HackleTests";
-      };
-      "OBJ_36" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_37",
-            "OBJ_38"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_37" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_MODULES = "YES";
-            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "Hackle.xcodeproj/HackleTests_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "@loader_path/../Frameworks",
-               "@loader_path/Frameworks"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "HackleTests";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Debug";
-      };
-      "OBJ_38" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_MODULES = "YES";
-            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "Hackle.xcodeproj/HackleTests_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "@loader_path/../Frameworks",
-               "@loader_path/Frameworks"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "HackleTests";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Release";
-      };
-      "OBJ_39" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_40",
-            "OBJ_41"
-         );
-      };
-      "OBJ_4" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_OBJC_ARC = "YES";
-            COMBINE_HIDPI_IMAGES = "YES";
-            COPY_PHASE_STRIP = "YES";
-            DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-            DYLIB_INSTALL_NAME_BASE = "@rpath";
-            GCC_OPTIMIZATION_LEVEL = "s";
-            GCC_PREPROCESSOR_DEFINITIONS = (
-               "$(inherited)",
-               "SWIFT_PACKAGE=1"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.10";
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)",
-               "-DXcode"
-            );
-            PRODUCT_NAME = "$(TARGET_NAME)";
-            SDKROOT = "macosx";
-            SUPPORTED_PLATFORMS = (
-               "macosx",
-               "iphoneos",
-               "iphonesimulator",
-               "appletvos",
-               "appletvsimulator",
-               "watchos",
-               "watchsimulator"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)",
-               "SWIFT_PACKAGE"
-            );
-            SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-            USE_HEADERMAP = "NO";
-         };
-         name = "Release";
-      };
-      "OBJ_40" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_12";
-      };
-      "OBJ_41" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_13";
-      };
-      "OBJ_42" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-            "OBJ_43"
-         );
-      };
-      "OBJ_43" = {
-         isa = "PBXBuildFile";
-         fileRef = "Hackle::Hackle::Product";
-      };
-      "OBJ_44" = {
-         isa = "PBXTargetDependency";
-         target = "Hackle::Hackle";
-      };
-      "OBJ_5" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_6",
-            "OBJ_7",
-            "OBJ_10",
-            "OBJ_14"
-         );
-         path = "";
-         sourceTree = "<group>";
-      };
-      "OBJ_6" = {
-         isa = "PBXFileReference";
-         explicitFileType = "sourcecode.swift";
-         path = "Package.swift";
-         sourceTree = "<group>";
-      };
-      "OBJ_7" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_8"
-         );
-         name = "Sources";
-         path = "";
-         sourceTree = "SOURCE_ROOT";
-      };
-      "OBJ_8" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_9"
-         );
-         name = "Hackle";
-         path = "Sources/Hackle";
-         sourceTree = "SOURCE_ROOT";
-      };
-      "OBJ_9" = {
-         isa = "PBXFileReference";
-         path = "Hackle.swift";
-         sourceTree = "<group>";
-      };
-   };
-   rootObject = "OBJ_1";
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		38AF40A7FBB6B467DC55987F /* Murmur3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF470733AA5556534D1C37 /* Murmur3.swift */; };
+		38AF40BEC58C4291F06EACE7 /* bucketing_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF483C398969DF0DA587FD /* bucketing_numeric.csv */; };
+		38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4DAC4C37792542D1DFFC /* Buckter.swift */; };
+		38AF4110A19264FE458293D2 /* Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4BE977B88600DA3E2D5D /* Json.swift */; };
+		38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4181FACBBCC328D68E0E /* DefaultUserEventDispatcherSepc.swift */; };
+		38AF41C2B3B08E38A440B515 /* UserEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4496F69287A28D0FD3D9 /* UserEvent.swift */; };
+		38AF41D95D81FF1E8E6D082D /* murmur_uuid.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF456ADB07BA774C55689A /* murmur_uuid.csv */; };
+		38AF42300656FB911C519998 /* Hackle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF43F1A58DBA768C4FAC06 /* Hackle.swift */; };
+		38AF42941D113C93F45BEB7F /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF43D9DA0666009D70B5EA /* Version.swift */; };
+		38AF42BAD239A3D9C0C6212C /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF471C77E8071F5BEE24B8 /* Scheduler.swift */; };
+		38AF42C95E4555C00E1432DF /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4F36962643CD99E18F0C /* Array.swift */; };
+		38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF436089661EF600282CEB /* ConcurrentArray.swift */; };
+		38AF43BA27FFC45539BCA3B6 /* bucketing_all.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF46461DC9861DBFBBA055 /* bucketing_all.csv */; };
+		38AF4427FCC79BAA69BCCFC8 /* bucketing_alphanumeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF44B3D864B2E2DEBD9FFA /* bucketing_alphanumeric.csv */; };
+		38AF4458DAAD768D2C214872 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF421F34574D7A6A7170F1 /* HttpClient.swift */; };
+		38AF44C5ECF84D590D843AE6 /* Bucket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF40BD3958D0CA8D2D20AE /* Bucket.swift */; };
+		38AF45034761E1C6750BC849 /* UserEventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4572057A4BC08B7E80F2 /* UserEventProcessor.swift */; };
+		38AF4515F80A6011AE1FC3F3 /* UserEventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF49713A3D82F26EADF6A5 /* UserEventDispatcher.swift */; };
+		38AF454E87491272E64D4079 /* MockWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4DA9E228316FA63F1FA1 /* MockWorkspace.swift */; };
+		38AF4586F06263F58C2459CF /* MockHasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4107C00A8992A8813A48 /* MockHasher.swift */; };
+		38AF45915E475599B79CA948 /* MockUserEventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF410B427BE654533C677D /* MockUserEventDispatcher.swift */; };
+		38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF41A5F59715E976616A3B /* Date.swift */; };
+		38AF45B319284D4521F86860 /* CachedWorkspaceFetcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF43F277875FAA552A6A3D /* CachedWorkspaceFetcherSpec.swift */; };
+		38AF464FE66B9534B84023CD /* MockUserEventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4E0406E86546C422F87F /* MockUserEventProcessor.swift */; };
+		38AF465143B0766817769A64 /* HttpResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4733E0C0386F658D32BB /* HttpResponse.swift */; };
+		38AF467F543D2F84774AE1DB /* HttpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF48E89B30317B1A2E30FC /* HttpRequest.swift */; };
+		38AF46E5BB880D17ADB0B732 /* MockBucketer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4331889C7AD4657D3CF4 /* MockBucketer.swift */; };
+		38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4BE21FBF05D3FFFCD8D9 /* Sdk.swift */; };
+		38AF477390B95497B853A310 /* WorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF41E61111FF7022DDF17C /* WorkspaceFetcher.swift */; };
+		38AF47C051B797B546BB3E58 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44CAEB3AF13D32574032 /* EventType.swift */; };
+		38AF47C2A2AF79F4268423EB /* Decider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF49BF350BAC0397343381 /* Decider.swift */; };
+		38AF4875E5654381051B0A0A /* Hasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44012FE9815BF8BF9190 /* Hasher.swift */; };
+		38AF489DB2E9ACA040488112 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF45493800B905A3D873FB /* Event.swift */; };
+		38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF455413A9E3EB6F851C90 /* MockHttpClient.swift */; };
+		38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4D833E82DF14236B5A7F /* Experiment.swift */; };
+		38AF49563D4580349DB825AD /* murmur_alphabetic.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF48730F1EE874B8F950EF /* murmur_alphabetic.csv */; };
+		38AF49A458F3B29AD66ACF87 /* MockDecider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF451296B78F2E4677BCFD /* MockDecider.swift */; };
+		38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4B6437D4125B407E4BE2 /* MockUserEvent.swift */; };
+		38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4382779078126A37F680 /* MockScheduler.swift */; };
+		38AF4A919E544871F1E120DE /* MockWorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4380F50E85464E25F8EC /* MockWorkspaceFetcher.swift */; };
+		38AF4B7323A7DD34B19A6635 /* BucketingDeciderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF469E782C9C02A3857412 /* BucketingDeciderSpec.swift */; };
+		38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */; };
+		38AF4C10BDA3079A3C36C6E9 /* murmur_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */; };
+		38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF45C765E632118B4ECFDB /* MockModels.swift */; };
+		38AF4CA1EAFFF7B1334AA8EC /* DefaultBucketerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4E74DC3B98FD725A69AB /* DefaultBucketerSpec.swift */; };
+		38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF436BC0E15D8FD5670B81 /* MockSlotNumberCalculator.swift */; };
+		38AF4CD8C1F8579BE84DE84A /* HackleAppSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF447F3F5FAA526FACA4F7 /* HackleAppSpec.swift */; };
+		38AF4D3040C6946446A6C399 /* murmur_all.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF4B344C684208613DBD5E /* murmur_all.csv */; };
+		38AF4D395BC520AC4F82C16A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF42AC8E638347A2068316 /* User.swift */; };
+		38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4935B94116B63C5C923A /* AppNotificationObserver.swift */; };
+		38AF4D5A91D0663D200F3AA3 /* Slot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF48C794F4EEED83590BF6 /* Slot.swift */; };
+		38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4BE3AF7320B105CE3FA7 /* AppNotification.swift */; };
+		38AF4DEC87427243B185BAAA /* Murmur3HasherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4D4CAD66FAB4F56A7D21 /* Murmur3HasherSpec.swift */; };
+		38AF4E5143E991DFDF908CBA /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF49EDBC42DAD68F8CCE47 /* Workspace.swift */; };
+		38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF41B1049ED4BFB8FB872D /* AppNotificationListener.swift */; };
+		38AF4E9684FDA9795C9B325F /* DefaultUserEventProcessorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF459B5DDE013B6E19F358 /* DefaultUserEventProcessorSpec.swift */; };
+		38AF4EA90EE0BBEF5460CD73 /* bucketing_alphabetic.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF4720C79FDE615243B5B8 /* bucketing_alphabetic.csv */; };
+		38AF4EB00AC2DCFA652596A1 /* murmur_alphanumeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF409CD86CDFE7CD3B167A /* murmur_alphanumeric.csv */; };
+		38AF4ECF7D12C7B2E1CA8E10 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF409035BBBCB5190E8DB8 /* Log.swift */; };
+		38AF4EE9D2A10EFBFE516443 /* bucketing_uuid.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF401FBBD6373254632CDA /* bucketing_uuid.csv */; };
+		38AF4EEB04BE3D41368554A1 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4DE9A1A12BD8638ECCC9 /* Mocks.swift */; };
+		38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44225C76ECE6793796B9 /* HackleApp.swift */; };
+		38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF47E80B54FB74773C2CB5 /* Variation.swift */; };
+		38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */; };
+		EE7F6874259752400020530F /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
+		EE7F6875259752400020530F /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
+		EE7F6876259752400020530F /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
+		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EE67F8012582821B006CD00A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "Hackle::Hackle";
+			remoteInfo = Hackle;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		38AF401FBBD6373254632CDA /* bucketing_uuid.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_uuid.csv; sourceTree = "<group>"; };
+		38AF409035BBBCB5190E8DB8 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		38AF409CD86CDFE7CD3B167A /* murmur_alphanumeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_alphanumeric.csv; sourceTree = "<group>"; };
+		38AF40BD3958D0CA8D2D20AE /* Bucket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bucket.swift; sourceTree = "<group>"; };
+		38AF4107C00A8992A8813A48 /* MockHasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHasher.swift; sourceTree = "<group>"; };
+		38AF410B427BE654533C677D /* MockUserEventDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserEventDispatcher.swift; sourceTree = "<group>"; };
+		38AF4181FACBBCC328D68E0E /* DefaultUserEventDispatcherSepc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserEventDispatcherSepc.swift; sourceTree = "<group>"; };
+		38AF41A5F59715E976616A3B /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		38AF41B1049ED4BFB8FB872D /* AppNotificationListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotificationListener.swift; sourceTree = "<group>"; };
+		38AF41E61111FF7022DDF17C /* WorkspaceFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceFetcher.swift; sourceTree = "<group>"; };
+		38AF421F34574D7A6A7170F1 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
+		38AF42AC8E638347A2068316 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		38AF4331889C7AD4657D3CF4 /* MockBucketer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockBucketer.swift; sourceTree = "<group>"; };
+		38AF436089661EF600282CEB /* ConcurrentArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentArray.swift; sourceTree = "<group>"; };
+		38AF436BC0E15D8FD5670B81 /* MockSlotNumberCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSlotNumberCalculator.swift; sourceTree = "<group>"; };
+		38AF4380F50E85464E25F8EC /* MockWorkspaceFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockWorkspaceFetcher.swift; sourceTree = "<group>"; };
+		38AF4382779078126A37F680 /* MockScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockScheduler.swift; sourceTree = "<group>"; };
+		38AF43D9DA0666009D70B5EA /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		38AF43F1A58DBA768C4FAC06 /* Hackle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hackle.swift; sourceTree = "<group>"; };
+		38AF43F277875FAA552A6A3D /* CachedWorkspaceFetcherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedWorkspaceFetcherSpec.swift; sourceTree = "<group>"; };
+		38AF44012FE9815BF8BF9190 /* Hasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hasher.swift; sourceTree = "<group>"; };
+		38AF44225C76ECE6793796B9 /* HackleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleApp.swift; sourceTree = "<group>"; };
+		38AF447F3F5FAA526FACA4F7 /* HackleAppSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleAppSpec.swift; sourceTree = "<group>"; };
+		38AF4496F69287A28D0FD3D9 /* UserEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEvent.swift; sourceTree = "<group>"; };
+		38AF44B3D864B2E2DEBD9FFA /* bucketing_alphanumeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_alphanumeric.csv; sourceTree = "<group>"; };
+		38AF44CAEB3AF13D32574032 /* EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventType.swift; sourceTree = "<group>"; };
+		38AF451296B78F2E4677BCFD /* MockDecider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDecider.swift; sourceTree = "<group>"; };
+		38AF45493800B905A3D873FB /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		38AF455413A9E3EB6F851C90 /* MockHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHttpClient.swift; sourceTree = "<group>"; };
+		38AF456ADB07BA774C55689A /* murmur_uuid.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_uuid.csv; sourceTree = "<group>"; };
+		38AF4572057A4BC08B7E80F2 /* UserEventProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEventProcessor.swift; sourceTree = "<group>"; };
+		38AF459B5DDE013B6E19F358 /* DefaultUserEventProcessorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserEventProcessorSpec.swift; sourceTree = "<group>"; };
+		38AF45C765E632118B4ECFDB /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
+		38AF46461DC9861DBFBBA055 /* bucketing_all.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_all.csv; sourceTree = "<group>"; };
+		38AF469E782C9C02A3857412 /* BucketingDeciderSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BucketingDeciderSpec.swift; sourceTree = "<group>"; };
+		38AF470733AA5556534D1C37 /* Murmur3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Murmur3.swift; sourceTree = "<group>"; };
+		38AF471C77E8071F5BEE24B8 /* Scheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
+		38AF4720C79FDE615243B5B8 /* bucketing_alphabetic.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_alphabetic.csv; sourceTree = "<group>"; };
+		38AF4733E0C0386F658D32BB /* HttpResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpResponse.swift; sourceTree = "<group>"; };
+		38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultSlotNumberCalculatorSpec.swift; sourceTree = "<group>"; };
+		38AF47E80B54FB74773C2CB5 /* Variation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variation.swift; sourceTree = "<group>"; };
+		38AF483C398969DF0DA587FD /* bucketing_numeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_numeric.csv; sourceTree = "<group>"; };
+		38AF48730F1EE874B8F950EF /* murmur_alphabetic.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_alphabetic.csv; sourceTree = "<group>"; };
+		38AF48C794F4EEED83590BF6 /* Slot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slot.swift; sourceTree = "<group>"; };
+		38AF48E89B30317B1A2E30FC /* HttpRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpRequest.swift; sourceTree = "<group>"; };
+		38AF4935B94116B63C5C923A /* AppNotificationObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotificationObserver.swift; sourceTree = "<group>"; };
+		38AF49713A3D82F26EADF6A5 /* UserEventDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEventDispatcher.swift; sourceTree = "<group>"; };
+		38AF49BF350BAC0397343381 /* Decider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decider.swift; sourceTree = "<group>"; };
+		38AF49EDBC42DAD68F8CCE47 /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
+		38AF4B344C684208613DBD5E /* murmur_all.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_all.csv; sourceTree = "<group>"; };
+		38AF4B6437D4125B407E4BE2 /* MockUserEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserEvent.swift; sourceTree = "<group>"; };
+		38AF4BE21FBF05D3FFFCD8D9 /* Sdk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sdk.swift; sourceTree = "<group>"; };
+		38AF4BE3AF7320B105CE3FA7 /* AppNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotification.swift; sourceTree = "<group>"; };
+		38AF4BE977B88600DA3E2D5D /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
+		38AF4D4CAD66FAB4F56A7D21 /* Murmur3HasherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Murmur3HasherSpec.swift; sourceTree = "<group>"; };
+		38AF4D833E82DF14236B5A7F /* Experiment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Experiment.swift; sourceTree = "<group>"; };
+		38AF4DA9E228316FA63F1FA1 /* MockWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockWorkspace.swift; sourceTree = "<group>"; };
+		38AF4DAC4C37792542D1DFFC /* Buckter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Buckter.swift; sourceTree = "<group>"; };
+		38AF4DE9A1A12BD8638ECCC9 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		38AF4E0406E86546C422F87F /* MockUserEventProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserEventProcessor.swift; sourceTree = "<group>"; };
+		38AF4E74DC3B98FD725A69AB /* DefaultBucketerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultBucketerSpec.swift; sourceTree = "<group>"; };
+		38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_numeric.csv; sourceTree = "<group>"; };
+		38AF4F36962643CD99E18F0C /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
+		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		OBJ_23 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_42 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				EE7F6875259752400020530F /* Nimble in Frameworks */,
+				EE7F6876259752400020530F /* Mockery in Frameworks */,
+				EE7F6874259752400020530F /* Quick in Frameworks */,
+				OBJ_43 /* Hackle.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		38AF414ABBBB10CFB1B1ED03 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4B344C684208613DBD5E /* murmur_all.csv */,
+				38AF48730F1EE874B8F950EF /* murmur_alphabetic.csv */,
+				38AF409CD86CDFE7CD3B167A /* murmur_alphanumeric.csv */,
+				38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */,
+				38AF456ADB07BA774C55689A /* murmur_uuid.csv */,
+				38AF46461DC9861DBFBBA055 /* bucketing_all.csv */,
+				38AF4720C79FDE615243B5B8 /* bucketing_alphabetic.csv */,
+				38AF44B3D864B2E2DEBD9FFA /* bucketing_alphanumeric.csv */,
+				38AF483C398969DF0DA587FD /* bucketing_numeric.csv */,
+				38AF401FBBD6373254632CDA /* bucketing_uuid.csv */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		38AF41DBE816CE3C1A75FEEC /* Decision */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4DAC4C37792542D1DFFC /* Buckter.swift */,
+				38AF49BF350BAC0397343381 /* Decider.swift */,
+				38AF470733AA5556534D1C37 /* Murmur3.swift */,
+				38AF44012FE9815BF8BF9190 /* Hasher.swift */,
+			);
+			path = Decision;
+			sourceTree = "<group>";
+		};
+		38AF434C1C785B1996086B0C /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4DE9A1A12BD8638ECCC9 /* Mocks.swift */,
+				38AF4331889C7AD4657D3CF4 /* MockBucketer.swift */,
+				38AF451296B78F2E4677BCFD /* MockDecider.swift */,
+				38AF4E0406E86546C422F87F /* MockUserEventProcessor.swift */,
+				38AF4380F50E85464E25F8EC /* MockWorkspaceFetcher.swift */,
+				38AF4107C00A8992A8813A48 /* MockHasher.swift */,
+				38AF436BC0E15D8FD5670B81 /* MockSlotNumberCalculator.swift */,
+				38AF45C765E632118B4ECFDB /* MockModels.swift */,
+				38AF4DA9E228316FA63F1FA1 /* MockWorkspace.swift */,
+				38AF410B427BE654533C677D /* MockUserEventDispatcher.swift */,
+				38AF4B6437D4125B407E4BE2 /* MockUserEvent.swift */,
+				38AF4382779078126A37F680 /* MockScheduler.swift */,
+				38AF455413A9E3EB6F851C90 /* MockHttpClient.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		38AF43A95D3A0F60C05181CD /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4496F69287A28D0FD3D9 /* UserEvent.swift */,
+				38AF4572057A4BC08B7E80F2 /* UserEventProcessor.swift */,
+				38AF49713A3D82F26EADF6A5 /* UserEventDispatcher.swift */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		38AF45B4E58F92A4791926C4 /* Decision */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4E74DC3B98FD725A69AB /* DefaultBucketerSpec.swift */,
+				38AF469E782C9C02A3857412 /* BucketingDeciderSpec.swift */,
+				38AF4D4CAD66FAB4F56A7D21 /* Murmur3HasherSpec.swift */,
+				38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */,
+			);
+			path = Decision;
+			sourceTree = "<group>";
+		};
+		38AF45B605A39AEE2B1355D1 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				38AF42AC8E638347A2068316 /* User.swift */,
+				38AF45493800B905A3D873FB /* Event.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		38AF46DB6CB910731975C835 /* Workspace */ = {
+			isa = PBXGroup;
+			children = (
+				38AF43F277875FAA552A6A3D /* CachedWorkspaceFetcherSpec.swift */,
+			);
+			path = Workspace;
+			sourceTree = "<group>";
+		};
+		38AF4932C2739F8CED158D23 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */,
+				38AF436089661EF600282CEB /* ConcurrentArray.swift */,
+				38AF41A5F59715E976616A3B /* Date.swift */,
+				38AF4BE977B88600DA3E2D5D /* Json.swift */,
+				38AF4BE21FBF05D3FFFCD8D9 /* Sdk.swift */,
+				38AF43D9DA0666009D70B5EA /* Version.swift */,
+				38AF471C77E8071F5BEE24B8 /* Scheduler.swift */,
+				38AF4F36962643CD99E18F0C /* Array.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		38AF4975BEF89059B2A959A6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				38AF40BD3958D0CA8D2D20AE /* Bucket.swift */,
+				38AF48C794F4EEED83590BF6 /* Slot.swift */,
+				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
+				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
+				38AF44CAEB3AF13D32574032 /* EventType.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		38AF49D7C0561BCCAA8FDD68 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				38AF459B5DDE013B6E19F358 /* DefaultUserEventProcessorSpec.swift */,
+				38AF4181FACBBCC328D68E0E /* DefaultUserEventDispatcherSepc.swift */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		38AF4ACE8E8E9C8C89DFF855 /* Http */ = {
+			isa = PBXGroup;
+			children = (
+				38AF421F34574D7A6A7170F1 /* HttpClient.swift */,
+				38AF48E89B30317B1A2E30FC /* HttpRequest.swift */,
+				38AF4733E0C0386F658D32BB /* HttpResponse.swift */,
+			);
+			path = Http;
+			sourceTree = "<group>";
+		};
+		38AF4AF89F323B8E1AAE4F27 /* Workspace */ = {
+			isa = PBXGroup;
+			children = (
+				38AF49EDBC42DAD68F8CCE47 /* Workspace.swift */,
+				38AF41E61111FF7022DDF17C /* WorkspaceFetcher.swift */,
+			);
+			path = Workspace;
+			sourceTree = "<group>";
+		};
+		38AF4F669561F1662BDA1DAA /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4BE3AF7320B105CE3FA7 /* AppNotification.swift */,
+				38AF41B1049ED4BFB8FB872D /* AppNotificationListener.swift */,
+				38AF4935B94116B63C5C923A /* AppNotificationObserver.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		38AF4F7139F209248611A4F1 /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				38AF409035BBBCB5190E8DB8 /* Log.swift */,
+			);
+			path = Log;
+			sourceTree = "<group>";
+		};
+		OBJ_10 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_11 /* HackleTests */,
+			);
+			name = Tests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_11 /* HackleTests */ = {
+			isa = PBXGroup;
+			children = (
+				38AF434C1C785B1996086B0C /* Mock */,
+				38AF447F3F5FAA526FACA4F7 /* HackleAppSpec.swift */,
+				38AF45B4E58F92A4791926C4 /* Decision */,
+				38AF414ABBBB10CFB1B1ED03 /* Resources */,
+				38AF49D7C0561BCCAA8FDD68 /* Event */,
+				38AF46DB6CB910731975C835 /* Workspace */,
+			);
+			name = HackleTests;
+			path = Tests/HackleTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_14 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				"Hackle::HackleTests::Product" /* HackleTests.xctest */,
+				"Hackle::Hackle::Product" /* Hackle.framework */,
+			);
+			name = Products;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		OBJ_5 = {
+			isa = PBXGroup;
+			children = (
+				OBJ_7 /* Sources */,
+				OBJ_10 /* Tests */,
+				OBJ_14 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		OBJ_7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_8 /* Hackle */,
+			);
+			name = Sources;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_8 /* Hackle */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4ACE8E8E9C8C89DFF855 /* Http */,
+				38AF4F669561F1662BDA1DAA /* Notification */,
+				38AF43A95D3A0F60C05181CD /* Event */,
+				38AF41DBE816CE3C1A75FEEC /* Decision */,
+				38AF45B605A39AEE2B1355D1 /* Common */,
+				38AF4975BEF89059B2A959A6 /* Model */,
+				38AF4932C2739F8CED158D23 /* Utilities */,
+				38AF4AF89F323B8E1AAE4F27 /* Workspace */,
+				38AF4F7139F209248611A4F1 /* Log */,
+				38AF44225C76ECE6793796B9 /* HackleApp.swift */,
+				38AF43F1A58DBA768C4FAC06 /* Hackle.swift */,
+			);
+			name = Hackle;
+			path = Sources/Hackle;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		"Hackle::Hackle" /* Hackle */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_18 /* Build configuration list for PBXNativeTarget "Hackle" */;
+			buildPhases = (
+				OBJ_21 /* Sources */,
+				OBJ_23 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Hackle;
+			productName = Hackle;
+			productReference = "Hackle::Hackle::Product" /* Hackle.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		"Hackle::HackleTests" /* HackleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_36 /* Build configuration list for PBXNativeTarget "HackleTests" */;
+			buildPhases = (
+				OBJ_39 /* Sources */,
+				OBJ_42 /* Frameworks */,
+				EE5878B7258B103F007664CE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_44 /* PBXTargetDependency */,
+			);
+			name = HackleTests;
+			packageProductDependencies = (
+				EE67F86425828DC8006CD00A /* Quick */,
+				EE67F86B25828DE4006CD00A /* Nimble */,
+				EE67F87225828DFF006CD00A /* Mockery */,
+			);
+			productName = HackleTests;
+			productReference = "Hackle::HackleTests::Product" /* HackleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		OBJ_1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 9999;
+				LastUpgradeCheck = 9999;
+			};
+			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "Hackle" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = OBJ_5;
+			packageReferences = (
+				EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */,
+				EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */,
+				EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */,
+			);
+			productRefGroup = OBJ_14 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				"Hackle::Hackle" /* Hackle */,
+				"Hackle::HackleTests" /* HackleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EE5878B7258B103F007664CE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38AF4D3040C6946446A6C399 /* murmur_all.csv in Resources */,
+				38AF49563D4580349DB825AD /* murmur_alphabetic.csv in Resources */,
+				38AF4EB00AC2DCFA652596A1 /* murmur_alphanumeric.csv in Resources */,
+				38AF4C10BDA3079A3C36C6E9 /* murmur_numeric.csv in Resources */,
+				38AF41D95D81FF1E8E6D082D /* murmur_uuid.csv in Resources */,
+				38AF43BA27FFC45539BCA3B6 /* bucketing_all.csv in Resources */,
+				38AF4EA90EE0BBEF5460CD73 /* bucketing_alphabetic.csv in Resources */,
+				38AF4427FCC79BAA69BCCFC8 /* bucketing_alphanumeric.csv in Resources */,
+				38AF40BEC58C4291F06EACE7 /* bucketing_numeric.csv in Resources */,
+				38AF4EE9D2A10EFBFE516443 /* bucketing_uuid.csv in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		OBJ_21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */,
+				38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */,
+				38AF4D395BC520AC4F82C16A /* User.swift in Sources */,
+				38AF489DB2E9ACA040488112 /* Event.swift in Sources */,
+				38AF44C5ECF84D590D843AE6 /* Bucket.swift in Sources */,
+				38AF4D5A91D0663D200F3AA3 /* Slot.swift in Sources */,
+				38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */,
+				38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */,
+				38AF47C051B797B546BB3E58 /* EventType.swift in Sources */,
+				38AF47C2A2AF79F4268423EB /* Decider.swift in Sources */,
+				38AF40A7FBB6B467DC55987F /* Murmur3.swift in Sources */,
+				38AF4875E5654381051B0A0A /* Hasher.swift in Sources */,
+				38AF41C2B3B08E38A440B515 /* UserEvent.swift in Sources */,
+				38AF45034761E1C6750BC849 /* UserEventProcessor.swift in Sources */,
+				38AF4E5143E991DFDF908CBA /* Workspace.swift in Sources */,
+				38AF477390B95497B853A310 /* WorkspaceFetcher.swift in Sources */,
+				38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */,
+				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
+				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
+				38AF4458DAAD768D2C214872 /* HttpClient.swift in Sources */,
+				38AF467F543D2F84774AE1DB /* HttpRequest.swift in Sources */,
+				38AF465143B0766817769A64 /* HttpResponse.swift in Sources */,
+				38AF4515F80A6011AE1FC3F3 /* UserEventDispatcher.swift in Sources */,
+				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
+				38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */,
+				38AF4ECF7D12C7B2E1CA8E10 /* Log.swift in Sources */,
+				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
+				38AF4110A19264FE458293D2 /* Json.swift in Sources */,
+				38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */,
+				38AF42941D113C93F45BEB7F /* Version.swift in Sources */,
+				38AF42BAD239A3D9C0C6212C /* Scheduler.swift in Sources */,
+				38AF42300656FB911C519998 /* Hackle.swift in Sources */,
+				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				38AF4EEB04BE3D41368554A1 /* Mocks.swift in Sources */,
+				38AF46E5BB880D17ADB0B732 /* MockBucketer.swift in Sources */,
+				38AF49A458F3B29AD66ACF87 /* MockDecider.swift in Sources */,
+				38AF464FE66B9534B84023CD /* MockUserEventProcessor.swift in Sources */,
+				38AF4A919E544871F1E120DE /* MockWorkspaceFetcher.swift in Sources */,
+				38AF4CD8C1F8579BE84DE84A /* HackleAppSpec.swift in Sources */,
+				38AF4CA1EAFFF7B1334AA8EC /* DefaultBucketerSpec.swift in Sources */,
+				38AF4586F06263F58C2459CF /* MockHasher.swift in Sources */,
+				38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */,
+				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
+				38AF4B7323A7DD34B19A6635 /* BucketingDeciderSpec.swift in Sources */,
+				38AF4DEC87427243B185BAAA /* Murmur3HasherSpec.swift in Sources */,
+				38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */,
+				38AF454E87491272E64D4079 /* MockWorkspace.swift in Sources */,
+				38AF4E9684FDA9795C9B325F /* DefaultUserEventProcessorSpec.swift in Sources */,
+				38AF45915E475599B79CA948 /* MockUserEventDispatcher.swift in Sources */,
+				38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */,
+				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
+				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,
+				38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */,
+				38AF45B319284D4521F86860 /* CachedWorkspaceFetcherSpec.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		OBJ_44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "Hackle::Hackle" /* Hackle */;
+			targetProxy = EE67F8012582821B006CD00A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		OBJ_19 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MARKETING_VERSION = 1.0.0;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.hackle.Hackle;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGET_NAME = Hackle;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		OBJ_20 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MARKETING_VERSION = 1.0.0;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.hackle.Hackle;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGET_NAME = Hackle;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		OBJ_3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SWIFT_PACKAGE=1",
+					"DEBUG=1",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		OBJ_37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Hackle.xcodeproj/HackleTests_Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGET_NAME = HackleTests;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		OBJ_38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Hackle.xcodeproj/HackleTests_Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGET_NAME = HackleTests;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		OBJ_4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SWIFT_PACKAGE=1",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				USE_HEADERMAP = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		OBJ_18 /* Build configuration list for PBXNativeTarget "Hackle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_19 /* Debug */,
+				OBJ_20 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_2 /* Build configuration list for PBXProject "Hackle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_3 /* Debug */,
+				OBJ_4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_36 /* Build configuration list for PBXNativeTarget "HackleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_37 /* Debug */,
+				OBJ_38 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Quick.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielsaidi/Mockery.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EE67F86425828DC8006CD00A /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		EE67F86B25828DE4006CD00A /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+		EE67F87225828DFF006CD00A /* Mockery */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */;
+			productName = Mockery;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = OBJ_1 /* Project object */;
 }

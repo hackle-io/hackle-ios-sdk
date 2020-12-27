@@ -1,3 +1,58 @@
-# Hackle
+# Hackle SDK for iOS
 
-A description of this package.
+## Install
+
+### CocoaPods
+
+```
+pod 'Hackle', '~> 1.0.0'
+```
+
+### Swift Package Manager
+
+```swift
+// ...
+dependencies: [
+    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("1.0.0"))
+],
+targets: [
+    .target(
+        name: "YOUR_TARGET",
+        dependencies: ["Hackle"]
+    )
+],
+// ...
+```
+
+
+## Usage
+
+### Initialize
+
+```swift
+import Hackle
+
+Hackle.initialize(sdkKey: "<YOUR_APP_SDK_KEY>") {
+    // welcome Hackle SDK!
+}
+
+let hackleApp = Hackle.app()
+```
+
+### Decide the variation
+```swift
+
+let user = Hackle.user(id: "ae2182e0")
+let variation = hackleApp.variation(experimentKey:42, user: user)
+
+if variation == "A" {
+    awesomeFeature()
+} else if variation == "B" {
+    moreAwesomeFeature()
+}
+```
+
+### Tracks the event
+```swift
+hackleApp.track(eventKey: "purchase", user: user)
+```
