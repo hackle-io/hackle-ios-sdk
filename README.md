@@ -41,9 +41,7 @@ let hackleApp = Hackle.app()
 
 ### Decide the variation
 ```swift
-
-let user = Hackle.user(id: "ae2182e0")
-let variation = hackleApp.variation(experimentKey:42, user: user)
+let variation = hackleApp.variation(experimentKey: 42)
 
 if variation == "A" {
     awesomeFeature()
@@ -54,5 +52,5 @@ if variation == "A" {
 
 ### Tracks the event
 ```swift
-hackleApp.track(eventKey: "purchase", user: user)
+hackleApp.track(eventKey: "purchase")
 ```

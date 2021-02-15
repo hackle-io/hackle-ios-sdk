@@ -15,6 +15,7 @@
 		38AF41C2B3B08E38A440B515 /* UserEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4496F69287A28D0FD3D9 /* UserEvent.swift */; };
 		38AF41D95D81FF1E8E6D082D /* murmur_uuid.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF456ADB07BA774C55689A /* murmur_uuid.csv */; };
 		38AF42300656FB911C519998 /* Hackle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF43F1A58DBA768C4FAC06 /* Hackle.swift */; };
+		38AF42534080D9377FB992A7 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF40D6AA6CE4E92009E89B /* UserDefaults.swift */; };
 		38AF42941D113C93F45BEB7F /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF43D9DA0666009D70B5EA /* Version.swift */; };
 		38AF42BAD239A3D9C0C6212C /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF471C77E8071F5BEE24B8 /* Scheduler.swift */; };
 		38AF42C95E4555C00E1432DF /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4F36962643CD99E18F0C /* Array.swift */; };
@@ -71,9 +72,6 @@
 		38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44225C76ECE6793796B9 /* HackleApp.swift */; };
 		38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF47E80B54FB74773C2CB5 /* Variation.swift */; };
 		38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */; };
-		EE7F6874259752400020530F /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
-		EE7F6875259752400020530F /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
-		EE7F6876259752400020530F /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
 		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,7 +80,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = "Hackle::Hackle";
+			remoteGlobalIDString = Hackle::Hackle;
 			remoteInfo = Hackle;
 		};
 /* End PBXContainerItemProxy section */
@@ -92,6 +90,7 @@
 		38AF409035BBBCB5190E8DB8 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		38AF409CD86CDFE7CD3B167A /* murmur_alphanumeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_alphanumeric.csv; sourceTree = "<group>"; };
 		38AF40BD3958D0CA8D2D20AE /* Bucket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bucket.swift; sourceTree = "<group>"; };
+		38AF40D6AA6CE4E92009E89B /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		38AF4107C00A8992A8813A48 /* MockHasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHasher.swift; sourceTree = "<group>"; };
 		38AF410B427BE654533C677D /* MockUserEventDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserEventDispatcher.swift; sourceTree = "<group>"; };
 		38AF4181FACBBCC328D68E0E /* DefaultUserEventDispatcherSepc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserEventDispatcherSepc.swift; sourceTree = "<group>"; };
@@ -168,9 +167,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				EE7F6875259752400020530F /* Nimble in Frameworks */,
-				EE7F6876259752400020530F /* Mockery in Frameworks */,
-				EE7F6874259752400020530F /* Quick in Frameworks */,
 				OBJ_43 /* Hackle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,6 +271,7 @@
 				38AF43D9DA0666009D70B5EA /* Version.swift */,
 				38AF471C77E8071F5BEE24B8 /* Scheduler.swift */,
 				38AF4F36962643CD99E18F0C /* Array.swift */,
+				38AF40D6AA6CE4E92009E89B /* UserDefaults.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -438,9 +435,9 @@
 			);
 			name = HackleTests;
 			packageProductDependencies = (
-				EE67F86425828DC8006CD00A /* Quick */,
-				EE67F86B25828DE4006CD00A /* Nimble */,
-				EE67F87225828DFF006CD00A /* Mockery */,
+				EE67F86425828DC8006CD00A,
+				EE67F86B25828DE4006CD00A,
+				EE67F87225828DFF006CD00A,
 			);
 			productName = HackleTests;
 			productReference = "Hackle::HackleTests::Product" /* HackleTests.xctest */;
@@ -464,9 +461,9 @@
 			);
 			mainGroup = OBJ_5;
 			packageReferences = (
-				EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */,
-				EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */,
-				EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */,
+				EE67F86325828DC8006CD00A,
+				EE67F86A25828DE4006CD00A,
+				EE67F87125828DFF006CD00A,
 			);
 			productRefGroup = OBJ_14 /* Products */;
 			projectDirPath = "";
@@ -536,6 +533,7 @@
 				38AF42BAD239A3D9C0C6212C /* Scheduler.swift in Sources */,
 				38AF42300656FB911C519998 /* Hackle.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
+				38AF42534080D9377FB992A7 /* UserDefaults.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -799,7 +797,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */ = {
+		EE67F86325828DC8006CD00A = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick.git";
 			requirement = {
@@ -807,7 +805,7 @@
 				minimumVersion = 3.0.0;
 			};
 		};
-		EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */ = {
+		EE67F86A25828DE4006CD00A = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Nimble.git";
 			requirement = {
@@ -815,7 +813,7 @@
 				minimumVersion = 9.0.0;
 			};
 		};
-		EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */ = {
+		EE67F87125828DFF006CD00A = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielsaidi/Mockery.git";
 			requirement = {
@@ -826,19 +824,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EE67F86425828DC8006CD00A /* Quick */ = {
+		EE67F86425828DC8006CD00A = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */;
+			package = EE67F86325828DC8006CD00A;
 			productName = Quick;
 		};
-		EE67F86B25828DE4006CD00A /* Nimble */ = {
+		EE67F86B25828DE4006CD00A = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */;
+			package = EE67F86A25828DE4006CD00A;
 			productName = Nimble;
 		};
-		EE67F87225828DFF006CD00A /* Mockery */ = {
+		EE67F87225828DFF006CD00A = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */;
+			package = EE67F87125828DFF006CD00A;
 			productName = Mockery;
 		};
 /* End XCSwiftPackageProductDependency section */

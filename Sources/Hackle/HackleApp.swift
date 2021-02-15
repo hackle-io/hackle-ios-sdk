@@ -5,11 +5,17 @@
 import Foundation
 
 /// Entry point of Hackle Sdk.
-@objc public class HackleApp: NSObject {
+@objc public final class HackleApp: NSObject {
 
     private let decider: Decider
     private let workspaceFetcher: WorkspaceFetcher
     private let eventProcessor: UserEventProcessor
+
+    private var deviceId: String {
+        get {
+            UserDefaults.standard.computeIfAbsent(key: HackleApp.hackleDeviceId) { _ in UUID().uuidString }
+        }
+    }
 
     init(decider: Decider, workspaceFetcher: WorkspaceFetcher, eventProcessor: UserEventProcessor) {
         self.decider = decider
@@ -17,21 +23,14 @@ import Foundation
         self.eventProcessor = eventProcessor
     }
 
-    ///
-    /// Decide the variation to expose to the user for experiment.
-    ///
-    /// This method return the `defaultVariation` if:
-    /// - SDK is not ready
-    /// - The experiment key is invalid
-    /// - The experiment has not started yet
-    /// - The user is not allocated to the experiment
-    /// - The decided variation has been dropped
-    ///
-    /// - Parameters:
-    ///   - experimentKey: The unique key of the experiment.
-    ///   - user: The user to participate in the experiment.
-    ///   - defaultVariation: The default variation of the experiment.
-    /// - Returns: the decided variation for the user, or defaultVariation.
+    @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
+        return variation(experimentKey: experimentKey, userId: deviceId, defaultVariation: defaultVariation)
+    }
+
+    @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
+        return variation(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation)
+    }
+
     @objc public func variation(experimentKey: Int, user: User, defaultVariation: String = "A") -> String {
 
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
@@ -55,22 +54,26 @@ import Foundation
         }
     }
 
-    ///
-    /// Records the event that occurred by the user.
-    ///
-    /// - Parameters:
-    ///   - eventKey: the unique key of event that occurred.
-    ///   - user: The user that occurred the event.
+    @objc public func track(eventKey: String) {
+        track(eventKey: eventKey, userId: deviceId)
+    }
+
+    @objc public func track(eventKey: String, userId: String) {
+        track(eventKey: eventKey, user: Hackle.user(id: userId))
+    }
+
     @objc public func track(eventKey: String, user: User) {
         track(event: Hackle.event(key: eventKey), user: user)
     }
 
-    ///
-    /// Records the event that occurred by the user.
-    ///
-    /// - Parameters:
-    ///   - event: The event that occurred
-    ///   - user: The user that occurred the event
+    @objc public func track(event: Event) {
+        track(event: event, userId: deviceId)
+    }
+
+    @objc public func track(event: Event, userId: String) {
+        track(event: event, user: Hackle.user(id: userId))
+    }
+
     @objc public func track(event: Event, user: User) {
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
             return
@@ -82,6 +85,8 @@ import Foundation
 }
 
 extension HackleApp {
+
+    private static let hackleDeviceId = "hackle_device_id"
 
     func initialize(completion: @escaping () -> ()) {
         eventProcessor.start()
