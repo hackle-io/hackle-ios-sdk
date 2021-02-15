@@ -5,5 +5,5 @@
 import Foundation
 
 class Version {
-    static let CURRENT = "1.0.0"
+    static let CURRENT = "1.1.0"
 }
