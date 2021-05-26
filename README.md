@@ -5,7 +5,7 @@
 ### CocoaPods
 
 ```
-pod 'Hackle', '~> 1.1.0'
+pod 'Hackle', '~> 1.1.1'
 ```
 
 ### Swift Package Manager
@@ -13,7 +13,7 @@ pod 'Hackle', '~> 1.1.0'
 ```swift
 // ...
 dependencies: [
-    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("1.1.0"))
+    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("1.1.1"))
 ],
 targets: [
     .target(

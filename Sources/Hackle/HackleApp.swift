@@ -11,7 +11,7 @@ import Foundation
     private let workspaceFetcher: WorkspaceFetcher
     private let eventProcessor: UserEventProcessor
 
-    private var deviceId: String {
+    @objc public var deviceId: String {
         get {
             UserDefaults.standard.computeIfAbsent(key: HackleApp.hackleDeviceId) { _ in UUID().uuidString }
         }
