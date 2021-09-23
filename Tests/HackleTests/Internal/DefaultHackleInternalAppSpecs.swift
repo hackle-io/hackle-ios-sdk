@@ -33,7 +33,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     // then
                     expect(actual.variation) == "J"
-                    expect(actual.reason) == DecisionReason.SDK_NOK_READY
+                    expect(actual.reason) == DecisionReason.SDK_NOT_READY
                 }
             }
 
@@ -105,7 +105,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     // then
                     expect(actual.isOn) == false
-                    expect(actual.reason) == DecisionReason.SDK_NOK_READY
+                    expect(actual.reason) == DecisionReason.SDK_NOT_READY
                 }
             }
 

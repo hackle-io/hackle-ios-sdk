@@ -42,7 +42,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
     func experiment(experimentKey: Experiment.Key, user: User, defaultVariationKey: Variation.Key) throws -> Decision {
 
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
-            return Decision.of(variation: defaultVariationKey, reason: DecisionReason.SDK_NOK_READY)
+            return Decision.of(variation: defaultVariationKey, reason: DecisionReason.SDK_NOT_READY)
         }
 
         guard let experiment = workspace.getExperimentOrNil(experimentKey: experimentKey) else {
@@ -57,7 +57,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
 
     func featureFlag(featureKey: Experiment.Key, user: User) throws -> FeatureFlagDecision {
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
-            return FeatureFlagDecision.off(reason: DecisionReason.SDK_NOK_READY)
+            return FeatureFlagDecision.off(reason: DecisionReason.SDK_NOT_READY)
         }
 
         guard let featureFlag = workspace.getFeatureFlagOrNil(featureKey: featureKey) else {

@@ -15,7 +15,7 @@ import Foundation
     }
 }
 
-@objc public class FeatureFlagDecision: NSObject {
+@objc public final class FeatureFlagDecision: NSObject {
 
     @objc public let isOn: Bool
     @objc public let reason: String
@@ -37,9 +37,8 @@ import Foundation
 
 class DecisionReason {
 
-    static let SDK_NOK_READY = "SDK_NOK_READY"
+    static let SDK_NOT_READY = "SDK_NOT_READY"
     static let EXCEPTION = "EXCEPTION"
-    static let INVALID_INPUT = "INVALID_INPUT"
 
     static let EXPERIMENT_NOT_FOUND = "EXPERIMENT_NOT_FOUND"
     static let EXPERIMENT_DRAFT = "EXPERIMENT_DRAFT"
