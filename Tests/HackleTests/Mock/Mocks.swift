@@ -36,9 +36,9 @@ func verify<Arguments, Result>(exactly: Int? = nil, _ mockFunction: () -> MockFu
     let invocations = mockFunc.mock.invokations(of: mockFunc.mockReference)
 
     if let exactly = exactly {
-        expect(invocations.count).to(equal(exactly), description: "asdf")
+        expect(invocations.count).to(equal(exactly))
     } else {
-        expect(invocations.count > 0).to(equal(true), description: "sadf")
+        expect(invocations.count > 0).to(equal(true))
     }
 
 }

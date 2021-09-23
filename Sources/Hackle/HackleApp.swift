@@ -7,50 +7,75 @@ import Foundation
 /// Entry point of Hackle Sdk.
 @objc public final class HackleApp: NSObject {
 
-    private let decider: Decider
-    private let workspaceFetcher: WorkspaceFetcher
-    private let eventProcessor: UserEventProcessor
+    private let internalApp: HackleInternalApp
 
     @objc public var deviceId: String {
         get {
-            UserDefaults.standard.computeIfAbsent(key: HackleApp.hackleDeviceId) { _ in UUID().uuidString }
+            UserDefaults.standard.computeIfAbsent(key: HackleApp.hackleDeviceId) { _ in
+                UUID().uuidString
+            }
         }
     }
 
-    init(decider: Decider, workspaceFetcher: WorkspaceFetcher, eventProcessor: UserEventProcessor) {
-        self.decider = decider
-        self.workspaceFetcher = workspaceFetcher
-        self.eventProcessor = eventProcessor
+    init(internalApp: HackleInternalApp) {
+        self.internalApp = internalApp
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
-        return variation(experimentKey: experimentKey, userId: deviceId, defaultVariation: defaultVariation)
+        variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
     }
 
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
-        return variation(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation)
+        variationDetail(experimentKey: experimentKey, userId: userId, defaultVariation: defaultVariation).variation
     }
 
     @objc public func variation(experimentKey: Int, user: User, defaultVariation: String = "A") -> String {
+        variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation).variation
+    }
 
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
-            return defaultVariation
+    @objc public func variationDetail(experimentKey: Int, defaultVariation: String = "A") -> Decision {
+        variationDetail(experimentKey: experimentKey, userId: deviceId, defaultVariation: defaultVariation)
+    }
+
+    @objc public func variationDetail(experimentKey: Int, userId: String, defaultVariation: String = "A") -> Decision {
+        variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation)
+    }
+
+    @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
+        do {
+            return try internalApp.experiment(experimentKey: Int64(experimentKey), user: user, defaultVariationKey: defaultVariation)
+        } catch let error {
+            Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
+            return Decision.of(variation: defaultVariation, reason: DecisionReason.EXCEPTION)
         }
+    }
 
-        guard let experiment = workspace.getExperimentOrNil(experimentKey: Int64(experimentKey)) else {
-            return defaultVariation
-        }
+    @objc public func isFeatureOn(featureKey: Int) -> Bool {
+        featureFlagDetail(featureKey: featureKey, userId: deviceId).isOn
+    }
 
-        let decision = decider.decide(experiment: experiment, user: user)
-        switch decision {
-        case .NotAllocated:
-            return defaultVariation
-        case .ForcedAllocated(let variationKey):
-            return variationKey
-        case .NaturalAllocated(let variation):
-            let userEvent = UserEvents.exposure(user: user, experiment: experiment, variation: variation)
-            eventProcessor.process(event: userEvent)
-            return variation.key
+    @objc public func isFeatureOn(featureKey: Int, userId: String) -> Bool {
+        featureFlagDetail(featureKey: featureKey, userId: userId).isOn
+    }
+
+    @objc public func isFeatureOn(featureKey: Int, user: User) -> Bool {
+        featureFlagDetail(featureKey: featureKey, user: user).isOn
+    }
+
+    @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
+        featureFlagDetail(featureKey: featureKey, userId: deviceId)
+    }
+
+    @objc public func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision {
+        featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId))
+    }
+
+    @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
+        do {
+            return try internalApp.featureFlag(featureKey: Int64(featureKey), user: user)
+        } catch {
+            Log.error("Unexpected error while deciding feature flag[\(featureKey)]: \(String(describing: error))")
+            return FeatureFlagDecision.off(reason: DecisionReason.EXCEPTION)
         }
     }
 
@@ -75,12 +100,7 @@ import Foundation
     }
 
     @objc public func track(event: Event, user: User) {
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
-            return
-        }
-        let eventType = workspace.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
-        let userEvent = UserEvents.track(user: user, eventType: eventType, event: event)
-        eventProcessor.process(event: userEvent)
+        internalApp.track(event: event, user: user)
     }
 }
 
@@ -89,11 +109,7 @@ extension HackleApp {
     private static let hackleDeviceId = "hackle_device_id"
 
     func initialize(completion: @escaping () -> ()) {
-        eventProcessor.start()
-        workspaceFetcher.fetchFromServer {
-            Log.info("Hackle \(Version.CURRENT) started")
-            completion()
-        }
+        internalApp.initialize(completion: completion)
     }
 
     static func create(sdkKey: String) -> HackleApp {
@@ -121,10 +137,8 @@ extension HackleApp {
 
         DefaultAppNotificationObserver.instance.addListener(listener: eventProcessor)
 
-        return HackleApp(
-            decider: BucketingDecider(),
-            workspaceFetcher: workspaceFetcher,
-            eventProcessor: eventProcessor
-        )
+        let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+
+        return HackleApp(internalApp: internalApp)
     }
 }

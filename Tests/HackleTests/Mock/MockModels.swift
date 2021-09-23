@@ -38,69 +38,76 @@ class MockSlot: Mock, Slot {
     }
 }
 
-class MockRunningExperiment: Mock, Running {
+class MockExperiment: Mock, Experiment {
+    let id: Id
+    let key: Key
+    let type: ExperimentType
 
-    var id: Id
-    var key: Key
-    var bucket: Bucket
-
-    init(id: Id = 42, key: Key = 320, bucket: Bucket = MockBucket()) {
+    init(id: Id = 1, key: Key = 1, type: ExperimentType = .abTest) {
         self.id = id
         self.key = key
-        self.bucket = bucket
+        self.type = type
         super.init()
     }
 
-    lazy var mockGetVariationOrNil = MockFunction(self, getVariationOrNil)
+    lazy var getVariationByIdOrNilMock: MockFunction<Variation.Id, Variation?> = MockFunction(self, getVariationOrNil)
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation? {
-        call(mockGetVariationOrNil, args: variationId)
+        call(getVariationByIdOrNilMock, args: variationId)
     }
 
-    lazy var mockGetOverriddenVariationOrNil = MockFunction(self, getOverriddenVariationOrNil)
+    lazy var getVariationByKeyOrNilMock: MockFunction<Variation.Key, Variation?> = MockFunction(self, getVariationOrNil)
+
+    func getVariationOrNil(variationKey: Variation.Key) -> Variation? {
+        call(getVariationByKeyOrNilMock, args: variationKey)
+    }
+
+    lazy var getOverriddenVariationOrNilMock = MockFunction(self, getOverriddenVariationOrNil)
 
     func getOverriddenVariationOrNil(user: User) -> Variation? {
-        call(mockGetOverriddenVariationOrNil, args: user)
+        call(getOverriddenVariationOrNilMock, args: user)
     }
 }
 
-class MockRunning: Mock, Running {
+class MockDraftExperiment: MockExperiment, DraftExperiment {
+}
 
-    var id: Id
-    var key: Key
-    var bucket: Bucket
+class MockRunningExperiment: MockExperiment, RunningExperiment {
 
-    init(id: Id = 42, key: Key = 320, bucket: Bucket = MockBucket()) {
-        self.id = id
-        self.key = key
-        self.bucket = bucket
-        super.init()
-    }
+    let targetAudiences: [Target]
+    let targetRules: [TargetRule]
+    let defaultRule: Action
 
-    lazy var mockGetVariationOrNil = MockReference(getVariationOrNil)
-
-    func getVariationOrNil(variationId: Variation.Id) -> Variation? {
-        invoke(mockGetVariationOrNil, args: (variationId))
-    }
-
-    lazy var mockGetOverriddenVariationOrNil = MockReference(getOverriddenVariationOrNil)
-
-    func getOverriddenVariationOrNil(user: User) -> Variation? {
-        invoke(mockGetOverriddenVariationOrNil, args: (user))
+    init(
+        id: Id = 42,
+        key: Key = 320,
+        type: ExperimentType = .abTest,
+        targetAudiences: [Target] = [],
+        targetRules: [TargetRule] = [],
+        defaultRule: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1)
+    ) {
+        self.targetAudiences = targetAudiences
+        self.targetRules = targetRules
+        self.defaultRule = defaultRule
+        super.init(id: id, key: key, type: type)
     }
 }
 
-class MockCompletedExperiment: Mock, Completed {
+class MockPausedExperiment: MockExperiment, PausedExperiment {
 
-    var id: Id
-    var key: Key
-    var winnerVariationKey: Variation.Key
+}
 
-    init(id: Id = 42, key: Key = 320, winnerVariationKey: Variation.Key) {
-        self.id = id
-        self.key = key
-        self.winnerVariationKey = winnerVariationKey
-        super.init()
+class MockCompletedExperiment: MockExperiment, CompletedExperiment {
+    let winnerVariation: Variation
+
+    init(
+        id: Id = 1,
+        key: Key = 1,
+        type: ExperimentType = .abTest,
+        winnerVariation: Variation
+    ) {
+        self.winnerVariation = winnerVariation
+        super.init(id: id, key: key, type: type)
     }
 }
 
@@ -113,6 +120,17 @@ class MockVariation: Mock, Variation {
         self.id = id
         self.key = key
         self.isDropped = isDropped
+        super.init()
+    }
+}
+
+class MockTargetRule: Mock, TargetRule {
+    let target: Target
+    let action: Action
+
+    init(target: Target = Target(conditions: []), action: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1)) {
+        self.target = target
+        self.action = action
         super.init()
     }
 }
