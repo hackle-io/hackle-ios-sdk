@@ -5,7 +5,7 @@
 ### CocoaPods
 
 ```
-pod 'Hackle', '~> 1.1.1'
+pod 'Hackle', '~> 2.0.0'
 ```
 
 ### Swift Package Manager
@@ -13,7 +13,7 @@ pod 'Hackle', '~> 1.1.1'
 ```swift
 // ...
 dependencies: [
-    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("1.1.1"))
+    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("2.0.0"))
 ],
 targets: [
     .target(
@@ -23,7 +23,6 @@ targets: [
 ],
 // ...
 ```
-
 
 ## Usage
 
@@ -39,7 +38,8 @@ Hackle.initialize(sdkKey: "<YOUR_APP_SDK_KEY>") {
 let hackleApp = Hackle.app()
 ```
 
-### Decide the variation
+### Decide the A/B test variation
+
 ```swift
 let variation = hackleApp.variation(experimentKey: 42)
 
@@ -50,7 +50,20 @@ if variation == "A" {
 }
 ```
 
+### Decide the Feature
+
+```swift
+let isFeatureOn = hackleApp.isFeatureOn(featureKey: 42)
+
+if isFeatureOn {
+    moreAwesomeFeature()
+} else {
+    awesomeFeature()
+}
+```
+
 ### Tracks the event
+
 ```swift
 hackleApp.track(eventKey: "purchase")
 ```

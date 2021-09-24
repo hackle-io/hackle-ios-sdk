@@ -38,17 +38,14 @@
 		38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4BE21FBF05D3FFFCD8D9 /* Sdk.swift */; };
 		38AF477390B95497B853A310 /* WorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF41E61111FF7022DDF17C /* WorkspaceFetcher.swift */; };
 		38AF47C051B797B546BB3E58 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44CAEB3AF13D32574032 /* EventType.swift */; };
-		38AF47C2A2AF79F4268423EB /* Decider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF49BF350BAC0397343381 /* Decider.swift */; };
 		38AF4875E5654381051B0A0A /* Hasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44012FE9815BF8BF9190 /* Hasher.swift */; };
 		38AF489DB2E9ACA040488112 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF45493800B905A3D873FB /* Event.swift */; };
 		38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF455413A9E3EB6F851C90 /* MockHttpClient.swift */; };
 		38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4D833E82DF14236B5A7F /* Experiment.swift */; };
 		38AF49563D4580349DB825AD /* murmur_alphabetic.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF48730F1EE874B8F950EF /* murmur_alphabetic.csv */; };
-		38AF49A458F3B29AD66ACF87 /* MockDecider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF451296B78F2E4677BCFD /* MockDecider.swift */; };
 		38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4B6437D4125B407E4BE2 /* MockUserEvent.swift */; };
 		38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4382779078126A37F680 /* MockScheduler.swift */; };
 		38AF4A919E544871F1E120DE /* MockWorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4380F50E85464E25F8EC /* MockWorkspaceFetcher.swift */; };
-		38AF4B7323A7DD34B19A6635 /* BucketingDeciderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF469E782C9C02A3857412 /* BucketingDeciderSpec.swift */; };
 		38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */; };
 		38AF4C10BDA3079A3C36C6E9 /* murmur_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */; };
 		38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF45C765E632118B4ECFDB /* MockModels.swift */; };
@@ -72,6 +69,56 @@
 		38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44225C76ECE6793796B9 /* HackleApp.swift */; };
 		38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF47E80B54FB74773C2CB5 /* Variation.swift */; };
 		38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */; };
+		EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */; };
+		EE0560C426F1CF5F0051B624 /* MockFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */; };
+		EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */; };
+		EE0560CC26F1E01D0051B624 /* MockTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */; };
+		EE0560D026F1F9420051B624 /* MockConditionMatcherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */; };
+		EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */; };
+		EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */; };
+		EE0560E026F21F970051B624 /* HackleError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560DF26F21F970051B624 /* HackleError.swift */; };
+		EE641F9926F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */; };
+		EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */; };
+		EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */; };
+		EE641FAB26F09BB50037AE25 /* DefaultEvaluationFlowSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FAA26F09BB50037AE25 /* DefaultEvaluationFlowSpecs.swift */; };
+		EE641FB126F09BC90037AE25 /* DefaultEvaluationFlowFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FB026F09BC90037AE25 /* DefaultEvaluationFlowFactorySpecs.swift */; };
+		EE641FB526F09BD20037AE25 /* FlowEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FB426F09BD20037AE25 /* FlowEvaluatorSpecs.swift */; };
+		EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */; };
+		EE641FBD26F09BE90037AE25 /* ValueMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */; };
+		EE641FC126F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */; };
+		EE641FC526F09BFC0037AE25 /* MatchValueSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC426F09BFC0037AE25 /* MatchValueSpecs.swift */; };
+		EE641FC926F09C040037AE25 /* PropertyConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC826F09C040037AE25 /* PropertyConditionMatcherSpecs.swift */; };
+		EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */; };
+		EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */; };
+		EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */; };
+		EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */; };
+		EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FDC26F09D760037AE25 /* MockActionResolver.swift */; };
+		EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
+		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
+		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
+		EEA8BD1626ECFD4C007230D9 /* Evaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD1526ECFD4C007230D9 /* Evaluation.swift */; };
+		EEA8BD1C26ECFD52007230D9 /* Evaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD1B26ECFD52007230D9 /* Evaluator.swift */; };
+		EEA8BD2026ECFD6B007230D9 /* ActionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD1F26ECFD6B007230D9 /* ActionResolver.swift */; };
+		EEA8BD2426ECFD8C007230D9 /* EvaluationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD2326ECFD8C007230D9 /* EvaluationFlow.swift */; };
+		EEA8BD2A26ECFD95007230D9 /* EvaluationFlowFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD2926ECFD95007230D9 /* EvaluationFlowFactory.swift */; };
+		EEA8BD2E26ECFD9C007230D9 /* FlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD2D26ECFD9C007230D9 /* FlowEvaluator.swift */; };
+		EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD3126ECFDA2007230D9 /* ConditionMatcher.swift */; };
+		EEA8BD3626ECFDA8007230D9 /* OperatorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD3526ECFDA8007230D9 /* OperatorMatcher.swift */; };
+		EEA8BD3A26ECFDAE007230D9 /* TargetMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD3926ECFDAE007230D9 /* TargetMatcher.swift */; };
+		EEA8BD3E26ECFDB5007230D9 /* ValueMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD3D26ECFDB5007230D9 /* ValueMatcher.swift */; };
+		EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD4126ECFDBA007230D9 /* ValueOperatorMatcher.swift */; };
+		EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */; };
+		EEA8BD4F26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */; };
+		EEA8BD5326ECFFBE007230D9 /* TargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */; };
+		EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5626ECFFD1007230D9 /* Action.swift */; };
+		EEA8BD5B26ECFFD7007230D9 /* Target.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5A26ECFFD7007230D9 /* Target.swift */; };
+		EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */; };
+		EEA8BD6326ECFFF9007230D9 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6226ECFFF9007230D9 /* Objects.swift */; };
+		EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6C26EDDB7D007230D9 /* Decision.swift */; };
+		EEA8BD7126EDF02D007230D9 /* MatchValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7026EDF02D007230D9 /* MatchValue.swift */; };
+		EEA8BD7526EDF77C007230D9 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7426EDF77C007230D9 /* Enums.swift */; };
+		EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */; };
+		EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */; };
 		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,7 +127,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = Hackle::Hackle;
+			remoteGlobalIDString = "Hackle::Hackle";
 			remoteInfo = Hackle;
 		};
 /* End PBXContainerItemProxy section */
@@ -113,7 +160,6 @@
 		38AF4496F69287A28D0FD3D9 /* UserEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEvent.swift; sourceTree = "<group>"; };
 		38AF44B3D864B2E2DEBD9FFA /* bucketing_alphanumeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_alphanumeric.csv; sourceTree = "<group>"; };
 		38AF44CAEB3AF13D32574032 /* EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventType.swift; sourceTree = "<group>"; };
-		38AF451296B78F2E4677BCFD /* MockDecider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDecider.swift; sourceTree = "<group>"; };
 		38AF45493800B905A3D873FB /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		38AF455413A9E3EB6F851C90 /* MockHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHttpClient.swift; sourceTree = "<group>"; };
 		38AF456ADB07BA774C55689A /* murmur_uuid.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_uuid.csv; sourceTree = "<group>"; };
@@ -121,7 +167,6 @@
 		38AF459B5DDE013B6E19F358 /* DefaultUserEventProcessorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserEventProcessorSpec.swift; sourceTree = "<group>"; };
 		38AF45C765E632118B4ECFDB /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
 		38AF46461DC9861DBFBBA055 /* bucketing_all.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_all.csv; sourceTree = "<group>"; };
-		38AF469E782C9C02A3857412 /* BucketingDeciderSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BucketingDeciderSpec.swift; sourceTree = "<group>"; };
 		38AF470733AA5556534D1C37 /* Murmur3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Murmur3.swift; sourceTree = "<group>"; };
 		38AF471C77E8071F5BEE24B8 /* Scheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
 		38AF4720C79FDE615243B5B8 /* bucketing_alphabetic.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_alphabetic.csv; sourceTree = "<group>"; };
@@ -134,7 +179,6 @@
 		38AF48E89B30317B1A2E30FC /* HttpRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpRequest.swift; sourceTree = "<group>"; };
 		38AF4935B94116B63C5C923A /* AppNotificationObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotificationObserver.swift; sourceTree = "<group>"; };
 		38AF49713A3D82F26EADF6A5 /* UserEventDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEventDispatcher.swift; sourceTree = "<group>"; };
-		38AF49BF350BAC0397343381 /* Decider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decider.swift; sourceTree = "<group>"; };
 		38AF49EDBC42DAD68F8CCE47 /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
 		38AF4B344C684208613DBD5E /* murmur_all.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_all.csv; sourceTree = "<group>"; };
 		38AF4B6437D4125B407E4BE2 /* MockUserEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserEvent.swift; sourceTree = "<group>"; };
@@ -151,6 +195,53 @@
 		38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_numeric.csv; sourceTree = "<group>"; };
 		38AF4F36962643CD99E18F0C /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
+		EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluationFlow.swift; sourceTree = "<group>"; };
+		EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlowEvaluator.swift; sourceTree = "<group>"; };
+		EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExperimentTargetDeterminer.swift; sourceTree = "<group>"; };
+		EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTargetRuleDeterminer.swift; sourceTree = "<group>"; };
+		EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConditionMatcherFactory.swift; sourceTree = "<group>"; };
+		EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConditionMatcher.swift; sourceTree = "<group>"; };
+		EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockValueOperatorMatcher.swift; sourceTree = "<group>"; };
+		EE0560DF26F21F970051B624 /* HackleError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleError.swift; sourceTree = "<group>"; };
+		EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvaluatorSpecs.swift; sourceTree = "<group>"; };
+		EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationSpecs.swift; sourceTree = "<group>"; };
+		EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultActionResolverSpecs.swift; sourceTree = "<group>"; };
+		EE641FAA26F09BB50037AE25 /* DefaultEvaluationFlowSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvaluationFlowSpecs.swift; sourceTree = "<group>"; };
+		EE641FB026F09BC90037AE25 /* DefaultEvaluationFlowFactorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvaluationFlowFactorySpecs.swift; sourceTree = "<group>"; };
+		EE641FB426F09BD20037AE25 /* FlowEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowEvaluatorSpecs.swift; sourceTree = "<group>"; };
+		EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperatorMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultValueOperatorMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE641FC426F09BFC0037AE25 /* MatchValueSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchValueSpecs.swift; sourceTree = "<group>"; };
+		EE641FC826F09C040037AE25 /* PropertyConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyConditionMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConditionMatcherFactorySpecs.swift; sourceTree = "<group>"; };
+		EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTargetMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetDeterminerSpecs.swift; sourceTree = "<group>"; };
+		EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTargetRuleDeterminerSpecs.swift; sourceTree = "<group>"; };
+		EE641FDC26F09D760037AE25 /* MockActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockActionResolver.swift; sourceTree = "<group>"; };
+		EEA8BD1526ECFD4C007230D9 /* Evaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluation.swift; sourceTree = "<group>"; };
+		EEA8BD1B26ECFD52007230D9 /* Evaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluator.swift; sourceTree = "<group>"; };
+		EEA8BD1F26ECFD6B007230D9 /* ActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionResolver.swift; sourceTree = "<group>"; };
+		EEA8BD2326ECFD8C007230D9 /* EvaluationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationFlow.swift; sourceTree = "<group>"; };
+		EEA8BD2926ECFD95007230D9 /* EvaluationFlowFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationFlowFactory.swift; sourceTree = "<group>"; };
+		EEA8BD2D26ECFD9C007230D9 /* FlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowEvaluator.swift; sourceTree = "<group>"; };
+		EEA8BD3126ECFDA2007230D9 /* ConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionMatcher.swift; sourceTree = "<group>"; };
+		EEA8BD3526ECFDA8007230D9 /* OperatorMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperatorMatcher.swift; sourceTree = "<group>"; };
+		EEA8BD3926ECFDAE007230D9 /* TargetMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetMatcher.swift; sourceTree = "<group>"; };
+		EEA8BD3D26ECFDB5007230D9 /* ValueMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueMatcher.swift; sourceTree = "<group>"; };
+		EEA8BD4126ECFDBA007230D9 /* ValueOperatorMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOperatorMatcher.swift; sourceTree = "<group>"; };
+		EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInternalApp.swift; sourceTree = "<group>"; };
+		EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentTargetDeterminer.swift; sourceTree = "<group>"; };
+		EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRuleDeterminer.swift; sourceTree = "<group>"; };
+		EEA8BD5626ECFFD1007230D9 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		EEA8BD5A26ECFFD7007230D9 /* Target.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Target.swift; sourceTree = "<group>"; };
+		EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRule.swift; sourceTree = "<group>"; };
+		EEA8BD6226ECFFF9007230D9 /* Objects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
+		EEA8BD6C26EDDB7D007230D9 /* Decision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decision.swift; sourceTree = "<group>"; };
+		EEA8BD7026EDF02D007230D9 /* MatchValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchValue.swift; sourceTree = "<group>"; };
+		EEA8BD7426EDF77C007230D9 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleInternalAppSpecs.swift; sourceTree = "<group>"; };
+		EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluator.swift; sourceTree = "<group>"; };
 		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -167,6 +258,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+				EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */,
+				EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */,
+				EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */,
 				OBJ_43 /* Hackle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -191,27 +285,13 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		38AF41DBE816CE3C1A75FEEC /* Decision */ = {
-			isa = PBXGroup;
-			children = (
-				38AF4DAC4C37792542D1DFFC /* Buckter.swift */,
-				38AF49BF350BAC0397343381 /* Decider.swift */,
-				38AF470733AA5556534D1C37 /* Murmur3.swift */,
-				38AF44012FE9815BF8BF9190 /* Hasher.swift */,
-			);
-			path = Decision;
-			sourceTree = "<group>";
-		};
 		38AF434C1C785B1996086B0C /* Mock */ = {
 			isa = PBXGroup;
 			children = (
 				38AF4DE9A1A12BD8638ECCC9 /* Mocks.swift */,
-				38AF4331889C7AD4657D3CF4 /* MockBucketer.swift */,
-				38AF451296B78F2E4677BCFD /* MockDecider.swift */,
 				38AF4E0406E86546C422F87F /* MockUserEventProcessor.swift */,
 				38AF4380F50E85464E25F8EC /* MockWorkspaceFetcher.swift */,
 				38AF4107C00A8992A8813A48 /* MockHasher.swift */,
-				38AF436BC0E15D8FD5670B81 /* MockSlotNumberCalculator.swift */,
 				38AF45C765E632118B4ECFDB /* MockModels.swift */,
 				38AF4DA9E228316FA63F1FA1 /* MockWorkspace.swift */,
 				38AF410B427BE654533C677D /* MockUserEventDispatcher.swift */,
@@ -232,22 +312,12 @@
 			path = Event;
 			sourceTree = "<group>";
 		};
-		38AF45B4E58F92A4791926C4 /* Decision */ = {
-			isa = PBXGroup;
-			children = (
-				38AF4E74DC3B98FD725A69AB /* DefaultBucketerSpec.swift */,
-				38AF469E782C9C02A3857412 /* BucketingDeciderSpec.swift */,
-				38AF4D4CAD66FAB4F56A7D21 /* Murmur3HasherSpec.swift */,
-				38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */,
-			);
-			path = Decision;
-			sourceTree = "<group>";
-		};
 		38AF45B605A39AEE2B1355D1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
 				38AF42AC8E638347A2068316 /* User.swift */,
 				38AF45493800B905A3D873FB /* Event.swift */,
+				EEA8BD6C26EDDB7D007230D9 /* Decision.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -272,6 +342,8 @@
 				38AF471C77E8071F5BEE24B8 /* Scheduler.swift */,
 				38AF4F36962643CD99E18F0C /* Array.swift */,
 				38AF40D6AA6CE4E92009E89B /* UserDefaults.swift */,
+				EEA8BD6226ECFFF9007230D9 /* Objects.swift */,
+				EEA8BD7426EDF77C007230D9 /* Enums.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -279,11 +351,14 @@
 		38AF4975BEF89059B2A959A6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EEA8BD5626ECFFD1007230D9 /* Action.swift */,
 				38AF40BD3958D0CA8D2D20AE /* Bucket.swift */,
-				38AF48C794F4EEED83590BF6 /* Slot.swift */,
-				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
-				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
 				38AF44CAEB3AF13D32574032 /* EventType.swift */,
+				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
+				38AF48C794F4EEED83590BF6 /* Slot.swift */,
+				EEA8BD5A26ECFFD7007230D9 /* Target.swift */,
+				EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */,
+				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -334,6 +409,174 @@
 			path = Log;
 			sourceTree = "<group>";
 		};
+		EE641F9126F09AE80037AE25 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				EE641F9226F09B110037AE25 /* Evaluation */,
+				38AF46DB6CB910731975C835 /* Workspace */,
+				38AF49D7C0561BCCAA8FDD68 /* Event */,
+				EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		EE641F9226F09B110037AE25 /* Evaluation */ = {
+			isa = PBXGroup;
+			children = (
+				EE641F9326F09B240037AE25 /* Action */,
+				EE641F9426F09B2A0037AE25 /* Bucket */,
+				EE641F9526F09B300037AE25 /* Flow */,
+				EE641F9626F09B330037AE25 /* Match */,
+				EE641F9726F09B380037AE25 /* Target */,
+				EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */,
+				EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */,
+				EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */,
+			);
+			path = Evaluation;
+			sourceTree = "<group>";
+		};
+		EE641F9326F09B240037AE25 /* Action */ = {
+			isa = PBXGroup;
+			children = (
+				EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */,
+				EE641FDC26F09D760037AE25 /* MockActionResolver.swift */,
+			);
+			path = Action;
+			sourceTree = "<group>";
+		};
+		EE641F9426F09B2A0037AE25 /* Bucket */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */,
+				38AF4D4CAD66FAB4F56A7D21 /* Murmur3HasherSpec.swift */,
+				38AF4E74DC3B98FD725A69AB /* DefaultBucketerSpec.swift */,
+				38AF4331889C7AD4657D3CF4 /* MockBucketer.swift */,
+				38AF436BC0E15D8FD5670B81 /* MockSlotNumberCalculator.swift */,
+			);
+			path = Bucket;
+			sourceTree = "<group>";
+		};
+		EE641F9526F09B300037AE25 /* Flow */ = {
+			isa = PBXGroup;
+			children = (
+				EE641FAA26F09BB50037AE25 /* DefaultEvaluationFlowSpecs.swift */,
+				EE641FB026F09BC90037AE25 /* DefaultEvaluationFlowFactorySpecs.swift */,
+				EE641FB426F09BD20037AE25 /* FlowEvaluatorSpecs.swift */,
+				EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */,
+				EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */,
+			);
+			path = Flow;
+			sourceTree = "<group>";
+		};
+		EE641F9626F09B330037AE25 /* Match */ = {
+			isa = PBXGroup;
+			children = (
+				EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */,
+				EE641FC426F09BFC0037AE25 /* MatchValueSpecs.swift */,
+				EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */,
+				EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */,
+				EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */,
+				EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */,
+				EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */,
+				EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */,
+				EE641FC826F09C040037AE25 /* PropertyConditionMatcherSpecs.swift */,
+				EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */,
+			);
+			path = Match;
+			sourceTree = "<group>";
+		};
+		EE641F9726F09B380037AE25 /* Target */ = {
+			isa = PBXGroup;
+			children = (
+				EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */,
+				EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */,
+				EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */,
+				EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */,
+			);
+			path = Target;
+			sourceTree = "<group>";
+		};
+		EEA8BD0F26ECFCE5007230D9 /* Evaluation */ = {
+			isa = PBXGroup;
+			children = (
+				EEA8BD1026ECFCF2007230D9 /* Action */,
+				EEA8BD1126ECFCF8007230D9 /* Bucket */,
+				EEA8BD1226ECFD0A007230D9 /* Flow */,
+				EEA8BD1326ECFD0F007230D9 /* Match */,
+				EEA8BD1426ECFD1A007230D9 /* Target */,
+				EEA8BD1526ECFD4C007230D9 /* Evaluation.swift */,
+				EEA8BD1B26ECFD52007230D9 /* Evaluator.swift */,
+			);
+			path = Evaluation;
+			sourceTree = "<group>";
+		};
+		EEA8BD1026ECFCF2007230D9 /* Action */ = {
+			isa = PBXGroup;
+			children = (
+				EEA8BD1F26ECFD6B007230D9 /* ActionResolver.swift */,
+			);
+			path = Action;
+			sourceTree = "<group>";
+		};
+		EEA8BD1126ECFCF8007230D9 /* Bucket */ = {
+			isa = PBXGroup;
+			children = (
+				38AF4DAC4C37792542D1DFFC /* Buckter.swift */,
+				38AF44012FE9815BF8BF9190 /* Hasher.swift */,
+				38AF470733AA5556534D1C37 /* Murmur3.swift */,
+			);
+			path = Bucket;
+			sourceTree = "<group>";
+		};
+		EEA8BD1226ECFD0A007230D9 /* Flow */ = {
+			isa = PBXGroup;
+			children = (
+				EEA8BD2326ECFD8C007230D9 /* EvaluationFlow.swift */,
+				EEA8BD2926ECFD95007230D9 /* EvaluationFlowFactory.swift */,
+				EEA8BD2D26ECFD9C007230D9 /* FlowEvaluator.swift */,
+			);
+			path = Flow;
+			sourceTree = "<group>";
+		};
+		EEA8BD1326ECFD0F007230D9 /* Match */ = {
+			isa = PBXGroup;
+			children = (
+				EEA8BD3126ECFDA2007230D9 /* ConditionMatcher.swift */,
+				EEA8BD7026EDF02D007230D9 /* MatchValue.swift */,
+				EEA8BD3526ECFDA8007230D9 /* OperatorMatcher.swift */,
+				EEA8BD3926ECFDAE007230D9 /* TargetMatcher.swift */,
+				EEA8BD3D26ECFDB5007230D9 /* ValueMatcher.swift */,
+				EEA8BD4126ECFDBA007230D9 /* ValueOperatorMatcher.swift */,
+			);
+			path = Match;
+			sourceTree = "<group>";
+		};
+		EEA8BD1426ECFD1A007230D9 /* Target */ = {
+			isa = PBXGroup;
+			children = (
+				EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */,
+				EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */,
+			);
+			path = Target;
+			sourceTree = "<group>";
+		};
+		EEA8BD4526ECFDEF007230D9 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				EEA8BD0F26ECFCE5007230D9 /* Evaluation */,
+				38AF43A95D3A0F60C05181CD /* Event */,
+				38AF4ACE8E8E9C8C89DFF855 /* Http */,
+				38AF4F7139F209248611A4F1 /* Log */,
+				38AF4975BEF89059B2A959A6 /* Model */,
+				38AF4F669561F1662BDA1DAA /* Notification */,
+				38AF4932C2739F8CED158D23 /* Utilities */,
+				38AF4AF89F323B8E1AAE4F27 /* Workspace */,
+				EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */,
+				EE0560DF26F21F970051B624 /* HackleError.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		OBJ_10 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -345,12 +588,10 @@
 		OBJ_11 /* HackleTests */ = {
 			isa = PBXGroup;
 			children = (
+				38AF414ABBBB10CFB1B1ED03 /* Resources */,
+				EE641F9126F09AE80037AE25 /* Internal */,
 				38AF434C1C785B1996086B0C /* Mock */,
 				38AF447F3F5FAA526FACA4F7 /* HackleAppSpec.swift */,
-				38AF45B4E58F92A4791926C4 /* Decision */,
-				38AF414ABBBB10CFB1B1ED03 /* Resources */,
-				38AF49D7C0561BCCAA8FDD68 /* Event */,
-				38AF46DB6CB910731975C835 /* Workspace */,
 			);
 			name = HackleTests;
 			path = Tests/HackleTests;
@@ -385,15 +626,8 @@
 		OBJ_8 /* Hackle */ = {
 			isa = PBXGroup;
 			children = (
-				38AF4ACE8E8E9C8C89DFF855 /* Http */,
-				38AF4F669561F1662BDA1DAA /* Notification */,
-				38AF43A95D3A0F60C05181CD /* Event */,
-				38AF41DBE816CE3C1A75FEEC /* Decision */,
+				EEA8BD4526ECFDEF007230D9 /* Internal */,
 				38AF45B605A39AEE2B1355D1 /* Common */,
-				38AF4975BEF89059B2A959A6 /* Model */,
-				38AF4932C2739F8CED158D23 /* Utilities */,
-				38AF4AF89F323B8E1AAE4F27 /* Workspace */,
-				38AF4F7139F209248611A4F1 /* Log */,
 				38AF44225C76ECE6793796B9 /* HackleApp.swift */,
 				38AF43F1A58DBA768C4FAC06 /* Hackle.swift */,
 			);
@@ -435,9 +669,9 @@
 			);
 			name = HackleTests;
 			packageProductDependencies = (
-				EE67F86425828DC8006CD00A,
-				EE67F86B25828DE4006CD00A,
-				EE67F87225828DFF006CD00A,
+				EE67F86425828DC8006CD00A /* Quick */,
+				EE67F86B25828DE4006CD00A /* Nimble */,
+				EE67F87225828DFF006CD00A /* Mockery */,
 			);
 			productName = HackleTests;
 			productReference = "Hackle::HackleTests::Product" /* HackleTests.xctest */;
@@ -461,9 +695,9 @@
 			);
 			mainGroup = OBJ_5;
 			packageReferences = (
-				EE67F86325828DC8006CD00A,
-				EE67F86A25828DE4006CD00A,
-				EE67F87125828DFF006CD00A,
+				EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */,
+				EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */,
+				EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */,
 			);
 			productRefGroup = OBJ_14 /* Products */;
 			projectDirPath = "";
@@ -500,40 +734,61 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				EEA8BD3626ECFDA8007230D9 /* OperatorMatcher.swift in Sources */,
 				38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */,
+				EEA8BD7126EDF02D007230D9 /* MatchValue.swift in Sources */,
+				EEA8BD2E26ECFD9C007230D9 /* FlowEvaluator.swift in Sources */,
 				38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */,
 				38AF4D395BC520AC4F82C16A /* User.swift in Sources */,
 				38AF489DB2E9ACA040488112 /* Event.swift in Sources */,
 				38AF44C5ECF84D590D843AE6 /* Bucket.swift in Sources */,
+				EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */,
 				38AF4D5A91D0663D200F3AA3 /* Slot.swift in Sources */,
 				38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */,
 				38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */,
 				38AF47C051B797B546BB3E58 /* EventType.swift in Sources */,
-				38AF47C2A2AF79F4268423EB /* Decider.swift in Sources */,
+				EEA8BD1626ECFD4C007230D9 /* Evaluation.swift in Sources */,
+				EEA8BD4F26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift in Sources */,
 				38AF40A7FBB6B467DC55987F /* Murmur3.swift in Sources */,
+				EEA8BD7526EDF77C007230D9 /* Enums.swift in Sources */,
+				EEA8BD2A26ECFD95007230D9 /* EvaluationFlowFactory.swift in Sources */,
 				38AF4875E5654381051B0A0A /* Hasher.swift in Sources */,
 				38AF41C2B3B08E38A440B515 /* UserEvent.swift in Sources */,
 				38AF45034761E1C6750BC849 /* UserEventProcessor.swift in Sources */,
+				EE0560E026F21F970051B624 /* HackleError.swift in Sources */,
 				38AF4E5143E991DFDF908CBA /* Workspace.swift in Sources */,
 				38AF477390B95497B853A310 /* WorkspaceFetcher.swift in Sources */,
+				EEA8BD1C26ECFD52007230D9 /* Evaluator.swift in Sources */,
+				EEA8BD3A26ECFDAE007230D9 /* TargetMatcher.swift in Sources */,
 				38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */,
 				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
+				EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */,
 				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
 				38AF4458DAAD768D2C214872 /* HttpClient.swift in Sources */,
 				38AF467F543D2F84774AE1DB /* HttpRequest.swift in Sources */,
 				38AF465143B0766817769A64 /* HttpResponse.swift in Sources */,
+				EEA8BD2026ECFD6B007230D9 /* ActionResolver.swift in Sources */,
 				38AF4515F80A6011AE1FC3F3 /* UserEventDispatcher.swift in Sources */,
+				EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */,
 				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
 				38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */,
 				38AF4ECF7D12C7B2E1CA8E10 /* Log.swift in Sources */,
+				EEA8BD5326ECFFBE007230D9 /* TargetRuleDeterminer.swift in Sources */,
 				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
+				EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */,
 				38AF4110A19264FE458293D2 /* Json.swift in Sources */,
 				38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */,
+				EEA8BD3E26ECFDB5007230D9 /* ValueMatcher.swift in Sources */,
 				38AF42941D113C93F45BEB7F /* Version.swift in Sources */,
 				38AF42BAD239A3D9C0C6212C /* Scheduler.swift in Sources */,
+				EEA8BD5B26ECFFD7007230D9 /* Target.swift in Sources */,
 				38AF42300656FB911C519998 /* Hackle.swift in Sources */,
+				EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
+				EEA8BD6326ECFFF9007230D9 /* Objects.swift in Sources */,
 				38AF42534080D9377FB992A7 /* UserDefaults.swift in Sources */,
+				EEA8BD2426ECFD8C007230D9 /* EvaluationFlow.swift in Sources */,
+				EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,26 +796,49 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				EE641F9926F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift in Sources */,
 				38AF4EEB04BE3D41368554A1 /* Mocks.swift in Sources */,
 				38AF46E5BB880D17ADB0B732 /* MockBucketer.swift in Sources */,
-				38AF49A458F3B29AD66ACF87 /* MockDecider.swift in Sources */,
 				38AF464FE66B9534B84023CD /* MockUserEventProcessor.swift in Sources */,
 				38AF4A919E544871F1E120DE /* MockWorkspaceFetcher.swift in Sources */,
+				EE0560C426F1CF5F0051B624 /* MockFlowEvaluator.swift in Sources */,
 				38AF4CD8C1F8579BE84DE84A /* HackleAppSpec.swift in Sources */,
+				EE641FAB26F09BB50037AE25 /* DefaultEvaluationFlowSpecs.swift in Sources */,
 				38AF4CA1EAFFF7B1334AA8EC /* DefaultBucketerSpec.swift in Sources */,
 				38AF4586F06263F58C2459CF /* MockHasher.swift in Sources */,
+				EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */,
+				EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */,
+				EE641FBD26F09BE90037AE25 /* ValueMatcherSpecs.swift in Sources */,
+				EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */,
+				EE641FC526F09BFC0037AE25 /* MatchValueSpecs.swift in Sources */,
+				EE641FC926F09C040037AE25 /* PropertyConditionMatcherSpecs.swift in Sources */,
 				38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */,
+				EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */,
+				EE0560CC26F1E01D0051B624 /* MockTargetRuleDeterminer.swift in Sources */,
+				EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */,
 				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
-				38AF4B7323A7DD34B19A6635 /* BucketingDeciderSpec.swift in Sources */,
+				EE641FC126F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
 				38AF4DEC87427243B185BAAA /* Murmur3HasherSpec.swift in Sources */,
 				38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */,
+				EE641FB126F09BC90037AE25 /* DefaultEvaluationFlowFactorySpecs.swift in Sources */,
+				EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */,
+				EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */,
 				38AF454E87491272E64D4079 /* MockWorkspace.swift in Sources */,
 				38AF4E9684FDA9795C9B325F /* DefaultUserEventProcessorSpec.swift in Sources */,
 				38AF45915E475599B79CA948 /* MockUserEventDispatcher.swift in Sources */,
 				38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */,
+				EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */,
+				EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */,
+				EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */,
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
+				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
 				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,
+				EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */,
+				EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */,
+				EE0560D026F1F9420051B624 /* MockConditionMatcherFactory.swift in Sources */,
+				EE641FB526F09BD20037AE25 /* FlowEvaluatorSpecs.swift in Sources */,
 				38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */,
+				EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */,
 				38AF45B319284D4521F86860 /* CachedWorkspaceFetcherSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -797,7 +1075,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EE67F86325828DC8006CD00A = {
+		EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick.git";
 			requirement = {
@@ -805,7 +1083,7 @@
 				minimumVersion = 3.0.0;
 			};
 		};
-		EE67F86A25828DE4006CD00A = {
+		EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Nimble.git";
 			requirement = {
@@ -813,7 +1091,7 @@
 				minimumVersion = 9.0.0;
 			};
 		};
-		EE67F87125828DFF006CD00A = {
+		EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielsaidi/Mockery.git";
 			requirement = {
@@ -824,19 +1102,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EE67F86425828DC8006CD00A = {
+		EE67F86425828DC8006CD00A /* Quick */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F86325828DC8006CD00A;
+			package = EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */;
 			productName = Quick;
 		};
-		EE67F86B25828DE4006CD00A = {
+		EE67F86B25828DE4006CD00A /* Nimble */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F86A25828DE4006CD00A;
+			package = EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */;
 			productName = Nimble;
 		};
-		EE67F87225828DFF006CD00A = {
+		EE67F87225828DFF006CD00A /* Mockery */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F87125828DFF006CD00A;
+			package = EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */;
 			productName = Mockery;
 		};
 /* End XCSwiftPackageProductDependency section */
