@@ -14,6 +14,19 @@ class MockWorkspace: Mock, Workspace {
         call(getExperimentOrNilMock, args: experimentKey)
     }
 
+
+    lazy var getFeatureFlagOrNilMock = MockFunction(self, getFeatureFlagOrNil)
+
+    func getFeatureFlagOrNil(featureKey: Experiment.Key) -> Experiment? {
+        call(getFeatureFlagOrNilMock, args: featureKey)
+    }
+
+    lazy var getBucketOrNilMock = MockFunction(self, getBucketOrNil)
+
+    func getBucketOrNil(bucketId: Bucket.Id) -> Bucket? {
+        call(getBucketOrNilMock, args: bucketId)
+    }
+
     lazy var getEventTypeOrNilMock = MockFunction(self, getEventTypeOrNil)
 
     func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
