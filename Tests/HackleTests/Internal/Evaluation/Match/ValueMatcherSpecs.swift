@@ -70,5 +70,27 @@ class ValueMatcherSpecs: QuickSpec {
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: MatchValue(value: "true"))).to(beFalse())
             }
         }
+
+        describe("VersionMatcher") {
+
+            let sut = VersionMatcher()
+
+            it("userValue, matchValue가 Version 타입이면 OperatorMatcher의 일치 결과로 평가한다") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1.0.0", matchValue: MatchValue(value: "1.0.0"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1.0.0", matchValue: MatchValue(value: "2.0.0"))).to(beFalse())
+            }
+
+            it("userValue가 Version 타입이 아니면 false") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 1.0, matchValue: MatchValue(value: "1.0.0"))).to(beFalse())
+            }
+
+            it("userValue가 Version 타입이지만 matchValue가 Version 타입이 아니면 false") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1.0.0", matchValue: MatchValue(value: 1.0))).to(beFalse())
+            }
+
+            func v(_ version: String) -> Version {
+                Version.tryParse(value: version)!
+            }
+        }
     }
 }

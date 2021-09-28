@@ -35,17 +35,29 @@ class BoolMatcher: ValueMatcher {
     }
 }
 
+class VersionMatcher: ValueMatcher {
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: MatchValue) -> Bool {
+        guard let userValue = Version.tryParse(value: userValue),
+              let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
+            return false
+        }
+        return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
+    }
+}
+
 class ValueMatcherFactory {
 
     private let stringMatcher = StringMatcher()
     private let numberMatcher = NumberMatcher()
     private let boolMatcher = BoolMatcher()
+    private let versionMatcher = VersionMatcher()
 
     func getMatcher(_ valueType: Target.Match.ValueType) -> ValueMatcher {
         switch valueType {
         case .string: return stringMatcher
         case .number: return numberMatcher
         case .bool: return boolMatcher
+        case .version: return versionMatcher
         }
     }
 }

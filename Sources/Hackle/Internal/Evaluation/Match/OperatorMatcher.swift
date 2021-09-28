@@ -4,6 +4,7 @@ protocol OperatorMatcher {
     func matches(userValue: String, matchValue: String) -> Bool
     func matches(userValue: Double, matchValue: Double) -> Bool
     func matches(userValue: Bool, matchValue: Bool) -> Bool
+    func matches(userValue: Version, matchValue: Version) -> Bool
 }
 
 class InMatcher: OperatorMatcher {
@@ -16,6 +17,10 @@ class InMatcher: OperatorMatcher {
     }
 
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
+        userValue == matchValue
+    }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
         userValue == matchValue
     }
 }
@@ -32,6 +37,10 @@ class ContainsMatcher: OperatorMatcher {
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
         false
     }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
+        false
+    }
 }
 
 class StartsWithMatcher: OperatorMatcher {
@@ -44,6 +53,10 @@ class StartsWithMatcher: OperatorMatcher {
     }
 
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
+        false
+    }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
         false
     }
 }
@@ -60,6 +73,10 @@ class EndsWithMatcher: OperatorMatcher {
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
         false
     }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
+        false
+    }
 }
 
 class GreaterThanMatcher: OperatorMatcher {
@@ -73,6 +90,10 @@ class GreaterThanMatcher: OperatorMatcher {
 
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
         false
+    }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
+        userValue > matchValue
     }
 }
 
@@ -88,6 +109,10 @@ class GreaterThanOrEqualToMatcher: OperatorMatcher {
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
         false
     }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
+        userValue >= matchValue
+    }
 }
 
 class LessThanMatcher: OperatorMatcher {
@@ -102,6 +127,10 @@ class LessThanMatcher: OperatorMatcher {
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
         false
     }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
+        userValue < matchValue
+    }
 }
 
 class LessThanOrEqualToMatcher: OperatorMatcher {
@@ -115,6 +144,10 @@ class LessThanOrEqualToMatcher: OperatorMatcher {
 
     func matches(userValue: Bool, matchValue: Bool) -> Bool {
         false
+    }
+
+    func matches(userValue: Version, matchValue: Version) -> Bool {
+        userValue <= matchValue
     }
 }
 
