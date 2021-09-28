@@ -30,6 +30,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
             }
+
+            it("version") {
+                self.assertTrue(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
+            }
         }
 
         describe("ContainsMatcher") {
@@ -56,6 +62,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: false, matchValue: false))
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
+            }
+
+            it("version") {
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
             }
         }
 
@@ -84,6 +96,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
             }
+
+            it("version") {
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
+            }
         }
 
         describe("EndsWithMatcher") {
@@ -110,6 +128,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: false, matchValue: false))
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
+            }
+
+            it("version") {
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
             }
         }
 
@@ -138,6 +162,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
             }
+
+            it("version") {
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertTrue(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
+            }
         }
 
         describe("GreaterThanOrEqualToMatcher") {
@@ -164,6 +194,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: false, matchValue: false))
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
+            }
+
+            it("version") {
+                self.assertTrue(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertTrue(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
             }
         }
 
@@ -192,6 +228,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
             }
+
+            it("version") {
+                self.assertFalse(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertTrue(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
+            }
         }
 
         describe("LessThanOrEqualToMatcher") {
@@ -219,6 +261,12 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertFalse(sut.matches(userValue: true, matchValue: false))
                 self.assertFalse(sut.matches(userValue: false, matchValue: true))
             }
+
+            it("version") {
+                self.assertTrue(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("1.0.0")))
+                self.assertTrue(sut.matches(userValue: self.v("1.0.0"), matchValue: self.v("2.0.0")))
+                self.assertFalse(sut.matches(userValue: self.v("2.0.0"), matchValue: self.v("1.0.0")))
+            }
         }
     }
 
@@ -228,5 +276,9 @@ class OperatorMatcherSpecs: QuickSpec {
 
     private func assertFalse(_ actual: Bool) {
         expect(actual).to(beFalse())
+    }
+
+    private func v(_ version: String) -> Version {
+        Version.tryParse(value: version)!
     }
 }

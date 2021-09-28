@@ -62,6 +62,7 @@ class Target {
             case string = "STRING"
             case number = "NUMBER"
             case bool = "BOOLEAN"
+            case version = "VERSION"
         }
     }
 

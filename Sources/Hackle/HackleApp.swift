@@ -114,7 +114,7 @@ extension HackleApp {
 
     static func create(sdkKey: String) -> HackleApp {
 
-        let sdk = Sdk(key: sdkKey, name: "ios-sdk", version: Version.CURRENT)
+        let sdk = Sdk(key: sdkKey, name: "ios-sdk", version: SdkVersion.CURRENT)
         let httpClient = DefaultHttpClient(sdk: sdk)
 
         let httpWorkspaceFetcher = DefaultHttpWorkspaceFetcher(
