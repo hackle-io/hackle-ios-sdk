@@ -5,7 +5,7 @@
 import Foundation
 
 protocol Bucketer {
-    func bucketing(bucket: Bucket, user: User) -> Slot?
+    func bucketing(bucket: Bucket, user: HackleUser) -> Slot?
 }
 
 class DefaultBucketer: Bucketer {
@@ -16,7 +16,7 @@ class DefaultBucketer: Bucketer {
         self.slotNumberCalculator = slotNumberCalculator
     }
 
-    func bucketing(bucket: Bucket, user: User) -> Slot? {
+    func bucketing(bucket: Bucket, user: HackleUser) -> Slot? {
         let slotNumber = slotNumberCalculator.calculate(seed: bucket.seed, slotSize: bucket.slotSize, userId: user.id)
         return bucket.getSlotOrNil(slotNumber: slotNumber)
     }

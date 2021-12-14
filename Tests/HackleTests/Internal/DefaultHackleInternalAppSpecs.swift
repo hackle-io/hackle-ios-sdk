@@ -6,7 +6,7 @@ import Nimble
 class DefaultHackleInternalAppSpecs: QuickSpec {
     override func spec() {
 
-        let user = Hackle.user(id: "test")
+        let user = HackleUser.of(userId: "test")
 
         var evaluator: MockEvaluator!
         var workspaceFetcher: MockWorkspaceFetcher!

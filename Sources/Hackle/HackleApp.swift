@@ -8,17 +8,17 @@ import Foundation
 @objc public final class HackleApp: NSObject {
 
     private let internalApp: HackleInternalApp
+    private let device: Device
 
     @objc public var deviceId: String {
         get {
-            UserDefaults.standard.computeIfAbsent(key: HackleApp.hackleDeviceId) { _ in
-                UUID().uuidString
-            }
+            device.id
         }
     }
 
-    init(internalApp: HackleInternalApp) {
+    init(internalApp: HackleInternalApp, device: Device) {
         self.internalApp = internalApp
+        self.device = device
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
@@ -43,7 +43,11 @@ import Foundation
 
     @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
         do {
-            return try internalApp.experiment(experimentKey: Int64(experimentKey), user: user, defaultVariationKey: defaultVariation)
+            return try internalApp.experiment(
+                experimentKey: Int64(experimentKey),
+                user: HackleUser.of(user: user, hackleProperties: device.properties),
+                defaultVariationKey: defaultVariation
+            )
         } catch let error {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
             return Decision.of(variation: defaultVariation, reason: DecisionReason.EXCEPTION)
@@ -72,7 +76,10 @@ import Foundation
 
     @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
         do {
-            return try internalApp.featureFlag(featureKey: Int64(featureKey), user: user)
+            return try internalApp.featureFlag(
+                featureKey: Int64(featureKey),
+                user: HackleUser.of(user: user, hackleProperties: device.properties)
+            )
         } catch {
             Log.error("Unexpected error while deciding feature flag[\(featureKey)]: \(String(describing: error))")
             return FeatureFlagDecision.off(reason: DecisionReason.EXCEPTION)
@@ -100,7 +107,15 @@ import Foundation
     }
 
     @objc public func track(event: Event, user: User) {
-        internalApp.track(event: event, user: user)
+        do {
+            internalApp.track(
+                event: event,
+                user: HackleUser.of(user: user, hackleProperties: device.properties)
+            )
+        } catch {
+            Log.error("Unexpected exception while tracking event[\(event.key)]: \(String(describing: error))")
+        }
+
     }
 }
 
@@ -138,7 +153,8 @@ extension HackleApp {
         DefaultAppNotificationObserver.instance.addListener(listener: eventProcessor)
 
         let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+        let device = Device.create()
 
-        return HackleApp(internalApp: internalApp)
+        return HackleApp(internalApp: internalApp, device: device)
     }
 }

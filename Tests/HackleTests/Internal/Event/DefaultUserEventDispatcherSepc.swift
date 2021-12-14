@@ -30,8 +30,8 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
 
         it("UserEvents.Exposure.toDto") {
 
-            let userProperties : [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
-            let user = User(id: "test_id", properties: userProperties)
+            let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
+            let user = HackleUser.of(user: User(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
             let date = Date()
             let experiment = MockRunningExperiment(id: 42, key: 320)
             let variation = MockVariation(id: 142, key: "F")
@@ -49,6 +49,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             expect(actual["timestamp"] as! Int64) == date.epochMillis
             expect(actual["userId"] as! String) == "test_id"
             expect((actual["userProperties"] as! [String: Any])).to(haveCount(3))
+            expect((actual["hackleProperties"] as! [String: Any])).to(haveCount(1))
             expect(actual["experimentId"] as! Int64) == 42
             expect(actual["experimentKey"] as! Int64) == 320
             expect(actual["variationId"] as! Int64) == 142
@@ -57,19 +58,18 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
         }
 
         it("UserEvents.Track.toDto") {
-            let user = User(id: "test_id", properties: ["age": 20, "grade": "GOLD", "membership": false])
+            let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
+            let user = HackleUser.of(user: User(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
             let date = Date()
             let eventType = EventTypeEntity(id: 42, key: "test_event_key")
             let event = Event(key: "test_event_key")
 
             let dto1 = UserEvents.Track(timestamp: date, user: user, eventType: eventType, event: event).toDto()
 
-            let p = ["age": 20, "grade": "GOLD", "membership": false] as [String: Any]
-
-
             expect(dto1["timestamp"] as! Int64) == date.epochMillis
             expect(dto1["userId"] as! String) == "test_id"
             expect(dto1["userProperties"] as! [String: Any]).to(haveCount(3))
+            expect(dto1["hackleProperties"] as! [String: Any]).to(haveCount(1))
             expect(dto1["eventTypeId"] as! Int64) == 42
             expect(dto1["eventTypeKey"] as! String) == "test_event_key"
             expect(dto1["value"]) == nil

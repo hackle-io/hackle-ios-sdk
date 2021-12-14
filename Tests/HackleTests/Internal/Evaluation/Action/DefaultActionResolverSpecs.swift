@@ -10,7 +10,7 @@ class DefaultActionResolverSpecs: QuickSpec {
         var bucketer: MockBucketer!
         var sut: DefaultActionResolver!
 
-        let user = Hackle.user(id: "test_id")
+        let user = HackleUser.of(userId: "test_id")
 
         beforeEach {
             bucketer = MockBucketer()

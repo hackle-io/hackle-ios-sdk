@@ -119,6 +119,8 @@
 		EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6C26EDDB7D007230D9 /* Decision.swift */; };
 		EEA8BD7126EDF02D007230D9 /* MatchValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7026EDF02D007230D9 /* MatchValue.swift */; };
 		EEA8BD7526EDF77C007230D9 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7426EDF77C007230D9 /* Enums.swift */; };
+		EED91E792766F85C001CF5B3 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E782766F85C001CF5B3 /* Device.swift */; };
+		EED91E7B27670066001CF5B3 /* HackleUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E7A27670066001CF5B3 /* HackleUser.swift */; };
 		EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */; };
 		EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */; };
 		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
@@ -244,6 +246,8 @@
 		EEA8BD6C26EDDB7D007230D9 /* Decision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decision.swift; sourceTree = "<group>"; };
 		EEA8BD7026EDF02D007230D9 /* MatchValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchValue.swift; sourceTree = "<group>"; };
 		EEA8BD7426EDF77C007230D9 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		EED91E782766F85C001CF5B3 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		EED91E7A27670066001CF5B3 /* HackleUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUser.swift; sourceTree = "<group>"; };
 		EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleInternalAppSpecs.swift; sourceTree = "<group>"; };
 		EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluator.swift; sourceTree = "<group>"; };
 		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -357,12 +361,14 @@
 			children = (
 				EEA8BD5626ECFFD1007230D9 /* Action.swift */,
 				38AF40BD3958D0CA8D2D20AE /* Bucket.swift */,
+				EED91E782766F85C001CF5B3 /* Device.swift */,
 				38AF44CAEB3AF13D32574032 /* EventType.swift */,
 				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
 				38AF48C794F4EEED83590BF6 /* Slot.swift */,
 				EEA8BD5A26ECFFD7007230D9 /* Target.swift */,
 				EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */,
 				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
+				EED91E7A27670066001CF5B3 /* HackleUser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -764,6 +770,7 @@
 				38AF45034761E1C6750BC849 /* UserEventProcessor.swift in Sources */,
 				EE0560E026F21F970051B624 /* HackleError.swift in Sources */,
 				38AF4E5143E991DFDF908CBA /* Workspace.swift in Sources */,
+				EED91E7B27670066001CF5B3 /* HackleUser.swift in Sources */,
 				38AF477390B95497B853A310 /* WorkspaceFetcher.swift in Sources */,
 				EEA8BD1C26ECFD52007230D9 /* Evaluator.swift in Sources */,
 				EEA8BD3A26ECFDAE007230D9 /* TargetMatcher.swift in Sources */,
@@ -791,6 +798,7 @@
 				EEA8BD5B26ECFFD7007230D9 /* Target.swift in Sources */,
 				38AF42300656FB911C519998 /* Hackle.swift in Sources */,
 				EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */,
+				EED91E792766F85C001CF5B3 /* Device.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
 				EEA8BD6326ECFFF9007230D9 /* Objects.swift in Sources */,
 				38AF42534080D9377FB992A7 /* UserDefaults.swift in Sources */,

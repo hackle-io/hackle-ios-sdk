@@ -7,7 +7,7 @@ import Nimble
 class FlowEvaluatorSpecs: QuickSpec {
     override func spec() {
 
-        let user = Hackle.user(id: "test_id")
+        let user = HackleUser.of(userId: "test_id")
 
         describe("OverrideEvaluator") {
 
