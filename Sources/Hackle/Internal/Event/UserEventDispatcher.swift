@@ -99,6 +99,9 @@ extension UserEvents.Exposure {
         if let userProperties = user.properties {
             dto["userProperties"] = userProperties
         }
+        if let hackleProperties = user.hackleProperties {
+            dto["hackleProperties"] = hackleProperties
+        }
         dto["experimentId"] = experiment.id
         dto["experimentKey"] = experiment.key
         dto["variationId"] = variationId
@@ -115,6 +118,9 @@ extension UserEvents.Track {
         dto["userId"] = user.id
         if let userProperties = user.properties {
             dto["userProperties"] = userProperties
+        }
+        if let hackleProperties = user.hackleProperties {
+            dto["hackleProperties"] = hackleProperties
         }
         dto["eventTypeId"] = eventType.id
         dto["eventTypeKey"] = eventType.key

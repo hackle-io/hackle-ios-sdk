@@ -1,7 +1,7 @@
 import Foundation
 
 protocol Evaluator {
-    func evaluate(workspace: Workspace, experiment: Experiment, user: User, defaultVariationKey: Variation.Key) throws -> Evaluation
+    func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation
 }
 
 class DefaultEvaluator: Evaluator {
@@ -12,7 +12,7 @@ class DefaultEvaluator: Evaluator {
         self.evaluationFlowFactory = evaluationFlowFactory
     }
 
-    func evaluate(workspace: Workspace, experiment: Experiment, user: User, defaultVariationKey: Variation.Key) throws -> Evaluation {
+    func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
         let evaluationFlow = evaluationFlowFactory.getFlow(experimentType: experiment.type)
         return try evaluationFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
     }

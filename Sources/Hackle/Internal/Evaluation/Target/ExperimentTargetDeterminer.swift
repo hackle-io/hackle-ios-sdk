@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ExperimentTargetDeterminer {
-    func isUserInExperimentTarget(workspace: Workspace, experiment: RunningExperiment, user: User) -> Bool
+    func isUserInExperimentTarget(workspace: Workspace, experiment: RunningExperiment, user: HackleUser) -> Bool
 }
 
 class DefaultExperimentTargetDeterminer: ExperimentTargetDeterminer {
@@ -12,7 +12,7 @@ class DefaultExperimentTargetDeterminer: ExperimentTargetDeterminer {
         self.targetMatcher = targetMatcher
     }
 
-    func isUserInExperimentTarget(workspace: Workspace, experiment: RunningExperiment, user: User) -> Bool {
+    func isUserInExperimentTarget(workspace: Workspace, experiment: RunningExperiment, user: HackleUser) -> Bool {
         if experiment.targetAudiences.isEmpty {
             return true
         }

@@ -8,7 +8,7 @@ class MockEvaluationFlow: Mock, EvaluationFlow {
 
     lazy var evaluateMock = MockFunction(self, evaluate)
 
-    func evaluate(workspace: Workspace, experiment: Experiment, user: User, defaultVariationKey: Variation.Key) throws -> Evaluation {
+    func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
         call(evaluateMock, args: (workspace, experiment, user, defaultVariationKey))
     }
 }

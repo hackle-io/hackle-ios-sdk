@@ -6,12 +6,12 @@ import Foundation
 
 protocol UserEvent {
     var timestamp: Date { get }
-    var user: User { get }
+    var user: HackleUser { get }
 }
 
 enum UserEvents {
 
-    static func exposure(experiment: Experiment, user: User, evaluation: Evaluation) -> UserEvent {
+    static func exposure(experiment: Experiment, user: HackleUser, evaluation: Evaluation) -> UserEvent {
         Exposure(
             timestamp: Date(),
             user: user,
@@ -22,7 +22,7 @@ enum UserEvents {
         )
     }
 
-    static func track(user: User, eventType: EventType, event: Event) -> UserEvent {
+    static func track(user: HackleUser, eventType: EventType, event: Event) -> UserEvent {
         Track(
             timestamp: Date(),
             user: user,
@@ -33,13 +33,13 @@ enum UserEvents {
 
     struct Exposure: UserEvent {
         let timestamp: Date
-        let user: User
+        let user: HackleUser
         let experiment: Experiment
         let variationId: Variation.Id?
         let variationKey: Variation.Key
         let decisionReason: String
 
-        init(timestamp: Date, user: User, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String) {
+        init(timestamp: Date, user: HackleUser, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String) {
             self.timestamp = timestamp
             self.user = user
             self.experiment = experiment
@@ -51,11 +51,11 @@ enum UserEvents {
 
     struct Track: UserEvent {
         let timestamp: Date
-        let user: User
+        let user: HackleUser
         let eventType: EventType
         let event: Event
 
-        init(timestamp: Date, user: User, eventType: EventType, event: Event) {
+        init(timestamp: Date, user: HackleUser, eventType: EventType, event: Event) {
             self.timestamp = timestamp
             self.user = user
             self.eventType = eventType

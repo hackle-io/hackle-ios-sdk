@@ -14,7 +14,7 @@ protocol Experiment {
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation?
     func getVariationOrNil(variationKey: Variation.Key) -> Variation?
-    func getOverriddenVariationOrNil(user: User) -> Variation?
+    func getOverriddenVariationOrNil(user: HackleUser) -> Variation?
 
 }
 
@@ -67,7 +67,7 @@ class BaseExperiment: Experiment {
         }
     }
 
-    func getOverriddenVariationOrNil(user: User) -> Variation? {
+    func getOverriddenVariationOrNil(user: HackleUser) -> Variation? {
         guard let overriddenVariationId = overrides[user.id] else {
             return nil
         }

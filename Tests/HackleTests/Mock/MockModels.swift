@@ -64,7 +64,7 @@ class MockExperiment: Mock, Experiment {
 
     lazy var getOverriddenVariationOrNilMock = MockFunction(self, getOverriddenVariationOrNil)
 
-    func getOverriddenVariationOrNil(user: User) -> Variation? {
+    func getOverriddenVariationOrNil(user: HackleUser) -> Variation? {
         call(getOverriddenVariationOrNilMock, args: user)
     }
 }

@@ -19,7 +19,7 @@ class DefaultEvaluatorSpecs: QuickSpec {
             let sut = DefaultEvaluator(evaluationFlowFactory: factory)
 
             // when
-            let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(), user: Hackle.user(id: "test"), defaultVariationKey: "A")
+            let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(), user: HackleUser.of(userId: "test"), defaultVariationKey: "A")
 
             // then
             expect(actual).to(equal(evaluation))
