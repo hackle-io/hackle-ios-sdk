@@ -22,7 +22,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             let sut = DefaultTargetRuleDeterminer(targetMatcher: matcher)
 
             // when
-            let actual = sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: Hackle.user(id: "test"))
+            let actual = sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beIdenticalTo(matchedTargetRule))
@@ -43,7 +43,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             let sut = DefaultTargetRuleDeterminer(targetMatcher: matcher)
 
             // when
-            let actual = sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: Hackle.user(id: "test"))
+            let actual = sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beNil())
@@ -66,7 +66,7 @@ private class TargetMatcherStub: TargetMatcher {
         TargetMatcherStub(isMatches: isMatches)
     }
 
-    func matches(target: Target, workspace: Workspace, user: User) -> Bool {
+    func matches(target: Target, workspace: Workspace, user: HackleUser) -> Bool {
         let isMatch = isMatches[index]
         index = index + 1
         callCount = callCount + 1

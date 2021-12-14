@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ConditionMatcher {
-    func matches(condition: Target.Condition, workspace: Workspace, user: User) -> Bool
+    func matches(condition: Target.Condition, workspace: Workspace, user: HackleUser) -> Bool
 }
 
 protocol ConditionMatcherFactory {
@@ -16,17 +16,17 @@ class PropertyConditionMatcher: ConditionMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func matches(condition: Target.Condition, workspace: Workspace, user: User) -> Bool {
+    func matches(condition: Target.Condition, workspace: Workspace, user: HackleUser) -> Bool {
         guard let userValue = resolvePropertyOrNil(user: user, key: condition.key) else {
             return false
         }
         return valueOperatorMatcher.matches(userValue: userValue, match: condition.match)
     }
 
-    private func resolvePropertyOrNil(user: User, key: Target.Key) -> Any? {
+    private func resolvePropertyOrNil(user: HackleUser, key: Target.Key) -> Any? {
         switch key.type {
         case .userProperty: return user.properties?[key.name]
-        case .hackleProperty: return nil
+        case .hackleProperty: return user.hackleProperties?[key.name]
         }
     }
 }

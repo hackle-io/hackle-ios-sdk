@@ -11,7 +11,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
     override func spec() {
 
-        var user = User(id: "test_id")
+        var user = HackleUser.of(userId: "test_id")
 
         var eventQueue: ConcurrentArray<UserEvent>!
         var eventDispatcher: MockUserEventDispatcher!

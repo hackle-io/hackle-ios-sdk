@@ -13,7 +13,7 @@ class MockConditionMatcher: ConditionMatcher {
         self.isMatches = isMatches
     }
 
-    func matches(condition: Target.Condition, workspace: Workspace, user: User) -> Bool {
+    func matches(condition: Target.Condition, workspace: Workspace, user: HackleUser) -> Bool {
         callCount = callCount + 1
         return isMatches
     }

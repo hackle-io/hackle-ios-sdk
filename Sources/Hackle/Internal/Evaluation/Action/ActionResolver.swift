@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ActionResolver {
-    func resolveOrNil(action: Action, workspace: Workspace, experiment: Experiment, user: User) throws -> Variation?
+    func resolveOrNil(action: Action, workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation?
 }
 
 class DefaultActionResolver: ActionResolver {
@@ -11,7 +11,7 @@ class DefaultActionResolver: ActionResolver {
         self.bucketer = bucketer
     }
 
-    func resolveOrNil(action: Action, workspace: Workspace, experiment: Experiment, user: User) throws -> Variation? {
+    func resolveOrNil(action: Action, workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation? {
         switch action.type {
         case .variation:
             return try resolveVariation(action: action, experiment: experiment)
@@ -32,7 +32,7 @@ class DefaultActionResolver: ActionResolver {
         return variation
     }
 
-    private func resolveBucket(action: Action, workspace: Workspace, experiment: Experiment, user: User) throws -> Variation? {
+    private func resolveBucket(action: Action, workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation? {
         guard let bucketId = action.bucketId else {
             throw HackleError.error("action bucket[\(experiment.id)]")
         }

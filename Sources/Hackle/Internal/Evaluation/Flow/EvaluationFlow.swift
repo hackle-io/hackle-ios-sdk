@@ -1,7 +1,7 @@
 import Foundation
 
 protocol EvaluationFlow {
-    func evaluate(workspace: Workspace, experiment: Experiment, user: User, defaultVariationKey: Variation.Key) throws -> Evaluation
+    func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation
 }
 
 enum DefaultEvaluationFlow: EvaluationFlow {
@@ -9,7 +9,7 @@ enum DefaultEvaluationFlow: EvaluationFlow {
     case end
     case decision(flowEvaluator: FlowEvaluator, nextFlow: EvaluationFlow)
 
-    func evaluate(workspace: Workspace, experiment: Experiment, user: User, defaultVariationKey: Variation.Key) throws -> Evaluation {
+    func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
         switch self {
         case .end:
             return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)

@@ -4,7 +4,7 @@ protocol FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation
@@ -14,7 +14,7 @@ class OverrideEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -35,7 +35,7 @@ class DraftExperimentEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -51,7 +51,7 @@ class PausedExperimentEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -72,7 +72,7 @@ class CompletedExperimentEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -94,7 +94,7 @@ class ExperimentTargetEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -122,7 +122,7 @@ class TrafficAllocateEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -154,7 +154,7 @@ class TargetRuleEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
@@ -184,7 +184,7 @@ class DefaultRuleEvaluator: FlowEvaluator {
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
-        user: User,
+        user: HackleUser,
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
