@@ -1,7 +1,7 @@
 import Foundation
 
 protocol TargetRuleDeterminer {
-    func determineTargetRuleOrNil(workspace: Workspace, experiment: RunningExperiment, user: User) -> TargetRule?
+    func determineTargetRuleOrNil(workspace: Workspace, experiment: RunningExperiment, user: HackleUser) -> TargetRule?
 }
 
 class DefaultTargetRuleDeterminer: TargetRuleDeterminer {
@@ -12,7 +12,7 @@ class DefaultTargetRuleDeterminer: TargetRuleDeterminer {
         self.targetMatcher = targetMatcher
     }
 
-    func determineTargetRuleOrNil(workspace: Workspace, experiment: RunningExperiment, user: User) -> TargetRule? {
+    func determineTargetRuleOrNil(workspace: Workspace, experiment: RunningExperiment, user: HackleUser) -> TargetRule? {
         experiment.targetRules.first { it in
             targetMatcher.matches(target: it.target, workspace: workspace, user: user)
         }

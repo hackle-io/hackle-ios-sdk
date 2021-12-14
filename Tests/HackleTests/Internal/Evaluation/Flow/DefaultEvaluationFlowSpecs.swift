@@ -15,7 +15,7 @@ class DefaultEvaluationFlowSpecs: QuickSpec {
                 every(experiment.getVariationByKeyOrNilMock).returns(MockVariation(id: 42, key: "J"))
 
                 // when
-                let actual = try DefaultEvaluationFlow.end.evaluate(workspace: MockWorkspace(), experiment: experiment, user: Hackle.user(id: "test"), defaultVariationKey: "J")
+                let actual = try DefaultEvaluationFlow.end.evaluate(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"), defaultVariationKey: "J")
 
                 // then
                 expect(actual.variationId) == 42
@@ -34,7 +34,7 @@ class DefaultEvaluationFlowSpecs: QuickSpec {
                 let sut = DefaultEvaluationFlow.decision(flowEvaluator: flowEvaluator, nextFlow: nextFlow)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(), user: Hackle.user(id: "test"), defaultVariationKey: "J")
+                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(), user: HackleUser.of(userId: "test"), defaultVariationKey: "J")
 
                 // then
                 expect(actual) == evaluation

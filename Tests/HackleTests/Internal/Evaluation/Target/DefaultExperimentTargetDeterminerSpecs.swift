@@ -14,7 +14,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let experiment = MockRunningExperiment(targetAudiences: [])
 
             // when
-            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: Hackle.user(id: "test"))
+            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beTrue())
@@ -28,7 +28,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let experiment = MockRunningExperiment(targetAudiences: self.audiences())
 
             // when
-            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: Hackle.user(id: "test"))
+            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beTrue())
@@ -43,7 +43,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let experiment = MockRunningExperiment(targetAudiences: self.audiences())
 
             // when
-            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: Hackle.user(id: "test"))
+            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beFalse())
@@ -80,7 +80,7 @@ private class TargetMatcherStub: TargetMatcher {
         TargetMatcherStub(isMatches: isMatches)
     }
 
-    func matches(target: Target, workspace: Workspace, user: User) -> Bool {
+    func matches(target: Target, workspace: Workspace, user: HackleUser) -> Bool {
         let isMatch = isMatches[index]
         index = index + 1
         callCount = callCount + 1

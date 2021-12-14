@@ -4,11 +4,11 @@ protocol HackleInternalApp {
 
     func initialize(completion: @escaping () -> ())
 
-    func experiment(experimentKey: Experiment.Key, user: User, defaultVariationKey: Variation.Key) throws -> Decision
+    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision
 
-    func featureFlag(featureKey: Experiment.Key, user: User) throws -> FeatureFlagDecision
+    func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision
 
-    func track(event: Event, user: User)
+    func track(event: Event, user: HackleUser)
 }
 
 class DefaultHackleInternalApp: HackleInternalApp {
@@ -39,7 +39,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
         }
     }
 
-    func experiment(experimentKey: Experiment.Key, user: User, defaultVariationKey: Variation.Key) throws -> Decision {
+    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
 
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
             return Decision.of(variation: defaultVariationKey, reason: DecisionReason.SDK_NOT_READY)
@@ -55,7 +55,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
         return Decision.of(variation: evaluation.variationKey, reason: evaluation.reason)
     }
 
-    func featureFlag(featureKey: Experiment.Key, user: User) throws -> FeatureFlagDecision {
+    func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
             return FeatureFlagDecision.off(reason: DecisionReason.SDK_NOT_READY)
         }
@@ -74,7 +74,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
         }
     }
 
-    func track(event: Event, user: User) {
+    func track(event: Event, user: HackleUser) {
 
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
             return

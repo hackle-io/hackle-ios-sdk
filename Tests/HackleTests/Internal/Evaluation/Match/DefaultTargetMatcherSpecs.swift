@@ -7,7 +7,7 @@ import Mockery
 class DefaultTargetMatcherSpecs: QuickSpec {
     override func spec() {
 
-        let user = Hackle.user(id: "test")
+        let user = HackleUser.of(userId: "test")
 
         it("타겟의 모든 조건이 일치하면 true") {
             // given
