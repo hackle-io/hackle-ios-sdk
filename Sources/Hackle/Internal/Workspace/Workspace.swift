@@ -205,61 +205,55 @@ extension VariationDto {
 extension ExperimentDto {
     func toExperimentOrNil(type: ExperimentType) -> Experiment? {
 
+        guard let experimentStatus = ExperimentDto.experimentStatusOrNil(executionStatus: execution.status) else {
+            return nil
+        }
+
+        guard let defaultRule = execution.defaultRule.toActionOrNil() else {
+            return nil
+        }
+
+        let targetAudiences = execution.targetAudiences.compactMap { it in
+            it.toTargetOrNil()
+        }
+        let targetRules = execution.targetRules.compactMap { it in
+            it.toTargetRuleOrNil()
+        }
+
         let variation = variations.map { it in
             it.toVariation()
         }
+
         let overrides = execution.userOverrides.associate { it in
             (it.userId, it.variationId)
         }
 
-        switch execution.status {
+        return ExperimentEntity(
+            id: id,
+            key: key,
+            type: type,
+            status: experimentStatus,
+            variations: variation,
+            overrides: overrides,
+            targetAudiences: targetAudiences,
+            targetRules: targetRules,
+            defaultRule: defaultRule,
+            winnerVariationId: winnerVariationId
+        )
+    }
+
+    static func experimentStatusOrNil(executionStatus: String) -> ExperimentStatus? {
+        switch executionStatus {
         case "READY":
-            return DraftExperimentEntity(
-                id: id,
-                key: key,
-                type: type,
-                variations: variation,
-                overrides: overrides
-            )
+            return .draft
         case "RUNNING":
-            guard let defaultRule = execution.defaultRule.toActionOrNil() else {
-                return nil
-            }
-            let targetAudiences = execution.targetAudiences.compactMap { it in
-                it.toTargetOrNil()
-            }
-            let targetRules = execution.targetRules.compactMap { it in
-                it.toTargetRuleOrNil()
-            }
-            return RunningExperimentEntity(
-                id: id,
-                key: key,
-                type: type,
-                variations: variation,
-                overrides: overrides,
-                targetAudiences: targetAudiences,
-                targetRules: targetRules,
-                defaultRule: defaultRule
-            )
+            return .running
         case "PAUSED":
-            return PausedExperimentEntity(
-                id: id,
-                key: key,
-                type: type,
-                variations: variation,
-                overrides: overrides
-            )
+            return .paused
         case "STOPPED":
-            return CompletedExperimentEntity(
-                id: id,
-                key: key,
-                type: type,
-                variations: variation,
-                overrides: overrides,
-                winnerVariationId: winnerVariationId!
-            )
+            return .completed
         default:
-            Log.debug("Unsupported experiment status [\(execution.status)]")
+            Log.debug("Unsupported status [\(executionStatus)]")
             return nil
         }
     }

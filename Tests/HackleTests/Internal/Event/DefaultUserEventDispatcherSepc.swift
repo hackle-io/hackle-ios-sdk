@@ -33,7 +33,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
             let user = HackleUser.of(user: User(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
             let date = Date()
-            let experiment = MockRunningExperiment(id: 42, key: 320)
+            let experiment = MockExperiment(id: 42, key: 320)
             let variation = MockVariation(id: 142, key: "F")
             let exposure: UserEvents.Exposure = UserEvents.Exposure(
                 timestamp: date,

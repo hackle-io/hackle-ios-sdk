@@ -42,11 +42,30 @@ class MockExperiment: Mock, Experiment {
     let id: Id
     let key: Key
     let type: ExperimentType
+    let status: ExperimentStatus
+    let targetAudiences: [Target]
+    let targetRules: [TargetRule]
+    let defaultRule: Action
+    let winnerVariation: Variation?
 
-    init(id: Id = 1, key: Key = 1, type: ExperimentType = .abTest) {
+    init(
+        id: Id = 42,
+        key: Key = 320,
+        type: ExperimentType = .abTest,
+        status: ExperimentStatus = .running,
+        targetAudiences: [Target] = [],
+        targetRules: [TargetRule] = [],
+        defaultRule: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1),
+        winnerVariation: Variation? = nil
+    ) {
         self.id = id
         self.key = key
         self.type = type
+        self.status = status
+        self.targetAudiences = targetAudiences
+        self.targetRules = targetRules
+        self.defaultRule = defaultRule
+        self.winnerVariation = winnerVariation
         super.init()
     }
 
@@ -66,48 +85,6 @@ class MockExperiment: Mock, Experiment {
 
     func getOverriddenVariationOrNil(user: HackleUser) -> Variation? {
         call(getOverriddenVariationOrNilMock, args: user)
-    }
-}
-
-class MockDraftExperiment: MockExperiment, DraftExperiment {
-}
-
-class MockRunningExperiment: MockExperiment, RunningExperiment {
-
-    let targetAudiences: [Target]
-    let targetRules: [TargetRule]
-    let defaultRule: Action
-
-    init(
-        id: Id = 42,
-        key: Key = 320,
-        type: ExperimentType = .abTest,
-        targetAudiences: [Target] = [],
-        targetRules: [TargetRule] = [],
-        defaultRule: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1)
-    ) {
-        self.targetAudiences = targetAudiences
-        self.targetRules = targetRules
-        self.defaultRule = defaultRule
-        super.init(id: id, key: key, type: type)
-    }
-}
-
-class MockPausedExperiment: MockExperiment, PausedExperiment {
-
-}
-
-class MockCompletedExperiment: MockExperiment, CompletedExperiment {
-    let winnerVariation: Variation
-
-    init(
-        id: Id = 1,
-        key: Key = 1,
-        type: ExperimentType = .abTest,
-        winnerVariation: Variation
-    ) {
-        self.winnerVariation = winnerVariation
-        super.init(id: id, key: key, type: type)
     }
 }
 

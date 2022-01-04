@@ -11,48 +11,62 @@ protocol Experiment {
     var id: Id { get }
     var key: Key { get }
     var type: ExperimentType { get }
+    var status: ExperimentStatus { get }
+    var targetAudiences: [Target] { get }
+    var targetRules: [TargetRule] { get }
+    var defaultRule: Action { get }
+    var winnerVariation: Variation? { get }
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation?
     func getVariationOrNil(variationKey: Variation.Key) -> Variation?
     func getOverriddenVariationOrNil(user: HackleUser) -> Variation?
-
 }
+
 
 enum ExperimentType: String, Codable {
     case abTest = "AB_TEST"
     case featureFlag = "FEATURE_FLAG"
 }
 
-protocol DraftExperiment: Experiment {
+enum ExperimentStatus {
+    case draft
+    case running
+    case paused
+    case completed
 }
 
 
-protocol RunningExperiment: Experiment {
-    var targetAudiences: [Target] { get }
-    var targetRules: [TargetRule] { get }
-    var defaultRule: Action { get }
-}
-
-protocol PausedExperiment: Experiment {
-}
-
-protocol CompletedExperiment: Experiment {
-    var winnerVariation: Variation { get }
-}
-
-class BaseExperiment: Experiment {
+class ExperimentEntity: Experiment {
     let id: Id
     let key: Key
     let type: ExperimentType
-    let variations: [Variation]
-    let overrides: [User.Id: Variation.Id]
+    let status: ExperimentStatus
+    private let variations: [Variation]
+    private let overrides: [User.Id: Variation.Id]
+    let targetAudiences: [Target]
+    let targetRules: [TargetRule]
+    let defaultRule: Action
+    private let winnerVariationId: Variation.Id?
 
-    init(id: Id, key: Key, type: ExperimentType, variations: [Variation], overrides: [User.Id: Variation.Id]) {
+    init(id: Id, key: Key, type: ExperimentType, status: ExperimentStatus, variations: [Variation], overrides: [User.Id: Variation.Id], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, winnerVariationId: Variation.Id?) {
         self.id = id
         self.key = key
         self.type = type
+        self.status = status
         self.variations = variations
         self.overrides = overrides
+        self.targetAudiences = targetAudiences
+        self.targetRules = targetRules
+        self.defaultRule = defaultRule
+        self.winnerVariationId = winnerVariationId
+    }
+
+    var winnerVariation: Variation? {
+        get {
+            variations.first { it in
+                it.id == winnerVariationId
+            }
+        }
     }
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation? {
@@ -75,40 +89,3 @@ class BaseExperiment: Experiment {
     }
 }
 
-
-class DraftExperimentEntity: BaseExperiment, DraftExperiment {
-
-}
-
-class RunningExperimentEntity: BaseExperiment, RunningExperiment {
-
-    let targetAudiences: [Target]
-    let targetRules: [TargetRule]
-    let defaultRule: Action
-
-    init(id: Id, key: Key, type: ExperimentType, variations: [Variation], overrides: [User.Id: Variation.Id], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action) {
-        self.targetAudiences = targetAudiences
-        self.targetRules = targetRules
-        self.defaultRule = defaultRule
-        super.init(id: id, key: key, type: type, variations: variations, overrides: overrides)
-    }
-}
-
-class PausedExperimentEntity: BaseExperiment, PausedExperiment {
-
-}
-
-class CompletedExperimentEntity: BaseExperiment, CompletedExperiment {
-    internal let winnerVariationId: Variation.Id
-    var winnerVariation: Variation {
-        get {
-            getVariationOrNil(variationId: winnerVariationId)!
-        }
-    }
-
-    init(id: Id, key: Key, type: ExperimentType, variations: [Variation], overrides: [User.Id: Variation.Id], winnerVariationId: Variation.Id) {
-        self.winnerVariationId = winnerVariationId
-        super.init(id: id, key: key, type: type, variations: variations, overrides: overrides)
-    }
-
-}
