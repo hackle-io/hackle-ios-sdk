@@ -101,7 +101,7 @@ class ExperimentTargetEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        guard  experiment.type == .abTest else {
+        guard experiment.type == .abTest else {
             throw HackleError.error("Experiment type must be abTest [\(experiment.id)]")
         }
 
@@ -133,7 +133,7 @@ class TrafficAllocateEvaluator: FlowEvaluator {
             throw HackleError.error("Experiment status must be running [\(experiment.id)]")
         }
 
-        guard  experiment.type == .abTest else {
+        guard experiment.type == .abTest else {
             throw HackleError.error("Experiment type must be abTest [\(experiment.id)]")
         }
 
@@ -169,7 +169,7 @@ class TargetRuleEvaluator: FlowEvaluator {
             throw HackleError.error("Experiment status must be running [\(experiment.id)]")
         }
 
-        guard  experiment.type == .featureFlag else {
+        guard experiment.type == .featureFlag else {
             throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
         }
 
@@ -203,7 +203,7 @@ class DefaultRuleEvaluator: FlowEvaluator {
             throw HackleError.error("Experiment status must be running [\(experiment.id)]")
         }
 
-        guard  experiment.type == .featureFlag else {
+        guard experiment.type == .featureFlag else {
             throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
         }
 
