@@ -39,7 +39,7 @@ class DraftExperimentEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        if experiment is DraftExperiment {
+        if experiment.status == .draft {
             return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.EXPERIMENT_DRAFT)
         } else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
@@ -55,7 +55,7 @@ class PausedExperimentEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        if experiment is PausedExperiment {
+        if experiment.status == .paused {
             switch experiment.type {
             case .abTest:
                 return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.EXPERIMENT_PAUSED)
@@ -76,8 +76,11 @@ class CompletedExperimentEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        if let completedExperiment = experiment as? CompletedExperiment {
-            return Evaluation.of(variation: completedExperiment.winnerVariation, reason: DecisionReason.EXPERIMENT_COMPLETED)
+        if experiment.status == .completed {
+            guard let winnerVariation = experiment.winnerVariation else {
+                throw HackleError.error("winner variation [\(experiment.id)]")
+            }
+            return Evaluation.of(variation: winnerVariation, reason: DecisionReason.EXPERIMENT_COMPLETED)
         } else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         }
@@ -98,15 +101,15 @@ class ExperimentTargetEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        guard let runningExperiment = experiment as? RunningExperiment, runningExperiment.type == .abTest else {
-            throw HackleError.error("experiment must be running and abTest type [\(experiment.id)]")
+        guard experiment.type == .abTest else {
+            throw HackleError.error("Experiment type must be abTest [\(experiment.id)]")
         }
 
-        let isUserInExperimentTarget = experimentTargetDeterminer.isUserInExperimentTarget(workspace: workspace, experiment: runningExperiment, user: user)
+        let isUserInExperimentTarget = experimentTargetDeterminer.isUserInExperimentTarget(workspace: workspace, experiment: experiment, user: user)
         if isUserInExperimentTarget {
-            return try nextFlow.evaluate(workspace: workspace, experiment: runningExperiment, user: user, defaultVariationKey: defaultVariationKey)
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {
-            return Evaluation.of(experiment: runningExperiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
         }
     }
 }
@@ -126,16 +129,20 @@ class TrafficAllocateEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        guard let runningExperiment = experiment as? RunningExperiment, runningExperiment.type == .abTest else {
-            throw HackleError.error("experiment must be running and abTest type [\(experiment.id)]")
+        guard experiment.status == .running else {
+            throw HackleError.error("Experiment status must be running [\(experiment.id)]")
         }
 
-        guard let variation = try actionResolver.resolveOrNil(action: runningExperiment.defaultRule, workspace: workspace, experiment: runningExperiment, user: user) else {
-            return Evaluation.of(experiment: runningExperiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+        guard experiment.type == .abTest else {
+            throw HackleError.error("Experiment type must be abTest [\(experiment.id)]")
+        }
+
+        guard let variation = try actionResolver.resolveOrNil(action: experiment.defaultRule, workspace: workspace, experiment: experiment, user: user) else {
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
         }
 
         if variation.isDropped {
-            return Evaluation.of(experiment: runningExperiment, variationKey: defaultVariationKey, reason: DecisionReason.VARIATION_DROPPED)
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.VARIATION_DROPPED)
         }
 
         return Evaluation.of(variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED)
@@ -158,15 +165,19 @@ class TargetRuleEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        guard let runningExperiment = experiment as? RunningExperiment, runningExperiment.type == .featureFlag else {
-            throw HackleError.error("experiment must be running and featureFlag type [\(experiment.id)]")
+        guard experiment.status == .running else {
+            throw HackleError.error("Experiment status must be running [\(experiment.id)]")
         }
 
-        guard let targetRule = targetRuleDeterminer.determineTargetRuleOrNil(workspace: workspace, experiment: runningExperiment, user: user) else {
-            return try nextFlow.evaluate(workspace: workspace, experiment: runningExperiment, user: user, defaultVariationKey: defaultVariationKey)
+        guard experiment.type == .featureFlag else {
+            throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
         }
 
-        guard let variation = try actionResolver.resolveOrNil(action: targetRule.action, workspace: workspace, experiment: runningExperiment, user: user) else {
+        guard let targetRule = targetRuleDeterminer.determineTargetRuleOrNil(workspace: workspace, experiment: experiment, user: user) else {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        }
+
+        guard let variation = try actionResolver.resolveOrNil(action: targetRule.action, workspace: workspace, experiment: experiment, user: user) else {
             throw HackleError.error("FeatureFlag must decide the Variation [\(experiment.id)]")
         }
 
@@ -188,12 +199,16 @@ class DefaultRuleEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        guard let runningExperiment = experiment as? RunningExperiment, runningExperiment.type == .featureFlag else {
-            throw HackleError.error("experiment must be running and featureFlag type [\(experiment.id)]")
+        guard experiment.status == .running else {
+            throw HackleError.error("Experiment status must be running [\(experiment.id)]")
         }
 
-        guard let variation = try actionResolver.resolveOrNil(action: runningExperiment.defaultRule, workspace: workspace, experiment: runningExperiment, user: user) else {
-            throw HackleError.error("FeatureFlag must decide the Variation [\(runningExperiment.id)]")
+        guard experiment.type == .featureFlag else {
+            throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
+        }
+
+        guard let variation = try actionResolver.resolveOrNil(action: experiment.defaultRule, workspace: workspace, experiment: experiment, user: user) else {
+            throw HackleError.error("FeatureFlag must decide the Variation [\(experiment.id)]")
         }
 
         return Evaluation.of(variation: variation, reason: DecisionReason.DEFAULT_RULE)

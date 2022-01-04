@@ -10,7 +10,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
         it("첫 번째로 일치하는 타겟룰을 리턴한다") {
             // given
             let matchedTargetRule = MockTargetRule()
-            let experiment = MockRunningExperiment(targetRules: [
+            let experiment = MockExperiment(targetRules: [
                 MockTargetRule(),
                 MockTargetRule(),
                 MockTargetRule(),
@@ -31,7 +31,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
 
         it("실험의 타겟룰중 일치하는 타겟이 하나도 없으면 nil을 리턴한다") {
             // given
-            let experiment = MockRunningExperiment(targetRules: [
+            let experiment = MockExperiment(targetRules: [
                 MockTargetRule(),
                 MockTargetRule(),
                 MockTargetRule(),
