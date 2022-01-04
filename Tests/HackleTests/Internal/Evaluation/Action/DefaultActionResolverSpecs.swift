@@ -24,7 +24,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let action = ActionEntity(type: .variation, variationId: 1, bucketId: nil)
 
                     let variation = MockVariation()
-                    let experiment = MockRunningExperiment(defaultRule: action)
+                    let experiment = MockExperiment(defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(variation)
 
                     // when
@@ -39,7 +39,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     // given
                     let action = ActionEntity(type: .variation, variationId: nil, bucketId: nil)
 
-                    let experiment = MockRunningExperiment(id: 320, defaultRule: action)
+                    let experiment = MockExperiment(id: 320, defaultRule: action)
 
                     // when
                     expect(try sut.resolveOrNil(action: action, workspace: MockWorkspace(), experiment: experiment, user: user))
@@ -50,7 +50,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     // given
                     let action = ActionEntity(type: .variation, variationId: 42, bucketId: nil)
 
-                    let experiment = MockRunningExperiment(id: 320, defaultRule: action)
+                    let experiment = MockExperiment(id: 320, defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(nil)
 
                     // when
@@ -63,7 +63,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                 it("bucketId 가 없으면 예외 발생") {
                     // given
                     let action = ActionEntity(type: .bucket, variationId: nil, bucketId: nil)
-                    let experiment = MockRunningExperiment(id: 42, defaultRule: action)
+                    let experiment = MockExperiment(id: 42, defaultRule: action)
 
                     // when
                     expect(try sut.resolveOrNil(action: action, workspace: MockWorkspace(), experiment: experiment, user: user))
@@ -73,7 +73,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                 it("bucket이 없는 경우 예외 발생") {
                     // given
                     let action = ActionEntity(type: .bucket, variationId: nil, bucketId: 320)
-                    let experiment = MockRunningExperiment(id: 42, defaultRule: action)
+                    let experiment = MockExperiment(id: 42, defaultRule: action)
                     let workspace = MockWorkspace()
                     every(workspace.getBucketOrNilMock).returns(nil)
 
@@ -85,7 +85,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                 it("슬롯에 할당되지 않았으면 nil리턴") {
                     // given
                     let action = ActionEntity(type: .bucket, variationId: nil, bucketId: 320)
-                    let experiment = MockRunningExperiment(id: 42, defaultRule: action)
+                    let experiment = MockExperiment(id: 42, defaultRule: action)
                     let workspace = MockWorkspace()
                     let bucket = MockBucket()
                     every(workspace.getBucketOrNilMock).returns(bucket)
@@ -109,7 +109,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let slot = MockSlot(variationId: 99)
                     every(bucketer.bucketingMock).returns(slot)
 
-                    let experiment = MockRunningExperiment(id: 42, defaultRule: action)
+                    let experiment = MockExperiment(id: 42, defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(nil)
 
                     // when
@@ -130,7 +130,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     every(bucketer.bucketingMock).returns(slot)
 
                     let variation = MockVariation()
-                    let experiment = MockRunningExperiment(id: 42, defaultRule: action)
+                    let experiment = MockExperiment(id: 42, defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(variation)
 
                     // when

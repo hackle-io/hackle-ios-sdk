@@ -16,10 +16,10 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
 
         abTestFlow = DefaultEvaluationFlow.of(
             OverrideEvaluator(),
+            ExperimentTargetEvaluator(experimentTargetDeterminer: DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)),
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),
             CompletedExperimentEvaluator(),
-            ExperimentTargetEvaluator(experimentTargetDeterminer: DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)),
             TrafficAllocateEvaluator(actionResolver: actionResolver)
         )
 

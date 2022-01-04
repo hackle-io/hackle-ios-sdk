@@ -11,7 +11,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
         it("Audience가 비어 있으면 true") {
             // given
             let sut = DefaultExperimentTargetDeterminer(targetMatcher: TargetMatcherStub.of(false, false))
-            let experiment = MockRunningExperiment(targetAudiences: [])
+            let experiment = MockExperiment(targetAudiences: [])
 
             // when
             let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
@@ -25,7 +25,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let matcher = TargetMatcherStub.of(false, false, false, true, false)
             let sut = DefaultExperimentTargetDeterminer(targetMatcher: matcher)
 
-            let experiment = MockRunningExperiment(targetAudiences: self.audiences())
+            let experiment = MockExperiment(targetAudiences: self.audiences())
 
             // when
             let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
@@ -40,7 +40,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let matcher = TargetMatcherStub.of(false, false, false, false, false)
             let sut = DefaultExperimentTargetDeterminer(targetMatcher: matcher)
 
-            let experiment = MockRunningExperiment(targetAudiences: self.audiences())
+            let experiment = MockExperiment(targetAudiences: self.audiences())
 
             // when
             let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
