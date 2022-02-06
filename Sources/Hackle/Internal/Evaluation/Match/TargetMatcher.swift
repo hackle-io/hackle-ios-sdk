@@ -1,7 +1,7 @@
 import Foundation
 
 protocol TargetMatcher {
-    func matches(target: Target, workspace: Workspace, user: HackleUser) -> Bool
+    func matches(target: Target, workspace: Workspace, user: HackleUser) throws -> Bool
 }
 
 
@@ -13,14 +13,14 @@ class DefaultTargetMatcher: TargetMatcher {
         self.conditionMatcherFactory = conditionMatcherFactory
     }
 
-    func matches(target: Target, workspace: Workspace, user: HackleUser) -> Bool {
-        target.conditions.allSatisfy { it in
-            matches(condition: it, workspace: workspace, user: user)
+    func matches(target: Target, workspace: Workspace, user: HackleUser) throws -> Bool {
+        try target.conditions.allSatisfy { it in
+            try matches(condition: it, workspace: workspace, user: user)
         }
     }
 
-    private func matches(condition: Target.Condition, workspace: Workspace, user: HackleUser) -> Bool {
+    private func matches(condition: Target.Condition, workspace: Workspace, user: HackleUser) throws -> Bool {
         let conditionMatcher = conditionMatcherFactory.getMatcher(condition.key.type)
-        return conditionMatcher.matches(condition: condition, workspace: workspace, user: user)
+        return try conditionMatcher.matches(condition: condition, workspace: workspace, user: user)
     }
 }

@@ -12,6 +12,8 @@ protocol Experiment {
     var key: Key { get }
     var type: ExperimentType { get }
     var status: ExperimentStatus { get }
+    var userOverrides: [User.Id: Variation.Id] { get }
+    var segmentOverrides: [TargetRule] { get }
     var targetAudiences: [Target] { get }
     var targetRules: [TargetRule] { get }
     var defaultRule: Action { get }
@@ -19,7 +21,6 @@ protocol Experiment {
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation?
     func getVariationOrNil(variationKey: Variation.Key) -> Variation?
-    func getOverriddenVariationOrNil(user: HackleUser) -> Variation?
 }
 
 
@@ -35,26 +36,27 @@ enum ExperimentStatus {
     case completed
 }
 
-
 class ExperimentEntity: Experiment {
     let id: Id
     let key: Key
     let type: ExperimentType
     let status: ExperimentStatus
     private let variations: [Variation]
-    private let overrides: [User.Id: Variation.Id]
+    let userOverrides: [User.Id: Variation.Id]
+    let segmentOverrides: [TargetRule]
     let targetAudiences: [Target]
     let targetRules: [TargetRule]
     let defaultRule: Action
     private let winnerVariationId: Variation.Id?
 
-    init(id: Id, key: Key, type: ExperimentType, status: ExperimentStatus, variations: [Variation], overrides: [User.Id: Variation.Id], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, winnerVariationId: Variation.Id?) {
+    init(id: Id, key: Key, type: ExperimentType, status: ExperimentStatus, variations: [Variation], userOverrides: [User.Id: Variation.Id], segmentOverrides: [TargetRule], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, winnerVariationId: Variation.Id?) {
         self.id = id
         self.key = key
         self.type = type
         self.status = status
         self.variations = variations
-        self.overrides = overrides
+        self.userOverrides = userOverrides
+        self.segmentOverrides = segmentOverrides
         self.targetAudiences = targetAudiences
         self.targetRules = targetRules
         self.defaultRule = defaultRule
@@ -79,13 +81,6 @@ class ExperimentEntity: Experiment {
         variations.first { it in
             it.key == variationKey
         }
-    }
-
-    func getOverriddenVariationOrNil(user: HackleUser) -> Variation? {
-        guard let overriddenVariationId = overrides[user.id] else {
-            return nil
-        }
-        return getVariationOrNil(variationId: overriddenVariationId)
     }
 }
 
