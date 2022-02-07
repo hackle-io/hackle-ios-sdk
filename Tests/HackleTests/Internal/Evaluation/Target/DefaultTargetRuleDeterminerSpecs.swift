@@ -22,7 +22,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             let sut = DefaultTargetRuleDeterminer(targetMatcher: matcher)
 
             // when
-            let actual = sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
+            let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beIdenticalTo(matchedTargetRule))
@@ -43,7 +43,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             let sut = DefaultTargetRuleDeterminer(targetMatcher: matcher)
 
             // when
-            let actual = sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
+            let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beNil())

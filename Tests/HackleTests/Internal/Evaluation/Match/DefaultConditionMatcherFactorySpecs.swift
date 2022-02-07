@@ -8,8 +8,10 @@ class DefaultConditionMatcherFactorySpecs: QuickSpec {
     override func spec() {
         let sut = DefaultConditionMatcherFactory()
         it("getMatcher") {
-            expect(sut.getMatcher(.userProperty)).to(beAnInstanceOf(PropertyConditionMatcher.self))
-            expect(sut.getMatcher(.hackleProperty)).to(beAnInstanceOf(PropertyConditionMatcher.self))
+            expect(sut.getMatcher(.userId)).to(beAnInstanceOf(UserConditionMatcher.self))
+            expect(sut.getMatcher(.userProperty)).to(beAnInstanceOf(UserConditionMatcher.self))
+            expect(sut.getMatcher(.hackleProperty)).to(beAnInstanceOf(UserConditionMatcher.self))
+            expect(sut.getMatcher(.segment)).to(beAnInstanceOf(SegmentConditionMatcher.self))
         }
     }
 }

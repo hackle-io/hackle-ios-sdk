@@ -11,6 +11,13 @@ protocol FlowEvaluator {
 }
 
 class OverrideEvaluator: FlowEvaluator {
+
+    private let overrideResolver: OverrideResolver
+
+    init(overrideResolver: OverrideResolver) {
+        self.overrideResolver = overrideResolver
+    }
+
     func evaluate(
         workspace: Workspace,
         experiment: Experiment,
@@ -18,7 +25,7 @@ class OverrideEvaluator: FlowEvaluator {
         defaultVariationKey: Variation.Key,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        if let overriddenVariation = experiment.getOverriddenVariationOrNil(user: user) {
+        if let overriddenVariation = try overrideResolver.resolveOrNil(workspace: workspace, experiment: experiment, user: user) {
             switch experiment.type {
             case .abTest:
                 return Evaluation.of(variation: overriddenVariation, reason: DecisionReason.OVERRIDDEN)
@@ -105,7 +112,7 @@ class ExperimentTargetEvaluator: FlowEvaluator {
             throw HackleError.error("Experiment type must be abTest [\(experiment.id)]")
         }
 
-        let isUserInExperimentTarget = experimentTargetDeterminer.isUserInExperimentTarget(workspace: workspace, experiment: experiment, user: user)
+        let isUserInExperimentTarget = try experimentTargetDeterminer.isUserInExperimentTarget(workspace: workspace, experiment: experiment, user: user)
         if isUserInExperimentTarget {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {
@@ -173,7 +180,7 @@ class TargetRuleEvaluator: FlowEvaluator {
             throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
         }
 
-        guard let targetRule = targetRuleDeterminer.determineTargetRuleOrNil(workspace: workspace, experiment: experiment, user: user) else {
+        guard let targetRule = try targetRuleDeterminer.determineTargetRuleOrNil(workspace: workspace, experiment: experiment, user: user) else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         }
 

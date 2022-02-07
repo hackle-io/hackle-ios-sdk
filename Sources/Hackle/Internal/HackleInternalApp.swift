@@ -75,11 +75,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
     }
 
     func track(event: Event, user: HackleUser) {
-
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
-            return
-        }
-        let eventType = workspace.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
+        let eventType = workspaceFetcher.getWorkspaceOrNil()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
         let userEvent = UserEvents.track(user: user, eventType: eventType, event: event)
         eventProcessor.process(event: userEvent)
     }

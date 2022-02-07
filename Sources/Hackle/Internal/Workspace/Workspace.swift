@@ -12,6 +12,8 @@ protocol Workspace {
     func getBucketOrNil(bucketId: Bucket.Id) -> Bucket?
 
     func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType?
+
+    func getSegmentOrNil(segmentKey: Segment.Key) -> Segment?
 }
 
 class WorkspaceEntity: Workspace {
@@ -20,12 +22,21 @@ class WorkspaceEntity: Workspace {
     private let featureFlags: [Experiment.Key: Experiment]
     private let buckets: [Bucket.Id: Bucket]
     private let eventTypes: [EventType.Key: EventType]
+    private let segments: [Segment.Key: Segment]
 
-    init(experiments: [Experiment.Key: Experiment], featureFlags: [Experiment.Key: Experiment], buckets: [Bucket.Id: Bucket], eventTypes: [EventType.Key: EventType]) {
+
+    init(
+        experiments: [Experiment.Key: Experiment],
+        featureFlags: [Experiment.Key: Experiment],
+        buckets: [Bucket.Id: Bucket],
+        eventTypes: [EventType.Key: EventType],
+        segments: [Segment.Key: Segment]
+    ) {
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.buckets = buckets
         self.eventTypes = eventTypes
+        self.segments = segments
     }
 
     func getExperimentOrNil(experimentKey: Experiment.Key) -> Experiment? {
@@ -42,6 +53,10 @@ class WorkspaceEntity: Workspace {
 
     func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
         eventTypes[eventTypeKey]
+    }
+
+    func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
+        segments[segmentKey]
     }
 
     static func from(dto: WorkspaceDto) -> Workspace {
@@ -70,11 +85,20 @@ class WorkspaceEntity: Workspace {
             (it.key, it.toEventType())
         }
 
+        let segments = dto.segments
+            .compactMap { it in
+                it.toSegmentOrNil()
+            }
+            .associateBy { it in
+                it.key
+            }
+
         return WorkspaceEntity(
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
-            eventTypes: eventTypes
+            eventTypes: eventTypes,
+            segments: segments
         )
     }
 }
@@ -84,6 +108,7 @@ class WorkspaceDto: Codable {
     var featureFlags: [ExperimentDto]
     var buckets: [BucketDto]
     var events: [EventTypeDto]
+    var segments: [SegmentDto]
 }
 
 class ExperimentDto: Codable {
@@ -105,6 +130,7 @@ class VariationDto: Codable {
 class ExecutionDto: Codable {
     var status: String
     var userOverrides: [UserOverrideDto]
+    var segmentOverrides: [TargetRuleDto]
     var targetAudiences: [TargetDto]
     var targetRules: [TargetRuleDto]
     var defaultRule: TargetActionDto
@@ -182,6 +208,13 @@ class TargetRuleDto: Codable {
     var action: TargetActionDto
 }
 
+class SegmentDto: Codable {
+    var id: Int64
+    var key: String
+    var type: String
+    var targets: [TargetDto]
+}
+
 extension SlotDto {
     func toSlot() -> Slot {
         SlotEntity(startInclusive: startInclusive, endExclusive: endExclusive, variationId: variationId)
@@ -214,18 +247,22 @@ extension ExperimentDto {
         }
 
         let targetAudiences = execution.targetAudiences.compactMap { it in
-            it.toTargetOrNil()
+            it.toTargetOrNil(.property)
         }
         let targetRules = execution.targetRules.compactMap { it in
-            it.toTargetRuleOrNil()
+            it.toTargetRuleOrNil(.property)
         }
 
         let variation = variations.map { it in
             it.toVariation()
         }
 
-        let overrides = execution.userOverrides.associate { it in
+        let userOverrides = execution.userOverrides.associate { it in
             (it.userId, it.variationId)
+        }
+
+        let segmentOverrides = execution.segmentOverrides.compactMap { it in
+            it.toTargetRuleOrNil(.identifier)
         }
 
         return ExperimentEntity(
@@ -234,7 +271,8 @@ extension ExperimentDto {
             type: type,
             status: experimentStatus,
             variations: variation,
-            overrides: overrides,
+            userOverrides: userOverrides,
+            segmentOverrides: segmentOverrides,
             targetAudiences: targetAudiences,
             targetRules: targetRules,
             defaultRule: defaultRule,
@@ -260,9 +298,9 @@ extension ExperimentDto {
 }
 
 extension TargetDto {
-    func toTargetOrNil() -> Target? {
+    func toTargetOrNil(_ targetingType: TargetingType) -> Target? {
         let condition = conditions.compactMap { it in
-            it.toConditionOrNil()
+            it.toConditionOrNil(targetingType)
         }
         if condition.isEmpty {
             return nil
@@ -273,8 +311,8 @@ extension TargetDto {
 }
 
 extension TargetDto.ConditionDto {
-    func toConditionOrNil() -> Target.Condition? {
-        guard let key = key.toTargetKeyOrNil() else {
+    func toConditionOrNil(_ targetingType: TargetingType) -> Target.Condition? {
+        guard let key = key.toTargetKeyOrNil(), targetingType.supports(keyType: key.type) else {
             return nil
         }
 
@@ -323,8 +361,8 @@ extension TargetActionDto {
 }
 
 extension TargetRuleDto {
-    func toTargetRuleOrNil() -> TargetRule? {
-        guard let target = target.toTargetOrNil() else {
+    func toTargetRuleOrNil(_ targetingType: TargetingType) -> TargetRule? {
+        guard let target = target.toTargetOrNil(targetingType) else {
             return nil
         }
         guard let action = action.toActionOrNil() else {
@@ -337,5 +375,21 @@ extension TargetRuleDto {
 extension EventTypeDto {
     func toEventType() -> EventType {
         EventTypeEntity(id: id, key: key)
+    }
+}
+
+extension SegmentDto {
+    func toSegmentOrNil() -> Segment? {
+        guard let segmentType: SegmentType = Enums.parseOrNil(rawValue: type) else {
+            return nil
+        }
+        return SegmentEntity(
+            id: id,
+            key: key,
+            type: segmentType,
+            targets: targets.compactMap { it in
+                it.toTargetOrNil(.segment)
+            }
+        )
     }
 }
