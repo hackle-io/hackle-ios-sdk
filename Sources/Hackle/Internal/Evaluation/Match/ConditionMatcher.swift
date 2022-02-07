@@ -57,9 +57,10 @@ class SegmentConditionMatcher: ConditionMatcher {
         guard condition.key.type == .segment else {
             throw HackleError.error("Unsupported TargetKeyType [\(condition.key.type)]")
         }
-        return try condition.match.values.contains { it in
+        let isMatched = try condition.match.values.contains { it in
             try matches(value: it, workspace: workspace, user: user)
         }
+        return condition.match.type.matches(isMatched)
     }
 
     private func matches(value: MatchValue, workspace: Workspace, user: HackleUser) throws -> Bool {
