@@ -78,7 +78,17 @@
 		EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */; };
 		EE0560E026F21F970051B624 /* HackleError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560DF26F21F970051B624 /* HackleError.swift */; };
 		EE08749126F9EB7A0057EF4E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE08749026F9EB7A0057EF4E /* Version.swift */; };
+		EE1081D227A3F5CC00E76BB2 /* MockUserValueResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081D127A3F5CC00E76BB2 /* MockUserValueResolver.swift */; };
+		EE1081D427A3F64600E76BB2 /* MockSegmentMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081D327A3F64600E76BB2 /* MockSegmentMatcher.swift */; };
+		EE1081D627A3F6A600E76BB2 /* MockOverrideResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081D527A3F6A600E76BB2 /* MockOverrideResolver.swift */; };
+		EE1081D827A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081D727A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift */; };
+		EE1081DA27A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081D927A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift */; };
+		EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */; };
+		EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */; };
 		EE2A71E22701F880007691D7 /* VersionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A71E12701F880007691D7 /* VersionSpecs.swift */; };
+		EE51540A27A3C64900B1F205 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540927A3C64900B1F205 /* Segment.swift */; };
+		EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540B27A3C94D00B1F205 /* TargetingType.swift */; };
+		EE51540E27A3D1CD00B1F205 /* OverrideResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */; };
 		EE641F9926F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */; };
 		EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */; };
 		EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */; };
@@ -88,8 +98,7 @@
 		EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */; };
 		EE641FBD26F09BE90037AE25 /* ValueMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */; };
 		EE641FC126F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */; };
-		EE641FC526F09BFC0037AE25 /* MatchValueSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC426F09BFC0037AE25 /* MatchValueSpecs.swift */; };
-		EE641FC926F09C040037AE25 /* PropertyConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC826F09C040037AE25 /* PropertyConditionMatcherSpecs.swift */; };
+		EE641FC926F09C040037AE25 /* UserConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FC826F09C040037AE25 /* UserConditionMatcherSpecs.swift */; };
 		EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */; };
 		EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */; };
 		EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */; };
@@ -208,7 +217,17 @@
 		EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockValueOperatorMatcher.swift; sourceTree = "<group>"; };
 		EE0560DF26F21F970051B624 /* HackleError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleError.swift; sourceTree = "<group>"; };
 		EE08749026F9EB7A0057EF4E /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		EE1081D127A3F5CC00E76BB2 /* MockUserValueResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserValueResolver.swift; sourceTree = "<group>"; };
+		EE1081D327A3F64600E76BB2 /* MockSegmentMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSegmentMatcher.swift; sourceTree = "<group>"; };
+		EE1081D527A3F6A600E76BB2 /* MockOverrideResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOverrideResolver.swift; sourceTree = "<group>"; };
+		EE1081D727A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserValueResolverSpecs.swift; sourceTree = "<group>"; };
+		EE1081D927A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentConditionMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSegmentMatcher.swift; sourceTree = "<group>"; };
+		EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultOverrideResolverSpecs.swift; sourceTree = "<group>"; };
 		EE2A71E12701F880007691D7 /* VersionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionSpecs.swift; sourceTree = "<group>"; };
+		EE51540927A3C64900B1F205 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
+		EE51540B27A3C94D00B1F205 /* TargetingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetingType.swift; sourceTree = "<group>"; };
+		EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideResolver.swift; sourceTree = "<group>"; };
 		EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationSpecs.swift; sourceTree = "<group>"; };
 		EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultActionResolverSpecs.swift; sourceTree = "<group>"; };
@@ -218,8 +237,7 @@
 		EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperatorMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultValueOperatorMatcherSpecs.swift; sourceTree = "<group>"; };
-		EE641FC426F09BFC0037AE25 /* MatchValueSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchValueSpecs.swift; sourceTree = "<group>"; };
-		EE641FC826F09C040037AE25 /* PropertyConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyConditionMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE641FC826F09C040037AE25 /* UserConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserConditionMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConditionMatcherFactorySpecs.swift; sourceTree = "<group>"; };
 		EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTargetMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetDeterminerSpecs.swift; sourceTree = "<group>"; };
@@ -367,8 +385,10 @@
 				38AF48C794F4EEED83590BF6 /* Slot.swift */,
 				EEA8BD5A26ECFFD7007230D9 /* Target.swift */,
 				EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */,
+				EE51540B27A3C94D00B1F205 /* TargetingType.swift */,
 				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
 				EED91E7A27670066001CF5B3 /* HackleUser.swift */,
+				EE51540927A3C64900B1F205 /* Segment.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -481,15 +501,19 @@
 		EE641F9626F09B330037AE25 /* Match */ = {
 			isa = PBXGroup;
 			children = (
-				EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */,
-				EE641FC426F09BFC0037AE25 /* MatchValueSpecs.swift */,
-				EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */,
-				EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */,
-				EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */,
-				EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */,
-				EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */,
 				EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */,
-				EE641FC826F09C040037AE25 /* PropertyConditionMatcherSpecs.swift */,
+				EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */,
+				EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */,
+				EE1081D727A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift */,
+				EE641FC026F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift */,
+				EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */,
+				EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */,
+				EE1081D327A3F64600E76BB2 /* MockSegmentMatcher.swift */,
+				EE1081D127A3F5CC00E76BB2 /* MockUserValueResolver.swift */,
+				EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */,
+				EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */,
+				EE1081D927A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift */,
+				EE641FC826F09C040037AE25 /* UserConditionMatcherSpecs.swift */,
 				EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */,
 				EE2A71E12701F880007691D7 /* VersionSpecs.swift */,
 			);
@@ -500,8 +524,10 @@
 			isa = PBXGroup;
 			children = (
 				EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */,
+				EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */,
 				EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */,
 				EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */,
+				EE1081D527A3F6A600E76BB2 /* MockOverrideResolver.swift */,
 				EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */,
 			);
 			path = Target;
@@ -567,6 +593,7 @@
 			isa = PBXGroup;
 			children = (
 				EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */,
+				EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */,
 				EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */,
 			);
 			path = Target;
@@ -776,6 +803,7 @@
 				EEA8BD3A26ECFDAE007230D9 /* TargetMatcher.swift in Sources */,
 				38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */,
 				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
+				EE51540A27A3C64900B1F205 /* Segment.swift in Sources */,
 				EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */,
 				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
 				38AF4458DAAD768D2C214872 /* HttpClient.swift in Sources */,
@@ -798,9 +826,11 @@
 				EEA8BD5B26ECFFD7007230D9 /* Target.swift in Sources */,
 				38AF42300656FB911C519998 /* Hackle.swift in Sources */,
 				EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */,
+				EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */,
 				EED91E792766F85C001CF5B3 /* Device.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
 				EEA8BD6326ECFFF9007230D9 /* Objects.swift in Sources */,
+				EE51540E27A3D1CD00B1F205 /* OverrideResolver.swift in Sources */,
 				38AF42534080D9377FB992A7 /* UserDefaults.swift in Sources */,
 				EEA8BD2426ECFD8C007230D9 /* EvaluationFlow.swift in Sources */,
 				EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */,
@@ -824,14 +854,15 @@
 				EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */,
 				EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */,
 				EE641FBD26F09BE90037AE25 /* ValueMatcherSpecs.swift in Sources */,
+				EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */,
 				EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */,
-				EE641FC526F09BFC0037AE25 /* MatchValueSpecs.swift in Sources */,
-				EE641FC926F09C040037AE25 /* PropertyConditionMatcherSpecs.swift in Sources */,
+				EE641FC926F09C040037AE25 /* UserConditionMatcherSpecs.swift in Sources */,
 				38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */,
 				EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */,
 				EE0560CC26F1E01D0051B624 /* MockTargetRuleDeterminer.swift in Sources */,
 				EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */,
 				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
+				EE1081DA27A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift in Sources */,
 				EE641FC126F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
 				38AF4DEC87427243B185BAAA /* Murmur3HasherSpec.swift in Sources */,
 				38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */,
@@ -844,17 +875,22 @@
 				38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */,
 				EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */,
 				EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */,
+				EE1081D627A3F6A600E76BB2 /* MockOverrideResolver.swift in Sources */,
 				EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */,
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
 				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,
 				EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */,
+				EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */,
+				EE1081D227A3F5CC00E76BB2 /* MockUserValueResolver.swift in Sources */,
 				EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */,
 				EE0560D026F1F9420051B624 /* MockConditionMatcherFactory.swift in Sources */,
+				EE1081D827A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift in Sources */,
 				EE641FB526F09BD20037AE25 /* FlowEvaluatorSpecs.swift in Sources */,
 				38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */,
 				EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */,
 				38AF45B319284D4521F86860 /* CachedWorkspaceFetcherSpec.swift in Sources */,
+				EE1081D427A3F64600E76BB2 /* MockSegmentMatcher.swift in Sources */,
 				EE2A71E22701F880007691D7 /* VersionSpecs.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

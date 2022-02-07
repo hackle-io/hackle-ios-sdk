@@ -14,7 +14,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let experiment = MockExperiment(targetAudiences: [])
 
             // when
-            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
+            let actual = try sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beTrue())
@@ -28,7 +28,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let experiment = MockExperiment(targetAudiences: self.audiences())
 
             // when
-            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
+            let actual = try sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beTrue())
@@ -43,7 +43,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let experiment = MockExperiment(targetAudiences: self.audiences())
 
             // when
-            let actual = sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
+            let actual = try sut.isUserInExperimentTarget(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
 
             // then
             expect(actual).to(beFalse())
