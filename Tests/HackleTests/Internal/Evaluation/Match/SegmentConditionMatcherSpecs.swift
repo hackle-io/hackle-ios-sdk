@@ -95,5 +95,23 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // then
             expect(actual) == false
         }
+
+        it("등록된 segment 중 일치하는게 있지만 MatchType.NOT_MATCH 인 경우 false") {
+            // given
+            let condition = Target.Condition(
+                key: Target.Key(type: .segment, name: "SEGMENT"),
+                match: Target.Match(type: .notMatch, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "seg1"), MatchValue(value: "seg2"), MatchValue(value: "seg3")])
+            )
+            let workspace = MockWorkspace()
+            every(workspace.getSegmentOrNilMock).returns(MockSegment())
+
+            every(segmentMatcher.matchesMock).returns(false)
+
+            // when
+            let actual = try sut.matches(condition: condition, workspace: workspace, user: HackleUser.of(userId: "test_id"))
+
+            // then
+            expect(actual) == true
+        }
     }
 }

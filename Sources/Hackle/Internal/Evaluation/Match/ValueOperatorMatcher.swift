@@ -27,11 +27,3 @@ class DefaultValueOperatorMatcher: ValueOperatorMatcher {
     }
 }
 
-private extension Target.MatchType {
-    func matches(_ isMatched: Bool) -> Bool {
-        switch self {
-        case .match: return isMatched
-        case .notMatch: return !isMatched
-        }
-    }
-}
