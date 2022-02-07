@@ -32,4 +32,10 @@ class MockWorkspace: Mock, Workspace {
     func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
         call(getEventTypeOrNilMock, args: eventTypeKey)
     }
+
+    lazy var getSegmentOrNilMock = MockFunction(self, getSegmentOrNil)
+
+    func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
+        call(getSegmentOrNilMock, args: (segmentKey))
+    }
 }

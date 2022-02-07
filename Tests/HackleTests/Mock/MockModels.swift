@@ -43,6 +43,8 @@ class MockExperiment: Mock, Experiment {
     let key: Key
     let type: ExperimentType
     let status: ExperimentStatus
+    let userOverrides: [User.Id: Variation.Id]
+    let segmentOverrides: [TargetRule]
     let targetAudiences: [Target]
     let targetRules: [TargetRule]
     let defaultRule: Action
@@ -53,6 +55,8 @@ class MockExperiment: Mock, Experiment {
         key: Key = 320,
         type: ExperimentType = .abTest,
         status: ExperimentStatus = .running,
+        userOverrides: [User.Id: Variation.Id] = [:],
+        segmentOverrides: [TargetRule] = [],
         targetAudiences: [Target] = [],
         targetRules: [TargetRule] = [],
         defaultRule: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1),
@@ -62,6 +66,8 @@ class MockExperiment: Mock, Experiment {
         self.key = key
         self.type = type
         self.status = status
+        self.userOverrides = userOverrides
+        self.segmentOverrides = segmentOverrides
         self.targetAudiences = targetAudiences
         self.targetRules = targetRules
         self.defaultRule = defaultRule
@@ -109,5 +115,19 @@ class MockTargetRule: Mock, TargetRule {
         self.target = target
         self.action = action
         super.init()
+    }
+}
+
+class MockSegment: Mock, Segment {
+    let id: Id
+    let key: Key
+    let type: SegmentType
+    let targets: [Target]
+
+    init(id: Id = 42, key: Key = "segment", type: SegmentType = .userId, targets: [Target] = []) {
+        self.id = id
+        self.key = key
+        self.type = type
+        self.targets = targets
     }
 }

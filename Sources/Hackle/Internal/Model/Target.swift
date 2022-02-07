@@ -29,8 +29,10 @@ class Target {
     }
 
     enum KeyType: String, Codable {
+        case userId = "USER_ID"
         case userProperty = "USER_PROPERTY"
         case hackleProperty = "HACKLE_PROPERTY"
+        case segment = "SEGMENT"
     }
 
     class Match {
