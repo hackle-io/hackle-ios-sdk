@@ -29,6 +29,7 @@ class DefaultHttpClient: HttpClient {
         req.setValue(sdk.key, forHTTPHeaderField: "X-HACKLE-SDK-KEY")
         req.setValue(sdk.name, forHTTPHeaderField: "X-HACKLE-SDK-NAME")
         req.setValue(sdk.version, forHTTPHeaderField: "X-HACKLE-SDK-VERSION")
+        req.setValue(String(Date().epochMillis), forHTTPHeaderField: "X-HACKLE-SDK-TIME")
 
         let task = session.dataTask(with: req) { data, response, error in
             completion(HttpResponse(request: request, data: data, urlResponse: response, error: error))
