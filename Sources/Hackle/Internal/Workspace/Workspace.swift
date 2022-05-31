@@ -116,6 +116,7 @@ class ExperimentDto: Codable {
     var key: Int64
     var identifierType: String
     var status: String
+    var version: Int
     var bucketId: Int64
     var variations: [VariationDto]
     var execution: ExecutionDto
@@ -272,6 +273,7 @@ extension ExperimentDto {
             type: type,
             identifierType: identifierType,
             status: experimentStatus,
+            version: version,
             variations: variation,
             userOverrides: userOverrides,
             segmentOverrides: segmentOverrides,

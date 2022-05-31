@@ -105,6 +105,7 @@ extension UserEvents.Exposure {
         dto["experimentId"] = experiment.id
         dto["experimentKey"] = experiment.key
         dto["experimentType"] = experiment.type.rawValue
+        dto["experimentVersion"] = experiment.version
         dto["variationId"] = variationId
         dto["variationKey"] = variationKey
         dto["decisionReason"] = decisionReason
