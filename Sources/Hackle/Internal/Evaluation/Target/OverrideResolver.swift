@@ -23,9 +23,23 @@ class DefaultOverrideResolver: OverrideResolver {
     }
 
     func resolveOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation? {
-        if let overriddenVariationId = experiment.userOverrides[user.id] {
-            return experiment.getVariationOrNil(variationId: overriddenVariationId)
+        if let overriddenVariation = resolveUserOverrideOrNil(experiment: experiment, user: user) {
+            return overriddenVariation
         }
+        return try resolveSegmentOverrideOrNil(workspace: workspace, experiment: experiment, user: user)
+    }
+
+    private func resolveUserOverrideOrNil(experiment: Experiment, user: HackleUser) -> Variation? {
+        guard let identifier = user.identifiers[experiment.identifierType] else {
+            return nil
+        }
+        guard let overriddenVariationId = experiment.userOverrides[identifier] else {
+            return nil
+        }
+        return experiment.getVariationOrNil(variationId: overriddenVariationId)
+    }
+
+    private func resolveSegmentOverrideOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation? {
         guard let overriddenRule = try experiment.segmentOverrides.first(
             where: { it in try targetMatcher.matches(target: it.target, workspace: workspace, user: user) }
         ) else {

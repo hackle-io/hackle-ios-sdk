@@ -10,7 +10,7 @@ class MockBucketer: Mock, Bucketer {
 
     lazy var bucketingMock = MockFunction(self, bucketing)
 
-    func bucketing(bucket: Bucket, user: HackleUser) -> Slot? {
-        call(bucketingMock, args: (bucket, user))
+    func bucketing(bucket: Bucket, identifier: String) -> Slot? {
+        call(bucketingMock, args: (bucket, identifier))
     }
 }

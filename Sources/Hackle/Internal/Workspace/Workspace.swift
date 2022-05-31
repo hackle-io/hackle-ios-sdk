@@ -114,6 +114,7 @@ class WorkspaceDto: Codable {
 class ExperimentDto: Codable {
     var id: Int64
     var key: Int64
+    var identifierType: String
     var status: String
     var bucketId: Int64
     var variations: [VariationDto]
@@ -269,6 +270,7 @@ extension ExperimentDto {
             id: id,
             key: key,
             type: type,
+            identifierType: identifierType,
             status: experimentStatus,
             variations: variation,
             userOverrides: userOverrides,

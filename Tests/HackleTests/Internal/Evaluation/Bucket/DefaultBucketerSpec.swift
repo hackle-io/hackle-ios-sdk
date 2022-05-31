@@ -18,8 +18,6 @@ class DefaultBucketerSpec: QuickSpec {
             sut = DefaultBucketer(slotNumberCalculator: slotNumberCalculator)
         }
 
-        let user = HackleUser.of(userId: "test_id")
-
         describe("bucketing") {
             it("계산된 슬롯번호로 버켓에서 슬롯을 가져온다") {
 
@@ -30,7 +28,7 @@ class DefaultBucketerSpec: QuickSpec {
                 every(slotNumberCalculator.mockCalculate).returns(320)
 
                 // when
-                let actual = sut.bucketing(bucket: bucket, user: user)
+                let actual = sut.bucketing(bucket: bucket, identifier: "test_id")
 
                 // then
                 expect(actual).to(beIdenticalTo(slot))

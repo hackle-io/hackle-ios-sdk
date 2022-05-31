@@ -34,11 +34,11 @@ class DefaultUserValueResolver: UserValueResolver {
     func resolveOrNil(user: HackleUser, key: Target.Key) throws -> Any? {
         switch key.type {
         case .userId:
-            return user.id
+            return user.identifiers[key.name]
         case .userProperty:
-            return user.properties?[key.name]
+            return user.properties[key.name]
         case .hackleProperty:
-            return user.hackleProperties?[key.name]
+            return user.hackleProperties[key.name]
         case .segment:
             throw HackleError.error("Unsupported TargetKeyType [\(key.type)]")
         }

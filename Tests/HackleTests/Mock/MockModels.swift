@@ -42,6 +42,7 @@ class MockExperiment: Mock, Experiment {
     let id: Id
     let key: Key
     let type: ExperimentType
+    let identifierType: String
     let status: ExperimentStatus
     let userOverrides: [User.Id: Variation.Id]
     let segmentOverrides: [TargetRule]
@@ -54,6 +55,7 @@ class MockExperiment: Mock, Experiment {
         id: Id = 42,
         key: Key = 320,
         type: ExperimentType = .abTest,
+        identifierType: String = IdentifierType.id.rawValue,
         status: ExperimentStatus = .running,
         userOverrides: [User.Id: Variation.Id] = [:],
         segmentOverrides: [TargetRule] = [],
@@ -65,6 +67,7 @@ class MockExperiment: Mock, Experiment {
         self.id = id
         self.key = key
         self.type = type
+        self.identifierType = identifierType
         self.status = status
         self.userOverrides = userOverrides
         self.segmentOverrides = segmentOverrides
@@ -72,7 +75,6 @@ class MockExperiment: Mock, Experiment {
         self.targetRules = targetRules
         self.defaultRule = defaultRule
         self.winnerVariation = winnerVariation
-        super.init()
     }
 
     lazy var getVariationByIdOrNilMock: MockFunction<Variation.Id, Variation?> = MockFunction(self, getVariationOrNil)
