@@ -44,6 +44,10 @@ class IdentifiersBuilder {
             return false
         }
 
+        if value.isEmpty {
+            return false
+        }
+
         return true
     }
 
