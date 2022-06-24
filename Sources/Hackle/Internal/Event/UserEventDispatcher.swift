@@ -94,19 +94,22 @@ typealias EventPayloadDto = [String: Any]
 extension UserEvents.Exposure {
     func toDto() -> ExposureEventDto {
         var dto = ExposureEventDto()
+
         dto["timestamp"] = timestamp.epochMillis
-        dto["userId"] = user.id
-        if let userProperties = user.properties {
-            dto["userProperties"] = userProperties
-        }
-        if let hackleProperties = user.hackleProperties {
-            dto["hackleProperties"] = hackleProperties
-        }
+
+        dto["userId"] = user.identifiers[IdentifierType.id.rawValue]
+        dto["identifiers"] = user.identifiers
+        dto["userProperties"] = user.properties
+        dto["hackleProperties"] = user.hackleProperties
+
         dto["experimentId"] = experiment.id
         dto["experimentKey"] = experiment.key
+        dto["experimentType"] = experiment.type.rawValue
+        dto["experimentVersion"] = experiment.version
         dto["variationId"] = variationId
         dto["variationKey"] = variationKey
         dto["decisionReason"] = decisionReason
+
         return dto
     }
 }
@@ -114,14 +117,14 @@ extension UserEvents.Exposure {
 extension UserEvents.Track {
     func toDto() -> TrackEventDto {
         var dto = TrackEventDto()
+
         dto["timestamp"] = timestamp.epochMillis
-        dto["userId"] = user.id
-        if let userProperties = user.properties {
-            dto["userProperties"] = userProperties
-        }
-        if let hackleProperties = user.hackleProperties {
-            dto["hackleProperties"] = hackleProperties
-        }
+
+        dto["userId"] = user.identifiers[IdentifierType.id.rawValue]
+        dto["identifiers"] = user.identifiers
+        dto["userProperties"] = user.properties
+        dto["hackleProperties"] = user.hackleProperties
+
         dto["eventTypeId"] = eventType.id
         dto["eventTypeKey"] = eventType.key
         if let value = event.value {

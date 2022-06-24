@@ -11,7 +11,9 @@ protocol Experiment {
     var id: Id { get }
     var key: Key { get }
     var type: ExperimentType { get }
+    var identifierType: String { get }
     var status: ExperimentStatus { get }
+    var version: Int { get }
     var userOverrides: [User.Id: Variation.Id] { get }
     var segmentOverrides: [TargetRule] { get }
     var targetAudiences: [Target] { get }
@@ -40,7 +42,9 @@ class ExperimentEntity: Experiment {
     let id: Id
     let key: Key
     let type: ExperimentType
+    let identifierType: String
     let status: ExperimentStatus
+    let version: Int
     private let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
     let segmentOverrides: [TargetRule]
@@ -49,11 +53,13 @@ class ExperimentEntity: Experiment {
     let defaultRule: Action
     private let winnerVariationId: Variation.Id?
 
-    init(id: Id, key: Key, type: ExperimentType, status: ExperimentStatus, variations: [Variation], userOverrides: [User.Id: Variation.Id], segmentOverrides: [TargetRule], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, winnerVariationId: Variation.Id?) {
+    init(id: Id, key: Key, type: ExperimentType, identifierType: String, status: ExperimentStatus, version: Int, variations: [Variation], userOverrides: [User.Id: Variation.Id], segmentOverrides: [TargetRule], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, winnerVariationId: Variation.Id?) {
         self.id = id
         self.key = key
         self.type = type
+        self.identifierType = identifierType
         self.status = status
+        self.version = version
         self.variations = variations
         self.userOverrides = userOverrides
         self.segmentOverrides = segmentOverrides

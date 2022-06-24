@@ -31,7 +31,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
         it("UserEvents.Exposure.toDto") {
 
             let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
-            let user = HackleUser.of(user: User(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
+            let user = HackleUser.of(user: Hackle.user(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
             let date = Date()
             let experiment = MockExperiment(id: 42, key: 320)
             let variation = MockVariation(id: 142, key: "F")
@@ -59,7 +59,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
 
         it("UserEvents.Track.toDto") {
             let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
-            let user = HackleUser.of(user: User(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
+            let user = HackleUser.of(user: Hackle.user(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
             let date = Date()
             let eventType = EventTypeEntity(id: 42, key: "test_event_key")
             let event = Event(key: "test_event_key")

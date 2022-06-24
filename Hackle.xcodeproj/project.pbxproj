@@ -89,6 +89,9 @@
 		EE51540A27A3C64900B1F205 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540927A3C64900B1F205 /* Segment.swift */; };
 		EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540B27A3C94D00B1F205 /* TargetingType.swift */; };
 		EE51540E27A3D1CD00B1F205 /* OverrideResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */; };
+		EE5EF549283D0D0800407084 /* IdentifierType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5EF548283D0D0800407084 /* IdentifierType.swift */; };
+		EE5EF54B283D0EE000407084 /* PropertiesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5EF54A283D0EE000407084 /* PropertiesBuilder.swift */; };
+		EE5EF54D283D0EE900407084 /* IdentifiersBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5EF54C283D0EE900407084 /* IdentifiersBuilder.swift */; };
 		EE641F9926F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */; };
 		EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */; };
 		EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */; };
@@ -104,6 +107,8 @@
 		EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */; };
 		EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */; };
 		EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FDC26F09D760037AE25 /* MockActionResolver.swift */; };
+		EE8A7428284345C3004C923D /* HackleUserResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A7427284345C3004C923D /* HackleUserResolver.swift */; };
+		EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */; };
 		EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
 		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
 		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
@@ -228,6 +233,9 @@
 		EE51540927A3C64900B1F205 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
 		EE51540B27A3C94D00B1F205 /* TargetingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetingType.swift; sourceTree = "<group>"; };
 		EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideResolver.swift; sourceTree = "<group>"; };
+		EE5EF548283D0D0800407084 /* IdentifierType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifierType.swift; sourceTree = "<group>"; };
+		EE5EF54A283D0EE000407084 /* PropertiesBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertiesBuilder.swift; sourceTree = "<group>"; };
+		EE5EF54C283D0EE900407084 /* IdentifiersBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiersBuilder.swift; sourceTree = "<group>"; };
 		EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationSpecs.swift; sourceTree = "<group>"; };
 		EE641FA426F09B810037AE25 /* DefaultActionResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultActionResolverSpecs.swift; sourceTree = "<group>"; };
@@ -243,6 +251,8 @@
 		EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTargetRuleDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EE641FDC26F09D760037AE25 /* MockActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockActionResolver.swift; sourceTree = "<group>"; };
+		EE8A7427284345C3004C923D /* HackleUserResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserResolver.swift; sourceTree = "<group>"; };
+		EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleUserResolverSpecs.swift; sourceTree = "<group>"; };
 		EEA8BD1526ECFD4C007230D9 /* Evaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluation.swift; sourceTree = "<group>"; };
 		EEA8BD1B26ECFD52007230D9 /* Evaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluator.swift; sourceTree = "<group>"; };
 		EEA8BD1F26ECFD6B007230D9 /* ActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionResolver.swift; sourceTree = "<group>"; };
@@ -387,7 +397,6 @@
 				EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */,
 				EE51540B27A3C94D00B1F205 /* TargetingType.swift */,
 				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
-				EED91E7A27670066001CF5B3 /* HackleUser.swift */,
 				EE51540927A3C64900B1F205 /* Segment.swift */,
 			);
 			path = Model;
@@ -439,12 +448,25 @@
 			path = Log;
 			sourceTree = "<group>";
 		};
+		EE5EF547283D0CA100407084 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				EED91E7A27670066001CF5B3 /* HackleUser.swift */,
+				EE8A7427284345C3004C923D /* HackleUserResolver.swift */,
+				EE5EF548283D0D0800407084 /* IdentifierType.swift */,
+				EE5EF54A283D0EE000407084 /* PropertiesBuilder.swift */,
+				EE5EF54C283D0EE900407084 /* IdentifiersBuilder.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
 		EE641F9126F09AE80037AE25 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
 				EE641F9226F09B110037AE25 /* Evaluation */,
-				38AF46DB6CB910731975C835 /* Workspace */,
 				38AF49D7C0561BCCAA8FDD68 /* Event */,
+				EE8A742928435DC1004C923D /* User */,
+				38AF46DB6CB910731975C835 /* Workspace */,
 				EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */,
 			);
 			path = Internal;
@@ -533,6 +555,14 @@
 			path = Target;
 			sourceTree = "<group>";
 		};
+		EE8A742928435DC1004C923D /* User */ = {
+			isa = PBXGroup;
+			children = (
+				EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
 		EEA8BD0F26ECFCE5007230D9 /* Evaluation */ = {
 			isa = PBXGroup;
 			children = (
@@ -608,6 +638,7 @@
 				38AF4F7139F209248611A4F1 /* Log */,
 				38AF4975BEF89059B2A959A6 /* Model */,
 				38AF4F669561F1662BDA1DAA /* Notification */,
+				EE5EF547283D0CA100407084 /* User */,
 				38AF4932C2739F8CED158D23 /* Utilities */,
 				38AF4AF89F323B8E1AAE4F27 /* Workspace */,
 				EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */,
@@ -806,11 +837,14 @@
 				EE51540A27A3C64900B1F205 /* Segment.swift in Sources */,
 				EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */,
 				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
+				EE5EF54B283D0EE000407084 /* PropertiesBuilder.swift in Sources */,
 				38AF4458DAAD768D2C214872 /* HttpClient.swift in Sources */,
 				38AF467F543D2F84774AE1DB /* HttpRequest.swift in Sources */,
 				38AF465143B0766817769A64 /* HttpResponse.swift in Sources */,
+				EE8A7428284345C3004C923D /* HackleUserResolver.swift in Sources */,
 				EEA8BD2026ECFD6B007230D9 /* ActionResolver.swift in Sources */,
 				38AF4515F80A6011AE1FC3F3 /* UserEventDispatcher.swift in Sources */,
+				EE5EF549283D0D0800407084 /* IdentifierType.swift in Sources */,
 				EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */,
 				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
 				38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */,
@@ -819,6 +853,7 @@
 				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
 				EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */,
 				38AF4110A19264FE458293D2 /* Json.swift in Sources */,
+				EE5EF54D283D0EE900407084 /* IdentifiersBuilder.swift in Sources */,
 				38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */,
 				EEA8BD3E26ECFDB5007230D9 /* ValueMatcher.swift in Sources */,
 				38AF42941D113C93F45BEB7F /* SdkVersion.swift in Sources */,
@@ -876,6 +911,7 @@
 				EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */,
 				EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */,
 				EE1081D627A3F6A600E76BB2 /* MockOverrideResolver.swift in Sources */,
+				EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */,
 				EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */,
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
