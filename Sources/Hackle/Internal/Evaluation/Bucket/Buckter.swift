@@ -5,7 +5,7 @@
 import Foundation
 
 protocol Bucketer {
-    func bucketing(bucket: Bucket, user: HackleUser) -> Slot?
+    func bucketing(bucket: Bucket, identifier: String) -> Slot?
 }
 
 class DefaultBucketer: Bucketer {
@@ -16,14 +16,14 @@ class DefaultBucketer: Bucketer {
         self.slotNumberCalculator = slotNumberCalculator
     }
 
-    func bucketing(bucket: Bucket, user: HackleUser) -> Slot? {
-        let slotNumber = slotNumberCalculator.calculate(seed: bucket.seed, slotSize: bucket.slotSize, userId: user.id)
+    func bucketing(bucket: Bucket, identifier: String) -> Slot? {
+        let slotNumber = slotNumberCalculator.calculate(seed: bucket.seed, slotSize: bucket.slotSize, value: identifier)
         return bucket.getSlotOrNil(slotNumber: slotNumber)
     }
 }
 
 protocol SlotNumberCalculator {
-    func calculate(seed: Int32, slotSize: Int32, userId: String) -> Int
+    func calculate(seed: Int32, slotSize: Int32, value: String) -> Int
 }
 
 class DefaultSlotNumberCalculator: SlotNumberCalculator {
@@ -34,8 +34,8 @@ class DefaultSlotNumberCalculator: SlotNumberCalculator {
         self.hasher = hasher
     }
 
-    func calculate(seed: Int32, slotSize: Int32, userId: String) -> Int {
-        let hashValue = hasher.hash(data: userId, seed: seed)
+    func calculate(seed: Int32, slotSize: Int32, value: String) -> Int {
+        let hashValue = hasher.hash(data: value, seed: seed)
         return Int(abs(hashValue) % slotSize)
     }
 }

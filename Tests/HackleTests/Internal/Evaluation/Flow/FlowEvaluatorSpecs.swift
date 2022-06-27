@@ -288,6 +288,20 @@ class FlowEvaluatorSpecs: QuickSpec {
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
+            it("identifierType에 해당하는 식별자가 없으면 다음 플로우를 실행한다") {
+                // given
+                let experiment = MockExperiment(id: 42, type: .featureFlag, identifierType: "customId", status: .running)
+                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                let nextFlow = MockEvaluationFlow()
+                every(nextFlow.evaluateMock).returns(evaluation)
+
+                // when
+                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: nextFlow)
+
+                // then
+                expect(actual).to(equal(evaluation))
+            }
+
             it("타겟룰에 해당하지 않으면 다음 플로우를 실행한다") {
                 // given
                 let experiment = MockExperiment(id: 42, type: .featureFlag, status: .running)
@@ -356,6 +370,19 @@ class FlowEvaluatorSpecs: QuickSpec {
             it("featureFlag 타입이 아니면 예외 발생") {
                 expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .abTest, status: .running), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
+            }
+
+            it("identifierType에 해당하는 식별자가 없으면 defaultVariation을 리턴한다") {
+                // given
+                let experiment = MockExperiment(id: 42, type: .featureFlag, identifierType: "customId", status: .running)
+                let variation = MockVariation(id: 42, key: "G")
+                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+
+                // when
+                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "G", nextFlow: MockEvaluationFlow())
+
+                // then
+                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "G", reason: DecisionReason.DEFAULT_RULE)))
             }
 
             it("기본 룰에 해당하는 Variation을 결정하지 못하면 예외 발생") {

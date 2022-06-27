@@ -68,8 +68,14 @@ import Foundation
 
 extension Hackle {
 
-    @objc public static func user(id: String, properties: [String: Any]? = nil) -> User {
-        User(id: id, properties: properties)
+    @objc public static func user(
+        id: String? = nil,
+        userId: String? = nil,
+        deviceId: String? = nil,
+        identifiers: [String: String]? = nil,
+        properties: [String: Any]? = nil
+    ) -> User {
+        User(id: id, userId: userId, deviceId: deviceId, identifiers: identifiers, properties: properties)
     }
 
     @objc public static func event(key: String, properties: [String: Any]? = nil) -> Event {

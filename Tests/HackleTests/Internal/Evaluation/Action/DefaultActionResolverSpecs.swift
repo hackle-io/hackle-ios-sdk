@@ -82,6 +82,27 @@ class DefaultActionResolverSpecs: QuickSpec {
                         .to(throwError(HackleError.error("bucket[320]")))
                 }
 
+                it("identifierType 에 해당하는 식별자가 없으면 nil 리턴") {
+                    // given
+                    let action = ActionEntity(type: .bucket, variationId: nil, bucketId: 320)
+                    let workspace = MockWorkspace()
+                    let bucket = MockBucket()
+                    every(workspace.getBucketOrNilMock).returns(bucket)
+
+                    let slot = MockSlot(variationId: 99)
+                    every(bucketer.bucketingMock).returns(slot)
+
+                    let variation = MockVariation()
+                    let experiment = MockExperiment(id: 42, identifierType: "customId", defaultRule: action)
+                    every(experiment.getVariationByIdOrNilMock).returns(variation)
+
+                    // when
+                    let actual = try sut.resolveOrNil(action: action, workspace: workspace, experiment: experiment, user: user)
+
+                    // then
+                    expect(actual).to(beNil())
+                }
+
                 it("슬롯에 할당되지 않았으면 nil리턴") {
                     // given
                     let action = ActionEntity(type: .bucket, variationId: nil, bucketId: 320)

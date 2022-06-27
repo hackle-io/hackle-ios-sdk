@@ -39,7 +39,10 @@ class DefaultActionResolver: ActionResolver {
         guard let bucket = workspace.getBucketOrNil(bucketId: bucketId) else {
             throw HackleError.error("bucket[\(bucketId)]")
         }
-        guard let allocatedSlot = bucketer.bucketing(bucket: bucket, user: user) else {
+        guard let identifier = user.identifiers[experiment.identifierType] else {
+            return nil
+        }
+        guard let allocatedSlot = bucketer.bucketing(bucket: bucket, identifier: identifier) else {
             return nil
         }
         return experiment.getVariationOrNil(variationId: allocatedSlot.variationId)
