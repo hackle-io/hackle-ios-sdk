@@ -20,7 +20,7 @@ class DefaultSlotNumberCalculatorSpec: QuickSpec {
                     let userId = line[2]
                     let slotNumber = Int(line[3])!
 
-                    let actual = sut.calculate(seed: seed, slotSize: slotSize, userId: userId)
+                    let actual = sut.calculate(seed: seed, slotSize: slotSize, value: userId)
 
                     expect(actual) == slotNumber
                 }

@@ -10,7 +10,7 @@ class MockSlotNumberCalculator: Mock, SlotNumberCalculator {
 
     lazy var mockCalculate = MockFunction(self, calculate)
 
-    func calculate(seed: Int32, slotSize: Int32, userId: String) -> Int {
-        call(mockCalculate, args: (seed, slotSize, userId))
+    func calculate(seed: Int32, slotSize: Int32, value: String) -> Int {
+        call(mockCalculate, args: (seed, slotSize, value))
     }
 }

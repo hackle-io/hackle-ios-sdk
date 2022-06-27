@@ -180,6 +180,10 @@ class TargetRuleEvaluator: FlowEvaluator {
             throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
         }
 
+        if user.identifiers[experiment.identifierType] == nil {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        }
+
         guard let targetRule = try targetRuleDeterminer.determineTargetRuleOrNil(workspace: workspace, experiment: experiment, user: user) else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         }
@@ -212,6 +216,10 @@ class DefaultRuleEvaluator: FlowEvaluator {
 
         guard experiment.type == .featureFlag else {
             throw HackleError.error("Experiment type must be featureFlag [\(experiment.id)]")
+        }
+
+        if user.identifiers[experiment.identifierType] == nil {
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.DEFAULT_RULE)
         }
 
         guard let variation = try actionResolver.resolveOrNil(action: experiment.defaultRule, workspace: workspace, experiment: experiment, user: user) else {

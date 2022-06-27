@@ -8,6 +8,7 @@ import Foundation
 @objc public final class HackleApp: NSObject {
 
     private let internalApp: HackleInternalApp
+    private let userResolver: HackleUserResolver
     private let device: Device
 
     @objc public var deviceId: String {
@@ -16,8 +17,9 @@ import Foundation
         }
     }
 
-    init(internalApp: HackleInternalApp, device: Device) {
+    init(internalApp: HackleInternalApp, userResolver: HackleUserResolver, device: Device) {
         self.internalApp = internalApp
+        self.userResolver = userResolver
         self.device = device
     }
 
@@ -43,9 +45,12 @@ import Foundation
 
     @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
         do {
+            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
+                return Decision.of(variation: defaultVariation, reason: DecisionReason.INVALID_INPUT)
+            }
             return try internalApp.experiment(
                 experimentKey: Int64(experimentKey),
-                user: HackleUser.of(user: user, hackleProperties: device.properties),
+                user: hackleUser,
                 defaultVariationKey: defaultVariation
             )
         } catch let error {
@@ -76,9 +81,12 @@ import Foundation
 
     @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
         do {
+            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
+                return FeatureFlagDecision.off(reason: DecisionReason.INVALID_INPUT)
+            }
             return try internalApp.featureFlag(
                 featureKey: Int64(featureKey),
-                user: HackleUser.of(user: user, hackleProperties: device.properties)
+                user: hackleUser
             )
         } catch {
             Log.error("Unexpected error while deciding feature flag[\(featureKey)]: \(String(describing: error))")
@@ -108,9 +116,12 @@ import Foundation
 
     @objc public func track(event: Event, user: User) {
         do {
+            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
+                return
+            }
             internalApp.track(
                 event: event,
-                user: HackleUser.of(user: user, hackleProperties: device.properties)
+                user: hackleUser
             )
         } catch {
             Log.error("Unexpected exception while tracking event[\(event.key)]: \(String(describing: error))")
@@ -154,7 +165,8 @@ extension HackleApp {
 
         let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
         let device = Device.create()
+        let userResolver = DefaultHackleUserResolver(device: device)
 
-        return HackleApp(internalApp: internalApp, device: device)
+        return HackleApp(internalApp: internalApp, userResolver: userResolver, device: device)
     }
 }
