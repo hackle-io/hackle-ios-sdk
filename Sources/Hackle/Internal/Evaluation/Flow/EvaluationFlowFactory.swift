@@ -19,7 +19,7 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
         abTestFlow = DefaultEvaluationFlow.of(
             OverrideEvaluator(overrideResolver: overrideResolver),
             IdentifierEvaluator(),
-            MutualExclusionEvaluator(mutualExclusionResolver),
+            MutualExclusionEvaluator(mutualExclusionResolver: mutualExclusionResolver),
             ExperimentTargetEvaluator(experimentTargetDeterminer: DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)),
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),

@@ -6,17 +6,17 @@ protocol MutualExclusionResolver {
 
 class DefaultMutualExclusionResolver: MutualExclusionResolver {
     private let bucketer: Bucketer
-    
+
     init(bucketer: Bucketer) {
         self.bucketer = bucketer
     }
-    
+
     func resolve(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Bool {
         if experiment.contianerId == nil {
             return true
         }
-        
-        guard let container = workspace.getContainerOrNil(containerId: experiment.contianerId) else {
+
+        guard let container = workspace.getContainerOrNil(containerId: experiment.contianerId!) else {
             throw HackleError.error("container group not exist. containerId[\(experiment.contianerId)]")
         }
         guard let bucket = workspace.getBucketOrNil(bucketId: container.bucketId) else {

@@ -25,7 +25,7 @@ class WorkspaceEntity: Workspace {
     private let buckets: [Bucket.Id: Bucket]
     private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
-    private let containers: [Container]
+    private let containers: [Int64: Container]
 
 
     init(
@@ -432,19 +432,21 @@ extension SegmentDto {
 
 extension ContainerDto {
     func toContainerOrNil() -> Container? {
-        return ContainerEntity(
-            containerId: containerId,
-            bucketId: bucketId,
-            groups: groups.map(it in it.toContainerGroupOrNil())
+        ContainerEntity(
+                containerId: containerId,
+                bucketId: bucketId,
+                groups: groups.map { it in
+                    it.toContainerGroupOrNil()
+                }
         )
     }
 }
 
 extension ContainerGroupDto {
     func toContainerGroupOrNil() -> ContainerGroup {
-        return ContainerGroupEntity(
-            containerGroupId: containerGroupId,
-            experiments: experiments
+        ContainerGroupEntity(
+                containerGroupId: containerGroupId,
+                experiments: experiments
         )
     }
 }
