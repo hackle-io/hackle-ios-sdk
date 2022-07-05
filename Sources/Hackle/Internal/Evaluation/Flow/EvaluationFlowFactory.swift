@@ -14,9 +14,12 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
         let targetMatcher = DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory())
         let actionResolver = DefaultActionResolver(bucketer: DefaultBucketer())
         let overrideResolver = DefaultOverrideResolver(targetMatcher: targetMatcher, actionResolver: actionResolver)
+        let mutualExclusionResolver = DefaultMutualExclusionResolver(bucketer: DefaultBucketer())
 
         abTestFlow = DefaultEvaluationFlow.of(
             OverrideEvaluator(overrideResolver: overrideResolver),
+            IdentifierEvaluator(),
+            MutualExclusionEvaluator(mutualExclusionResolver),
             ExperimentTargetEvaluator(experimentTargetDeterminer: DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)),
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),
@@ -29,6 +32,7 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
             PausedExperimentEvaluator(),
             CompletedExperimentEvaluator(),
             OverrideEvaluator(overrideResolver: overrideResolver),
+            IdentifierEvaluator(),
             TargetRuleEvaluator(targetRuleDeterminer: DefaultTargetRuleDeterminer(targetMatcher: targetMatcher), actionResolver: actionResolver),
             DefaultRuleEvaluator(actionResolver: actionResolver)
         )

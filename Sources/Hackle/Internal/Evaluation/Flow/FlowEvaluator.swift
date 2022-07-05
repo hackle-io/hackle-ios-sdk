@@ -229,3 +229,44 @@ class DefaultRuleEvaluator: FlowEvaluator {
         return Evaluation.of(variation: variation, reason: DecisionReason.DEFAULT_RULE)
     }
 }
+
+class MutualExclusionEvaluator: FlowEvaluator {
+    private let mutualExclusionResolver: MutualExclusionResolver
+    
+    init(mutualExclusionResolver: MutualExclusionResolver) {
+        self.mutualExclusionResolver = mutualExclusionResolver
+    }
+
+    func evaluate(
+        workspace: Workspace,
+        experiment: Experiment,
+        user: HackleUser,
+        defaultVariationKey: String,
+        nextFlow: EvaluationFlow
+    ) throws -> Evaluation {
+        let result = try mutualExclusionResolver.resolve(workspace: workspace, experiment: experiment, user: user)
+        if result {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        } else {
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
+        }
+    }
+}
+
+class IdentifierEvaluator: FlowEvaluator {
+
+    func evaluate(
+            workspace: Workspace,
+            experiment: Experiment,
+            user: HackleUser,
+            defaultVariationKey: String,
+            nextFlow: EvaluationFlow
+    ) throws -> Evaluation {
+        let identifier = user.identifiers[experiment.identifierType]
+        if identifier == nil {
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
+        } else {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        }
+    }
+}

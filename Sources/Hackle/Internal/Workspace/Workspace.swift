@@ -14,6 +14,8 @@ protocol Workspace {
     func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType?
 
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment?
+    
+    func getContainerOrNil(containerId: Int64) -> Container?
 }
 
 class WorkspaceEntity: Workspace {
@@ -23,6 +25,7 @@ class WorkspaceEntity: Workspace {
     private let buckets: [Bucket.Id: Bucket]
     private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
+    private let containers: [Container]
 
 
     init(
@@ -30,13 +33,15 @@ class WorkspaceEntity: Workspace {
         featureFlags: [Experiment.Key: Experiment],
         buckets: [Bucket.Id: Bucket],
         eventTypes: [EventType.Key: EventType],
-        segments: [Segment.Key: Segment]
+        segments: [Segment.Key: Segment],
+        containers: [Int64: Container]
     ) {
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.buckets = buckets
         self.eventTypes = eventTypes
         self.segments = segments
+        self.containers = containers
     }
 
     func getExperimentOrNil(experimentKey: Experiment.Key) -> Experiment? {
@@ -57,6 +62,10 @@ class WorkspaceEntity: Workspace {
 
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
         segments[segmentKey]
+    }
+    
+    func getContainerOrNil(containerId: Int64) -> Container? {
+        containers[containerId]
     }
 
     static func from(dto: WorkspaceDto) -> Workspace {
@@ -92,13 +101,22 @@ class WorkspaceEntity: Workspace {
             .associateBy { it in
                 it.key
             }
+        
+        let containers = dto.containers
+            .compactMap {it in
+                it.toContainerOrNil
+            }
+            .associateBy { it in
+                it.containerId
+            }
 
         return WorkspaceEntity(
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
             eventTypes: eventTypes,
-            segments: segments
+            segments: segments,
+            containers: containers
         )
     }
 }
@@ -109,6 +127,7 @@ class WorkspaceDto: Codable {
     var buckets: [BucketDto]
     var events: [EventTypeDto]
     var segments: [SegmentDto]
+    var containers: [ContainerDto]
 }
 
 class ExperimentDto: Codable {
@@ -121,6 +140,7 @@ class ExperimentDto: Codable {
     var variations: [VariationDto]
     var execution: ExecutionDto
     var winnerVariationId: Int64?
+    var containerId: Int64?
 }
 
 class VariationDto: Codable {
@@ -217,6 +237,17 @@ class SegmentDto: Codable {
     var targets: [TargetDto]
 }
 
+class ContainerDto: Codable {
+    var containerId: Int64
+    var bucketId: Int64
+    var groups: [ContainerGroupDto]
+}
+
+class ContainerGroupDto: Codable {
+    var containerGroupId: Int64
+    var experiments: [Int64]
+}
+
 extension SlotDto {
     func toSlot() -> Slot {
         SlotEntity(startInclusive: startInclusive, endExclusive: endExclusive, variationId: variationId)
@@ -280,6 +311,7 @@ extension ExperimentDto {
             targetAudiences: targetAudiences,
             targetRules: targetRules,
             defaultRule: defaultRule,
+            containerId: containerId,
             winnerVariationId: winnerVariationId
         )
     }
@@ -394,6 +426,25 @@ extension SegmentDto {
             targets: targets.compactMap { it in
                 it.toTargetOrNil(.segment)
             }
+        )
+    }
+}
+
+extension ContainerDto {
+    func toContainerOrNil() -> Container? {
+        return ContainerEntity(
+            containerId: containerId,
+            bucketId: bucketId,
+            groups: groups.map(it in it.toContainerGroupOrNil())
+        )
+    }
+}
+
+extension ContainerGroupDto {
+    func toContainerGroupOrNil() -> ContainerGroup {
+        return ContainerGroupEntity(
+            containerGroupId: containerGroupId,
+            experiments: experiments
         )
     }
 }

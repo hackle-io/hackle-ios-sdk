@@ -38,4 +38,10 @@ class MockWorkspace: Mock, Workspace {
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
         call(getSegmentOrNilMock, args: (segmentKey))
     }
+
+    lazy var getContainerOrNilMock = MockFunction(self, getContainerOrNil)
+
+    func getContainerOrNull(containerId: Int64) -> Container? {
+        call(getContainerOrNilMock, args: (containerId))
+    }
 }

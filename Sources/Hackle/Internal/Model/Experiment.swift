@@ -19,6 +19,7 @@ protocol Experiment {
     var targetAudiences: [Target] { get }
     var targetRules: [TargetRule] { get }
     var defaultRule: Action { get }
+    var contianerId: Int64? {get}
     var winnerVariation: Variation? { get }
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation?
@@ -51,9 +52,10 @@ class ExperimentEntity: Experiment {
     let targetAudiences: [Target]
     let targetRules: [TargetRule]
     let defaultRule: Action
+    let containerId: Int64?
     private let winnerVariationId: Variation.Id?
 
-    init(id: Id, key: Key, type: ExperimentType, identifierType: String, status: ExperimentStatus, version: Int, variations: [Variation], userOverrides: [User.Id: Variation.Id], segmentOverrides: [TargetRule], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, winnerVariationId: Variation.Id?) {
+    init(id: Id, key: Key, type: ExperimentType, identifierType: String, status: ExperimentStatus, version: Int, variations: [Variation], userOverrides: [User.Id: Variation.Id], segmentOverrides: [TargetRule], targetAudiences: [Target], targetRules: [TargetRule], defaultRule: Action, containerId: Int64?, winnerVariationId: Variation.Id?) {
         self.id = id
         self.key = key
         self.type = type
@@ -66,6 +68,7 @@ class ExperimentEntity: Experiment {
         self.targetAudiences = targetAudiences
         self.targetRules = targetRules
         self.defaultRule = defaultRule
+        self.containerId = containerId
         self.winnerVariationId = winnerVariationId
     }
 
