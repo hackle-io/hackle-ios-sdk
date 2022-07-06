@@ -7,8 +7,8 @@ class DefaultMutualExclusionResolverSpecs: QuickSpec {
 
     override func spec() {
 
-        var bucketer = MockBucketer!
-        var sut = DefaultMutualExclusionResolver!
+        var bucketer: MockBucketer!
+        var sut: DefaultMutualExclusionResolver!
 
         let identifier = HackleUser.of(userId: "test_id")
 

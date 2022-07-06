@@ -6,7 +6,7 @@ class MockMutualExclusionResolver: Mock, MutualExclusionResolver {
 
     lazy var resolverOrNilMock = MockFunction(self, resolve)
 
-    func resolve(workspace: Workspace, experiment: Experiment, identifier: String) throws -> Bool {
-        call(resolverOrNilMock, args: (workspace, experiment, identifier))
+    func resolve(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Bool {
+        call(resolverOrNilMock, args: (workspace, experiment, user))
     }
 }

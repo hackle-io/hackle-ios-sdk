@@ -1,7 +1,7 @@
 import Foundation
 
 protocol Container {
-    var containerId: Int64 {get}
+    var id: Int64 {get}
     var bucketId: Int64 {get}
     var groups: [ContainerGroup] {get}
 
@@ -9,12 +9,12 @@ protocol Container {
 }
 
 class ContainerEntity: Container {
-    let containerId: Int64
+    let id: Int64
     let bucketId: Int64
     let groups: [ContainerGroup]
 
-    init(containerId: Int64, bucketId: Int64, groups: [ContainerGroup]) {
-        self.containerId = containerId
+    init(id: Int64, bucketId: Int64, groups: [ContainerGroup]) {
+        self.id = id
         self.bucketId = bucketId
         self.groups = groups
     }

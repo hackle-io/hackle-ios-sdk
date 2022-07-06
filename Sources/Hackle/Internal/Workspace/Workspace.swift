@@ -238,13 +238,13 @@ class SegmentDto: Codable {
 }
 
 class ContainerDto: Codable {
-    var containerId: Int64
+    var id: Int64
     var bucketId: Int64
     var groups: [ContainerGroupDto]
 }
 
 class ContainerGroupDto: Codable {
-    var containerGroupId: Int64
+    var id: Int64
     var experiments: [Int64]
 }
 
@@ -433,7 +433,7 @@ extension SegmentDto {
 extension ContainerDto {
     func toContainerOrNil() -> Container? {
         ContainerEntity(
-                containerId: containerId,
+                id: id,
                 bucketId: bucketId,
                 groups: groups.map { it in
                     it.toContainerGroupOrNil()
@@ -445,7 +445,7 @@ extension ContainerDto {
 extension ContainerGroupDto {
     func toContainerGroupOrNil() -> ContainerGroup {
         ContainerGroupEntity(
-                containerGroupId: containerGroupId,
+                id: id,
                 experiments: experiments
         )
     }
