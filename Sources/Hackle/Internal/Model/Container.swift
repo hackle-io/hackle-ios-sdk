@@ -5,7 +5,7 @@ protocol Container {
     var bucketId: Int64 {get}
     var groups: [ContainerGroup] {get}
 
-    func findGroup(containerGroupId: Int64) -> ContainerGroup?
+    func findGroupOrNil(containerGroupId: Int64) -> ContainerGroup?
 }
 
 class ContainerEntity: Container {
@@ -19,7 +19,8 @@ class ContainerEntity: Container {
         self.groups = groups
     }
 
-    func findGroup(containerGroupId: Int64) -> ContainerGroup? {
-        groups.filter({ (groupId: Int64) -> Bool in (groupId == containerGroupId) })
+    func findGroupOrNil(containerGroupId: Int64) -> ContainerGroup? {
+        groups.filter({ (id: Int64) -> Bool in return id == containerGroupId })
     }
 }
+

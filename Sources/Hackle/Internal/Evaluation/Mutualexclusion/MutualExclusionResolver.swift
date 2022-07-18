@@ -1,7 +1,7 @@
 import Foundation
 
 protocol MutualExclusionResolver {
-    func resolve(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Bool
+    func isMutualExclusionGroup(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Bool
 }
 
 class DefaultMutualExclusionResolver: MutualExclusionResolver {
@@ -11,13 +11,13 @@ class DefaultMutualExclusionResolver: MutualExclusionResolver {
         self.bucketer = bucketer
     }
 
-    func resolve(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Bool {
+    func isMutualExclusionGroup(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Bool {
         if experiment.contianerId == nil {
             return true
         }
 
         guard let container = workspace.getContainerOrNil(containerId: experiment.contianerId!) else {
-            throw HackleError.error("container group not exist. containerId[\(experiment.contianerId)]")
+            throw HackleError.error("container group not exist. containerId[\(experiment.contianerId!)]")
         }
         guard let bucket = workspace.getBucketOrNil(bucketId: container.bucketId) else {
             throw HackleError.error("container group bucket not exist. bucketId[\(container.bucketId)]")
@@ -29,9 +29,9 @@ class DefaultMutualExclusionResolver: MutualExclusionResolver {
         guard let allocatedSlot = bucketer.bucketing(bucket: bucket, identifier: identifier) else {
             return false
         }
-        guard let containerGoup = container.findGroup(containerGroupId: allocatedSlot.variationId) else {
+        guard let containerGroup = container.findGroupOrNil(containerGroupId: allocatedSlot.variationId) else {
             return false
         }
-        return containerGoup?.experiments.contains(experiment.id)
+        return containerGroup.experiments.contains(experiment.id)
     }
 }

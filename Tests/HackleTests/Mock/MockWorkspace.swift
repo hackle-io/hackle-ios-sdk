@@ -41,7 +41,7 @@ class MockWorkspace: Mock, Workspace {
 
     lazy var getContainerOrNilMock = MockFunction(self, getContainerOrNil)
 
-    func getContainerOrNull(containerId: Int64) -> Container? {
+    func getContainerOrNil(containerId: Int64) -> Container? {
         call(getContainerOrNilMock, args: (containerId))
     }
 }

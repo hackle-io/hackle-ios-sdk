@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		028345B42875D97300F9CBCA /* Pods_Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B070523683097DFFBF478E7 /* Pods_Hackle.framework */; };
+		028345BA2875E3B000F9CBCA /* DefaultMutualExclusionResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345B92875E3B000F9CBCA /* DefaultMutualExclusionResolverSpecs.swift */; };
+		028345BC2875E3D900F9CBCA /* MutualExclusionResolverTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345BB2875E3D900F9CBCA /* MutualExclusionResolverTest.swift */; };
+		028345BE2875E4B000F9CBCA /* MutualExclusionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345BD2875E4B000F9CBCA /* MutualExclusionResolver.swift */; };
+		028345C22875E7A100F9CBCA /* MockContainerGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345C12875E7A100F9CBCA /* MockContainerGroup.swift */; };
+		028345C42875E8AE00F9CBCA /* ContainerGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345C32875E8AE00F9CBCA /* ContainerGroup.swift */; };
+		028345C62875E8D100F9CBCA /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345C52875E8D100F9CBCA /* Container.swift */; };
+		028345C82879BC6300F9CBCA /* MockContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028345C72879BC6300F9CBCA /* MockContainer.swift */; };
 		38AF40A7FBB6B467DC55987F /* Murmur3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF470733AA5556534D1C37 /* Murmur3.swift */; };
 		38AF40BEC58C4291F06EACE7 /* bucketing_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = 38AF483C398969DF0DA587FD /* bucketing_numeric.csv */; };
 		38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4DAC4C37792542D1DFFC /* Buckter.swift */; };
@@ -69,6 +77,7 @@
 		38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44225C76ECE6793796B9 /* HackleApp.swift */; };
 		38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF47E80B54FB74773C2CB5 /* Variation.swift */; };
 		38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */; };
+		C76FC777443521F942768862 /* Pods_Hackle_HackleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6726D620D1F8DC0597929B9 /* Pods_Hackle_HackleTests.framework */; };
 		EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */; };
 		EE0560C426F1CF5F0051B624 /* MockFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */; };
 		EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */; };
@@ -151,6 +160,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		028345B92875E3B000F9CBCA /* DefaultMutualExclusionResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultMutualExclusionResolverSpecs.swift; sourceTree = "<group>"; };
+		028345BB2875E3D900F9CBCA /* MutualExclusionResolverTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutualExclusionResolverTest.swift; sourceTree = "<group>"; };
+		028345BD2875E4B000F9CBCA /* MutualExclusionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutualExclusionResolver.swift; sourceTree = "<group>"; };
+		028345C12875E7A100F9CBCA /* MockContainerGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContainerGroup.swift; sourceTree = "<group>"; };
+		028345C32875E8AE00F9CBCA /* ContainerGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerGroup.swift; sourceTree = "<group>"; };
+		028345C52875E8D100F9CBCA /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
+		028345C72879BC6300F9CBCA /* MockContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContainer.swift; sourceTree = "<group>"; };
+		0E85FEA6DB6CBDC7E33C1229 /* Pods-Hackle-HackleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hackle-HackleTests.debug.xcconfig"; path = "Target Support Files/Pods-Hackle-HackleTests/Pods-Hackle-HackleTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1B070523683097DFFBF478E7 /* Pods_Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		265BD1ACAD8D4C87915AB2E5 /* Pods-Hackle-HackleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hackle-HackleTests.release.xcconfig"; path = "Target Support Files/Pods-Hackle-HackleTests/Pods-Hackle-HackleTests.release.xcconfig"; sourceTree = "<group>"; };
 		38AF401FBBD6373254632CDA /* bucketing_uuid.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = bucketing_uuid.csv; sourceTree = "<group>"; };
 		38AF409035BBBCB5190E8DB8 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		38AF409CD86CDFE7CD3B167A /* murmur_alphanumeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_alphanumeric.csv; sourceTree = "<group>"; };
@@ -213,6 +232,8 @@
 		38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_numeric.csv; sourceTree = "<group>"; };
 		38AF4F36962643CD99E18F0C /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
+		7284ED69888353F357B84C94 /* Pods-Hackle.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hackle.debug.xcconfig"; path = "Target Support Files/Pods-Hackle/Pods-Hackle.debug.xcconfig"; sourceTree = "<group>"; };
+		A85770BDF9F6EDA28DB265ED /* Pods-Hackle.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hackle.release.xcconfig"; path = "Target Support Files/Pods-Hackle/Pods-Hackle.release.xcconfig"; sourceTree = "<group>"; };
 		EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluationFlow.swift; sourceTree = "<group>"; };
 		EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlowEvaluator.swift; sourceTree = "<group>"; };
 		EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExperimentTargetDeterminer.swift; sourceTree = "<group>"; };
@@ -278,8 +299,9 @@
 		EED91E7A27670066001CF5B3 /* HackleUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUser.swift; sourceTree = "<group>"; };
 		EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleInternalAppSpecs.swift; sourceTree = "<group>"; };
 		EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluator.swift; sourceTree = "<group>"; };
+		F6726D620D1F8DC0597929B9 /* Pods_Hackle_HackleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hackle_HackleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,6 +309,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+				028345B42875D97300F9CBCA /* Pods_Hackle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,12 +321,30 @@
 				EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */,
 				EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */,
 				OBJ_43 /* Hackle.framework in Frameworks */,
+				C76FC777443521F942768862 /* Pods_Hackle_HackleTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		028345B72875DE3F00F9CBCA /* Mutualexclusion */ = {
+			isa = PBXGroup;
+			children = (
+				028345B92875E3B000F9CBCA /* DefaultMutualExclusionResolverSpecs.swift */,
+				028345BB2875E3D900F9CBCA /* MutualExclusionResolverTest.swift */,
+			);
+			path = Mutualexclusion;
+			sourceTree = "<group>";
+		};
+		028345B82875E24C00F9CBCA /* Mutualexclusion */ = {
+			isa = PBXGroup;
+			children = (
+				028345BD2875E4B000F9CBCA /* MutualExclusionResolver.swift */,
+			);
+			path = Mutualexclusion;
+			sourceTree = "<group>";
+		};
 		38AF414ABBBB10CFB1B1ED03 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -334,6 +375,8 @@
 				38AF4B6437D4125B407E4BE2 /* MockUserEvent.swift */,
 				38AF4382779078126A37F680 /* MockScheduler.swift */,
 				38AF455413A9E3EB6F851C90 /* MockHttpClient.swift */,
+				028345C12875E7A100F9CBCA /* MockContainerGroup.swift */,
+				028345C72879BC6300F9CBCA /* MockContainer.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -398,6 +441,8 @@
 				EE51540B27A3C94D00B1F205 /* TargetingType.swift */,
 				38AF47E80B54FB74773C2CB5 /* Variation.swift */,
 				EE51540927A3C64900B1F205 /* Segment.swift */,
+				028345C32875E8AE00F9CBCA /* ContainerGroup.swift */,
+				028345C52875E8D100F9CBCA /* Container.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -448,6 +493,26 @@
 			path = Log;
 			sourceTree = "<group>";
 		};
+		7C793C7F37149037D2DE9C31 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1B070523683097DFFBF478E7 /* Pods_Hackle.framework */,
+				F6726D620D1F8DC0597929B9 /* Pods_Hackle_HackleTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BB8EB9A278DD18BF0C8CCF78 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7284ED69888353F357B84C94 /* Pods-Hackle.debug.xcconfig */,
+				A85770BDF9F6EDA28DB265ED /* Pods-Hackle.release.xcconfig */,
+				0E85FEA6DB6CBDC7E33C1229 /* Pods-Hackle-HackleTests.debug.xcconfig */,
+				265BD1ACAD8D4C87915AB2E5 /* Pods-Hackle-HackleTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		EE5EF547283D0CA100407084 /* User */ = {
 			isa = PBXGroup;
 			children = (
@@ -475,6 +540,7 @@
 		EE641F9226F09B110037AE25 /* Evaluation */ = {
 			isa = PBXGroup;
 			children = (
+				028345B72875DE3F00F9CBCA /* Mutualexclusion */,
 				EE641F9326F09B240037AE25 /* Action */,
 				EE641F9426F09B2A0037AE25 /* Bucket */,
 				EE641F9526F09B300037AE25 /* Flow */,
@@ -566,6 +632,7 @@
 		EEA8BD0F26ECFCE5007230D9 /* Evaluation */ = {
 			isa = PBXGroup;
 			children = (
+				028345B82875E24C00F9CBCA /* Mutualexclusion */,
 				EEA8BD1026ECFCF2007230D9 /* Action */,
 				EEA8BD1126ECFCF8007230D9 /* Bucket */,
 				EEA8BD1226ECFD0A007230D9 /* Flow */,
@@ -682,6 +749,8 @@
 				OBJ_7 /* Sources */,
 				OBJ_10 /* Tests */,
 				OBJ_14 /* Products */,
+				BB8EB9A278DD18BF0C8CCF78 /* Pods */,
+				7C793C7F37149037D2DE9C31 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -712,6 +781,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_18 /* Build configuration list for PBXNativeTarget "Hackle" */;
 			buildPhases = (
+				4658E36D5FBEAA67B2CAAEB0 /* [CP] Check Pods Manifest.lock */,
 				OBJ_21 /* Sources */,
 				OBJ_23 /* Frameworks */,
 			);
@@ -728,9 +798,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_36 /* Build configuration list for PBXNativeTarget "HackleTests" */;
 			buildPhases = (
+				A6AB159028385645A2AF9D46 /* [CP] Check Pods Manifest.lock */,
 				OBJ_39 /* Sources */,
 				OBJ_42 /* Frameworks */,
 				EE5878B7258B103F007664CE /* Resources */,
+				C4097823532D8FB804ABC5E7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -754,7 +826,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 9999;
-				LastUpgradeCheck = 9999;
+				LastUpgradeCheck = 1340;
 			};
 			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "Hackle" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -762,6 +834,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = OBJ_5;
 			packageReferences = (
@@ -799,6 +872,75 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4658E36D5FBEAA67B2CAAEB0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Hackle-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A6AB159028385645A2AF9D46 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Hackle-HackleTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C4097823532D8FB804ABC5E7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Hackle-HackleTests/Pods-Hackle-HackleTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Mockery/Mockery.framework",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mockery.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Hackle-HackleTests/Pods-Hackle-HackleTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		OBJ_21 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -816,7 +958,9 @@
 				38AF4D5A91D0663D200F3AA3 /* Slot.swift in Sources */,
 				38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */,
 				38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */,
+				028345C22875E7A100F9CBCA /* MockContainerGroup.swift in Sources */,
 				38AF47C051B797B546BB3E58 /* EventType.swift in Sources */,
+				028345BE2875E4B000F9CBCA /* MutualExclusionResolver.swift in Sources */,
 				EEA8BD1626ECFD4C007230D9 /* Evaluation.swift in Sources */,
 				EEA8BD4F26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift in Sources */,
 				38AF40A7FBB6B467DC55987F /* Murmur3.swift in Sources */,
@@ -835,6 +979,7 @@
 				38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */,
 				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
 				EE51540A27A3C64900B1F205 /* Segment.swift in Sources */,
+				028345C62875E8D100F9CBCA /* Container.swift in Sources */,
 				EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */,
 				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
 				EE5EF54B283D0EE000407084 /* PropertiesBuilder.swift in Sources */,
@@ -848,6 +993,7 @@
 				EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */,
 				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
 				38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */,
+				028345C42875E8AE00F9CBCA /* ContainerGroup.swift in Sources */,
 				38AF4ECF7D12C7B2E1CA8E10 /* Log.swift in Sources */,
 				EEA8BD5326ECFFBE007230D9 /* TargetRuleDeterminer.swift in Sources */,
 				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
@@ -885,6 +1031,7 @@
 				38AF4CD8C1F8579BE84DE84A /* HackleAppSpec.swift in Sources */,
 				EE641FAB26F09BB50037AE25 /* DefaultEvaluationFlowSpecs.swift in Sources */,
 				38AF4CA1EAFFF7B1334AA8EC /* DefaultBucketerSpec.swift in Sources */,
+				028345C82879BC6300F9CBCA /* MockContainer.swift in Sources */,
 				38AF4586F06263F58C2459CF /* MockHasher.swift in Sources */,
 				EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */,
 				EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */,
@@ -896,6 +1043,7 @@
 				EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */,
 				EE0560CC26F1E01D0051B624 /* MockTargetRuleDeterminer.swift in Sources */,
 				EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */,
+				028345BA2875E3B000F9CBCA /* DefaultMutualExclusionResolverSpecs.swift in Sources */,
 				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
 				EE1081DA27A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift in Sources */,
 				EE641FC126F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
@@ -903,6 +1051,7 @@
 				38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */,
 				EE641FB126F09BC90037AE25 /* DefaultEvaluationFlowFactorySpecs.swift in Sources */,
 				EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */,
+				028345BC2875E3D900F9CBCA /* MutualExclusionResolverTest.swift in Sources */,
 				EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */,
 				38AF454E87491272E64D4079 /* MockWorkspace.swift in Sources */,
 				38AF4E9684FDA9795C9B325F /* DefaultUserEventProcessorSpec.swift in Sources */,
@@ -944,6 +1093,7 @@
 /* Begin XCBuildConfiguration section */
 		OBJ_19 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7284ED69888353F357B84C94 /* Pods-Hackle.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -956,7 +1106,7 @@
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
@@ -975,13 +1125,14 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_NAME = Hackle;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
 		OBJ_20 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A85770BDF9F6EDA28DB265ED /* Pods-Hackle.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -994,7 +1145,7 @@
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
@@ -1013,7 +1164,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_NAME = Hackle;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -1022,18 +1173,46 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_NS_ASSERTIONS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SWIFT_PACKAGE=1",
 					"DEBUG=1",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
@@ -1048,9 +1227,10 @@
 		};
 		OBJ_37 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0E85FEA6DB6CBDC7E33C1229 /* Pods-Hackle-HackleTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
@@ -1070,16 +1250,17 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGET_NAME = HackleTests;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
 		OBJ_38 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 265BD1ACAD8D4C87915AB2E5 /* Pods-Hackle-HackleTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
@@ -1099,7 +1280,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGET_NAME = HackleTests;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -1108,16 +1289,42 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SWIFT_PACKAGE=1",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";

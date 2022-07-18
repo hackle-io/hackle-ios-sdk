@@ -244,7 +244,7 @@ class MutualExclusionEvaluator: FlowEvaluator {
         defaultVariationKey: String,
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
-        let result = try mutualExclusionResolver.resolve(workspace: workspace, experiment: experiment, user: user)
+        let result = try mutualExclusionResolver.isMutualExclusionGroup(workspace: workspace, experiment: experiment, user: user)
         if result {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {

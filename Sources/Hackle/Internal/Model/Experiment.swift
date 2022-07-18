@@ -19,7 +19,7 @@ protocol Experiment {
     var targetAudiences: [Target] { get }
     var targetRules: [TargetRule] { get }
     var defaultRule: Action { get }
-    var contianerId: Int64? {get}
+    var containerId: Int64? { get }
     var winnerVariation: Variation? { get }
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation?

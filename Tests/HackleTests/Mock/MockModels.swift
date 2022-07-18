@@ -50,6 +50,7 @@ class MockExperiment: Mock, Experiment {
     let targetAudiences: [Target]
     let targetRules: [TargetRule]
     let defaultRule: Action
+    let containerId: Int64?
     let winnerVariation: Variation?
 
     init(
@@ -64,6 +65,7 @@ class MockExperiment: Mock, Experiment {
         targetAudiences: [Target] = [],
         targetRules: [TargetRule] = [],
         defaultRule: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1),
+        containerId: Int64? = nil,
         winnerVariation: Variation? = nil
     ) {
         self.id = id
@@ -77,6 +79,7 @@ class MockExperiment: Mock, Experiment {
         self.targetAudiences = targetAudiences
         self.targetRules = targetRules
         self.defaultRule = defaultRule
+        self.containerId = containerId
         self.winnerVariation = winnerVariation
     }
 
