@@ -50,6 +50,7 @@ class MockExperiment: Mock, Experiment {
     let targetAudiences: [Target]
     let targetRules: [TargetRule]
     let defaultRule: Action
+    let containerId: Container.Id?
     let winnerVariation: Variation?
 
     init(
@@ -64,6 +65,7 @@ class MockExperiment: Mock, Experiment {
         targetAudiences: [Target] = [],
         targetRules: [TargetRule] = [],
         defaultRule: Action = ActionEntity(type: .bucket, variationId: nil, bucketId: 1),
+        containerId: Container.Id? = nil,
         winnerVariation: Variation? = nil
     ) {
         self.id = id
@@ -77,6 +79,7 @@ class MockExperiment: Mock, Experiment {
         self.targetAudiences = targetAudiences
         self.targetRules = targetRules
         self.defaultRule = defaultRule
+        self.containerId = containerId
         self.winnerVariation = winnerVariation
     }
 
@@ -134,5 +137,33 @@ class MockSegment: Mock, Segment {
         self.key = key
         self.type = type
         self.targets = targets
+    }
+}
+
+class MockContainer: Mock, Container {
+    let id: Id
+    let bucketId: Bucket.Id
+    let groups: [ContainerGroup]
+
+    init(id: Id = 1, bucketId: Bucket.Id = 2, groups: [ContainerGroup] = []) {
+        self.id = id
+        self.bucketId = bucketId
+        self.groups = groups
+    }
+
+    lazy var getGroupOrNilMock = MockFunction(self, getGroupOrNil)
+
+    func getGroupOrNil(containerGroupId: ContainerGroup.Id) -> ContainerGroup? {
+        call(getGroupOrNilMock, args: containerGroupId)
+    }
+}
+
+class MockContainerGroup: Mock, ContainerGroup {
+    let id: Id
+    let experiments: [Experiment.Id]
+
+    init(id: Id = 1, experiments: [Experiment.Id] = []) {
+        self.id = id
+        self.experiments = experiments
     }
 }
