@@ -24,7 +24,7 @@ class DefaultContainerResolverSpecs: QuickSpec {
             let user = HackleUser.of(userId: "test_id")
 
             // when
-            let actual = sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
 
             // then
             expect(actual) == false
@@ -40,7 +40,7 @@ class DefaultContainerResolverSpecs: QuickSpec {
             every(bucketer.bucketingMock).returns(nil)
 
             // when
-            let actual = sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
 
             // then
             expect(actual) == false
@@ -58,15 +58,14 @@ class DefaultContainerResolverSpecs: QuickSpec {
             let container = MockContainer()
             every(container.getGroupOrNilMock).returns(nil)
 
-
             // when
-            let actual = sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = expect(try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user))
 
             // then
-            expect(actual) == false
+            actual.to(throwError(HackleError.error("ContainerGroup[99]")))
         }
 
-        it("할당받은 ContainerGroup 에 입력받은 Experiment 가 없는 경우 false") {
+        it("할당받은 ContainerGroup 에 입력받은 Experiment 가 없는 경우 예외 발생") {
             // given
             let experiment = MockExperiment(id: 320)
             let user = HackleUser.of(userId: "test_id")
@@ -81,7 +80,7 @@ class DefaultContainerResolverSpecs: QuickSpec {
 
 
             // when
-            let actual = sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
 
             // then
             expect(actual) == false
@@ -102,7 +101,7 @@ class DefaultContainerResolverSpecs: QuickSpec {
 
 
             // when
-            let actual = sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
 
             // then
             expect(actual) == true

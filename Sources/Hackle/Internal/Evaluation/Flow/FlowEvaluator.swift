@@ -257,7 +257,7 @@ class ContainerEvaluator: FlowEvaluator {
             throw HackleError.error("bucket[\(container.bucketId)]")
         }
 
-        let isUserInContainerGroup = containerResolver.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+        let isUserInContainerGroup = try containerResolver.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
         if isUserInContainerGroup {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {
