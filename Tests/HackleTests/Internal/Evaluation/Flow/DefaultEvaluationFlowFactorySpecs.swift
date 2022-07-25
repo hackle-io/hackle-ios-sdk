@@ -19,6 +19,8 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
                 let flow = actual as! DefaultEvaluationFlow
                 flow
                     .isDecisionWith(OverrideEvaluator.self)!
+                    .isDecisionWith(IdentifierEvaluator.self)!
+                    .isDecisionWith(ContainerEvaluator.self)!
                     .isDecisionWith(ExperimentTargetEvaluator.self)!
                     .isDecisionWith(DraftExperimentEvaluator.self)!
                     .isDecisionWith(PausedExperimentEvaluator.self)!
@@ -39,6 +41,7 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
                     .isDecisionWith(PausedExperimentEvaluator.self)!
                     .isDecisionWith(CompletedExperimentEvaluator.self)!
                     .isDecisionWith(OverrideEvaluator.self)!
+                    .isDecisionWith(IdentifierEvaluator.self)!
                     .isDecisionWith(TargetRuleEvaluator.self)!
                     .isDecisionWith(DefaultRuleEvaluator.self)!
                     .isEnd()

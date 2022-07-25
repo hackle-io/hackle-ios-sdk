@@ -229,3 +229,55 @@ class DefaultRuleEvaluator: FlowEvaluator {
         return Evaluation.of(variation: variation, reason: DecisionReason.DEFAULT_RULE)
     }
 }
+
+class ContainerEvaluator: FlowEvaluator {
+
+    private let containerResolver: ContainerResolver
+
+    init(containerResolver: ContainerResolver) {
+        self.containerResolver = containerResolver
+    }
+
+    func evaluate(
+        workspace: Workspace,
+        experiment: Experiment,
+        user: HackleUser,
+        defaultVariationKey: Variation.Key,
+        nextFlow: EvaluationFlow
+    ) throws -> Evaluation {
+        guard let containerId = experiment.containerId else {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        }
+
+        guard let container = workspace.getContainerOrNil(containerId: containerId) else {
+            throw HackleError.error("container[\(containerId)]")
+        }
+
+        guard let bucket = workspace.getBucketOrNil(bucketId: container.bucketId) else {
+            throw HackleError.error("bucket[\(container.bucketId)]")
+        }
+
+        let isUserInContainerGroup = try containerResolver.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+        if isUserInContainerGroup {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        } else {
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
+        }
+    }
+}
+
+class IdentifierEvaluator: FlowEvaluator {
+    func evaluate(
+        workspace: Workspace,
+        experiment: Experiment,
+        user: HackleUser,
+        defaultVariationKey: Variation.Key,
+        nextFlow: EvaluationFlow
+    ) throws -> Evaluation {
+        if user.identifiers[experiment.identifierType] != nil {
+            return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        } else {
+            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
+        }
+    }
+}

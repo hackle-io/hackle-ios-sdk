@@ -133,10 +133,15 @@
 		EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6C26EDDB7D007230D9 /* Decision.swift */; };
 		EEA8BD7126EDF02D007230D9 /* MatchValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7026EDF02D007230D9 /* MatchValue.swift */; };
 		EEA8BD7526EDF77C007230D9 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7426EDF77C007230D9 /* Enums.swift */; };
+		EED6B19F288D670F00F82D74 /* MockContainerResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */; };
 		EED91E792766F85C001CF5B3 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E782766F85C001CF5B3 /* Device.swift */; };
 		EED91E7B27670066001CF5B3 /* HackleUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E7A27670066001CF5B3 /* HackleUser.swift */; };
 		EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */; };
 		EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */; };
+		EEF2E7342888E9E5007B480A /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E7332888E9E5007B480A /* Container.swift */; };
+		EEF2E7362889311D007B480A /* ContainerGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E7352889311D007B480A /* ContainerGroup.swift */; };
+		EEF2E739288932BD007B480A /* ContainerResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E738288932BD007B480A /* ContainerResolver.swift */; };
+		EEF2E73C28895A0E007B480A /* DefaultContainerResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E73B28895A0E007B480A /* DefaultContainerResolverSpecs.swift */; };
 		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
 /* End PBXBuildFile section */
 
@@ -274,10 +279,15 @@
 		EEA8BD6C26EDDB7D007230D9 /* Decision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decision.swift; sourceTree = "<group>"; };
 		EEA8BD7026EDF02D007230D9 /* MatchValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchValue.swift; sourceTree = "<group>"; };
 		EEA8BD7426EDF77C007230D9 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContainerResolver.swift; sourceTree = "<group>"; };
 		EED91E782766F85C001CF5B3 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		EED91E7A27670066001CF5B3 /* HackleUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUser.swift; sourceTree = "<group>"; };
 		EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleInternalAppSpecs.swift; sourceTree = "<group>"; };
 		EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluator.swift; sourceTree = "<group>"; };
+		EEF2E7332888E9E5007B480A /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
+		EEF2E7352889311D007B480A /* ContainerGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerGroup.swift; sourceTree = "<group>"; };
+		EEF2E738288932BD007B480A /* ContainerResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerResolver.swift; sourceTree = "<group>"; };
+		EEF2E73B28895A0E007B480A /* DefaultContainerResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultContainerResolverSpecs.swift; sourceTree = "<group>"; };
 		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -389,6 +399,8 @@
 			children = (
 				EEA8BD5626ECFFD1007230D9 /* Action.swift */,
 				38AF40BD3958D0CA8D2D20AE /* Bucket.swift */,
+				EEF2E7332888E9E5007B480A /* Container.swift */,
+				EEF2E7352889311D007B480A /* ContainerGroup.swift */,
 				EED91E782766F85C001CF5B3 /* Device.swift */,
 				38AF44CAEB3AF13D32574032 /* EventType.swift */,
 				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
@@ -477,6 +489,7 @@
 			children = (
 				EE641F9326F09B240037AE25 /* Action */,
 				EE641F9426F09B2A0037AE25 /* Bucket */,
+				EEF2E73A288959FC007B480A /* Container */,
 				EE641F9526F09B300037AE25 /* Flow */,
 				EE641F9626F09B330037AE25 /* Match */,
 				EE641F9726F09B380037AE25 /* Target */,
@@ -568,6 +581,7 @@
 			children = (
 				EEA8BD1026ECFCF2007230D9 /* Action */,
 				EEA8BD1126ECFCF8007230D9 /* Bucket */,
+				EEF2E737288932A3007B480A /* Container */,
 				EEA8BD1226ECFD0A007230D9 /* Flow */,
 				EEA8BD1326ECFD0F007230D9 /* Match */,
 				EEA8BD1426ECFD1A007230D9 /* Target */,
@@ -645,6 +659,23 @@
 				EE0560DF26F21F970051B624 /* HackleError.swift */,
 			);
 			path = Internal;
+			sourceTree = "<group>";
+		};
+		EEF2E737288932A3007B480A /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				EEF2E738288932BD007B480A /* ContainerResolver.swift */,
+			);
+			path = Container;
+			sourceTree = "<group>";
+		};
+		EEF2E73A288959FC007B480A /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				EEF2E73B28895A0E007B480A /* DefaultContainerResolverSpecs.swift */,
+				EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */,
+			);
+			path = Container;
 			sourceTree = "<group>";
 		};
 		OBJ_10 /* Tests */ = {
@@ -835,9 +866,11 @@
 				38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */,
 				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
 				EE51540A27A3C64900B1F205 /* Segment.swift in Sources */,
+				EEF2E7342888E9E5007B480A /* Container.swift in Sources */,
 				EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */,
 				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
 				EE5EF54B283D0EE000407084 /* PropertiesBuilder.swift in Sources */,
+				EEF2E7362889311D007B480A /* ContainerGroup.swift in Sources */,
 				38AF4458DAAD768D2C214872 /* HttpClient.swift in Sources */,
 				38AF467F543D2F84774AE1DB /* HttpRequest.swift in Sources */,
 				38AF465143B0766817769A64 /* HttpResponse.swift in Sources */,
@@ -861,6 +894,7 @@
 				EEA8BD5B26ECFFD7007230D9 /* Target.swift in Sources */,
 				38AF42300656FB911C519998 /* Hackle.swift in Sources */,
 				EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */,
+				EEF2E739288932BD007B480A /* ContainerResolver.swift in Sources */,
 				EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */,
 				EED91E792766F85C001CF5B3 /* Device.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
@@ -889,6 +923,7 @@
 				EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */,
 				EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */,
 				EE641FBD26F09BE90037AE25 /* ValueMatcherSpecs.swift in Sources */,
+				EEF2E73C28895A0E007B480A /* DefaultContainerResolverSpecs.swift in Sources */,
 				EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */,
 				EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */,
 				EE641FC926F09C040037AE25 /* UserConditionMatcherSpecs.swift in Sources */,
@@ -916,6 +951,7 @@
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
 				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,
+				EED6B19F288D670F00F82D74 /* MockContainerResolver.swift in Sources */,
 				EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */,
 				EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */,
 				EE1081D227A3F5CC00E76BB2 /* MockUserValueResolver.swift in Sources */,
