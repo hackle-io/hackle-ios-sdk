@@ -408,7 +408,149 @@ class FlowEvaluatorSpecs: QuickSpec {
                 expect(actual).to(equal(Evaluation(variationId: 513, variationKey: "H", reason: DecisionReason.DEFAULT_RULE)))
             }
         }
+
+        describe("ContainerEvaluator") {
+
+            var containerResolver: MockContainerResolver!
+            var sut: ContainerEvaluator!
+
+            beforeEach {
+                containerResolver = MockContainerResolver()
+                sut = ContainerEvaluator(containerResolver: containerResolver)
+            }
+
+            it("Experiment 가 Container 를 가지고 있지 않는 경우 nextFlow 로 평가한다") {
+                // given
+                let experiment = MockExperiment()
+
+                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                let nextFlow = MockEvaluationFlow()
+                every(nextFlow.evaluateMock).returns(evaluation)
+
+                // when
+                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: nextFlow)
+
+                // then
+                expect(actual).to(equal(evaluation))
+            }
+
+
+            it("containerId 로 Container 를 찾을 수 없으면 예외 발생") {
+                // given
+                let experiment = MockExperiment(containerId: 42)
+
+                let workspace = MockWorkspace()
+                every(workspace.getContainerOrNilMock).returns(nil)
+
+                // when
+                let actual = expect(try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow()))
+
+                // then
+                actual.to(throwError(HackleError.error("container[42]")))
+            }
+
+            it("Container 의 Bucket 를 찾을 수 없으면 예외 발생") {
+                // given
+                let experiment = MockExperiment(containerId: 42)
+
+                let workspace = MockWorkspace()
+                let container = MockContainer(bucketId: 320)
+                every(workspace.getContainerOrNilMock).returns(container)
+                every(workspace.getBucketOrNilMock).returns(nil)
+
+                // when
+                let actual = expect(try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow()))
+
+                // then
+                actual.to(throwError(HackleError.error("bucket[320]")))
+            }
+
+            it("ContainerGroup 에 속해있으면 nextFlow 로 평가한다") {
+                // given
+                let experiment = MockExperiment(containerId: 42)
+
+                let workspace = MockWorkspace()
+                let container = MockContainer(bucketId: 320)
+                every(workspace.getContainerOrNilMock).returns(container)
+
+                let bucket = MockBucket()
+                every(workspace.getBucketOrNilMock).returns(bucket)
+
+                every(containerResolver.isUserInContainerGroupMock).returns(true)
+
+                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                let nextFlow = MockEvaluationFlow()
+                every(nextFlow.evaluateMock).returns(evaluation)
+
+                // when
+                let actual = try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: nextFlow)
+
+                // then
+                expect(actual).to(equal(evaluation))
+            }
+
+            it("ContainerGroup 에 속해있지 않으면 NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT") {
+                // given
+                let experiment = MockExperiment(type: .abTest, containerId: 22)
+                let variation = MockVariation(id: 42, key: "B", isDropped: false)
+                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+
+                let workspace = MockWorkspace()
+                let container = MockContainer(bucketId: 320)
+                every(workspace.getContainerOrNilMock).returns(container)
+
+                let bucket = MockBucket()
+                every(workspace.getBucketOrNilMock).returns(bucket)
+
+                every(containerResolver.isUserInContainerGroupMock).returns(false)
+
+                let evaluation = Evaluation(variationId: 999, variationKey: "A", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                let nextFlow = MockEvaluationFlow()
+                every(nextFlow.evaluateMock).returns(evaluation)
+
+                // when
+                let actual = try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "B", nextFlow: nextFlow)
+
+                // then
+                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "B", reason: "NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT")))
+            }
+        }
+
+        describe("IdentifierEvaluator") {
+
+            var sut: IdentifierEvaluator!
+
+            beforeEach {
+                sut = IdentifierEvaluator()
+            }
+
+            it("identifierType 에 해당하는 identifier 가 있으면 nextFlow") {
+                // given
+                let experiment = MockExperiment()
+                let evaluation = Evaluation(variationId: 999, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                let nextFlow = MockEvaluationFlow()
+                every(nextFlow.evaluateMock).returns(evaluation)
+
+                // when
+                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: nextFlow)
+
+                // then
+                expect(actual).to(equal(evaluation))
+            }
+
+            it("identifierType 에 해당하는 identifier 가 없으면 IDENTIFIER_NOT_FOUND") {
+                // given
+                let experiment = MockExperiment(identifierType: "custom_id")
+                let variation = MockVariation(id: 42, key: "B", isDropped: false)
+                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+
+
+                // when
+                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: MockEvaluationFlow())
+
+                // then
+                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "B", reason: "IDENTIFIER_NOT_FOUND")))
+            }
+        }
     }
-
-
 }
