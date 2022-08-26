@@ -25,7 +25,7 @@ class DefaultExposureEventDedupDeterminer: ExposureEventDedupDeterminer {
 
     func isDedupTarget(event: UserEvent) -> Bool {
 
-        if dedupInterval == -1 {
+        if dedupInterval == HackleConfig.NO_DEDUP {
             return false
         }
 

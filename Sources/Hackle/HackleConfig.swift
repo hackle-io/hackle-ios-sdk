@@ -20,6 +20,8 @@ public class HackleConfig: NSObject {
         super.init()
     }
 
+    static let NO_DEDUP: TimeInterval = -1
+
     @objc public static let DEFAULT: HackleConfig = builder().build()
 
     @objc public static func builder() -> HackleConfigBuilder {
@@ -31,7 +33,7 @@ public class HackleConfigBuilder: NSObject {
 
     var sdkUrl: URL = URL(string: "https://sdk.hackle.io")!
     var eventUrl: URL = URL(string: "https://event.hackle.io")!
-    var exposureEventDedupInterval: TimeInterval = -1
+    var exposureEventDedupInterval: TimeInterval = HackleConfig.NO_DEDUP
 
     @objc public func sdkUrl(_ sdkUrl: URL) -> HackleConfigBuilder {
         self.sdkUrl = sdkUrl
@@ -43,17 +45,17 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
-    @objc public func exposureEventDedupInterval(_ exposureEventDedupInterval: TimeInterval) -> HackleConfigBuilder {
+    @objc public func exposureEventDedupIntervalSeconds(_ exposureEventDedupInterval: TimeInterval) -> HackleConfigBuilder {
         self.exposureEventDedupInterval = exposureEventDedupInterval
         return self
     }
 
     @objc public func build() -> HackleConfig {
 
-        if (exposureEventDedupInterval != -1) {
+        if (exposureEventDedupInterval != HackleConfig.NO_DEDUP) {
             if (exposureEventDedupInterval < 1 || exposureEventDedupInterval > 3600) {
                 Log.info("Exposure event dedup interval is outside allowed range[1s..3600s]. Setting to default value[no dedup].")
-                self.exposureEventDedupInterval = -1
+                self.exposureEventDedupInterval = HackleConfig.NO_DEDUP
             }
         }
 
