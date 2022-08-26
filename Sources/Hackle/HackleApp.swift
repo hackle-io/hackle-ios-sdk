@@ -138,19 +138,19 @@ extension HackleApp {
         internalApp.initialize(completion: completion)
     }
 
-    static func create(sdkKey: String) -> HackleApp {
+    static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
 
         let sdk = Sdk(key: sdkKey, name: "ios-sdk", version: SdkVersion.CURRENT)
         let httpClient = DefaultHttpClient(sdk: sdk)
 
         let httpWorkspaceFetcher = DefaultHttpWorkspaceFetcher(
-            sdkBaseUrl: URL(string: "https://sdk.hackle.io")!,
+            sdkBaseUrl: config.sdkUrl,
             httpClient: httpClient
         )
         let workspaceFetcher = CachedWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher)
 
         let eventDispatcher = DefaultUserEventDispatcher(
-            eventBaseUrl: URL(string: "https://event.hackle.io")!,
+            eventBaseUrl: config.eventUrl,
             httpClient: httpClient
         )
         let eventProcessor = DefaultUserEventProcessor(
@@ -158,7 +158,8 @@ extension HackleApp {
             eventDispatcher: eventDispatcher,
             eventDispatchSize: 10,
             flushScheduler: DispatchSourceTimerScheduler(),
-            flushInterval: 60
+            flushInterval: 60,
+            eventDedupDeterminer: DefaultExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval)
         )
 
         DefaultAppNotificationObserver.instance.addListener(listener: eventProcessor)

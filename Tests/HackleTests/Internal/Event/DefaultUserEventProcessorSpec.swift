@@ -18,18 +18,22 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var maxEventDispatchSize: Int = 20
         var flushScheduler: MockScheduler!
         var flushInterval: TimeInterval = 60.0
+        var eventDedupDeterminer: MockExposureEventDedupDeterminer!
         var sut: DefaultUserEventProcessor!
 
         beforeEach {
             eventQueue = ConcurrentArray()
             eventDispatcher = MockUserEventDispatcher()
             flushScheduler = MockScheduler()
+            eventDedupDeterminer = MockExposureEventDedupDeterminer()
+            every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             sut = DefaultUserEventProcessor(
                 eventQueue: eventQueue,
                 eventDispatcher: eventDispatcher,
                 eventDispatchSize: maxEventDispatchSize,
                 flushScheduler: flushScheduler,
-                flushInterval: flushInterval
+                flushInterval: flushInterval,
+                eventDedupDeterminer: eventDedupDeterminer
             )
         }
 
@@ -197,7 +201,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher: eventDispatcher,
                     eventDispatchSize: maxEventDispatchSize,
                     flushScheduler: flushScheduler,
-                    flushInterval: flushInterval)
+                    flushInterval: flushInterval,
+                    eventDedupDeterminer: eventDedupDeterminer
+                )
             }
 
             context("didEnterBackground 노티인 경우") {
