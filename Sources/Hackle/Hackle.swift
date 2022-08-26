@@ -14,6 +14,7 @@ import Foundation
     ///
     /// - Parameters:
     ///   - sdkKey: The Sdk key of your Hackle environment.
+    ///   - config: The HackleConfig that contains the desired configuration.
     @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT) {
         lock.write {
             if instance == nil {
@@ -32,6 +33,7 @@ import Foundation
     ///
     /// - Parameters:
     ///   - sdkKey: The Sdk key of your Hackle environment.
+    ///   - config: The HackleConfig that contains the desired configuration.
     ///   - completion: Callback that is called when Hackle App is ready to use.
     @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
         lock.write {
