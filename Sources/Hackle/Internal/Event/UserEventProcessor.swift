@@ -19,6 +19,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
     private let eventDispatchSize: Int
     private let flushScheduler: Scheduler
     private let flushInterval: TimeInterval
+    private let eventDedupDeterminer: ExposureEventDedupDeterminer
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -27,17 +28,24 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         eventDispatcher: UserEventDispatcher,
         eventDispatchSize: Int,
         flushScheduler: Scheduler,
-        flushInterval: TimeInterval
+        flushInterval: TimeInterval,
+        eventDedupDeterminer: ExposureEventDedupDeterminer
     ) {
         self.eventQueue = eventQueue
         self.eventDispatcher = eventDispatcher
         self.eventDispatchSize = eventDispatchSize
         self.flushScheduler = flushScheduler
         self.flushInterval = flushInterval
+        self.eventDedupDeterminer = eventDedupDeterminer
         self.lock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
     }
 
     func process(event: UserEvent) {
+
+        if eventDedupDeterminer.isDedupTarget(event: event) {
+            return
+        }
+
         eventQueue.add(event)
 
         if eventQueue.size >= eventDispatchSize {
