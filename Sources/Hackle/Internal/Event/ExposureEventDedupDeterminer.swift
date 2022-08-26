@@ -43,7 +43,7 @@ class DefaultExposureEventDedupDeterminer: ExposureEventDedupDeterminer {
             let key = key(exposureEvent: exposureEvent)
             let now = Date().timeIntervalSince1970
 
-            if let firstExposureTime = cache[key], firstExposureTime >= now - dedupInterval {
+            if let firstExposureTime = cache[key], now - firstExposureTime <= dedupInterval {
                 return true
             }
 
