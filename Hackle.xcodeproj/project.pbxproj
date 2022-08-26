@@ -86,6 +86,10 @@
 		EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */; };
 		EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */; };
 		EE2A71E22701F880007691D7 /* VersionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A71E12701F880007691D7 /* VersionSpecs.swift */; };
+		EE34413A28A4912400630557 /* ExposureEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34413928A4912400630557 /* ExposureEventDedupDeterminer.swift */; };
+		EE34413C28A5EA0A00630557 /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34413B28A5EA0A00630557 /* HackleConfig.swift */; };
+		EE3EE82F28B770040078575F /* MockExposureEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */; };
+		EE3EE83128B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */; };
 		EE51540A27A3C64900B1F205 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540927A3C64900B1F205 /* Segment.swift */; };
 		EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540B27A3C94D00B1F205 /* TargetingType.swift */; };
 		EE51540E27A3D1CD00B1F205 /* OverrideResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */; };
@@ -109,6 +113,7 @@
 		EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FDC26F09D760037AE25 /* MockActionResolver.swift */; };
 		EE8A7428284345C3004C923D /* HackleUserResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A7427284345C3004C923D /* HackleUserResolver.swift */; };
 		EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */; };
+		EE90396628B7876B00846643 /* HackleConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE90396528B7876B00846643 /* HackleConfigSpec.swift */; };
 		EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
 		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
 		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
@@ -235,6 +240,10 @@
 		EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSegmentMatcher.swift; sourceTree = "<group>"; };
 		EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultOverrideResolverSpecs.swift; sourceTree = "<group>"; };
 		EE2A71E12701F880007691D7 /* VersionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionSpecs.swift; sourceTree = "<group>"; };
+		EE34413928A4912400630557 /* ExposureEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExposureEventDedupDeterminer.swift; sourceTree = "<group>"; };
+		EE34413B28A5EA0A00630557 /* HackleConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
+		EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExposureEventDedupDeterminer.swift; sourceTree = "<group>"; };
+		EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExposureEventDedupDeterminerSpec.swift; sourceTree = "<group>"; };
 		EE51540927A3C64900B1F205 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
 		EE51540B27A3C94D00B1F205 /* TargetingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetingType.swift; sourceTree = "<group>"; };
 		EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideResolver.swift; sourceTree = "<group>"; };
@@ -258,6 +267,7 @@
 		EE641FDC26F09D760037AE25 /* MockActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockActionResolver.swift; sourceTree = "<group>"; };
 		EE8A7427284345C3004C923D /* HackleUserResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserResolver.swift; sourceTree = "<group>"; };
 		EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleUserResolverSpecs.swift; sourceTree = "<group>"; };
+		EE90396528B7876B00846643 /* HackleConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleConfigSpec.swift; sourceTree = "<group>"; };
 		EEA8BD1526ECFD4C007230D9 /* Evaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluation.swift; sourceTree = "<group>"; };
 		EEA8BD1B26ECFD52007230D9 /* Evaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluator.swift; sourceTree = "<group>"; };
 		EEA8BD1F26ECFD6B007230D9 /* ActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionResolver.swift; sourceTree = "<group>"; };
@@ -354,6 +364,7 @@
 				38AF4496F69287A28D0FD3D9 /* UserEvent.swift */,
 				38AF4572057A4BC08B7E80F2 /* UserEventProcessor.swift */,
 				38AF49713A3D82F26EADF6A5 /* UserEventDispatcher.swift */,
+				EE34413928A4912400630557 /* ExposureEventDedupDeterminer.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -417,8 +428,10 @@
 		38AF49D7C0561BCCAA8FDD68 /* Event */ = {
 			isa = PBXGroup;
 			children = (
+				EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */,
 				38AF459B5DDE013B6E19F358 /* DefaultUserEventProcessorSpec.swift */,
 				38AF4181FACBBCC328D68E0E /* DefaultUserEventDispatcherSepc.swift */,
+				EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -693,6 +706,7 @@
 				EE641F9126F09AE80037AE25 /* Internal */,
 				38AF434C1C785B1996086B0C /* Mock */,
 				38AF447F3F5FAA526FACA4F7 /* HackleAppSpec.swift */,
+				EE90396528B7876B00846643 /* HackleConfigSpec.swift */,
 			);
 			name = HackleTests;
 			path = Tests/HackleTests;
@@ -729,8 +743,9 @@
 			children = (
 				EEA8BD4526ECFDEF007230D9 /* Internal */,
 				38AF45B605A39AEE2B1355D1 /* Common */,
-				38AF44225C76ECE6793796B9 /* HackleApp.swift */,
 				38AF43F1A58DBA768C4FAC06 /* Hackle.swift */,
+				38AF44225C76ECE6793796B9 /* HackleApp.swift */,
+				EE34413B28A5EA0A00630557 /* HackleConfig.swift */,
 			);
 			name = Hackle;
 			path = Sources/Hackle;
@@ -848,6 +863,7 @@
 				38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */,
 				38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */,
 				38AF47C051B797B546BB3E58 /* EventType.swift in Sources */,
+				EE34413C28A5EA0A00630557 /* HackleConfig.swift in Sources */,
 				EEA8BD1626ECFD4C007230D9 /* Evaluation.swift in Sources */,
 				EEA8BD4F26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift in Sources */,
 				38AF40A7FBB6B467DC55987F /* Murmur3.swift in Sources */,
@@ -885,6 +901,7 @@
 				EEA8BD5326ECFFBE007230D9 /* TargetRuleDeterminer.swift in Sources */,
 				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
 				EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */,
+				EE34413A28A4912400630557 /* ExposureEventDedupDeterminer.swift in Sources */,
 				38AF4110A19264FE458293D2 /* Json.swift in Sources */,
 				EE5EF54D283D0EE900407084 /* IdentifiersBuilder.swift in Sources */,
 				38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */,
@@ -948,6 +965,7 @@
 				EE1081D627A3F6A600E76BB2 /* MockOverrideResolver.swift in Sources */,
 				EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */,
 				EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */,
+				EE3EE83128B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */,
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
 				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,
@@ -955,8 +973,10 @@
 				EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */,
 				EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */,
 				EE1081D227A3F5CC00E76BB2 /* MockUserValueResolver.swift in Sources */,
+				EE90396628B7876B00846643 /* HackleConfigSpec.swift in Sources */,
 				EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */,
 				EE0560D026F1F9420051B624 /* MockConditionMatcherFactory.swift in Sources */,
+				EE3EE82F28B770040078575F /* MockExposureEventDedupDeterminer.swift in Sources */,
 				EE1081D827A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift in Sources */,
 				EE641FB526F09BD20037AE25 /* FlowEvaluatorSpecs.swift in Sources */,
 				38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */,

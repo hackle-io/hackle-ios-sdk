@@ -14,10 +14,10 @@ import Foundation
     ///
     /// - Parameters:
     ///   - sdkKey: The Sdk key of your Hackle environment.
-    @objc public static func initialize(sdkKey: String) {
+    @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT) {
         lock.write {
             if instance == nil {
-                let app = HackleApp.create(sdkKey: sdkKey)
+                let app = HackleApp.create(sdkKey: sdkKey, config: config)
                 app.initialize {
                     readyToUse(completion: {})
                 }
@@ -33,12 +33,12 @@ import Foundation
     /// - Parameters:
     ///   - sdkKey: The Sdk key of your Hackle environment.
     ///   - completion: Callback that is called when Hackle App is ready to use.
-    @objc public static func initialize(sdkKey: String, completion: @escaping () -> ()) {
+    @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
         lock.write {
             if instance != nil {
                 readyToUse(completion: completion)
             } else {
-                let app = HackleApp.create(sdkKey: sdkKey)
+                let app = HackleApp.create(sdkKey: sdkKey, config: config)
                 app.initialize {
                     readyToUse(completion: completion)
                 }
