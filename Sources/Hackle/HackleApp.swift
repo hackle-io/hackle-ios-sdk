@@ -59,7 +59,7 @@ import Foundation
         }
     }
 
-    @objc public func allExperimentsDecision(user: User) -> [Int: Decision] {
+    @objc public func allVariationDetails(user: User) -> [Int: Decision] {
         do {
             guard let hackleUser = userResolver.resolveOrNil(user: user) else {
                 return [:]
