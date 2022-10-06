@@ -6,6 +6,8 @@ protocol HackleInternalApp {
 
     func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision
 
+    func experiments(user: HackleUser) throws -> [Int: Decision]
+
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision
 
     func track(event: Event, user: HackleUser)
@@ -53,6 +55,19 @@ class DefaultHackleInternalApp: HackleInternalApp {
         eventProcessor.process(event: UserEvents.exposure(experiment: experiment, user: user, evaluation: evaluation))
 
         return Decision.of(variation: evaluation.variationKey, reason: evaluation.reason)
+    }
+
+    func experiments(user: HackleUser) throws -> [Int: Decision] {
+        var decisions = [Int: Decision]()
+        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+            return decisions
+        }
+        for experiment in workspace.experiments {
+            let evaluation = try evaluator.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "A")
+            let decision = Decision.of(variation: evaluation.variationKey, reason: evaluation.reason)
+            decisions[Int(experiment.key)] = decision
+        }
+        return decisions
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {

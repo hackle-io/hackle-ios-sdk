@@ -5,6 +5,11 @@
 import Foundation
 
 protocol Workspace {
+
+    var experiments: [Experiment] { get }
+
+    var featureFlags: [Experiment] { get }
+
     func getExperimentOrNil(experimentKey: Experiment.Key) -> Experiment?
 
     func getFeatureFlagOrNil(featureKey: Experiment.Key) -> Experiment?
@@ -20,17 +25,19 @@ protocol Workspace {
 
 class WorkspaceEntity: Workspace {
 
-    private let experiments: [Experiment.Key: Experiment]
-    private let featureFlags: [Experiment.Key: Experiment]
+    let experiments: [Experiment]
+    let featureFlags: [Experiment]
     private let buckets: [Bucket.Id: Bucket]
     private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
 
+    private let _experiments: [Experiment.Key: Experiment]
+    private let _featureFlags: [Experiment.Key: Experiment]
 
     init(
-        experiments: [Experiment.Key: Experiment],
-        featureFlags: [Experiment.Key: Experiment],
+        experiments: [Experiment],
+        featureFlags: [Experiment],
         buckets: [Bucket.Id: Bucket],
         eventTypes: [EventType.Key: EventType],
         segments: [Segment.Key: Segment],
@@ -42,14 +49,21 @@ class WorkspaceEntity: Workspace {
         self.eventTypes = eventTypes
         self.segments = segments
         self.containers = containers
+
+        self._experiments = experiments.associateBy { it in
+            it.key
+        }
+        self._featureFlags = featureFlags.associateBy { it in
+            it.key
+        }
     }
 
     func getExperimentOrNil(experimentKey: Experiment.Key) -> Experiment? {
-        experiments[experimentKey]
+        _experiments[experimentKey]
     }
 
     func getFeatureFlagOrNil(featureKey: Experiment.Key) -> Experiment? {
-        featureFlags[featureKey]
+        _featureFlags[featureKey]
     }
 
     func getBucketOrNil(bucketId: Bucket.Id) -> Bucket? {
@@ -78,16 +92,10 @@ class WorkspaceEntity: Workspace {
             .compactMap { it in
                 it.toExperimentOrNil(type: .abTest)
             }
-            .associateBy { it in
-                it.key
-            }
 
         let featureFlags = dto.featureFlags
             .compactMap { it in
                 it.toExperimentOrNil(type: .featureFlag)
-            }
-            .associateBy { it in
-                it.key
             }
 
         let eventTypes: [EventType.Key: EventType] = dto.events.associate { it in
