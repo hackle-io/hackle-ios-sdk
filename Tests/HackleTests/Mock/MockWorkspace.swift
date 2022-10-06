@@ -7,6 +7,14 @@ import Mockery
 @testable import Hackle
 
 class MockWorkspace: Mock, Workspace {
+    let experiments: [Experiment]
+    let featureFlags: [Experiment]
+
+    init(experiments: [Experiment] = [], featureFlags: [Experiment] = []) {
+        self.experiments = experiments
+        self.featureFlags = featureFlags
+        super.init()
+    }
 
     lazy var getExperimentOrNilMock = MockFunction(self, getExperimentOrNil)
 

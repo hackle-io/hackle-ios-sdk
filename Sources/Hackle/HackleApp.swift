@@ -59,6 +59,18 @@ import Foundation
         }
     }
 
+    @objc public func allExperimentsDecision(user: User) -> [Int: Decision] {
+        do {
+            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
+                return [:]
+            }
+            return try internalApp.experiments(user: hackleUser)
+        } catch let error {
+            Log.error("Unexpected error while deciding variations for experiments: \(String(describing: error))")
+            return [:]
+        }
+    }
+
     @objc public func isFeatureOn(featureKey: Int) -> Bool {
         featureFlagDetail(featureKey: featureKey, userId: deviceId).isOn
     }
