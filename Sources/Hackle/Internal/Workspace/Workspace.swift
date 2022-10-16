@@ -203,7 +203,7 @@ class TargetDto: Codable {
         var type: String
         var matchOperator: String
         var valueType: String
-        var values: [MatchValue]
+        var values: [HackleValue]
 
         enum CodingKeys: String, CodingKey {
             case type
@@ -217,7 +217,7 @@ class TargetDto: Codable {
             type = try container.decode(String.self, forKey: .type)
             matchOperator = try container.decode(String.self, forKey: .matchOperator)
             valueType = try container.decode(String.self, forKey: .valueType)
-            values = try container.decode([MatchValue].self, forKey: .values)
+            values = try container.decode([HackleValue].self, forKey: .values)
         }
     }
 }

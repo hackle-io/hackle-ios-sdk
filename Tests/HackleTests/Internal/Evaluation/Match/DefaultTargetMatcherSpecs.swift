@@ -72,6 +72,6 @@ class DefaultTargetMatcherSpecs: QuickSpec {
     }
 
     private func condition() -> Target.Condition {
-        Target.Condition(key: Target.Key(type: .userProperty, name: "age"), match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [MatchValue(value: 1)]))
+        Target.Condition(key: Target.Key(type: .userProperty, name: "age"), match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 1)]))
     }
 }

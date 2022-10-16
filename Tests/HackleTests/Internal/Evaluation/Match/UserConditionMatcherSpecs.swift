@@ -22,7 +22,7 @@ class UserConditionMatcherSpecs: QuickSpec {
             every(userValueResolver.resolveOrNilMock).returns(nil)
             let condition = Target.Condition(
                 key: Target.Key(type: .hackleProperty, name: "osName"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "iOS")])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "iOS")])
             )
 
             // when
@@ -36,7 +36,7 @@ class UserConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .hackleProperty, name: "osName"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "iOS")])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "iOS")])
             )
 
             let user = HackleUser.of(user: Hackle.user(id: "test_user_id"), hackleProperties: ["osName": "iOS"])

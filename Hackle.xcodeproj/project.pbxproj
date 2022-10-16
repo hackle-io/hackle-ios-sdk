@@ -136,7 +136,7 @@
 		EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */; };
 		EEA8BD6326ECFFF9007230D9 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6226ECFFF9007230D9 /* Objects.swift */; };
 		EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6C26EDDB7D007230D9 /* Decision.swift */; };
-		EEA8BD7126EDF02D007230D9 /* MatchValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7026EDF02D007230D9 /* MatchValue.swift */; };
+		EEA8BD7126EDF02D007230D9 /* HackleValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7026EDF02D007230D9 /* HackleValue.swift */; };
 		EEA8BD7526EDF77C007230D9 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7426EDF77C007230D9 /* Enums.swift */; };
 		EED6B19F288D670F00F82D74 /* MockContainerResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */; };
 		EED91E792766F85C001CF5B3 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E782766F85C001CF5B3 /* Device.swift */; };
@@ -287,7 +287,7 @@
 		EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRule.swift; sourceTree = "<group>"; };
 		EEA8BD6226ECFFF9007230D9 /* Objects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		EEA8BD6C26EDDB7D007230D9 /* Decision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decision.swift; sourceTree = "<group>"; };
-		EEA8BD7026EDF02D007230D9 /* MatchValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchValue.swift; sourceTree = "<group>"; };
+		EEA8BD7026EDF02D007230D9 /* HackleValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleValue.swift; sourceTree = "<group>"; };
 		EEA8BD7426EDF77C007230D9 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContainerResolver.swift; sourceTree = "<group>"; };
 		EED91E782766F85C001CF5B3 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
@@ -415,6 +415,7 @@
 				EED91E782766F85C001CF5B3 /* Device.swift */,
 				38AF44CAEB3AF13D32574032 /* EventType.swift */,
 				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
+				EEA8BD7026EDF02D007230D9 /* HackleValue.swift */,
 				38AF48C794F4EEED83590BF6 /* Slot.swift */,
 				EEA8BD5A26ECFFD7007230D9 /* Target.swift */,
 				EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */,
@@ -637,7 +638,6 @@
 			children = (
 				EEA8BD3126ECFDA2007230D9 /* ConditionMatcher.swift */,
 				EE08749026F9EB7A0057EF4E /* Version.swift */,
-				EEA8BD7026EDF02D007230D9 /* MatchValue.swift */,
 				EEA8BD3526ECFDA8007230D9 /* OperatorMatcher.swift */,
 				EEA8BD3926ECFDAE007230D9 /* TargetMatcher.swift */,
 				EEA8BD3D26ECFDB5007230D9 /* ValueMatcher.swift */,
@@ -852,7 +852,7 @@
 			files = (
 				EEA8BD3626ECFDA8007230D9 /* OperatorMatcher.swift in Sources */,
 				38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */,
-				EEA8BD7126EDF02D007230D9 /* MatchValue.swift in Sources */,
+				EEA8BD7126EDF02D007230D9 /* HackleValue.swift in Sources */,
 				EEA8BD2E26ECFD9C007230D9 /* FlowEvaluator.swift in Sources */,
 				38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */,
 				38AF4D395BC520AC4F82C16A /* User.swift in Sources */,

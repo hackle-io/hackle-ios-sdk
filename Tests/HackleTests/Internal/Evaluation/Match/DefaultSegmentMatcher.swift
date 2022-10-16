@@ -66,7 +66,7 @@ class DefaultSegmentMatcherSpecs: QuickSpec {
             for targetMatches in targetConditions {
                 var conditions = [Target.Condition]()
                 for conditionMatch in targetMatches {
-                    let condition = Target.Condition(key: Target.Key(type: .userProperty, name: "t"), match: Target.Match(type: .match, matchOperator: .contains, valueType: .string, values: [MatchValue(value: "a")]))
+                    let condition = Target.Condition(key: Target.Key(type: .userProperty, name: "t"), match: Target.Match(type: .match, matchOperator: .contains, valueType: .string, values: [HackleValue(value: "a")]))
                     userConditionMatcher.addResult(condition: condition, isMatches: conditionMatch)
                     conditions.append(condition)
                 }

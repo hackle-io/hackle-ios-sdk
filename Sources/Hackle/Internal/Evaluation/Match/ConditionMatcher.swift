@@ -63,7 +63,7 @@ class SegmentConditionMatcher: ConditionMatcher {
         return condition.match.type.matches(isMatched)
     }
 
-    private func matches(value: MatchValue, workspace: Workspace, user: HackleUser) throws -> Bool {
+    private func matches(value: HackleValue, workspace: Workspace, user: HackleUser) throws -> Bool {
         guard let segmentKey = value.stringOrNil else {
             throw HackleError.error("SegmentKey[\(value)]")
         }
