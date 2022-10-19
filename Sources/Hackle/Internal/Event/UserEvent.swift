@@ -18,8 +18,17 @@ enum UserEvents {
             experiment: experiment,
             variationId: evaluation.variationId,
             variationKey: evaluation.variationKey,
-            decisionReason: evaluation.reason
+            decisionReason: evaluation.reason,
+            properties: exposureProperties(evaluation: evaluation)
         )
+    }
+
+    private static func exposureProperties(evaluation: Evaluation) -> [String: Any] {
+        guard let config = evaluation.config else {
+            return [:]
+        }
+
+        return ["$parameterConfigurationId": config.id]
     }
 
     static func track(user: HackleUser, eventType: EventType, event: Event) -> UserEvent {
@@ -38,14 +47,16 @@ enum UserEvents {
         let variationId: Variation.Id?
         let variationKey: Variation.Key
         let decisionReason: String
+        let properties: [String: Any]
 
-        init(timestamp: Date, user: HackleUser, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String) {
+        init(timestamp: Date, user: HackleUser, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String, properties: [String: Any]) {
             self.timestamp = timestamp
             self.user = user
             self.experiment = experiment
             self.variationId = variationId
             self.variationKey = variationKey
             self.decisionReason = decisionReason
+            self.properties = properties
         }
     }
 

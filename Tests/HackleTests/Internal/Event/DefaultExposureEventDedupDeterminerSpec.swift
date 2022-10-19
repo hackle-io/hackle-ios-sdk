@@ -46,7 +46,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(),
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 // when
@@ -68,7 +69,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let secondEvent = UserEvents.Exposure(
@@ -77,7 +79,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
@@ -96,7 +99,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let secondEvent = UserEvents.Exposure(
@@ -105,7 +109,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
@@ -124,7 +129,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let secondEvent = UserEvents.Exposure(
@@ -133,7 +139,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
@@ -151,7 +158,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let secondEvent = UserEvents.Exposure(
@@ -160,7 +168,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(id: 2),
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
@@ -178,7 +187,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "B",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let secondEvent = UserEvents.Exposure(
@@ -187,7 +197,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.EXPERIMENT_PAUSED
+                    decisionReason: DecisionReason.EXPERIMENT_PAUSED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
@@ -203,7 +214,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let secondEvent = UserEvents.Exposure(
@@ -212,7 +224,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
@@ -233,7 +246,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event2 = UserEvents.Exposure(
@@ -242,7 +256,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event3 = UserEvents.Exposure(
@@ -251,7 +266,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event4 = UserEvents.Exposure(
@@ -260,7 +276,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: event1)) == false
@@ -283,7 +300,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event2 = UserEvents.Exposure(
@@ -292,7 +310,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event3 = UserEvents.Exposure(
@@ -301,7 +320,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event4 = UserEvents.Exposure(
@@ -310,7 +330,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: event1)) == false
@@ -333,7 +354,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment1,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event2 = UserEvents.Exposure(
@@ -342,7 +364,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment2,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event3 = UserEvents.Exposure(
@@ -351,7 +374,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment1,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 let event4 = UserEvents.Exposure(
@@ -360,7 +384,8 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                     experiment: experiment2,
                     variationId: 14,
                     variationKey: "A",
-                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
                 )
 
                 expect(sut.isDedupTarget(event: event1)) == false

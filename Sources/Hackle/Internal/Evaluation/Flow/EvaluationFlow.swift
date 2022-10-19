@@ -12,7 +12,7 @@ enum DefaultEvaluationFlow: EvaluationFlow {
     func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
         switch self {
         case .end:
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
         case .decision(let flowEvaluator, let nextFlow):
             return try flowEvaluator.evaluate(
                 workspace: workspace,

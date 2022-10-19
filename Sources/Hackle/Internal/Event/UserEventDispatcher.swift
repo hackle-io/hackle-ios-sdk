@@ -109,6 +109,7 @@ extension UserEvents.Exposure {
         dto["variationId"] = variationId
         dto["variationKey"] = variationKey
         dto["decisionReason"] = decisionReason
+        dto["properties"] = properties
 
         return dto
     }
