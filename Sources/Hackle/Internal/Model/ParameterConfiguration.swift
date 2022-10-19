@@ -31,10 +31,7 @@ class ParameterConfigurationEntity: ParameterConfiguration {
     }
 
     func getInt(forKey: String, defaultValue: Int) -> Int {
-        guard let parameterValue = parameters[forKey]?.numberOrNil else {
-            return defaultValue
-        }
-        return Int(parameterValue)
+        parameters[forKey]?.numberOrNil?.toIntOrNil() ?? defaultValue
     }
 
     func getDouble(forKey: String, defaultValue: Double) -> Double {
@@ -43,5 +40,15 @@ class ParameterConfigurationEntity: ParameterConfiguration {
 
     func getBool(forKey: String, defaultValue: Bool) -> Bool {
         parameters[forKey]?.boolOrNil ?? defaultValue
+    }
+}
+
+extension Double {
+    func toIntOrNil() -> Int? {
+        if Double(Int.min) < self && self < Double(Int.max) {
+            return Int(self)
+        } else {
+            return nil
+        }
     }
 }
