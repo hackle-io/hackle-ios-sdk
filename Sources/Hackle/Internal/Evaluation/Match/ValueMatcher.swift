@@ -1,11 +1,11 @@
 import Foundation
 
 protocol ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: MatchValue) -> Bool
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool
 }
 
 class StringMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: MatchValue) -> Bool {
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue: String = Objects.asStringOrNil(userValue),
               let matchValue: String = matchValue.stringOrNil else {
             return false
@@ -15,7 +15,7 @@ class StringMatcher: ValueMatcher {
 }
 
 class NumberMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: MatchValue) -> Bool {
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue: Double = Objects.asDoubleOrNil(userValue),
               let matchValue: Double = matchValue.numberOrNil else {
             return false
@@ -26,7 +26,7 @@ class NumberMatcher: ValueMatcher {
 }
 
 class BoolMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: MatchValue) -> Bool {
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue: Bool = Objects.asBoolOrNil(userValue),
               let matchValue: Bool = matchValue.boolOrNil else {
             return false
@@ -36,7 +36,7 @@ class BoolMatcher: ValueMatcher {
 }
 
 class VersionMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: MatchValue) -> Bool {
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue = Version.tryParse(value: userValue),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false

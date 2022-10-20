@@ -1,36 +1,73 @@
 import Foundation
 
-@objc public final class Decision: NSObject {
+@objc public final class Decision: NSObject, ParameterConfig {
 
     @objc public let variation: String
     @objc public let reason: String
+    @objc public let config: ParameterConfig
 
-    internal init(variation: String, reason: String) {
+    internal init(variation: String, reason: String, config: ParameterConfig) {
         self.variation = variation
         self.reason = reason
+        self.config = config
     }
 
-    internal static func of(variation: String, reason: String) -> Decision {
-        Decision(variation: variation, reason: reason)
+    internal static func of(variation: String, reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> Decision {
+        Decision(variation: variation, reason: reason, config: config)
+    }
+
+    public func getString(forKey: String, defaultValue: String) -> String {
+        config.getString(forKey: forKey, defaultValue: defaultValue)
+    }
+
+    public func getInt(forKey: String, defaultValue: Int) -> Int {
+        config.getInt(forKey: forKey, defaultValue: defaultValue)
+    }
+
+    public func getDouble(forKey: String, defaultValue: Double) -> Double {
+        config.getDouble(forKey: forKey, defaultValue: defaultValue)
+    }
+
+    public func getBool(forKey: String, defaultValue: Bool) -> Bool {
+        config.getBool(forKey: forKey, defaultValue: defaultValue)
     }
 }
 
-@objc public final class FeatureFlagDecision: NSObject {
+@objc public final class FeatureFlagDecision: NSObject, ParameterConfig {
 
     @objc public let isOn: Bool
     @objc public let reason: String
+    @objc public let config: ParameterConfig
 
-    init(isOn: Bool, reason: String) {
+
+    init(isOn: Bool, reason: String, config: ParameterConfig) {
         self.isOn = isOn
         self.reason = reason
+        self.config = config
     }
 
-    static func on(reason: String) -> FeatureFlagDecision {
-        FeatureFlagDecision(isOn: true, reason: reason)
+    static func on(reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> FeatureFlagDecision {
+        FeatureFlagDecision(isOn: true, reason: reason, config: config)
     }
 
-    static func off(reason: String) -> FeatureFlagDecision {
-        FeatureFlagDecision(isOn: false, reason: reason)
+    static func off(reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> FeatureFlagDecision {
+        FeatureFlagDecision(isOn: false, reason: reason, config: config)
+    }
+
+    public func getString(forKey: String, defaultValue: String) -> String {
+        config.getString(forKey: forKey, defaultValue: defaultValue)
+    }
+
+    public func getInt(forKey: String, defaultValue: Int) -> Int {
+        config.getInt(forKey: forKey, defaultValue: defaultValue)
+    }
+
+    public func getDouble(forKey: String, defaultValue: Double) -> Double {
+        config.getDouble(forKey: forKey, defaultValue: defaultValue)
+    }
+
+    public func getBool(forKey: String, defaultValue: Bool) -> Bool {
+        config.getBool(forKey: forKey, defaultValue: defaultValue)
     }
 }
 

@@ -24,7 +24,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 let events = [UserEvent]()
                 sut.dispatch(events: events)
 
-                expect(httpClient.executeMock.wasCalled()).toEventually(equal(true))
+                expect(httpClient.executeMock.wasCalled()).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5))
             }
         }
 
@@ -41,7 +41,8 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 experiment: experiment,
                 variationId: 142,
                 variationKey: "F",
-                decisionReason: DecisionReason.TRAFFIC_ALLOCATED
+                decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                properties: ["$parameterConfigurationId": 333]
             )
 
             let actual = exposure.toDto()
@@ -55,6 +56,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             expect(actual["variationId"] as! Int64) == 142
             expect(actual["variationKey"] as! String) == "F"
             expect(actual["decisionReason"] as! String) == "TRAFFIC_ALLOCATED"
+            expect(actual["properties"] as! [String: Any]).to(haveCount(1))
         }
 
         it("UserEvents.Track.toDto") {

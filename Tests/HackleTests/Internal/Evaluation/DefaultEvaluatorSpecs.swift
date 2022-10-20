@@ -11,7 +11,7 @@ class DefaultEvaluatorSpecs: QuickSpec {
 
             // given
             let evaluationFlow = MockEvaluationFlow()
-            let evaluation = Evaluation(variationId: 42, variationKey: "B", reason: DecisionReason.DEFAULT_RULE)
+            let evaluation = Evaluation(variationId: 42, variationKey: "B", reason: DecisionReason.DEFAULT_RULE, config: nil)
             every(evaluationFlow.evaluateMock).returns(evaluation)
 
             let factory = EvaluationFlowFactoryStub(flow: evaluationFlow)

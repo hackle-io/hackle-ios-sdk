@@ -1,12 +1,12 @@
 import Foundation
 
 
-enum MatchValue: Codable, Equatable {
+enum HackleValue: Codable, Equatable {
 
     case string(String)
     case number(Double)
     case bool(Bool)
-    case other
+    case null
 
     init(value: Any) {
         if let value = Objects.asStringOrNil(value) {
@@ -24,7 +24,7 @@ enum MatchValue: Codable, Equatable {
             return
         }
 
-        self = .other
+        self = .null
     }
 
     init(from decoder: Decoder) throws {
@@ -45,7 +45,7 @@ enum MatchValue: Codable, Equatable {
             return
         }
 
-        self = .other
+        self = .null
     }
 
     func encode(to encoder: Encoder) throws {
@@ -54,7 +54,7 @@ enum MatchValue: Codable, Equatable {
         case .string(let value): try container.encode(value)
         case .number(let value): try container.encode(value)
         case .bool(let value): try container.encode(value)
-        case .other: return
+        case .null: return
         }
     }
 

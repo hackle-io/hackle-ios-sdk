@@ -22,7 +22,6 @@ class MockWorkspace: Mock, Workspace {
         call(getExperimentOrNilMock, args: experimentKey)
     }
 
-
     lazy var getFeatureFlagOrNilMock = MockFunction(self, getFeatureFlagOrNil)
 
     func getFeatureFlagOrNil(featureKey: Experiment.Key) -> Experiment? {
@@ -51,5 +50,11 @@ class MockWorkspace: Mock, Workspace {
 
     func getContainerOrNil(containerId: Container.Id) -> Container? {
         call(getContainerOrNilMock, args: containerId)
+    }
+
+    lazy var getParameterConfigurationOrNilMock = MockFunction(self, getParameterConfigurationOrNil)
+
+    func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration? {
+        call(getParameterConfigurationOrNilMock, args: parameterConfigurationId)
     }
 }
