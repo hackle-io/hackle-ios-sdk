@@ -21,6 +21,8 @@ protocol Workspace {
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment?
 
     func getContainerOrNil(containerId: Container.Id) -> Container?
+
+    func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration?
 }
 
 class WorkspaceEntity: Workspace {
@@ -31,6 +33,7 @@ class WorkspaceEntity: Workspace {
     private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
+    private let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
 
     private let _experiments: [Experiment.Key: Experiment]
     private let _featureFlags: [Experiment.Key: Experiment]
@@ -41,7 +44,8 @@ class WorkspaceEntity: Workspace {
         buckets: [Bucket.Id: Bucket],
         eventTypes: [EventType.Key: EventType],
         segments: [Segment.Key: Segment],
-        containers: [Container.Id: Container]
+        containers: [Container.Id: Container],
+        parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
     ) {
         self.experiments = experiments
         self.featureFlags = featureFlags
@@ -49,6 +53,7 @@ class WorkspaceEntity: Workspace {
         self.eventTypes = eventTypes
         self.segments = segments
         self.containers = containers
+        self.parameterConfigurations = parameterConfigurations
 
         self._experiments = experiments.associateBy { it in
             it.key
@@ -80,6 +85,10 @@ class WorkspaceEntity: Workspace {
 
     func getContainerOrNil(containerId: Container.Id) -> Container? {
         containers[containerId]
+    }
+
+    func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration? {
+        parameterConfigurations[parameterConfigurationId]
     }
 
     static func from(dto: WorkspaceDto) -> Workspace {
@@ -114,13 +123,22 @@ class WorkspaceEntity: Workspace {
             (it.id, it.toContainer())
         }
 
+        let parameterConfigurations = dto.parameterConfigurations
+            .map { it in
+                it.toParameterConfiguration()
+            }
+            .associateBy { it in
+                it.id
+            }
+
         return WorkspaceEntity(
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
             eventTypes: eventTypes,
             segments: segments,
-            containers: containers
+            containers: containers,
+            parameterConfigurations: parameterConfigurations
         )
     }
 }
@@ -132,6 +150,7 @@ class WorkspaceDto: Codable {
     var events: [EventTypeDto]
     var segments: [SegmentDto]
     var containers: [ContainerDto]
+    var parameterConfigurations: [ParameterConfigurationDto]
 }
 
 class ExperimentDto: Codable {
@@ -151,6 +170,7 @@ class VariationDto: Codable {
     var id: Int64
     var key: String
     var status: String
+    var parameterConfigurationId: Int64?
 }
 
 class ExecutionDto: Codable {
@@ -203,7 +223,7 @@ class TargetDto: Codable {
         var type: String
         var matchOperator: String
         var valueType: String
-        var values: [MatchValue]
+        var values: [HackleValue]
 
         enum CodingKeys: String, CodingKey {
             case type
@@ -217,7 +237,7 @@ class TargetDto: Codable {
             type = try container.decode(String.self, forKey: .type)
             matchOperator = try container.decode(String.self, forKey: .matchOperator)
             valueType = try container.decode(String.self, forKey: .valueType)
-            values = try container.decode([MatchValue].self, forKey: .values)
+            values = try container.decode([HackleValue].self, forKey: .values)
         }
     }
 }
@@ -252,6 +272,16 @@ class ContainerGroupDto: Codable {
     var experiments: [Int64]
 }
 
+class ParameterConfigurationDto: Codable {
+    var id: Int64
+    var parameters: [ParameterDto]
+}
+
+class ParameterDto: Codable {
+    var key: String
+    var value: HackleValue
+}
+
 extension SlotDto {
     func toSlot() -> Slot {
         SlotEntity(startInclusive: startInclusive, endExclusive: endExclusive, variationId: variationId)
@@ -268,7 +298,7 @@ extension BucketDto {
 
 extension VariationDto {
     func toVariation() -> Variation {
-        VariationEntity(id: id, key: key, isDropped: status == "DROPPED")
+        VariationEntity(id: id, key: key, isDropped: status == "DROPPED", parameterConfigurationId: parameterConfigurationId)
     }
 }
 
@@ -451,6 +481,17 @@ extension ContainerGroupDto {
         ContainerGroupEntity(
             id: id,
             experiments: experiments
+        )
+    }
+}
+
+extension ParameterConfigurationDto {
+    func toParameterConfiguration() -> ParameterConfiguration {
+        ParameterConfigurationEntity(
+            id: id,
+            parameters: parameters.associate { it in
+                (it.key, it.value)
+            }
         )
     }
 }

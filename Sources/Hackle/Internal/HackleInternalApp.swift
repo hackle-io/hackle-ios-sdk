@@ -54,7 +54,8 @@ class DefaultHackleInternalApp: HackleInternalApp {
         let evaluation = try evaluator.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         eventProcessor.process(event: UserEvents.exposure(experiment: experiment, user: user, evaluation: evaluation))
 
-        return Decision.of(variation: evaluation.variationKey, reason: evaluation.reason)
+        let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
+        return Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config)
     }
 
     func experiments(user: HackleUser) throws -> [Int: Decision] {
@@ -64,7 +65,8 @@ class DefaultHackleInternalApp: HackleInternalApp {
         }
         for experiment in workspace.experiments {
             let evaluation = try evaluator.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "A")
-            let decision = Decision.of(variation: evaluation.variationKey, reason: evaluation.reason)
+            let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
+            let decision = Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config)
             decisions[Int(experiment.key)] = decision
         }
         return decisions
@@ -82,10 +84,11 @@ class DefaultHackleInternalApp: HackleInternalApp {
         let evaluation = try evaluator.evaluate(workspace: workspace, experiment: featureFlag, user: user, defaultVariationKey: "A")
         eventProcessor.process(event: UserEvents.exposure(experiment: featureFlag, user: user, evaluation: evaluation))
 
+        let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
         if evaluation.variationKey == "A" {
-            return FeatureFlagDecision.off(reason: evaluation.reason)
+            return FeatureFlagDecision.off(reason: evaluation.reason, config: config)
         } else {
-            return FeatureFlagDecision.on(reason: evaluation.reason)
+            return FeatureFlagDecision.on(reason: evaluation.reason, config: config)
         }
     }
 

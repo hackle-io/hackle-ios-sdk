@@ -28,7 +28,7 @@ class DefaultEvaluationFlowSpecs: QuickSpec {
                 let flowEvaluator = MockFlowEvaluator()
                 let nextFlow = MockEvaluationFlow()
 
-                let evaluation = Evaluation(variationId: 42, variationKey: "E", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                let evaluation = Evaluation(variationId: 42, variationKey: "E", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
                 every(flowEvaluator.evaluateMock).returns(evaluation)
 
                 let sut = DefaultEvaluationFlow.decision(flowEvaluator: flowEvaluator, nextFlow: nextFlow)

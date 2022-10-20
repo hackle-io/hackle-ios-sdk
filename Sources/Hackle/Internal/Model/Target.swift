@@ -40,9 +40,9 @@ class Target {
         var type: MatchType
         var matchOperator: Operator
         var valueType: ValueType
-        var values: [MatchValue]
+        var values: [HackleValue]
 
-        init(type: MatchType, matchOperator: Operator, valueType: ValueType, values: [MatchValue]) {
+        init(type: MatchType, matchOperator: Operator, valueType: ValueType, values: [HackleValue]) {
             self.type = type
             self.matchOperator = matchOperator
             self.valueType = valueType

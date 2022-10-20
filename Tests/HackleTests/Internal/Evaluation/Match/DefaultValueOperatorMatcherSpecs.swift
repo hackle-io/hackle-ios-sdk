@@ -17,9 +17,9 @@ class DefaultValueOperatorMatcherSpecs: QuickSpec {
                 matchOperator: ._in,
                 valueType: .number,
                 values: [
-                    MatchValue(value: 1),
-                    MatchValue(value: 2),
-                    MatchValue(value: 3)
+                    HackleValue(value: 1),
+                    HackleValue(value: 2),
+                    HackleValue(value: 3)
                 ])
 
             let actual = sut.matches(userValue: 3, match: match)
@@ -34,9 +34,9 @@ class DefaultValueOperatorMatcherSpecs: QuickSpec {
                 matchOperator: ._in,
                 valueType: .number,
                 values: [
-                    MatchValue(value: 1),
-                    MatchValue(value: 2),
-                    MatchValue(value: 3)
+                    HackleValue(value: 1),
+                    HackleValue(value: 2),
+                    HackleValue(value: 3)
                 ])
 
             let actual = sut.matches(userValue: 4, match: match)
@@ -51,9 +51,9 @@ class DefaultValueOperatorMatcherSpecs: QuickSpec {
                 matchOperator: ._in,
                 valueType: .number,
                 values: [
-                    MatchValue(value: 1),
-                    MatchValue(value: 2),
-                    MatchValue(value: 3)
+                    HackleValue(value: 1),
+                    HackleValue(value: 2),
+                    HackleValue(value: 3)
                 ])
 
             let actual = sut.matches(userValue: 3, match: match)
@@ -68,9 +68,9 @@ class DefaultValueOperatorMatcherSpecs: QuickSpec {
                 matchOperator: ._in,
                 valueType: .number,
                 values: [
-                    MatchValue(value: 1),
-                    MatchValue(value: 2),
-                    MatchValue(value: 3)
+                    HackleValue(value: 1),
+                    HackleValue(value: 2),
+                    HackleValue(value: 3)
                 ])
 
             let actual = sut.matches(userValue: 4, match: match)
