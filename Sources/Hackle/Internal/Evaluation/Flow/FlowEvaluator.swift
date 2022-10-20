@@ -28,9 +28,9 @@ class OverrideEvaluator: FlowEvaluator {
         if let overriddenVariation = try overrideResolver.resolveOrNil(workspace: workspace, experiment: experiment, user: user) {
             switch experiment.type {
             case .abTest:
-                return Evaluation.of(variation: overriddenVariation, reason: DecisionReason.OVERRIDDEN)
+                return try Evaluation.of(workspace: workspace, variation: overriddenVariation, reason: DecisionReason.OVERRIDDEN)
             case .featureFlag:
-                return Evaluation.of(variation: overriddenVariation, reason: DecisionReason.INDIVIDUAL_TARGET_MATCH)
+                return try Evaluation.of(workspace: workspace, variation: overriddenVariation, reason: DecisionReason.INDIVIDUAL_TARGET_MATCH)
             }
         } else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
@@ -47,7 +47,7 @@ class DraftExperimentEvaluator: FlowEvaluator {
         nextFlow: EvaluationFlow
     ) throws -> Evaluation {
         if experiment.status == .draft {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.EXPERIMENT_DRAFT)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.EXPERIMENT_DRAFT)
         } else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         }
@@ -65,9 +65,9 @@ class PausedExperimentEvaluator: FlowEvaluator {
         if experiment.status == .paused {
             switch experiment.type {
             case .abTest:
-                return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.EXPERIMENT_PAUSED)
+                return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.EXPERIMENT_PAUSED)
             case .featureFlag:
-                return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.FEATURE_FLAG_INACTIVE)
+                return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.FEATURE_FLAG_INACTIVE)
             }
         } else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
@@ -87,7 +87,7 @@ class CompletedExperimentEvaluator: FlowEvaluator {
             guard let winnerVariation = experiment.winnerVariation else {
                 throw HackleError.error("winner variation [\(experiment.id)]")
             }
-            return Evaluation.of(variation: winnerVariation, reason: DecisionReason.EXPERIMENT_COMPLETED)
+            return try Evaluation.of(workspace: workspace, variation: winnerVariation, reason: DecisionReason.EXPERIMENT_COMPLETED)
         } else {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         }
@@ -116,7 +116,7 @@ class ExperimentTargetEvaluator: FlowEvaluator {
         if isUserInExperimentTarget {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
         }
     }
 }
@@ -145,14 +145,14 @@ class TrafficAllocateEvaluator: FlowEvaluator {
         }
 
         guard let variation = try actionResolver.resolveOrNil(action: experiment.defaultRule, workspace: workspace, experiment: experiment, user: user) else {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
         }
 
         if variation.isDropped {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.VARIATION_DROPPED)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.VARIATION_DROPPED)
         }
 
-        return Evaluation.of(variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED)
+        return try Evaluation.of(workspace: workspace, variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED)
     }
 }
 
@@ -192,7 +192,7 @@ class TargetRuleEvaluator: FlowEvaluator {
             throw HackleError.error("FeatureFlag must decide the Variation [\(experiment.id)]")
         }
 
-        return Evaluation.of(variation: variation, reason: DecisionReason.TARGET_RULE_MATCH)
+        return try Evaluation.of(workspace: workspace, variation: variation, reason: DecisionReason.TARGET_RULE_MATCH)
     }
 }
 
@@ -219,14 +219,14 @@ class DefaultRuleEvaluator: FlowEvaluator {
         }
 
         if user.identifiers[experiment.identifierType] == nil {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.DEFAULT_RULE)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.DEFAULT_RULE)
         }
 
         guard let variation = try actionResolver.resolveOrNil(action: experiment.defaultRule, workspace: workspace, experiment: experiment, user: user) else {
             throw HackleError.error("FeatureFlag must decide the Variation [\(experiment.id)]")
         }
 
-        return Evaluation.of(variation: variation, reason: DecisionReason.DEFAULT_RULE)
+        return try Evaluation.of(workspace: workspace, variation: variation, reason: DecisionReason.DEFAULT_RULE)
     }
 }
 
@@ -261,7 +261,7 @@ class ContainerEvaluator: FlowEvaluator {
         if isUserInContainerGroup {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
         }
     }
 }
@@ -277,7 +277,7 @@ class IdentifierEvaluator: FlowEvaluator {
         if user.identifiers[experiment.identifierType] != nil {
             return try nextFlow.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         } else {
-            return Evaluation.of(experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
+            return try Evaluation.of(workspace: workspace, experiment: experiment, variationKey: defaultVariationKey, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
         }
     }
 }

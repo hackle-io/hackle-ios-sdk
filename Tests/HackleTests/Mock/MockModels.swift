@@ -106,11 +106,14 @@ class MockVariation: Mock, Variation {
     var id: Id
     var key: Key
     var isDropped: Bool
+    var parameterConfigurationId: ParameterConfiguration.Id?
 
-    init(id: Id = 42, key: Key = "A", isDropped: Bool = false) {
+
+    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfigurationId: ParameterConfiguration.Id? = nil) {
         self.id = id
         self.key = key
         self.isDropped = isDropped
+        self.parameterConfigurationId = parameterConfigurationId
         super.init()
     }
 }

@@ -19,7 +19,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .userProperty, name: "age"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [MatchValue(value: 42)])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 42)])
             )
 
             // when
@@ -33,7 +33,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .segment, name: "SEGMENT"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [MatchValue(value: 42)])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: 42)])
             )
 
             // when
@@ -47,7 +47,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .segment, name: "SEGMENT"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "seg1")])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "seg1")])
             )
 
             let workspace = MockWorkspace()
@@ -64,7 +64,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .segment, name: "SEGMENT"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "seg1"), MatchValue(value: "seg2"), MatchValue(value: "seg3")])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "seg1"), HackleValue(value: "seg2"), HackleValue(value: "seg3")])
             )
             let workspace = MockWorkspace()
             every(workspace.getSegmentOrNilMock).returns(MockSegment())
@@ -82,7 +82,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .segment, name: "SEGMENT"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "seg1"), MatchValue(value: "seg2"), MatchValue(value: "seg3")])
+                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "seg1"), HackleValue(value: "seg2"), HackleValue(value: "seg3")])
             )
             let workspace = MockWorkspace()
             every(workspace.getSegmentOrNilMock).returns(MockSegment())
@@ -100,7 +100,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .segment, name: "SEGMENT"),
-                match: Target.Match(type: .notMatch, matchOperator: ._in, valueType: .string, values: [MatchValue(value: "seg1"), MatchValue(value: "seg2"), MatchValue(value: "seg3")])
+                match: Target.Match(type: .notMatch, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "seg1"), HackleValue(value: "seg2"), HackleValue(value: "seg3")])
             )
             let workspace = MockWorkspace()
             every(workspace.getSegmentOrNilMock).returns(MockSegment())

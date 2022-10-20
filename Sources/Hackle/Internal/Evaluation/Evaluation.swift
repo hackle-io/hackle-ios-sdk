@@ -4,21 +4,40 @@ struct Evaluation: Equatable {
     let variationId: Variation.Id?
     let variationKey: Variation.Key
     let reason: String
+    let config: ParameterConfiguration?
 
-    init(variationId: Variation.Id?, variationKey: Variation.Key, reason: String) {
+    init(variationId: Variation.Id?, variationKey: Variation.Key, reason: String, config: ParameterConfiguration?) {
         self.variationId = variationId
         self.variationKey = variationKey
         self.reason = reason
+        self.config = config
     }
 
-    static func of(variation: Variation, reason: String) -> Evaluation {
-        Evaluation(variationId: variation.id, variationKey: variation.key, reason: reason)
+    static func ==(lhs: Evaluation, rhs: Evaluation) -> Bool {
+        lhs.variationId == rhs.variationId && lhs.variationKey == rhs.variationKey && lhs.reason == rhs.reason && lhs.config?.id == rhs.config?.id
     }
 
-    static func of(experiment: Experiment, variationKey: Variation.Key, reason: String) -> Evaluation {
+    static func of(workspace: Workspace, experiment: Experiment, variationKey: Variation.Key, reason: String) throws -> Evaluation {
         guard let variation = experiment.getVariationOrNil(variationKey: variationKey) else {
-            return Evaluation(variationId: nil, variationKey: variationKey, reason: reason)
+            return Evaluation(variationId: nil, variationKey: variationKey, reason: reason, config: nil)
         }
-        return of(variation: variation, reason: reason)
+        return try of(workspace: workspace, variation: variation, reason: reason)
+    }
+
+    static func of(workspace: Workspace, variation: Variation, reason: String) throws -> Evaluation {
+        let parameterConfiguration = try config(workspace: workspace, variation: variation)
+        return Evaluation(variationId: variation.id, variationKey: variation.key, reason: reason, config: parameterConfiguration)
+    }
+
+    private static func config(workspace: Workspace, variation: Variation) throws -> ParameterConfiguration? {
+        guard let parameterConfigurationId = variation.parameterConfigurationId else {
+            return nil
+        }
+
+        guard let parameterConfiguration = workspace.getParameterConfigurationOrNil(parameterConfigurationId: parameterConfigurationId) else {
+            throw HackleError.error("ParameterConfiguration[\(parameterConfigurationId)]")
+        }
+
+        return parameterConfiguration
     }
 }
