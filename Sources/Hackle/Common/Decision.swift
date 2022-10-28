@@ -5,11 +5,13 @@ import Foundation
     @objc public let variation: String
     @objc public let reason: String
     @objc public let config: ParameterConfig
+    @objc public let parameters: [String: Any]
 
     internal init(variation: String, reason: String, config: ParameterConfig) {
         self.variation = variation
         self.reason = reason
         self.config = config
+        self.parameters = config.parameters
     }
 
     internal static func of(variation: String, reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> Decision {
@@ -38,12 +40,13 @@ import Foundation
     @objc public let isOn: Bool
     @objc public let reason: String
     @objc public let config: ParameterConfig
-
+    @objc public let parameters: [String: Any]
 
     init(isOn: Bool, reason: String, config: ParameterConfig) {
         self.isOn = isOn
         self.reason = reason
         self.config = config
+        self.parameters = config.parameters
     }
 
     static func on(reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> FeatureFlagDecision {
