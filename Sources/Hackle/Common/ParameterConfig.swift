@@ -9,6 +9,7 @@ import Foundation
 
 @objc
 public protocol ParameterConfig {
+    var parameters: [String: Any] { get }
     func getString(forKey: String, defaultValue: String) -> String
     func getInt(forKey: String, defaultValue: Int) -> Int
     func getDouble(forKey: String, defaultValue: Double) -> Double
@@ -16,6 +17,7 @@ public protocol ParameterConfig {
 }
 
 class EmptyParameterConfig: ParameterConfig {
+    let parameters: [String: Any] = [:]
 
     private init() {
     }

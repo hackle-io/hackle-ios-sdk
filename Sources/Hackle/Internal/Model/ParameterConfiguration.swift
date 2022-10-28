@@ -12,34 +12,37 @@ protocol ParameterConfiguration: ParameterConfig {
     typealias Id = Int64
 
     var id: Id { get }
-    var parameters: [String: HackleValue] { get }
 }
 
 
 class ParameterConfigurationEntity: ParameterConfiguration {
 
     let id: Id
-    let parameters: [String: HackleValue]
+    let parameters: [String: Any]
+    private let _parameters: [String: HackleValue]
 
     init(id: Id, parameters: [String: HackleValue]) {
         self.id = id
-        self.parameters = parameters
+        self._parameters = parameters
+        self.parameters = parameters.compactMapValues { it in
+            it.rawValue
+        }
     }
 
     func getString(forKey: String, defaultValue: String) -> String {
-        parameters[forKey]?.stringOrNil ?? defaultValue
+        _parameters[forKey]?.stringOrNil ?? defaultValue
     }
 
     func getInt(forKey: String, defaultValue: Int) -> Int {
-        parameters[forKey]?.numberOrNil?.toIntOrNil() ?? defaultValue
+        _parameters[forKey]?.numberOrNil?.toIntOrNil() ?? defaultValue
     }
 
     func getDouble(forKey: String, defaultValue: Double) -> Double {
-        parameters[forKey]?.numberOrNil ?? defaultValue
+        _parameters[forKey]?.numberOrNil ?? defaultValue
     }
 
     func getBool(forKey: String, defaultValue: Bool) -> Bool {
-        parameters[forKey]?.boolOrNil ?? defaultValue
+        _parameters[forKey]?.boolOrNil ?? defaultValue
     }
 }
 
