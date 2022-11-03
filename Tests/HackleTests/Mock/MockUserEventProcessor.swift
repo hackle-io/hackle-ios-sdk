@@ -25,4 +25,10 @@ class MockUserEventProcessor: Mock, UserEventProcessor {
     func stop() {
         call(stopMock, args: ())
     }
+
+    lazy var initializeMock = MockFunction(self, initialize)
+
+    func initialize() {
+        call(initializeMock, args: ())
+    }
 }

@@ -1,10 +1,7 @@
-//
-// Created by yong on 2020/12/20.
-//
-
 import Foundation
 import Quick
 import Nimble
+import Mockery
 @testable import Hackle
 
 class DefaultUserEventProcessorSpec: QuickSpec {
@@ -13,183 +10,182 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
         var user = HackleUser.of(userId: "test_id")
 
-        var eventQueue: ConcurrentArray<UserEvent>!
-        var eventDispatcher: MockUserEventDispatcher!
-        var maxEventDispatchSize: Int = 20
-        var flushScheduler: MockScheduler!
-        var flushInterval: TimeInterval = 60.0
         var eventDedupDeterminer: MockExposureEventDedupDeterminer!
-        var sut: DefaultUserEventProcessor!
+        var eventQueue: DispatchQueue!
+        var eventRepository: MockEventRepository!
+        var eventFlushScheduler: MockScheduler!
+        var eventDispatcher: MockUserEventDispatcher!
 
         beforeEach {
-            eventQueue = ConcurrentArray()
-            eventDispatcher = MockUserEventDispatcher()
-            flushScheduler = MockScheduler()
             eventDedupDeterminer = MockExposureEventDedupDeterminer()
+            eventQueue = DispatchQueue(label: "test.EventQueue")
+            eventRepository = MockEventRepository()
+            eventFlushScheduler = MockScheduler()
+            eventDispatcher = MockUserEventDispatcher()
+
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
-            sut = DefaultUserEventProcessor(
+            every(eventRepository.countMock).returns(0)
+            every(eventRepository.countByMock).returns(0)
+            every(eventRepository.getEventToFlushMock).returns([])
+        }
+
+        func processor(
+            eventDedupDeterminer: ExposureEventDedupDeterminer = eventDedupDeterminer,
+            eventQueue: DispatchQueue = eventQueue,
+            eventRepository: EventRepository = eventRepository,
+            eventRepositoryMaxSize: Int = 100,
+            eventFlushScheduler: Scheduler = eventFlushScheduler,
+            eventFlushInterval: TimeInterval = 10,
+            eventFlushThreshold: Int = 10,
+            eventFlushMaxBatchSize: Int = 21,
+            eventDispatcher: UserEventDispatcher = eventDispatcher
+        ) -> DefaultUserEventProcessor {
+            DefaultUserEventProcessor(
+                eventDedupDeterminer: eventDedupDeterminer,
                 eventQueue: eventQueue,
-                eventDispatcher: eventDispatcher,
-                eventDispatchSize: maxEventDispatchSize,
-                flushScheduler: flushScheduler,
-                flushInterval: flushInterval,
-                eventDedupDeterminer: eventDedupDeterminer
+                eventRepository: eventRepository,
+                eventRepositoryMaxSize: eventRepositoryMaxSize,
+                eventFlushScheduler: eventFlushScheduler,
+                eventFlushInterval: eventFlushInterval,
+                eventFlushThreshold: eventFlushThreshold,
+                eventFlushMaxBatchSize: eventFlushMaxBatchSize,
+                eventDispatcher: eventDispatcher
             )
         }
 
         describe("process") {
-            it("이벤트를 큐에 쌓는다") {
+
+            it("중복제거 대상이면 이벤트를 저장하지 않는다") {
                 // given
-                var event = MockUserEvent(user: user)
+                let sut = processor()
+
+                every(eventDedupDeterminer.isDedupTargetMock).returns(true)
+                let event = MockUserEvent(user: user)
 
                 // when
                 sut.process(event: event)
+                eventQueue.sync {
+                }
 
                 // then
-                expect(eventQueue.size) == 1
-                expect(eventQueue.take()!).to(beIdenticalTo(event))
-            }
-
-            context("이벤트를 큐에 쌓은 이후") {
-                context("큐에 적재된 이벤트 갯수가 maxEventDispatchSize 보다 크거나 같으면") {
-                    it("큐에 있던 이벤트를 전송하고 큐를 비운다") {
-                        // given
-                        for _ in 1...maxEventDispatchSize - 1 {
-                            eventQueue.add(MockUserEvent(user: user))
-                        }
-
-                        // when
-                        sut.process(event: MockUserEvent(user: user))
-
-                        // then
-                        expect(eventQueue.isEmpty) == true
-                        expect(eventDispatcher.dispatchMock.wasCalled()) == true
-                        expect(eventDispatcher.dispatchMock.invokations()[0].arguments.count) == 20
-                    }
-                }
-                context("큐에 적재된 이벤트 갯수가 maxEventDispatchSize 보다 작으면") {
-                    it("이벤트를 전송하지 않는다") {
-                        // given
-                        for _ in 1...maxEventDispatchSize - 2 {
-                            eventQueue.add(MockUserEvent(user: user))
-                        }
-
-                        // when
-                        sut.process(event: MockUserEvent(user: user))
-
-                        // then
-                        expect(eventQueue.isEmpty) == false
-                        expect(eventDispatcher.dispatchMock.wasNotCalled()) == true
-                    }
-                }
-            }
-        }
-
-        describe("flush") {
-
-            context("큐에 이벤트가 있으면") {
-                it("이벤트를 전송하고 큐를 비운다") {
-                    // given
-                    eventQueue.add(MockUserEvent(user: user))
-
-                    // when
-                    sut.flush()
-
-                    // then
-                    expect(eventQueue.isEmpty) == true
-                    expect(eventDispatcher.dispatchMock.wasCalled()) == true
+                verify(exactly: 0) {
+                    eventRepository.saveMock
                 }
             }
 
-            context("큐가 비어있으면") {
-                it("전송하지 않는다") {
-                    // given
-                    eventQueue.takeAll()
-
-                    // when
-                    sut.flush()
-
-                    // then
-                    expect(eventDispatcher.dispatchMock.wasNotCalled()) == true
-                }
-            }
-        }
-
-        describe("start") {
-
-            it("flush 스케줄링을 시작한다") {
+            it("입력받은 이벤트를 저장한다") {
                 // given
-                every(flushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
-                eventQueue.add(MockUserEvent(user: user))
+                let sut = processor()
+                let event = MockUserEvent(user: user)
 
                 // when
-                sut.start()
+                sut.process(event: event)
+                eventQueue.sync {
+                }
 
                 // then
-                expect(flushScheduler.schedulePeriodicallyMock.wasCalled(exactly: 1)) == true
-
-                expect(eventQueue.isEmpty) == false
-                let flushTask = flushScheduler.schedulePeriodicallyMock.invokations()[0].arguments.2
-                flushTask()
-                expect(eventQueue.isEmpty) == true
-            }
-
-            context("이미 스케줄링이 시작되어있으면") {
-                it("아무것도 하지않고 리턴한다") {
-                    // given
-                    every(flushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
-                    sut.start()
-
-                    // when
-                    sut.start()
-
-                    // then
-                    expect(flushScheduler.schedulePeriodicallyMock.wasCalled(exactly: 1)) == true
+                verify(exactly: 1) {
+                    eventRepository.saveMock
                 }
             }
 
-            context("여러번 호출해도") {
-                it("스케줄링은 한번만 실행된다") {
-                    every(flushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+            it("이벤트 저장 후 저장된 이벤트의 갯수가 최대 저장 갯수보다 큰 경우 오래된 이벤트를 삭제한다") {
+                // given
+                let sut = processor(
+                    eventRepositoryMaxSize: 100,
+                    eventFlushThreshold: 42,
+                    eventFlushMaxBatchSize: 51
+                )
+                every(eventRepository.countMock).returns(101)
+                let event = MockUserEvent(user: user)
 
-                    let q = DispatchQueue(label: "test", attributes: .concurrent)
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
 
-                    for _ in 1...100 {
-                        q.async {
-                            sut.start()
-                        }
-                    }
-
-                    expect(flushScheduler.schedulePeriodicallyMock.wasCalled(exactly: 1)) == true
+                // then
+                verify(exactly: 1) {
+                    eventRepository.deleteOldEventsMock
                 }
             }
-        }
 
-        describe("stop") {
-            it("스케줄링을 취소한다") {
+            it("이벤트 저장 후 Pending 이벤트 갯수가 임계치랑 같은 경우 Flush 한다") {
                 // given
-                let scheduledJob = MockScheduledJob()
-                every(flushScheduler.schedulePeriodicallyMock).returns(scheduledJob)
+                let sut = processor(
+                    eventRepositoryMaxSize: 100,
+                    eventFlushThreshold: 15,
+                    eventFlushMaxBatchSize: 42
+                )
+                every(eventRepository.countMock).returns(100)
+                every(eventRepository.countByMock).returns(15)
+
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+
+                let event = MockUserEvent(user: user)
 
                 // when
-                sut.start()
-                sut.stop()
+                sut.process(event: event)
+                eventQueue.sync {
+                }
 
                 // then
-                expect(scheduledJob.cancelMock.wasCalled()) == true
+                verify(exactly: 1) {
+                    eventDispatcher.dispatchMock
+                }
             }
 
-            it("flush를 호출한다") {
+            it("이벤트 저장 후 Pending 이벤트 갯수가 임계치의 배수이면 Flush 한다") {
                 // given
-                eventQueue.add(MockUserEvent(user: user))
-                every(flushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+                let sut = processor(
+                    eventRepositoryMaxSize: 100,
+                    eventFlushThreshold: 15,
+                    eventFlushMaxBatchSize: 42
+                )
+                every(eventRepository.countMock).returns(100)
+                every(eventRepository.countByMock).returns(30)
+
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+
+                let event = MockUserEvent(user: user)
 
                 // when
-                sut.start()
-                sut.stop()
+                sut.process(event: event)
+                eventQueue.sync {
+                }
 
                 // then
-                expect(eventDispatcher.dispatchMock.wasCalled()) == true
+                verify(exactly: 1) {
+                    eventDispatcher.dispatchMock
+                }
+            }
+
+            it("Pending 이벤트가 임계치보다 크지만 배수가 아닌경우 Flush 하지 않는다") {
+                // given
+                let sut = processor(
+                    eventRepositoryMaxSize: 100,
+                    eventFlushThreshold: 15,
+                    eventFlushMaxBatchSize: 42
+                )
+                every(eventRepository.countMock).returns(100)
+                every(eventRepository.countByMock).returns(29)
+
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+
+                let event = MockUserEvent(user: user)
+
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 0) {
+                    eventDispatcher.dispatchMock
+                }
             }
         }
 
@@ -197,12 +193,15 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             var spy: OnNotifiedSpy!
             beforeEach {
                 spy = OnNotifiedSpy(
+                    eventDedupDeterminer: eventDedupDeterminer,
                     eventQueue: eventQueue,
-                    eventDispatcher: eventDispatcher,
-                    eventDispatchSize: maxEventDispatchSize,
-                    flushScheduler: flushScheduler,
-                    flushInterval: flushInterval,
-                    eventDedupDeterminer: eventDedupDeterminer
+                    eventRepository: eventRepository,
+                    eventRepositoryMaxSize: 100,
+                    eventFlushScheduler: eventFlushScheduler,
+                    eventFlushInterval: 10,
+                    eventFlushThreshold: 10,
+                    eventFlushMaxBatchSize: 21,
+                    eventDispatcher: eventDispatcher
                 )
             }
 
@@ -217,6 +216,192 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 it("start() 를 호출한다") {
                     spy.onNotified(notification: .didBecomeActive)
                     expect(spy.startCalled) == true
+                }
+            }
+        }
+
+        describe("initialize") {
+
+            it("Flushing 상태의 이벤트를 Pending 상태로 바꾼다") {
+                // given
+                let sut = processor()
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.findAllByMock).returns(events)
+
+                // when
+                sut.initialize()
+                eventQueue.sync {
+                }
+
+                // then
+                expect(eventRepository.updateMock.invokations()[0].arguments.0).to(beIdenticalTo(events))
+                expect(eventRepository.updateMock.invokations()[0].arguments.1) == EventEntityStatus.pending
+            }
+
+            it("Flushing 상태의 이벤트가 없으면 별도 처리 하지 않는다") {
+                // given
+                let sut = processor()
+                let events = [EventEntity]()
+                every(eventRepository.findAllByMock).returns(events)
+
+                // when
+                sut.initialize()
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 0) {
+                    eventRepository.updateMock
+                }
+            }
+
+        }
+
+        describe("start") {
+
+            it("flush 스케줄링을 시작한다") {
+                // given
+                let sut = processor()
+                every(eventFlushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+
+                // when
+                sut.start()
+
+                // then
+                verify(exactly: 1) {
+                    eventFlushScheduler.schedulePeriodicallyMock
+                }
+
+                verify(exactly: 0) {
+                    eventRepository.getEventToFlushMock
+                }
+
+                let flushTask = eventFlushScheduler.schedulePeriodicallyMock.firstInvokation().arguments.2
+                flushTask()
+                eventQueue.sync {
+                }
+
+                verify(exactly: 1) {
+                    eventRepository.getEventToFlushMock
+                }
+            }
+
+            context("이미 스케줄링이 시작되어있으면") {
+                it("아무것도 하지않고 리턴한다") {
+                    // given
+                    let sut = processor()
+                    every(eventFlushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+                    sut.start()
+
+                    // when
+                    sut.start()
+
+                    // then
+                    verify(exactly: 1) {
+                        eventFlushScheduler.schedulePeriodicallyMock
+                    }
+                }
+            }
+
+            context("여러번 호출해도") {
+                it("스케줄링은 한번만 실행된다") {
+                    let sut = processor()
+                    every(eventFlushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+
+                    let q = DispatchQueue(label: "test", attributes: .concurrent)
+
+                    for _ in 1...100 {
+                        q.async {
+                            sut.start()
+                        }
+                    }
+
+                    verify(exactly: 1) {
+                        eventFlushScheduler.schedulePeriodicallyMock
+                    }
+                }
+            }
+        }
+
+        it("stop") {
+            let sut = processor()
+
+            let scheduledJob = MockScheduledJob()
+            every(eventFlushScheduler.schedulePeriodicallyMock).returns(scheduledJob)
+
+            sut.start()
+            verify(exactly: 1) {
+                eventFlushScheduler.schedulePeriodicallyMock
+            }
+
+            sut.stop()
+            eventQueue.sync {
+            }
+            verify(exactly: 1) {
+                eventRepository.getEventToFlushMock
+            }
+
+            sut.start()
+            verify(exactly: 2) {
+                eventFlushScheduler.schedulePeriodicallyMock
+            }
+
+            // then
+            expect(scheduledJob.cancelMock.wasCalled()) == true
+        }
+
+        context("dispatch") {
+
+            it("limit 가 0보다 작으면 실행하지 않는다") {
+                // given
+                let sut = processor(eventFlushMaxBatchSize: 0)
+
+                // when
+                sut.flush()
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 0) {
+                    eventRepository.getEventToFlushMock
+                }
+
+                verify(exactly: 0) {
+                    eventDispatcher.dispatchMock
+                }
+            }
+
+            it("전송할 이벤트가 없으면 전송하지 않는다") {
+                // given
+                let sut = processor(eventFlushMaxBatchSize: 1)
+                every(eventRepository.getEventToFlushMock).returns([])
+
+                // when
+                sut.flush()
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 0) {
+                    eventDispatcher.dispatchMock
+                }
+            }
+
+            it("이벤트를 전송한다") {
+                // given
+                let sut = processor(eventFlushMaxBatchSize: 1)
+
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+
+                // when
+                sut.flush()
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventDispatcher.dispatchMock
                 }
             }
         }

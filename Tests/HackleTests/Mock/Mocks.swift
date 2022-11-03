@@ -53,6 +53,14 @@ struct MockFunction<Arguments, Result> {
         self.mockReference = MockReference(function)
     }
 
+    func firstInvokation() -> MockInvokation<Arguments, Result> {
+        invokations().first!
+    }
+
+    func lastInvokation() -> MockInvokation<Arguments, Result> {
+        invokations().last!
+    }
+
     func invokations() -> [MockInvokation<Arguments, Result>] {
         mock.invokations(of: mockReference)
     }
