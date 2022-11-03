@@ -62,7 +62,6 @@ class SQLiteEventRepository: EventRepository {
         guard let body = event.toBody() else {
             return
         }
-        Log.info(body)
         let sql = String(
             format: "INSERT INTO %@ (%@, %@, %@) VALUES (?, ?, ?)",
             EventEntity.TABLE_NAME, EventEntity.TYPE_COLUMN_NAME, EventEntity.STATUS_COLUMN_NAME, EventEntity.BODY_COLUMN_NAME
