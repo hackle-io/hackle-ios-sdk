@@ -85,7 +85,7 @@ class SQLiteStatement: SQLiteCloseable {
 
     func queryForInt() throws -> Int {
         if sqlite3_step(statement) != SQLITE_ROW {
-            throw HackleError.error("Failed to query")
+            throw HackleError.error("Failed to query for int: \(String(cString: sqlite3_errmsg(database.connection))) \"\(sql)\"")
         }
         return Int(sqlite3_column_int(statement, 0))
     }
