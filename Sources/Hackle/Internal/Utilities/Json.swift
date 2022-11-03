@@ -25,3 +25,12 @@ class Json {
         return json
     }
 }
+
+extension Dictionary {
+    func toJson() -> String? {
+        guard  let data = Json.serialize(self) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
+    }
+}

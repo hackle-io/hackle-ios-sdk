@@ -14,35 +14,45 @@ import Nimble
 class HackleConfigSpec: QuickSpec {
     override func spec() {
 
-        describe("exposureEventDedupInterval") {
+        it("exposureEventDedupInterval") {
+            expect(HackleConfigBuilder().build().exposureEventDedupInterval) == 60
+            expect(HackleConfigBuilder().exposureEventDedupIntervalSeconds(0.9999).build().exposureEventDedupInterval) == 60
+            expect(HackleConfigBuilder().exposureEventDedupIntervalSeconds(3600.1).build().exposureEventDedupInterval) == 60
 
-            it("설정하지 않으면 -1") {
+
+            for i in 1...3600 {
                 let config = HackleConfigBuilder()
+                    .exposureEventDedupIntervalSeconds(Double(i))
                     .build()
-                expect(config.exposureEventDedupInterval) == -1
+                expect(config.exposureEventDedupInterval) == Double(i)
             }
+        }
 
-            it("1 보다 작은 값으로 설정하면 -1로 설정된다") {
+        it("eventFlushInterval") {
+            expect(HackleConfigBuilder().build().eventFlushInterval) == 10
+            expect(HackleConfigBuilder().eventFlushIntervalSeconds(0.9999).build().eventFlushInterval) == 10
+            expect(HackleConfigBuilder().eventFlushIntervalSeconds(60.1).build().eventFlushInterval) == 10
+
+
+            for i in 1...60 {
                 let config = HackleConfigBuilder()
-                    .exposureEventDedupIntervalSeconds(0.9999)
+                    .eventFlushIntervalSeconds(Double(i))
                     .build()
-                expect(config.exposureEventDedupInterval) == -1
+                expect(config.eventFlushInterval) == Double(i)
             }
+        }
 
-            it("3600 보다 큰 값으로 설정하면 -1로 설정된다") {
+        it("eventFlushThreshold") {
+            expect(HackleConfigBuilder().build().eventFlushThreshold) == 10
+            expect(HackleConfigBuilder().eventFlushThreshold(4).build().eventFlushThreshold) == 10
+            expect(HackleConfigBuilder().eventFlushThreshold(31).build().eventFlushThreshold) == 10
+
+
+            for i in 5...30 {
                 let config = HackleConfigBuilder()
-                    .exposureEventDedupIntervalSeconds(3600.1)
+                    .eventFlushThreshold(i)
                     .build()
-                expect(config.exposureEventDedupInterval) == -1
-            }
-
-            it("1 ~ 3600 사이의 값으로 설정해야 된다") {
-                for i in 1...3600 {
-                    let config = HackleConfigBuilder()
-                        .exposureEventDedupIntervalSeconds(Double(i))
-                        .build()
-                    expect(config.exposureEventDedupInterval) == Double(i)
-                }
+                expect(config.eventFlushThreshold) == i
             }
         }
     }

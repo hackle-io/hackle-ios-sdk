@@ -161,17 +161,29 @@ extension HackleApp {
         )
         let workspaceFetcher = CachedWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher)
 
+        let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
+        let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
+        let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
+        let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
+
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,
+            eventQueue: eventQueue,
+            eventRepository: eventRepository,
+            httpQueue: httpQueue,
             httpClient: httpClient
         )
+
         let eventProcessor = DefaultUserEventProcessor(
-            eventQueue: ConcurrentArray(),
-            eventDispatcher: eventDispatcher,
-            eventDispatchSize: 10,
-            flushScheduler: DispatchSourceTimerScheduler(),
-            flushInterval: 60,
-            eventDedupDeterminer: DefaultExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval)
+            eventDedupDeterminer: DefaultExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval),
+            eventQueue: eventQueue,
+            eventRepository: eventRepository,
+            eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
+            eventFlushScheduler: DispatchSourceTimerScheduler(),
+            eventFlushInterval: config.eventFlushInterval,
+            eventFlushThreshold: config.eventFlushThreshold,
+            eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
+            eventDispatcher: eventDispatcher
         )
 
         DefaultAppNotificationObserver.instance.addListener(listener: eventProcessor)

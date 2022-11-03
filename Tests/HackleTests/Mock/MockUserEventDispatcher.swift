@@ -10,7 +10,7 @@ class MockUserEventDispatcher: Mock, UserEventDispatcher {
 
     lazy var dispatchMock = MockFunction(self, dispatch)
 
-    func dispatch(events: [UserEvent]) {
+    func dispatch(events: [EventEntity]) {
         call(dispatchMock, args: events)
     }
 }
