@@ -34,6 +34,7 @@ class DefaultHackleInternalApp: HackleInternalApp {
     }
 
     func initialize(completion: @escaping () -> ()) {
+        eventProcessor.initialize()
         eventProcessor.start()
         workspaceFetcher.fetchFromServer {
             Log.info("Hackle \(SdkVersion.CURRENT) started")

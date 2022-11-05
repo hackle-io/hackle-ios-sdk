@@ -41,6 +41,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let sut = DefaultExposureEventDedupDeterminer(dedupInterval: 1)
 
                 let event = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser.of(userId: "test_id"),
                     experiment: MockExperiment(),
@@ -64,6 +65,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let experiment = MockExperiment()
 
                 let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: experiment,
@@ -74,6 +76,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: experiment,
@@ -94,6 +97,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let experiment = MockExperiment()
 
                 let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: experiment,
@@ -104,6 +108,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: experiment,
@@ -124,6 +129,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let experiment = MockExperiment()
 
                 let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser.of(userId: "test_id_01"),
                     experiment: experiment,
@@ -134,6 +140,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser.of(userId: "test_id_02"),
                     experiment: experiment,
@@ -153,6 +160,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let user = HackleUser.of(userId: "test_id_01")
 
                 let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: MockExperiment(id: 1),
@@ -163,6 +171,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: MockExperiment(id: 2),
@@ -182,6 +191,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let user = HackleUser.of(userId: "test_id_01")
 
                 let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: MockExperiment(id: 1),
@@ -192,6 +202,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: user,
                     experiment: MockExperiment(id: 1),
@@ -209,6 +220,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let sut = DefaultExposureEventDedupDeterminer(dedupInterval: 1)
 
                 let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser(identifiers: ["id": "test_id_01"], properties: [:], hackleProperties: [:]),
                     experiment: MockExperiment(id: 1),
@@ -219,6 +231,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser(identifiers: ["id": "test_id_01"], properties: ["age": 30], hackleProperties: [:]),
                     experiment: MockExperiment(id: 1),
@@ -241,6 +254,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let experiment = MockExperiment()
 
                 let event1 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment,
@@ -251,6 +265,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event2 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment,
@@ -261,6 +276,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event3 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userB,
                     experiment: experiment,
@@ -271,6 +287,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event4 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment,
@@ -295,6 +312,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let experiment = MockExperiment()
 
                 let event1 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment,
@@ -305,6 +323,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event2 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment,
@@ -315,6 +334,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event3 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userAA,
                     experiment: experiment,
@@ -325,6 +345,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event4 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment,
@@ -349,6 +370,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 let experiment2 = MockExperiment(id: 2)
 
                 let event1 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment1,
@@ -359,6 +381,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event2 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment2,
@@ -369,6 +392,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event3 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment1,
@@ -379,6 +403,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 let event4 = UserEvents.Exposure(
+                    insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
                     experiment: experiment2,

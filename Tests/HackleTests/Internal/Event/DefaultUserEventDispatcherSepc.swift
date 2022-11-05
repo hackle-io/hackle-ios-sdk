@@ -10,83 +10,128 @@ import Nimble
 class DefaultUserEventDispatcherSpec: QuickSpec {
     override func spec() {
 
+        var eventQueue: DispatchQueue!
+        var eventRepository: MockEventRepository!
+        var httpQueue: DispatchQueue!
         var httpClient: MockHttpClient!
         var sut: DefaultUserEventDispatcher!
 
         beforeEach {
+            eventQueue = DispatchQueue(label: "test.EventQueue")
+            eventRepository = MockEventRepository()
+            httpQueue = DispatchQueue(label: "test.HttpQueue")
             httpClient = MockHttpClient()
-            sut = DefaultUserEventDispatcher(eventBaseUrl: URL(string: "localhost")!, httpClient: httpClient)
+
+            every(eventRepository.deleteMock).returns(())
+            sut = DefaultUserEventDispatcher(
+                eventBaseUrl: URL(string: "localhost")!,
+                eventQueue: eventQueue,
+                eventRepository: eventRepository,
+                httpQueue: httpQueue,
+                httpClient: httpClient
+            )
+        }
+
+        func mockResponse(statusCode: Int, error: Error? = nil) -> HttpResponse {
+            let url = URL(string: "localhost")!
+
+            return HttpResponse(
+                request: HttpRequest.get(url: URL(string: "localhost")!),
+                data: nil,
+                urlResponse: HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil, headerFields: nil),
+                error: error)
         }
 
         describe("dispatch") {
 
-            it("입력된 이벤트로 httpClient 를 호출한다") {
-                let events = [UserEvent]()
+            it("이벤트 전송에 실패하면 재시도를 위해 다시 PENDING 상태로 변경한다") {
+                // given
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(httpClient.executeMock).returns(())
+
+                let response = mockResponse(statusCode: 500, error: HackleError.error("error"))
+
+                // when
                 sut.dispatch(events: events)
+                httpQueue.sync {
+                }
 
-                expect(httpClient.executeMock.wasCalled()).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5))
+                httpClient.executeMock.firstInvokation().arguments.1(response)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.updateMock
+                }
             }
-        }
-
-        it("UserEvents.Exposure.toDto") {
-
-            let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
-            let user = HackleUser.of(user: Hackle.user(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
-            let date = Date()
-            let experiment = MockExperiment(id: 42, key: 320)
-            let variation = MockVariation(id: 142, key: "F")
-            let exposure: UserEvents.Exposure = UserEvents.Exposure(
-                timestamp: date,
-                user: user,
-                experiment: experiment,
-                variationId: 142,
-                variationKey: "F",
-                decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
-                properties: ["$parameterConfigurationId": 333]
-            )
-
-            let actual = exposure.toDto()
-
-            expect(actual["timestamp"] as! Int64) == date.epochMillis
-            expect(actual["userId"] as! String) == "test_id"
-            expect((actual["userProperties"] as! [String: Any])).to(haveCount(3))
-            expect((actual["hackleProperties"] as! [String: Any])).to(haveCount(1))
-            expect(actual["experimentId"] as! Int64) == 42
-            expect(actual["experimentKey"] as! Int64) == 320
-            expect(actual["variationId"] as! Int64) == 142
-            expect(actual["variationKey"] as! String) == "F"
-            expect(actual["decisionReason"] as! String) == "TRAFFIC_ALLOCATED"
-            expect(actual["properties"] as! [String: Any]).to(haveCount(1))
-        }
-
-        it("UserEvents.Track.toDto") {
-            let userProperties: [String: Any] = ["age": 20, "grade": "GOLD", "membership": false]
-            let user = HackleUser.of(user: Hackle.user(id: "test_id", properties: userProperties), hackleProperties: ["osName": "iOS"])
-            let date = Date()
-            let eventType = EventTypeEntity(id: 42, key: "test_event_key")
-            let event = Event(key: "test_event_key")
-
-            let dto1 = UserEvents.Track(timestamp: date, user: user, eventType: eventType, event: event).toDto()
-
-            expect(dto1["timestamp"] as! Int64) == date.epochMillis
-            expect(dto1["userId"] as! String) == "test_id"
-            expect(dto1["userProperties"] as! [String: Any]).to(haveCount(3))
-            expect(dto1["hackleProperties"] as! [String: Any]).to(haveCount(1))
-            expect(dto1["eventTypeId"] as! Int64) == 42
-            expect(dto1["eventTypeKey"] as! String) == "test_event_key"
-            expect(dto1["value"]) == nil
-            expect(dto1["properties"]) == nil
 
 
-            let dto2 = UserEvents.Track(
-                timestamp: date,
-                user: user,
-                eventType: eventType,
-                event: Event(key: "test_event_key", value: 320.42, properties: ["prop_key_1": "prop_value_1", "prop_key_2": false, "prop_key_3": 42])
-            ).toDto()
+            it("이벤트 전송에 성공하면 해당 이벤트를 DB에서 지운다") {
+                // given
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(httpClient.executeMock).returns(())
 
-            expect(dto2["value"] as! Double) == 320.42
-            expect(dto2["properties"] as! [String: Any]).to(haveCount(3))
+                let response = mockResponse(statusCode: 202)
+
+                // when
+                sut.dispatch(events: events)
+                httpQueue.sync {
+                }
+
+                httpClient.executeMock.firstInvokation().arguments.1(response)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.deleteMock
+                }
+            }
+
+            it("이벤트 전송시 4xx 에러가 발생하면 해당 이벤트를 DB 에서 지운다") {
+                // given
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(httpClient.executeMock).returns(())
+
+                let response = mockResponse(statusCode: 400)
+
+                // when
+                sut.dispatch(events: events)
+                httpQueue.sync {
+                }
+
+                httpClient.executeMock.firstInvokation().arguments.1(response)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.deleteMock
+                }
+            }
+
+            it("이벤트 전송시 5xx 에러가 발생하면 재시도를 위해 다시 PENDING 상태로 변경한다") {
+                // given
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(httpClient.executeMock).returns(())
+
+                let response = mockResponse(statusCode: 500)
+
+                // when
+                sut.dispatch(events: events)
+                httpQueue.sync {
+                }
+
+                httpClient.executeMock.firstInvokation().arguments.1(response)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.updateMock
+                }
+            }
         }
     }
 }

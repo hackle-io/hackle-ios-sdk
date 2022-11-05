@@ -6,10 +6,12 @@ import Foundation
 @testable import Hackle
 
 class MockUserEvent: UserEvent {
+    var type: UserEventType
     var user: HackleUser
     var timestamp: Date
 
-    init(user: HackleUser, timestamp: Date = Date()) {
+    init(user: HackleUser, timestamp: Date = Date(), type: UserEventType = .exposure) {
+        self.type = type
         self.user = user
         self.timestamp = timestamp
     }
