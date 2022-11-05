@@ -12,19 +12,19 @@ class ReadWriteLock {
         self.queue = DispatchQueue(label: label, attributes: .concurrent)
     }
 
-    func read(block: () -> ()) {
-        queue.sync(execute: block)
+    func read(block: () throws -> ()) rethrows {
+        try queue.sync(execute: block)
     }
 
-    func read<T>(block: () -> T) -> T {
-        queue.sync(execute: block)
+    func read<T>(block: () throws -> T) rethrows -> T {
+        try queue.sync(execute: block)
     }
 
-    func write(block: () -> ()) {
-        queue.sync(flags: .barrier, execute: block)
+    func write(block: () throws -> ()) rethrows {
+        try queue.sync(flags: .barrier, execute: block)
     }
 
-    func write<T>(block: () -> T) -> T {
-        queue.sync(flags: .barrier, execute: block)
+    func write<T>(block: () throws -> T) rethrows -> T {
+        try queue.sync(flags: .barrier, execute: block)
     }
 }

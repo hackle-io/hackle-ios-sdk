@@ -5,85 +5,110 @@
 import Foundation
 
 protocol UserEventDispatcher {
-    func dispatch(events: [UserEvent])
+    func dispatch(events: [EventEntity])
 }
 
 class DefaultUserEventDispatcher: UserEventDispatcher {
 
     private let endpoint: URL
-    private let httpClient: HttpClient
-    private let queue: DispatchQueue
 
-    init(eventBaseUrl: URL, httpClient: HttpClient) {
+    private let eventQueue: DispatchQueue
+    private let eventRepository: EventRepository
+    private let httpQueue: DispatchQueue
+    private let httpClient: HttpClient
+
+    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient) {
         self.endpoint = eventBaseUrl.appendingPathComponent("/api/v2/events")
+        self.eventQueue = eventQueue
+        self.eventRepository = eventRepository
+        self.httpQueue = httpQueue
         self.httpClient = httpClient
-        self.queue = DispatchQueue(label: "io.hackle.DefaultUserEventDispatcher")
     }
 
-    func dispatch(events: [UserEvent]) {
-        queue.async {
-            self.dispatchToServer(events: events)
+    func dispatch(events: [EventEntity]) {
+        httpQueue.async {
+            self.eventDispatchInternal(events: events)
         }
     }
 
-    private func dispatchToServer(events: [UserEvent]) {
+    private func delete(events: [EventEntity]) {
+        eventQueue.async {
+            self.deleteEventInternal(events: events)
+        }
+    }
 
-        let payload = createPayload(events: events)
-        guard let requestBody = Json.serialize(payload) else {
+    private func updateEventStatusToPending(events: [EventEntity]) {
+        eventQueue.async {
+            self.updateEventToPendingInternal(events: events)
+        }
+    }
+
+    private func eventDispatchInternal(events: [EventEntity]) {
+        guard let requestBody = toBody(events: events) else {
+            Log.error("Failed to dispatch events: invalid requestBody")
+            delete(events: events)
             return
         }
 
         let request = HttpRequest.post(url: endpoint, body: requestBody)
 
         httpClient.execute(request: request) { response in
-            self.checkResponse(response: response)
+            self.handleResponse(events: events, response: response)
         }
     }
 
-    private func createPayload(events: [UserEvent]) -> EventPayloadDto {
+    private func handleResponse(events: [EventEntity], response: HttpResponse) {
 
-        var exposures = [ExposureEventDto]()
-        var tracks = [TrackEventDto]()
-
-        for event in events {
-            switch event {
-            case let exposure as UserEvents.Exposure:
-
-                let dto = exposure.toDto()
-                if Json.isValid(dto) {
-                    exposures.append(dto)
-                }
-            case let track as UserEvents.Track:
-                let dto = track.toDto()
-                if Json.isValid(dto) {
-                    tracks.append(dto)
-                }
-            default:
-                continue
-            }
-        }
-
-        return [
-            "exposureEvents": exposures,
-            "trackEvents": tracks
-        ]
-    }
-
-    private func checkResponse(response: HttpResponse) {
         if let error = response.error {
             Log.error("Failed to dispatch events: \(error.localizedDescription)")
+            updateEventStatusToPending(events: events)
             return
         }
 
         guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
             Log.error("Failed to dispatch events: Response is empty")
+            delete(events: events)
             return
         }
 
-        guard (200..<300).contains(urlResponse.statusCode) else {
-            Log.error("Failed to dispatch events: Http status code: \(urlResponse.statusCode)")
+        if (200..<300).contains(urlResponse.statusCode) {
+            delete(events: events)
             return
         }
+
+        if (400..<500).contains(urlResponse.statusCode) {
+            delete(events: events)
+            return
+        }
+
+        updateEventStatusToPending(events: events)
+    }
+
+    private func deleteEventInternal(events: [EventEntity]) {
+        eventRepository.delete(events: events)
+    }
+
+    private func updateEventToPendingInternal(events: [EventEntity]) {
+        eventRepository.update(events: events, status: .pending)
+    }
+
+    private func toBody(events: [EventEntity]) -> Data? {
+        var exposures = [String]()
+        var tracks = [String]()
+
+        for event in events {
+            switch event.type {
+            case .exposure:
+                exposures.append(event.body)
+            case .track:
+                tracks.append(event.body)
+            }
+        }
+        let exposurePayload = exposures.joined(separator: ",")
+        let trackPayload = tracks.joined(separator: ",")
+
+        let body = "{\"exposureEvents\":[\(exposurePayload)],\"trackEvents\":[\(trackPayload)]}"
+        return body.data(using: .utf8)
     }
 }
 
@@ -95,6 +120,7 @@ extension UserEvents.Exposure {
     func toDto() -> ExposureEventDto {
         var dto = ExposureEventDto()
 
+        dto["insertId"] = insertId
         dto["timestamp"] = timestamp.epochMillis
 
         dto["userId"] = user.identifiers[IdentifierType.id.rawValue]
@@ -119,6 +145,7 @@ extension UserEvents.Track {
     func toDto() -> TrackEventDto {
         var dto = TrackEventDto()
 
+        dto["insertId"] = insertId
         dto["timestamp"] = timestamp.epochMillis
 
         dto["userId"] = user.identifiers[IdentifierType.id.rawValue]

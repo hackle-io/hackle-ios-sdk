@@ -90,6 +90,8 @@
 		EE34413C28A5EA0A00630557 /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34413B28A5EA0A00630557 /* HackleConfig.swift */; };
 		EE3EE82F28B770040078575F /* MockExposureEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */; };
 		EE3EE83128B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */; };
+		EE404398291296D200980A73 /* SQLiteDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE404397291296D200980A73 /* SQLiteDatabase.swift */; };
+		EE40439B2913489600980A73 /* MockEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE40439A2913489600980A73 /* MockEventRepository.swift */; };
 		EE51540A27A3C64900B1F205 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540927A3C64900B1F205 /* Segment.swift */; };
 		EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540B27A3C94D00B1F205 /* TargetingType.swift */; };
 		EE51540E27A3D1CD00B1F205 /* OverrideResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */; };
@@ -147,6 +149,9 @@
 		EED91E7B27670066001CF5B3 /* HackleUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E7A27670066001CF5B3 /* HackleUser.swift */; };
 		EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */; };
 		EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */; };
+		EEF268672911F45F00455C70 /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF268662911F45F00455C70 /* EventRepository.swift */; };
+		EEF268692911F4BC00455C70 /* EventEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF268682911F4BC00455C70 /* EventEntity.swift */; };
+		EEF2686B2912149000455C70 /* DatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2686A2912149000455C70 /* DatabaseHelper.swift */; };
 		EEF2E7342888E9E5007B480A /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E7332888E9E5007B480A /* Container.swift */; };
 		EEF2E7362889311D007B480A /* ContainerGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E7352889311D007B480A /* ContainerGroup.swift */; };
 		EEF2E739288932BD007B480A /* ContainerResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF2E738288932BD007B480A /* ContainerResolver.swift */; };
@@ -248,6 +253,8 @@
 		EE34413B28A5EA0A00630557 /* HackleConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
 		EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExposureEventDedupDeterminer.swift; sourceTree = "<group>"; };
 		EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExposureEventDedupDeterminerSpec.swift; sourceTree = "<group>"; };
+		EE404397291296D200980A73 /* SQLiteDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteDatabase.swift; sourceTree = "<group>"; };
+		EE40439A2913489600980A73 /* MockEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEventRepository.swift; sourceTree = "<group>"; };
 		EE51540927A3C64900B1F205 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
 		EE51540B27A3C94D00B1F205 /* TargetingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetingType.swift; sourceTree = "<group>"; };
 		EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideResolver.swift; sourceTree = "<group>"; };
@@ -302,6 +309,9 @@
 		EED91E7A27670066001CF5B3 /* HackleUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUser.swift; sourceTree = "<group>"; };
 		EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleInternalAppSpecs.swift; sourceTree = "<group>"; };
 		EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluator.swift; sourceTree = "<group>"; };
+		EEF268662911F45F00455C70 /* EventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRepository.swift; sourceTree = "<group>"; };
+		EEF268682911F4BC00455C70 /* EventEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEntity.swift; sourceTree = "<group>"; };
+		EEF2686A2912149000455C70 /* DatabaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseHelper.swift; sourceTree = "<group>"; };
 		EEF2E7332888E9E5007B480A /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		EEF2E7352889311D007B480A /* ContainerGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerGroup.swift; sourceTree = "<group>"; };
 		EEF2E738288932BD007B480A /* ContainerResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerResolver.swift; sourceTree = "<group>"; };
@@ -485,6 +495,14 @@
 			path = Log;
 			sourceTree = "<group>";
 		};
+		EE4043992913487F00980A73 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				EE40439A2913489600980A73 /* MockEventRepository.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
 		EE5EF547283D0CA100407084 /* User */ = {
 			isa = PBXGroup;
 			children = (
@@ -500,6 +518,7 @@
 		EE641F9126F09AE80037AE25 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				EE4043992913487F00980A73 /* Database */,
 				EE641F9226F09B110037AE25 /* Evaluation */,
 				38AF49D7C0561BCCAA8FDD68 /* Event */,
 				EEA1DAC628FE8AFC00A2F762 /* Model */,
@@ -679,6 +698,7 @@
 		EEA8BD4526ECFDEF007230D9 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				EEF268652911F44C00455C70 /* Database */,
 				EEA8BD0F26ECFCE5007230D9 /* Evaluation */,
 				38AF43A95D3A0F60C05181CD /* Event */,
 				38AF4ACE8E8E9C8C89DFF855 /* Http */,
@@ -692,6 +712,17 @@
 				EE0560DF26F21F970051B624 /* HackleError.swift */,
 			);
 			path = Internal;
+			sourceTree = "<group>";
+		};
+		EEF268652911F44C00455C70 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				EEF2686A2912149000455C70 /* DatabaseHelper.swift */,
+				EEF268682911F4BC00455C70 /* EventEntity.swift */,
+				EEF268662911F45F00455C70 /* EventRepository.swift */,
+				EE404397291296D200980A73 /* SQLiteDatabase.swift */,
+			);
+			path = Database;
 			sourceTree = "<group>";
 		};
 		EEF2E737288932A3007B480A /* Container */ = {
@@ -875,10 +906,12 @@
 				EEA8BD7126EDF02D007230D9 /* HackleValue.swift in Sources */,
 				EEA8BD2E26ECFD9C007230D9 /* FlowEvaluator.swift in Sources */,
 				38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */,
+				EEF268692911F4BC00455C70 /* EventEntity.swift in Sources */,
 				38AF4D395BC520AC4F82C16A /* User.swift in Sources */,
 				38AF489DB2E9ACA040488112 /* Event.swift in Sources */,
 				EED6B91228FBF2BE00C2C6C0 /* ParameterConfig.swift in Sources */,
 				38AF44C5ECF84D590D843AE6 /* Bucket.swift in Sources */,
+				EE404398291296D200980A73 /* SQLiteDatabase.swift in Sources */,
 				EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */,
 				38AF4D5A91D0663D200F3AA3 /* Slot.swift in Sources */,
 				38AF48CB5F238CA99BAC3C2E /* Experiment.swift in Sources */,
@@ -915,6 +948,7 @@
 				EE8A7428284345C3004C923D /* HackleUserResolver.swift in Sources */,
 				EEA8BD2026ECFD6B007230D9 /* ActionResolver.swift in Sources */,
 				38AF4515F80A6011AE1FC3F3 /* UserEventDispatcher.swift in Sources */,
+				EEF2686B2912149000455C70 /* DatabaseHelper.swift in Sources */,
 				EE5EF549283D0D0800407084 /* IdentifierType.swift in Sources */,
 				EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */,
 				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
@@ -926,6 +960,7 @@
 				EE34413A28A4912400630557 /* ExposureEventDedupDeterminer.swift in Sources */,
 				38AF4110A19264FE458293D2 /* Json.swift in Sources */,
 				EE5EF54D283D0EE900407084 /* IdentifiersBuilder.swift in Sources */,
+				EEF268672911F45F00455C70 /* EventRepository.swift in Sources */,
 				38AF475A6F944EA8D56D2B57 /* Sdk.swift in Sources */,
 				EEA8BD3E26ECFDB5007230D9 /* ValueMatcher.swift in Sources */,
 				38AF42941D113C93F45BEB7F /* SdkVersion.swift in Sources */,
@@ -985,6 +1020,7 @@
 				38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */,
 				EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */,
 				EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */,
+				EE40439B2913489600980A73 /* MockEventRepository.swift in Sources */,
 				EE1081D627A3F6A600E76BB2 /* MockOverrideResolver.swift in Sources */,
 				EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */,
 				EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */,
