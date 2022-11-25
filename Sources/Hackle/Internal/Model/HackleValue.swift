@@ -97,4 +97,22 @@ enum HackleValue: Codable, Equatable {
             return nil
         }
     }
+
+    var type: HackleValueType {
+        switch self {
+        case .string: return .string
+        case .number: return .number
+        case .bool: return .bool
+        case .null: return .null
+        }
+    }
+}
+
+enum HackleValueType: String, Codable {
+    case null = "NULL"
+    case string = "STRING"
+    case number = "NUMBER"
+    case bool = "BOOLEAN"
+    case version = "VERSION"
+    case json = "JSON"
 }

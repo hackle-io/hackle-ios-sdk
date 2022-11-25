@@ -41,3 +41,23 @@ struct Evaluation: Equatable {
         return parameterConfiguration
     }
 }
+
+
+class RemoteConfigEvaluation {
+    let valueId: Int64?
+    let value: HackleValue
+    let reason: String
+    let properties: [String: Any]
+
+    init(valueId: Int64?, value: HackleValue, reason: String, properties: [String: Any]) {
+        self.valueId = valueId
+        self.value = value
+        self.reason = reason
+        self.properties = properties
+    }
+
+    static func of(valueId: Int64?, value: HackleValue, reason: String, propertiesBuilder: PropertiesBuilder) -> RemoteConfigEvaluation {
+        propertiesBuilder.add(key: "returnValue", value: value.rawValue)
+        return RemoteConfigEvaluation(valueId: valueId, value: value, reason: reason, properties: propertiesBuilder.build())
+    }
+}

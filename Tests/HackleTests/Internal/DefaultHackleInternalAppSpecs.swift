@@ -64,7 +64,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
                     let config = ParameterConfigurationEntity(id: 32, parameters: [:])
-                    every(evaluator.evaluateMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: config))
+                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: config))
 
                     // when
                     let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
@@ -83,7 +83,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil))
+                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil))
 
                     // when
                     try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
@@ -151,16 +151,20 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
             class EvaluatorStub: Evaluator {
 
-                private let evaluations: [Evaluation]
-                private var i = -1
+                private let experimentEvaluations: [Evaluation]
+                private var experimentEvaluateCount = -1
 
                 init(evaluations: [Evaluation]) {
-                    self.evaluations = evaluations
+                    self.experimentEvaluations = evaluations
                 }
 
-                func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
-                    i = i + 1
-                    return evaluations[i]
+                func evaluateExperiment(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
+                    experimentEvaluateCount = experimentEvaluateCount + 1
+                    return experimentEvaluations[experimentEvaluateCount]
+                }
+
+                func evaluateRemoteConfig(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigEvaluation {
+                    fatalError("evaluateRemoteConfig(workspace:parameter:user:defaultValue:) has not been implemented")
                 }
             }
         }
@@ -210,7 +214,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TARGET_RULE_MATCH, config: nil))
+                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TARGET_RULE_MATCH, config: nil))
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -230,7 +234,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateMock).returns(Evaluation(variationId: 320, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: nil))
+                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: nil))
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -250,7 +254,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
                     let config = ParameterConfigurationEntity(id: 32, parameters: [:])
-                    every(evaluator.evaluateMock).returns(Evaluation(variationId: 320, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: config))
+                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: config))
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -268,7 +272,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, config: nil))
+                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, config: nil))
 
                     // when
                     try sut.featureFlag(featureKey: 42, user: user)
