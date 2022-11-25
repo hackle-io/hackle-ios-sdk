@@ -1,10 +1,10 @@
 import Foundation
 
-protocol TargetRuleDeterminer {
+protocol ExperimentTargetRuleDeterminer {
     func determineTargetRuleOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> TargetRule?
 }
 
-class DefaultTargetRuleDeterminer: TargetRuleDeterminer {
+class DefaultExperimentTargetRuleDeterminer: ExperimentTargetRuleDeterminer {
 
     private let targetMatcher: TargetMatcher
 

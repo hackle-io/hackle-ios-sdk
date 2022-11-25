@@ -8,7 +8,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
     override func spec() {
 
-        var user = HackleUser.of(userId: "test_id")
+        let user = HackleUser.of(userId: "test_id")
 
         var eventDedupDeterminer: MockExposureEventDedupDeterminer!
         var eventQueue: DispatchQueue!

@@ -19,7 +19,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             ])
 
             let matcher = TargetMatcherStub.of(false, false, false, true, false)
-            let sut = DefaultTargetRuleDeterminer(targetMatcher: matcher)
+            let sut = DefaultExperimentTargetRuleDeterminer(targetMatcher: matcher)
 
             // when
             let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))
@@ -40,7 +40,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             ])
 
             let matcher = TargetMatcherStub.of(false, false, false, false, false)
-            let sut = DefaultTargetRuleDeterminer(targetMatcher: matcher)
+            let sut = DefaultExperimentTargetRuleDeterminer(targetMatcher: matcher)
 
             // when
             let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"))

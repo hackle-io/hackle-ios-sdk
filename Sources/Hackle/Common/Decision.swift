@@ -74,6 +74,17 @@ import Foundation
     }
 }
 
+final class RemoteConfigDecision {
+
+    let value: HackleValue
+    let reason: String
+
+    init(value: HackleValue, reason: String) {
+        self.value = value
+        self.reason = reason
+    }
+}
+
 
 class DecisionReason {
 
@@ -98,4 +109,6 @@ class DecisionReason {
     static let INDIVIDUAL_TARGET_MATCH = "INDIVIDUAL_TARGET_MATCH"
     static let TARGET_RULE_MATCH = "TARGET_RULE_MATCH"
     static let DEFAULT_RULE = "DEFAULT_RULE"
+    static let REMOTE_CONFIG_PARAMETER_NOT_FOUND = "REMOTE_CONFIG_PARAMETER_NOT_FOUND"
+    static let TYPE_MISMATCH = "TYPE_MISMATCH"
 }

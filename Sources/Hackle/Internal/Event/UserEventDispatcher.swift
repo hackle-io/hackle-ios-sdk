@@ -95,6 +95,7 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
     private func toBody(events: [EventEntity]) -> Data? {
         var exposures = [String]()
         var tracks = [String]()
+        var remoteConfigs = [String]()
 
         for event in events {
             switch event.type {
@@ -102,18 +103,22 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
                 exposures.append(event.body)
             case .track:
                 tracks.append(event.body)
+            case .remoteConfig:
+                remoteConfigs.append(event.body)
             }
         }
         let exposurePayload = exposures.joined(separator: ",")
         let trackPayload = tracks.joined(separator: ",")
+        let remoteConfigPayload = remoteConfigs.joined(separator: ",")
 
-        let body = "{\"exposureEvents\":[\(exposurePayload)],\"trackEvents\":[\(trackPayload)]}"
+        let body = "{\"exposureEvents\":[\(exposurePayload)],\"trackEvents\":[\(trackPayload)],\"remoteConfigEvents\":[\(remoteConfigPayload)]}"
         return body.data(using: .utf8)
     }
 }
 
 typealias ExposureEventDto = [String: Any]
 typealias TrackEventDto = [String: Any]
+typealias RemoteConfigEventDto = [String: Any]
 typealias EventPayloadDto = [String: Any]
 
 extension UserEvents.Exposure {
@@ -161,6 +166,29 @@ extension UserEvents.Track {
         if let properties = event.properties {
             dto["properties"] = properties
         }
+        return dto
+    }
+}
+
+extension UserEvents.RemoteConfig {
+    func toDto() -> RemoteConfigEventDto {
+        var dto = RemoteConfigEventDto()
+
+        dto["insertId"] = insertId
+        dto["timestamp"] = timestamp.epochMillis
+
+        dto["userId"] = user.identifiers[IdentifierType.id.rawValue]
+        dto["identifiers"] = user.identifiers
+        dto["userProperties"] = user.properties
+        dto["hackleProperties"] = user.hackleProperties
+
+        dto["parameterId"] = parameter.id
+        dto["parameterKey"] = parameter.key
+        dto["parameterType"] = parameter.type.rawValue
+        dto["valueId"] = valueId
+        dto["decisionReason"] = decisionReason
+        dto["properties"] = properties
+
         return dto
     }
 }

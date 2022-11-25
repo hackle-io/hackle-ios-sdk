@@ -72,7 +72,7 @@
 		EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */; };
 		EE0560C426F1CF5F0051B624 /* MockFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */; };
 		EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */; };
-		EE0560CC26F1E01D0051B624 /* MockTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */; };
+		EE0560CC26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560CB26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift */; };
 		EE0560D026F1F9420051B624 /* MockConditionMatcherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */; };
 		EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */; };
 		EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */; };
@@ -111,8 +111,19 @@
 		EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */; };
 		EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */; };
 		EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */; };
-		EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */; };
+		EE641FD926F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD826F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift */; };
 		EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FDC26F09D760037AE25 /* MockActionResolver.swift */; };
+		EE83D0D9292EEC6D0080C7B8 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0D8292EEC6D0080C7B8 /* Config.swift */; };
+		EE83D0DE292EED9A0080C7B8 /* DefaultRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0DD292EED9A0080C7B8 /* DefaultRemoteConfig.swift */; };
+		EE83D0E0292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0DF292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift */; };
+		EE83D0E2292EF1BE0080C7B8 /* MockRemoteConfigTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0E1292EF1BE0080C7B8 /* MockRemoteConfigTargetRuleDeterminer.swift */; };
+		EE83D0E429304EB40080C7B8 /* HackleRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0E329304EB40080C7B8 /* HackleRemoteConfig.swift */; };
+		EE83D0E6293068E60080C7B8 /* ValueMatcherFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0E5293068E60080C7B8 /* ValueMatcherFactorySpecs.swift */; };
+		EE83D0E829306A300080C7B8 /* DefaultRemoteConfigTargetRuleDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0E729306A300080C7B8 /* DefaultRemoteConfigTargetRuleDeterminerSpecs.swift */; };
+		EE83D0EA29306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0E929306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift */; };
+		EE83D0EE29307D0E0080C7B8 /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0ED29307D0E0080C7B8 /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift */; };
+		EE83D0F029307E030080C7B8 /* MockTargetMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0EF29307E030080C7B8 /* MockTargetMatcher.swift */; };
+		EE83D0F2293089150080C7B8 /* RemoteConfigEvaluationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0F1293089150080C7B8 /* RemoteConfigEvaluationSpecs.swift */; };
 		EE8A7428284345C3004C923D /* HackleUserResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A7427284345C3004C923D /* HackleUserResolver.swift */; };
 		EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */; };
 		EE90396628B7876B00846643 /* HackleConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE90396528B7876B00846643 /* HackleConfigSpec.swift */; };
@@ -134,7 +145,7 @@
 		EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD4126ECFDBA007230D9 /* ValueOperatorMatcher.swift */; };
 		EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */; };
 		EEA8BD4F26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */; };
-		EEA8BD5326ECFFBE007230D9 /* TargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */; };
+		EEA8BD5326ECFFBE007230D9 /* ExperimentTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5226ECFFBE007230D9 /* ExperimentTargetRuleDeterminer.swift */; };
 		EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5626ECFFD1007230D9 /* Action.swift */; };
 		EEA8BD5B26ECFFD7007230D9 /* Target.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5A26ECFFD7007230D9 /* Target.swift */; };
 		EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */; };
@@ -147,6 +158,7 @@
 		EED6B91228FBF2BE00C2C6C0 /* ParameterConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6B91128FBF2BE00C2C6C0 /* ParameterConfig.swift */; };
 		EED91E792766F85C001CF5B3 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E782766F85C001CF5B3 /* Device.swift */; };
 		EED91E7B27670066001CF5B3 /* HackleUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED91E7A27670066001CF5B3 /* HackleUser.swift */; };
+		EEDE2A2629265966000A44EB /* RemoteConfigParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDE2A2529265966000A44EB /* RemoteConfigParameter.swift */; };
 		EEDFE72A26F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */; };
 		EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */; };
 		EEF268672911F45F00455C70 /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF268662911F45F00455C70 /* EventRepository.swift */; };
@@ -235,7 +247,7 @@
 		EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluationFlow.swift; sourceTree = "<group>"; };
 		EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlowEvaluator.swift; sourceTree = "<group>"; };
 		EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExperimentTargetDeterminer.swift; sourceTree = "<group>"; };
-		EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTargetRuleDeterminer.swift; sourceTree = "<group>"; };
+		EE0560CB26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExperimentTargetRuleDeterminer.swift; sourceTree = "<group>"; };
 		EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConditionMatcherFactory.swift; sourceTree = "<group>"; };
 		EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConditionMatcher.swift; sourceTree = "<group>"; };
 		EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockValueOperatorMatcher.swift; sourceTree = "<group>"; };
@@ -274,8 +286,19 @@
 		EE641FCC26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConditionMatcherFactorySpecs.swift; sourceTree = "<group>"; };
 		EE641FD026F09C170037AE25 /* DefaultTargetMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTargetMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetDeterminerSpecs.swift; sourceTree = "<group>"; };
-		EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTargetRuleDeterminerSpecs.swift; sourceTree = "<group>"; };
+		EE641FD826F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetRuleDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EE641FDC26F09D760037AE25 /* MockActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockActionResolver.swift; sourceTree = "<group>"; };
+		EE83D0D8292EEC6D0080C7B8 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		EE83D0DD292EED9A0080C7B8 /* DefaultRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoteConfig.swift; sourceTree = "<group>"; };
+		EE83D0DF292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigTargetRuleDeterminer.swift; sourceTree = "<group>"; };
+		EE83D0E1292EF1BE0080C7B8 /* MockRemoteConfigTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfigTargetRuleDeterminer.swift; sourceTree = "<group>"; };
+		EE83D0E329304EB40080C7B8 /* HackleRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleRemoteConfig.swift; sourceTree = "<group>"; };
+		EE83D0E5293068E60080C7B8 /* ValueMatcherFactorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueMatcherFactorySpecs.swift; sourceTree = "<group>"; };
+		EE83D0E729306A300080C7B8 /* DefaultRemoteConfigTargetRuleDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoteConfigTargetRuleDeterminerSpecs.swift; sourceTree = "<group>"; };
+		EE83D0E929306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfigTargetRuleMatcher.swift; sourceTree = "<group>"; };
+		EE83D0ED29307D0E0080C7B8 /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoteConfigTargetRuleMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE83D0EF29307E030080C7B8 /* MockTargetMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTargetMatcher.swift; sourceTree = "<group>"; };
+		EE83D0F1293089150080C7B8 /* RemoteConfigEvaluationSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigEvaluationSpecs.swift; sourceTree = "<group>"; };
 		EE8A7427284345C3004C923D /* HackleUserResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserResolver.swift; sourceTree = "<group>"; };
 		EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleUserResolverSpecs.swift; sourceTree = "<group>"; };
 		EE90396528B7876B00846643 /* HackleConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleConfigSpec.swift; sourceTree = "<group>"; };
@@ -294,7 +317,7 @@
 		EEA8BD4126ECFDBA007230D9 /* ValueOperatorMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOperatorMatcher.swift; sourceTree = "<group>"; };
 		EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInternalApp.swift; sourceTree = "<group>"; };
 		EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentTargetDeterminer.swift; sourceTree = "<group>"; };
-		EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRuleDeterminer.swift; sourceTree = "<group>"; };
+		EEA8BD5226ECFFBE007230D9 /* ExperimentTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentTargetRuleDeterminer.swift; sourceTree = "<group>"; };
 		EEA8BD5626ECFFD1007230D9 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		EEA8BD5A26ECFFD7007230D9 /* Target.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Target.swift; sourceTree = "<group>"; };
 		EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetRule.swift; sourceTree = "<group>"; };
@@ -307,6 +330,7 @@
 		EED6B91128FBF2BE00C2C6C0 /* ParameterConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterConfig.swift; sourceTree = "<group>"; };
 		EED91E782766F85C001CF5B3 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		EED91E7A27670066001CF5B3 /* HackleUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUser.swift; sourceTree = "<group>"; };
+		EEDE2A2529265966000A44EB /* RemoteConfigParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigParameter.swift; sourceTree = "<group>"; };
 		EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHackleInternalAppSpecs.swift; sourceTree = "<group>"; };
 		EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluator.swift; sourceTree = "<group>"; };
 		EEF268662911F45F00455C70 /* EventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRepository.swift; sourceTree = "<group>"; };
@@ -390,10 +414,12 @@
 		38AF45B605A39AEE2B1355D1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				38AF42AC8E638347A2068316 /* User.swift */,
-				38AF45493800B905A3D873FB /* Event.swift */,
+				EE83D0D8292EEC6D0080C7B8 /* Config.swift */,
 				EEA8BD6C26EDDB7D007230D9 /* Decision.swift */,
+				38AF45493800B905A3D873FB /* Event.swift */,
+				EE83D0E329304EB40080C7B8 /* HackleRemoteConfig.swift */,
 				EED6B91128FBF2BE00C2C6C0 /* ParameterConfig.swift */,
+				38AF42AC8E638347A2068316 /* User.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -436,6 +462,7 @@
 				38AF4D833E82DF14236B5A7F /* Experiment.swift */,
 				EEA8BD7026EDF02D007230D9 /* HackleValue.swift */,
 				EED6B90F28FBF2B200C2C6C0 /* ParameterConfiguration.swift */,
+				EEDE2A2529265966000A44EB /* RemoteConfigParameter.swift */,
 				38AF48C794F4EEED83590BF6 /* Slot.swift */,
 				EEA8BD5A26ECFFD7007230D9 /* Target.swift */,
 				EEA8BD5E26ECFFDD007230D9 /* TargetRule.swift */,
@@ -541,6 +568,7 @@
 				EE641F9E26F09B6B0037AE25 /* EvaluationSpecs.swift */,
 				EE641F9826F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift */,
 				EEDFE72D26F4BF7C005631B7 /* MockEvaluator.swift */,
+				EE83D0F1293089150080C7B8 /* RemoteConfigEvaluationSpecs.swift */,
 			);
 			path = Evaluation;
 			sourceTree = "<group>";
@@ -589,11 +617,13 @@
 				EE0560D526F1FA730051B624 /* MockConditionMatcher.swift */,
 				EE0560CF26F1F9420051B624 /* MockConditionMatcherFactory.swift */,
 				EE1081D327A3F64600E76BB2 /* MockSegmentMatcher.swift */,
+				EE83D0EF29307E030080C7B8 /* MockTargetMatcher.swift */,
 				EE1081D127A3F5CC00E76BB2 /* MockUserValueResolver.swift */,
 				EE0560D926F217D90051B624 /* MockValueOperatorMatcher.swift */,
 				EE641FB826F09BE00037AE25 /* OperatorMatcherSpecs.swift */,
 				EE1081D927A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift */,
 				EE641FC826F09C040037AE25 /* UserConditionMatcherSpecs.swift */,
+				EE83D0E5293068E60080C7B8 /* ValueMatcherFactorySpecs.swift */,
 				EE641FBC26F09BE90037AE25 /* ValueMatcherSpecs.swift */,
 				EE2A71E12701F880007691D7 /* VersionSpecs.swift */,
 			);
@@ -604,13 +634,25 @@
 			isa = PBXGroup;
 			children = (
 				EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */,
+				EE641FD826F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift */,
 				EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */,
-				EE641FD826F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift */,
+				EE83D0E729306A300080C7B8 /* DefaultRemoteConfigTargetRuleDeterminerSpecs.swift */,
+				EE83D0ED29307D0E0080C7B8 /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift */,
 				EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */,
+				EE0560CB26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift */,
 				EE1081D527A3F6A600E76BB2 /* MockOverrideResolver.swift */,
-				EE0560CB26F1E01D0051B624 /* MockTargetRuleDeterminer.swift */,
+				EE83D0E1292EF1BE0080C7B8 /* MockRemoteConfigTargetRuleDeterminer.swift */,
+				EE83D0E929306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift */,
 			);
 			path = Target;
+			sourceTree = "<group>";
+		};
+		EE83D0DC292EED540080C7B8 /* RemoteConfig */ = {
+			isa = PBXGroup;
+			children = (
+				EE83D0DD292EED9A0080C7B8 /* DefaultRemoteConfig.swift */,
+			);
+			path = RemoteConfig;
 			sourceTree = "<group>";
 		};
 		EE8A742928435DC1004C923D /* User */ = {
@@ -689,8 +731,9 @@
 			isa = PBXGroup;
 			children = (
 				EEA8BD4E26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift */,
+				EEA8BD5226ECFFBE007230D9 /* ExperimentTargetRuleDeterminer.swift */,
 				EE51540D27A3D1CD00B1F205 /* OverrideResolver.swift */,
-				EEA8BD5226ECFFBE007230D9 /* TargetRuleDeterminer.swift */,
+				EE83D0DF292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift */,
 			);
 			path = Target;
 			sourceTree = "<group>";
@@ -705,11 +748,12 @@
 				38AF4F7139F209248611A4F1 /* Log */,
 				38AF4975BEF89059B2A959A6 /* Model */,
 				38AF4F669561F1662BDA1DAA /* Notification */,
+				EE83D0DC292EED540080C7B8 /* RemoteConfig */,
 				EE5EF547283D0CA100407084 /* User */,
 				38AF4932C2739F8CED158D23 /* Utilities */,
 				38AF4AF89F323B8E1AAE4F27 /* Workspace */,
-				EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */,
 				EE0560DF26F21F970051B624 /* HackleError.swift */,
+				EEA8BD4826ECFF87007230D9 /* HackleInternalApp.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -938,6 +982,7 @@
 				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
 				EE51540A27A3C64900B1F205 /* Segment.swift in Sources */,
 				EEF2E7342888E9E5007B480A /* Container.swift in Sources */,
+				EE83D0E0292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift in Sources */,
 				EEA8BD3226ECFDA2007230D9 /* ConditionMatcher.swift in Sources */,
 				38AF4D53AD85D462DCBFDDB6 /* AppNotificationObserver.swift in Sources */,
 				EE5EF54B283D0EE000407084 /* PropertiesBuilder.swift in Sources */,
@@ -949,12 +994,13 @@
 				EEA8BD2026ECFD6B007230D9 /* ActionResolver.swift in Sources */,
 				38AF4515F80A6011AE1FC3F3 /* UserEventDispatcher.swift in Sources */,
 				EEF2686B2912149000455C70 /* DatabaseHelper.swift in Sources */,
+				EE83D0DE292EED9A0080C7B8 /* DefaultRemoteConfig.swift in Sources */,
 				EE5EF549283D0D0800407084 /* IdentifierType.swift in Sources */,
 				EEA8BD5726ECFFD1007230D9 /* Action.swift in Sources */,
 				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
 				38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */,
 				38AF4ECF7D12C7B2E1CA8E10 /* Log.swift in Sources */,
-				EEA8BD5326ECFFBE007230D9 /* TargetRuleDeterminer.swift in Sources */,
+				EEA8BD5326ECFFBE007230D9 /* ExperimentTargetRuleDeterminer.swift in Sources */,
 				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
 				EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */,
 				EE34413A28A4912400630557 /* ExposureEventDedupDeterminer.swift in Sources */,
@@ -971,10 +1017,13 @@
 				EEF2E739288932BD007B480A /* ContainerResolver.swift in Sources */,
 				EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */,
 				EED91E792766F85C001CF5B3 /* Device.swift in Sources */,
+				EEDE2A2629265966000A44EB /* RemoteConfigParameter.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
 				EEA8BD6326ECFFF9007230D9 /* Objects.swift in Sources */,
 				EE51540E27A3D1CD00B1F205 /* OverrideResolver.swift in Sources */,
 				38AF42534080D9377FB992A7 /* UserDefaults.swift in Sources */,
+				EE83D0D9292EEC6D0080C7B8 /* Config.swift in Sources */,
+				EE83D0E429304EB40080C7B8 /* HackleRemoteConfig.swift in Sources */,
 				EEA8BD2426ECFD8C007230D9 /* EvaluationFlow.swift in Sources */,
 				EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */,
 			);
@@ -984,6 +1033,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				EE83D0EE29307D0E0080C7B8 /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift in Sources */,
 				EE641F9926F09B5A0037AE25 /* DefaultEvaluatorSpecs.swift in Sources */,
 				38AF4EEB04BE3D41368554A1 /* Mocks.swift in Sources */,
 				38AF46E5BB880D17ADB0B732 /* MockBucketer.swift in Sources */,
@@ -1001,11 +1051,14 @@
 				EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */,
 				EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */,
 				EE641FC926F09C040037AE25 /* UserConditionMatcherSpecs.swift in Sources */,
+				EE83D0EA29306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
 				38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */,
+				EE83D0E2292EF1BE0080C7B8 /* MockRemoteConfigTargetRuleDeterminer.swift in Sources */,
 				EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */,
-				EE0560CC26F1E01D0051B624 /* MockTargetRuleDeterminer.swift in Sources */,
+				EE0560CC26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift in Sources */,
 				EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */,
 				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
+				EE83D0F029307E030080C7B8 /* MockTargetMatcher.swift in Sources */,
 				EEA1DACA28FE9EAC00A2F762 /* ParameterConfigurationEntitySpecs.swift in Sources */,
 				EE1081DA27A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift in Sources */,
 				EE641FC126F09BF30037AE25 /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
@@ -1018,13 +1071,15 @@
 				38AF4E9684FDA9795C9B325F /* DefaultUserEventProcessorSpec.swift in Sources */,
 				38AF45915E475599B79CA948 /* MockUserEventDispatcher.swift in Sources */,
 				38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */,
+				EE83D0E829306A300080C7B8 /* DefaultRemoteConfigTargetRuleDeterminerSpecs.swift in Sources */,
 				EEDFE72E26F4BF7C005631B7 /* MockEvaluator.swift in Sources */,
 				EE0560DA26F217D90051B624 /* MockValueOperatorMatcher.swift in Sources */,
 				EE40439B2913489600980A73 /* MockEventRepository.swift in Sources */,
 				EE1081D627A3F6A600E76BB2 /* MockOverrideResolver.swift in Sources */,
 				EE8A742B28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift in Sources */,
-				EE641FD926F09C280037AE25 /* DefaultTargetRuleDeterminerSpecs.swift in Sources */,
+				EE641FD926F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift in Sources */,
 				EE3EE83128B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */,
+				EE83D0E6293068E60080C7B8 /* ValueMatcherFactorySpecs.swift in Sources */,
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
 				EEA1DAC828FE97FA00A2F762 /* UserEventSpecs.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
@@ -1039,6 +1094,7 @@
 				EE3EE82F28B770040078575F /* MockExposureEventDedupDeterminer.swift in Sources */,
 				EE1081D827A3FBE300E76BB2 /* DefaultUserValueResolverSpecs.swift in Sources */,
 				EE641FB526F09BD20037AE25 /* FlowEvaluatorSpecs.swift in Sources */,
+				EE83D0F2293089150080C7B8 /* RemoteConfigEvaluationSpecs.swift in Sources */,
 				38AF48C1EE57AE78F5BF3000 /* MockHttpClient.swift in Sources */,
 				EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */,
 				38AF45B319284D4521F86860 /* CachedWorkspaceFetcherSpec.swift in Sources */,

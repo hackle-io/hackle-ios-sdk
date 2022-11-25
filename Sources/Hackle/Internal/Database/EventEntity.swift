@@ -41,6 +41,8 @@ extension UserEvent {
             return exposure.toDto().toJson()
         case let track as UserEvents.Track:
             return track.toDto().toJson()
+        case let remoteConfig as UserEvents.RemoteConfig:
+            return remoteConfig.toDto().toJson()
         default:
             return nil
         }

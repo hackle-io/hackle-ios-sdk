@@ -3,7 +3,7 @@ import Mockery
 @testable import Hackle
 
 
-class MockTargetRuleDeterminer: Mock, TargetRuleDeterminer {
+class MockExperimentTargetRuleDeterminer: Mock, ExperimentTargetRuleDeterminer {
 
     lazy var determineTargetRuleOrNilMock = MockFunction(self, determineTargetRuleOrNil)
 

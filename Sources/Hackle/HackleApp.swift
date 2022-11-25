@@ -138,7 +138,14 @@ import Foundation
         } catch {
             Log.error("Unexpected exception while tracking event[\(event.key)]: \(String(describing: error))")
         }
+    }
 
+    @objc public func remoteConfig() -> HackleRemoteConfig {
+        remoteConfig(user: Hackle.user(id: deviceId))
+    }
+
+    @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
+        DefaultRemoteConfig(user: user, app: internalApp, userResolver: userResolver)
     }
 }
 

@@ -39,10 +39,10 @@ class Target {
 
         var type: MatchType
         var matchOperator: Operator
-        var valueType: ValueType
+        var valueType: HackleValueType
         var values: [HackleValue]
 
-        init(type: MatchType, matchOperator: Operator, valueType: ValueType, values: [HackleValue]) {
+        init(type: MatchType, matchOperator: Operator, valueType: HackleValueType, values: [HackleValue]) {
             self.type = type
             self.matchOperator = matchOperator
             self.valueType = valueType
@@ -58,13 +58,6 @@ class Target {
             case gte = "GTE"
             case lt = "LT"
             case lte = "LTE"
-        }
-
-        enum ValueType: String, Codable {
-            case string = "STRING"
-            case number = "NUMBER"
-            case bool = "BOOLEAN"
-            case version = "VERSION"
         }
     }
 

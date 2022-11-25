@@ -157,10 +157,10 @@ class TrafficAllocateEvaluator: FlowEvaluator {
 }
 
 class TargetRuleEvaluator: FlowEvaluator {
-    private let targetRuleDeterminer: TargetRuleDeterminer
+    private let targetRuleDeterminer: ExperimentTargetRuleDeterminer
     private let actionResolver: ActionResolver
 
-    init(targetRuleDeterminer: TargetRuleDeterminer, actionResolver: ActionResolver) {
+    init(targetRuleDeterminer: ExperimentTargetRuleDeterminer, actionResolver: ActionResolver) {
         self.targetRuleDeterminer = targetRuleDeterminer
         self.actionResolver = actionResolver
     }

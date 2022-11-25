@@ -45,19 +45,28 @@ class VersionMatcher: ValueMatcher {
     }
 }
 
+class NoneMatcher: ValueMatcher {
+    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
+        false
+    }
+}
+
 class ValueMatcherFactory {
 
     private let stringMatcher = StringMatcher()
     private let numberMatcher = NumberMatcher()
     private let boolMatcher = BoolMatcher()
     private let versionMatcher = VersionMatcher()
+    private let noneMatcher = NoneMatcher()
 
-    func getMatcher(_ valueType: Target.Match.ValueType) -> ValueMatcher {
+    func getMatcher(_ valueType: HackleValueType) -> ValueMatcher {
         switch valueType {
         case .string: return stringMatcher
         case .number: return numberMatcher
         case .bool: return boolMatcher
         case .version: return versionMatcher
+        case .json: return stringMatcher
+        case .null: return noneMatcher
         }
     }
 }
