@@ -46,7 +46,7 @@ public class HackleConfig: NSObject {
 
 public class HackleConfigBuilder: NSObject {
 
-    var sdkUrl: URL = URL(string: "https://sdk.hackle.io")!
+    var sdkUrl: URL = URL(string: "https://client-sdk.hackle.io")!
     var eventUrl: URL = URL(string: "https://event.hackle.io")!
 
     var eventFlushInterval: TimeInterval = HackleConfig.DEFAULT_EVENT_FLUSH_INTERVAL
