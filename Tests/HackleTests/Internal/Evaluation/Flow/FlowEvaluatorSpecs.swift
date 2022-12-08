@@ -268,12 +268,12 @@ class FlowEvaluatorSpecs: QuickSpec {
 
         describe("TargetRuleEvaluator") {
 
-            var targetRuleDeterminer: MockTargetRuleDeterminer!
+            var targetRuleDeterminer: MockExperimentTargetRuleDeterminer!
             var actionResolver: MockActionResolver!
             var sut: TargetRuleEvaluator!
 
             beforeEach {
-                targetRuleDeterminer = MockTargetRuleDeterminer()
+                targetRuleDeterminer = MockExperimentTargetRuleDeterminer()
                 actionResolver = MockActionResolver()
                 sut = TargetRuleEvaluator(targetRuleDeterminer: targetRuleDeterminer, actionResolver: actionResolver)
             }

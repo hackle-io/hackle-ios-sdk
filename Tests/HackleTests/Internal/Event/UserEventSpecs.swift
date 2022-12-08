@@ -25,5 +25,31 @@ class UserEventSpecs: QuickSpec {
             }
         }
 
+        describe("RemoteConfig") {
+            it("create") {
+                // given
+                let parameter = RemoteConfigParameter(id: 42, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("dv")))
+                let user = HackleUser.of(userId: "id")
+                let evaluation = RemoteConfigEvaluation(valueId: 42, value: HackleValue.string("remote config value"), reason: DecisionReason.DEFAULT_RULE, properties: [
+                    "string": "a",
+                    "number": 1,
+                    "bool": false
+                ])
+
+                // when
+                let actual = UserEvents.remoteConfig(parameter: parameter, user: user, evaluation: evaluation)
+
+                // then
+                expect(actual).to(beAnInstanceOf(UserEvents.RemoteConfig.self))
+                let remoteConfigEvent = actual as! UserEvents.RemoteConfig
+
+                expect(remoteConfigEvent.parameter).to(beIdenticalTo(parameter))
+                expect(remoteConfigEvent.valueId) == 42
+                expect(remoteConfigEvent.decisionReason) == DecisionReason.DEFAULT_RULE
+                expect(remoteConfigEvent.properties["string"] as? String) == "a"
+                expect(remoteConfigEvent.properties["number"] as? Int) == 1
+                expect(remoteConfigEvent.properties["bool"] as? Bool) == false
+            }
+        }
     }
 }

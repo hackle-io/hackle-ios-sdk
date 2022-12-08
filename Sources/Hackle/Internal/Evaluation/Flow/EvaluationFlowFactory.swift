@@ -1,6 +1,7 @@
 import Foundation
 
 protocol EvaluationFlowFactory {
+    var remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer { get }
     func getFlow(experimentType: ExperimentType) -> EvaluationFlow
 }
 
@@ -8,6 +9,7 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
 
     private let abTestFlow: EvaluationFlow
     private let featureFlagFlow: EvaluationFlow
+    let remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer
 
     init() {
 
@@ -34,10 +36,13 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
             CompletedExperimentEvaluator(),
             OverrideEvaluator(overrideResolver: overrideResolver),
             IdentifierEvaluator(),
-            TargetRuleEvaluator(targetRuleDeterminer: DefaultTargetRuleDeterminer(targetMatcher: targetMatcher), actionResolver: actionResolver),
+            TargetRuleEvaluator(targetRuleDeterminer: DefaultExperimentTargetRuleDeterminer(targetMatcher: targetMatcher), actionResolver: actionResolver),
             DefaultRuleEvaluator(actionResolver: actionResolver)
         )
 
+        remoteConfigTargetRuleDeterminer = DefaultRemoteConfigTargetRuleDeterminer(
+            matcher: DefaultRemoteConfigTargetRuleMatcher(targetMatcher: targetMatcher, buckter: bucketer)
+        )
     }
 
     func getFlow(experimentType: ExperimentType) -> EvaluationFlow {
