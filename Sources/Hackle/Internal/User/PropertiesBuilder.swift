@@ -25,14 +25,18 @@ class PropertiesBuilder {
         return self
     }
 
-    func add(key: String, value: Any) -> PropertiesBuilder {
+    func add(key: String, value: Any?) -> PropertiesBuilder {
         if (isValid(key: key, value: value)) {
             properties[key] = value
         }
         return self
     }
 
-    private func isValid(key: String, value: Any) -> Bool {
+    private func isValid(key: String, value: Any?) -> Bool {
+
+        guard let value = value else {
+            return false
+        }
 
         if properties.count >= PropertiesBuilder.MAX_PROPERTIES_COUNT {
             return false

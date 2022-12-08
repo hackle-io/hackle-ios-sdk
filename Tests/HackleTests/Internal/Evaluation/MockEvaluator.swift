@@ -5,9 +5,15 @@ import Mockery
 @testable import Hackle
 
 class MockEvaluator: Mock, Evaluator {
-    lazy var evaluateMock = MockFunction(self, evaluate)
+    lazy var evaluateExperimentMock = MockFunction(self, evaluateExperiment)
 
-    func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
-        call(evaluateMock, args: (workspace, experiment, user, defaultVariationKey))
+    func evaluateExperiment(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
+        call(evaluateExperimentMock, args: (workspace, experiment, user, defaultVariationKey))
+    }
+
+    lazy var evaluateRemoteConfigMock = MockFunction(self, evaluateRemoteConfig)
+
+    func evaluateRemoteConfig(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigEvaluation {
+        call(evaluateRemoteConfigMock, args: (workspace, parameter, user, defaultValue))
     }
 }

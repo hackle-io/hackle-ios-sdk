@@ -13,6 +13,7 @@ protocol UserEvent {
 enum UserEventType: Int {
     case exposure = 0
     case track = 1
+    case remoteConfig = 2
 }
 
 enum UserEvents {
@@ -45,6 +46,18 @@ enum UserEvents {
             user: user,
             eventType: eventType,
             event: event
+        )
+    }
+
+    static func remoteConfig(parameter: RemoteConfigParameter, user: HackleUser, evaluation: RemoteConfigEvaluation) -> UserEvent {
+        RemoteConfig(
+            insertId: UUID().uuidString.lowercased(),
+            timestamp: Date(),
+            user: user,
+            parameter: parameter,
+            valueId: evaluation.valueId,
+            decisionReason: evaluation.reason,
+            properties: evaluation.properties
         )
     }
 
@@ -85,6 +98,27 @@ enum UserEvents {
             self.user = user
             self.eventType = eventType
             self.event = event
+        }
+    }
+
+    struct RemoteConfig: UserEvent {
+        let type: UserEventType = .remoteConfig
+        let insertId: String
+        let timestamp: Date
+        let user: HackleUser
+        let parameter: RemoteConfigParameter
+        let valueId: Int64?
+        let decisionReason: String
+        let properties: [String: Any]
+
+        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any]) {
+            self.insertId = insertId
+            self.timestamp = timestamp
+            self.user = user
+            self.parameter = parameter
+            self.valueId = valueId
+            self.decisionReason = decisionReason
+            self.properties = properties
         }
     }
 }

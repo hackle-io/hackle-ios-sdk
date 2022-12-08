@@ -8,7 +8,7 @@
 import Foundation
 
 @objc
-public protocol ParameterConfig {
+public protocol ParameterConfig: Config {
     var parameters: [String: Any] { get }
     func getString(forKey: String, defaultValue: String) -> String
     func getInt(forKey: String, defaultValue: Int) -> Int

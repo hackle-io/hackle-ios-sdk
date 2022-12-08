@@ -23,6 +23,8 @@ protocol Workspace {
     func getContainerOrNil(containerId: Container.Id) -> Container?
 
     func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration?
+
+    func getRemoteConfigParameter(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter?
 }
 
 class WorkspaceEntity: Workspace {
@@ -34,6 +36,7 @@ class WorkspaceEntity: Workspace {
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
     private let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
+    private let remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
 
     private let _experiments: [Experiment.Key: Experiment]
     private let _featureFlags: [Experiment.Key: Experiment]
@@ -45,7 +48,8 @@ class WorkspaceEntity: Workspace {
         eventTypes: [EventType.Key: EventType],
         segments: [Segment.Key: Segment],
         containers: [Container.Id: Container],
-        parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
+        parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration],
+        remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
     ) {
         self.experiments = experiments
         self.featureFlags = featureFlags
@@ -54,6 +58,7 @@ class WorkspaceEntity: Workspace {
         self.segments = segments
         self.containers = containers
         self.parameterConfigurations = parameterConfigurations
+        self.remoteConfigParameters = remoteConfigParameters
 
         self._experiments = experiments.associateBy { it in
             it.key
@@ -89,6 +94,10 @@ class WorkspaceEntity: Workspace {
 
     func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration? {
         parameterConfigurations[parameterConfigurationId]
+    }
+
+    func getRemoteConfigParameter(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
+        remoteConfigParameters[parameterKey]
     }
 
     static func from(dto: WorkspaceDto) -> Workspace {
@@ -131,6 +140,14 @@ class WorkspaceEntity: Workspace {
                 it.id
             }
 
+        let remoteConfigParameters = dto.remoteConfigParameters
+            .compactMap { it in
+                it.toRemoteConfigParameterOrNil()
+            }
+            .associateBy { it in
+                it.key
+            }
+
         return WorkspaceEntity(
             experiments: experiments,
             featureFlags: featureFlags,
@@ -138,7 +155,8 @@ class WorkspaceEntity: Workspace {
             eventTypes: eventTypes,
             segments: segments,
             containers: containers,
-            parameterConfigurations: parameterConfigurations
+            parameterConfigurations: parameterConfigurations,
+            remoteConfigParameters: remoteConfigParameters
         )
     }
 }
@@ -151,6 +169,7 @@ class WorkspaceDto: Codable {
     var segments: [SegmentDto]
     var containers: [ContainerDto]
     var parameterConfigurations: [ParameterConfigurationDto]
+    var remoteConfigParameters: [RemoteConfigParameterDto]
 }
 
 class ExperimentDto: Codable {
@@ -280,6 +299,29 @@ class ParameterConfigurationDto: Codable {
 class ParameterDto: Codable {
     var key: String
     var value: HackleValue
+}
+
+class RemoteConfigParameterDto: Codable {
+    var id: Int64
+    var key: String
+    var type: String
+    var identifierType: String
+    var targetRules: [TargetRuleDto]
+    var defaultValue: ValueDto
+
+    class TargetRuleDto: Codable {
+        var key: String
+        var name: String
+        var target: TargetDto
+        var bucketId: Int64
+        var value: ValueDto
+    }
+
+    class ValueDto: Codable {
+        var id: Int64
+        var value: HackleValue
+    }
+
 }
 
 extension SlotDto {
@@ -413,7 +455,7 @@ extension TargetDto.MatchDto {
             return nil
         }
 
-        guard let valueType: Target.Match.ValueType = Enums.parseOrNil(rawValue: valueType) else {
+        guard let valueType: HackleValueType = Enums.parseOrNil(rawValue: valueType) else {
             return nil
         }
 
@@ -493,5 +535,44 @@ extension ParameterConfigurationDto {
                 (it.key, it.value)
             }
         )
+    }
+}
+
+extension RemoteConfigParameterDto {
+    func toRemoteConfigParameterOrNil() -> RemoteConfigParameter? {
+        guard let type: HackleValueType = Enums.parseOrNil(rawValue: type) else {
+            return nil
+        }
+        return RemoteConfigParameter(
+            id: id,
+            key: key,
+            type: type,
+            identifierType: identifierType,
+            targetRules: targetRules.compactMap { it in
+                it.toTargetRuleOrNil()
+            },
+            defaultValue: defaultValue.toValue()
+        )
+    }
+}
+
+extension RemoteConfigParameterDto.TargetRuleDto {
+    func toTargetRuleOrNil() -> RemoteConfigParameter.TargetRule? {
+        guard let target = target.toTargetOrNil(.property) else {
+            return nil
+        }
+        return RemoteConfigParameter.TargetRule(
+            key: key,
+            name: name,
+            target: target,
+            bucketId: bucketId,
+            value: value.toValue()
+        )
+    }
+}
+
+extension RemoteConfigParameterDto.ValueDto {
+    func toValue() -> RemoteConfigParameter.Value {
+        RemoteConfigParameter.Value(id: id, rawValue: value)
     }
 }
