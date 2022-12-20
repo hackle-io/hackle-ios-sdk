@@ -15,4 +15,8 @@ class MockUserEvent: UserEvent {
         self.user = user
         self.timestamp = timestamp
     }
+
+    func with(user: HackleUser) -> UserEvent {
+        MockUserEvent(user: user, timestamp: timestamp, type: type)
+    }
 }

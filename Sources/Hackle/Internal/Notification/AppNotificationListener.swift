@@ -5,5 +5,5 @@
 import Foundation
 
 protocol AppNotificationListener {
-    func onNotified(notification: AppNotification)
+    func onNotified(notification: AppNotification, timestamp: Date)
 }

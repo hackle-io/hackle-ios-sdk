@@ -15,6 +15,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var eventRepository: MockEventRepository!
         var eventFlushScheduler: MockScheduler!
         var eventDispatcher: MockUserEventDispatcher!
+        var userManager: MockUserManager!
+        var sessionManager: MockSessionManager!
 
         beforeEach {
             eventDedupDeterminer = MockExposureEventDedupDeterminer()
@@ -22,6 +24,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventRepository = MockEventRepository()
             eventFlushScheduler = MockScheduler()
             eventDispatcher = MockUserEventDispatcher()
+            userManager = MockUserManager()
+            sessionManager = MockSessionManager()
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             every(eventRepository.countMock).returns(0)
@@ -38,7 +42,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventFlushInterval: TimeInterval = 10,
             eventFlushThreshold: Int = 10,
             eventFlushMaxBatchSize: Int = 21,
-            eventDispatcher: UserEventDispatcher = eventDispatcher
+            eventDispatcher: UserEventDispatcher = eventDispatcher,
+            userManager: UserManager = userManager,
+            sessionManager: SessionManager = sessionManager
         ) -> DefaultUserEventProcessor {
             DefaultUserEventProcessor(
                 eventDedupDeterminer: eventDedupDeterminer,
@@ -49,11 +55,35 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventFlushInterval: eventFlushInterval,
                 eventFlushThreshold: eventFlushThreshold,
                 eventFlushMaxBatchSize: eventFlushMaxBatchSize,
-                eventDispatcher: eventDispatcher
+                eventDispatcher: eventDispatcher,
+                userManager: userManager,
+                sessionManager: sessionManager
             )
         }
 
         describe("process") {
+
+            it("userManager, sessionManager update") {
+                // given
+                let sut = processor()
+                let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
+
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    userManager.updateUserMock
+                }
+                verify(exactly: 1) {
+                    sessionManager.updateLastEventTimeMock
+                }
+
+                expect(userManager.updateUserMock.firstInvokation().arguments).to(beIdenticalTo(user))
+                expect(sessionManager.updateLastEventTimeMock.firstInvokation().arguments.timeIntervalSince1970) == 42
+            }
 
             it("중복제거 대상이면 이벤트를 저장하지 않는다") {
                 // given
@@ -71,6 +101,45 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 verify(exactly: 0) {
                     eventRepository.saveMock
                 }
+            }
+
+            it("currentSession 이 없으면 sessionId 를 추가하지 않는다") {
+                // given
+                let sut = processor()
+                let event = MockUserEvent(user: user)
+
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.saveMock
+                }
+                expect(eventRepository.saveMock.firstInvokation().arguments).to(beIdenticalTo(event))
+            }
+
+            it("currentSession 의 sessionId 를 추가한다") {
+                // given
+                let sut = processor(
+                    sessionManager: MockSessionManager(currentSession: Session(id: "42.session"))
+                )
+                let event = MockUserEvent(user: user)
+
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.saveMock
+                }
+                let actualEvent = eventRepository.saveMock.firstInvokation().arguments
+                expect(actualEvent.user.identifiers.count) == 2
+                expect(actualEvent.user.identifiers[IdentifierType.session.rawValue]) == "42.session"
+
             }
 
             it("입력받은 이벤트를 저장한다") {
@@ -201,35 +270,38 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventFlushInterval: 10,
                     eventFlushThreshold: 10,
                     eventFlushMaxBatchSize: 21,
-                    eventDispatcher: eventDispatcher
+                    eventDispatcher: eventDispatcher,
+                    userManager: userManager,
+                    sessionManager: sessionManager
                 )
             }
 
             context("didEnterBackground 노티인 경우") {
                 it("stop() 을 호출한다") {
-                    spy.onNotified(notification: .didEnterBackground)
+                    spy.onNotified(notification: .didEnterBackground, timestamp: Date())
                     expect(spy.stopCalled) == true
                 }
             }
 
             context("didBecomeActive 노티인 경우") {
                 it("start() 를 호출한다") {
-                    spy.onNotified(notification: .didBecomeActive)
+                    spy.onNotified(notification: .didBecomeActive, timestamp: Date())
                     expect(spy.startCalled) == true
                 }
             }
         }
 
-        describe("initialize") {
+        describe("onInitialized") {
 
             it("Flushing 상태의 이벤트를 Pending 상태로 바꾼다") {
                 // given
                 let sut = processor()
+                every(eventFlushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
                 let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
                 every(eventRepository.findAllByMock).returns(events)
 
                 // when
-                sut.initialize()
+                sut.onInitialized()
                 eventQueue.sync {
                 }
 
@@ -241,11 +313,12 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             it("Flushing 상태의 이벤트가 없으면 별도 처리 하지 않는다") {
                 // given
                 let sut = processor()
+                every(eventFlushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
                 let events = [EventEntity]()
                 every(eventRepository.findAllByMock).returns(events)
 
                 // when
-                sut.initialize()
+                sut.onInitialized()
                 eventQueue.sync {
                 }
 
