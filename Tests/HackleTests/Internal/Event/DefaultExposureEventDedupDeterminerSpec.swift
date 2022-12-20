@@ -119,7 +119,7 @@ class DefaultExposureEventDedupDeterminerSpec: QuickSpec {
                 )
 
                 expect(sut.isDedupTarget(event: firstEvent)) == false
-                sleep(1)
+                sleep(2)
                 expect(sut.isDedupTarget(event: secondEvent)) == false
             }
 

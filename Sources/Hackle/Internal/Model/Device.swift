@@ -24,8 +24,8 @@ extension Device {
 
     private static let idKey = "hackle_device_id"
 
-    static func create() -> Device {
-        let deviceId = UserDefaults.standard.computeIfAbsent(key: Device.idKey) { _ in
+    static func create(keyValueRepository: KeyValueRepository) -> Device {
+        let deviceId = keyValueRepository.getString(key: Device.idKey) { _ in
             UUID().uuidString
         }
         let properties: [String: Any] = [

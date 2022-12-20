@@ -11,7 +11,7 @@ protocol UserEventProcessor {
     func stop()
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
+class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppNotificationListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -24,6 +24,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
     private let eventFlushThreshold: Int
     private let eventFlushMaxBatchSize: Int
     private let eventDispatcher: UserEventDispatcher
+    private let userManager: UserManager
+    private let sessionManager: SessionManager
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -36,7 +38,9 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         eventFlushInterval: TimeInterval,
         eventFlushThreshold: Int,
         eventFlushMaxBatchSize: Int,
-        eventDispatcher: UserEventDispatcher
+        eventDispatcher: UserEventDispatcher,
+        userManager: UserManager,
+        sessionManager: SessionManager
     ) {
         self.eventDedupDeterminer = eventDedupDeterminer
         self.eventQueue = eventQueue
@@ -47,18 +51,11 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         self.eventFlushInterval = eventFlushInterval
         self.eventFlushMaxBatchSize = eventFlushMaxBatchSize
         self.eventDispatcher = eventDispatcher
+        self.userManager = userManager
+        self.sessionManager = sessionManager
     }
 
     func process(event: UserEvent) {
-
-        if eventDedupDeterminer.isDedupTarget(event: event) {
-            return
-        }
-
-        addEvent(event: event)
-    }
-
-    private func addEvent(event: UserEvent) {
         eventQueue.async {
             self.addEventInternal(event: event)
         }
@@ -70,39 +67,32 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         }
     }
 
-    func onNotified(notification: AppNotification) {
-        switch notification {
-        case .didEnterBackground:
-            stop()
-        case .didBecomeActive:
-            start()
-        }
-    }
-
     func initialize() {
-        eventQueue.async {
-            self.initializeInternal()
+        start()
+        let events = eventRepository.findAllBy(status: .flushing)
+        if !events.isEmpty {
+            eventRepository.update(events: events, status: .pending)
         }
     }
 
     func start() {
-        lock.write {
-            if flushingJob != nil {
+        lock.write { [weak self] in
+            if self?.flushingJob != nil {
                 return
             }
-            flushingJob = eventFlushScheduler.schedulePeriodically(delay: eventFlushInterval, period: eventFlushInterval) {
-                self.flush()
+            self?.flushingJob = eventFlushScheduler.schedulePeriodically(delay: eventFlushInterval, period: eventFlushInterval) {
+                self?.flush()
             }
             Log.info("UserEventProcessor started. Flush events every \(eventFlushInterval.format())")
         }
     }
 
     func stop() {
-        lock.write {
-            flushingJob?.cancel()
-            flushingJob = nil
+        lock.write { [weak self] in
+            self?.flushingJob?.cancel()
+            self?.flushingJob = nil
+            self?.flush()
             Log.info("UserEventProcessor stopped. Flush pending events")
-            flush()
         }
     }
 
@@ -119,8 +109,32 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         eventDispatcher.dispatch(events: events)
     }
 
+    func onInitialized() {
+        eventQueue.async { [weak self] in
+            self?.initialize()
+        }
+    }
+
+    func onNotified(notification: AppNotification, timestamp: Date) {
+        switch notification {
+        case .didBecomeActive:
+            start()
+        case .didEnterBackground:
+            stop()
+        }
+    }
+
     private func addEventInternal(event: UserEvent) {
-        eventRepository.save(event: event)
+        userManager.updateUser(user: event.user)
+        sessionManager.updateLastEventTime(timestamp: event.timestamp)
+
+        if eventDedupDeterminer.isDedupTarget(event: event) {
+            return
+        }
+
+        let newEvent = decorateSession(event: event)
+
+        eventRepository.save(event: newEvent)
 
         let totalCount = eventRepository.count()
         if totalCount > eventRepositoryMaxSize {
@@ -133,14 +147,25 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         }
     }
 
-    private func flushInternal() {
-        dispatch(limit: eventFlushMaxBatchSize)
+    private func decorateSession(event: UserEvent) -> UserEvent {
+        guard let session = sessionManager.currentSession else {
+            return event
+        }
+
+        if event.user.sessionId != nil {
+            return event
+        }
+
+        let identifiers = IdentifiersBuilder()
+            .add(identifiers: event.user.identifiers)
+            .add(type: .session, value: session.id)
+            .build()
+
+        let newUser = event.user.with(identifiers: identifiers)
+        return event.with(user: newUser)
     }
 
-    private func initializeInternal() {
-        let events = eventRepository.findAllBy(status: .flushing)
-        if !events.isEmpty {
-            eventRepository.update(events: events, status: .pending)
-        }
+    private func flushInternal() {
+        dispatch(limit: eventFlushMaxBatchSize)
     }
 }
