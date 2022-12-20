@@ -39,3 +39,23 @@ class HackleUser {
         return HackleUser(identifiers: identifiers, properties: properties, hackleProperties: hackleProperties)
     }
 }
+
+
+extension HackleUser {
+
+    func with(identifiers: [String: String]) -> HackleUser {
+        HackleUser(identifiers: identifiers, properties: properties, hackleProperties: hackleProperties)
+    }
+
+    var userId: String? {
+        identifiers[IdentifierType.user.rawValue]
+    }
+
+    var deviceId: String? {
+        identifiers[IdentifierType.device.rawValue]
+    }
+
+    var sessionId: String? {
+        identifiers[IdentifierType.session.rawValue]
+    }
+}

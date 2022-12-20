@@ -35,16 +35,16 @@ class DefaultAppNotificationObserver: AppNotificationObserver {
     }
 
     @objc private func enterBackground() {
-        broadcast(notification: .didEnterBackground)
+        broadcast(notification: .didEnterBackground, timestamp: Date())
     }
 
     @objc private func becomeActive() {
-        broadcast(notification: .didBecomeActive)
+        broadcast(notification: .didBecomeActive, timestamp: Date())
     }
 
-    private func broadcast(notification: AppNotification) {
+    private func broadcast(notification: AppNotification, timestamp: Date) {
         for listener in listeners {
-            listener.onNotified(notification: notification)
+            listener.onNotified(notification: notification, timestamp: timestamp)
         }
     }
 }

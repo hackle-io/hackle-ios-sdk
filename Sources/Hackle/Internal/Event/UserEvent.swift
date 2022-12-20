@@ -8,6 +8,8 @@ protocol UserEvent {
     var type: UserEventType { get }
     var timestamp: Date { get }
     var user: HackleUser { get }
+
+    func with(user: HackleUser) -> UserEvent
 }
 
 enum UserEventType: Int {
@@ -82,6 +84,19 @@ enum UserEvents {
             self.decisionReason = decisionReason
             self.properties = properties
         }
+
+        func with(user: HackleUser) -> UserEvent {
+            Exposure(
+                insertId: insertId,
+                timestamp: timestamp,
+                user: user,
+                experiment: experiment,
+                variationId: variationId,
+                variationKey: variationKey,
+                decisionReason: decisionReason,
+                properties: properties
+            )
+        }
     }
 
     struct Track: UserEvent {
@@ -98,6 +113,16 @@ enum UserEvents {
             self.user = user
             self.eventType = eventType
             self.event = event
+        }
+
+        func with(user: HackleUser) -> UserEvent {
+            Track(
+                insertId: insertId,
+                timestamp: timestamp,
+                user: user,
+                eventType: eventType,
+                event: event
+            )
         }
     }
 
@@ -119,6 +144,18 @@ enum UserEvents {
             self.valueId = valueId
             self.decisionReason = decisionReason
             self.properties = properties
+        }
+
+        func with(user: HackleUser) -> UserEvent {
+            RemoteConfig(
+                insertId: insertId,
+                timestamp: timestamp,
+                user: user,
+                parameter: parameter,
+                valueId: valueId,
+                decisionReason: decisionReason,
+                properties: properties
+            )
         }
     }
 }

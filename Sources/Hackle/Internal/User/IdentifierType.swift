@@ -11,4 +11,5 @@ enum IdentifierType: String, Codable {
     case id = "$id"
     case user = "$userId"
     case device = "$deviceId"
+    case session = "$sessionId"
 }
