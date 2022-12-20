@@ -11,6 +11,7 @@ public class HackleConfig: NSObject {
 
     var sdkUrl: URL
     var eventUrl: URL
+    var sessionTimeoutInterval: TimeInterval
     var eventFlushInterval: TimeInterval
     var eventFlushThreshold: Int
     var exposureEventDedupInterval: TimeInterval
@@ -18,12 +19,14 @@ public class HackleConfig: NSObject {
     public init(
         sdkUrl: URL,
         eventUrl: URL,
+        sessionTimeoutInterval: TimeInterval,
         eventFlushInterval: TimeInterval,
         eventFlushThreshold: Int,
         exposureEventDedupInterval: TimeInterval
     ) {
         self.sdkUrl = sdkUrl
         self.eventUrl = eventUrl
+        self.sessionTimeoutInterval = sessionTimeoutInterval
         self.eventFlushInterval = eventFlushInterval
         self.eventFlushThreshold = eventFlushThreshold
         self.exposureEventDedupInterval = exposureEventDedupInterval
@@ -32,6 +35,7 @@ public class HackleConfig: NSObject {
 
     static let NO_DEDUP: TimeInterval = -1
 
+    static let DEFAULT_SESSION_TIMEOUT_INTERVAL: TimeInterval = 1800 // 30m
     static let DEFAULT_EVENT_FLUSH_INTERVAL: TimeInterval = 10
     static let DEFAULT_EVENT_FLUSH_THRESHOLD = 10
     static let DEFAULT_EVENT_REPOSITORY_MAX_SIZE = 1000
@@ -49,6 +53,8 @@ public class HackleConfigBuilder: NSObject {
     var sdkUrl: URL = URL(string: "https://client-sdk.hackle.io")!
     var eventUrl: URL = URL(string: "https://event.hackle.io")!
 
+    var sessionTimeoutInterval: TimeInterval = HackleConfig.DEFAULT_SESSION_TIMEOUT_INTERVAL
+
     var eventFlushInterval: TimeInterval = HackleConfig.DEFAULT_EVENT_FLUSH_INTERVAL
     var eventFlushThreshold: Int = HackleConfig.DEFAULT_EVENT_FLUSH_THRESHOLD
 
@@ -61,6 +67,11 @@ public class HackleConfigBuilder: NSObject {
 
     @objc public func eventUrl(_ eventUrl: URL) -> HackleConfigBuilder {
         self.eventUrl = eventUrl
+        return self
+    }
+
+    @objc public func sessionTimeoutIntervalSeconds(_ sessionTimeoutInterval: TimeInterval) -> HackleConfigBuilder {
+        self.sessionTimeoutInterval = sessionTimeoutInterval
         return self
     }
 
@@ -99,6 +110,7 @@ public class HackleConfigBuilder: NSObject {
         return HackleConfig(
             sdkUrl: sdkUrl,
             eventUrl: eventUrl,
+            sessionTimeoutInterval: sessionTimeoutInterval,
             eventFlushInterval: eventFlushInterval,
             eventFlushThreshold: eventFlushThreshold,
             exposureEventDedupInterval: exposureEventDedupInterval

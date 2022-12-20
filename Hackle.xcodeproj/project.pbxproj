@@ -69,6 +69,10 @@
 		38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF44225C76ECE6793796B9 /* HackleApp.swift */; };
 		38AF4F7D6BB3193860963F06 /* Variation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF47E80B54FB74773C2CB5 /* Variation.swift */; };
 		38AF4FF12D29830A640E0C71 /* DefaultSlotNumberCalculatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AF4752229AC0230C5B0C8F /* DefaultSlotNumberCalculatorSpec.swift */; };
+		EE02C18029513B0000F3E5E3 /* MockSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02C17F29513B0000F3E5E3 /* MockSessionManager.swift */; };
+		EE02C18229513B2E00F3E5E3 /* MockUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02C18129513B2E00F3E5E3 /* MockUserManager.swift */; };
+		EE02C18429513B3A00F3E5E3 /* DefaultSessionManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02C18329513B3A00F3E5E3 /* DefaultSessionManagerSpecs.swift */; };
+		EE02C18629513B4400F3E5E3 /* DefaultUserManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02C18529513B4400F3E5E3 /* DefaultUserManagerSpecs.swift */; };
 		EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */; };
 		EE0560C426F1CF5F0051B624 /* MockFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */; };
 		EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */; };
@@ -86,6 +90,13 @@
 		EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */; };
 		EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */; };
 		EE2A71E22701F880007691D7 /* VersionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A71E12701F880007691D7 /* VersionSpecs.swift */; };
+		EE323425294C42C00051F3E6 /* KeyValueRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323424294C42C00051F3E6 /* KeyValueRepository.swift */; };
+		EE323427294C45470051F3E6 /* AppInitializeListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323426294C45470051F3E6 /* AppInitializeListener.swift */; };
+		EE32342A294C470F0051F3E6 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323429294C470F0051F3E6 /* Session.swift */; };
+		EE32342C294C47170051F3E6 /* SessionListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE32342B294C47170051F3E6 /* SessionListener.swift */; };
+		EE32342E294C471C0051F3E6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE32342D294C471C0051F3E6 /* SessionManager.swift */; };
+		EE323430294C4E3A0051F3E6 /* UserListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE32342F294C4E3A0051F3E6 /* UserListener.swift */; };
+		EE323432294C4E3F0051F3E6 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323431294C4E3F0051F3E6 /* UserManager.swift */; };
 		EE34413A28A4912400630557 /* ExposureEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34413928A4912400630557 /* ExposureEventDedupDeterminer.swift */; };
 		EE34413C28A5EA0A00630557 /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34413B28A5EA0A00630557 /* HackleConfig.swift */; };
 		EE3EE82F28B770040078575F /* MockExposureEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */; };
@@ -244,6 +255,10 @@
 		38AF4F22148DBF68E1A5A2AB /* murmur_numeric.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = murmur_numeric.csv; sourceTree = "<group>"; };
 		38AF4F36962643CD99E18F0C /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		38AF4FB932D7E5E6E820CC0F /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
+		EE02C17F29513B0000F3E5E3 /* MockSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSessionManager.swift; sourceTree = "<group>"; };
+		EE02C18129513B2E00F3E5E3 /* MockUserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserManager.swift; sourceTree = "<group>"; };
+		EE02C18329513B3A00F3E5E3 /* DefaultSessionManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSessionManagerSpecs.swift; sourceTree = "<group>"; };
+		EE02C18529513B4400F3E5E3 /* DefaultUserManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserManagerSpecs.swift; sourceTree = "<group>"; };
 		EE0560BF26F1CF590051B624 /* MockEvaluationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEvaluationFlow.swift; sourceTree = "<group>"; };
 		EE0560C326F1CF5F0051B624 /* MockFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlowEvaluator.swift; sourceTree = "<group>"; };
 		EE0560C726F1DC510051B624 /* MockExperimentTargetDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExperimentTargetDeterminer.swift; sourceTree = "<group>"; };
@@ -261,6 +276,13 @@
 		EE1081DB27A6842000E76BB2 /* DefaultSegmentMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSegmentMatcher.swift; sourceTree = "<group>"; };
 		EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultOverrideResolverSpecs.swift; sourceTree = "<group>"; };
 		EE2A71E12701F880007691D7 /* VersionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionSpecs.swift; sourceTree = "<group>"; };
+		EE323424294C42C00051F3E6 /* KeyValueRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueRepository.swift; sourceTree = "<group>"; };
+		EE323426294C45470051F3E6 /* AppInitializeListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInitializeListener.swift; sourceTree = "<group>"; };
+		EE323429294C470F0051F3E6 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		EE32342B294C47170051F3E6 /* SessionListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListener.swift; sourceTree = "<group>"; };
+		EE32342D294C471C0051F3E6 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		EE32342F294C4E3A0051F3E6 /* UserListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListener.swift; sourceTree = "<group>"; };
+		EE323431294C4E3F0051F3E6 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		EE34413928A4912400630557 /* ExposureEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExposureEventDedupDeterminer.swift; sourceTree = "<group>"; };
 		EE34413B28A5EA0A00630557 /* HackleConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
 		EE3EE82E28B770040078575F /* MockExposureEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExposureEventDedupDeterminer.swift; sourceTree = "<group>"; };
@@ -507,6 +529,7 @@
 		38AF4F669561F1662BDA1DAA /* Notification */ = {
 			isa = PBXGroup;
 			children = (
+				EE323426294C45470051F3E6 /* AppInitializeListener.swift */,
 				38AF4BE3AF7320B105CE3FA7 /* AppNotification.swift */,
 				38AF41B1049ED4BFB8FB872D /* AppNotificationListener.swift */,
 				38AF4935B94116B63C5C923A /* AppNotificationObserver.swift */,
@@ -520,6 +543,25 @@
 				38AF409035BBBCB5190E8DB8 /* Log.swift */,
 			);
 			path = Log;
+			sourceTree = "<group>";
+		};
+		EE02C17E29513AD800F3E5E3 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				EE02C18329513B3A00F3E5E3 /* DefaultSessionManagerSpecs.swift */,
+				EE02C17F29513B0000F3E5E3 /* MockSessionManager.swift */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		EE323428294C47020051F3E6 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				EE323429294C470F0051F3E6 /* Session.swift */,
+				EE32342B294C47170051F3E6 /* SessionListener.swift */,
+				EE32342D294C471C0051F3E6 /* SessionManager.swift */,
+			);
+			path = Session;
 			sourceTree = "<group>";
 		};
 		EE4043992913487F00980A73 /* Database */ = {
@@ -538,6 +580,8 @@
 				EE5EF548283D0D0800407084 /* IdentifierType.swift */,
 				EE5EF54A283D0EE000407084 /* PropertiesBuilder.swift */,
 				EE5EF54C283D0EE900407084 /* IdentifiersBuilder.swift */,
+				EE32342F294C4E3A0051F3E6 /* UserListener.swift */,
+				EE323431294C4E3F0051F3E6 /* UserManager.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -549,6 +593,7 @@
 				EE641F9226F09B110037AE25 /* Evaluation */,
 				38AF49D7C0561BCCAA8FDD68 /* Event */,
 				EEA1DAC628FE8AFC00A2F762 /* Model */,
+				EE02C17E29513AD800F3E5E3 /* Session */,
 				EE8A742928435DC1004C923D /* User */,
 				38AF46DB6CB910731975C835 /* Workspace */,
 				EEDFE72926F4BE7D005631B7 /* DefaultHackleInternalAppSpecs.swift */,
@@ -659,6 +704,8 @@
 			isa = PBXGroup;
 			children = (
 				EE8A742A28435DEA004C923D /* DefaultHackleUserResolverSpecs.swift */,
+				EE02C18529513B4400F3E5E3 /* DefaultUserManagerSpecs.swift */,
+				EE02C18129513B2E00F3E5E3 /* MockUserManager.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -749,6 +796,7 @@
 				38AF4975BEF89059B2A959A6 /* Model */,
 				38AF4F669561F1662BDA1DAA /* Notification */,
 				EE83D0DC292EED540080C7B8 /* RemoteConfig */,
+				EE323428294C47020051F3E6 /* Session */,
 				EE5EF547283D0CA100407084 /* User */,
 				38AF4932C2739F8CED158D23 /* Utilities */,
 				38AF4AF89F323B8E1AAE4F27 /* Workspace */,
@@ -764,6 +812,7 @@
 				EEF2686A2912149000455C70 /* DatabaseHelper.swift */,
 				EEF268682911F4BC00455C70 /* EventEntity.swift */,
 				EEF268662911F45F00455C70 /* EventRepository.swift */,
+				EE323424294C42C00051F3E6 /* KeyValueRepository.swift */,
 				EE404397291296D200980A73 /* SQLiteDatabase.swift */,
 			);
 			path = Database;
@@ -948,8 +997,10 @@
 				EEA8BD3626ECFDA8007230D9 /* OperatorMatcher.swift in Sources */,
 				38AF4F799982880AF7A74FFA /* HackleApp.swift in Sources */,
 				EEA8BD7126EDF02D007230D9 /* HackleValue.swift in Sources */,
+				EE32342C294C47170051F3E6 /* SessionListener.swift in Sources */,
 				EEA8BD2E26ECFD9C007230D9 /* FlowEvaluator.swift in Sources */,
 				38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */,
+				EE323427294C45470051F3E6 /* AppInitializeListener.swift in Sources */,
 				EEF268692911F4BC00455C70 /* EventEntity.swift in Sources */,
 				38AF4D395BC520AC4F82C16A /* User.swift in Sources */,
 				38AF489DB2E9ACA040488112 /* Event.swift in Sources */,
@@ -971,6 +1022,7 @@
 				EE08749126F9EB7A0057EF4E /* Version.swift in Sources */,
 				38AF4875E5654381051B0A0A /* Hasher.swift in Sources */,
 				38AF41C2B3B08E38A440B515 /* UserEvent.swift in Sources */,
+				EE32342E294C471C0051F3E6 /* SessionManager.swift in Sources */,
 				38AF45034761E1C6750BC849 /* UserEventProcessor.swift in Sources */,
 				EE0560E026F21F970051B624 /* HackleError.swift in Sources */,
 				38AF4E5143E991DFDF908CBA /* Workspace.swift in Sources */,
@@ -980,6 +1032,7 @@
 				EEA8BD3A26ECFDAE007230D9 /* TargetMatcher.swift in Sources */,
 				38AF4D6B470231004B316C2B /* AppNotification.swift in Sources */,
 				38AF4E926085BFF420D7E4D9 /* AppNotificationListener.swift in Sources */,
+				EE323430294C4E3A0051F3E6 /* UserListener.swift in Sources */,
 				EE51540A27A3C64900B1F205 /* Segment.swift in Sources */,
 				EEF2E7342888E9E5007B480A /* Container.swift in Sources */,
 				EE83D0E0292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift in Sources */,
@@ -1000,6 +1053,7 @@
 				38AF4BDC930D45DC8D061AD3 /* ReadWriteLock.swift in Sources */,
 				38AF434D652DDA7AA07C177F /* ConcurrentArray.swift in Sources */,
 				38AF4ECF7D12C7B2E1CA8E10 /* Log.swift in Sources */,
+				EE32342A294C470F0051F3E6 /* Session.swift in Sources */,
 				EEA8BD5326ECFFBE007230D9 /* ExperimentTargetRuleDeterminer.swift in Sources */,
 				38AF459FFE727D25D9B2A8C1 /* Date.swift in Sources */,
 				EEA8BD4226ECFDBA007230D9 /* ValueOperatorMatcher.swift in Sources */,
@@ -1016,6 +1070,7 @@
 				EEA8BD4926ECFF87007230D9 /* HackleInternalApp.swift in Sources */,
 				EEF2E739288932BD007B480A /* ContainerResolver.swift in Sources */,
 				EE51540C27A3C94D00B1F205 /* TargetingType.swift in Sources */,
+				EE323425294C42C00051F3E6 /* KeyValueRepository.swift in Sources */,
 				EED91E792766F85C001CF5B3 /* Device.swift in Sources */,
 				EEDE2A2629265966000A44EB /* RemoteConfigParameter.swift in Sources */,
 				38AF42C95E4555C00E1432DF /* Array.swift in Sources */,
@@ -1025,6 +1080,7 @@
 				EE83D0D9292EEC6D0080C7B8 /* Config.swift in Sources */,
 				EE83D0E429304EB40080C7B8 /* HackleRemoteConfig.swift in Sources */,
 				EEA8BD2426ECFD8C007230D9 /* EvaluationFlow.swift in Sources */,
+				EE323432294C4E3F0051F3E6 /* UserManager.swift in Sources */,
 				EEA8BD5F26ECFFDD007230D9 /* TargetRule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1047,9 +1103,11 @@
 				EE0560C026F1CF590051B624 /* MockEvaluationFlow.swift in Sources */,
 				EE0560D626F1FA730051B624 /* MockConditionMatcher.swift in Sources */,
 				EE641FBD26F09BE90037AE25 /* ValueMatcherSpecs.swift in Sources */,
+				EE02C18429513B3A00F3E5E3 /* DefaultSessionManagerSpecs.swift in Sources */,
 				EEF2E73C28895A0E007B480A /* DefaultContainerResolverSpecs.swift in Sources */,
 				EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */,
 				EE0560C826F1DC510051B624 /* MockExperimentTargetDeterminer.swift in Sources */,
+				EE02C18229513B2E00F3E5E3 /* MockUserManager.swift in Sources */,
 				EE641FC926F09C040037AE25 /* UserConditionMatcherSpecs.swift in Sources */,
 				EE83D0EA29306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
 				38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */,
@@ -1057,6 +1115,7 @@
 				EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */,
 				EE0560CC26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift in Sources */,
 				EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */,
+				EE02C18029513B0000F3E5E3 /* MockSessionManager.swift in Sources */,
 				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
 				EE83D0F029307E030080C7B8 /* MockTargetMatcher.swift in Sources */,
 				EEA1DACA28FE9EAC00A2F762 /* ParameterConfigurationEntitySpecs.swift in Sources */,
@@ -1081,6 +1140,7 @@
 				EE3EE83128B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */,
 				EE83D0E6293068E60080C7B8 /* ValueMatcherFactorySpecs.swift in Sources */,
 				38AF4A0396492A2E8FAD6040 /* MockScheduler.swift in Sources */,
+				EE02C18629513B4400F3E5E3 /* DefaultUserManagerSpecs.swift in Sources */,
 				EEA1DAC828FE97FA00A2F762 /* UserEventSpecs.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
 				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,

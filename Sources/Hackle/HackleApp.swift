@@ -10,6 +10,8 @@ import Foundation
     private let internalApp: HackleInternalApp
     private let userResolver: HackleUserResolver
     private let device: Device
+    private let sessionManager: SessionManager
+    private let listeners: [AppInitializeListener]
 
     @objc public var deviceId: String {
         get {
@@ -17,10 +19,24 @@ import Foundation
         }
     }
 
-    init(internalApp: HackleInternalApp, userResolver: HackleUserResolver, device: Device) {
+    @objc public var sessionId: String {
+        get {
+            sessionManager.requiredSession.id
+        }
+    }
+
+    init(
+        internalApp: HackleInternalApp,
+        userResolver: HackleUserResolver,
+        device: Device,
+        sessionManager: SessionManager,
+        listeners: [AppInitializeListener]
+    ) {
         self.internalApp = internalApp
         self.userResolver = userResolver
         self.device = device
+        self.sessionManager = sessionManager
+        self.listeners = listeners
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
@@ -154,6 +170,9 @@ extension HackleApp {
     private static let hackleDeviceId = "hackle_device_id"
 
     func initialize(completion: @escaping () -> ()) {
+        for listener in listeners {
+            listener.onInitialized()
+        }
         internalApp.initialize(completion: completion)
     }
 
@@ -168,6 +187,8 @@ extension HackleApp {
         )
         let workspaceFetcher = CachedWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher)
 
+        let keyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard)
+
         let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
@@ -181,8 +202,19 @@ extension HackleApp {
             httpClient: httpClient
         )
 
+        let userManager = DefaultUserManager()
+        let sessionManager = DefaultSessionManager(
+            eventQueue: eventQueue,
+            keyValueRepository: keyValueRepository,
+            sessionTimeout: config.sessionTimeoutInterval
+        )
+
+        let dedupDeterminer = DefaultExposureEventDedupDeterminer(
+            dedupInterval: config.exposureEventDedupInterval
+        )
+
         let eventProcessor = DefaultUserEventProcessor(
-            eventDedupDeterminer: DefaultExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval),
+            eventDedupDeterminer: dedupDeterminer,
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
@@ -190,15 +222,27 @@ extension HackleApp {
             eventFlushInterval: config.eventFlushInterval,
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
-            eventDispatcher: eventDispatcher
+            eventDispatcher: eventDispatcher,
+            userManager: userManager,
+            sessionManager: sessionManager
         )
 
-        DefaultAppNotificationObserver.instance.addListener(listener: eventProcessor)
+        let appNotificationObserver = DefaultAppNotificationObserver.instance
+        appNotificationObserver.addListener(listener: sessionManager)
+        appNotificationObserver.addListener(listener: eventProcessor)
+        userManager.addListener(listener: sessionManager)
 
         let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
-        let device = Device.create()
+        let device = Device.create(keyValueRepository: keyValueRepository)
         let userResolver = DefaultHackleUserResolver(device: device)
+        let listeners: [AppInitializeListener] = [sessionManager, eventProcessor]
 
-        return HackleApp(internalApp: internalApp, userResolver: userResolver, device: device)
+        return HackleApp(
+            internalApp: internalApp,
+            userResolver: userResolver,
+            device: device,
+            sessionManager: sessionManager,
+            listeners: listeners
+        )
     }
 }
