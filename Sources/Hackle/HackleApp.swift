@@ -60,6 +60,13 @@ import Foundation
     }
 
     @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
+        let sample = TimerSample.start()
+        let decision = variationDetailInternal(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation)
+        DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
+        return decision
+    }
+
+    private func variationDetailInternal(experimentKey: Int, user: User, defaultVariation: String) -> Decision {
         do {
             guard let hackleUser = userResolver.resolveOrNil(user: user) else {
                 return Decision.of(variation: defaultVariation, reason: DecisionReason.INVALID_INPUT)
@@ -108,6 +115,13 @@ import Foundation
     }
 
     @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
+        let sample = TimerSample.start()
+        let decision = featureFlagDetailInternal(featureKey: featureKey, user: user)
+        DecisionMetrics.featureFlag(sample: sample, key: featureKey, decision: decision)
+        return decision
+    }
+
+    private func featureFlagDetailInternal(featureKey: Int, user: User) -> FeatureFlagDecision {
         do {
             guard let hackleUser = userResolver.resolveOrNil(user: user) else {
                 return FeatureFlagDecision.off(reason: DecisionReason.INVALID_INPUT)
@@ -218,7 +232,7 @@ extension HackleApp {
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
-            eventFlushScheduler: DispatchSourceTimerScheduler(),
+            eventFlushScheduler: Schedulers.dispatch(),
             eventFlushInterval: config.eventFlushInterval,
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
@@ -232,6 +246,8 @@ extension HackleApp {
         appNotificationObserver.addListener(listener: eventProcessor)
         userManager.addListener(listener: sessionManager)
 
+        HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
+
         let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
         let device = Device.create(keyValueRepository: keyValueRepository)
         let userResolver = DefaultHackleUserResolver(device: device)
@@ -244,5 +260,32 @@ extension HackleApp {
             sessionManager: sessionManager,
             listeners: listeners
         )
+    }
+
+    private static func metricConfiguration(
+        config: HackleConfig,
+        observer: DefaultAppNotificationObserver,
+        eventQueue: DispatchQueue,
+        httpQueue: DispatchQueue,
+        httpClient: HttpClient
+    ) {
+        let monitoringMetricRegistry = MonitoringMetricRegistry(
+            monitoringBaseUrl: config.monitoringUrl,
+            eventQueue: eventQueue,
+            httpQueue: httpQueue,
+            httpClient: httpClient
+        )
+
+        observer.addListener(listener: monitoringMetricRegistry)
+        Metrics.addRegistry(registry: monitoringMetricRegistry)
+
+        let scheduler = Schedulers.dispatch()
+
+        let loggingMetricRegistry = LoggingMetricRegistry(
+            scheduler: scheduler,
+            pushInterval: 60
+        )
+        observer.addListener(listener: loggingMetricRegistry)
+        Metrics.addRegistry(registry: loggingMetricRegistry)
     }
 }

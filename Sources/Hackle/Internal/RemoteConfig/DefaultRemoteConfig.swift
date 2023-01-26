@@ -37,6 +37,13 @@ class DefaultRemoteConfig: HackleRemoteConfig {
     }
 
     private func get(user: User, key: String, defaultValue: HackleValue) -> RemoteConfigDecision {
+        let sample = TimerSample.start()
+        let decision = getInternal(user: user, key: key, defaultValue: defaultValue)
+        DecisionMetrics.remoteConfig(sample: sample, key: key, decision: decision)
+        return decision
+    }
+
+    private func getInternal(user: User, key: String, defaultValue: HackleValue) -> RemoteConfigDecision {
         do {
             guard let hackleUser = userResolver.resolveOrNil(user: user) else {
                 return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.INVALID_INPUT)
