@@ -12,6 +12,12 @@ protocol ScheduledJob {
     func cancel()
 }
 
+enum Schedulers {
+    static func dispatch() -> Scheduler {
+        DispatchSourceTimerScheduler()
+    }
+}
+
 class DispatchSourceTimerScheduler: Scheduler {
     func schedulePeriodically(delay: TimeInterval, period: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
         let queue = DispatchQueue(label: "io.hackle.DispatchSourceTimerScheduler")
