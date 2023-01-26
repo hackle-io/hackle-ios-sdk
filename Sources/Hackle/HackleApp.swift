@@ -278,14 +278,5 @@ extension HackleApp {
 
         observer.addListener(listener: monitoringMetricRegistry)
         Metrics.addRegistry(registry: monitoringMetricRegistry)
-
-        let scheduler = Schedulers.dispatch()
-
-        let loggingMetricRegistry = LoggingMetricRegistry(
-            scheduler: scheduler,
-            pushInterval: 60
-        )
-        observer.addListener(listener: loggingMetricRegistry)
-        Metrics.addRegistry(registry: loggingMetricRegistry)
     }
 }
