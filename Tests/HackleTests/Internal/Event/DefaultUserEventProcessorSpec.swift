@@ -381,13 +381,15 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     let sut = processor()
                     every(eventFlushScheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
 
-                    let q = DispatchQueue(label: "test", attributes: .concurrent)
+                    let q = DispatchQueue.concurrent()
 
                     for _ in 1...100 {
                         q.async {
                             sut.start()
                         }
                     }
+
+                    q.await()
 
                     verify(exactly: 1) {
                         eventFlushScheduler.schedulePeriodicallyMock

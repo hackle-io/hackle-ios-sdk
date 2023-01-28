@@ -49,7 +49,9 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
 
     func fetch(completion: @escaping (Workspace?) -> ()) {
         let request = HttpRequest.get(url: endpoint)
+        let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
+            ApiCallMetrics.record(operation: "get.workspace", sample: sample, isSuccess: response.isSuccessful)
             let workspace = self.getWorkspaceOrNil(response: response)
             completion(workspace)
         }
@@ -83,5 +85,10 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
 
         return WorkspaceEntity.from(dto: workspaceDto)
+    }
+
+    private func record(sample: TimerSample, isSuccess: Bool) {
+        let timer = Metrics.timer(name: "workspace.fetch", tags: ["success": String(isSuccess)])
+        sample.stop(timer: timer)
     }
 }

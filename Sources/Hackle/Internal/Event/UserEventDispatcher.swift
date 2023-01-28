@@ -52,7 +52,9 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
 
         let request = HttpRequest.post(url: endpoint, body: requestBody)
 
+        let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
+            ApiCallMetrics.record(operation: "post.events", sample: sample, isSuccess: response.isSuccessful)
             self.handleResponse(events: events, response: response)
         }
     }
