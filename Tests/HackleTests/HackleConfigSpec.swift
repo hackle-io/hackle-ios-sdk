@@ -55,5 +55,13 @@ class HackleConfigSpec: QuickSpec {
                 expect(config.eventFlushThreshold) == i
             }
         }
+
+        it("extra") {
+            let config = HackleConfigBuilder()
+                .add("test_key", "test_value")
+                .build()
+            expect(config.get("test_key")) == "test_value"
+            expect(config.get("test_key2")).to(beNil())
+        }
     }
 }
