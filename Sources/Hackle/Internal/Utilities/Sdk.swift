@@ -10,8 +10,8 @@ struct Sdk {
     var version: String
 
     static func of(sdkKey: String, config: HackleConfig) -> Sdk {
-        guard let wrapperName = config.get("wrapper_name"),
-              let wrapperVersion = config.get("wrapper_version")
+        guard let wrapperName = config.get("$wrapper_name"),
+              let wrapperVersion = config.get("$wrapper_version")
         else {
             return Sdk(key: sdkKey, name: "ios-sdk", version: SdkVersion.CURRENT)
         }
