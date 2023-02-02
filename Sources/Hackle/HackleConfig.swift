@@ -16,6 +16,7 @@ public class HackleConfig: NSObject {
     var eventFlushInterval: TimeInterval
     var eventFlushThreshold: Int
     var exposureEventDedupInterval: TimeInterval
+    var extra: [String: String]
 
     init(builder: HackleConfigBuilder) {
         sdkUrl = builder.sdkUrl
@@ -25,6 +26,7 @@ public class HackleConfig: NSObject {
         eventFlushInterval = builder.eventFlushInterval
         eventFlushThreshold = builder.eventFlushThreshold
         exposureEventDedupInterval = builder.exposureEventDedupInterval
+        extra = builder.extra
         super.init()
     }
 
@@ -41,6 +43,10 @@ public class HackleConfig: NSObject {
     @objc public static func builder() -> HackleConfigBuilder {
         HackleConfigBuilder()
     }
+
+    func get(_ key: String) -> String? {
+        extra[key]
+    }
 }
 
 public class HackleConfigBuilder: NSObject {
@@ -55,6 +61,8 @@ public class HackleConfigBuilder: NSObject {
     var eventFlushThreshold: Int = HackleConfig.DEFAULT_EVENT_FLUSH_THRESHOLD
 
     var exposureEventDedupInterval: TimeInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
+
+    var extra: [String: String] = [:]
 
     @objc public func sdkUrl(_ sdkUrl: URL) -> HackleConfigBuilder {
         self.sdkUrl = sdkUrl
@@ -88,6 +96,11 @@ public class HackleConfigBuilder: NSObject {
 
     @objc public func exposureEventDedupIntervalSeconds(_ exposureEventDedupInterval: TimeInterval) -> HackleConfigBuilder {
         self.exposureEventDedupInterval = exposureEventDedupInterval
+        return self
+    }
+
+    @objc public func add(_ key: String, _ value: String) -> HackleConfigBuilder {
+        self.extra[key] = value
         return self
     }
 
