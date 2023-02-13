@@ -8,5 +8,5 @@
 import Foundation
 
 protocol UserListener {
-    func onUserUpdated(user: HackleUser, timestamp: Date)
+    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date)
 }

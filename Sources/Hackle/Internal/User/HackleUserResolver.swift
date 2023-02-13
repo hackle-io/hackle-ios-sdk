@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol HackleUserResolver {
-    func resolveOrNil(user: User) -> HackleUser?
+    func resolve(user: User) -> HackleUser
 }
 
 
@@ -21,28 +21,17 @@ class DefaultHackleUserResolver: HackleUserResolver {
         self.device = device
     }
 
-    func resolveOrNil(user: User) -> HackleUser? {
-        let decoratedUser = decorateUser(user: user)
-        let hackleUser = HackleUser.of(user: decoratedUser, hackleProperties: device.properties)
-
-        if hackleUser.identifiers.isEmpty {
-            return nil
-        }
-
-        return hackleUser
-    }
-
-    private func decorateUser(user: User) -> User {
-        if user.deviceId != nil {
-            return user
-        } else {
-            return user.withDeviceId(deviceId: device.id)
-        }
-    }
-}
-
-extension User {
-    func withDeviceId(deviceId: String) -> User {
-        return User(id: id, userId: userId, deviceId: deviceId, identifiers: identifiers, properties: properties)
+    func resolve(user: User) -> HackleUser {
+        HackleUser.builder()
+            .identifiers(user.identifiers)
+            .identifier(.id, user.id)
+            .identifier(.id, device.id, overwrite: false)
+            .identifier(.user, user.userId)
+            .identifier(.device, user.deviceId)
+            .identifier(.device, device.id, overwrite: false)
+            .identifier(.hackleDevice, device.id)
+            .properties(user.properties)
+            .hackleProperties(device.properties)
+            .build()
     }
 }

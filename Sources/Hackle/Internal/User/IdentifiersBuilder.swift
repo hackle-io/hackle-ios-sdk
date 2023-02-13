@@ -15,20 +15,25 @@ class IdentifiersBuilder {
     private static let MAX_IDENTIFIER_TYPE_LENGTH = 128
     private static let MAX_IDENTIFIER_VALUE_LENGTH = 512
 
-    func add(identifiers: [String: String]?) -> IdentifiersBuilder {
-        if let identifiers = identifiers {
-            for (key, value) in identifiers {
-                add(type: key, value: value)
-            }
+    @discardableResult
+    func add(_ identifiers: [String: String], overwrite: Bool = true) -> IdentifiersBuilder {
+        for (key, value) in identifiers {
+            add(key, value, overwrite: overwrite)
         }
         return self
     }
 
-    func add(type: IdentifierType, value: String?) -> IdentifiersBuilder {
-        add(type: type.rawValue, value: value)
+    @discardableResult
+    func add(_ type: IdentifierType, _ value: String?, overwrite: Bool = true) -> IdentifiersBuilder {
+        add(type.rawValue, value, overwrite: overwrite)
     }
 
-    func add(type: String, value: String?) -> IdentifiersBuilder {
+    @discardableResult
+    func add(_ type: String, _ value: String?, overwrite: Bool = true) -> IdentifiersBuilder {
+        if !overwrite && identifiers[type] != nil {
+            return self
+        }
+
         if let value = value, isValid(type: type, value: value) {
             identifiers[type] = value
         }

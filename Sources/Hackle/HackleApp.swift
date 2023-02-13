@@ -8,10 +8,12 @@ import Foundation
 @objc public final class HackleApp: NSObject {
 
     private let internalApp: HackleInternalApp
-    private let userResolver: HackleUserResolver
+    private let eventQueue: DispatchQueue
+    private let hackleUserResolver: HackleUserResolver
     private let device: Device
+    private let userManager: UserManager
     private let sessionManager: SessionManager
-    private let listeners: [AppInitializeListener]
+    private let eventProcessor: DefaultUserEventProcessor
 
     @objc public var deviceId: String {
         get {
@@ -27,66 +29,76 @@ import Foundation
 
     init(
         internalApp: HackleInternalApp,
-        userResolver: HackleUserResolver,
+        eventQueue: DispatchQueue,
+        hackleUserResolver: HackleUserResolver,
         device: Device,
+        userManager: UserManager,
         sessionManager: SessionManager,
-        listeners: [AppInitializeListener]
+        eventProcessor: DefaultUserEventProcessor
     ) {
         self.internalApp = internalApp
-        self.userResolver = userResolver
+        self.eventQueue = eventQueue
+        self.hackleUserResolver = hackleUserResolver
         self.device = device
+        self.userManager = userManager
         self.sessionManager = sessionManager
-        self.listeners = listeners
+        self.eventProcessor = eventProcessor
+        super.init()
+    }
+
+    @objc public func setUser(user: User) {
+        userManager.setUser(user: user)
+    }
+
+    @objc public func setUserId(userId: String?) {
+        userManager.setUserId(userId: userId)
+    }
+
+    @objc public func setDeviceId(deviceId: String) {
+        userManager.setDeviceId(deviceId: deviceId)
+    }
+
+    @objc public func setUserProperty(key: String, value: Any?) {
+        userManager.setUserProperty(key: key, value: value)
+    }
+
+    @objc public func resetUser() {
+        userManager.resetUser()
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
         variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
     }
 
-    @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
-        variationDetail(experimentKey: experimentKey, userId: userId, defaultVariation: defaultVariation).variation
-    }
-
-    @objc public func variation(experimentKey: Int, user: User, defaultVariation: String = "A") -> String {
-        variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation).variation
-    }
-
     @objc public func variationDetail(experimentKey: Int, defaultVariation: String = "A") -> Decision {
-        variationDetail(experimentKey: experimentKey, userId: deviceId, defaultVariation: defaultVariation)
-    }
-
-    @objc public func variationDetail(experimentKey: Int, userId: String, defaultVariation: String = "A") -> Decision {
-        variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation)
-    }
-
-    @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
-        let sample = TimerSample.start()
-        let decision = variationDetailInternal(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation)
-        DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
-        return decision
+        variationDetailInternal(experimentKey: experimentKey, user: userManager.currentUser, defaultVariation: defaultVariation)
     }
 
     private func variationDetailInternal(experimentKey: Int, user: User, defaultVariation: String) -> Decision {
+        let sample = TimerSample.start()
+        let decision: Decision
         do {
-            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
-                return Decision.of(variation: defaultVariation, reason: DecisionReason.INVALID_INPUT)
-            }
-            return try internalApp.experiment(
+            let hackleUser = hackleUserResolver.resolve(user: user)
+            decision = try internalApp.experiment(
                 experimentKey: Int64(experimentKey),
                 user: hackleUser,
                 defaultVariationKey: defaultVariation
             )
         } catch let error {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
-            return Decision.of(variation: defaultVariation, reason: DecisionReason.EXCEPTION)
+            decision = Decision.of(variation: defaultVariation, reason: DecisionReason.EXCEPTION)
         }
+        DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
+        return decision
     }
 
-    @objc public func allVariationDetails(user: User) -> [Int: Decision] {
+    @objc public func allVariationDetails() -> [Int: Decision] {
+        allVariationDetailsInternal(user: userManager.currentUser)
+    }
+
+    private func allVariationDetailsInternal(user: User) -> [Int: Decision] {
         do {
-            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
-                return [:]
-            }
+            let hackleUser = hackleUserResolver.resolve(user: user)
             return try internalApp.experiments(user: hackleUser)
         } catch let error {
             Log.error("Unexpected error while deciding variations for experiments: \(String(describing: error))")
@@ -95,87 +107,128 @@ import Foundation
     }
 
     @objc public func isFeatureOn(featureKey: Int) -> Bool {
-        featureFlagDetail(featureKey: featureKey, userId: deviceId).isOn
-    }
-
-    @objc public func isFeatureOn(featureKey: Int, userId: String) -> Bool {
-        featureFlagDetail(featureKey: featureKey, userId: userId).isOn
-    }
-
-    @objc public func isFeatureOn(featureKey: Int, user: User) -> Bool {
-        featureFlagDetail(featureKey: featureKey, user: user).isOn
+        featureFlagDetailInternal(featureKey: featureKey, user: userManager.currentUser).isOn
     }
 
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
-        featureFlagDetail(featureKey: featureKey, userId: deviceId)
-    }
-
-    @objc public func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision {
-        featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId))
-    }
-
-    @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
-        let sample = TimerSample.start()
-        let decision = featureFlagDetailInternal(featureKey: featureKey, user: user)
-        DecisionMetrics.featureFlag(sample: sample, key: featureKey, decision: decision)
-        return decision
+        featureFlagDetailInternal(featureKey: featureKey, user: userManager.currentUser)
     }
 
     private func featureFlagDetailInternal(featureKey: Int, user: User) -> FeatureFlagDecision {
+        let sample = TimerSample.start()
+        let decision: FeatureFlagDecision
         do {
-            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
-                return FeatureFlagDecision.off(reason: DecisionReason.INVALID_INPUT)
-            }
-            return try internalApp.featureFlag(
+            let hackleUser = hackleUserResolver.resolve(user: user)
+            decision = try internalApp.featureFlag(
                 featureKey: Int64(featureKey),
                 user: hackleUser
             )
         } catch {
             Log.error("Unexpected error while deciding feature flag[\(featureKey)]: \(String(describing: error))")
-            return FeatureFlagDecision.off(reason: DecisionReason.EXCEPTION)
+            decision = FeatureFlagDecision.off(reason: DecisionReason.EXCEPTION)
         }
+        DecisionMetrics.featureFlag(sample: sample, key: featureKey, decision: decision)
+        return decision
     }
 
     @objc public func track(eventKey: String) {
-        track(eventKey: eventKey, userId: deviceId)
-    }
-
-    @objc public func track(eventKey: String, userId: String) {
-        track(eventKey: eventKey, user: Hackle.user(id: userId))
-    }
-
-    @objc public func track(eventKey: String, user: User) {
-        track(event: Hackle.event(key: eventKey), user: user)
+        trackInternal(event: Hackle.event(key: eventKey), user: userManager.currentUser)
     }
 
     @objc public func track(event: Event) {
-        track(event: event, userId: deviceId)
+        trackInternal(event: event, user: userManager.currentUser)
     }
 
-    @objc public func track(event: Event, userId: String) {
-        track(event: event, user: Hackle.user(id: userId))
-    }
-
-    @objc public func track(event: Event, user: User) {
-        do {
-            guard let hackleUser = userResolver.resolveOrNil(user: user) else {
-                return
-            }
-            internalApp.track(
-                event: event,
-                user: hackleUser
-            )
-        } catch {
-            Log.error("Unexpected exception while tracking event[\(event.key)]: \(String(describing: error))")
-        }
+    private func trackInternal(event: Event, user: User) {
+        let hackleUser = hackleUserResolver.resolve(user: user)
+        internalApp.track(event: event, user: hackleUser)
     }
 
     @objc public func remoteConfig() -> HackleRemoteConfig {
-        remoteConfig(user: Hackle.user(id: deviceId))
+        DefaultRemoteConfig(user: nil, app: internalApp, userManager: userManager, userResolver: hackleUserResolver)
     }
 
+    @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
+    @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
+        let updatedUser = userManager.setUser(user: Hackle.user(id: userId))
+        return variationDetailInternal(experimentKey: experimentKey, user: updatedUser, defaultVariation: defaultVariation).variation
+    }
+
+    @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
+    @objc public func variation(experimentKey: Int, user: User, defaultVariation: String = "A") -> String {
+        let updatedUser = userManager.setUser(user: user)
+        return variationDetailInternal(experimentKey: experimentKey, user: updatedUser, defaultVariation: defaultVariation).variation
+    }
+
+    @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
+    @objc public func variationDetail(experimentKey: Int, userId: String, defaultVariation: String = "A") -> Decision {
+        let updatedUser = userManager.setUser(user: Hackle.user(id: userId))
+        return variationDetailInternal(experimentKey: experimentKey, user: updatedUser, defaultVariation: defaultVariation)
+    }
+
+    @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
+    @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
+        let updatedUser = userManager.setUser(user: user)
+        return variationDetailInternal(experimentKey: experimentKey, user: updatedUser, defaultVariation: defaultVariation)
+    }
+
+    @available(*, deprecated, message: "Use allVariationDetails() with setUser(user) instead.")
+    @objc public func allVariationDetails(user: User) -> [Int: Decision] {
+        let updatedUser = userManager.setUser(user: user)
+        return allVariationDetailsInternal(user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
+    @objc public func isFeatureOn(featureKey: Int, userId: String) -> Bool {
+        let updatedUser = userManager.setUser(user: Hackle.user(id: userId))
+        return featureFlagDetailInternal(featureKey: featureKey, user: updatedUser).isOn
+    }
+
+    @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
+    @objc public func isFeatureOn(featureKey: Int, user: User) -> Bool {
+        let updatedUser = userManager.setUser(user: user)
+        return featureFlagDetailInternal(featureKey: featureKey, user: updatedUser).isOn
+    }
+
+    @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
+    @objc public func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision {
+        let updatedUser = userManager.setUser(user: Hackle.user(id: userId))
+        return featureFlagDetailInternal(featureKey: featureKey, user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
+    @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
+        let updatedUser = userManager.setUser(user: user)
+        return featureFlagDetailInternal(featureKey: featureKey, user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
+    @objc public func track(eventKey: String, userId: String) {
+        let updatedUser = userManager.setUser(user: Hackle.user(id: userId))
+        trackInternal(event: Hackle.event(key: eventKey), user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
+    @objc public func track(eventKey: String, user: User) {
+        let updatedUser = userManager.setUser(user: user)
+        trackInternal(event: Hackle.event(key: eventKey), user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
+    @objc public func track(event: Event, userId: String) {
+        let updatedUser = userManager.setUser(user: Hackle.user(id: userId))
+        trackInternal(event: event, user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
+    @objc public func track(event: Event, user: User) {
+        let updatedUser = userManager.setUser(user: user)
+        trackInternal(event: event, user: updatedUser)
+    }
+
+    @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
-        DefaultRemoteConfig(user: user, app: internalApp, userResolver: userResolver)
+        DefaultRemoteConfig(user: user, app: internalApp, userManager: userManager, userResolver: hackleUserResolver)
     }
 }
 
@@ -183,16 +236,22 @@ extension HackleApp {
 
     private static let hackleDeviceId = "hackle_device_id"
 
-    func initialize(completion: @escaping () -> ()) {
-        for listener in listeners {
-            listener.onInitialized()
+    func initialize(user: User?, completion: @escaping () -> ()) {
+        userManager.initialize(user: user)
+        eventQueue.async {
+            self.sessionManager.initialize()
+            self.eventProcessor.initialize()
+            self.internalApp.initialize(completion: completion)
         }
-        internalApp.initialize(completion: completion)
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
 
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
+
+        let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard)
+        let device = Device.create(keyValueRepository: globalKeyValueRepository)
+
         let httpClient = DefaultHttpClient(sdk: sdk)
 
         let httpWorkspaceFetcher = DefaultHttpWorkspaceFetcher(
@@ -201,7 +260,6 @@ extension HackleApp {
         )
         let workspaceFetcher = CachedWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher)
 
-        let keyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard)
 
         let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
@@ -216,17 +274,18 @@ extension HackleApp {
             httpClient: httpClient
         )
 
-        let userManager = DefaultUserManager()
+        let userManager = DefaultUserManager(
+            device: device,
+            repository: UserDefaultsKeyValueRepository(userDefaults: UserDefaults(suiteName: "Hackle_\(sdkKey)")!)
+        )
         let sessionManager = DefaultSessionManager(
-            eventQueue: eventQueue,
-            keyValueRepository: keyValueRepository,
+            userManager: userManager,
+            keyValueRepository: globalKeyValueRepository,
             sessionTimeout: config.sessionTimeoutInterval
         )
-
         let dedupDeterminer = DefaultExposureEventDedupDeterminer(
             dedupInterval: config.exposureEventDedupInterval
         )
-
         let eventProcessor = DefaultUserEventProcessor(
             eventDedupDeterminer: dedupDeterminer,
             eventQueue: eventQueue,
@@ -237,28 +296,34 @@ extension HackleApp {
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
             eventDispatcher: eventDispatcher,
-            userManager: userManager,
             sessionManager: sessionManager
         )
 
+        let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+        let hackleUserResolver = DefaultHackleUserResolver(device: device)
+
         let appNotificationObserver = DefaultAppNotificationObserver.instance
         appNotificationObserver.addListener(listener: sessionManager)
+        appNotificationObserver.addListener(listener: userManager)
         appNotificationObserver.addListener(listener: eventProcessor)
         userManager.addListener(listener: sessionManager)
 
-        HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
+        let sessionEventTracker = SessionEventTracker(
+            hackleUserResolver: hackleUserResolver,
+            internalApp: internalApp
+        )
+        sessionManager.addListener(listener: sessionEventTracker)
 
-        let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
-        let device = Device.create(keyValueRepository: keyValueRepository)
-        let userResolver = DefaultHackleUserResolver(device: device)
-        let listeners: [AppInitializeListener] = [sessionManager, eventProcessor]
+        HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
 
         return HackleApp(
             internalApp: internalApp,
-            userResolver: userResolver,
+            eventQueue: eventQueue,
+            hackleUserResolver: hackleUserResolver,
             device: device,
+            userManager: userManager,
             sessionManager: sessionManager,
-            listeners: listeners
+            eventProcessor: eventProcessor
         )
     }
 

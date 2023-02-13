@@ -9,7 +9,7 @@ import Foundation
 
 protocol SessionListener {
 
-    func onSessionStarted(session: Session, timestamp: Date)
+    func onSessionStarted(session: Session, user: User, timestamp: Date)
 
-    func onSessionEnded(session: Session, timestamp: Date)
+    func onSessionEnded(session: Session, user: User, timestamp: Date)
 }
