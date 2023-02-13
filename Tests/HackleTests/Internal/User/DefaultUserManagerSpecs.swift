@@ -6,134 +6,136 @@ import Mockery
 
 class DefaultUserManagerSpecs: QuickSpec {
     override func spec() {
-        it("updateUser") {
-            func updateUser(
-                _ u1: (String?, String?),
-                _ u2: (String?, String?),
-                _ isSame: Bool
-            ) {
-                let listener = UserListenerStub()
-                let sut = DefaultUserManager()
-                sut.addListener(listener: listener)
+        describe("initialize") {
+            it("from input") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
 
-                let user1 = HackleUser.of(user: Hackle.user(userId: u1.0, deviceId: u1.1), hackleProperties: [:])
-                let user2 = HackleUser.of(user: Hackle.user(userId: u2.0, deviceId: u2.1), hackleProperties: [:])
+                let user = HackleUserBuilder().id("hello").build()
+                userManager.initialize(user: user)
 
-
-                sut.updateUser(user: user1)
-                sut.updateUser(user: user2)
-
-                if isSame {
-                    expect(listener.invocations.count) == 0
-                } else {
-                    expect(listener.invocations.count) == 1
-                }
-
+                expect(userManager.currentUser) == user
             }
 
-            updateUser((nil, nil), (nil, nil), true)
-            updateUser((nil, nil), (nil, "a"), false)
-            updateUser((nil, nil), (nil, "b"), false)
-            updateUser((nil, nil), ("a", nil), true)
-            updateUser((nil, nil), ("a", "a"), false)
-            updateUser((nil, nil), ("a", "b"), false)
-            updateUser((nil, nil), ("b", nil), true)
-            updateUser((nil, nil), ("b", "a"), false)
-            updateUser((nil, nil), ("b", "b"), false)
+            it("from repository") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
+                let user = HackleUserBuilder()
+                    .id("id")
+                    .userId("userId")
+                    .deviceId("deviceId")
+                    .identifier("customId", "customValue")
+                    .property("string", "value")
+                    .property("int", 42)
+                    .property("boolean", false)
+                    .property("nil", nil)
+                    .build()
+                repository.putData(key: "user", value: user.toData()!)
 
-            updateUser((nil, "a"), (nil, nil), false)
-            updateUser((nil, "a"), (nil, "a"), true)
-            updateUser((nil, "a"), (nil, "b"), false)
-            updateUser((nil, "a"), ("a", nil), false)
-            updateUser((nil, "a"), ("a", "a"), true)
-            updateUser((nil, "a"), ("a", "b"), false)
-            updateUser((nil, "a"), ("b", nil), false)
-            updateUser((nil, "a"), ("b", "a"), true)
-            updateUser((nil, "a"), ("b", "b"), false)
+                userManager.initialize(user: nil)
 
-            updateUser((nil, "b"), (nil, nil), false)
-            updateUser((nil, "b"), (nil, "a"), false)
-            updateUser((nil, "b"), (nil, "b"), true)
-            updateUser((nil, "b"), ("a", nil), false)
-            updateUser((nil, "b"), ("a", "a"), false)
-            updateUser((nil, "b"), ("a", "b"), true)
-            updateUser((nil, "b"), ("b", nil), false)
-            updateUser((nil, "b"), ("b", "a"), false)
-            updateUser((nil, "b"), ("b", "b"), true)
+                expect(userManager.currentUser.id) == "id"
+                expect(userManager.currentUser.userId) == "userId"
+                expect(userManager.currentUser.deviceId) == "deviceId"
+                expect(userManager.currentUser.identifiers) == user.identifiers
+            }
 
+            it("from default user") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
 
-            updateUser(("a", nil), (nil, nil), true)
-            updateUser(("a", nil), (nil, "a"), false)
-            updateUser(("a", nil), (nil, "b"), false)
-            updateUser(("a", nil), ("a", nil), true)
-            updateUser(("a", nil), ("a", "a"), true)
-            updateUser(("a", nil), ("a", "b"), true)
-            updateUser(("a", nil), ("b", nil), false)
-            updateUser(("a", nil), ("b", "a"), false)
-            updateUser(("a", nil), ("b", "b"), false)
+                userManager.initialize(user: nil)
 
-            updateUser(("a", "a"), (nil, nil), false)
-            updateUser(("a", "a"), (nil, "a"), true)
-            updateUser(("a", "a"), (nil, "b"), false)
-            updateUser(("a", "a"), ("a", nil), true)
-            updateUser(("a", "a"), ("a", "a"), true)
-            updateUser(("a", "a"), ("a", "b"), true)
-            updateUser(("a", "a"), ("b", nil), false)
-            updateUser(("a", "a"), ("b", "a"), false)
-            updateUser(("a", "a"), ("b", "b"), false)
+                expect(userManager.currentUser.deviceId) == "test_device_id"
+            }
+        }
 
-            updateUser(("a", "b"), (nil, nil), false)
-            updateUser(("a", "b"), (nil, "a"), false)
-            updateUser(("a", "b"), (nil, "b"), true)
-            updateUser(("a", "b"), ("a", nil), true)
-            updateUser(("a", "b"), ("a", "a"), true)
-            updateUser(("a", "b"), ("a", "b"), true)
-            updateUser(("a", "b"), ("b", nil), false)
-            updateUser(("a", "b"), ("b", "a"), false)
-            updateUser(("a", "b"), ("b", "b"), false)
+        describe("setUser") {
+
+            it("기존 사용자와 다른 경우") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
+                let listener = UserListenerStub()
+                userManager.addListener(listener: listener)
+
+                let user = HackleUserBuilder().deviceId("42").build()
+                let actual = userManager.setUser(user: user)
+
+                expect(actual.deviceId) == "42"
+                expect(listener.history.count) == 1
+                expect(listener.history[0].0.deviceId) == "test_device_id"
+                expect(listener.history[0].1.deviceId) == "42"
+            }
 
 
-            updateUser(("b", nil), (nil, nil), true)
-            updateUser(("b", nil), (nil, "a"), false)
-            updateUser(("b", nil), (nil, "b"), false)
-            updateUser(("b", nil), ("a", nil), false)
-            updateUser(("b", nil), ("a", "a"), false)
-            updateUser(("b", nil), ("a", "b"), false)
-            updateUser(("b", nil), ("b", nil), true)
-            updateUser(("b", nil), ("b", "a"), true)
-            updateUser(("b", nil), ("b", "b"), true)
+            it("기존 사용자와 다른 경우 2") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
+                let listener = UserListenerStub()
+                userManager.addListener(listener: listener)
 
-            updateUser(("b", "a"), (nil, nil), false)
-            updateUser(("b", "a"), (nil, "a"), true)
-            updateUser(("b", "a"), (nil, "b"), false)
-            updateUser(("b", "a"), ("a", nil), false)
-            updateUser(("b", "a"), ("a", "a"), false)
-            updateUser(("b", "a"), ("a", "b"), false)
-            updateUser(("b", "a"), ("b", nil), true)
-            updateUser(("b", "a"), ("b", "a"), true)
-            updateUser(("b", "a"), ("b", "b"), true)
+                let oldUser = HackleUserBuilder().deviceId("a").property("a", "a").build()
+                let newUser = HackleUserBuilder().deviceId("b").property("b", "b").build()
 
-            updateUser(("b", "b"), (nil, nil), false)
-            updateUser(("b", "b"), (nil, "a"), false)
-            updateUser(("b", "b"), (nil, "b"), true)
-            updateUser(("b", "b"), ("a", nil), false)
-            updateUser(("b", "b"), ("a", "a"), false)
-            updateUser(("b", "b"), ("a", "b"), false)
-            updateUser(("b", "b"), ("b", nil), true)
-            updateUser(("b", "b"), ("b", "a"), true)
-            updateUser(("b", "b"), ("b", "b"), true)
+                userManager.initialize(user: oldUser)
+                let actual = userManager.setUser(user: newUser)
+
+                expect(actual.deviceId) == "b"
+                expect(actual.properties["a"] as? String).to(beNil())
+                expect(actual.properties["b"] as? String) == "b"
+                expect(listener.history.count) == 1
+                expect(listener.history[0].0.deviceId) == "a"
+                expect(listener.history[0].1.deviceId) == "b"
+            }
+
+            it("기존 사용자와 같은 사용자인 경우") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
+                let listener = UserListenerStub()
+                userManager.addListener(listener: listener)
+
+                let oldUser = HackleUserBuilder().deviceId("a").property("a", "a").build()
+                let newUser = HackleUserBuilder().deviceId("a").property("b", "b").build()
+
+                userManager.initialize(user: oldUser)
+                let actual = userManager.setUser(user: newUser)
+
+                expect(actual.deviceId) == "a"
+                expect(actual.properties["a"] as? String) == "a"
+                expect(actual.properties["b"] as? String) == "b"
+                expect(listener.history.count) == 0
+            }
+        }
+
+        describe("onNotified") {
+            it("현재 사용자를 저장한다") {
+                let device = Device(id: "test_device_id", properties: [:])
+                let repository = MemoryKeyValueRepository()
+                let userManager = DefaultUserManager(device: device, repository: repository)
+                let listener = UserListenerStub()
+                userManager.addListener(listener: listener)
+
+                let user = HackleUserBuilder().deviceId("a").property("a", "a").build()
+                userManager.initialize(user: user)
+                userManager.onNotified(notification: .didEnterBackground, timestamp: Date(timeIntervalSince1970: 42))
+
+                expect(repository.getData(key: "user")).toNot(beNil())
+            }
         }
     }
-
-
 }
-
 
 fileprivate class UserListenerStub: UserListener {
 
-    var invocations = [(HackleUser, Date)]()
+    var history = [(User, User, Date)]()
 
-    func onUserUpdated(user: HackleUser, timestamp: Date) {
-        invocations.append((user, timestamp))
+    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+        history.append((oldUser, newUser, timestamp))
     }
 }

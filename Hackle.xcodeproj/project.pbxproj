@@ -91,7 +91,6 @@
 		EE1081DE27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */; };
 		EE2A71E22701F880007691D7 /* VersionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A71E12701F880007691D7 /* VersionSpecs.swift */; };
 		EE323425294C42C00051F3E6 /* KeyValueRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323424294C42C00051F3E6 /* KeyValueRepository.swift */; };
-		EE323427294C45470051F3E6 /* AppInitializeListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323426294C45470051F3E6 /* AppInitializeListener.swift */; };
 		EE32342A294C470F0051F3E6 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE323429294C470F0051F3E6 /* Session.swift */; };
 		EE32342C294C47170051F3E6 /* SessionListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE32342B294C47170051F3E6 /* SessionListener.swift */; };
 		EE32342E294C471C0051F3E6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE32342D294C471C0051F3E6 /* SessionManager.swift */; };
@@ -105,6 +104,7 @@
 		EE3EE83128B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */; };
 		EE404398291296D200980A73 /* SQLiteDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE404397291296D200980A73 /* SQLiteDatabase.swift */; };
 		EE40439B2913489600980A73 /* MockEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE40439A2913489600980A73 /* MockEventRepository.swift */; };
+		EE45BFEA298BC8F800F977C9 /* SessionEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45BFE9298BC8F800F977C9 /* SessionEventTracker.swift */; };
 		EE49C00A29756A1B001D9F6D /* Metric.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE49C00929756A1B001D9F6D /* Metric.swift */; };
 		EE49C00C29756A3B001D9F6D /* MetricRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE49C00B29756A3B001D9F6D /* MetricRegistry.swift */; };
 		EE49C01029756A58001D9F6D /* Counter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE49C00F29756A58001D9F6D /* Counter.swift */; };
@@ -205,6 +205,9 @@
 		EEA8BD6D26EDDB7D007230D9 /* Decision.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD6C26EDDB7D007230D9 /* Decision.swift */; };
 		EEA8BD7126EDF02D007230D9 /* HackleValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7026EDF02D007230D9 /* HackleValue.swift */; };
 		EEA8BD7526EDF77C007230D9 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA8BD7426EDF77C007230D9 /* Enums.swift */; };
+		EEB624C82999E91800F1ECB6 /* MemoryKeyValueRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB624C72999E91800F1ECB6 /* MemoryKeyValueRepository.swift */; };
+		EEB624CB299A0AB400F1ECB6 /* UserSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB624CA299A0AB400F1ECB6 /* UserSpecs.swift */; };
+		EEB624CD299A0F1000F1ECB6 /* SessionEventTrackerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB624CC299A0F1000F1ECB6 /* SessionEventTrackerSpecs.swift */; };
 		EED6B19F288D670F00F82D74 /* MockContainerResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */; };
 		EED6B91028FBF2B200C2C6C0 /* ParameterConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6B90F28FBF2B200C2C6C0 /* ParameterConfiguration.swift */; };
 		EED6B91228FBF2BE00C2C6C0 /* ParameterConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6B91128FBF2BE00C2C6C0 /* ParameterConfig.swift */; };
@@ -326,7 +329,6 @@
 		EE1081DD27A68E0400E76BB2 /* DefaultOverrideResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultOverrideResolverSpecs.swift; sourceTree = "<group>"; };
 		EE2A71E12701F880007691D7 /* VersionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionSpecs.swift; sourceTree = "<group>"; };
 		EE323424294C42C00051F3E6 /* KeyValueRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueRepository.swift; sourceTree = "<group>"; };
-		EE323426294C45470051F3E6 /* AppInitializeListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInitializeListener.swift; sourceTree = "<group>"; };
 		EE323429294C470F0051F3E6 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		EE32342B294C47170051F3E6 /* SessionListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListener.swift; sourceTree = "<group>"; };
 		EE32342D294C471C0051F3E6 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
@@ -340,6 +342,7 @@
 		EE3EE83028B771F30078575F /* DefaultExposureEventDedupDeterminerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExposureEventDedupDeterminerSpec.swift; sourceTree = "<group>"; };
 		EE404397291296D200980A73 /* SQLiteDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteDatabase.swift; sourceTree = "<group>"; };
 		EE40439A2913489600980A73 /* MockEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEventRepository.swift; sourceTree = "<group>"; };
+		EE45BFE9298BC8F800F977C9 /* SessionEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEventTracker.swift; sourceTree = "<group>"; };
 		EE49C00929756A1B001D9F6D /* Metric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metric.swift; sourceTree = "<group>"; };
 		EE49C00B29756A3B001D9F6D /* MetricRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricRegistry.swift; sourceTree = "<group>"; };
 		EE49C00F29756A58001D9F6D /* Counter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Counter.swift; sourceTree = "<group>"; };
@@ -437,6 +440,9 @@
 		EEA8BD6C26EDDB7D007230D9 /* Decision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decision.swift; sourceTree = "<group>"; };
 		EEA8BD7026EDF02D007230D9 /* HackleValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleValue.swift; sourceTree = "<group>"; };
 		EEA8BD7426EDF77C007230D9 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		EEB624C72999E91800F1ECB6 /* MemoryKeyValueRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryKeyValueRepository.swift; sourceTree = "<group>"; };
+		EEB624CA299A0AB400F1ECB6 /* UserSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSpecs.swift; sourceTree = "<group>"; };
+		EEB624CC299A0F1000F1ECB6 /* SessionEventTrackerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEventTrackerSpecs.swift; sourceTree = "<group>"; };
 		EED6B19E288D670F00F82D74 /* MockContainerResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContainerResolver.swift; sourceTree = "<group>"; };
 		EED6B90F28FBF2B200C2C6C0 /* ParameterConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterConfiguration.swift; sourceTree = "<group>"; };
 		EED6B91128FBF2BE00C2C6C0 /* ParameterConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterConfig.swift; sourceTree = "<group>"; };
@@ -627,7 +633,6 @@
 		38AF4F669561F1662BDA1DAA /* Notification */ = {
 			isa = PBXGroup;
 			children = (
-				EE323426294C45470051F3E6 /* AppInitializeListener.swift */,
 				38AF4BE3AF7320B105CE3FA7 /* AppNotification.swift */,
 				38AF41B1049ED4BFB8FB872D /* AppNotificationListener.swift */,
 				38AF4935B94116B63C5C923A /* AppNotificationObserver.swift */,
@@ -648,6 +653,7 @@
 			children = (
 				EE02C18329513B3A00F3E5E3 /* DefaultSessionManagerSpecs.swift */,
 				EE02C17F29513B0000F3E5E3 /* MockSessionManager.swift */,
+				EEB624CC299A0F1000F1ECB6 /* SessionEventTrackerSpecs.swift */,
 			);
 			path = Session;
 			sourceTree = "<group>";
@@ -658,6 +664,7 @@
 				EE323429294C470F0051F3E6 /* Session.swift */,
 				EE32342B294C47170051F3E6 /* SessionListener.swift */,
 				EE32342D294C471C0051F3E6 /* SessionManager.swift */,
+				EE45BFE9298BC8F800F977C9 /* SessionEventTracker.swift */,
 			);
 			path = Session;
 			sourceTree = "<group>";
@@ -666,6 +673,7 @@
 			isa = PBXGroup;
 			children = (
 				EE40439A2913489600980A73 /* MockEventRepository.swift */,
+				EEB624C72999E91800F1ECB6 /* MemoryKeyValueRepository.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -1060,6 +1068,14 @@
 			path = Internal;
 			sourceTree = "<group>";
 		};
+		EEB624C9299A0AA800F1ECB6 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				EEB624CA299A0AB400F1ECB6 /* UserSpecs.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		EEF268652911F44C00455C70 /* Database */ = {
 			isa = PBXGroup;
 			children = (
@@ -1155,6 +1171,7 @@
 			children = (
 				38AF414ABBBB10CFB1B1ED03 /* Resources */,
 				EE641F9126F09AE80037AE25 /* Internal */,
+				EEB624C9299A0AA800F1ECB6 /* Common */,
 				38AF434C1C785B1996086B0C /* Mock */,
 				38AF447F3F5FAA526FACA4F7 /* HackleAppSpec.swift */,
 				EE90396528B7876B00846643 /* HackleConfigSpec.swift */,
@@ -1312,7 +1329,6 @@
 				EEA8BD2E26ECFD9C007230D9 /* FlowEvaluator.swift in Sources */,
 				38AF40C9A5C88230C1C10B32 /* Buckter.swift in Sources */,
 				EEFD00B82976B0D900F06EFD /* Metrics.swift in Sources */,
-				EE323427294C45470051F3E6 /* AppInitializeListener.swift in Sources */,
 				EE49C0192975840E001D9F6D /* NoopCounter.swift in Sources */,
 				EEF268692911F4BC00455C70 /* EventEntity.swift in Sources */,
 				EE49C030297650B5001D9F6D /* DelegatingTimer.swift in Sources */,
@@ -1329,6 +1345,7 @@
 				EE34413C28A5EA0A00630557 /* HackleConfig.swift in Sources */,
 				EE49C02E297650AE001D9F6D /* DelegatingCounter.swift in Sources */,
 				EED6B91028FBF2B200C2C6C0 /* ParameterConfiguration.swift in Sources */,
+				EE45BFEA298BC8F800F977C9 /* SessionEventTracker.swift in Sources */,
 				EEA8BD1626ECFD4C007230D9 /* Evaluation.swift in Sources */,
 				EEFD00B4297699B800F06EFD /* FlushMetricRegistry.swift in Sources */,
 				EEA8BD4F26ECFFB5007230D9 /* ExperimentTargetDeterminer.swift in Sources */,
@@ -1455,12 +1472,14 @@
 				EE641FC926F09C040037AE25 /* UserConditionMatcherSpecs.swift in Sources */,
 				EE83D0EA29306C1F0080C7B8 /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
 				38AF4CD11550B06E0824519D /* MockSlotNumberCalculator.swift in Sources */,
+				EEB624C82999E91800F1ECB6 /* MemoryKeyValueRepository.swift in Sources */,
 				EE83D0E2292EF1BE0080C7B8 /* MockRemoteConfigTargetRuleDeterminer.swift in Sources */,
 				EE641FB926F09BE00037AE25 /* OperatorMatcherSpecs.swift in Sources */,
 				EE0560CC26F1E01D0051B624 /* MockExperimentTargetRuleDeterminer.swift in Sources */,
 				EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */,
 				EE02C18029513B0000F3E5E3 /* MockSessionManager.swift in Sources */,
 				38AF4C36250C9B81B7937897 /* MockModels.swift in Sources */,
+				EEB624CD299A0F1000F1ECB6 /* SessionEventTrackerSpecs.swift in Sources */,
 				EE83D0F029307E030080C7B8 /* MockTargetMatcher.swift in Sources */,
 				EEA1DACA28FE9EAC00A2F762 /* ParameterConfigurationEntitySpecs.swift in Sources */,
 				EE1081DA27A67E5500E76BB2 /* SegmentConditionMatcherSpecs.swift in Sources */,
@@ -1492,6 +1511,7 @@
 				EEA1DAC828FE97FA00A2F762 /* UserEventSpecs.swift in Sources */,
 				EE4D9AE3297F912A00D41D02 /* TimerSpecs.swift in Sources */,
 				EE641FD126F09C170037AE25 /* DefaultTargetMatcherSpecs.swift in Sources */,
+				EEB624CB299A0AB400F1ECB6 /* UserSpecs.swift in Sources */,
 				38AF414C9F4EBFA8B1BFA740 /* DefaultUserEventDispatcherSepc.swift in Sources */,
 				EED6B19F288D670F00F82D74 /* MockContainerResolver.swift in Sources */,
 				EE4D9B04297F9A0D00D41D02 /* NoopTimerSpecs.swift in Sources */,

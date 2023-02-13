@@ -15,7 +15,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var eventRepository: MockEventRepository!
         var eventFlushScheduler: MockScheduler!
         var eventDispatcher: MockUserEventDispatcher!
-        var userManager: MockUserManager!
         var sessionManager: MockSessionManager!
 
         beforeEach {
@@ -24,7 +23,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventRepository = MockEventRepository()
             eventFlushScheduler = MockScheduler()
             eventDispatcher = MockUserEventDispatcher()
-            userManager = MockUserManager()
             sessionManager = MockSessionManager()
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
@@ -43,7 +41,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventFlushThreshold: Int = 10,
             eventFlushMaxBatchSize: Int = 21,
             eventDispatcher: UserEventDispatcher = eventDispatcher,
-            userManager: UserManager = userManager,
             sessionManager: SessionManager = sessionManager
         ) -> DefaultUserEventProcessor {
             DefaultUserEventProcessor(
@@ -56,14 +53,30 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventFlushThreshold: eventFlushThreshold,
                 eventFlushMaxBatchSize: eventFlushMaxBatchSize,
                 eventDispatcher: eventDispatcher,
-                userManager: userManager,
                 sessionManager: sessionManager
             )
         }
 
         describe("process") {
 
-            it("userManager, sessionManager update") {
+
+            it("SessionEvent 인 경우 lastEventTime 을 업데이트 하지 않는다") {
+                // given
+                let sut = processor()
+                let user = HackleUser.builder().identifier(.id, "id").build()
+                let event = UserEvents.track(eventType: UndefinedEventType(key: "$session_start"), event: Hackle.event(key: "$session_start"), timestamp: Date(), user: user)
+
+                // when
+                sut.process(event: event)
+
+                // then
+                verify(exactly: 0) {
+                    sessionManager.updateLastEventTimeMock
+                }
+            }
+
+
+            it("update lastEventTime") {
                 // given
                 let sut = processor()
                 let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
@@ -75,13 +88,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
                 // then
                 verify(exactly: 1) {
-                    userManager.updateUserMock
-                }
-                verify(exactly: 1) {
                     sessionManager.updateLastEventTimeMock
                 }
 
-                expect(userManager.updateUserMock.firstInvokation().arguments).to(beIdenticalTo(user))
                 expect(sessionManager.updateLastEventTimeMock.firstInvokation().arguments.timeIntervalSince1970) == 42
             }
 
@@ -271,7 +280,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventFlushThreshold: 10,
                     eventFlushMaxBatchSize: 21,
                     eventDispatcher: eventDispatcher,
-                    userManager: userManager,
                     sessionManager: sessionManager
                 )
             }
@@ -291,7 +299,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             }
         }
 
-        describe("onInitialized") {
+        describe("initialize") {
 
             it("Flushing 상태의 이벤트를 Pending 상태로 바꾼다") {
                 // given
@@ -301,9 +309,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 every(eventRepository.findAllByMock).returns(events)
 
                 // when
-                sut.onInitialized()
-                eventQueue.sync {
-                }
+                sut.initialize()
 
                 // then
                 expect(eventRepository.updateMock.invokations()[0].arguments.0).to(beIdenticalTo(events))
@@ -318,9 +324,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 every(eventRepository.findAllByMock).returns(events)
 
                 // when
-                sut.onInitialized()
-                eventQueue.sync {
-                }
+                sut.initialize()
 
                 // then
                 verify(exactly: 0) {

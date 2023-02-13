@@ -12,4 +12,5 @@ enum IdentifierType: String, Codable {
     case user = "$userId"
     case device = "$deviceId"
     case session = "$sessionId"
+    case hackleDevice = "$hackleDeviceId"
 }

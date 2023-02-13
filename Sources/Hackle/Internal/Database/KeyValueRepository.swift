@@ -16,6 +16,10 @@ protocol KeyValueRepository {
     func getDouble(key: String) -> Double
 
     func putDouble(key: String, value: Double)
+
+    func getData(key: String) -> Data?
+
+    func putData(key: String, value: Data)
 }
 
 extension KeyValueRepository {
@@ -51,6 +55,15 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
     }
 
     func putDouble(key: String, value: Double) {
+        userDefaults.set(value, forKey: key)
+        userDefaults.synchronize()
+    }
+
+    func getData(key: String) -> Data? {
+        userDefaults.data(forKey: key)
+    }
+
+    func putData(key: String, value: Data) {
         userDefaults.set(value, forKey: key)
         userDefaults.synchronize()
     }

@@ -41,10 +41,10 @@ enum UserEvents {
         return ["$parameterConfigurationId": config.id]
     }
 
-    static func track(user: HackleUser, eventType: EventType, event: Event) -> UserEvent {
+    static func track(eventType: EventType, event: Event, timestamp: Date, user: HackleUser) -> UserEvent {
         Track(
             insertId: UUID().uuidString.lowercased(),
-            timestamp: Date(),
+            timestamp: timestamp,
             user: user,
             eventType: eventType,
             event: event
@@ -134,9 +134,9 @@ enum UserEvents {
         let parameter: RemoteConfigParameter
         let valueId: Int64?
         let decisionReason: String
-        let properties: [String: Any]
+        let properties: [String: Any?]
 
-        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any]) {
+        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any?]) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user
