@@ -10,41 +10,15 @@ import Foundation
     static var instance: HackleApp?
 
     @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT) {
-        lock.write {
-            if instance == nil {
-                let app = HackleApp.create(sdkKey: sdkKey, config: config)
-                app.initialize(user: nil) {
-                    readyToUse(completion: {})
-                }
-                instance = app
-            }
-        }
+        initialize(sdkKey: sdkKey, user: nil, config: config, completion: {})
     }
 
     @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
-        lock.write {
-            if instance != nil {
-                readyToUse(completion: completion)
-            } else {
-                let app = HackleApp.create(sdkKey: sdkKey, config: config)
-                app.initialize(user: nil) {
-                    readyToUse(completion: completion)
-                }
-                instance = app
-            }
-        }
+        initialize(sdkKey: sdkKey, user: nil, config: config, completion: completion)
     }
-    
+
     @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT) {
-        lock.write {
-            if instance == nil {
-                let app = HackleApp.create(sdkKey: sdkKey, config: config)
-                app.initialize(user: user) {
-                    readyToUse(completion: {})
-                }
-                instance = app
-            }
-        }
+        initialize(sdkKey: sdkKey, user: user, config: config, completion: {})
     }
 
     @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {

@@ -148,7 +148,7 @@ class DefaultUserManager: UserManager, AppNotificationListener {
     }
 }
 
-extension User {
+private extension User {
     func mergeWith(other: User?) -> User {
         guard let other = other else {
             return self

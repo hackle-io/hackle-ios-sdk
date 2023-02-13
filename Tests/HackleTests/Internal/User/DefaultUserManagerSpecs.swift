@@ -32,7 +32,16 @@ class DefaultUserManagerSpecs: QuickSpec {
                     .property("boolean", false)
                     .property("nil", nil)
                     .build()
-                repository.putData(key: "user", value: user.toData()!)
+
+                let dict: [String: Any?] = [
+                    "id": user.id,
+                    "userId": user.userId,
+                    "deviceId": user.deviceId,
+                    "identifiers": user.identifiers,
+                    "properties": user.properties
+                ]
+
+                repository.putData(key: "user", value: Json.serialize(dict)!)
 
                 userManager.initialize(user: nil)
 
