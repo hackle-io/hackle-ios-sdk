@@ -21,8 +21,8 @@ class DefaultEvaluator: Evaluator {
     func evaluateRemoteConfig(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigEvaluation {
 
         let propertiesBuilder = PropertiesBuilder()
-            .add(key: "requestValueType", value: defaultValue.type.rawValue)
-            .add(key: "requestDefaultValue", value: defaultValue.rawValue)
+            .add("requestValueType", defaultValue.type.rawValue)
+            .add("requestDefaultValue", defaultValue.rawValue)
 
         if user.identifiers[parameter.identifierType] == nil {
             return RemoteConfigEvaluation.of(valueId: nil, value: defaultValue, reason: DecisionReason.IDENTIFIER_NOT_FOUND, propertiesBuilder: propertiesBuilder)
@@ -30,8 +30,8 @@ class DefaultEvaluator: Evaluator {
 
         let targetRuleDeterminer = evaluationFlowFactory.remoteConfigTargetRuleDeterminer
         if let targetRule = try targetRuleDeterminer.determineTargetRuleOrNil(workspace: workspace, parameter: parameter, user: user) {
-            propertiesBuilder.add(key: "targetRuleKey", value: targetRule.key)
-            propertiesBuilder.add(key: "targetRuleName", value: targetRule.name)
+            propertiesBuilder.add("targetRuleKey", targetRule.key)
+            propertiesBuilder.add("targetRuleName", targetRule.name)
             return evaluation(parameterValue: targetRule.value, reason: DecisionReason.TARGET_RULE_MATCH, defaultValue: defaultValue, propertiesBuilder: propertiesBuilder)
         }
 

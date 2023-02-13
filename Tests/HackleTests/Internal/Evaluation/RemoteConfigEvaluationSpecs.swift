@@ -10,8 +10,13 @@ class RemoteConfigEvaluationSpecs: QuickSpec {
 
         it("of") {
             let propertiesBuilder = PropertiesBuilder()
-            propertiesBuilder.add(key: "hello", value: "world")
-            let actual = RemoteConfigEvaluation.of(valueId: 42, value: HackleValue.string("remote"), reason: DecisionReason.DEFAULT_RULE, propertiesBuilder: propertiesBuilder)
+            propertiesBuilder.add("hello", "world")
+            let actual = RemoteConfigEvaluation.of(
+                valueId: 42,
+                value: HackleValue.string("remote"),
+                reason: DecisionReason.DEFAULT_RULE,
+                propertiesBuilder: propertiesBuilder
+            )
 
             expect(actual.valueId) == 42
             expect(actual.value) == HackleValue.string("remote")

@@ -47,9 +47,9 @@ class RemoteConfigEvaluation {
     let valueId: Int64?
     let value: HackleValue
     let reason: String
-    let properties: [String: Any]
+    let properties: [String: Any?]
 
-    init(valueId: Int64?, value: HackleValue, reason: String, properties: [String: Any]) {
+    init(valueId: Int64?, value: HackleValue, reason: String, properties: [String: Any?]) {
         self.valueId = valueId
         self.value = value
         self.reason = reason
@@ -57,7 +57,7 @@ class RemoteConfigEvaluation {
     }
 
     static func of(valueId: Int64?, value: HackleValue, reason: String, propertiesBuilder: PropertiesBuilder) -> RemoteConfigEvaluation {
-        propertiesBuilder.add(key: "returnValue", value: value.rawValue)
+        propertiesBuilder.add("returnValue", value.rawValue)
         return RemoteConfigEvaluation(valueId: valueId, value: value, reason: reason, properties: propertiesBuilder.build())
     }
 }

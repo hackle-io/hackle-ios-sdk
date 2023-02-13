@@ -13,55 +13,45 @@ import Nimble
 
 class DefaultHackleUserResolverSpecs: QuickSpec {
     override func spec() {
-
-        it("deviceId가 없으면 내부에서 생성된 deviceId를 설정한다") {
-            // given
-            let user = Hackle.user()
-
-            let device = Device(id: "abc123", properties: [:])
-            let sut = DefaultHackleUserResolver(device: device)
-
-            // when
-            let actual = sut.resolveOrNil(user: user)
-
-            // then
-            expect(actual).notTo(beNil())
-            expect(actual?.identifiers["$deviceId"]) == "abc123"
-        }
-
-        it("deviceId가 있으면 그대로 사용한다") {
-            // given
-            let user = Hackle.user(deviceId: "999")
-
-            let device = Device(id: "abc123", properties: [:])
-            let sut = DefaultHackleUserResolver(device: device)
-
-            // when
-            let actual = sut.resolveOrNil(user: user)
-
-            // then
-            expect(actual).notTo(beNil())
-            expect(actual?.identifiers["$deviceId"]) == "999"
-        }
-
         it("resolve") {
-            // given
-            let user = Hackle.user(id: "id", userId: "userId", deviceId: "deviceId", identifiers: ["customId": "customId"], properties: ["age": 30])
+            let device = Device(id: "hackleDeviceId", properties: ["key": "hackle_value"])
+            let resolver = DefaultHackleUserResolver(device: device)
 
-            let device = Device(id: "internal_device_id", properties: ["os": "ios"])
-            let sut = DefaultHackleUserResolver(device: device)
+            let user = User.builder()
+                .id("id")
+                .userId("userId")
+                .deviceId("deviceId")
+                .identifier("customId", "customValue")
+                .property("key", "user_value")
+                .build()
 
-            // when
-            let actual = sut.resolveOrNil(user: user)
+            let hackleUser = resolver.resolve(user: user)
 
-            // then
-            expect(actual).notTo(beNil())
-            expect(actual?.identifiers["$id"]) == "id"
-            expect(actual?.identifiers["$userId"]) == "userId"
-            expect(actual?.identifiers["$deviceId"]) == "deviceId"
-            expect(actual?.identifiers["customId"]) == "customId"
-            expect(actual?.properties["age"] as? Int) == 30
-            expect(actual?.hackleProperties["os"] as? String) == "ios"
+            expect(hackleUser.identifiers) == [
+                "customId": "customValue",
+                "$id": "id",
+                "$userId": "userId",
+                "$deviceId": "deviceId",
+                "$hackleDeviceId": "hackleDeviceId",
+            ]
+            expect(hackleUser.properties.count) == 1
+            expect(hackleUser.properties["key"] as? String) == "user_value"
+
+            expect(hackleUser.hackleProperties.count) == 1
+            expect(hackleUser.hackleProperties["key"] as? String) == "hackle_value"
+        }
+
+        it("식별자 없는 경우") {
+            let device = Device(id: "hackleDeviceId", properties: ["key": "hackle_value"])
+            let resolver = DefaultHackleUserResolver(device: device)
+
+            let hackleUser = resolver.resolve(user: User.builder().build())
+
+            expect(hackleUser.identifiers) == [
+                "$id": "hackleDeviceId",
+                "$deviceId": "hackleDeviceId",
+                "$hackleDeviceId": "hackleDeviceId",
+            ]
         }
     }
 }

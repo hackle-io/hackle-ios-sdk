@@ -11,7 +11,7 @@ protocol UserEventProcessor {
     func stop()
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppNotificationListener {
+class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -24,7 +24,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
     private let eventFlushThreshold: Int
     private let eventFlushMaxBatchSize: Int
     private let eventDispatcher: UserEventDispatcher
-    private let userManager: UserManager
     private let sessionManager: SessionManager
 
     private var flushingJob: ScheduledJob? = nil
@@ -39,7 +38,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
         eventFlushThreshold: Int,
         eventFlushMaxBatchSize: Int,
         eventDispatcher: UserEventDispatcher,
-        userManager: UserManager,
         sessionManager: SessionManager
     ) {
         self.eventDedupDeterminer = eventDedupDeterminer
@@ -51,7 +49,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
         self.eventFlushInterval = eventFlushInterval
         self.eventFlushMaxBatchSize = eventFlushMaxBatchSize
         self.eventDispatcher = eventDispatcher
-        self.userManager = userManager
         self.sessionManager = sessionManager
     }
 
@@ -73,6 +70,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
         if !events.isEmpty {
             eventRepository.update(events: events, status: .pending)
         }
+        Log.debug("DefaultUserEventProcessor initialized.")
     }
 
     func start() {
@@ -109,12 +107,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
         eventDispatcher.dispatch(events: events)
     }
 
-    func onInitialized() {
-        eventQueue.async { [weak self] in
-            self?.initialize()
-        }
-    }
-
     func onNotified(notification: AppNotification, timestamp: Date) {
         switch notification {
         case .didBecomeActive:
@@ -125,16 +117,39 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
     }
 
     private func addEventInternal(event: UserEvent) {
-        userManager.updateUser(user: event.user)
-        sessionManager.updateLastEventTime(timestamp: event.timestamp)
-
+        updateEvent(event: event)
         if eventDedupDeterminer.isDedupTarget(event: event) {
             return
         }
+        let decoratedEvent = decorateSession(event: event)
+        saveEvent(event: decoratedEvent)
+    }
 
-        let newEvent = decorateSession(event: event)
+    private func updateEvent(event: UserEvent) {
+        if SessionEventTracker.isSessionEvent(event: event) {
+            return
+        }
+        sessionManager.updateLastEventTime(timestamp: event.timestamp)
+    }
 
-        eventRepository.save(event: newEvent)
+    private func decorateSession(event: UserEvent) -> UserEvent {
+
+        if event.user.sessionId != nil {
+            return event
+        }
+
+        guard let session = sessionManager.currentSession else {
+            return event
+        }
+
+        let decoratedUser = event.user.toBuilder()
+            .identifier(.session, session.id, overwrite: false)
+            .build()
+        return event.with(user: decoratedUser)
+    }
+
+    private func saveEvent(event: UserEvent) {
+        eventRepository.save(event: event)
 
         let totalCount = eventRepository.count()
         if totalCount > eventRepositoryMaxSize {
@@ -145,24 +160,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppInitializeListener, AppN
         if pendingCount >= eventFlushThreshold && pendingCount % eventFlushThreshold == 0 {
             dispatch(limit: eventFlushMaxBatchSize)
         }
-    }
-
-    private func decorateSession(event: UserEvent) -> UserEvent {
-        guard let session = sessionManager.currentSession else {
-            return event
-        }
-
-        if event.user.sessionId != nil {
-            return event
-        }
-
-        let identifiers = IdentifiersBuilder()
-            .add(identifiers: event.user.identifiers)
-            .add(type: .session, value: session.id)
-            .build()
-
-        let newUser = event.user.with(identifiers: identifiers)
-        return event.with(user: newUser)
     }
 
     private func flushInternal() {
