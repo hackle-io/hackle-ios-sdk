@@ -7,246 +7,201 @@ import Mockery
 class DefaultSessionManagerSpecs: QuickSpec {
     override func spec() {
 
-        var eventQueue: DispatchQueue!
-        var keyValueRepository: KeyValueRepositoryStub!
-        var listener: SessionListenerStub!
-
-        beforeEach {
-            eventQueue = DispatchQueue(label: "test.EventQueue")
-            keyValueRepository = KeyValueRepositoryStub()
-            listener = SessionListenerStub()
-        }
 
         func manager(
-            sessionTimeoutInterval: TimeInterval = 10
+            sessionTimeoutInterval: TimeInterval = 10,
+            repository: KeyValueRepository = MemoryKeyValueRepository(),
+            _ listeners: SessionListener...
         ) -> DefaultSessionManager {
             let sut = DefaultSessionManager(
-                eventQueue: eventQueue,
-                keyValueRepository: keyValueRepository,
+                userManager: DefaultUserManager(
+                    device: Device(id: "test_id", properties: [:]),
+                    repository: MemoryKeyValueRepository()
+                ),
+                keyValueRepository: repository,
                 sessionTimeout: sessionTimeoutInterval
             )
-            sut.addListener(listener: listener)
+            for listener in listeners {
+                sut.addListener(listener: listener)
+            }
             return sut
         }
 
         it("requiredSession") {
-
             let sut = manager()
             expect(sut.requiredSession.id) == "0.ffffffff"
-            sut.startNewSession(timestamp: Date(timeIntervalSince1970: 42))
+            sut.startNewSession(user: User.builder().id("hello").build(), timestamp: Date(timeIntervalSince1970: 42))
             expect(sut.requiredSession.id.hasPrefix("42000.")) == true
         }
 
-        it("startNewSession") {
-            let sut = manager()
+        describe("initialize") {
+            it("저장된 데이터가 있는 경우") {
+                let repository = MemoryKeyValueRepository(dict: ["session_id": "42.ffffffff", "last_event_time": 42.0])
+                let sut = manager(repository: repository)
 
-            let s1 = sut.startNewSession(timestamp: Date(timeIntervalSince1970: 42))
-            expect(s1.id.hasPrefix("42000.")) == true
-            expect(listener.sessionStarted.count) == 1
-            expect(listener.sessionStarted[0].0) == s1
-            expect(listener.sessionStarted[0].1) == Date(timeIntervalSince1970: 42)
-            expect(listener.sessionEnded.count) == 0
-            expect(keyValueRepository.getString(key: "session_id")) == s1.id
+                sut.initialize()
 
-            let s2 = sut.startNewSession(timestamp: Date(timeIntervalSince1970: 43))
-            expect(s2.id.hasPrefix("43000.")) == true
-            expect(listener.sessionStarted.count) == 2
-            expect(listener.sessionStarted[1].0) == s2
-            expect(listener.sessionStarted[1].1) == Date(timeIntervalSince1970: 43)
-
-            expect(listener.sessionEnded.count) == 1
-            expect(listener.sessionEnded[0].0) == s1
-            expect(listener.sessionEnded[0].1) == Date(timeIntervalSince1970: 42)
-            expect(keyValueRepository.getString(key: "session_id")) == s2.id
-        }
-
-        describe("startNewSessionIfNeeded") {
-            it("lastEventTime 이 없으면 세션을 시작한다") {
-                // given
-                let sut = manager()
-
-                // when
-                let actual = sut.startNewSessionIfNeeded(timestamp: Date(timeIntervalSince1970: 42))
-
-                // then
-                expect(actual.id.hasPrefix("42000.")) == true
+                expect(sut.currentSession?.id) == "42.ffffffff"
                 expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
             }
 
-            it("세션 만료전이면 기존 세션을 리턴한다") {
-                let sut = manager(sessionTimeoutInterval: 10)
+            it("저장된 데이터가 없는 경우") {
+                let sut = manager(repository: MemoryKeyValueRepository())
 
-                let s1 = sut.startNewSession(timestamp: Date(timeIntervalSince1970: 42))
-                let s2 = sut.startNewSessionIfNeeded(timestamp: Date(timeIntervalSince1970: 51.999))
+                sut.initialize()
 
-                expect(s1) == s2
-                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 51.999)
-            }
-
-            it("세션이 만료됐으면 새로운 세션을 시작한다") {
-                let sut = manager(sessionTimeoutInterval: 10)
-
-                let s1 = sut.startNewSession(timestamp: Date(timeIntervalSince1970: 42))
-                let s2 = sut.startNewSessionIfNeeded(timestamp: Date(timeIntervalSince1970: 52))
-
-                expect(s1) != s2
-                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 52)
-                expect(listener.sessionStarted[1].0) == s2
-                expect(listener.sessionEnded[0].0) == s1
-            }
-        }
-
-        it("updateLastEventTime") {
-            let sut = manager()
-            expect(sut.lastEventTime).to(beNil())
-            sut.updateLastEventTime(timestamp: Date(timeIntervalSince1970: 42))
-            expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
-            expect(keyValueRepository.getDouble(key: "last_event_time")) == 42.0
-        }
-
-        describe("onInitialized") {
-            it("저장된 세션이 없으면 nil") {
-                // given
-                let sut = manager()
-
-                // when
-                sut.onInitialized()
-                eventQueue.sync {
-                }
-
-                // then
                 expect(sut.currentSession).to(beNil())
-            }
-
-            it("저장된 세션이 있는 경우") {
-                // given
-                let sut = manager()
-                keyValueRepository.putString(key: "session_id", value: "42")
-
-                // when
-                sut.onInitialized()
-                eventQueue.sync {
-                }
-
-                // then
-                expect(sut.currentSession) == Session(id: "42")
-            }
-
-            it("저장되어있는 LastEventTime 이 있는 경우") {
-                // given
-                let sut = manager()
-                keyValueRepository.putDouble(key: "last_event_time", value: 42.0)
-
-                // when
-                sut.onInitialized()
-                eventQueue.sync {
-                }
-
-                // then
-                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
-            }
-
-            it("저장되어있는 LastEventTime 이 없는 경우") {
-                // given
-                let sut = manager()
-
-                // when
-                sut.onInitialized()
-                eventQueue.sync {
-                }
-
-                // then
                 expect(sut.lastEventTime).to(beNil())
             }
         }
 
+        it("startNewSession") {
+
+            let repository = MemoryKeyValueRepository()
+            let listener = SessionListenerStub()
+            let sut = manager(repository: repository, listener)
+
+            expect(sut.currentSession).to(beNil())
+            expect(sut.lastEventTime).to(beNil())
+
+            let user1 = User.builder().id("user1").build()
+            let session1 = sut.startNewSession(user: user1, timestamp: Date(timeIntervalSince1970: 42))
+
+            expect(session1.id.hasPrefix("42000.")) == true
+            expect(sut.currentSession) == session1
+            expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
+            expect(listener.started.count) == 1
+            expect(listener.started[0].0) == session1
+            expect(listener.started[0].1.id) == "user1"
+            expect(listener.ended.count) == 0
+
+            let user2 = User.builder().id("user2").build()
+            let session2 = sut.startNewSession(user: user2, timestamp: Date(timeIntervalSince1970: 43))
+
+            expect(session2.id.hasPrefix("43000.")) == true
+            expect(sut.currentSession) == session2
+            expect(sut.lastEventTime) == Date(timeIntervalSince1970: 43)
+            expect(listener.started.count) == 2
+            expect(listener.started[0].0) == session1
+            expect(listener.started[1].0) == session2
+            expect(listener.started[1].1.id) == "user2"
+            expect(listener.ended.count) == 1
+            expect(listener.ended[0].0) == session1
+            expect(repository.getString(key: "session_id")) == session2.id
+            expect(repository.getDouble(key: "last_event_time")) == 43
+        }
+
+        describe("startNewSessionIfNeeded") {
+            it("lastEventTime 이 없으면 세션을 시작한다") {
+                let repository = MemoryKeyValueRepository()
+                let listener = SessionListenerStub()
+                let sut = manager(repository: repository, listener)
+
+                let session = sut.startNewSessionIfNeeded(user: User.builder().id("hello").build(), timestamp: Date(timeIntervalSince1970: 42))
+
+                expect(session.id.starts(with: "42000.")) == true
+                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
+            }
+
+            it("세션 만료전이면 기존 세션을 리턴한다") {
+                let repository = MemoryKeyValueRepository()
+                let listener = SessionListenerStub()
+                let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
+
+                let user = User.builder().id("hello").build()
+
+                let session1 = sut.startNewSession(user: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session2 = sut.startNewSessionIfNeeded(user: user, timestamp: Date(timeIntervalSince1970: 51))
+
+                expect(session1) == session2
+                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 51)
+            }
+
+            it("세션이 만료됐으면 새로운 세션을 시작한다") {
+                let repository = MemoryKeyValueRepository()
+                let listener = SessionListenerStub()
+                let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
+
+                let user = User.builder().id("hello").build()
+
+                let session1 = sut.startNewSession(user: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session2 = sut.startNewSessionIfNeeded(user: user, timestamp: Date(timeIntervalSince1970: 52))
+
+                expect(session1) != session2
+                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 52)
+                expect(listener.started.count) == 2
+                expect(listener.started[0].0) == session1
+                expect(listener.started[1].0) == session2
+                expect(listener.ended.count) == 1
+                expect(listener.ended[0].0) == session1
+            }
+        }
+
+        it("updateLastEventTime") {
+            let repository = MemoryKeyValueRepository()
+            let listener = SessionListenerStub()
+            let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
+
+            expect(sut.lastEventTime).to(beNil())
+            sut.updateLastEventTime(timestamp: Date(timeIntervalSince1970: 42))
+            expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
+            expect(repository.getDouble(key: "last_event_time")) == 42.0
+        }
+
+
         describe("onNotified") {
             it("FOREGROUND 세션 초기화 시도") {
-                let sut = manager()
-                expect(sut.currentSession).to(beNil())
+                let repository = MemoryKeyValueRepository()
+                let listener = SessionListenerStub()
+                let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
 
+                expect(sut.currentSession).to(beNil())
                 sut.onNotified(notification: .didBecomeActive, timestamp: Date(timeIntervalSince1970: 42))
-                eventQueue.sync {
-                }
 
                 expect(sut.requiredSession.id.hasPrefix("42000."))
             }
 
             it("BACKGROUND 현재 세션을 저장한다") {
                 // given
-                let sut = manager()
-                sut.startNewSession(timestamp: Date(timeIntervalSince1970: 42))
+                let repository = MemoryKeyValueRepository()
+                let listener = SessionListenerStub()
+                let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
+
+                sut.startNewSession(user: User.builder().id("hello").build(), timestamp: Date(timeIntervalSince1970: 42))
 
                 // when
                 sut.onNotified(notification: .didEnterBackground, timestamp: Date(timeIntervalSince1970: 43))
-                eventQueue.sync {
-                }
 
                 // then
-                expect(keyValueRepository.getString(key: "session_id")?.hasPrefix("42000.")) == true
+                expect(repository.getString(key: "session_id")?.hasPrefix("42000.")) == true
             }
 
             it("백그라운드로 넘어기면 전달받은 timestamp 로 업데이트한다") {
                 // given
-                let sut = manager()
+                let repository = MemoryKeyValueRepository()
+                let listener = SessionListenerStub()
+                let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
 
                 // when
                 sut.onNotified(notification: .didEnterBackground, timestamp: Date(timeIntervalSince1970: 42))
-                eventQueue.sync {
-                }
 
                 // then
-                expect(keyValueRepository.getDouble(key: "last_event_time")) == 42.0
+                expect(repository.getDouble(key: "last_event_time")) == 42.0
             }
         }
-
-        describe("onUserUpdated") {
-
-            it("세션을 새로 시작한다") {
-                // given
-                let sut = manager()
-
-                // when
-                sut.onUserUpdated(user: HackleUser.of(userId: "hi"), timestamp: Date(timeIntervalSince1970: 42))
-
-                // then
-                expect(sut.currentSession?.id.hasPrefix("42000.")) == true
-            }
-        }
-    }
-}
-
-fileprivate class KeyValueRepositoryStub: KeyValueRepository {
-
-    var map = [String: Any]()
-
-    func getString(key: String) -> String? {
-        map[key] as? String
-    }
-
-    func putString(key: String, value: String) {
-        map[key] = value
-    }
-
-    func getDouble(key: String) -> Double {
-        map[key] as? Double ?? 0.0
-    }
-
-    func putDouble(key: String, value: Double) {
-        map[key] = value
     }
 }
 
 fileprivate class SessionListenerStub: SessionListener {
 
-    var sessionStarted = [(Session, Date)]()
-    var sessionEnded = [(Session, Date)]()
+    var started = [(Session, User, Date)]()
+    var ended = [(Session, User, Date)]()
 
-    func onSessionStarted(session: Session, timestamp: Date) {
-        sessionStarted.append((session, timestamp))
+    func onSessionStarted(session: Session, user: User, timestamp: Date) {
+        started.append((session, user, timestamp))
     }
 
-    func onSessionEnded(session: Session, timestamp: Date) {
-        sessionEnded.append((session, timestamp))
+    func onSessionEnded(session: Session, user: User, timestamp: Date) {
+        ended.append((session, user, timestamp))
     }
 }

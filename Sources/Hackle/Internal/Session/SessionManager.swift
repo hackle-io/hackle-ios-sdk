@@ -16,16 +16,18 @@ protocol SessionManager {
 
     var lastEventTime: Date? { get }
 
-    func startNewSession(timestamp: Date) -> Session
+    func initialize()
 
-    func startNewSessionIfNeeded(timestamp: Date) -> Session
+    func startNewSession(user: User, timestamp: Date) -> Session
+
+    func startNewSessionIfNeeded(user: User, timestamp: Date) -> Session
 
     func updateLastEventTime(timestamp: Date)
 }
 
-class DefaultSessionManager: SessionManager, AppInitializeListener, AppNotificationListener, UserListener {
+class DefaultSessionManager: SessionManager, AppNotificationListener, UserListener {
 
-    private let eventQueue: DispatchQueue
+    private let userManager: UserManager
     private let keyValueRepository: KeyValueRepository
     private let sessionTimeout: TimeInterval
     private var sessionListeners: [SessionListener]
@@ -37,8 +39,8 @@ class DefaultSessionManager: SessionManager, AppInitializeListener, AppNotificat
     private(set) var currentSession: Session? = nil
     private(set) var lastEventTime: Date? = nil
 
-    init(eventQueue: DispatchQueue, keyValueRepository: KeyValueRepository, sessionTimeout: TimeInterval) {
-        self.eventQueue = eventQueue
+    init(userManager: UserManager, keyValueRepository: KeyValueRepository, sessionTimeout: TimeInterval) {
+        self.userManager = userManager
         self.keyValueRepository = keyValueRepository
         self.sessionTimeout = sessionTimeout
         self.sessionListeners = []
@@ -47,22 +49,30 @@ class DefaultSessionManager: SessionManager, AppInitializeListener, AppNotificat
     private static let SESSION_ID_KEY = "session_id"
     private static let LAST_EVENT_TIME_KEY = "last_event_time"
 
+    func initialize() {
+        loadSession()
+        loadLastEventTime()
+        Log.debug("SessionManager initialized.")
+    }
+
     func addListener(listener: SessionListener) {
         self.sessionListeners.append(listener)
+        Log.debug("SessionListener added [\(listener)]")
     }
 
-    func startNewSession(timestamp: Date) -> Session {
-        endSession()
-        return newSession(timestamp: timestamp)
+    func startNewSession(user: User, timestamp: Date) -> Session {
+        endSession(user: user)
+        return newSession(user: user, timestamp: timestamp)
     }
 
-    func startNewSessionIfNeeded(timestamp: Date) -> Session {
+    @discardableResult
+    func startNewSessionIfNeeded(user: User, timestamp: Date) -> Session {
         guard let lastEventTime = lastEventTime else {
-            return startNewSession(timestamp: timestamp)
+            return startNewSession(user: user, timestamp: timestamp)
         }
 
         guard let currentSession = currentSession, timestamp.timeIntervalSince1970 - lastEventTime.timeIntervalSince1970 < sessionTimeout else {
-            return startNewSession(timestamp: timestamp)
+            return startNewSession(user: user, timestamp: timestamp)
         }
 
         updateLastEventTime(timestamp: timestamp)
@@ -72,19 +82,22 @@ class DefaultSessionManager: SessionManager, AppInitializeListener, AppNotificat
     func updateLastEventTime(timestamp: Date) {
         lastEventTime = timestamp
         keyValueRepository.putDouble(key: DefaultSessionManager.LAST_EVENT_TIME_KEY, value: timestamp.timeIntervalSince1970)
+        Log.debug("LastEventTime updated [\(timestamp)]")
     }
 
-    private func endSession() {
+    private func endSession(user: User) {
         guard let oldSession = currentSession, let lastEventTime = lastEventTime else {
             return
         }
 
         for listener in sessionListeners {
-            listener.onSessionEnded(session: oldSession, timestamp: lastEventTime)
+            listener.onSessionEnded(session: oldSession, user: user, timestamp: lastEventTime)
         }
+        Log.debug("Session ended [$\(oldSession.id)]")
     }
 
-    private func newSession(timestamp: Date) -> Session {
+    @discardableResult
+    private func newSession(user: User, timestamp: Date) -> Session {
         let newSession = Session.create(timestamp: timestamp)
         currentSession = newSession
         saveSession(session: newSession)
@@ -92,20 +105,22 @@ class DefaultSessionManager: SessionManager, AppInitializeListener, AppNotificat
         updateLastEventTime(timestamp: timestamp)
 
         for listener in sessionListeners {
-            listener.onSessionStarted(session: newSession, timestamp: timestamp)
+            listener.onSessionStarted(session: newSession, user: user, timestamp: timestamp)
         }
-
+        Log.debug("Session started [\(newSession.id)]")
         return newSession
     }
 
     private func saveSession(session: Session) {
         keyValueRepository.putString(key: DefaultSessionManager.SESSION_ID_KEY, value: session.id)
+        Log.debug("Session saved [\(session.id)]")
     }
 
     private func loadSession() {
         if let sessionId = keyValueRepository.getString(key: DefaultSessionManager.SESSION_ID_KEY) {
             currentSession = Session(id: sessionId)
         }
+        Log.debug("Session loaded [\(currentSession?.id ?? "nil")]")
     }
 
     private func loadLastEventTime() {
@@ -113,33 +128,24 @@ class DefaultSessionManager: SessionManager, AppInitializeListener, AppNotificat
         if lastEventTime > 0 {
             self.lastEventTime = Date(timeIntervalSince1970: lastEventTime)
         }
-    }
-
-    func onInitialized() {
-        eventQueue.async { [weak self] in
-            self?.loadSession()
-            self?.loadLastEventTime()
-        }
+        Log.debug("LastEventTime loaded [\(lastEventTime)]")
     }
 
     func onNotified(notification: AppNotification, timestamp: Date) {
         switch notification {
         case .didBecomeActive:
-            eventQueue.async { [weak self] in
-                _ = self?.startNewSessionIfNeeded(timestamp: timestamp)
-            }
+            startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
         case .didEnterBackground:
-            eventQueue.async { [weak self] in
-                self?.updateLastEventTime(timestamp: timestamp)
-                guard let session = self?.currentSession else {
-                    return
-                }
-                self?.saveSession(session: session)
+            updateLastEventTime(timestamp: timestamp)
+            guard let session = currentSession else {
+                return
             }
+            saveSession(session: session)
         }
     }
 
-    func onUserUpdated(user: HackleUser, timestamp: Date) {
-        _ = startNewSession(timestamp: timestamp)
+    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+        endSession(user: oldUser)
+        newSession(user: newUser, timestamp: timestamp)
     }
 }

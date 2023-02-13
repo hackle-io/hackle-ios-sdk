@@ -16,17 +16,22 @@ class MockSessionManager: Mock, SessionManager {
         super.init()
     }
 
+    func initialize() {
+
+    }
+
     lazy var startNewSessionMock = MockFunction(self, startNewSession)
 
-    func startNewSession(timestamp: Date) -> Session {
-        call(startNewSessionMock, args: timestamp)
+    func startNewSession(user: User, timestamp: Date) -> Session {
+        call(startNewSessionMock, args: (user, timestamp))
     }
 
     lazy var startNewSessionIfNeededMock = MockFunction(self, startNewSessionIfNeeded)
 
-    func startNewSessionIfNeeded(timestamp: Date) -> Session {
-        call(startNewSessionIfNeededMock, args: timestamp)
+    func startNewSessionIfNeeded(user: User, timestamp: Date) -> Session {
+        call(startNewSessionIfNeededMock, args: (user, timestamp))
     }
+
 
     lazy var updateLastEventTimeMock = MockFunction(self, updateLastEventTime)
 

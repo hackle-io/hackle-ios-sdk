@@ -12,6 +12,8 @@ protocol HackleInternalApp {
 
     func track(event: Event, user: HackleUser)
 
+    func track(event: Event, user: HackleUser, timestamp: Date)
+
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 }
 
@@ -94,8 +96,12 @@ class DefaultHackleInternalApp: HackleInternalApp {
     }
 
     func track(event: Event, user: HackleUser) {
+        self.track(event: event, user: user, timestamp: Date())
+    }
+
+    func track(event: Event, user: HackleUser, timestamp: Date) {
         let eventType = workspaceFetcher.getWorkspaceOrNil()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
-        let userEvent = UserEvents.track(user: user, eventType: eventType, event: event)
+        let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
         eventProcessor.process(event: userEvent)
     }
 

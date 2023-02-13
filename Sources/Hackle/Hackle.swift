@@ -9,39 +9,25 @@ import Foundation
     static let lock = ReadWriteLock(label: "io.hackle.HackleApp")
     static var instance: HackleApp?
 
-    ///
-    /// Initialized the HackleApp instance
-    ///
-    /// - Parameters:
-    ///   - sdkKey: The Sdk key of your Hackle environment.
-    ///   - config: The HackleConfig that contains the desired configuration.
     @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT) {
-        lock.write {
-            if instance == nil {
-                let app = HackleApp.create(sdkKey: sdkKey, config: config)
-                app.initialize {
-                    readyToUse(completion: {})
-                }
-                instance = app
-            }
-        }
+        initialize(sdkKey: sdkKey, user: nil, config: config, completion: {})
     }
 
-    ///
-    /// Initialized the HackleApp instance.
-    /// When the sdk is ready to use, the callback `completion` is called.
-    ///
-    /// - Parameters:
-    ///   - sdkKey: The Sdk key of your Hackle environment.
-    ///   - config: The HackleConfig that contains the desired configuration.
-    ///   - completion: Callback that is called when Hackle App is ready to use.
     @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
+        initialize(sdkKey: sdkKey, user: nil, config: config, completion: completion)
+    }
+
+    @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT) {
+        initialize(sdkKey: sdkKey, user: user, config: config, completion: {})
+    }
+
+    @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
         lock.write {
             if instance != nil {
                 readyToUse(completion: completion)
             } else {
                 let app = HackleApp.create(sdkKey: sdkKey, config: config)
-                app.initialize {
+                app.initialize(user: user) {
                     readyToUse(completion: completion)
                 }
                 instance = app
@@ -77,7 +63,7 @@ extension Hackle {
         identifiers: [String: String]? = nil,
         properties: [String: Any]? = nil
     ) -> User {
-        User(id: id, userId: userId, deviceId: deviceId, identifiers: identifiers, properties: properties)
+        User(id: id, userId: userId, deviceId: deviceId, identifiers: identifiers ?? [:], properties: properties ?? [:])
     }
 
     @objc public static func event(key: String, properties: [String: Any]? = nil) -> Event {

@@ -35,3 +35,12 @@ class Objects {
         return value
     }
 }
+
+extension Optional {
+    var orNil: String {
+        guard let value = self else {
+            return "nil"
+        }
+        return "\(value)"
+    }
+}
