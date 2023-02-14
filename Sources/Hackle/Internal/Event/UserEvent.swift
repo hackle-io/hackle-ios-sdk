@@ -134,9 +134,9 @@ enum UserEvents {
         let parameter: RemoteConfigParameter
         let valueId: Int64?
         let decisionReason: String
-        let properties: [String: Any?]
+        let properties: [String: Any]
 
-        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any?]) {
+        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any]) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user

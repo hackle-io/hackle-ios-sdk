@@ -10,9 +10,9 @@ import Foundation
     let userId: String?
     let deviceId: String?
     let identifiers: [String: String]
-    let properties: [String: Any?]
+    let properties: [String: Any]
 
-    init(id: String?, userId: String?, deviceId: String?, identifiers: [String: String], properties: [String: Any?]) {
+    init(id: String?, userId: String?, deviceId: String?, identifiers: [String: String], properties: [String: Any]) {
         self.id = id
         self.userId = userId
         self.deviceId = deviceId
@@ -58,26 +58,31 @@ extension User {
         properties.add(user.properties)
     }
 
+    @discardableResult
     @objc public func id(_ id: String?) -> HackleUserBuilder {
         self.id = id
         return self
     }
 
+    @discardableResult
     @objc public func userId(_ userId: String?) -> HackleUserBuilder {
         self.userId = userId
         return self
     }
 
+    @discardableResult
     @objc public func deviceId(_ deviceId: String?) -> HackleUserBuilder {
         self.deviceId = deviceId
         return self
     }
 
+    @discardableResult
     @objc public func identifier(_ type: String, _ value: String) -> HackleUserBuilder {
         self.identifiers.add(type, value)
         return self
     }
 
+    @discardableResult
     @objc public func property(_ key: String, _ value: Any?) -> HackleUserBuilder {
         self.properties.add(key, value)
         return self
