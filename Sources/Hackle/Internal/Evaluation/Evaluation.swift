@@ -47,9 +47,9 @@ class RemoteConfigEvaluation {
     let valueId: Int64?
     let value: HackleValue
     let reason: String
-    let properties: [String: Any?]
+    let properties: [String: Any]
 
-    init(valueId: Int64?, value: HackleValue, reason: String, properties: [String: Any?]) {
+    init(valueId: Int64?, value: HackleValue, reason: String, properties: [String: Any]) {
         self.valueId = valueId
         self.value = value
         self.reason = reason
