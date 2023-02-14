@@ -27,6 +27,12 @@ import Foundation
         }
     }
 
+    @objc public var user: User {
+        get {
+            userManager.currentUser
+        }
+    }
+
     init(
         internalApp: HackleInternalApp,
         eventQueue: DispatchQueue,

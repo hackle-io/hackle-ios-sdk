@@ -33,7 +33,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     .property("nil", nil)
                     .build()
 
-                let dict: [String: Any?] = [
+                let dict: [String: Any] = [
                     "id": user.id,
                     "userId": user.userId,
                     "deviceId": user.deviceId,

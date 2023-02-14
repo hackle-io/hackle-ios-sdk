@@ -21,9 +21,7 @@ class UserSpecs: QuickSpec {
             expect(user.deviceId) == "deviceId"
             expect(user.identifiers) == ["customId": "customValue"]
             expect(user.properties["key"] as? String) == "value"
-            expect(user.properties.contains { key, value in
-                key == "nil"
-            }) == true
+            expect(user.properties["nil"]).to(beNil())
 
             let user2 = user.toBuilder()
                 .identifier("customId2", "customValue2")
@@ -36,9 +34,7 @@ class UserSpecs: QuickSpec {
             expect(user2.identifiers) == ["customId": "customValue", "customId2": "customValue2"]
             expect(user2.properties["key"] as? String) == "value"
             expect(user2.properties["age"] as? Int) == 30
-            expect(user2.properties.contains { key, value in
-                key == "nil"
-            }) == true
+            expect(user.properties["nil"]).to(beNil())
         }
     }
 }

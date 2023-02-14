@@ -193,7 +193,7 @@ private extension User {
             userId: json["userId"] as? String,
             deviceId: json["deviceId"] as? String,
             identifiers: json["identifiers"] as? [String: String] ?? [:],
-            properties: json["properties"] as? [String: Any?] ?? [:]
+            properties: json["properties"] as? [String: Any] ?? [:]
         )
     }
 }

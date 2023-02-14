@@ -10,14 +10,10 @@ import Foundation
 class HackleUser {
 
     let identifiers: [String: String]
-    let properties: [String: Any?]
-    let hackleProperties: [String: Any?]
+    let properties: [String: Any]
+    let hackleProperties: [String: Any]
 
-    init(
-        identifiers: [String: String],
-        properties: [String: Any?],
-        hackleProperties: [String: Any?]
-    ) {
+    init(identifiers: [String: String], properties: [String: Any], hackleProperties: [String: Any]) {
         self.identifiers = identifiers
         self.properties = properties
         self.hackleProperties = hackleProperties
@@ -102,7 +98,7 @@ class InternalHackleUserBuilder {
     }
 
     @discardableResult
-    func properties(_ properties: [String: Any?]) -> InternalHackleUserBuilder {
+    func properties(_ properties: [String: Any]) -> InternalHackleUserBuilder {
         self.properties.add(properties)
         return self
     }
@@ -114,14 +110,14 @@ class InternalHackleUserBuilder {
     }
 
     @discardableResult
-    func hackleProperties(_ properties: [String: Any?]) -> InternalHackleUserBuilder {
+    func hackleProperties(_ properties: [String: Any]) -> InternalHackleUserBuilder {
         self.hackleProperties.add(properties)
         return self
     }
 
     @discardableResult
-    func hackleProperty(_ key: String, _ value: String) -> InternalHackleUserBuilder {
-        self.hackleProperty(key, value)
+    func hackleProperty(_ key: String, _ value: Any?) -> InternalHackleUserBuilder {
+        self.hackleProperties.add(key, value)
         return self
     }
 
