@@ -6,11 +6,11 @@ import Foundation
 
 @objc public class User: NSObject {
 
-    let id: String?
-    let userId: String?
-    let deviceId: String?
-    let identifiers: [String: String]
-    let properties: [String: Any]
+    @objc public let id: String?
+    @objc public let userId: String?
+    @objc public let deviceId: String?
+    @objc public let identifiers: [String: String]
+    @objc public let properties: [String: Any]
 
     init(id: String?, userId: String?, deviceId: String?, identifiers: [String: String], properties: [String: Any]) {
         self.id = id
