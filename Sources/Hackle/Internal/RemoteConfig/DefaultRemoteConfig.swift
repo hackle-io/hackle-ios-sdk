@@ -27,11 +27,11 @@ class DefaultRemoteConfig: HackleRemoteConfig {
     }
 
     func getInt(forKey: String, defaultValue: Int) -> Int {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.numberOrNil?.toIntOrNil() ?? defaultValue
+        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.doubleOrNil?.toIntOrNil() ?? defaultValue
     }
 
     func getDouble(forKey: String, defaultValue: Double) -> Double {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.numberOrNil ?? defaultValue
+        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.doubleOrNil ?? defaultValue
     }
 
     func getBool(forKey: String, defaultValue: Bool) -> Bool {

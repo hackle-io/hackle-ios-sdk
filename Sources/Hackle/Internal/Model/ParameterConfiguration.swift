@@ -34,11 +34,11 @@ class ParameterConfigurationEntity: ParameterConfiguration {
     }
 
     func getInt(forKey: String, defaultValue: Int) -> Int {
-        _parameters[forKey]?.numberOrNil?.toIntOrNil() ?? defaultValue
+        _parameters[forKey]?.doubleOrNil?.toIntOrNil() ?? defaultValue
     }
 
     func getDouble(forKey: String, defaultValue: Double) -> Double {
-        _parameters[forKey]?.numberOrNil ?? defaultValue
+        _parameters[forKey]?.doubleOrNil ?? defaultValue
     }
 
     func getBool(forKey: String, defaultValue: Bool) -> Bool {

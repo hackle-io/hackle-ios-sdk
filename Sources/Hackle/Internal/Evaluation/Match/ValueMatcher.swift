@@ -6,8 +6,8 @@ protocol ValueMatcher {
 
 class StringMatcher: ValueMatcher {
     func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue: String = Objects.asStringOrNil(userValue),
-              let matchValue: String = matchValue.stringOrNil else {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
             return false
         }
         return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
@@ -16,13 +16,12 @@ class StringMatcher: ValueMatcher {
 
 class NumberMatcher: ValueMatcher {
     func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue: Double = Objects.asDoubleOrNil(userValue),
-              let matchValue: Double = matchValue.numberOrNil else {
+        guard let userValue: Double = HackleValue(value: userValue).asDouble(),
+              let matchValue: Double = matchValue.asDouble() else {
             return false
         }
         return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
     }
-
 }
 
 class BoolMatcher: ValueMatcher {

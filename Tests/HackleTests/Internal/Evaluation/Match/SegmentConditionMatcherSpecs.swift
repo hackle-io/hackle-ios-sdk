@@ -40,7 +40,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             let actual = expect(try sut.matches(condition: condition, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_id")))
 
             // then
-            actual.to(throwError(HackleError.error("SegmentKey[number(42.0)]")))
+            actual.to(throwError(HackleError.error("SegmentKey[int(42)]")))
         }
 
         it("등록된 segmentKey 에 해당하는 Segment 가 없으면 예외가 발생한다") {
