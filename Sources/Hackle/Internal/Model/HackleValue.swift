@@ -4,7 +4,8 @@ import Foundation
 enum HackleValue: Codable, Equatable {
 
     case string(String)
-    case number(Double)
+    case int(Int64)
+    case double(Double)
     case bool(Bool)
     case null
 
@@ -14,8 +15,13 @@ enum HackleValue: Codable, Equatable {
             return
         }
 
+        if let value = Objects.asIntOrNull(value) {
+            self = .int(value)
+            return
+        }
+
         if let value = Objects.asDoubleOrNil(value) {
-            self = .number(value)
+            self = .double(value)
             return
         }
 
@@ -35,8 +41,13 @@ enum HackleValue: Codable, Equatable {
             return
         }
 
+        if let value = try? container.decode(Int64.self) {
+            self = .int(value)
+            return
+        }
+
         if let value = try? container.decode(Double.self) {
-            self = .number(value)
+            self = .double(value)
             return
         }
 
@@ -52,59 +63,99 @@ enum HackleValue: Codable, Equatable {
         var container = encoder.singleValueContainer()
         switch self {
         case .string(let value): try container.encode(value)
-        case .number(let value): try container.encode(value)
+        case .int(let value): try container.encode(value)
+        case .double(let value): try container.encode(value)
         case .bool(let value): try container.encode(value)
         case .null: return
-        }
-    }
-
-    var stringOrNil: String? {
-        switch self {
-        case .string(let value):
-            return value
-        default:
-            return nil
-        }
-    }
-
-    var numberOrNil: Double? {
-        switch self {
-        case .number(let value):
-            return value
-        default:
-            return nil
-        }
-    }
-
-    var boolOrNil: Bool? {
-        switch self {
-        case .bool(let value):
-            return value
-        default:
-            return nil
-        }
-    }
-
-    var rawValue: Any? {
-        switch self {
-        case .string(let value):
-            return value
-        case .number(let value):
-            return value
-        case .bool(let value):
-            return value
-        case .null:
-            return nil
         }
     }
 
     var type: HackleValueType {
         switch self {
         case .string: return .string
-        case .number: return .number
+        case .int: return .number
+        case .double: return .number
         case .bool: return .bool
         case .null: return .null
         }
+    }
+}
+
+extension HackleValue {
+    var rawValue: Any? {
+        switch self {
+        case .string(let value): return value
+        case .int(let value): return value
+        case .double(let value): return value
+        case .bool(let value): return value
+        case .null: return nil
+        }
+    }
+    var stringOrNil: String? {
+        switch self {
+        case .string(let value): return value
+        case .int: return nil
+        case .double: return nil
+        case .bool: return nil
+        case .null: return nil
+        }
+    }
+
+    var intOrNil: Int64? {
+        switch self {
+        case .string: return nil
+        case .int(let value): return value
+        case .double(let value): return Int64(value)
+        case .bool: return nil
+        case .null: return nil
+        }
+    }
+
+    var doubleOrNil: Double? {
+        switch self {
+        case .string: return nil
+        case .int(let value): return Double(value)
+        case .double(let value): return value
+        case .bool: return nil
+        case .null: return nil
+        }
+    }
+
+    var boolOrNil: Bool? {
+        switch self {
+        case .string: return nil
+        case .int: return nil
+        case .double: return nil
+        case .bool(let value): return value
+        case .null: return nil
+        }
+    }
+}
+
+extension HackleValue {
+
+    func asString() -> String? {
+        switch self {
+        case .string(let value): return value
+        case .int(let value): return String(value)
+        case .double(let value): return String(value)
+        case .bool: return nil
+        case .null: return nil
+        }
+    }
+
+    func asDouble() -> Double? {
+        switch self {
+        case .string(let value): return Double(value)
+        case .int(let value): return Double(value)
+        case .double(let value): return value
+        case .bool: return nil
+        case .null: return nil
+        }
+    }
+
+    func asVersion() -> Version? {
+        Version.tryParse(value: rawValue)
     }
 }
 

@@ -9,18 +9,24 @@ class Objects {
         return value
     }
 
+    static func asIntOrNull(_ value: Any) -> Int64? {
+        switch value {
+        case is Int: return Int64(value as! Int)
+        case is Int8: return Int64(value as! Int8)
+        case is Int16: return Int64(value as! Int16)
+        case is Int32: return Int64(value as! Int32)
+        case is Int64: return Int64(value as! Int64)
+        case is UInt: return Int64(value as! UInt)
+        case is UInt8: return Int64(value as! UInt8)
+        case is UInt16: return Int64(value as! UInt16)
+        case is UInt32: return Int64(value as! UInt32)
+        case is UInt64: return Int64(value as! UInt64)
+        default: return nil
+        }
+    }
+
     static func asDoubleOrNil(_ value: Any) -> Double? {
         switch value {
-        case is Int: return Double(value as! Int)
-        case is Int8: return Double(value as! Int8)
-        case is Int16: return Double(value as! Int16)
-        case is Int32: return Double(value as! Int32)
-        case is Int64: return Double(value as! Int64)
-        case is UInt: return Double(value as! UInt)
-        case is UInt8: return Double(value as! UInt8)
-        case is UInt16: return Double(value as! UInt16)
-        case is UInt32: return Double(value as! UInt32)
-        case is UInt64: return Double(value as! UInt64)
         case is Double: return Double(value as! Double)
         case is Float: return Double(value as! Float)
         case is CLongDouble: return Double(value as! CLongDouble)

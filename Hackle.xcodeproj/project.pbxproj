@@ -165,6 +165,10 @@
 		EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */; };
 		EE641FD926F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FD826F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift */; };
 		EE641FDD26F09D760037AE25 /* MockActionResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE641FDC26F09D760037AE25 /* MockActionResolver.swift */; };
+		EE6FE55129B01D8C002114EE /* WorkspaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6FE55029B01D8C002114EE /* WorkspaceSpecs.swift */; };
+		EE6FE55329B01EF6002114EE /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = EE6FE55229B01EF6002114EE /* workspace_config.json */; };
+		EE6FE55529B1BDE5002114EE /* PropertiesBuilderSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6FE55429B1BDE5002114EE /* PropertiesBuilderSpecs.swift */; };
+		EE6FE55729B1C6E4002114EE /* HackleValueSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6FE55629B1C6E4002114EE /* HackleValueSpecs.swift */; };
 		EE83D0D9292EEC6D0080C7B8 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0D8292EEC6D0080C7B8 /* Config.swift */; };
 		EE83D0DE292EED9A0080C7B8 /* DefaultRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0DD292EED9A0080C7B8 /* DefaultRemoteConfig.swift */; };
 		EE83D0E0292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE83D0DF292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift */; };
@@ -403,6 +407,10 @@
 		EE641FD426F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EE641FD826F09C280037AE25 /* DefaultExperimentTargetRuleDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExperimentTargetRuleDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EE641FDC26F09D760037AE25 /* MockActionResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockActionResolver.swift; sourceTree = "<group>"; };
+		EE6FE55029B01D8C002114EE /* WorkspaceSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSpecs.swift; sourceTree = "<group>"; };
+		EE6FE55229B01EF6002114EE /* workspace_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
+		EE6FE55429B1BDE5002114EE /* PropertiesBuilderSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertiesBuilderSpecs.swift; sourceTree = "<group>"; };
+		EE6FE55629B1C6E4002114EE /* HackleValueSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleValueSpecs.swift; sourceTree = "<group>"; };
 		EE83D0D8292EEC6D0080C7B8 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		EE83D0DD292EED9A0080C7B8 /* DefaultRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoteConfig.swift; sourceTree = "<group>"; };
 		EE83D0DF292EF0460080C7B8 /* RemoteConfigTargetRuleDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigTargetRuleDeterminer.swift; sourceTree = "<group>"; };
@@ -505,6 +513,7 @@
 				38AF44B3D864B2E2DEBD9FFA /* bucketing_alphanumeric.csv */,
 				38AF483C398969DF0DA587FD /* bucketing_numeric.csv */,
 				38AF401FBBD6373254632CDA /* bucketing_uuid.csv */,
+				EE6FE55229B01EF6002114EE /* workspace_config.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -554,6 +563,7 @@
 			isa = PBXGroup;
 			children = (
 				38AF43F277875FAA552A6A3D /* CachedWorkspaceFetcherSpec.swift */,
+				EE6FE55029B01D8C002114EE /* WorkspaceSpecs.swift */,
 			);
 			path = Workspace;
 			sourceTree = "<group>";
@@ -974,6 +984,7 @@
 			isa = PBXGroup;
 			children = (
 				EEA1DAC928FE9EAC00A2F762 /* ParameterConfigurationEntitySpecs.swift */,
+				EE6FE55629B1C6E4002114EE /* HackleValueSpecs.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1072,6 +1083,7 @@
 			isa = PBXGroup;
 			children = (
 				EEB624CA299A0AB400F1ECB6 /* UserSpecs.swift */,
+				EE6FE55429B1BDE5002114EE /* PropertiesBuilderSpecs.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1301,6 +1313,7 @@
 				38AF4D3040C6946446A6C399 /* murmur_all.csv in Resources */,
 				38AF49563D4580349DB825AD /* murmur_alphabetic.csv in Resources */,
 				38AF4EB00AC2DCFA652596A1 /* murmur_alphanumeric.csv in Resources */,
+				EE6FE55329B01EF6002114EE /* workspace_config.json in Resources */,
 				38AF4C10BDA3079A3C36C6E9 /* murmur_numeric.csv in Resources */,
 				38AF41D95D81FF1E8E6D082D /* murmur_uuid.csv in Resources */,
 				38AF43BA27FFC45539BCA3B6 /* bucketing_all.csv in Resources */,
@@ -1494,6 +1507,7 @@
 				EE641FD526F09C210037AE25 /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */,
 				38AF454E87491272E64D4079 /* MockWorkspace.swift in Sources */,
 				38AF4E9684FDA9795C9B325F /* DefaultUserEventProcessorSpec.swift in Sources */,
+				EE6FE55529B1BDE5002114EE /* PropertiesBuilderSpecs.swift in Sources */,
 				38AF45915E475599B79CA948 /* MockUserEventDispatcher.swift in Sources */,
 				38AF49D924B9ABF00BA1C459 /* MockUserEvent.swift in Sources */,
 				EE83D0E829306A300080C7B8 /* DefaultRemoteConfigTargetRuleDeterminerSpecs.swift in Sources */,
@@ -1518,6 +1532,7 @@
 				EE641FA526F09B810037AE25 /* DefaultActionResolverSpecs.swift in Sources */,
 				EE1081DC27A6842000E76BB2 /* DefaultSegmentMatcher.swift in Sources */,
 				EE1081D227A3F5CC00E76BB2 /* MockUserValueResolver.swift in Sources */,
+				EE6FE55729B1C6E4002114EE /* HackleValueSpecs.swift in Sources */,
 				EE90396628B7876B00846643 /* HackleConfigSpec.swift in Sources */,
 				EE641F9F26F09B6B0037AE25 /* EvaluationSpecs.swift in Sources */,
 				EE4D9AE7297F915000D41D02 /* MetricFieldSpecs.swift in Sources */,
@@ -1533,6 +1548,7 @@
 				EE641FCD26F09C0C0037AE25 /* DefaultConditionMatcherFactorySpecs.swift in Sources */,
 				EE4D9B11297FD83A00D41D02 /* TimeUnitSpecs.swift in Sources */,
 				EE4D9AF2297F998F00D41D02 /* CumulativeMetricRegistrySpecs.swift in Sources */,
+				EE6FE55129B01D8C002114EE /* WorkspaceSpecs.swift in Sources */,
 				38AF45B319284D4521F86860 /* CachedWorkspaceFetcherSpec.swift in Sources */,
 				EE1081D427A3F64600E76BB2 /* MockSegmentMatcher.swift in Sources */,
 				EE2A71E22701F880007691D7 /* VersionSpecs.swift in Sources */,
