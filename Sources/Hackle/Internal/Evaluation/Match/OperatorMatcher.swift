@@ -81,7 +81,7 @@ class EndsWithMatcher: OperatorMatcher {
 
 class GreaterThanMatcher: OperatorMatcher {
     func matches(userValue: String, matchValue: String) -> Bool {
-        false
+        userValue > matchValue
     }
 
     func matches(userValue: Double, matchValue: Double) -> Bool {
@@ -99,7 +99,7 @@ class GreaterThanMatcher: OperatorMatcher {
 
 class GreaterThanOrEqualToMatcher: OperatorMatcher {
     func matches(userValue: String, matchValue: String) -> Bool {
-        false
+        userValue >= matchValue
     }
 
     func matches(userValue: Double, matchValue: Double) -> Bool {
@@ -117,7 +117,7 @@ class GreaterThanOrEqualToMatcher: OperatorMatcher {
 
 class LessThanMatcher: OperatorMatcher {
     func matches(userValue: String, matchValue: String) -> Bool {
-        false
+        userValue < matchValue
     }
 
     func matches(userValue: Double, matchValue: Double) -> Bool {
@@ -135,7 +135,7 @@ class LessThanMatcher: OperatorMatcher {
 
 class LessThanOrEqualToMatcher: OperatorMatcher {
     func matches(userValue: String, matchValue: String) -> Bool {
-        false
+        userValue <= matchValue
     }
 
     func matches(userValue: Double, matchValue: Double) -> Bool {

@@ -141,13 +141,23 @@ class OperatorMatcherSpecs: QuickSpec {
             let sut = GreaterThanMatcher()
 
             it("string") {
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "abc"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "a"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "b"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "c"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ab"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ac"))
-                self.assertFalse(sut.matches(userValue: "a", matchValue: "ab"))
+                self.assertFalse(sut.matches(userValue: "41", matchValue: "42"))
+                self.assertFalse(sut.matches(userValue: "42", matchValue: "42"))
+                self.assertTrue(sut.matches(userValue: "43", matchValue: "42"))
+
+                self.assertFalse(sut.matches(userValue: "20230114", matchValue: "20230115"))
+                self.assertFalse(sut.matches(userValue: "20230115", matchValue: "20230115"))
+                self.assertTrue(sut.matches(userValue: "20230116", matchValue: "20230115"))
+
+                self.assertFalse(sut.matches(userValue: "2023-01-14", matchValue: "2023-01-15"))
+                self.assertFalse(sut.matches(userValue: "2023-01-15", matchValue: "2023-01-15"))
+                self.assertTrue(sut.matches(userValue: "2023-01-16", matchValue: "2023-01-15"))
+
+                self.assertFalse(sut.matches(userValue: "a", matchValue: "a"))
+                self.assertTrue(sut.matches(userValue: "a", matchValue: "A"))
+                self.assertFalse(sut.matches(userValue: "A", matchValue: "a"))
+                self.assertTrue(sut.matches(userValue: "aa", matchValue: "a"))
+                self.assertFalse(sut.matches(userValue: "a", matchValue: "aa"))
             }
 
             it("number") {
@@ -174,13 +184,24 @@ class OperatorMatcherSpecs: QuickSpec {
             let sut = GreaterThanOrEqualToMatcher()
 
             it("string") {
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "abc"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "a"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "b"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "c"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ab"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ac"))
-                self.assertFalse(sut.matches(userValue: "a", matchValue: "ab"))
+                self.assertFalse(sut.matches(userValue: "41", matchValue: "42"))
+                self.assertTrue(sut.matches(userValue: "42", matchValue: "42"))
+                self.assertTrue(sut.matches(userValue: "43", matchValue: "42"))
+
+                self.assertFalse(sut.matches(userValue: "20230114", matchValue: "20230115"))
+                self.assertTrue(sut.matches(userValue: "20230115", matchValue: "20230115"))
+                self.assertTrue(sut.matches(userValue: "20230116", matchValue: "20230115"))
+
+
+                self.assertFalse(sut.matches(userValue: "2023-01-14", matchValue: "2023-01-15"))
+                self.assertTrue(sut.matches(userValue: "2023-01-15", matchValue: "2023-01-15"))
+                self.assertTrue(sut.matches(userValue: "2023-01-16", matchValue: "2023-01-15"))
+
+                self.assertTrue(sut.matches(userValue: "a", matchValue: "a"))
+                self.assertTrue(sut.matches(userValue: "a", matchValue: "A"))
+                self.assertFalse(sut.matches(userValue: "A", matchValue: "a"))
+                self.assertTrue(sut.matches(userValue: "aa", matchValue: "a"))
+                self.assertFalse(sut.matches(userValue: "a", matchValue: "aa"))
             }
 
             it("number") {
@@ -207,13 +228,23 @@ class OperatorMatcherSpecs: QuickSpec {
             let sut = LessThanMatcher()
 
             it("string") {
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "abc"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "a"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "b"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "c"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ab"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ac"))
-                self.assertFalse(sut.matches(userValue: "a", matchValue: "ab"))
+                self.assertTrue(sut.matches(userValue: "41", matchValue: "42"))
+                self.assertFalse(sut.matches(userValue: "42", matchValue: "42"))
+                self.assertFalse(sut.matches(userValue: "43", matchValue: "42"))
+
+                self.assertTrue(sut.matches(userValue: "20230114", matchValue: "20230115"))
+                self.assertFalse(sut.matches(userValue: "20230115", matchValue: "20230115"))
+                self.assertFalse(sut.matches(userValue: "20230116", matchValue: "20230115"))
+
+                self.assertTrue(sut.matches(userValue: "2023-01-14", matchValue: "2023-01-15"))
+                self.assertFalse(sut.matches(userValue: "2023-01-15", matchValue: "2023-01-15"))
+                self.assertFalse(sut.matches(userValue: "2023-01-16", matchValue: "2023-01-15"))
+
+                self.assertFalse(sut.matches(userValue: "a", matchValue: "a"))
+                self.assertFalse(sut.matches(userValue: "a", matchValue: "A"))
+                self.assertTrue(sut.matches(userValue: "A", matchValue: "a"))
+                self.assertFalse(sut.matches(userValue: "aa", matchValue: "a"))
+                self.assertTrue(sut.matches(userValue: "a", matchValue: "aa"))
             }
 
             it("number") {
@@ -240,13 +271,23 @@ class OperatorMatcherSpecs: QuickSpec {
             let sut = LessThanOrEqualToMatcher()
 
             it("string") {
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "abc"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "a"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "b"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "c"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ab"))
-                self.assertFalse(sut.matches(userValue: "abc", matchValue: "ac"))
-                self.assertFalse(sut.matches(userValue: "a", matchValue: "ab"))
+                self.assertTrue(sut.matches(userValue: "41", matchValue: "42"))
+                self.assertTrue(sut.matches(userValue: "42", matchValue: "42"))
+                self.assertFalse(sut.matches(userValue: "43", matchValue: "42"))
+
+                self.assertTrue(sut.matches(userValue: "20230114", matchValue: "20230115"))
+                self.assertTrue(sut.matches(userValue: "20230115", matchValue: "20230115"))
+                self.assertFalse(sut.matches(userValue: "20230116", matchValue: "20230115"))
+
+                self.assertTrue(sut.matches(userValue: "2023-01-14", matchValue: "2023-01-15"))
+                self.assertTrue(sut.matches(userValue: "2023-01-15", matchValue: "2023-01-15"))
+                self.assertFalse(sut.matches(userValue: "2023-01-16", matchValue: "2023-01-15"))
+
+                self.assertTrue(sut.matches(userValue: "a", matchValue: "a"))
+                self.assertFalse(sut.matches(userValue: "a", matchValue: "A"))
+                self.assertTrue(sut.matches(userValue: "A", matchValue: "a"))
+                self.assertFalse(sut.matches(userValue: "aa", matchValue: "a"))
+                self.assertTrue(sut.matches(userValue: "a", matchValue: "aa"))
             }
 
             it("number") {

@@ -63,14 +63,25 @@ extension Hackle {
         identifiers: [String: String]? = nil,
         properties: [String: Any]? = nil
     ) -> User {
-        User(id: id, userId: userId, deviceId: deviceId, identifiers: identifiers ?? [:], properties: properties ?? [:])
+        User.builder()
+            .id(id)
+            .userId(userId)
+            .deviceId(deviceId)
+            .identifiers(identifiers ?? [:])
+            .properties(properties ?? [:])
+            .build()
     }
 
     @objc public static func event(key: String, properties: [String: Any]? = nil) -> Event {
-        Event(key: key, properties: properties)
+        Event.builder(key)
+            .properties(properties ?? [:])
+            .build()
     }
 
     @objc public static func event(key: String, value: Double, properties: [String: Any]? = nil) -> Event {
-        Event(key: key, value: value, properties: properties)
+        Event.builder(key)
+            .value(value)
+            .properties(properties ?? [:])
+            .build()
     }
 }
