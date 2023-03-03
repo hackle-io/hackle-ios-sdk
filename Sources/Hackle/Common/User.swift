@@ -83,8 +83,20 @@ extension User {
     }
 
     @discardableResult
+    @objc public func identifiers(_ identifiers: [String: String]) -> HackleUserBuilder {
+        self.identifiers.add(identifiers)
+        return self
+    }
+
+    @discardableResult
     @objc public func property(_ key: String, _ value: Any?) -> HackleUserBuilder {
         self.properties.add(key, value)
+        return self
+    }
+
+    @discardableResult
+    @objc public func properties(_ properties: [String: Any]) -> HackleUserBuilder {
+        self.properties.add(properties)
         return self
     }
 

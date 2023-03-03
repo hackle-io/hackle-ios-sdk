@@ -11,18 +11,20 @@ class ValueMatcherSpecs: QuickSpec {
         describe("StringMatcher") {
             let sut = StringMatcher()
 
-            it("userValue, matchValue가 String타입이면 OperatorMatcher의 일치 결과로 평가한다") {
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "value1", matchValue: HackleValue(value: "value1"))).to(beTrue())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1", matchValue: HackleValue(value: "1"))).to(beTrue())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "11", matchValue: HackleValue(value: "1"))).to(beFalse())
+            it("string type match") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42", matchValue: HackleValue(value: "42"))).to(beTrue())
             }
 
-            it("userValue가 String타입이 아니면 false") {
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 1, matchValue: HackleValue(value: "1"))).to(beFalse())
+            it("number 타입이면 캐스팅 후 match") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42", matchValue: HackleValue(value: 42))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42, matchValue: HackleValue(value: "42"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42, matchValue: HackleValue(value: 42))).to(beTrue())
             }
 
-            it("userValue가 String타입이지만 matchValue가 String타입이 아니면 false") {
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1", matchValue: HackleValue(value: 1))).to(beFalse())
+            it("지원하지 않는 type") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: true))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "1"))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1", matchValue: HackleValue(value: true))).to(beFalse())
             }
         }
 
@@ -30,7 +32,7 @@ class ValueMatcherSpecs: QuickSpec {
 
             let sut = NumberMatcher()
 
-            it("userValue, matchValue가 Number타입이면 OperatorMatcher의 일치 결과로 평가한다") {
+            it("number type") {
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42, matchValue: HackleValue(value: 42))).to(beTrue())
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42.1, matchValue: HackleValue(value: 42.1))).to(beTrue())
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42.0, matchValue: HackleValue(value: 42))).to(beTrue())
@@ -38,14 +40,21 @@ class ValueMatcherSpecs: QuickSpec {
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: 0, matchValue: HackleValue(value: 0.0))).to(beTrue())
             }
 
-            it("userValue가 Number타입이 아니면 false") {
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "1", matchValue: HackleValue(value: 1))).to(beFalse())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: 1))).to(beFalse())
+            it("string type 이면 캐스팅후 match") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42", matchValue: HackleValue(value: "42"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42", matchValue: HackleValue(value: 42))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42, matchValue: HackleValue(value: "42"))).to(beTrue())
+
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42.42", matchValue: HackleValue(value: "42.42"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42.42", matchValue: HackleValue(value: 42.42))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 42.42, matchValue: HackleValue(value: "42.42"))).to(beTrue())
             }
 
-            it("userValue가 Number타입이지만 matchValue가 Number타입이 아니면 false") {
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: 1, matchValue: HackleValue(value: "1"))).to(beFalse())
+            it("지원하지 않는 type") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: true))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: 1))).to(beFalse())
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: 1, matchValue: HackleValue(value: true))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "42a", matchValue: HackleValue(value: 42))).to(beFalse())
             }
         }
 
