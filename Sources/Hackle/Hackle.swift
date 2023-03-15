@@ -6,6 +6,7 @@ import Foundation
 
 @objc public class Hackle: NSObject {
 
+    private static let queue = DispatchQueue(label: "io.hackle.InitializeQueue", qos: .utility)
     static let lock = ReadWriteLock(label: "io.hackle.HackleApp")
     static var instance: HackleApp?
 
@@ -35,9 +36,11 @@ import Foundation
         }
     }
 
-    private static func readyToUse(completion: () -> ()) {
-        Log.info("Hackle SDK ready to use")
-        completion()
+    private static func readyToUse(completion: @escaping () -> ()) {
+        queue.async {
+            Log.info("Hackle SDK ready to use")
+            completion()
+        }
     }
 
     ///
