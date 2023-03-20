@@ -38,7 +38,6 @@ import Foundation
 
     private static func readyToUse(completion: @escaping () -> ()) {
         queue.async {
-            Log.info("Hackle SDK ready to use")
             completion()
         }
     }
