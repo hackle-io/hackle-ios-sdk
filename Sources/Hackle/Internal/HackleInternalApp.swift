@@ -6,9 +6,11 @@ protocol HackleInternalApp {
 
     func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision
 
-    func experiments(user: HackleUser) throws -> [Int: Decision]
+    func experiments(user: HackleUser) throws -> [(Experiment, Decision)]
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision
+
+    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)]
 
     func track(event: Event, user: HackleUser)
 
@@ -29,9 +31,13 @@ class DefaultHackleInternalApp: HackleInternalApp {
         self.eventProcessor = eventProcessor
     }
 
-    static func create(workspaceFetcher: WorkspaceFetcher, eventProcessor: UserEventProcessor) -> DefaultHackleInternalApp {
+    static func create(
+        workspaceFetcher: WorkspaceFetcher,
+        eventProcessor: UserEventProcessor,
+        manualOverrideStorage: ManualOverrideStorage
+    ) -> DefaultHackleInternalApp {
         DefaultHackleInternalApp(
-            evaluator: DefaultEvaluator(evaluationFlowFactory: DefaultEvaluationFlowFactory()),
+            evaluator: DefaultEvaluator(evaluationFlowFactory: DefaultEvaluationFlowFactory(manualOverrideStorage: manualOverrideStorage)),
             workspaceFetcher: workspaceFetcher,
             eventProcessor: eventProcessor
         )
@@ -54,25 +60,27 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return Decision.of(variation: defaultVariationKey, reason: DecisionReason.EXPERIMENT_NOT_FOUND)
         }
 
-        let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        let (evaluation, decision) = try evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
         eventProcessor.process(event: UserEvents.exposure(experiment: experiment, user: user, evaluation: evaluation))
-
-        let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
-        return Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config)
+        return decision
     }
 
-    func experiments(user: HackleUser) throws -> [Int: Decision] {
-        var decisions = [Int: Decision]()
+    func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {
+        var decisions = [(Experiment, Decision)]()
         guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
             return decisions
         }
         for experiment in workspace.experiments {
-            let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "A")
-            let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
-            let decision = Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config)
-            decisions[Int(experiment.key)] = decision
+            let (_, decision) = try evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "A")
+            decisions.append((experiment, decision))
         }
         return decisions
+    }
+
+    private func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: String) throws -> (Evaluation, Decision) {
+        let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+        let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
+        return (evaluation, Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config))
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
@@ -84,14 +92,30 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return FeatureFlagDecision.off(reason: DecisionReason.FEATURE_FLAG_NOT_FOUND)
         }
 
-        let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: featureFlag, user: user, defaultVariationKey: "A")
+        let (evaluation, decision) = try evaluate(workspace: workspace, featureFlag: featureFlag, user: user)
         eventProcessor.process(event: UserEvents.exposure(experiment: featureFlag, user: user, evaluation: evaluation))
+        return decision
+    }
 
+    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
+        var decisions = [(Experiment, FeatureFlagDecision)]()
+        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+            return decisions
+        }
+        for featureFlag in workspace.featureFlags {
+            let (_, decision) = try evaluate(workspace: workspace, featureFlag: featureFlag, user: user)
+            decisions.append((featureFlag, decision))
+        }
+        return decisions
+    }
+
+    private func evaluate(workspace: Workspace, featureFlag: Experiment, user: HackleUser) throws -> (Evaluation, FeatureFlagDecision) {
+        let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: featureFlag, user: user, defaultVariationKey: "A")
         let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
         if evaluation.variationKey == "A" {
-            return FeatureFlagDecision.off(reason: evaluation.reason, config: config)
+            return (evaluation, FeatureFlagDecision.off(reason: evaluation.reason, config: config))
         } else {
-            return FeatureFlagDecision.on(reason: evaluation.reason, config: config)
+            return (evaluation, FeatureFlagDecision.on(reason: evaluation.reason, config: config))
         }
     }
 

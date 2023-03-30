@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HackleFeatureFlagTableViewCell" id="KGk-i7-Jjw" customClass="HackleFeatureFlagTableViewCell" customModule="Hackle" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Experiment Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r9u-hM-KT2">
+                        <rect key="frame" x="12" y="12" width="113" height="20"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Experiment Desc" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckj-Rf-Uwj">
+                        <rect key="frame" x="12" y="36" width="96" height="15"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UgE-9m-Q1j">
+                        <rect key="frame" x="248" y="20" width="60" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="60" id="Kob-QG-IUu"/>
+                            <constraint firstAttribute="height" constant="25" id="Ml6-sP-GvL"/>
+                        </constraints>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" title="Reset"/>
+                        <connections>
+                            <action selector="resetButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="vSV-Pb-XvE"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N8Z-ZR-xHV">
+                        <rect key="frame" x="184" y="20" width="60" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="QGk-lr-reg"/>
+                            <constraint firstAttribute="width" constant="60" id="WWW-Rz-4NX"/>
+                        </constraints>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" title="Button"/>
+                        <connections>
+                            <action selector="variationButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="sIM-iG-gBf"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="r9u-hM-KT2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="4fe-RA-4cP"/>
+                    <constraint firstItem="r9u-hM-KT2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="4zn-tG-Io4"/>
+                    <constraint firstItem="ckj-Rf-Uwj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="Kfz-Ic-eNq"/>
+                    <constraint firstItem="ckj-Rf-Uwj" firstAttribute="top" secondItem="r9u-hM-KT2" secondAttribute="bottom" constant="4" id="Slo-In-g4c"/>
+                    <constraint firstItem="UgE-9m-Q1j" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="UaR-WW-bLZ"/>
+                    <constraint firstItem="N8Z-ZR-xHV" firstAttribute="centerY" secondItem="UgE-9m-Q1j" secondAttribute="centerY" id="d3L-RF-asX"/>
+                    <constraint firstItem="UgE-9m-Q1j" firstAttribute="leading" secondItem="N8Z-ZR-xHV" secondAttribute="trailing" constant="4" id="p9t-5A-km0"/>
+                    <constraint firstAttribute="trailing" secondItem="UgE-9m-Q1j" secondAttribute="trailing" constant="12" id="rHD-IP-6bY"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="experimentDescLabel" destination="ckj-Rf-Uwj" id="Qdu-Id-3lS"/>
+                <outlet property="experimentKeyLabel" destination="r9u-hM-KT2" id="C5w-Hi-Zbg"/>
+                <outlet property="resetButton" destination="UgE-9m-Q1j" id="ze6-sz-0XR"/>
+                <outlet property="variationButton" destination="N8Z-ZR-xHV" id="UAv-a8-Yfw"/>
+            </connections>
+            <point key="canvasLocation" x="5" y="-1"/>
+        </tableViewCell>
+    </objects>
+</document>
