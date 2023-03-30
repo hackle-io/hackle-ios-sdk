@@ -62,12 +62,16 @@ fileprivate class HackleInternalAppStub: HackleInternalApp {
         fatalError("experiment(experimentKey:user:defaultVariationKey:) has not been implemented")
     }
 
-    func experiments(user: HackleUser) throws -> [Int: Decision] {
+    func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {
         fatalError("experiments(user:) has not been implemented")
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
         fatalError("featureFlag(featureKey:user:) has not been implemented")
+    }
+
+    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
+        fatalError("featureFlags(user:) has not been implemented")
     }
 
     func track(event: Event, user: HackleUser) {

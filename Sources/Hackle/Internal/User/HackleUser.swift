@@ -51,6 +51,10 @@ extension HackleUser {
         InternalHackleUserBuilder(user: self)
     }
 
+    var id: String? {
+        identifiers[IdentifierType.id.rawValue]
+    }
+
     var userId: String? {
         identifiers[IdentifierType.user.rawValue]
     }

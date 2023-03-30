@@ -20,7 +20,6 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
             sut = DefaultHackleInternalApp(evaluator: evaluator, workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
         }
 
-
         describe("experiment") {
 
             context("Workspace 를 가져올 수 없으면") {
@@ -98,7 +97,7 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
         describe("experiments") {
             context("Workspace 를 가져올 수 없으면") {
-                it("비어있는 dictionary 를 리턴한다") {
+                it("비어있는 list 를 리턴한다") {
                     // given
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
 
@@ -132,43 +131,50 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                 // then
                 expect(actual.count) == 4
 
-                expect(actual[1]!.variation) == "A"
-                expect(actual[1]!.reason) == DecisionReason.EXPERIMENT_PAUSED
-                expect(actual[1]!.config) === config42
+                expect(actual[0].0.key) == 1
+                expect(actual[0].1.variation) == "A"
+                expect(actual[0].1.reason) == DecisionReason.EXPERIMENT_PAUSED
+                expect(actual[0].1.config) === config42
 
-                expect(actual[3]!.variation) == "B"
-                expect(actual[3]!.reason) == DecisionReason.EXPERIMENT_COMPLETED
-                expect(actual[3]!.config) === config43
+                expect(actual[1].0.key) == 3
+                expect(actual[1].1.variation) == "B"
+                expect(actual[1].1.reason) == DecisionReason.EXPERIMENT_COMPLETED
+                expect(actual[1].1.config) === config43
 
-                expect(actual[4]!.variation) == "C"
-                expect(actual[4]!.reason) == DecisionReason.OVERRIDDEN
-                expect(actual[4]!.config) === EmptyParameterConfig.instance
+                expect(actual[2].0.key) == 4
+                expect(actual[2].1.variation) == "C"
+                expect(actual[2].1.reason) == DecisionReason.OVERRIDDEN
+                expect(actual[2].1.config) === EmptyParameterConfig.instance
 
-                expect(actual[7]!.variation) == "A"
-                expect(actual[7]!.reason) == DecisionReason.TRAFFIC_ALLOCATED
-                expect(actual[7]!.config) === EmptyParameterConfig.instance
-            }
+                expect(actual[3].0.key) == 7
+                expect(actual[3].1.variation) == "A"
+                expect(actual[3].1.reason) == DecisionReason.TRAFFIC_ALLOCATED
+                expect(actual[3].1.config) === EmptyParameterConfig.instance
 
-            class EvaluatorStub: Evaluator {
-
-                private let experimentEvaluations: [Evaluation]
-                private var experimentEvaluateCount = -1
-
-                init(evaluations: [Evaluation]) {
-                    self.experimentEvaluations = evaluations
-                }
-
-                func evaluateExperiment(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
-                    experimentEvaluateCount = experimentEvaluateCount + 1
-                    return experimentEvaluations[experimentEvaluateCount]
-                }
-
-                func evaluateRemoteConfig(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigEvaluation {
-                    fatalError("evaluateRemoteConfig(workspace:parameter:user:defaultValue:) has not been implemented")
+                verify(exactly: 0) {
+                    eventProcessor.processMock
                 }
             }
         }
 
+        class EvaluatorStub: Evaluator {
+
+            private let experimentEvaluations: [Evaluation]
+            private var experimentEvaluateCount = -1
+
+            init(evaluations: [Evaluation]) {
+                self.experimentEvaluations = evaluations
+            }
+
+            func evaluateExperiment(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
+                experimentEvaluateCount = experimentEvaluateCount + 1
+                return experimentEvaluations[experimentEvaluateCount]
+            }
+
+            func evaluateRemoteConfig(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigEvaluation {
+                fatalError("evaluateRemoteConfig(workspace:parameter:user:defaultValue:) has not been implemented")
+            }
+        }
 
         describe("featureFlag") {
 
@@ -281,6 +287,66 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                     verify(exactly: 1) {
                         eventProcessor.processMock
                     }
+                }
+            }
+        }
+        
+        describe("featureFlags") { 
+            it("Workspace 가 없으면 emptyList") {
+                // given
+                every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
+
+                // when
+                let actual = try sut.featureFlags(user: user)
+
+                // then
+                expect(actual.count) == 0
+            }
+
+            it("모든 기능플래그에 대한 분배 결과를 리턴한다") {
+                // given
+                let config42 = ParameterConfigurationEntity(id: 42, parameters: [:])
+                let config43 = ParameterConfigurationEntity(id: 43, parameters: [:])
+                let evaluations = [
+                    Evaluation(variationId: 10, variationKey: "A", reason: DecisionReason.FEATURE_FLAG_INACTIVE, config: config42),
+                    Evaluation(variationId: 30, variationKey: "B", reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, config: config43),
+                    Evaluation(variationId: 40, variationKey: "B", reason: DecisionReason.TARGET_RULE_MATCH, config: nil),
+                    Evaluation(variationId: 70, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: nil),
+                ]
+                let evaluator = EvaluatorStub(evaluations: evaluations)
+                let workspace = MockWorkspace(featureFlags: [MockExperiment(key: 1), MockExperiment(key: 3), MockExperiment(key: 4), MockExperiment(key: 7)])
+                every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+
+                let sut = DefaultHackleInternalApp(evaluator: evaluator, workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+
+                // when
+                let actual = try sut.featureFlags(user: user)
+
+                // then
+                expect(actual.count) == 4
+
+                expect(actual[0].0.key) == 1
+                expect(actual[0].1.isOn) == false
+                expect(actual[0].1.reason) == DecisionReason.FEATURE_FLAG_INACTIVE
+                expect(actual[0].1.config) === config42
+
+                expect(actual[1].0.key) == 3
+                expect(actual[1].1.isOn) == true
+                expect(actual[1].1.reason) == DecisionReason.INDIVIDUAL_TARGET_MATCH
+                expect(actual[1].1.config) === config43
+
+                expect(actual[2].0.key) == 4
+                expect(actual[2].1.isOn) == true
+                expect(actual[2].1.reason) == DecisionReason.TARGET_RULE_MATCH
+                expect(actual[2].1.config) === EmptyParameterConfig.instance
+
+                expect(actual[3].0.key) == 7
+                expect(actual[3].1.isOn) == false
+                expect(actual[3].1.reason) == DecisionReason.DEFAULT_RULE
+                expect(actual[3].1.config) === EmptyParameterConfig.instance
+
+                verify(exactly: 0) {
+                    eventProcessor.processMock
                 }
             }
         }
