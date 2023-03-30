@@ -7,6 +7,7 @@ import Mockery
 class DefaultOverrideResolverSpecs: QuickSpec {
     override func spec() {
 
+        var manualOverrideStorage: ManualOverrideStorageStub!
         var targetMatcher: TargetMatcherStub!
         var actionResolver: MockActionResolver!
         var sut: DefaultOverrideResolver!
@@ -14,9 +15,18 @@ class DefaultOverrideResolverSpecs: QuickSpec {
         beforeEach {
             targetMatcher = TargetMatcherStub()
             actionResolver = MockActionResolver()
-            sut = DefaultOverrideResolver(targetMatcher: targetMatcher, actionResolver: actionResolver)
+            manualOverrideStorage = ManualOverrideStorageStub()
+            sut = DefaultOverrideResolver(manualOverrideStorage: manualOverrideStorage, targetMatcher: targetMatcher, actionResolver: actionResolver)
         }
 
+        it("manual override 를 가장 먼저 확인한다") {
+            let variation = MockVariation()
+            manualOverrideStorage.returns = variation
+
+            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: MockExperiment(), user: HackleUser.builder().build())
+
+            expect(actual).to(beIdenticalTo(variation))
+        }
 
         it("identifierType에 해당하는 식별자가 없으면 segmentOverride를 평가한다") {
             // given
@@ -213,6 +223,15 @@ class DefaultOverrideResolverSpecs: QuickSpec {
 
         func addResult(target: Target, isMatch: Bool) {
             matches.append((target, isMatch))
+        }
+    }
+
+    private class ManualOverrideStorageStub: ManualOverrideStorage {
+
+        var returns: Variation? = nil
+
+        func get(experiment: Experiment, user: HackleUser) -> Variation? {
+            returns
         }
     }
 }

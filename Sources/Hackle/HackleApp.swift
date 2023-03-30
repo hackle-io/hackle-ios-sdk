@@ -14,6 +14,7 @@ import Foundation
     private let userManager: UserManager
     private let sessionManager: SessionManager
     private let eventProcessor: DefaultUserEventProcessor
+    internal let userExplorer: HackleUserExplorer
 
     @objc public var deviceId: String {
         get {
@@ -40,7 +41,8 @@ import Foundation
         device: Device,
         userManager: UserManager,
         sessionManager: SessionManager,
-        eventProcessor: DefaultUserEventProcessor
+        eventProcessor: DefaultUserEventProcessor,
+        userExplorer: HackleUserExplorer
     ) {
         self.internalApp = internalApp
         self.eventQueue = eventQueue
@@ -49,7 +51,20 @@ import Foundation
         self.userManager = userManager
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
+        self.userExplorer = userExplorer
         super.init()
+    }
+
+    private var view: HackleUserExplorerView? = nil
+
+    @objc public func showUserExplorer() {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            if self.view == nil {
+                self.view = HackleUserExplorerView()
+            }
+            self.view?.attach()
+        }
+        Metrics.counter(name: "user.explorer.show").increment()
     }
 
     @objc public func setUser(user: User) {
@@ -105,7 +120,9 @@ import Foundation
     private func allVariationDetailsInternal(user: User) -> [Int: Decision] {
         do {
             let hackleUser = hackleUserResolver.resolve(user: user)
-            return try internalApp.experiments(user: hackleUser)
+            return try internalApp.experiments(user: hackleUser).associate { experiment, decision in
+                (Int(experiment.key), decision)
+            }
         } catch let error {
             Log.error("Unexpected error while deciding variations for experiments: \(String(describing: error))")
             return [:]
@@ -255,7 +272,7 @@ extension HackleApp {
 
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
-        let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard)
+        let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let device = Device.create(keyValueRepository: globalKeyValueRepository)
 
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -265,7 +282,6 @@ extension HackleApp {
             httpClient: httpClient
         )
         let workspaceFetcher = CachedWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher)
-
 
         let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
@@ -282,7 +298,7 @@ extension HackleApp {
 
         let userManager = DefaultUserManager(
             device: device,
-            repository: UserDefaultsKeyValueRepository(userDefaults: UserDefaults(suiteName: "Hackle_\(sdkKey)")!)
+            repository: UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)")
         )
         let sessionManager = DefaultSessionManager(
             userManager: userManager,
@@ -305,7 +321,14 @@ extension HackleApp {
             sessionManager: sessionManager
         )
 
-        let internalApp = DefaultHackleInternalApp.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+        let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
+        let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ff_override_\(sdkKey)")
+
+        let internalApp = DefaultHackleInternalApp.create(
+            workspaceFetcher: workspaceFetcher,
+            eventProcessor: eventProcessor,
+            manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
+        )
         let hackleUserResolver = DefaultHackleUserResolver(device: device)
 
         let appNotificationObserver = DefaultAppNotificationObserver.instance
@@ -322,6 +345,14 @@ extension HackleApp {
 
         HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
 
+        let userExplorer = DefaultHackleUserExplorer(
+            app: internalApp,
+            userManager: userManager,
+            userResolver: hackleUserResolver,
+            abTestOverrideStorage: abOverrideStorage,
+            featureFlagOverrideStorage: ffOverrideStorage
+        )
+
         return HackleApp(
             internalApp: internalApp,
             eventQueue: eventQueue,
@@ -329,7 +360,8 @@ extension HackleApp {
             device: device,
             userManager: userManager,
             sessionManager: sessionManager,
-            eventProcessor: eventProcessor
+            eventProcessor: eventProcessor,
+            userExplorer: userExplorer
         )
     }
 

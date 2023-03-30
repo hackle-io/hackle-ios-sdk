@@ -9,9 +9,15 @@ import Foundation
 
 protocol KeyValueRepository {
 
+    func getAll() -> [String: Any]
+
     func getString(key: String) -> String?
 
     func putString(key: String, value: String)
+
+    func getInteger(key: String) -> Int
+
+    func putInteger(key: String, value: Int)
 
     func getDouble(key: String) -> Double
 
@@ -20,6 +26,10 @@ protocol KeyValueRepository {
     func getData(key: String) -> Data?
 
     func putData(key: String, value: Data)
+
+    func remove(key: String)
+
+    func clear()
 }
 
 extension KeyValueRepository {
@@ -36,9 +46,19 @@ extension KeyValueRepository {
 class UserDefaultsKeyValueRepository: KeyValueRepository {
 
     private let userDefaults: UserDefaults
+    private let suiteName: String?
 
-    init(userDefaults: UserDefaults) {
+    init(userDefaults: UserDefaults, suiteName: String?) {
         self.userDefaults = userDefaults
+        self.suiteName = suiteName
+    }
+
+    static func of(suiteName: String) -> UserDefaultsKeyValueRepository {
+        UserDefaultsKeyValueRepository(userDefaults: UserDefaults(suiteName: suiteName)!, suiteName: suiteName)
+    }
+
+    func getAll() -> [String: Any] {
+        userDefaults.dictionaryRepresentation()
     }
 
     func getString(key: String) -> String? {
@@ -46,6 +66,15 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
     }
 
     func putString(key: String, value: String) {
+        userDefaults.set(value, forKey: key)
+        userDefaults.synchronize()
+    }
+
+    func getInteger(key: String) -> Int {
+        userDefaults.integer(forKey: key)
+    }
+
+    func putInteger(key: String, value: Int) {
         userDefaults.set(value, forKey: key)
         userDefaults.synchronize()
     }
@@ -66,5 +95,17 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
     func putData(key: String, value: Data) {
         userDefaults.set(value, forKey: key)
         userDefaults.synchronize()
+    }
+
+    func remove(key: String) {
+        userDefaults.removeObject(forKey: key)
+        userDefaults.synchronize()
+    }
+
+    func clear() {
+        guard let suiteName = suiteName else {
+            return
+        }
+        userDefaults.removePersistentDomain(forName: suiteName)
     }
 }

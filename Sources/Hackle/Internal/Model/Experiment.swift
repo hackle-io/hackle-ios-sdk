@@ -14,6 +14,7 @@ protocol Experiment {
     var identifierType: String { get }
     var status: ExperimentStatus { get }
     var version: Int { get }
+    var variations: [Variation] { get }
     var userOverrides: [User.Id: Variation.Id] { get }
     var segmentOverrides: [TargetRule] { get }
     var targetAudiences: [Target] { get }
@@ -32,7 +33,7 @@ enum ExperimentType: String, Codable {
     case featureFlag = "FEATURE_FLAG"
 }
 
-enum ExperimentStatus {
+enum ExperimentStatus: String {
     case draft
     case running
     case paused
@@ -46,7 +47,7 @@ class ExperimentEntity: Experiment {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
-    private let variations: [Variation]
+    let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
     let segmentOverrides: [TargetRule]
     let targetAudiences: [Target]

@@ -81,7 +81,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
             self?.flushingJob = eventFlushScheduler.schedulePeriodically(delay: eventFlushInterval, period: eventFlushInterval) {
                 self?.flush()
             }
-            Log.info("UserEventProcessor started. Flush events every \(eventFlushInterval.format())")
+            Log.info("UserEventProcessor started. Flush events every \(eventFlushInterval) s")
         }
     }
 
