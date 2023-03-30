@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Hackle
 
 class HackleAbTestTableViewCell: UITableViewCell {
 
@@ -15,7 +16,7 @@ class HackleAbTestTableViewCell: UITableViewCell {
     @IBOutlet weak var resetButton: UIButton!
 
     private var item: HackleAbTestItem!
-    private var overrideSetListener: OnOverrideSetListnenr!
+    private var overrideSetListener: OnOverrideSetListener!
     private var overrideResetListener: OnOverrideResetListener!
     private var superView: UIViewController!
     private var alertController: UIAlertController!
@@ -30,7 +31,7 @@ class HackleAbTestTableViewCell: UITableViewCell {
     func bind(
         item: HackleAbTestItem,
         superView: UIViewController,
-        overrideSetListener: OnOverrideSetListnenr,
+        overrideSetListener: OnOverrideSetListener,
         overrideResetListener: OnOverrideResetListener
     ) {
         self.item = item

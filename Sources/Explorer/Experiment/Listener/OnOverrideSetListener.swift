@@ -6,8 +6,8 @@
 //
 
 import Foundation
+import Hackle
 
-
-protocol OnOverrideSetListnenr {
+protocol OnOverrideSetListener {
     func onOverrideSet(experiment: Experiment, variation: Variation)
 }

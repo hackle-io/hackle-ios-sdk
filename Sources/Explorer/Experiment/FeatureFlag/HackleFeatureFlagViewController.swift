@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Hackle
 
 
-class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListnenr, OnOverrideResetListener {
+class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener {
 
     @IBOutlet weak var tableView: UITableView!
 

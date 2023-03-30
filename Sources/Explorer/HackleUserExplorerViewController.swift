@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Hackle
 
 
 class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
