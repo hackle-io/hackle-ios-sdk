@@ -10,8 +10,8 @@ spec.author        = { "Hackle" => "platform@hackle.io" }
 spec.source        = { :git => "https://github.com/hackle-io/hackle-ios-sdk.git", :tag => "#{spec.version}" }
 
 spec.ios.deployment_target = "10.0"
-spec.ios.source_files      = "Sources/Hackle/**/*.swift", "Sources/Explorer/**/*.swift"
-spec.ios.resources         = "Sources/Explorer/**/*.{xib,png}"
+spec.source_files      = "Sources/Hackle/**/*.swift", "Sources/Explorer/**/*.swift"
+spec.resources         = "Sources/Explorer/**/*.{xib,png}"
 
 spec.frameworks    = "Foundation"
 spec.swift_version = "5.0"
