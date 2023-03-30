@@ -9,23 +9,33 @@ let package = Package(
         .iOS(.v10),
     ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "Hackle",
-            targets: ["Hackle"]),
+        .library(name: "Hackle", targets: ["Hackle"]),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/Quick/Quick.git", .upToNextMajor(from: "3.0.0")),
-        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0")),
-        .package(url: "https://github.com/danielsaidi/Mockery.git", .upToNextMajor(from: "0.7.0")),
+        .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "3.0.0")),
+        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMinor(from: "9.0.0")),
+        .package(url: "https://github.com/danielsaidi/Mockery.git", .upToNextMinor(from: "0.7.0")),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Hackle",
-            dependencies: []
+            resources: [
+                .process("Resources/HackleAbTestTableViewCell.xib"),
+                .process("Resources/HackleAbTestViewController.xib"),
+                .process("Resources/HackleFeatureFlagTableViewCell.xib"),
+                .process("Resources/HackleFeatureFlagViewController.xib"),
+                .process("Resources/HackleUserExplorerButton.xib"),
+                .process("Resources/HackleUserExplorerViewController.xib"),
+                .process("Resources/Images/hackle_banner.png"),
+                .process("Resources/Images/hackle_banner@2x.png"),
+                .process("Resources/Images/hackle_banner@3x.png"),
+                .process("Resources/Images/hackle_cancel.png"),
+                .process("Resources/Images/hackle_cancel@2x.png"),
+                .process("Resources/Images/hackle_cancel@3x.png"),
+                .process("Resources/Images/hackle_logo.png"),
+                .process("Resources/Images/hackle_logo@2x.png"),
+                .process("Resources/Images/hackle_logo@3x.png"),
+            ]
         ),
         .testTarget(
             name: "HackleTests",

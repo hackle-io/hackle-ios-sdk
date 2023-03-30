@@ -45,6 +45,7 @@ class MockExperiment: Mock, Experiment {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
+    let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
     let segmentOverrides: [TargetRule]
     let targetAudiences: [Target]
@@ -60,6 +61,7 @@ class MockExperiment: Mock, Experiment {
         identifierType: String = IdentifierType.id.rawValue,
         status: ExperimentStatus = .running,
         version: Int = 1,
+        variations: [Variation] = [],
         userOverrides: [User.Id: Variation.Id] = [:],
         segmentOverrides: [TargetRule] = [],
         targetAudiences: [Target] = [],
@@ -74,6 +76,7 @@ class MockExperiment: Mock, Experiment {
         self.identifierType = identifierType
         self.status = status
         self.version = version
+        self.variations = variations
         self.userOverrides = userOverrides
         self.segmentOverrides = segmentOverrides
         self.targetAudiences = targetAudiences

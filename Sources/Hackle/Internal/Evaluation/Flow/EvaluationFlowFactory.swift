@@ -11,12 +11,12 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
     private let featureFlagFlow: EvaluationFlow
     let remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer
 
-    init() {
+    init(manualOverrideStorage: ManualOverrideStorage) {
 
         let bucketer = DefaultBucketer()
         let targetMatcher = DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory())
         let actionResolver = DefaultActionResolver(bucketer: bucketer)
-        let overrideResolver = DefaultOverrideResolver(targetMatcher: targetMatcher, actionResolver: actionResolver)
+        let overrideResolver = DefaultOverrideResolver(manualOverrideStorage: manualOverrideStorage, targetMatcher: targetMatcher, actionResolver: actionResolver)
         let containerResolver = DefaultContainerResolver(bucketer: bucketer)
 
         abTestFlow = DefaultEvaluationFlow.of(
