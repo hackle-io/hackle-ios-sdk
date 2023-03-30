@@ -18,32 +18,24 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "HackleExplorer",
-            path: "Sources/Explorer",
-            resources: [
-                .process("Resources/HackleAbTestTableViewCell.xib"),
-                .process("Resources/HackleAbTestViewController.xib"),
-                .process("Resources/HackleFeatureFlagTableViewCell.xib"),
-                .process("Resources/HackleFeatureFlagViewController.xib"),
-                .process("Resources/HackleUserExplorerButton.xib"),
-                .process("Resources/HackleUserExplorerBubbleView.xib"),
-                .process("Resources/Images/hackle_banner.png"),
-                .process("Resources/Images/hackle_banner@2x.png"),
-                .process("Resources/Images/hackle_banner@3x.png"),
-                .process("Resources/Images/hackle_cancel.png"),
-                .process("Resources/Images/hackle_cancel@2x.png"),
-                .process("Resources/Images/hackle_cancel@3x.png"),
-                .process("Resources/Images/hackle_logo.png"),
-                .process("Resources/Images/hackle_logo@2x.png"),
-                .process("Resources/Images/hackle_logo@3x.png"),
-            ]
-        ),
-        .target(
             name: "Hackle",
-            dependencies: [
-                .target(name: "HackleExplorer", condition: .when(platforms: [.iOS]))
-            ],
-            path: "Sources/Hackle"
+            resources: [
+                .process("Explorer/Resources/HackleAbTestTableViewCell.xib"),
+                .process("Explorer/Resources/HackleAbTestViewController.xib"),
+                .process("Explorer/Resources/HackleFeatureFlagTableViewCell.xib"),
+                .process("Explorer/Resources/HackleFeatureFlagViewController.xib"),
+                .process("Explorer/Resources/HackleUserExplorerButton.xib"),
+                .process("Explorer/Resources/HackleUserExplorerBubbleView.xib"),
+                .process("Explorer/Resources/Images/hackle_banner.png"),
+                .process("Explorer/Resources/Images/hackle_banner@2x.png"),
+                .process("Explorer/Resources/Images/hackle_banner@3x.png"),
+                .process("Explorer/Resources/Images/hackle_cancel.png"),
+                .process("Explorer/Resources/Images/hackle_cancel@2x.png"),
+                .process("Explorer/Resources/Images/hackle_cancel@3x.png"),
+                .process("Explorer/Resources/Images/hackle_logo.png"),
+                .process("Explorer/Resources/Images/hackle_logo@2x.png"),
+                .process("Explorer/Resources/Images/hackle_logo@3x.png"),
+            ]
         ),
         .testTarget(
             name: "HackleTests",

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Hackle
 
 
 protocol HackleUserExplorer {

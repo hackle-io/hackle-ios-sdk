@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Hackle
 
 
 class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener {
