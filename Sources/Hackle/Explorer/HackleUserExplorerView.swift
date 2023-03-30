@@ -82,8 +82,7 @@ class HackleUserExplorerView {
         DispatchQueue.main.async {
             if self.button != nil {
                 let rootViewController = self.getKeyWindow()?.rootViewController
-                let bundle = Bundle(for: HackleUserExplorerViewController.self)
-                let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: bundle)
+                let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleResources.bundle)
                 hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
                 rootViewController?.present(hackleUserExplorerViewController, animated: true)
             }
@@ -91,8 +90,15 @@ class HackleUserExplorerView {
     }
 
     private func barHeight() -> CGFloat {
-        let size = UIApplication.shared.statusBarFrame.size
-        return min(size.width, size.height)
+        if #available(iOS 13.0, *) {
+            guard let size = getKeyWindow()?.windowScene?.statusBarManager?.statusBarFrame.size else {
+                return 0.0
+            }
+            return min(size.width, size.height)
+        } else {
+            let size = UIApplication.shared.statusBarFrame.size
+            return min(size.width, size.height)
+        }
     }
 
     private func offset() -> CGFloat {
