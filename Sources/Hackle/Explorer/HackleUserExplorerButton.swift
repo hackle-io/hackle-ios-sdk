@@ -21,8 +21,7 @@ class HackleUserExplorerButton: UIView {
     }
 
     func loadViewFromNib() {
-        let bundle = Bundle(for: HackleUserExplorerButton.self)
-        let view = bundle.loadNibNamed("HackleUserExplorerButton", owner: nil)?.first as! UIView
+        let view = HackleResources.bundle.loadNibNamed("HackleUserExplorerButton", owner: nil)?.first as! UIView
         view.frame = bounds
         addSubview(view)
     }
