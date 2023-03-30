@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Hackle
 
 class HackleFeatureFlagTableViewCell: UITableViewCell {
 
@@ -16,7 +16,7 @@ class HackleFeatureFlagTableViewCell: UITableViewCell {
     @IBOutlet weak var resetButton: UIButton!
 
     private var item: HackleFeatureFlagItem!
-    private var overrideSetListener: OnOverrideSetListnenr!
+    private var overrideSetListener: OnOverrideSetListener!
     private var overrideResetListener: OnOverrideResetListener!
     private var superView: UIViewController!
     private var alertController: UIAlertController!
@@ -31,7 +31,7 @@ class HackleFeatureFlagTableViewCell: UITableViewCell {
     func bind(
         item: HackleFeatureFlagItem,
         superView: UIViewController,
-        overrideSetListener: OnOverrideSetListnenr,
+        overrideSetListener: OnOverrideSetListener,
         overrideResetListener: OnOverrideResetListener
     ) {
         self.item = item

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Hackle
 
 struct HackleAbTestItem: Comparable {
 

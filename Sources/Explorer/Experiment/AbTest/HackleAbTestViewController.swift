@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Hackle
 
 
-class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListnenr, OnOverrideResetListener {
+class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener {
 
     @IBOutlet weak var abTestTableView: UITableView!
 

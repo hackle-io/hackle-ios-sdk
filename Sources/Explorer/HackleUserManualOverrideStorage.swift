@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Hackle
 
 
 class HackleUserManualOverrideStorage: ManualOverrideStorage {

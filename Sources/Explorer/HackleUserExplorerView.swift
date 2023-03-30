@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+import Hackle
+
 
 class HackleUserExplorerView {
 
