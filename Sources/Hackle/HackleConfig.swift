@@ -13,6 +13,7 @@ public class HackleConfig: NSObject {
     var eventUrl: URL
     var monitoringUrl: URL
     var sessionTimeoutInterval: TimeInterval
+    var pollingInterval: TimeInterval
     var eventFlushInterval: TimeInterval
     var eventFlushThreshold: Int
     var exposureEventDedupInterval: TimeInterval
@@ -23,6 +24,7 @@ public class HackleConfig: NSObject {
         eventUrl = builder.eventUrl
         monitoringUrl = builder.monitoringUrl
         sessionTimeoutInterval = builder.sessionTimeoutInterval
+        pollingInterval = builder.pollingInterval
         eventFlushInterval = builder.eventFlushInterval
         eventFlushThreshold = builder.eventFlushThreshold
         exposureEventDedupInterval = builder.exposureEventDedupInterval
@@ -30,6 +32,7 @@ public class HackleConfig: NSObject {
         super.init()
     }
 
+    static let NO_POLLING: TimeInterval = -1
     static let NO_DEDUP: TimeInterval = -1
 
     static let DEFAULT_SESSION_TIMEOUT_INTERVAL: TimeInterval = 1800 // 30m
@@ -56,6 +59,8 @@ public class HackleConfigBuilder: NSObject {
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
 
     var sessionTimeoutInterval: TimeInterval = HackleConfig.DEFAULT_SESSION_TIMEOUT_INTERVAL
+
+    var pollingInterval: TimeInterval = HackleConfig.NO_POLLING
 
     var eventFlushInterval: TimeInterval = HackleConfig.DEFAULT_EVENT_FLUSH_INTERVAL
     var eventFlushThreshold: Int = HackleConfig.DEFAULT_EVENT_FLUSH_THRESHOLD
@@ -84,6 +89,11 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
+    @objc public func pollingIntervalSeconds(_ pollingInterval: TimeInterval) -> HackleConfigBuilder {
+        self.pollingInterval = pollingInterval
+        return self
+    }
+
     @objc public func eventFlushIntervalSeconds(_ eventFlushInterval: TimeInterval) -> HackleConfigBuilder {
         self.eventFlushInterval = eventFlushInterval
         return self
@@ -105,6 +115,11 @@ public class HackleConfigBuilder: NSObject {
     }
 
     @objc public func build() -> HackleConfig {
+
+        if pollingInterval != HackleConfig.NO_POLLING && pollingInterval < 60 {
+            Log.info("Polling interval is outside allowed value [min 60s]. Setting to default value[60s]")
+            self.pollingInterval = 60
+        }
 
         if !(1...60).contains(eventFlushInterval) {
             Log.info("Event flush interval is outside allowed range[1s..60s]. Setting to default value[10s]")

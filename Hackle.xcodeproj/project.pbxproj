@@ -168,7 +168,6 @@
 		EE29DA6229CD82C200B1FEAA /* MemoryKeyValueRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E529CD82C100B1FEAA /* MemoryKeyValueRepository.swift */; };
 		EE29DA6329CD82C200B1FEAA /* MockEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E629CD82C100B1FEAA /* MockEventRepository.swift */; };
 		EE29DA6429CD82C200B1FEAA /* WorkspaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E829CD82C100B1FEAA /* WorkspaceSpecs.swift */; };
-		EE29DA6529CD82C200B1FEAA /* CachedWorkspaceFetcherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E929CD82C100B1FEAA /* CachedWorkspaceFetcherSpec.swift */; };
 		EE29DA6629CD82C200B1FEAA /* MockUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */; };
 		EE29DA6729CD82C200B1FEAA /* DefaultHackleUserResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9EC29CD82C100B1FEAA /* DefaultHackleUserResolverSpecs.swift */; };
 		EE29DA6829CD82C200B1FEAA /* DefaultUserManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */; };
@@ -263,6 +262,7 @@
 		EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
 		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
 		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
+		EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */; };
 		EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */; };
 		EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */; };
 		EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */; };
@@ -442,7 +442,6 @@
 		EE29D9E529CD82C100B1FEAA /* MemoryKeyValueRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryKeyValueRepository.swift; sourceTree = "<group>"; };
 		EE29D9E629CD82C100B1FEAA /* MockEventRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockEventRepository.swift; sourceTree = "<group>"; };
 		EE29D9E829CD82C100B1FEAA /* WorkspaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceSpecs.swift; sourceTree = "<group>"; };
-		EE29D9E929CD82C100B1FEAA /* CachedWorkspaceFetcherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedWorkspaceFetcherSpec.swift; sourceTree = "<group>"; };
 		EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserManager.swift; sourceTree = "<group>"; };
 		EE29D9EC29CD82C100B1FEAA /* DefaultHackleUserResolverSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultHackleUserResolverSpecs.swift; sourceTree = "<group>"; };
 		EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserManagerSpecs.swift; sourceTree = "<group>"; };
@@ -534,6 +533,7 @@
 		EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestItem.swift; sourceTree = "<group>"; };
 		EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideSetListener.swift; sourceTree = "<group>"; };
 		EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideResetListener.swift; sourceTree = "<group>"; };
+		EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
 		EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingManualOverrideStorageSpecs.swift; sourceTree = "<group>"; };
 		EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestTableViewCell.swift; sourceTree = "<group>"; };
 		EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestTableViewCell.xib; sourceTree = "<group>"; };
@@ -1118,7 +1118,7 @@
 			isa = PBXGroup;
 			children = (
 				EE29D9E829CD82C100B1FEAA /* WorkspaceSpecs.swift */,
-				EE29D9E929CD82C100B1FEAA /* CachedWorkspaceFetcherSpec.swift */,
+				EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */,
 			);
 			path = Workspace;
 			sourceTree = "<group>";
@@ -1727,6 +1727,7 @@
 				EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */,
 				EE29DAA529CD82C200B1FEAA /* UserSpecs.swift in Sources */,
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
+				EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */,
 				EE29DA7529CD82C200B1FEAA /* OperatorMatcherSpecs.swift in Sources */,
 				EE29DA6229CD82C200B1FEAA /* MemoryKeyValueRepository.swift in Sources */,
 				EE29DA6A29CD82C200B1FEAA /* TimeUnitSpecs.swift in Sources */,
@@ -1740,7 +1741,6 @@
 				EE29DA7429CD82C200B1FEAA /* DefaultConditionMatcherFactorySpecs.swift in Sources */,
 				EE29DA8B29CD82C200B1FEAA /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift in Sources */,
 				EE29DA8C29CD82C200B1FEAA /* DefaultContainerResolverSpecs.swift in Sources */,
-				EE29DA6529CD82C200B1FEAA /* CachedWorkspaceFetcherSpec.swift in Sources */,
 				EE29DA6F29CD82C200B1FEAA /* MockEvaluator.swift in Sources */,
 				EE29DA7229CD82C200B1FEAA /* DefaultUserValueResolverSpecs.swift in Sources */,
 				EE29DA7D29CD82C200B1FEAA /* UserConditionMatcherSpecs.swift in Sources */,
