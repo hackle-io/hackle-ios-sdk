@@ -71,7 +71,7 @@ class HackleUserExplorerView {
         DispatchQueue.main.async {
             if self.button != nil {
                 let rootViewController = self.getKeyWindow()?.rootViewController
-                let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleResources.bundle)
+                let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
                 hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
                 rootViewController?.present(hackleUserExplorerViewController, animated: true)
             }

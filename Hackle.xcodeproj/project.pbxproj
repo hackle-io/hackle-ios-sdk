@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */; };
 		EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */; };
-		EE14A3EC29D5B555000775C2 /* HackleResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE14A3EB29D5B555000775C2 /* HackleResources.swift */; };
+		EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */; };
 		EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */; };
 		EE29D94029CD825400B1FEAA /* Hackle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AC29CD825300B1FEAA /* Hackle.swift */; };
 		EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AD29CD825300B1FEAA /* HackleApp.swift */; };
@@ -275,7 +275,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = "Hackle::Hackle";
+			remoteGlobalIDString = Hackle::Hackle;
 			remoteInfo = Hackle;
 		};
 /* End PBXContainerItemProxy section */
@@ -283,7 +283,7 @@
 /* Begin PBXFileReference section */
 		EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestViewController.xib; sourceTree = "<group>"; };
 		EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestViewController.swift; sourceTree = "<group>"; };
-		EE14A3EB29D5B555000775C2 /* HackleResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleResources.swift; sourceTree = "<group>"; };
+		EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInternalResources.swift; sourceTree = "<group>"; };
 		EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
 		EE29D8AC29CD825300B1FEAA /* Hackle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hackle.swift; sourceTree = "<group>"; };
 		EE29D8AD29CD825300B1FEAA /* HackleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleApp.swift; sourceTree = "<group>"; };
@@ -1309,7 +1309,7 @@
 				EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */,
 				EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */,
 				EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */,
-				EE14A3EB29D5B555000775C2 /* HackleResources.swift */,
+				EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */,
 			);
 			path = Explorer;
 			sourceTree = "<group>";
@@ -1603,7 +1603,7 @@
 				EE29D97E29CD825400B1FEAA /* HttpClient.swift in Sources */,
 				EE29D96B29CD825400B1FEAA /* UserListener.swift in Sources */,
 				EE3C165B29D43234008177F6 /* HackleFeatureFlagTableViewCell.swift in Sources */,
-				EE14A3EC29D5B555000775C2 /* HackleResources.swift in Sources */,
+				EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */,
 				EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */,
 				EE29D95829CD825400B1FEAA /* MetricField.swift in Sources */,
 				EE29D98E29CD825400B1FEAA /* Action.swift in Sources */,
