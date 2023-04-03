@@ -56,7 +56,7 @@ class PollingWorkspaceFetcher: WorkspaceFetcher, AppNotificationListener {
                 return
             }
             self?.pollingJob = self?.pollingScheduler.schedulePeriodically(
-                delay: .zero,
+                delay: pollingInterval,
                 period: pollingInterval,
                 task: poll
             )
