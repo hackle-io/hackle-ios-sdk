@@ -25,7 +25,7 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
     private func setUpTableView() {
         abTestTableView.delegate = self
         abTestTableView.dataSource = self
-        abTestTableView.register(UINib(nibName: "HackleAbTestTableViewCell", bundle: HackleResources.bundle), forCellReuseIdentifier: "HackleAbTestTableViewCell")
+        abTestTableView.register(UINib(nibName: "HackleAbTestTableViewCell", bundle: HackleInternalResources.bundle), forCellReuseIdentifier: "HackleAbTestTableViewCell")
     }
 
     private func fetchAndUpdate() {
