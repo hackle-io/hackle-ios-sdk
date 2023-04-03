@@ -7,14 +7,15 @@
 
 import Foundation
 
-public final class HackleResources {
+public final class HackleInternalResources {
     public static let bundle: Bundle = {
+        let bundleName = "Hackle_Hackle"
+
         let candidates = [
             Bundle.main.resourceURL,
-            Bundle(for: HackleResources.self).resourceURL
+            Bundle(for: HackleInternalResources.self).resourceURL,
+            Bundle.main.bundleURL,
         ]
-
-        let bundleName = "Hackle_Hackle"
 
         for candidate in candidates {
             let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
@@ -23,6 +24,6 @@ public final class HackleResources {
             }
         }
 
-        return Bundle(for: HackleResources.self)
+        return Bundle(for: HackleInternalResources.self)
     }()
 }
