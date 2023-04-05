@@ -15,10 +15,10 @@ class MockWorkspaceFetcher: Mock, WorkspaceFetcher {
     func getWorkspaceOrNil() -> Workspace? {
         call(getWorkspaceOrNilMock, args: ())
     }
+    
+    lazy var initializeMock = MockFunction(self, initialize)
 
-    lazy var fetchFromServerMock = MockFunction(self, fetchFromServer)
-
-    func fetchFromServer(completion: @escaping () -> ()) {
-        call(fetchFromServerMock, args: completion)
+    func initialize(completion: @escaping () -> ()) {
+        call(initializeMock, args: completion)
     }
 }

@@ -6,29 +6,81 @@ import Foundation
 
 protocol WorkspaceFetcher {
     func getWorkspaceOrNil() -> Workspace?
-    func fetchFromServer(completion: @escaping () -> ())
+    func initialize(completion: @escaping () -> ())
 }
 
-class CachedWorkspaceFetcher: WorkspaceFetcher {
+class PollingWorkspaceFetcher: WorkspaceFetcher, AppNotificationListener {
 
-    private var workspace: Workspace?
-    private var httpWorkspaceFetcher: HttpWorkspaceFetcher
+    private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingWorkspaceFetcher.Lock")
 
-    init(httpWorkspaceFetcher: HttpWorkspaceFetcher) {
+    private let httpWorkspaceFetcher: HttpWorkspaceFetcher
+    private let pollingScheduler: Scheduler
+    private let pollingInterval: TimeInterval
+
+    private var pollingJob: ScheduledJob? = nil
+    private var workspace: Workspace? = nil
+
+    init(
+        httpWorkspaceFetcher: HttpWorkspaceFetcher,
+        pollingScheduler: Scheduler,
+        pollingInterval: TimeInterval
+    ) {
         self.httpWorkspaceFetcher = httpWorkspaceFetcher
+        self.pollingScheduler = pollingScheduler
+        self.pollingInterval = pollingInterval
     }
 
     func getWorkspaceOrNil() -> Workspace? {
         workspace
     }
 
-    func fetchFromServer(completion: @escaping () -> ()) {
-        httpWorkspaceFetcher.fetch { workspace in
-            if let workspace = workspace {
-                Log.info("Hackle workspace fetched")
-                self.workspace = workspace
-            }
+    func initialize(completion: @escaping () -> ()) {
+        httpWorkspaceFetcher.fetch { [weak self] workspace in
+            self?.workspace = workspace
             completion()
+        }
+    }
+
+    private func poll() {
+        httpWorkspaceFetcher.fetch { [weak self] workspace in
+            self?.workspace = workspace
+        }
+    }
+
+    func start() {
+        if pollingInterval == HackleConfig.NO_POLLING {
+            return
+        }
+        lock.write { [weak self] in
+            if self?.pollingJob != nil {
+                return
+            }
+            self?.pollingJob = self?.pollingScheduler.schedulePeriodically(
+                delay: pollingInterval,
+                period: pollingInterval,
+                task: poll
+            )
+            Log.info("PollingWorkspaceFetcher started polling. Poll every \(pollingInterval)s")
+        }
+    }
+
+    func stop() {
+        if pollingInterval == HackleConfig.NO_POLLING {
+            return
+        }
+        lock.write { [weak self] in
+            self?.pollingJob?.cancel()
+            self?.pollingJob = nil
+            Log.info("PollingWorkspaceFetcher stopped polling.")
+        }
+    }
+
+    func onNotified(notification: AppNotification, timestamp: Date) {
+        switch notification {
+        case .didBecomeActive:
+            start()
+        case .didEnterBackground:
+            stop()
         }
     }
 }
@@ -53,6 +105,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         httpClient.execute(request: request) { response in
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, isSuccess: response.isSuccessful)
             let workspace = self.getWorkspaceOrNil(response: response)
+            Log.debug("Hackle workspace fetched")
             completion(workspace)
         }
     }
@@ -75,7 +128,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
 
         guard let responseBody = response.data else {
-            Log.error("Failed to fetch Workspace. Responde body is empty")
+            Log.error("Failed to fetch Workspace. Response body is empty")
             return nil
         }
 
