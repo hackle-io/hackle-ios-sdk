@@ -14,6 +14,7 @@ import Foundation
     private let userManager: UserManager
     private let sessionManager: SessionManager
     private let eventProcessor: DefaultUserEventProcessor
+    private let notificationObserver: AppNotificationObserver
     internal let userExplorer: HackleUserExplorer
 
     @objc public var deviceId: String {
@@ -42,6 +43,7 @@ import Foundation
         userManager: UserManager,
         sessionManager: SessionManager,
         eventProcessor: DefaultUserEventProcessor,
+        notificationObserver: AppNotificationObserver,
         userExplorer: HackleUserExplorer
     ) {
         self.internalApp = internalApp
@@ -51,6 +53,7 @@ import Foundation
         self.userManager = userManager
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
+        self.notificationObserver = notificationObserver
         self.userExplorer = userExplorer
         super.init()
     }
@@ -253,6 +256,7 @@ import Foundation
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(user: user, app: internalApp, userManager: userManager, userResolver: hackleUserResolver)
     }
+
 }
 
 extension HackleApp {
@@ -272,6 +276,7 @@ extension HackleApp {
 
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
+        let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let device = Device.create(keyValueRepository: globalKeyValueRepository)
 
@@ -281,7 +286,12 @@ extension HackleApp {
             sdkBaseUrl: config.sdkUrl,
             httpClient: httpClient
         )
-        let workspaceFetcher = CachedWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher)
+
+        let workspaceFetcher = PollingWorkspaceFetcher(
+            httpWorkspaceFetcher: httpWorkspaceFetcher,
+            pollingScheduler: scheduler,
+            pollingInterval: config.pollingInterval
+        )
 
         let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
@@ -331,7 +341,8 @@ extension HackleApp {
         )
         let hackleUserResolver = DefaultHackleUserResolver(device: device)
 
-        let appNotificationObserver = DefaultAppNotificationObserver.instance
+        let appNotificationObserver = DefaultAppNotificationObserver(eventQueue: eventQueue)
+        appNotificationObserver.addListener(listener: workspaceFetcher)
         appNotificationObserver.addListener(listener: sessionManager)
         appNotificationObserver.addListener(listener: userManager)
         appNotificationObserver.addListener(listener: eventProcessor)
@@ -361,6 +372,7 @@ extension HackleApp {
             userManager: userManager,
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
+            notificationObserver: appNotificationObserver,
             userExplorer: userExplorer
         )
     }

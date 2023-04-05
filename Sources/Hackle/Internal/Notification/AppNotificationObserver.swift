@@ -11,11 +11,11 @@ protocol AppNotificationObserver {
 
 class DefaultAppNotificationObserver: AppNotificationObserver {
 
-    static let instance = DefaultAppNotificationObserver()
-
     private var listeners = [AppNotificationListener]()
+    private let eventQueue: DispatchQueue
 
-    init() {
+    init(eventQueue: DispatchQueue) {
+        self.eventQueue = eventQueue
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(enterBackground),
@@ -43,8 +43,10 @@ class DefaultAppNotificationObserver: AppNotificationObserver {
     }
 
     private func broadcast(notification: AppNotification, timestamp: Date) {
-        for listener in listeners {
-            listener.onNotified(notification: notification, timestamp: timestamp)
+        eventQueue.async {
+            for listener in self.listeners {
+                listener.onNotified(notification: notification, timestamp: timestamp)
+            }
         }
     }
 }
