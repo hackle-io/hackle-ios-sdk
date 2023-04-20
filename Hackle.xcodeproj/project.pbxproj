@@ -213,8 +213,6 @@
 		EE29DA9229CD82C200B1FEAA /* DefaultBucketerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2129CD82C200B1FEAA /* DefaultBucketerSpec.swift */; };
 		EE29DA9329CD82C200B1FEAA /* Murmur3HasherSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2229CD82C200B1FEAA /* Murmur3HasherSpec.swift */; };
 		EE29DA9429CD82C200B1FEAA /* MockSlotNumberCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2329CD82C200B1FEAA /* MockSlotNumberCalculator.swift */; };
-		EE29DA9529CD82C200B1FEAA /* EvaluationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2429CD82C200B1FEAA /* EvaluationSpecs.swift */; };
-		EE29DA9629CD82C200B1FEAA /* RemoteConfigEvaluationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2529CD82C200B1FEAA /* RemoteConfigEvaluationSpecs.swift */; };
 		EE29DA9729CD82C200B1FEAA /* FlowEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2729CD82C200B1FEAA /* FlowEvaluatorSpecs.swift */; };
 		EE29DA9829CD82C200B1FEAA /* DefaultEvaluationFlowSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2829CD82C200B1FEAA /* DefaultEvaluationFlowSpecs.swift */; };
 		EE29DA9929CD82C200B1FEAA /* DefaultEvaluationFlowFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA2929CD82C200B1FEAA /* DefaultEvaluationFlowFactorySpecs.swift */; };
@@ -517,8 +515,6 @@
 		EE29DA2129CD82C200B1FEAA /* DefaultBucketerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultBucketerSpec.swift; sourceTree = "<group>"; };
 		EE29DA2229CD82C200B1FEAA /* Murmur3HasherSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Murmur3HasherSpec.swift; sourceTree = "<group>"; };
 		EE29DA2329CD82C200B1FEAA /* MockSlotNumberCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSlotNumberCalculator.swift; sourceTree = "<group>"; };
-		EE29DA2429CD82C200B1FEAA /* EvaluationSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvaluationSpecs.swift; sourceTree = "<group>"; };
-		EE29DA2529CD82C200B1FEAA /* RemoteConfigEvaluationSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteConfigEvaluationSpecs.swift; sourceTree = "<group>"; };
 		EE29DA2729CD82C200B1FEAA /* FlowEvaluatorSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EE29DA2829CD82C200B1FEAA /* DefaultEvaluationFlowSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultEvaluationFlowSpecs.swift; sourceTree = "<group>"; };
 		EE29DA2929CD82C200B1FEAA /* DefaultEvaluationFlowFactorySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultEvaluationFlowFactorySpecs.swift; sourceTree = "<group>"; };
@@ -1246,8 +1242,6 @@
 				EE29DA1829CD82C200B1FEAA /* Container */,
 				EE29DA1B29CD82C200B1FEAA /* Action */,
 				EE29DA1E29CD82C200B1FEAA /* Bucket */,
-				EE29DA2429CD82C200B1FEAA /* EvaluationSpecs.swift */,
-				EE29DA2529CD82C200B1FEAA /* RemoteConfigEvaluationSpecs.swift */,
 				EE29DA2629CD82C200B1FEAA /* Flow */,
 			);
 			path = Evaluation;
@@ -1804,7 +1798,6 @@
 			buildActionMask = 0;
 			files = (
 				EE29DA7F29CD82C200B1FEAA /* MockConditionMatcher.swift in Sources */,
-				EE29DA9629CD82C200B1FEAA /* RemoteConfigEvaluationSpecs.swift in Sources */,
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
 				EE29DA6729CD82C200B1FEAA /* DefaultHackleUserResolverSpecs.swift in Sources */,
 				EE789E2F29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift in Sources */,
@@ -1863,7 +1856,6 @@
 				EE789E3929F0F8420088D8A6 /* ExperimentEvaluatorSpecs.swift in Sources */,
 				EE29DA5929CD82C200B1FEAA /* DelegatingCounterSpecs.swift in Sources */,
 				EE789E4629F106BE0088D8A6 /* ExperimentConditionMatcherSpecs.swift in Sources */,
-				EE29DA9529CD82C200B1FEAA /* EvaluationSpecs.swift in Sources */,
 				EE29DAA629CD82C200B1FEAA /* HackleConfigSpec.swift in Sources */,
 				EE29DAA229CD82C200B1FEAA /* SessionEventTrackerSpecs.swift in Sources */,
 				EE789E2D29F01C3A0088D8A6 /* HackleCoreSpecs.swift in Sources */,
