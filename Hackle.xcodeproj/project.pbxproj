@@ -106,7 +106,6 @@
 		EE29D99C29CD825500B1FEAA /* Buckter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92029CD825300B1FEAA /* Buckter.swift */; };
 		EE29D99D29CD825500B1FEAA /* Hasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92129CD825300B1FEAA /* Hasher.swift */; };
 		EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92229CD825300B1FEAA /* Murmur3.swift */; };
-		EE29D99F29CD825500B1FEAA /* Evaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92329CD825300B1FEAA /* Evaluation.swift */; };
 		EE29D9A029CD825500B1FEAA /* FlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92529CD825300B1FEAA /* FlowEvaluator.swift */; };
 		EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92629CD825300B1FEAA /* EvaluationFlow.swift */; };
 		EE29D9A229CD825500B1FEAA /* EvaluationFlowFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D92729CD825300B1FEAA /* EvaluationFlowFactory.swift */; };
@@ -411,7 +410,6 @@
 		EE29D92029CD825300B1FEAA /* Buckter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Buckter.swift; sourceTree = "<group>"; };
 		EE29D92129CD825300B1FEAA /* Hasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hasher.swift; sourceTree = "<group>"; };
 		EE29D92229CD825300B1FEAA /* Murmur3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Murmur3.swift; sourceTree = "<group>"; };
-		EE29D92329CD825300B1FEAA /* Evaluation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Evaluation.swift; sourceTree = "<group>"; };
 		EE29D92529CD825300B1FEAA /* FlowEvaluator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowEvaluator.swift; sourceTree = "<group>"; };
 		EE29D92629CD825300B1FEAA /* EvaluationFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvaluationFlow.swift; sourceTree = "<group>"; };
 		EE29D92729CD825300B1FEAA /* EvaluationFlowFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvaluationFlowFactory.swift; sourceTree = "<group>"; };
@@ -912,7 +910,6 @@
 				EE29D91D29CD825300B1FEAA /* Action */,
 				EE29D91F29CD825300B1FEAA /* Bucket */,
 				EE29D92429CD825300B1FEAA /* Flow */,
-				EE29D92329CD825300B1FEAA /* Evaluation.swift */,
 			);
 			path = Evaluation;
 			sourceTree = "<group>";
@@ -1719,7 +1716,6 @@
 				EE86377729ED312F000268DC /* ExperimentConditionMatcher.swift in Sources */,
 				EE29D95029CD825400B1FEAA /* DelegatingMetricRegistry.swift in Sources */,
 				EE29D99629CD825400B1FEAA /* ExperimentTargetDeterminer.swift in Sources */,
-				EE29D99F29CD825500B1FEAA /* Evaluation.swift in Sources */,
 				EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */,
 				EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */,
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,
