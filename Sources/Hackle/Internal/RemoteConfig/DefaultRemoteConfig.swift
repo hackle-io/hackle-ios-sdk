@@ -11,11 +11,11 @@ import Foundation
 class DefaultRemoteConfig: HackleRemoteConfig {
 
     private let user: User?
-    private let app: HackleInternalApp
+    private let app: HackleCore
     private let userManager: UserManager
     private let userResolver: HackleUserResolver
 
-    init(user: User?, app: HackleInternalApp, userManager: UserManager, userResolver: HackleUserResolver) {
+    init(user: User?, app: HackleCore, userManager: UserManager, userResolver: HackleUserResolver) {
         self.user = user
         self.app = app
         self.userManager = userManager

@@ -7,7 +7,7 @@ class MockExperimentTargetRuleDeterminer: Mock, ExperimentTargetRuleDeterminer {
 
     lazy var determineTargetRuleOrNilMock = MockFunction(self, determineTargetRuleOrNil)
 
-    func determineTargetRuleOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) -> TargetRule? {
-        call(determineTargetRuleOrNilMock, args: (workspace, experiment, user))
+    func determineTargetRuleOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> TargetRule? {
+        call(determineTargetRuleOrNilMock, args: (request, context))
     }
 }

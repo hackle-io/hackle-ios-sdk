@@ -20,25 +20,22 @@ enum UserEventType: Int {
 
 enum UserEvents {
 
-    static func exposure(experiment: Experiment, user: HackleUser, evaluation: Evaluation) -> UserEvent {
+    static func exposure(
+        user: HackleUser,
+        evaluation: ExperimentEvaluation,
+        properties: [String: Any],
+        timestamp: Date
+    ) -> UserEvent {
         Exposure(
             insertId: UUID().uuidString.lowercased(),
-            timestamp: Date(),
+            timestamp: timestamp,
             user: user,
-            experiment: experiment,
+            experiment: evaluation.experiment,
             variationId: evaluation.variationId,
             variationKey: evaluation.variationKey,
             decisionReason: evaluation.reason,
-            properties: exposureProperties(evaluation: evaluation)
+            properties: properties
         )
-    }
-
-    private static func exposureProperties(evaluation: Evaluation) -> [String: Any] {
-        guard let config = evaluation.config else {
-            return [:]
-        }
-
-        return ["$parameterConfigurationId": config.id]
     }
 
     static func track(eventType: EventType, event: Event, timestamp: Date, user: HackleUser) -> UserEvent {
@@ -51,12 +48,17 @@ enum UserEvents {
         )
     }
 
-    static func remoteConfig(parameter: RemoteConfigParameter, user: HackleUser, evaluation: RemoteConfigEvaluation) -> UserEvent {
+    static func remoteConfig(
+        user: HackleUser,
+        evaluation: RemoteConfigEvaluation,
+        properties: [String: Any],
+        timestamp: Date
+    ) -> UserEvent {
         RemoteConfig(
             insertId: UUID().uuidString.lowercased(),
-            timestamp: Date(),
+            timestamp: timestamp,
             user: user,
-            parameter: parameter,
+            parameter: evaluation.parameter,
             valueId: evaluation.valueId,
             decisionReason: evaluation.reason,
             properties: evaluation.properties

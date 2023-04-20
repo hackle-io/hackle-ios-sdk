@@ -3,21 +3,31 @@ import Quick
 import Nimble
 @testable import Hackle
 
-class DefaultHackleInternalAppSpecs: QuickSpec {
+class DefaultHackleCoreSpecs: QuickSpec {
     override func spec() {
 
         let user = HackleUser.of(userId: "test")
 
-        var evaluator: MockEvaluator!
+        var experimentEvaluator: MockEvaluator!
+        var remoteConfigEvaluator: MockEvaluator!
         var workspaceFetcher: MockWorkspaceFetcher!
+        var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!
-        var sut: DefaultHackleInternalApp!
+        var sut: DefaultHackleCore!
 
         beforeEach {
-            evaluator = MockEvaluator()
+            experimentEvaluator = MockEvaluator()
+            remoteConfigEvaluator = MockEvaluator()
             workspaceFetcher = MockWorkspaceFetcher()
+            eventFactory = MockUserEventFactory()
             eventProcessor = MockUserEventProcessor()
-            sut = DefaultHackleInternalApp(evaluator: evaluator, workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+            sut = DefaultHackleCore(
+                experimentEvaluator: experimentEvaluator,
+                remoteConfigEvaluator: remoteConfigEvaluator,
+                workspaceFetcher: workspaceFetcher,
+                eventFactory: eventFactory,
+                eventProcessor: eventProcessor
+            )
         }
 
         describe("experiment") {
@@ -56,14 +66,14 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
             context("experimentKey 에 해당하는 Experiment 가 있는 경우") {
                 it("평가한 결과로 결정한다") {
                     // given
-                    let experiment = MockExperiment()
                     let workspace = MockWorkspace()
-                    every(workspace.getExperimentOrNilMock).returns(experiment)
+                    every(workspace.getExperimentOrNilMock).returns(experiment())
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
                     let config = ParameterConfigurationEntity(id: 32, parameters: [:])
-                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: config))
+                    let evaluation = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, targetEvaluations: [], experiment: experiment(), variationId: 320, variationKey: "B", config: config)
+                    experimentEvaluator.returns = evaluation
 
                     // when
                     let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
@@ -76,13 +86,15 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                 it("평과 결과로 노출 이벤트를 처리한다") {
                     // given
-                    let experiment = MockExperiment()
                     let workspace = MockWorkspace()
-                    every(workspace.getExperimentOrNilMock).returns(experiment)
+                    every(workspace.getExperimentOrNilMock).returns(experiment())
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil))
+                    let evaluation = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, targetEvaluations: [], experiment: experiment(), variationId: 320, variationKey: "B", config: nil)
+                    experimentEvaluator.returns = evaluation
+
+                    eventFactory.events = [MockUserEvent()]
 
                     // when
                     try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
@@ -114,16 +126,16 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                 let config42 = ParameterConfigurationEntity(id: 42, parameters: [:])
                 let config43 = ParameterConfigurationEntity(id: 43, parameters: [:])
                 let evaluations = [
-                    Evaluation(variationId: 10, variationKey: "A", reason: DecisionReason.EXPERIMENT_PAUSED, config: config42),
-                    Evaluation(variationId: 30, variationKey: "B", reason: DecisionReason.EXPERIMENT_COMPLETED, config: config43),
-                    Evaluation(variationId: 40, variationKey: "C", reason: DecisionReason.OVERRIDDEN, config: nil),
-                    Evaluation(variationId: 70, variationKey: "A", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil),
+                    experimentEvaluation(reason: DecisionReason.EXPERIMENT_PAUSED, variationId: 10, variationKey: "A", config: config42),
+                    experimentEvaluation(reason: DecisionReason.EXPERIMENT_COMPLETED, variationId: 30, variationKey: "B", config: config43),
+                    experimentEvaluation(reason: DecisionReason.OVERRIDDEN, variationId: 40, variationKey: "C", config: nil),
+                    experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, variationId: 70, variationKey: "A", config: nil)
                 ]
                 let evaluator = EvaluatorStub(evaluations: evaluations)
                 let workspace = MockWorkspace(experiments: [MockExperiment(key: 1), MockExperiment(key: 3), MockExperiment(key: 4), MockExperiment(key: 7)])
                 every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                let sut = DefaultHackleInternalApp(evaluator: evaluator, workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+                let sut = DefaultHackleCore(experimentEvaluator: evaluator, remoteConfigEvaluator: remoteConfigEvaluator, workspaceFetcher: workspaceFetcher, eventFactory: eventFactory, eventProcessor: eventProcessor)
 
                 // when
                 let actual = try sut.experiments(user: user)
@@ -159,20 +171,16 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
         class EvaluatorStub: Evaluator {
 
-            private let experimentEvaluations: [Evaluation]
+            private let experimentEvaluations: [ExperimentEvaluation]
             private var experimentEvaluateCount = -1
 
-            init(evaluations: [Evaluation]) {
+            init(evaluations: [ExperimentEvaluation]) {
                 self.experimentEvaluations = evaluations
             }
 
-            func evaluateExperiment(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Evaluation {
+            func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
                 experimentEvaluateCount = experimentEvaluateCount + 1
-                return experimentEvaluations[experimentEvaluateCount]
-            }
-
-            func evaluateRemoteConfig(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigEvaluation {
-                fatalError("evaluateRemoteConfig(workspace:parameter:user:defaultValue:) has not been implemented")
+                return experimentEvaluations[experimentEvaluateCount] as! Evaluation
             }
         }
 
@@ -220,7 +228,8 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TARGET_RULE_MATCH, config: nil))
+                    let evaluation = experimentEvaluation(reason: DecisionReason.TARGET_RULE_MATCH, variationId: 320, variationKey: "B")
+                    experimentEvaluator.returns = evaluation
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -240,7 +249,8 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: nil))
+                    let evaluation = experimentEvaluation(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A")
+                    experimentEvaluator.returns = evaluation
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -260,7 +270,9 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
                     let config = ParameterConfigurationEntity(id: 32, parameters: [:])
-                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: config))
+
+                    let evaluation = experimentEvaluation(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A", config: config)
+                    experimentEvaluator.returns = evaluation
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -278,7 +290,9 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
 
                     every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                    every(evaluator.evaluateExperimentMock).returns(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, config: nil))
+                    let evaluation = experimentEvaluation(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A")
+                    experimentEvaluator.returns = evaluation
+                    eventFactory.events = [MockUserEvent()]
 
                     // when
                     try sut.featureFlag(featureKey: 42, user: user)
@@ -290,8 +304,8 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                 }
             }
         }
-        
-        describe("featureFlags") { 
+
+        describe("featureFlags") {
             it("Workspace 가 없으면 emptyList") {
                 // given
                 every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
@@ -308,16 +322,16 @@ class DefaultHackleInternalAppSpecs: QuickSpec {
                 let config42 = ParameterConfigurationEntity(id: 42, parameters: [:])
                 let config43 = ParameterConfigurationEntity(id: 43, parameters: [:])
                 let evaluations = [
-                    Evaluation(variationId: 10, variationKey: "A", reason: DecisionReason.FEATURE_FLAG_INACTIVE, config: config42),
-                    Evaluation(variationId: 30, variationKey: "B", reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, config: config43),
-                    Evaluation(variationId: 40, variationKey: "B", reason: DecisionReason.TARGET_RULE_MATCH, config: nil),
-                    Evaluation(variationId: 70, variationKey: "A", reason: DecisionReason.DEFAULT_RULE, config: nil),
+                    experimentEvaluation(reason: DecisionReason.FEATURE_FLAG_INACTIVE, variationId: 10, variationKey: "A", config: config42),
+                    experimentEvaluation(reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, variationId: 30, variationKey: "B", config: config43),
+                    experimentEvaluation(reason: DecisionReason.TARGET_RULE_MATCH, variationId: 40, variationKey: "B", config: nil),
+                    experimentEvaluation(reason: DecisionReason.DEFAULT_RULE, variationId: 70, variationKey: "A", config: nil)
                 ]
                 let evaluator = EvaluatorStub(evaluations: evaluations)
                 let workspace = MockWorkspace(featureFlags: [MockExperiment(key: 1), MockExperiment(key: 3), MockExperiment(key: 4), MockExperiment(key: 7)])
                 every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
 
-                let sut = DefaultHackleInternalApp(evaluator: evaluator, workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor)
+                let sut = DefaultHackleCore(experimentEvaluator: evaluator, remoteConfigEvaluator: remoteConfigEvaluator, workspaceFetcher: workspaceFetcher, eventFactory: eventFactory, eventProcessor: eventProcessor)
 
                 // when
                 let actual = try sut.featureFlags(user: user)

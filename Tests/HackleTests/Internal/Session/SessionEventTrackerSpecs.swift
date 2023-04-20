@@ -10,7 +10,7 @@ class SessionEventTrackerSpecs: QuickSpec {
         it("onSessionStarted") {
             let userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
             let internalApp = HackleInternalAppStub()
-            let sut = SessionEventTracker(hackleUserResolver: userResolver, internalApp: internalApp)
+            let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
 
             let session = Session(id: "42.ffffffff")
             let user = User.builder().id("user_id").build()
@@ -25,7 +25,7 @@ class SessionEventTrackerSpecs: QuickSpec {
         it("onSessionEnded") {
             let userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
             let internalApp = HackleInternalAppStub()
-            let sut = SessionEventTracker(hackleUserResolver: userResolver, internalApp: internalApp)
+            let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
 
             let session = Session(id: "42.ffffffff")
             let user = User.builder().id("user_id").build()
@@ -50,7 +50,7 @@ class SessionEventTrackerSpecs: QuickSpec {
     }
 }
 
-fileprivate class HackleInternalAppStub: HackleInternalApp {
+fileprivate class HackleInternalAppStub: HackleCore {
 
     var tracked = [(Event, HackleUser, Date)]()
 

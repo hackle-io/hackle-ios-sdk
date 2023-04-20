@@ -9,6 +9,17 @@ class FlowEvaluatorSpecs: QuickSpec {
 
         let user = HackleUser.of(userId: "test_id")
 
+        var nextFlow: MockEvaluationFlow!
+        var evaluation: ExperimentEvaluation!
+        var context: EvaluatorContext!
+
+        beforeEach {
+            evaluation = experimentEvaluation()
+            nextFlow = MockEvaluationFlow()
+            every(nextFlow.evaluateMock).returns(evaluation)
+            context = Evaluators.context()
+        }
+
         describe("OverrideEvaluator") {
 
             var overrideResolver: MockOverrideResolver!
@@ -21,41 +32,45 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("AbTest 인 경우 override된 사용자인 경우 overriddenVariation, OVERRIDDEN 으로 평가한다") {
                 // given
-                let variation = MockVariation(id: 320, key: "B")
-                let experiment = MockExperiment(type: .abTest)
+                let experiment = experiment(type: .abTest)
+                let variation = experiment.variations.first
                 every(overrideResolver.resolveOrNilMock).returns(variation)
 
+                let request = experimentRequest(experiment: experiment)
+
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "C", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.OVERRIDDEN, config: nil)))
+                expect(actual.reason) == DecisionReason.OVERRIDDEN
+                expect(actual.variationId) == variation?.id
             }
 
             it("FeatureFlag 인 경우override된 사용자인 경우 overriddenVariation, INDIVIDUAL_TARGET_MATCH 으로 평가한다") {
                 // given
-                let variation = MockVariation(id: 320, key: "B")
-                let experiment = MockExperiment(type: .featureFlag)
+                let experiment = experiment(type: .featureFlag)
+                let variation = experiment.variations.first
                 every(overrideResolver.resolveOrNilMock).returns(variation)
 
+                let request = experimentRequest(experiment: experiment)
+
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "C", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, config: nil)))
+                expect(actual.reason) == DecisionReason.INDIVIDUAL_TARGET_MATCH
+                expect(actual.variationId) == variation?.id
             }
 
             it("override된 사용자가 아닌경우 다음 Flow로 평가한다") {
                 // given
-                let experiment = MockExperiment(type: .abTest)
+                let experiment = experiment(type: .abTest)
                 every(overrideResolver.resolveOrNilMock).returns(nil)
 
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "C", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
                 expect(actual).to(equal(evaluation))
@@ -65,32 +80,31 @@ class FlowEvaluatorSpecs: QuickSpec {
         describe("DraftExperimentEvaluator") {
             it("DRAFT상태면 기본그룹으로 평가한다") {
                 // given
-                let experiment = MockExperiment(status: .draft)
-                let variation = MockVariation(id: 42, key: "J", isDropped: false)
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(type: .abTest, status: .draft)
+                let variation = experiment.variations.first!
+
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try DraftExperimentEvaluator().evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "J", nextFlow: MockEvaluationFlow())
+                let actual = try DraftExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "J", reason: DecisionReason.EXPERIMENT_DRAFT, config: nil)))
+                expect(actual.reason) == DecisionReason.EXPERIMENT_DRAFT
+                expect(actual.variationId) == variation.id
             }
 
             it("DRAFT상태가 아니면 다름 flow로 평가한다") {
                 // given
-                let experiment = MockExperiment(status: .running)
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let experiment = experiment(type: .abTest, status: .running)
+                let variation = experiment.variations.first!
+
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try DraftExperimentEvaluator().evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "D", nextFlow: nextFlow)
+                let actual = try DraftExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
                 expect(actual).to(equal(evaluation))
-                verify(exactly: 1) {
-                    nextFlow.evaluateMock
-                }
             }
         }
 
@@ -98,28 +112,44 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("AB 테스트가 PAUSED 상태면 기본그룹, EXPERIMENT_PAUSED으로 평가한다") {
                 // given
-                let experiment = MockExperiment(type: .abTest, status: .paused)
-                let variation = MockVariation(id: 42, key: "B", isDropped: false)
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(type: .abTest, status: .paused)
+                let variation = experiment.variations.first!
+
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try PausedExperimentEvaluator().evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow())
+                let actual = try PausedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "B", reason: DecisionReason.EXPERIMENT_PAUSED, config: nil)))
+                expect(actual.reason) == DecisionReason.EXPERIMENT_PAUSED
+                expect(actual.variationId) == variation.id
             }
 
             it("기능 플래그가 PAUSED 상태면 기본그룹, FEATURE_FLAG_INACTIVE 로 평가한다") {
                 // given
-                let experiment = MockExperiment(type: .featureFlag, status: .paused)
-                let variation = MockVariation(id: 42, key: "A", isDropped: false)
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(type: .featureFlag, status: .paused)
+                let variation = experiment.variations.first!
+
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try PausedExperimentEvaluator().evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: MockEvaluationFlow())
+                let actual = try PausedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "A", reason: DecisionReason.FEATURE_FLAG_INACTIVE, config: nil)))
+                expect(actual.reason) == DecisionReason.FEATURE_FLAG_INACTIVE
+                expect(actual.variationKey) == "A"
+            }
+
+            it("PAUSED 상태가 아니면 다음 플로우 실행한다") {
+                // given
+                let experiment = experiment(type: .abTest, status: .running)
+                let request = experimentRequest(experiment: experiment)
+
+                // when
+                let actual = try PausedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+
+                // then
+                expect(actual).to(equal(evaluation))
             }
         }
 
@@ -127,28 +157,39 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("COMPLETED 상태면 위너 그룹 평가한다") {
                 // given
-                let variation = MockVariation(id: 320, key: "E")
-                let experiment = MockExperiment(status: .completed, winnerVariation: variation)
+                let experiment = experiment(status: .completed, winnerVariationId: 2)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try CompletedExperimentEvaluator().evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow())
+                let actual = try CompletedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 320, variationKey: "E", reason: DecisionReason.EXPERIMENT_COMPLETED, config: nil)))
+                expect(actual.reason) == DecisionReason.EXPERIMENT_COMPLETED
+                expect(actual.variationId) == 2
+            }
+
+            it("COMPLETED 상태지만 winner variation 이 없으면 에러") {
+                // given
+                let experiment = experiment(id: 42, status: .completed)
+                let request = experimentRequest(experiment: experiment)
+
+                // when
+                let actual = expect(try CompletedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow))
+
+                // then
+                actual.to(throwError(HackleError.error("winner variation [42]")))
             }
 
             it("COMPLETED 상태가 아니면 다음 플로우를 실행한다") {
                 // given
-                let experiment = MockExperiment(status: .running)
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let experiment = experiment(status: .running)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try CompletedExperimentEvaluator().evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "B", nextFlow: nextFlow)
+                let actual = try CompletedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
             }
         }
 
@@ -162,24 +203,23 @@ class FlowEvaluatorSpecs: QuickSpec {
             }
 
             it("abTest 타입이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .featureFlag), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .featureFlag)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be abTest [42]")))
             }
 
             it("사용자가 실험 참여 대상이면 다음 플로우를 실행한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .abTest, status: .running)
+                let experiment = experiment(id: 42, type: .abTest, status: .running)
                 every(experimentTargetDeterminer.isUserInExperimentTargetMock).returns(true)
-
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
                 verify(exactly: 1) {
                     nextFlow.evaluateMock
                 }
@@ -187,16 +227,16 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("사용자가 실험 참여 대상이 아니면 기본그룹으로 평가한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .abTest, status: .running)
-                let variation = MockVariation(id: 42, key: "E")
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(id: 42, type: .abTest, status: .running)
                 every(experimentTargetDeterminer.isUserInExperimentTargetMock).returns(false)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "E", reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET, config: nil)))
+                expect(actual.reason) == DecisionReason.NOT_IN_EXPERIMENT_TARGET
+                expect(actual.variationKey) == "A"
             }
         }
 
@@ -211,58 +251,61 @@ class FlowEvaluatorSpecs: QuickSpec {
             }
 
             it("실행중이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, status: .draft), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .abTest, status: .draft)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("abTest 타입이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .featureFlag), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .featureFlag, status: .running)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be abTest [42]")))
             }
 
             it("기본룰에 해당하는 Variation이 없으면 기본그룹으로 평가한다") {
                 // given
-                let experiment = MockExperiment(type: .abTest, status: .running)
-                let variation = MockVariation(id: 42, key: "G")
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
-
+                let experiment = experiment(type: .abTest, status: .running)
+                let request = experimentRequest(experiment: experiment)
                 every(actionResolver.resolveOrNilMock).returns(nil)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "G", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "G", reason: DecisionReason.TRAFFIC_NOT_ALLOCATED, config: nil)))
+                expect(actual.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
+                expect(actual.variationKey) == "A"
             }
 
             it("할당된 Variation이 드랍 되었으면 기본그룹으로 평간한다") {
-                // given
-                let experiment = MockExperiment(type: .abTest)
-                let variation = MockVariation(id: 42, key: "G")
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
-
-                let resolvedVariation = MockVariation(id: 320, key: "B", isDropped: true)
-                every(actionResolver.resolveOrNilMock).returns(resolvedVariation)
+                let experiment = experiment(type: .abTest, status: .running, variations: [
+                    VariationEntity(id: 1, key: "A", isDropped: false, parameterConfigurationId: nil),
+                    VariationEntity(id: 2, key: "B", isDropped: true, parameterConfigurationId: nil)
+                ])
+                let request = experimentRequest(experiment: experiment)
+                every(actionResolver.resolveOrNilMock).returns(experiment.getVariationOrNil(variationKey: "B"))
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "G", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "G", reason: DecisionReason.VARIATION_DROPPED, config: nil)))
+                expect(actual.reason) == DecisionReason.VARIATION_DROPPED
+                expect(actual.variationKey) == "A"
             }
 
             it("할당된 Variation 으로 평가한다") {
                 // given
-                let experiment = MockExperiment(type: .abTest, status: .running)
-
-                let variation = MockVariation(id: 320, key: "B")
-                every(actionResolver.resolveOrNilMock).returns(variation)
+                let experiment = experiment(type: .abTest, status: .running)
+                every(actionResolver.resolveOrNilMock).returns(experiment.variations.first)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "G", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)))
+                expect(actual.reason) == DecisionReason.TRAFFIC_ALLOCATED
+                expect(actual.variationKey) == "A"
             }
         }
 
@@ -279,56 +322,57 @@ class FlowEvaluatorSpecs: QuickSpec {
             }
 
             it("실행중이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .featureFlag, status: .draft), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .featureFlag, status: .draft)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("featureFlag 타입이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .abTest, status: .running), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .abTest, status: .running)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
             it("identifierType에 해당하는 식별자가 없으면 다음 플로우를 실행한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, identifierType: "customId", status: .running)
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let experiment = experiment(type: .featureFlag, identifierType: "custom", status: .running)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
             }
 
             it("타겟룰에 해당하지 않으면 다음 플로우를 실행한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, status: .running)
+                let experiment = experiment(id: 42, type: .featureFlag, status: .running)
                 every(targetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
-
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
             }
 
             it("타겟룰에 매치했지만 Action에 해당하는 Variation이 결정되지 않으면 예외 발생") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, status: .running)
+                let experiment = experiment(id: 42, type: .featureFlag, status: .running)
 
                 let targetRule = MockTargetRule()
                 every(targetRuleDeterminer.determineTargetRuleOrNilMock).returns(targetRule)
 
                 every(actionResolver.resolveOrNilMock).returns(nil)
 
+                let request = experimentRequest(experiment: experiment)
+
                 // when
-                let actual = expect(try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow()))
+                let actual = expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
 
                 // then
                 actual.to(throwError(HackleError.error("FeatureFlag must decide the Variation [42]")))
@@ -336,19 +380,22 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("일치하는 타겟룰이 있는 경우 해당 룰에 해당하는 Variation 으로 결정한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, status: .running)
+                let experiment = experiment(id: 42, type: .featureFlag, status: .running)
 
                 let targetRule = MockTargetRule()
                 every(targetRuleDeterminer.determineTargetRuleOrNilMock).returns(targetRule)
 
-                let variation = MockVariation(id: 534, key: "E")
+                let variation = experiment.variations.first!
                 every(actionResolver.resolveOrNilMock).returns(variation)
 
+                let request = experimentRequest(experiment: experiment)
+
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "D", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 534, variationKey: "E", reason: DecisionReason.TARGET_RULE_MATCH, config: nil)))
+                expect(actual.reason) == DecisionReason.TARGET_RULE_MATCH
+                expect(actual.variationId) == variation.id
             }
         }
 
@@ -363,49 +410,56 @@ class FlowEvaluatorSpecs: QuickSpec {
             }
 
             it("실행중이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .featureFlag, status: .draft), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .featureFlag, status: .draft)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("featureFlag 타입이 아니면 예외 발생") {
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(id: 42, type: .abTest, status: .running), user: user, defaultVariationKey: "B", nextFlow: MockEvaluationFlow()))
+                let experiment = experiment(id: 42, type: .abTest, status: .running)
+                let request = experimentRequest(experiment: experiment)
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
             it("identifierType에 해당하는 식별자가 없으면 defaultVariation을 리턴한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, identifierType: "customId", status: .running)
-                let variation = MockVariation(id: 42, key: "G")
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(id: 42, type: .featureFlag, identifierType: "custom", status: .running)
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "G", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "G", reason: DecisionReason.DEFAULT_RULE, config: nil)))
+                expect(actual.reason) == DecisionReason.DEFAULT_RULE
+                expect(actual.variationKey) == "A"
             }
 
             it("기본 룰에 해당하는 Variation을 결정하지 못하면 예외 발생") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, status: .running)
+                let experiment = experiment(id: 42, type: .featureFlag, status: .running)
+                let request = experimentRequest(experiment: experiment)
                 every(actionResolver.resolveOrNilMock).returns(nil)
 
-                expect(try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow()))
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("FeatureFlag must decide the Variation [42]")))
             }
 
             it("기본 룰에 해당하는 Variation 으로 평가한다") {
                 // given
-                let experiment = MockExperiment(id: 42, type: .featureFlag, status: .running)
+                let experiment = experiment(id: 42, type: .featureFlag, status: .running)
+                let request = experimentRequest(experiment: experiment)
 
-                let variation = MockVariation(id: 513, key: "H")
+                let variation = experiment.variations.first!
                 every(actionResolver.resolveOrNilMock).returns(variation)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 513, variationKey: "H", reason: DecisionReason.DEFAULT_RULE, config: nil)))
+                expect(actual.reason) == DecisionReason.DEFAULT_RULE
+                expect(actual.variationId) == variation.id
             }
         }
 
@@ -421,97 +475,70 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("Experiment 가 Container 를 가지고 있지 않는 경우 nextFlow 로 평가한다") {
                 // given
-                let experiment = MockExperiment()
-
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let experiment = experiment()
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
             }
 
 
             it("containerId 로 Container 를 찾을 수 없으면 예외 발생") {
                 // given
-                let experiment = MockExperiment(containerId: 42)
+                let experiment = experiment(containerId: 42)
 
                 let workspace = MockWorkspace()
                 every(workspace.getContainerOrNilMock).returns(nil)
 
-                // when
-                let actual = expect(try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow()))
-
-                // then
-                actual.to(throwError(HackleError.error("container[42]")))
-            }
-
-            it("Container 의 Bucket 를 찾을 수 없으면 예외 발생") {
-                // given
-                let experiment = MockExperiment(containerId: 42)
-
-                let workspace = MockWorkspace()
-                let container = MockContainer(bucketId: 320)
-                every(workspace.getContainerOrNilMock).returns(container)
-                every(workspace.getBucketOrNilMock).returns(nil)
+                let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                 // when
-                let actual = expect(try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: MockEvaluationFlow()))
+                let actual = expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
 
                 // then
-                actual.to(throwError(HackleError.error("bucket[320]")))
+                actual.to(throwError(HackleError.error("Container[42]")))
             }
+
 
             it("ContainerGroup 에 속해있으면 nextFlow 로 평가한다") {
                 // given
-                let experiment = MockExperiment(containerId: 42)
+                let experiment = experiment(containerId: 42)
 
                 let workspace = MockWorkspace()
                 let container = MockContainer(bucketId: 320)
                 every(workspace.getContainerOrNilMock).returns(container)
 
-                let bucket = MockBucket()
-                every(workspace.getBucketOrNilMock).returns(bucket)
                 every(containerResolver.isUserInContainerGroupMock).returns(true)
 
-                let evaluation = Evaluation(variationId: 320, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "E", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
             }
 
             it("ContainerGroup 에 속해있지 않으면 NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT") {
                 // given
-                let experiment = MockExperiment(type: .abTest, containerId: 22)
-                let variation = MockVariation(id: 42, key: "B", isDropped: false)
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(type: .abTest, containerId: 22)
 
                 let workspace = MockWorkspace()
                 let container = MockContainer(bucketId: 320)
                 every(workspace.getContainerOrNilMock).returns(container)
-
-                let bucket = MockBucket()
-                every(workspace.getBucketOrNilMock).returns(bucket)
-
                 every(containerResolver.isUserInContainerGroupMock).returns(false)
 
-                let evaluation = Evaluation(variationId: 999, variationKey: "A", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "B", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "B", reason: "NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT", config: nil)))
+                expect(actual.reason) == DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT
+                expect(actual.variationKey) == "A"
             }
         }
 
@@ -525,30 +552,28 @@ class FlowEvaluatorSpecs: QuickSpec {
 
             it("identifierType 에 해당하는 identifier 가 있으면 nextFlow") {
                 // given
-                let experiment = MockExperiment()
-                let evaluation = Evaluation(variationId: 999, variationKey: "B", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
-                let nextFlow = MockEvaluationFlow()
-                every(nextFlow.evaluateMock).returns(evaluation)
+                let experiment = experiment()
+                let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: nextFlow)
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual) == evaluation
             }
 
             it("identifierType 에 해당하는 identifier 가 없으면 IDENTIFIER_NOT_FOUND") {
                 // given
-                let experiment = MockExperiment(identifierType: "custom_id")
-                let variation = MockVariation(id: 42, key: "B", isDropped: false)
-                every(experiment.getVariationByKeyOrNilMock).returns(variation)
+                let experiment = experiment(identifierType: "custom")
+                let request = experimentRequest(experiment: experiment)
 
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: experiment, user: user, defaultVariationKey: "A", nextFlow: MockEvaluationFlow())
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(Evaluation(variationId: 42, variationKey: "B", reason: "IDENTIFIER_NOT_FOUND", config: nil)))
+                expect(actual.reason) == DecisionReason.IDENTIFIER_NOT_FOUND
+                expect(actual.variationKey) == "A"
             }
         }
     }
