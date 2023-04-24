@@ -1,0 +1,84 @@
+{
+  "workspace": {
+    "id": 1,
+    "environment": {
+      "id": 1,
+      "primary": true
+    }
+  },
+  "experiments": [
+    {
+      "id": 2,
+      "key": 2,
+      "status": "EXECUTED",
+      "version": 1,
+      "bucketId": 2,
+      "variations": [
+        {
+          "id": 2,
+          "key": "A",
+          "status": "ACTIVE"
+        }
+      ],
+      "execution": {
+        "id": 2,
+        "status": "RUNNING",
+        "userOverrides": [],
+        "segmentOverrides": [],
+        "targetAudiences": [],
+        "targetRules": [],
+        "defaultRule": {
+          "type": "BUCKET",
+          "bucketId": 2
+        }
+      },
+      "winnerVariationId": null,
+      "identifierType": "$id",
+      "containerId": 1
+    }
+  ],
+  "featureFlags": [],
+  "buckets": [
+    {
+      "id": 1,
+      "seed": 1,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 2500,
+          "variationId": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "seed": 2,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 2
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "segments": [],
+  "containers": [
+    {
+      "id":1,
+      "environmentId": 1,
+      "bucketId": 1,
+      "groups": [
+        {
+          "id": 1,
+          "experiments": [2]
+        }
+      ]
+    }
+  ],
+  "parameterConfigurations": [],
+  "remoteConfigParameters": []
+}

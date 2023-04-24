@@ -21,26 +21,43 @@ class DefaultContainerResolverSpecs: QuickSpec {
             let container = MockContainer()
             let bucket = MockBucket()
             let experiment = MockExperiment(identifierType: "custom_type")
-            let user = HackleUser.of(userId: "test_id")
+
+            let request = experimentRequest(experiment: experiment)
 
             // when
-            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(request: request, container: container)
 
             // then
             expect(actual) == false
+        }
+
+        it("Bucket 없으면 에러") {
+            let workspace = MockWorkspace()
+            every(workspace.getBucketOrNilMock).returns(nil)
+
+            let container = MockContainer(bucketId: 42)
+            let request = experimentRequest(workspace: workspace)
+
+            let actual = expect(try sut.isUserInContainerGroup(request: request, container: container))
+
+            actual.to(throwError(HackleError.error("Bucket[42]")))
         }
 
         it("Slot 에 할당되지 않았으면 false") {
             // given
             let container = MockContainer()
             let bucket = MockBucket()
+            let workspace = MockWorkspace()
+            every(workspace.getBucketOrNilMock).returns(bucket)
             let experiment = MockExperiment()
             let user = HackleUser.of(userId: "test_id")
 
             every(bucketer.bucketingMock).returns(nil)
 
+            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment)
+
             // when
-            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(request: request, container: container)
 
             // then
             expect(actual) == false
@@ -55,17 +72,22 @@ class DefaultContainerResolverSpecs: QuickSpec {
             let slot = MockSlot(variationId: 99)
             every(bucketer.bucketingMock).returns(slot)
 
+            let workspace = MockWorkspace()
+            every(workspace.getBucketOrNilMock).returns(bucket)
+
             let container = MockContainer()
             every(container.getGroupOrNilMock).returns(nil)
 
+            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment)
+
             // when
-            let actual = expect(try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user))
+            let actual = expect(try sut.isUserInContainerGroup(request: request, container: container))
 
             // then
             actual.to(throwError(HackleError.error("ContainerGroup[99]")))
         }
 
-        it("할당받은 ContainerGroup 에 입력받은 Experiment 가 없는 경우 예외 발생") {
+        it("할당받은 ContainerGroup 에 입력받은 Experiment 가 없는 경우 false") {
             // given
             let experiment = MockExperiment(id: 320)
             let user = HackleUser.of(userId: "test_id")
@@ -74,13 +96,17 @@ class DefaultContainerResolverSpecs: QuickSpec {
             let slot = MockSlot(variationId: 99)
             every(bucketer.bucketingMock).returns(slot)
 
+            let workspace = MockWorkspace()
+            every(workspace.getBucketOrNilMock).returns(bucket)
+
             let container = MockContainer()
             let containerGroup = MockContainerGroup(experiments: [321])
             every(container.getGroupOrNilMock).returns(containerGroup)
 
+            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment)
 
             // when
-            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(request: request, container: container)
 
             // then
             expect(actual) == false
@@ -95,13 +121,17 @@ class DefaultContainerResolverSpecs: QuickSpec {
             let slot = MockSlot(variationId: 99)
             every(bucketer.bucketingMock).returns(slot)
 
+            let workspace = MockWorkspace()
+            every(workspace.getBucketOrNilMock).returns(bucket)
+
             let container = MockContainer()
             let containerGroup = MockContainerGroup(experiments: [320])
             every(container.getGroupOrNilMock).returns(containerGroup)
 
+            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment)
 
             // when
-            let actual = try sut.isUserInContainerGroup(container: container, bucket: bucket, experiment: experiment, user: user)
+            let actual = try sut.isUserInContainerGroup(request: request, container: container)
 
             // then
             expect(actual) == true

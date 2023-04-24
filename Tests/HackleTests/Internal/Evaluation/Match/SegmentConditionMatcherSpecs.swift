@@ -23,7 +23,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             )
 
             // when
-            let actual = expect(try sut.matches(condition: condition, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_id")))
+            let actual = expect(try sut.matches(request: experimentRequest(), context: Evaluators.context(), condition: condition))
 
             // then
             actual.to(throwError(HackleError.error("Unsupported TargetKeyType [userProperty]")))
@@ -37,7 +37,7 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             )
 
             // when
-            let actual = expect(try sut.matches(condition: condition, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_id")))
+            let actual = expect(try sut.matches(request: experimentRequest(), context: Evaluators.context(), condition: condition))
 
             // then
             actual.to(throwError(HackleError.error("SegmentKey[int(42)]")))
@@ -53,8 +53,10 @@ class SegmentConditionMatcherSpecs: QuickSpec {
             let workspace = MockWorkspace()
             every(workspace.getSegmentOrNilMock).returns(nil)
 
+            let request = experimentRequest(workspace: workspace)
+
             // when
-            let actual = expect(try sut.matches(condition: condition, workspace: workspace, user: HackleUser.of(userId: "test_id")))
+            let actual = expect(try sut.matches(request: request, context: Evaluators.context(), condition: condition))
 
             // then
             actual.to(throwError(HackleError.error("Segment[seg1]")))
@@ -71,8 +73,10 @@ class SegmentConditionMatcherSpecs: QuickSpec {
 
             every(segmentMatcher.matchesMock).returns(true)
 
+            let request = experimentRequest(workspace: workspace)
+
             // when
-            let actual = try sut.matches(condition: condition, workspace: workspace, user: HackleUser.of(userId: "test_id"))
+            let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
 
             // then
             expect(actual) == true
@@ -89,8 +93,10 @@ class SegmentConditionMatcherSpecs: QuickSpec {
 
             every(segmentMatcher.matchesMock).returns(false)
 
+            let request = experimentRequest(workspace: workspace)
+
             // when
-            let actual = try sut.matches(condition: condition, workspace: workspace, user: HackleUser.of(userId: "test_id"))
+            let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
 
             // then
             expect(actual) == false
@@ -107,8 +113,10 @@ class SegmentConditionMatcherSpecs: QuickSpec {
 
             every(segmentMatcher.matchesMock).returns(false)
 
+            let request = experimentRequest(workspace: workspace)
+
             // when
-            let actual = try sut.matches(condition: condition, workspace: workspace, user: HackleUser.of(userId: "test_id"))
+            let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
 
             // then
             expect(actual) == true

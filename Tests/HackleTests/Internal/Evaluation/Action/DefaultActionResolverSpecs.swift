@@ -10,8 +10,6 @@ class DefaultActionResolverSpecs: QuickSpec {
         var bucketer: MockBucketer!
         var sut: DefaultActionResolver!
 
-        let user = HackleUser.of(userId: "test_id")
-
         beforeEach {
             bucketer = MockBucketer()
             sut = DefaultActionResolver(bucketer: bucketer)
@@ -27,8 +25,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let experiment = MockExperiment(defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(variation)
 
+                    let request = experimentRequest(experiment: experiment)
+
                     // when
-                    let actual = try sut.resolveOrNil(action: action, workspace: MockWorkspace(), experiment: experiment, user: user)
+                    let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
                     expect(actual).to(beIdenticalTo(variation))
@@ -41,8 +41,10 @@ class DefaultActionResolverSpecs: QuickSpec {
 
                     let experiment = MockExperiment(id: 320, defaultRule: action)
 
+                    let request = experimentRequest(experiment: experiment)
+
                     // when
-                    expect(try sut.resolveOrNil(action: action, workspace: MockWorkspace(), experiment: experiment, user: user))
+                    expect(try sut.resolveOrNil(request: request, action: action))
                         .to(throwError(HackleError.error("action variation[320]")))
                 }
 
@@ -53,8 +55,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let experiment = MockExperiment(id: 320, defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(nil)
 
+                    let request = experimentRequest(experiment: experiment)
+
                     // when
-                    expect(try sut.resolveOrNil(action: action, workspace: MockWorkspace(), experiment: experiment, user: user))
+                    expect(try sut.resolveOrNil(request: request, action: action))
                         .to(throwError(HackleError.error("variation[42]")))
                 }
             }
@@ -64,9 +68,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     // given
                     let action = ActionEntity(type: .bucket, variationId: nil, bucketId: nil)
                     let experiment = MockExperiment(id: 42, defaultRule: action)
+                    let request = experimentRequest(experiment: experiment)
 
                     // when
-                    expect(try sut.resolveOrNil(action: action, workspace: MockWorkspace(), experiment: experiment, user: user))
+                    expect(try sut.resolveOrNil(request: request, action: action))
                         .to(throwError(HackleError.error("action bucket[42]")))
                 }
 
@@ -76,9 +81,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let experiment = MockExperiment(id: 42, defaultRule: action)
                     let workspace = MockWorkspace()
                     every(workspace.getBucketOrNilMock).returns(nil)
+                    let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                     // when
-                    expect(try sut.resolveOrNil(action: action, workspace: workspace, experiment: experiment, user: user))
+                    expect(try sut.resolveOrNil(request: request, action: action))
                         .to(throwError(HackleError.error("bucket[320]")))
                 }
 
@@ -96,8 +102,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let experiment = MockExperiment(id: 42, identifierType: "customId", defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(variation)
 
+                    let request = experimentRequest(workspace: workspace, experiment: experiment)
+
                     // when
-                    let actual = try sut.resolveOrNil(action: action, workspace: workspace, experiment: experiment, user: user)
+                    let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
                     expect(actual).to(beNil())
@@ -113,8 +121,10 @@ class DefaultActionResolverSpecs: QuickSpec {
 
                     every(bucketer.bucketingMock).returns(nil)
 
+                    let request = experimentRequest(workspace: workspace, experiment: experiment)
+
                     // when
-                    let actual = try sut.resolveOrNil(action: action, workspace: workspace, experiment: experiment, user: user)
+                    let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
                     expect(actual).to(beNil())
@@ -133,8 +143,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let experiment = MockExperiment(id: 42, defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(nil)
 
+                    let request = experimentRequest(workspace: workspace, experiment: experiment)
+
                     // when
-                    let actual = try sut.resolveOrNil(action: action, workspace: workspace, experiment: experiment, user: user)
+                    let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
                     expect(actual).to(beNil())
@@ -154,8 +166,10 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let experiment = MockExperiment(id: 42, defaultRule: action)
                     every(experiment.getVariationByIdOrNilMock).returns(variation)
 
+                    let request = experimentRequest(workspace: workspace, experiment: experiment)
+
                     // when
-                    let actual = try sut.resolveOrNil(action: action, workspace: workspace, experiment: experiment, user: user)
+                    let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
                     expect(actual).to(beIdenticalTo(variation))

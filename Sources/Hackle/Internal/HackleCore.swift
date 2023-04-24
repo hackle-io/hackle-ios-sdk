@@ -1,6 +1,6 @@
 import Foundation
 
-protocol HackleInternalApp {
+protocol HackleCore {
 
     func initialize(completion: @escaping () -> ())
 
@@ -19,15 +19,25 @@ protocol HackleInternalApp {
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 }
 
-class DefaultHackleInternalApp: HackleInternalApp {
+class DefaultHackleCore: HackleCore {
 
-    private let evaluator: Evaluator
+    private let experimentEvaluator: Evaluator
+    private let remoteConfigEvaluator: Evaluator
     private let workspaceFetcher: WorkspaceFetcher
+    private let eventFactory: UserEventFactory
     private let eventProcessor: UserEventProcessor
 
-    init(evaluator: Evaluator, workspaceFetcher: WorkspaceFetcher, eventProcessor: UserEventProcessor) {
-        self.evaluator = evaluator
+    init(
+        experimentEvaluator: Evaluator,
+        remoteConfigEvaluator: Evaluator,
+        workspaceFetcher: WorkspaceFetcher,
+        eventFactory: UserEventFactory,
+        eventProcessor: UserEventProcessor
+    ) {
+        self.experimentEvaluator = experimentEvaluator
+        self.remoteConfigEvaluator = remoteConfigEvaluator
         self.workspaceFetcher = workspaceFetcher
+        self.eventFactory = eventFactory
         self.eventProcessor = eventProcessor
     }
 
@@ -35,10 +45,22 @@ class DefaultHackleInternalApp: HackleInternalApp {
         workspaceFetcher: WorkspaceFetcher,
         eventProcessor: UserEventProcessor,
         manualOverrideStorage: ManualOverrideStorage
-    ) -> DefaultHackleInternalApp {
-        DefaultHackleInternalApp(
-            evaluator: DefaultEvaluator(evaluationFlowFactory: DefaultEvaluationFlowFactory(manualOverrideStorage: manualOverrideStorage)),
+    ) -> DefaultHackleCore {
+
+        let delegatingEvaluator = DelegatingEvaluator()
+        let flowFactory = DefaultEvaluationFlowFactory(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage)
+
+        let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
+        let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: flowFactory.remoteConfigTargetRuleDeterminer)
+
+        delegatingEvaluator.add(experimentEvaluator)
+        delegatingEvaluator.add(remoteConfigEvaluator)
+
+        return DefaultHackleCore(
+            experimentEvaluator: experimentEvaluator,
+            remoteConfigEvaluator: remoteConfigEvaluator,
             workspaceFetcher: workspaceFetcher,
+            eventFactory: DefaultUserEventFactory(clock: SystemClock.instance),
             eventProcessor: eventProcessor
         )
     }
@@ -59,8 +81,12 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return Decision.of(variation: defaultVariationKey, reason: DecisionReason.EXPERIMENT_NOT_FOUND)
         }
 
-        let (evaluation, decision) = try evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
-        eventProcessor.process(event: UserEvents.exposure(experiment: experiment, user: user, evaluation: evaluation))
+        let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: experiment, defaultVariationKey: defaultVariationKey)
+        let (evaluation, decision) = try experimentInternal(request: request)
+
+        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        eventProcessor.process(events: events)
+
         return decision
     }
 
@@ -70,16 +96,18 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return decisions
         }
         for experiment in workspace.experiments {
-            let (_, decision) = try evaluate(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: "A")
+            let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: experiment, defaultVariationKey: "A")
+            let (_, decision) = try experimentInternal(request: request)
             decisions.append((experiment, decision))
         }
         return decisions
     }
 
-    private func evaluate(workspace: Workspace, experiment: Experiment, user: HackleUser, defaultVariationKey: String) throws -> (Evaluation, Decision) {
-        let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: experiment, user: user, defaultVariationKey: defaultVariationKey)
+    private func experimentInternal(request: ExperimentRequest) throws -> (ExperimentEvaluation, Decision) {
+        let evaluation: ExperimentEvaluation = try experimentEvaluator.evaluate(request: request, context: Evaluators.context())
         let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
-        return (evaluation, Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config))
+        let decision = Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config)
+        return (evaluation, decision)
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
@@ -91,8 +119,12 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return FeatureFlagDecision.off(reason: DecisionReason.FEATURE_FLAG_NOT_FOUND)
         }
 
-        let (evaluation, decision) = try evaluate(workspace: workspace, featureFlag: featureFlag, user: user)
-        eventProcessor.process(event: UserEvents.exposure(experiment: featureFlag, user: user, evaluation: evaluation))
+        let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: featureFlag, defaultVariationKey: "A")
+        let (evaluation, decision) = try featureFlagInternal(request: request)
+
+        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        eventProcessor.process(events: events)
+
         return decision
     }
 
@@ -102,20 +134,22 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return decisions
         }
         for featureFlag in workspace.featureFlags {
-            let (_, decision) = try evaluate(workspace: workspace, featureFlag: featureFlag, user: user)
+            let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: featureFlag, defaultVariationKey: "A")
+            let (_, decision) = try featureFlagInternal(request: request)
             decisions.append((featureFlag, decision))
         }
         return decisions
     }
 
-    private func evaluate(workspace: Workspace, featureFlag: Experiment, user: HackleUser) throws -> (Evaluation, FeatureFlagDecision) {
-        let evaluation = try evaluator.evaluateExperiment(workspace: workspace, experiment: featureFlag, user: user, defaultVariationKey: "A")
+    private func featureFlagInternal(request: ExperimentRequest) throws -> (ExperimentEvaluation, FeatureFlagDecision) {
+        let evaluation: ExperimentEvaluation = try experimentEvaluator.evaluate(request: request, context: Evaluators.context())
         let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
-        if evaluation.variationKey == "A" {
-            return (evaluation, FeatureFlagDecision.off(reason: evaluation.reason, config: config))
-        } else {
-            return (evaluation, FeatureFlagDecision.on(reason: evaluation.reason, config: config))
-        }
+
+        let decision = evaluation.variationKey == "A"
+            ? FeatureFlagDecision.off(reason: evaluation.reason, config: config)
+            : FeatureFlagDecision.on(reason: evaluation.reason, config: config)
+
+        return (evaluation, decision)
     }
 
     func track(event: Event, user: HackleUser) {
@@ -136,8 +170,12 @@ class DefaultHackleInternalApp: HackleInternalApp {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.REMOTE_CONFIG_PARAMETER_NOT_FOUND)
         }
 
-        let evaluation = try evaluator.evaluateRemoteConfig(workspace: workspace, parameter: parameter, user: user, defaultValue: defaultValue)
-        eventProcessor.process(event: UserEvents.remoteConfig(parameter: parameter, user: user, evaluation: evaluation))
+        let request = RemoteConfigRequest.of(workspace: workspace, user: user, parameter: parameter, defaultValue: defaultValue)
+        let evaluation: RemoteConfigEvaluation = try remoteConfigEvaluator.evaluate(request: request, context: Evaluators.context())
+
+        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        eventProcessor.process(events: events)
+
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
     }
 }

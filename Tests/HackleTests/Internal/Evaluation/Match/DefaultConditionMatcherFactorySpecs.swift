@@ -6,12 +6,14 @@ import Mockery
 
 class DefaultConditionMatcherFactorySpecs: QuickSpec {
     override func spec() {
-        let sut = DefaultConditionMatcherFactory()
+        let sut = DefaultConditionMatcherFactory(evaluator: MockEvaluator())
         it("getMatcher") {
             expect(sut.getMatcher(.userId)).to(beAnInstanceOf(UserConditionMatcher.self))
             expect(sut.getMatcher(.userProperty)).to(beAnInstanceOf(UserConditionMatcher.self))
             expect(sut.getMatcher(.hackleProperty)).to(beAnInstanceOf(UserConditionMatcher.self))
             expect(sut.getMatcher(.segment)).to(beAnInstanceOf(SegmentConditionMatcher.self))
+            expect(sut.getMatcher(.abTest)).to(beAnInstanceOf(ExperimentConditionMatcher.self))
+            expect(sut.getMatcher(.featureFlag)).to(beAnInstanceOf(ExperimentConditionMatcher.self))
         }
     }
 }

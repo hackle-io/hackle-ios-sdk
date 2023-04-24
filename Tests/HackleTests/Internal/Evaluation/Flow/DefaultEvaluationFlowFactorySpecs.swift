@@ -8,7 +8,10 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
     override func spec() {
         describe("getFlow()") {
 
-            let sut = DefaultEvaluationFlowFactory(manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
+            let sut = DefaultEvaluationFlowFactory(
+                evaluator: MockEvaluator(),
+                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+            )
 
             it("AB_TEST") {
 

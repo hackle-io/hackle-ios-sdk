@@ -36,3 +36,10 @@ class ContainerEntity: Container {
         }
     }
 }
+
+
+extension Slot {
+    var containerGroupId: Int64 {
+        variationId
+    }
+}

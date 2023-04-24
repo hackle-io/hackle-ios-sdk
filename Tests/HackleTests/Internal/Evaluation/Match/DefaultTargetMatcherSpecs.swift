@@ -30,7 +30,7 @@ class DefaultTargetMatcherSpecs: QuickSpec {
             let sut = DefaultTargetMatcher(conditionMatcherFactory: factory)
 
             // when
-            let actual = try sut.matches(target: target, workspace: MockWorkspace(), user: user)
+            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), target: target)
 
             // then
             expect(actual).to(beTrue())
@@ -62,7 +62,7 @@ class DefaultTargetMatcherSpecs: QuickSpec {
             let sut = DefaultTargetMatcher(conditionMatcherFactory: factory)
 
             // when
-            let actual = try sut.matches(target: target, workspace: MockWorkspace(), user: user)
+            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), target: target)
 
             // then
             expect(actual).to(beFalse())

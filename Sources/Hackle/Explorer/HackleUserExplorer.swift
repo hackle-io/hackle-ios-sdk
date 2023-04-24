@@ -35,14 +35,14 @@ protocol HackleUserExplorer {
 
 class DefaultHackleUserExplorer: HackleUserExplorer {
 
-    private let app: HackleInternalApp
+    private let core: HackleCore
     private let userManager: UserManager
     private let userResolver: HackleUserResolver
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
 
-    init(app: HackleInternalApp, userManager: UserManager, userResolver: HackleUserResolver, abTestOverrideStorage: HackleUserManualOverrideStorage, featureFlagOverrideStorage: HackleUserManualOverrideStorage) {
-        self.app = app
+    init(core: HackleCore, userManager: UserManager, userResolver: HackleUserResolver, abTestOverrideStorage: HackleUserManualOverrideStorage, featureFlagOverrideStorage: HackleUserManualOverrideStorage) {
+        self.core = core
         self.userManager = userManager
         self.userResolver = userResolver
         self.abTestOverrideStorage = abTestOverrideStorage
@@ -56,7 +56,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
 
     func getAbTestDecisions() -> [(Experiment, Decision)] {
         do {
-            return try app.experiments(user: currentUser())
+            return try core.experiments(user: currentUser())
         } catch {
             return []
         }
@@ -83,7 +83,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
 
     func getFeatureFlagDecisions() -> [(Experiment, FeatureFlagDecision)] {
         do {
-            return try app.featureFlags(user: currentUser())
+            return try core.featureFlags(user: currentUser())
         } catch {
             return []
         }

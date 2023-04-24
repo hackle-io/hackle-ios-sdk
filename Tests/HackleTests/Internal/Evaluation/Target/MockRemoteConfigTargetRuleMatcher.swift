@@ -6,7 +6,7 @@ class MockRemoteConfigTargetRuleMatcher: Mock, RemoteConfigTargetRuleMatcher {
 
     lazy var matchesMock = MockFunction(self, matches)
 
-    func matches(targetRule: RemoteConfigParameter.TargetRule, workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> Bool {
-        call(matchesMock, args: (targetRule, workspace, parameter, user))
+    func matches(request: RemoteConfigRequest, context: EvaluatorContext, targetRule: RemoteConfigParameter.TargetRule) throws -> Bool {
+        call(matchesMock, args: (request, context, targetRule))
     }
 }

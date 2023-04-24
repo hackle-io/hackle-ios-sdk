@@ -11,6 +11,14 @@ protocol UserEventProcessor {
     func stop()
 }
 
+extension UserEventProcessor {
+    func process(events: [UserEvent]) {
+        for event in events {
+            process(event: event)
+        }
+    }
+}
+
 class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")

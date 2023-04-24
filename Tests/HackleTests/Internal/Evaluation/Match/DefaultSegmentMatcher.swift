@@ -21,7 +21,7 @@ class DefaultSegmentMatcherSpecs: QuickSpec {
             let segment = MockSegment()
 
             // when
-            let actual = try sut.matches(segment: segment, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_id"))
+            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), segment: segment)
 
             // then
             expect(actual) == false
@@ -37,7 +37,7 @@ class DefaultSegmentMatcherSpecs: QuickSpec {
             )
 
             // when
-            let actual = try sut.matches(segment: segment, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_id"))
+            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), segment: segment)
 
             // then
             expect(actual) == true
@@ -54,7 +54,7 @@ class DefaultSegmentMatcherSpecs: QuickSpec {
             )
 
             // when
-            let actual = try sut.matches(segment: segment, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_id"))
+            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), segment: segment)
 
             // then
             expect(actual) == false
@@ -81,7 +81,7 @@ class DefaultSegmentMatcherSpecs: QuickSpec {
         private var matches = [(Target.Condition, Bool)]()
         var callCount = 0
 
-        func matches(condition: Target.Condition, workspace: Workspace, user: HackleUser) throws -> Bool {
+        func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
             callCount = callCount + 1
             guard let match = matches.first(where: { $0.0 === condition }) else {
                 throw HackleError.error("error")

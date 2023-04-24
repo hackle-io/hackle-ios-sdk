@@ -10,7 +10,7 @@ class MockUserEvent: UserEvent {
     var user: HackleUser
     var timestamp: Date
 
-    init(user: HackleUser, timestamp: Date = Date(), type: UserEventType = .exposure) {
+    init(user: HackleUser = HackleUser.builder().identifier(.id, "user").build(), timestamp: Date = Date(), type: UserEventType = .exposure) {
         self.type = type
         self.user = user
         self.timestamp = timestamp
