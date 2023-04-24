@@ -109,5 +109,21 @@ class HackleCoreSpecs: QuickSpec {
                 .to(beGreaterThan(7400))
                 .to(beLessThan(7600))
         }
+
+        it("segment_match") {
+            let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "segment_match")
+            let eventProcessor = InMemoryUserEventProcessor()
+            let core = DefaultHackleCore.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor, manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
+
+            let user1 = HackleUser.builder().identifier(.id, "matched_id").build()
+            let decision1 = try core.experiment(experimentKey: 1, user: user1, defaultVariationKey: "A")
+            expect(decision1.reason) == DecisionReason.OVERRIDDEN
+            expect(decision1.variation) == "A"
+
+            let user2 = HackleUser.builder().identifier(.id, "not_matched_id").build()
+            let decision2 = try core.experiment(experimentKey: 1, user: user2, defaultVariationKey: "A")
+            expect(decision2.reason) == DecisionReason.TRAFFIC_ALLOCATED
+            expect(decision2.variation) == "A"
+        }
     }
 }

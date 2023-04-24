@@ -10,6 +10,7 @@
 		EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */; };
 		EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */; };
 		EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */; };
+		EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */ = {isa = PBXBuildFile; fileRef = EE240EEA29F6A9D6006D7414 /* segment_match.json */; };
 		EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */; };
 		EE29D94029CD825400B1FEAA /* Hackle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AC29CD825300B1FEAA /* Hackle.swift */; };
 		EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AD29CD825300B1FEAA /* HackleApp.swift */; };
@@ -312,6 +313,7 @@
 		EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestViewController.xib; sourceTree = "<group>"; };
 		EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestViewController.swift; sourceTree = "<group>"; };
 		EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInternalResources.swift; sourceTree = "<group>"; };
+		EE240EEA29F6A9D6006D7414 /* segment_match.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = segment_match.json; sourceTree = "<group>"; };
 		EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
 		EE29D8AC29CD825300B1FEAA /* Hackle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hackle.swift; sourceTree = "<group>"; };
 		EE29D8AD29CD825300B1FEAA /* HackleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleApp.swift; sourceTree = "<group>"; };
@@ -1081,6 +1083,7 @@
 				EE789E3229F01FDA0088D8A6 /* target_experiment.json */,
 				EE789E3429F026D70088D8A6 /* target_experiment_circular.json */,
 				EE789E3629F02AEA0088D8A6 /* container.json */,
+				EE240EEA29F6A9D6006D7414 /* segment_match.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1627,6 +1630,7 @@
 				EE29DA4B29CD82C200B1FEAA /* murmur_all.csv in Resources */,
 				EE29DA4629CD82C200B1FEAA /* bucketing_uuid.csv in Resources */,
 				EE29DA4829CD82C200B1FEAA /* workspace_config.json in Resources */,
+				EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */,
 				EE29DA4C29CD82C200B1FEAA /* murmur_alphabetic.csv in Resources */,
 				EE29DA4929CD82C200B1FEAA /* murmur_alphanumeric.csv in Resources */,
 				EE29DA4F29CD82C200B1FEAA /* bucketing_alphanumeric.csv in Resources */,
