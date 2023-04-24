@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ContainerResolver {
-    func isUserInContainerGroup(container: Container, bucket: Bucket, experiment: Experiment, user: HackleUser) throws -> Bool
+    func isUserInContainerGroup(request: ExperimentRequest, container: Container) throws -> Bool
 }
 
 class DefaultContainerResolver: ContainerResolver {
@@ -18,16 +18,23 @@ class DefaultContainerResolver: ContainerResolver {
         self.bucketer = bucketer
     }
 
-    func isUserInContainerGroup(container: Container, bucket: Bucket, experiment: Experiment, user: HackleUser) throws -> Bool {
-        guard let identifier = user.identifiers[experiment.identifierType] else {
+    func isUserInContainerGroup(request: ExperimentRequest, container: Container) throws -> Bool {
+        guard let identifier = request.user.identifiers[request.experiment.identifierType] else {
             return false
         }
+
+        guard let bucket = request.workspace.getBucketOrNil(bucketId: container.bucketId) else {
+            throw HackleError.error("Bucket[\(container.bucketId)]")
+        }
+
         guard let slot = bucketer.bucketing(bucket: bucket, identifier: identifier) else {
             return false
         }
-        guard let containerGroup = container.getGroupOrNil(containerGroupId: slot.variationId) else {
+
+        guard let containerGroup = container.getGroupOrNil(containerGroupId: slot.containerGroupId) else {
             throw HackleError.error("ContainerGroup[\(slot.variationId)]")
         }
-        return containerGroup.experiments.contains(experiment.id)
+
+        return containerGroup.experiments.contains(request.experiment.id)
     }
 }

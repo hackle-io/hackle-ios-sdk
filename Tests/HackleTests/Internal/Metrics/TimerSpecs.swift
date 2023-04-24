@@ -22,7 +22,14 @@ class TimerSpecs: QuickSpec {
         it("TimerSample") {
 
             class ClockStub: Clock {
+
+
                 private var _tick: UInt64 = 100
+
+
+                func now() -> Date {
+                    Date()
+                }
 
                 func currentMillis() -> Int64 {
                     0

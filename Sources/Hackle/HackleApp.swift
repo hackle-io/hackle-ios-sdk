@@ -7,7 +7,7 @@ import Foundation
 /// Entry point of Hackle Sdk.
 @objc public final class HackleApp: NSObject {
 
-    private let internalApp: HackleInternalApp
+    private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let hackleUserResolver: HackleUserResolver
     private let device: Device
@@ -36,7 +36,7 @@ import Foundation
     }
 
     init(
-        internalApp: HackleInternalApp,
+        core: HackleCore,
         eventQueue: DispatchQueue,
         hackleUserResolver: HackleUserResolver,
         device: Device,
@@ -46,7 +46,7 @@ import Foundation
         notificationObserver: AppNotificationObserver,
         userExplorer: HackleUserExplorer
     ) {
-        self.internalApp = internalApp
+        self.core = core
         self.eventQueue = eventQueue
         self.hackleUserResolver = hackleUserResolver
         self.device = device
@@ -103,7 +103,7 @@ import Foundation
         let decision: Decision
         do {
             let hackleUser = hackleUserResolver.resolve(user: user)
-            decision = try internalApp.experiment(
+            decision = try core.experiment(
                 experimentKey: Int64(experimentKey),
                 user: hackleUser,
                 defaultVariationKey: defaultVariation
@@ -123,7 +123,7 @@ import Foundation
     private func allVariationDetailsInternal(user: User) -> [Int: Decision] {
         do {
             let hackleUser = hackleUserResolver.resolve(user: user)
-            return try internalApp.experiments(user: hackleUser).associate { experiment, decision in
+            return try core.experiments(user: hackleUser).associate { experiment, decision in
                 (Int(experiment.key), decision)
             }
         } catch let error {
@@ -145,7 +145,7 @@ import Foundation
         let decision: FeatureFlagDecision
         do {
             let hackleUser = hackleUserResolver.resolve(user: user)
-            decision = try internalApp.featureFlag(
+            decision = try core.featureFlag(
                 featureKey: Int64(featureKey),
                 user: hackleUser
             )
@@ -167,11 +167,11 @@ import Foundation
 
     private func trackInternal(event: Event, user: User) {
         let hackleUser = hackleUserResolver.resolve(user: user)
-        internalApp.track(event: event, user: hackleUser)
+        core.track(event: event, user: hackleUser)
     }
 
     @objc public func remoteConfig() -> HackleRemoteConfig {
-        DefaultRemoteConfig(user: nil, app: internalApp, userManager: userManager, userResolver: hackleUserResolver)
+        DefaultRemoteConfig(user: nil, app: core, userManager: userManager, userResolver: hackleUserResolver)
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -254,7 +254,7 @@ import Foundation
 
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
-        DefaultRemoteConfig(user: user, app: internalApp, userManager: userManager, userResolver: hackleUserResolver)
+        DefaultRemoteConfig(user: user, app: core, userManager: userManager, userResolver: hackleUserResolver)
     }
 
 }
@@ -268,7 +268,7 @@ extension HackleApp {
         eventQueue.async {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
-            self.internalApp.initialize(completion: completion)
+            self.core.initialize(completion: completion)
         }
     }
 
@@ -334,7 +334,7 @@ extension HackleApp {
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
         let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ff_override_\(sdkKey)")
 
-        let internalApp = DefaultHackleInternalApp.create(
+        let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceFetcher,
             eventProcessor: eventProcessor,
             manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
@@ -350,14 +350,14 @@ extension HackleApp {
 
         let sessionEventTracker = SessionEventTracker(
             hackleUserResolver: hackleUserResolver,
-            internalApp: internalApp
+            core: core
         )
         sessionManager.addListener(listener: sessionEventTracker)
 
         HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
 
         let userExplorer = DefaultHackleUserExplorer(
-            app: internalApp,
+            core: core,
             userManager: userManager,
             userResolver: hackleUserResolver,
             abTestOverrideStorage: abOverrideStorage,
@@ -365,7 +365,7 @@ extension HackleApp {
         )
 
         return HackleApp(
-            internalApp: internalApp,
+            core: core,
             eventQueue: eventQueue,
             hackleUserResolver: hackleUserResolver,
             device: device,

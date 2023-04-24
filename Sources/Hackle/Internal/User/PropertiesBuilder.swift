@@ -79,7 +79,7 @@ class PropertiesBuilder {
             return stringValue.count <= PropertiesBuilder.MAX_PROPERTY_VALUE_LENGTH
         case is Bool:
             return true
-        case is Int, is Double, is Float:
+        case is Int, is Int8, is Int16, is Int32, is Int64, is Double, is Float:
             return true
         default:
             return false
@@ -93,7 +93,7 @@ class PropertiesBuilder {
             return stringValue.count <= PropertiesBuilder.MAX_PROPERTY_VALUE_LENGTH
         case is Bool:
             return true
-        case is Int, is Double, is Float:
+        case is Int, is Int8, is Int16, is Int32, is Int64, is Double, is Float:
             return true
         default:
             return false

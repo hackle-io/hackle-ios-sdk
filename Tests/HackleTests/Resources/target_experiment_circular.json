@@ -1,0 +1,282 @@
+{
+  "workspace": {
+    "id": 1,
+    "environment": {
+      "id": 1,
+      "primary": true
+    }
+  },
+  "experiments": [
+    {
+      "id": 2,
+      "key": 2,
+      "status": "EXECUTED",
+      "version": 1,
+      "bucketId": 2,
+      "variations": [
+        {
+          "id": 2,
+          "key": "B",
+          "status": "ACTIVE"
+        }
+      ],
+      "execution": {
+        "id": 2,
+        "status": "RUNNING",
+        "userOverrides": [],
+        "segmentOverrides": [],
+        "targetAudiences": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "FEATURE_FLAG",
+                  "name": "3"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "IN",
+                  "valueType": "BOOLEAN",
+                  "values": [
+                    true
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "targetRules": [],
+        "defaultRule": {
+          "type": "BUCKET",
+          "bucketId": 2
+        }
+      },
+      "winnerVariationId": null,
+      "identifierType": "$id",
+      "containerId": null
+    },
+    {
+      "id": 4,
+      "key": 4,
+      "status": "EXECUTED",
+      "version": 1,
+      "bucketId": 4,
+      "variations": [
+        {
+          "id": 4,
+          "key": "B",
+          "status": "ACTIVE"
+        }
+      ],
+      "execution": {
+        "id": 4,
+        "status": "RUNNING",
+        "userOverrides": [],
+        "segmentOverrides": [],
+        "targetAudiences": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "AB_TEST",
+                  "name": "2"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "IN",
+                  "valueType": "STRING",
+                  "values": [
+                    "B"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "targetRules": [],
+        "defaultRule": {
+          "type": "BUCKET",
+          "bucketId": 4
+        }
+      },
+      "winnerVariationId": null,
+      "identifierType": "$id",
+      "containerId": null
+    }
+  ],
+  "featureFlags": [
+    {
+      "id": 3,
+      "key": 3,
+      "status": "EXECUTED",
+      "version": 1,
+      "bucketId": 3,
+      "variations": [
+        {
+          "id": 3,
+          "key": "B",
+          "status": "ACTIVE"
+        }
+      ],
+      "execution": {
+        "id": 3,
+        "status": "RUNNING",
+        "userOverrides": [],
+        "segmentOverrides": [],
+        "targetAudiences": [],
+        "targetRules": [
+          {
+            "target": {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "AB_TEST",
+                    "name": "4"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "A"
+                    ]
+                  }
+                }
+              ]
+            },
+            "action": {
+              "type": "BUCKET",
+              "bucketId": 3
+            }
+          }
+        ],
+        "defaultRule": {
+          "type": "BUCKET",
+          "bucketId": 3
+        }
+      },
+      "winnerVariationId": null,
+      "identifierType": "$id",
+      "containerId": null
+    }
+  ],
+  "buckets": [
+    {
+      "id": 1,
+      "seed": 1,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "seed": 2,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 2
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "seed": 3,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 3
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "seed": 4,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 4
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "seed": 5,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 5
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "seed": 6,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 6
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "segments": [],
+  "containers": [],
+  "parameterConfigurations": [],
+  "remoteConfigParameters": [
+    {
+      "id": 1,
+      "key": "rc",
+      "type": "STRING",
+      "targetRules": [
+        {
+          "key": "",
+          "name": "",
+          "target": {
+            "conditions": [
+              {
+                "key": {
+                  "type": "AB_TEST",
+                  "name": "2"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "IN",
+                  "valueType": "STRING",
+                  "values": [
+                    "B"
+                  ]
+                }
+              }
+            ]
+          },
+          "bucketId": 1,
+          "value": {
+            "id": 1,
+            "value": "Targeting!!"
+          }
+        }
+      ],
+      "defaultValue": {
+        "id": 1,
+        "value": "Default!!"
+      },
+      "identifierType": "$id"
+    }
+  ]
+}

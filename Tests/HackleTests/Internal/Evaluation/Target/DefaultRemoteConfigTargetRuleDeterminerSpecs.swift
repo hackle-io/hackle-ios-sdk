@@ -27,8 +27,10 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
                 targetRule(false)
             )
 
+            let request = RemoteConfigRequest.of(workspace: MockWorkspace(), user: user, parameter: parameter, defaultValue: .string("go"))
+
             // when
-            let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), parameter: parameter, user: user)
+            let actual = try sut.determineTargetRuleOrNil(request: request, context: Evaluators.context())
 
             // then
             expect(actual).to(beIdenticalTo(matchRule))
@@ -44,8 +46,10 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
                 targetRule(false)
             )
 
+            let request = RemoteConfigRequest.of(workspace: MockWorkspace(), user: user, parameter: parameter, defaultValue: .string("go"))
+
             // when
-            let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), parameter: parameter, user: user)
+            let actual = try sut.determineTargetRuleOrNil(request: request, context: Evaluators.context())
 
             // then
             expect(actual).to(beNil())
@@ -55,8 +59,10 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
             // given
             let parameter = parameter()
 
+            let request = RemoteConfigRequest.of(workspace: MockWorkspace(), user: user, parameter: parameter, defaultValue: .string("go"))
+
             // when
-            let actual = try sut.determineTargetRuleOrNil(workspace: MockWorkspace(), parameter: parameter, user: user)
+            let actual = try sut.determineTargetRuleOrNil(request: request, context: Evaluators.context())
 
             // then
             expect(actual).to(beNil())
@@ -96,8 +102,7 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
             mocks.append((targetRule, isMatch))
         }
 
-        func matches(targetRule: RemoteConfigParameter.TargetRule, workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> Bool {
-
+        func matches(request: RemoteConfigRequest, context: EvaluatorContext, targetRule: RemoteConfigParameter.TargetRule) throws -> Bool {
             let mock = mocks.first { it in
                 it.0 === targetRule
             }
