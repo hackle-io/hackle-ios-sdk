@@ -26,7 +26,7 @@ class UserConditionMatcherSpecs: QuickSpec {
             )
 
             // when
-            let actual = try sut.matches(condition: condition, workspace: MockWorkspace(), user: HackleUser.of(userId: "test_user_id"))
+            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), condition: condition)
 
             // then
             expect(actual).to(beFalse())
@@ -44,8 +44,10 @@ class UserConditionMatcherSpecs: QuickSpec {
             every(userValueResolver.resolveOrNilMock).returns("iOS")
             every(valueOperatorMatcher.matchesMock).returns(true)
 
+            let request = experimentRequest(user: user)
+
             // when
-            let actual = try sut.matches(condition: condition, workspace: MockWorkspace(), user: user)
+            let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
 
             // then
             expect(actual).to(beTrue())

@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol OverrideResolver {
-    func resolveOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation?
+    func resolveOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation?
 }
 
 class DefaultOverrideResolver: OverrideResolver {
@@ -24,24 +24,25 @@ class DefaultOverrideResolver: OverrideResolver {
         self.actionResolver = actionResolver
     }
 
-    func resolveOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation? {
+    func resolveOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation? {
 
-        if let overriddenVariation = resolveManualOverrideOrNil(experiment: experiment, user: user) {
+        if let overriddenVariation = resolveManualOverrideOrNil(request: request) {
             return overriddenVariation
         }
 
-        if let overriddenVariation = resolveUserOverrideOrNil(experiment: experiment, user: user) {
+        if let overriddenVariation = resolveUserOverrideOrNil(request: request) {
             return overriddenVariation
         }
-        return try resolveSegmentOverrideOrNil(workspace: workspace, experiment: experiment, user: user)
+        return try resolveSegmentOverrideOrNil(request: request, context: context)
     }
 
-    private func resolveManualOverrideOrNil(experiment: Experiment, user: HackleUser) -> Variation? {
-        manualOverrideStorage.get(experiment: experiment, user: user)
+    private func resolveManualOverrideOrNil(request: ExperimentRequest) -> Variation? {
+        manualOverrideStorage.get(experiment: request.experiment, user: request.user)
     }
 
-    private func resolveUserOverrideOrNil(experiment: Experiment, user: HackleUser) -> Variation? {
-        guard let identifier = user.identifiers[experiment.identifierType] else {
+    private func resolveUserOverrideOrNil(request: ExperimentRequest) -> Variation? {
+        let experiment = request.experiment
+        guard let identifier = request.user.identifiers[experiment.identifierType] else {
             return nil
         }
         guard let overriddenVariationId = experiment.userOverrides[identifier] else {
@@ -50,13 +51,10 @@ class DefaultOverrideResolver: OverrideResolver {
         return experiment.getVariationOrNil(variationId: overriddenVariationId)
     }
 
-    private func resolveSegmentOverrideOrNil(workspace: Workspace, experiment: Experiment, user: HackleUser) throws -> Variation? {
-        guard let overriddenRule = try experiment.segmentOverrides.first(
-            where: { it in try targetMatcher.matches(target: it.target, workspace: workspace, user: user) }
-        )
-        else {
+    private func resolveSegmentOverrideOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation? {
+        guard let overriddenRule = try request.experiment.segmentOverrides.first(where: { it in try targetMatcher.matches(request: request, context: context, target: it.target) }) else {
             return nil
         }
-        return try actionResolver.resolveOrNil(action: overriddenRule.action, workspace: workspace, experiment: experiment, user: user)
+        return try actionResolver.resolveOrNil(request: request, action: overriddenRule.action)
     }
 }

@@ -33,6 +33,8 @@ class Target {
         case userProperty = "USER_PROPERTY"
         case hackleProperty = "HACKLE_PROPERTY"
         case segment = "SEGMENT"
+        case abTest = "AB_TEST"
+        case featureFlag = "FEATURE_FLAG"
     }
 
     class Match {

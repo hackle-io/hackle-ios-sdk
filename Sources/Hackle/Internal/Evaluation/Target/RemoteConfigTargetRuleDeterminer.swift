@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol RemoteConfigTargetRuleDeterminer {
-    func determineTargetRuleOrNil(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> RemoteConfigParameter.TargetRule?
+    func determineTargetRuleOrNil(request: RemoteConfigRequest, context: EvaluatorContext) throws -> RemoteConfigParameter.TargetRule?
 }
 
 class DefaultRemoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer {
@@ -20,16 +20,16 @@ class DefaultRemoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer 
         self.matcher = matcher
     }
 
-    func determineTargetRuleOrNil(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> RemoteConfigParameter.TargetRule? {
-        try parameter.targetRules.first { it in
-            try matcher.matches(targetRule: it, workspace: workspace, parameter: parameter, user: user)
+    func determineTargetRuleOrNil(request: RemoteConfigRequest, context: EvaluatorContext) throws -> RemoteConfigParameter.TargetRule? {
+        try request.parameter.targetRules.first { it in
+            try matcher.matches(request: request, context: context, targetRule: it)
         }
     }
 }
 
 
 protocol RemoteConfigTargetRuleMatcher {
-    func matches(targetRule: RemoteConfigParameter.TargetRule, workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> Bool
+    func matches(request: RemoteConfigRequest, context: EvaluatorContext, targetRule: RemoteConfigParameter.TargetRule) throws -> Bool
 }
 
 class DefaultRemoteConfigTargetRuleMatcher: RemoteConfigTargetRuleMatcher {
@@ -42,16 +42,16 @@ class DefaultRemoteConfigTargetRuleMatcher: RemoteConfigTargetRuleMatcher {
         self.buckter = buckter
     }
 
-    func matches(targetRule: RemoteConfigParameter.TargetRule, workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> Bool {
-        guard try targetMatcher.matches(target: targetRule.target, workspace: workspace, user: user) else {
+    func matches(request: RemoteConfigRequest, context: EvaluatorContext, targetRule: RemoteConfigParameter.TargetRule) throws -> Bool {
+        guard try targetMatcher.matches(request: request, context: context, target: targetRule.target) else {
             return false
         }
 
-        guard let identifier = user.identifiers[parameter.identifierType] else {
+        guard let identifier = request.user.identifiers[request.parameter.identifierType] else {
             return false
         }
 
-        guard let bucket = workspace.getBucketOrNil(bucketId: targetRule.bucketId) else {
+        guard let bucket = request.workspace.getBucketOrNil(bucketId: targetRule.bucketId) else {
             throw HackleError.error("Bucket[\(targetRule.bucketId)]")
         }
 

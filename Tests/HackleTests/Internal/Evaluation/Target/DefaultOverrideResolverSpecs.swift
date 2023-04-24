@@ -12,18 +12,22 @@ class DefaultOverrideResolverSpecs: QuickSpec {
         var actionResolver: MockActionResolver!
         var sut: DefaultOverrideResolver!
 
+        var context: EvaluatorContext!
+
         beforeEach {
             targetMatcher = TargetMatcherStub()
             actionResolver = MockActionResolver()
             manualOverrideStorage = ManualOverrideStorageStub()
             sut = DefaultOverrideResolver(manualOverrideStorage: manualOverrideStorage, targetMatcher: targetMatcher, actionResolver: actionResolver)
+            context = Evaluators.context()
         }
 
         it("manual override 를 가장 먼저 확인한다") {
             let variation = MockVariation()
             manualOverrideStorage.returns = variation
+            let request = experimentRequest()
 
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: MockExperiment(), user: HackleUser.builder().build())
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             expect(actual).to(beIdenticalTo(variation))
         }
@@ -46,9 +50,10 @@ class DefaultOverrideResolverSpecs: QuickSpec {
                 hackleProperties: [String: Any]()
             )
 
+            let request = experimentRequest(user: user, experiment: experiment)
 
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: user)
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beIdenticalTo(variationBySegmentOverride))
@@ -72,8 +77,10 @@ class DefaultOverrideResolverSpecs: QuickSpec {
                 hackleProperties: [String: Any]()
             )
 
+            let request = experimentRequest(user: user, experiment: experiment)
+
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: user)
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beIdenticalTo(variationBySegmentOverride))
@@ -97,8 +104,10 @@ class DefaultOverrideResolverSpecs: QuickSpec {
                 hackleProperties: [String: Any]()
             )
 
+            let request = experimentRequest(user: user, experiment: experiment)
+
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: user)
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beIdenticalTo(variationByUserOverride))
@@ -122,8 +131,10 @@ class DefaultOverrideResolverSpecs: QuickSpec {
                 hackleProperties: [String: Any]()
             )
 
+            let request = experimentRequest(user: user, experiment: experiment)
+
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: user)
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beNil())
@@ -148,8 +159,10 @@ class DefaultOverrideResolverSpecs: QuickSpec {
                 hackleProperties: [String: Any]()
             )
 
+            let request = experimentRequest(user: user, experiment: experiment)
+
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: user)
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beIdenticalTo(variationBySegmentOverride))
@@ -170,8 +183,12 @@ class DefaultOverrideResolverSpecs: QuickSpec {
             let variation = MockVariation()
             every(actionResolver.resolveOrNilMock).returns(variation)
 
+            let user = HackleUser.of(userId: "user_01")
+
+            let request = experimentRequest(user: user, experiment: experiment)
+
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "user_01"))
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beIdenticalTo(variation))
@@ -194,8 +211,12 @@ class DefaultOverrideResolverSpecs: QuickSpec {
                 ]
             )
 
+            let user = HackleUser.of(userId: "user_02")
+
+            let request = experimentRequest(user: user, experiment: experiment)
+
             // when
-            let actual = try sut.resolveOrNil(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "user_02"))
+            let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
             expect(actual).to(beNil())
@@ -213,7 +234,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
         private var matches = [(Target, Bool)]()
         var callCount = 0
 
-        func matches(target: Target, workspace: Workspace, user: HackleUser) throws -> Bool {
+        func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
             callCount = callCount + 1
             guard let match = matches.first(where: { $0.0 === target }) else {
                 throw HackleError.error("error")

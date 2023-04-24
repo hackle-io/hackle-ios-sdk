@@ -11,15 +11,13 @@ class DefaultEvaluationFlowSpecs: QuickSpec {
         describe("evaluate") {
             it("end 인 경우 기본 그룹으로 평가") {
                 // given
-                let experiment = MockExperiment()
-                every(experiment.getVariationByKeyOrNilMock).returns(MockVariation(id: 42, key: "J"))
+                let request = experimentRequest()
 
                 // when
-                let actual = try DefaultEvaluationFlow.end.evaluate(workspace: MockWorkspace(), experiment: experiment, user: HackleUser.of(userId: "test"), defaultVariationKey: "J")
+                let actual = try DefaultEvaluationFlow.end.evaluate(request: request, context: Evaluators.context())
 
                 // then
-                expect(actual.variationId) == 42
-                expect(actual.variationKey) == "J"
+                expect(actual.variationKey) == "A"
                 expect(actual.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
             }
 
@@ -27,14 +25,15 @@ class DefaultEvaluationFlowSpecs: QuickSpec {
                 // given
                 let flowEvaluator = MockFlowEvaluator()
                 let nextFlow = MockEvaluationFlow()
-
-                let evaluation = Evaluation(variationId: 42, variationKey: "E", reason: DecisionReason.TRAFFIC_ALLOCATED, config: nil)
+                let evaluation = experimentEvaluation()
                 every(flowEvaluator.evaluateMock).returns(evaluation)
+
+                let request = experimentRequest()
 
                 let sut = DefaultEvaluationFlow.decision(flowEvaluator: flowEvaluator, nextFlow: nextFlow)
 
                 // when
-                let actual = try sut.evaluate(workspace: MockWorkspace(), experiment: MockExperiment(), user: HackleUser.of(userId: "test"), defaultVariationKey: "J")
+                let actual = try sut.evaluate(request: request, context: Evaluators.context())
 
                 // then
                 expect(actual) == evaluation

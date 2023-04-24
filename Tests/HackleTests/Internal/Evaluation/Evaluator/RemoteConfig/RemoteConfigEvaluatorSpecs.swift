@@ -1,43 +1,46 @@
+//
+//  RemoteConfigEvaluatorSpecs.swift
+//  HackleTests
+//
+//  Created by yong on 2023/04/20.
+//
+
 import Foundation
 import Quick
 import Nimble
 import Mockery
 @testable import Hackle
 
-class DefaultEvaluatorSpecs: QuickSpec {
+class RemoteConfigEvaluatorSpecs: QuickSpec {
+
     override func spec() {
 
-        describe("evaluateExperiment") {
-            it("evaluationFlowFactory에서 ExperimentType으로 Flow를 가져와서 평가한다") {
+        var remoteConfigTargetRuleDeterminer: MockRemoteConfigTargetRuleDeterminer!
+        var sut: RemoteConfigEvaluator!
 
-                // given
-                let evaluationFlow = MockEvaluationFlow()
-                let evaluation = Evaluation(variationId: 42, variationKey: "B", reason: DecisionReason.DEFAULT_RULE, config: nil)
-                every(evaluationFlow.evaluateMock).returns(evaluation)
+        beforeEach {
+            remoteConfigTargetRuleDeterminer = MockRemoteConfigTargetRuleDeterminer()
+            sut = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: remoteConfigTargetRuleDeterminer)
 
-                let factory = EvaluationFlowFactoryStub(flow: evaluationFlow)
-
-                let sut = DefaultEvaluator(evaluationFlowFactory: factory)
-
-                // when
-                let actual = try sut.evaluateExperiment(workspace: MockWorkspace(), experiment: MockExperiment(), user: HackleUser.of(userId: "test"), defaultVariationKey: "A")
-
-                // then
-                expect(actual).to(equal(evaluation))
-            }
+            every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
         }
 
-        describe("evaluateRemoteConfig") {
-            var remoteConfigParameterTargetRuleDeterminer: MockRemoteConfigTargetRuleDeterminer!
-            var sut: DefaultEvaluator!
+        it("supports") {
+            expect(sut.support(request: experimentRequest())) == false
+            expect(sut.support(request: remoteConfigRequest())) == true
+        }
 
-            let user = HackleUser.of(userId: "test")
+        describe("evaluate") {
 
-            beforeEach {
-                remoteConfigParameterTargetRuleDeterminer = MockRemoteConfigTargetRuleDeterminer()
-                every(remoteConfigParameterTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
-                let factory = EvaluationFlowFactoryStub(remoteConfigTargetRuleDeterminer: remoteConfigParameterTargetRuleDeterminer)
-                sut = DefaultEvaluator(evaluationFlowFactory: factory)
+            func parameter(
+                id: Int64 = 42,
+                key: String = "test_parameter_key",
+                type: HackleValueType,
+                identifierType: String = "$id",
+                targetRules: [RemoteConfigParameter.TargetRule] = [],
+                defaultValue: RemoteConfigParameter.Value
+            ) -> RemoteConfigParameter {
+                RemoteConfigParameter(id: id, key: key, type: type, identifierType: identifierType, targetRules: targetRules, defaultValue: defaultValue)
             }
 
             it("식별자가 없는 경우") {
@@ -48,8 +51,10 @@ class DefaultEvaluatorSpecs: QuickSpec {
                     defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("hello value"))
                 )
 
+                let request = remoteConfigRequest(parameter: parameter)
+
                 // when
-                let actual = try sut.evaluateRemoteConfig(workspace: MockWorkspace(), parameter: parameter, user: user, defaultValue: HackleValue.string("default"))
+                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
 
                 // then
                 expect(actual.valueId).to(beNil())
@@ -75,10 +80,12 @@ class DefaultEvaluatorSpecs: QuickSpec {
                     defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("hello value"))
                 )
 
-                every(remoteConfigParameterTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(targetRule)
+                every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(targetRule)
+
+                let request = remoteConfigRequest(parameter: parameter)
 
                 // when
-                let actual = try sut.evaluateRemoteConfig(workspace: MockWorkspace(), parameter: parameter, user: user, defaultValue: HackleValue.string("default"))
+                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
 
                 // then
                 expect(actual.valueId) == 320
@@ -106,10 +113,12 @@ class DefaultEvaluatorSpecs: QuickSpec {
                     defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("hello value"))
                 )
 
-                every(remoteConfigParameterTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
+                every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
+
+                let request = remoteConfigRequest(parameter: parameter)
 
                 // when
-                let actual = try sut.evaluateRemoteConfig(workspace: MockWorkspace(), parameter: parameter, user: user, defaultValue: HackleValue.string("default"))
+                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
 
                 // then
                 expect(actual.valueId) == 43
@@ -148,8 +157,11 @@ class DefaultEvaluatorSpecs: QuickSpec {
 
             func verifyMatch(_ v1: HackleValue, _ v2: HackleValue, _ isMatch: Bool) throws {
                 let parameter = parameter(type: .string, defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: v1))
-                every(remoteConfigParameterTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
-                let actual = try sut.evaluateRemoteConfig(workspace: MockWorkspace(), parameter: parameter, user: user, defaultValue: v2)
+                every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
+
+                let request = remoteConfigRequest(parameter: parameter, defaultValue: v2)
+
+                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
 
                 if isMatch {
                     expect(actual.valueId) == 43
@@ -160,17 +172,6 @@ class DefaultEvaluatorSpecs: QuickSpec {
                     expect(actual.value) == v2
                     expect(actual.reason) == DecisionReason.TYPE_MISMATCH
                 }
-            }
-
-            func parameter(
-                id: Int64 = 42,
-                key: String = "test_parameter_key",
-                type: HackleValueType,
-                identifierType: String = "$id",
-                targetRules: [RemoteConfigParameter.TargetRule] = [],
-                defaultValue: RemoteConfigParameter.Value
-            ) -> RemoteConfigParameter {
-                RemoteConfigParameter(id: id, key: key, type: type, identifierType: identifierType, targetRules: targetRules, defaultValue: defaultValue)
             }
         }
     }

@@ -1,0 +1,111 @@
+{
+  "workspace": {
+    "id": 1,
+    "environment": {
+      "id": 1,
+      "primary": true
+    }
+  },
+  "experiments": [
+    {
+      "id": 1,
+      "key": 1,
+      "status": "EXECUTED",
+      "version": 1,
+      "bucketId": 1,
+      "variations": [
+        {
+          "id": 1,
+          "key": "A",
+          "status": "ACTIVE"
+        }
+      ],
+      "execution": {
+        "id": 1,
+        "status": "RUNNING",
+        "userOverrides": [],
+        "segmentOverrides": [
+          {
+            "target": {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "SEGMENT",
+                    "name": "SEGMENT"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "2"
+                    ]
+                  }
+                }
+              ]
+            },
+            "action": {
+              "type": "VARIATION",
+              "variationId": 1
+            }
+          }
+        ],
+        "targetAudiences": [],
+        "targetRules": [],
+        "defaultRule": {
+          "type": "BUCKET",
+          "bucketId": 1
+        }
+      },
+      "winnerVariationId": null,
+      "identifierType": "$id",
+      "containerId": null
+    }
+  ],
+  "featureFlags": [],
+  "buckets": [
+    {
+      "id": 1,
+      "seed": 1,
+      "slotSize": 10000,
+      "slots": [
+        {
+          "startInclusive": 0,
+          "endExclusive": 10000,
+          "variationId": 1
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "segments": [
+    {
+      "id": 2,
+      "key": "2",
+      "type": "USER_ID",
+      "targets": [
+        {
+          "conditions": [
+            {
+              "key": {
+                "type": "USER_ID",
+                "name": "$id"
+              },
+              "match": {
+                "type": "MATCH",
+                "operator": "IN",
+                "valueType": "STRING",
+                "values": [
+                  "matched_id"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "containers": [],
+  "parameterConfigurations": [],
+  "remoteConfigParameters": []
+}

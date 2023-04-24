@@ -10,11 +10,11 @@ import Foundation
 class SessionEventTracker: SessionListener {
 
     private let hackleUserResolver: HackleUserResolver
-    private let internalApp: HackleInternalApp
+    private let core: HackleCore
 
-    init(hackleUserResolver: HackleUserResolver, internalApp: HackleInternalApp) {
+    init(hackleUserResolver: HackleUserResolver, core: HackleCore) {
         self.hackleUserResolver = hackleUserResolver
-        self.internalApp = internalApp
+        self.core = core
     }
 
     func onSessionStarted(session: Session, user: User, timestamp: Date) {
@@ -33,7 +33,7 @@ class SessionEventTracker: SessionListener {
             .identifier(.session, session.id, overwrite: false)
             .build()
 
-        internalApp.track(event: event, user: hackleUser, timestamp: timestamp)
+        core.track(event: event, user: hackleUser, timestamp: timestamp)
         Log.debug("\(eventKey) event tracked [\(session.id)]")
     }
 }

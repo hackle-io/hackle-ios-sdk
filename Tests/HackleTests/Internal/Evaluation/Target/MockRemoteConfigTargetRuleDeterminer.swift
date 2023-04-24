@@ -6,7 +6,7 @@ class MockRemoteConfigTargetRuleDeterminer: Mock, RemoteConfigTargetRuleDetermin
 
     lazy var determineTargetRuleOrNilMock = MockFunction(self, determineTargetRuleOrNil)
 
-    func determineTargetRuleOrNil(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser) throws -> RemoteConfigParameter.TargetRule? {
-        call(determineTargetRuleOrNilMock, args: (workspace, parameter, user))
+    func determineTargetRuleOrNil(request: RemoteConfigRequest, context: EvaluatorContext) throws -> RemoteConfigParameter.TargetRule? {
+        call(determineTargetRuleOrNilMock, args: (request, context))
     }
 }
