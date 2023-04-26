@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 spec.name          = "Hackle"
 spec.module_name   = "Hackle"
-spec.version       = "2.16.1"
+spec.version       = "2.16.2"
 spec.summary       = "Hackle Sdk for iOS"
 spec.homepage      = "https://www.hackle.io"
 spec.license       = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
