@@ -25,7 +25,7 @@ protocol SessionManager {
     func updateLastEventTime(timestamp: Date)
 }
 
-class DefaultSessionManager: SessionManager, AppNotificationListener, UserListener {
+class DefaultSessionManager: SessionManager, AppStateChangeListener, UserListener {
 
     private let userManager: UserManager
     private let keyValueRepository: KeyValueRepository
@@ -131,11 +131,11 @@ class DefaultSessionManager: SessionManager, AppNotificationListener, UserListen
         Log.debug("LastEventTime loaded [\(lastEventTime)]")
     }
 
-    func onNotified(notification: AppNotification, timestamp: Date) {
-        switch notification {
-        case .didBecomeActive:
+    func onChanged(state: AppState, timestamp: Date) {
+        switch state {
+        case .foreground:
             startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
-        case .didEnterBackground:
+        case .background:
             updateLastEventTime(timestamp: timestamp)
             guard let session = currentSession else {
                 return

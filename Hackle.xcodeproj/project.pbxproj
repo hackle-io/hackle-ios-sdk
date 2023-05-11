@@ -42,9 +42,9 @@
 		EE29D95B29CD825400B1FEAA /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D029CD825300B1FEAA /* EventRepository.swift */; };
 		EE29D95C29CD825400B1FEAA /* KeyValueRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */; };
 		EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */; };
-		EE29D95E29CD825400B1FEAA /* AppNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D429CD825300B1FEAA /* AppNotification.swift */; };
+		EE29D95E29CD825400B1FEAA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D429CD825300B1FEAA /* AppState.swift */; };
 		EE29D95F29CD825400B1FEAA /* AppNotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D529CD825300B1FEAA /* AppNotificationObserver.swift */; };
-		EE29D96029CD825400B1FEAA /* AppNotificationListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D629CD825300B1FEAA /* AppNotificationListener.swift */; };
+		EE29D96029CD825400B1FEAA /* AppStateChangeListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D629CD825300B1FEAA /* AppStateChangeListener.swift */; };
 		EE29D96129CD825400B1FEAA /* HackleCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D729CD825300B1FEAA /* HackleCore.swift */; };
 		EE29D96229CD825400B1FEAA /* WorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D929CD825300B1FEAA /* WorkspaceFetcher.swift */; };
 		EE29D96329CD825400B1FEAA /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8DA29CD825300B1FEAA /* Workspace.swift */; };
@@ -292,6 +292,7 @@
 		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
 		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
 		EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */; };
+		EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */; };
 		EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */; };
 		EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */; };
 		EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */; };
@@ -345,9 +346,9 @@
 		EE29D8D029CD825300B1FEAA /* EventRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventRepository.swift; sourceTree = "<group>"; };
 		EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueRepository.swift; sourceTree = "<group>"; };
 		EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseHelper.swift; sourceTree = "<group>"; };
-		EE29D8D429CD825300B1FEAA /* AppNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotification.swift; sourceTree = "<group>"; };
+		EE29D8D429CD825300B1FEAA /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		EE29D8D529CD825300B1FEAA /* AppNotificationObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotificationObserver.swift; sourceTree = "<group>"; };
-		EE29D8D629CD825300B1FEAA /* AppNotificationListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNotificationListener.swift; sourceTree = "<group>"; };
+		EE29D8D629CD825300B1FEAA /* AppStateChangeListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStateChangeListener.swift; sourceTree = "<group>"; };
 		EE29D8D729CD825300B1FEAA /* HackleCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleCore.swift; sourceTree = "<group>"; };
 		EE29D8D929CD825300B1FEAA /* WorkspaceFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceFetcher.swift; sourceTree = "<group>"; };
 		EE29D8DA29CD825300B1FEAA /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
@@ -592,6 +593,7 @@
 		EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideSetListener.swift; sourceTree = "<group>"; };
 		EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideResetListener.swift; sourceTree = "<group>"; };
 		EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
+		EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateManager.swift; sourceTree = "<group>"; };
 		EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingManualOverrideStorageSpecs.swift; sourceTree = "<group>"; };
 		EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestTableViewCell.swift; sourceTree = "<group>"; };
 		EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestTableViewCell.xib; sourceTree = "<group>"; };
@@ -676,20 +678,20 @@
 		EE29D8AE29CD825300B1FEAA /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				EE29D8F829CD825300B1FEAA /* Http */,
-				EE29D8B029CD825300B1FEAA /* Metrics */,
 				EE29D8CD29CD825300B1FEAA /* Database */,
-				EE29D8D329CD825300B1FEAA /* Notification */,
-				EE29D8D829CD825300B1FEAA /* Workspace */,
+				EE29D90D29CD825300B1FEAA /* Evaluation */,
+				EE29D92D29CD825300B1FEAA /* Event */,
+				EE29D8F829CD825300B1FEAA /* Http */,
+				EEDF900C2A0A4B6B00C181E6 /* Lifecycle */,
+				EE29D92829CD825300B1FEAA /* Log */,
+				EE29D8B029CD825300B1FEAA /* Metrics */,
+				EE29D8FC29CD825300B1FEAA /* Model */,
+				EE29D92A29CD825300B1FEAA /* Monitoring */,
 				EE29D8DB29CD825300B1FEAA /* RemoteConfig */,
+				EE29D93229CD825300B1FEAA /* Session */,
 				EE29D8DD29CD825300B1FEAA /* User */,
 				EE29D8E529CD825300B1FEAA /* Utilities */,
-				EE29D8FC29CD825300B1FEAA /* Model */,
-				EE29D90D29CD825300B1FEAA /* Evaluation */,
-				EE29D92829CD825300B1FEAA /* Log */,
-				EE29D92A29CD825300B1FEAA /* Monitoring */,
-				EE29D92D29CD825300B1FEAA /* Event */,
-				EE29D93229CD825300B1FEAA /* Session */,
+				EE29D8D829CD825300B1FEAA /* Workspace */,
 				EE29D8AF29CD825300B1FEAA /* HackleError.swift */,
 				EE29D8D729CD825300B1FEAA /* HackleCore.swift */,
 			);
@@ -783,16 +785,6 @@
 				EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */,
 			);
 			path = Database;
-			sourceTree = "<group>";
-		};
-		EE29D8D329CD825300B1FEAA /* Notification */ = {
-			isa = PBXGroup;
-			children = (
-				EE29D8D429CD825300B1FEAA /* AppNotification.swift */,
-				EE29D8D529CD825300B1FEAA /* AppNotificationObserver.swift */,
-				EE29D8D629CD825300B1FEAA /* AppNotificationListener.swift */,
-			);
-			path = Notification;
 			sourceTree = "<group>";
 		};
 		EE29D8D829CD825300B1FEAA /* Workspace */ = {
@@ -1506,6 +1498,17 @@
 			path = FeatureFlag;
 			sourceTree = "<group>";
 		};
+		EEDF900C2A0A4B6B00C181E6 /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				EE29D8D529CD825300B1FEAA /* AppNotificationObserver.swift */,
+				EE29D8D429CD825300B1FEAA /* AppState.swift */,
+				EE29D8D629CD825300B1FEAA /* AppStateChangeListener.swift */,
+				EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
 		OBJ_14 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1712,6 +1715,7 @@
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
 				EE86377729ED312F000268DC /* ExperimentConditionMatcher.swift in Sources */,
+				EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */,
 				EE29D95029CD825400B1FEAA /* DelegatingMetricRegistry.swift in Sources */,
 				EE29D99629CD825400B1FEAA /* ExperimentTargetDeterminer.swift in Sources */,
 				EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */,
@@ -1755,7 +1759,7 @@
 				EE29D98E29CD825400B1FEAA /* Action.swift in Sources */,
 				EE29D98A29CD825400B1FEAA /* ContainerGroup.swift in Sources */,
 				EE29D97329CD825400B1FEAA /* Clock.swift in Sources */,
-				EE29D95E29CD825400B1FEAA /* AppNotification.swift in Sources */,
+				EE29D95E29CD825400B1FEAA /* AppState.swift in Sources */,
 				EE29D97B29CD825400B1FEAA /* SdkVersion.swift in Sources */,
 				EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */,
 				EE29D94229CD825400B1FEAA /* HackleError.swift in Sources */,
@@ -1771,7 +1775,7 @@
 				EE86376929ECE947000268DC /* UserConditionMatcher.swift in Sources */,
 				EE29D98429CD825400B1FEAA /* EventType.swift in Sources */,
 				EE29D99929CD825500B1FEAA /* ExperimentTargetRuleDeterminer.swift in Sources */,
-				EE29D96029CD825400B1FEAA /* AppNotificationListener.swift in Sources */,
+				EE29D96029CD825400B1FEAA /* AppStateChangeListener.swift in Sources */,
 				EE29D97729CD825400B1FEAA /* AtomicInt64.swift in Sources */,
 				EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */,
 				EE29D94F29CD825400B1FEAA /* DelegatingCounter.swift in Sources */,

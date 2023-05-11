@@ -132,7 +132,7 @@ class DefaultUserManagerSpecs: QuickSpec {
 
                 let user = HackleUserBuilder().deviceId("a").property("a", "a").build()
                 userManager.initialize(user: user)
-                userManager.onNotified(notification: .didEnterBackground, timestamp: Date(timeIntervalSince1970: 42))
+                userManager.onChanged(state: .background, timestamp: Date(timeIntervalSince1970: 42))
 
                 expect(repository.getData(key: "user")).toNot(beNil())
             }
