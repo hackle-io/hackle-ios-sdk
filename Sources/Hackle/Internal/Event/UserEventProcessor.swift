@@ -19,7 +19,7 @@ extension UserEventProcessor {
     }
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
+class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -33,6 +33,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
     private let eventFlushMaxBatchSize: Int
     private let eventDispatcher: UserEventDispatcher
     private let sessionManager: SessionManager
+    private let userManager: UserManager
+    private let appStateManager: AppStateManager
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -46,7 +48,9 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         eventFlushThreshold: Int,
         eventFlushMaxBatchSize: Int,
         eventDispatcher: UserEventDispatcher,
-        sessionManager: SessionManager
+        sessionManager: SessionManager,
+        userManager: UserManager,
+        appStateManager: AppStateManager
     ) {
         self.eventDedupDeterminer = eventDedupDeterminer
         self.eventQueue = eventQueue
@@ -58,6 +62,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         self.eventFlushMaxBatchSize = eventFlushMaxBatchSize
         self.eventDispatcher = eventDispatcher
         self.sessionManager = sessionManager
+        self.userManager = userManager
+        self.appStateManager = appStateManager
     }
 
     func process(event: UserEvent) {
@@ -115,11 +121,11 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         eventDispatcher.dispatch(events: events)
     }
 
-    func onNotified(notification: AppNotification, timestamp: Date) {
-        switch notification {
-        case .didBecomeActive:
+    func onChanged(state: AppState, timestamp: Date) {
+        switch state {
+        case .foreground:
             start()
-        case .didEnterBackground:
+        case .background:
             stop()
         }
     }
@@ -137,7 +143,13 @@ class DefaultUserEventProcessor: UserEventProcessor, AppNotificationListener {
         if SessionEventTracker.isSessionEvent(event: event) {
             return
         }
-        sessionManager.updateLastEventTime(timestamp: event.timestamp)
+
+        if appStateManager.currentState == .foreground {
+            sessionManager.updateLastEventTime(timestamp: event.timestamp)
+        } else {
+            // Corner case when an event is processed between background and foreground
+            sessionManager.startNewSessionIfNeeded(user: userManager.currentUser, timestamp: event.timestamp)
+        }
     }
 
     private func decorateSession(event: UserEvent) -> UserEvent {

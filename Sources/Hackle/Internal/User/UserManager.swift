@@ -30,7 +30,7 @@ protocol UserManager {
     func resetUser() -> User
 }
 
-class DefaultUserManager: UserManager, AppNotificationListener {
+class DefaultUserManager: UserManager, AppStateChangeListener {
 
     private static let USER_KEY = "user"
 
@@ -140,10 +140,10 @@ class DefaultUserManager: UserManager, AppNotificationListener {
         Log.debug("User saved: \(user)")
     }
 
-    func onNotified(notification: AppNotification, timestamp: Date) {
-        switch notification {
-        case .didBecomeActive: return
-        case .didEnterBackground: saveUser(user: currentUser)
+    func onChanged(state: AppState, timestamp: Date) {
+        switch state {
+        case .foreground: return
+        case .background: saveUser(user: currentUser)
         }
     }
 }

@@ -318,6 +318,7 @@ extension HackleApp {
         let dedupDeterminer = DefaultExposureEventDedupDeterminer(
             dedupInterval: config.exposureEventDedupInterval
         )
+        let appStateManager = DefaultAppStateManager()
         let eventProcessor = DefaultUserEventProcessor(
             eventDedupDeterminer: dedupDeterminer,
             eventQueue: eventQueue,
@@ -328,7 +329,9 @@ extension HackleApp {
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
             eventDispatcher: eventDispatcher,
-            sessionManager: sessionManager
+            sessionManager: sessionManager,
+            userManager: userManager,
+            appStateManager: appStateManager
         )
 
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
@@ -341,7 +344,7 @@ extension HackleApp {
         )
         let hackleUserResolver = DefaultHackleUserResolver(device: device)
 
-        let appNotificationObserver = DefaultAppNotificationObserver(eventQueue: eventQueue)
+        let appNotificationObserver = DefaultAppNotificationObserver(eventQueue: eventQueue, appStateManager: appStateManager)
         appNotificationObserver.addListener(listener: workspaceFetcher)
         appNotificationObserver.addListener(listener: sessionManager)
         appNotificationObserver.addListener(listener: userManager)
