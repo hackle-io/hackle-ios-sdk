@@ -137,6 +137,48 @@ class DefaultUserManagerSpecs: QuickSpec {
                 expect(repository.getData(key: "user")).toNot(beNil())
             }
         }
+
+        it("resetUser") {
+            let device = Device(id: "test_device_id", properties: [:])
+            let repository = MemoryKeyValueRepository()
+            let userManager = DefaultUserManager(device: device, repository: repository)
+
+            let user = User.builder().deviceId("a").property("a", "a").build()
+            userManager.initialize(user: user)
+
+            let actual = userManager.resetUser()
+            expect(actual.deviceId) == "test_device_id"
+            expect(userManager.currentUser.deviceId) == "test_device_id"
+        }
+
+        it("updateProperties") {
+            let device = Device(id: "test_device_id", properties: [:])
+            let repository = MemoryKeyValueRepository()
+            let userManager = DefaultUserManager(device: device, repository: repository)
+
+            let user = User.builder()
+                .userId("user")
+                .deviceId("device")
+                .property("a", 42)
+                .property("b", "b")
+                .property("c", "c")
+                .build()
+            userManager.initialize(user: user)
+
+            let operations = PropertyOperations.builder()
+                .set("d", "d")
+                .increment("a", 42)
+                .append("c", "cc")
+                .build()
+
+            let actual = userManager.updateProperties(operations: operations)
+            expect(actual.userId) == "user"
+            expect(actual.deviceId) == "device"
+            expect(actual.properties["a"] as? Double) == 84.0
+            expect(actual.properties["b"] as? String) == "b"
+            expect(actual.properties["c"] as? [String]) == ["c", "cc"]
+            expect(actual.properties["d"] as? String) == "d"
+        }
     }
 }
 

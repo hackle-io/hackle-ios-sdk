@@ -33,10 +33,10 @@ class MockUserManager: Mock, UserManager {
         call(setDeviceIdMock, args: deviceId)
     }
 
-    lazy var setUserPropertyMock = MockFunction(self, setUserProperty)
+    lazy var updatePropertiesMock = MockFunction(self, updateProperties)
 
-    func setUserProperty(key: String, value: Any?) -> User {
-        call(setUserPropertyMock, args: (key, value))
+    func updateProperties(operations: PropertyOperations) -> User {
+        call(updatePropertiesMock, args: operations)
     }
 
     lazy var resetUserMock = MockFunction(self, resetUser)

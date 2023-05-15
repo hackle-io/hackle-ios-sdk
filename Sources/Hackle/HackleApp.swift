@@ -83,11 +83,20 @@ import Foundation
     }
 
     @objc public func setUserProperty(key: String, value: Any?) {
-        userManager.setUserProperty(key: key, value: value)
+        let operations = PropertyOperations.builder()
+            .set(key, value)
+            .build()
+        updateUserProperties(operations: operations)
+    }
+
+    @objc public func updateUserProperties(operations: PropertyOperations) {
+        track(event: operations.toEvent())
+        userManager.updateProperties(operations: operations)
     }
 
     @objc public func resetUser() {
         userManager.resetUser()
+        track(event: PropertyOperations.clearAll().toEvent())
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
