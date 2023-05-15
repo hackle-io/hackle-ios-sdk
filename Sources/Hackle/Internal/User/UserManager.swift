@@ -24,13 +24,13 @@ protocol UserManager {
     func setDeviceId(deviceId: String) -> User
 
     @discardableResult
-    func setUserProperty(key: String, value: Any?) -> User
+    func updateProperties(operations: PropertyOperations) -> User
 
     @discardableResult
     func resetUser() -> User
 }
 
-class DefaultUserManager: UserManager, AppNotificationListener {
+class DefaultUserManager: UserManager, AppStateChangeListener {
 
     private static let USER_KEY = "user"
 
@@ -85,21 +85,36 @@ class DefaultUserManager: UserManager, AppNotificationListener {
         }
     }
 
-    func setUserProperty(key: String, value: Any?) -> User {
+    func resetUser() -> User {
         lock.write {
-            updateUser(user: _currentUser.toBuilder().property(key, value).build())
+            update { _ in
+                defaultUser
+            }
         }
     }
 
-    func resetUser() -> User {
+    func updateProperties(operations: PropertyOperations) -> User {
         lock.write {
-            updateUser(user: defaultUser)
+            operateProperties(operations: operations)
         }
     }
 
     private func updateUser(user: User) -> User {
+        update { currentUser in
+            user.mergeWith(other: currentUser)
+        }
+    }
+
+    private func operateProperties(operations: PropertyOperations) -> User {
+        update { currentUser in
+            let properties = operations.operate(base: currentUser.properties)
+            return currentUser.with(properties: properties)
+        }
+    }
+
+    private func update(updater: (User) -> User) -> User {
         let oldUser = _currentUser
-        let newUser = user.mergeWith(other: oldUser)
+        let newUser = updater(oldUser)
         _currentUser = newUser
 
         if !newUser.identifierEquals(other: oldUser) {
@@ -140,10 +155,10 @@ class DefaultUserManager: UserManager, AppNotificationListener {
         Log.debug("User saved: \(user)")
     }
 
-    func onNotified(notification: AppNotification, timestamp: Date) {
-        switch notification {
-        case .didBecomeActive: return
-        case .didEnterBackground: saveUser(user: currentUser)
+    func onChanged(state: AppState, timestamp: Date) {
+        switch state {
+        case .foreground: return
+        case .background: saveUser(user: currentUser)
         }
     }
 }
@@ -167,6 +182,16 @@ private extension User {
         }
 
         return self
+    }
+
+    func with(properties: [String: Any]) -> User {
+        User(
+            id: id,
+            userId: userId,
+            deviceId: deviceId,
+            identifiers: identifiers,
+            properties: properties
+        )
     }
 
     func identifierEquals(other: User?) -> Bool {

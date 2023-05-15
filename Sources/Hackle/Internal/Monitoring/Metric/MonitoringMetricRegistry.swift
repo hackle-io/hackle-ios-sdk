@@ -5,7 +5,7 @@
 import Foundation
 
 
-class MonitoringMetricRegistry: MetricRegistry, AppNotificationListener {
+class MonitoringMetricRegistry: MetricRegistry, AppStateChangeListener {
 
     private let endpoint: URL
     private let eventQueue: DispatchQueue
@@ -28,10 +28,10 @@ class MonitoringMetricRegistry: MetricRegistry, AppNotificationListener {
         FlushTimer(id: id)
     }
 
-    func onNotified(notification: AppNotification, timestamp: Date) {
-        switch notification {
-        case .didBecomeActive: return
-        case .didEnterBackground:
+    func onChanged(state: AppState, timestamp: Date) {
+        switch state {
+        case .foreground: return
+        case .background:
             eventQueue.async { [weak self] in
                 self?.flush()
             }
