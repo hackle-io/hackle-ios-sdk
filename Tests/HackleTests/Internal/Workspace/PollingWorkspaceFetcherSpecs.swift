@@ -48,7 +48,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
 
                 let sut = PollingWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher, pollingScheduler: pollingScheduler, pollingInterval: -1)
 
-                sut.onNotified(notification: .didBecomeActive, timestamp: Date())
+                sut.onChanged(state: .foreground, timestamp: Date())
 
                 verify(exactly: 0) {
                     pollingScheduler.schedulePeriodicallyMock
@@ -65,7 +65,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
 
                 let sut = PollingWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher, pollingScheduler: pollingScheduler, pollingInterval: 42)
 
-                sut.onNotified(notification: .didBecomeActive, timestamp: Date())
+                sut.onChanged(state: .foreground, timestamp: Date())
 
                 verify {
                     pollingScheduler.schedulePeriodicallyMock
@@ -85,7 +85,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
 
                 let sut = PollingWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher, pollingScheduler: pollingScheduler, pollingInterval: 42)
 
-                sut.onNotified(notification: .didBecomeActive, timestamp: Date())
+                sut.onChanged(state: .foreground, timestamp: Date())
 
                 verify {
                     pollingScheduler.schedulePeriodicallyMock
@@ -93,7 +93,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
                 pollingScheduler.schedulePeriodicallyMock.firstInvokation().arguments.2()
                 expect(sut.getWorkspaceOrNil()).to(beIdenticalTo(workspace))
 
-                sut.onNotified(notification: .didEnterBackground, timestamp: Date())
+                sut.onChanged(state: .background, timestamp: Date())
                 verify(exactly: 1) {
                     job.cancelMock
                 }

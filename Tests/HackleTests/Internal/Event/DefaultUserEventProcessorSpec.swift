@@ -16,6 +16,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var eventFlushScheduler: MockScheduler!
         var eventDispatcher: MockUserEventDispatcher!
         var sessionManager: MockSessionManager!
+        var userManager: MockUserManager!
 
         beforeEach {
             eventDedupDeterminer = MockExposureEventDedupDeterminer()
@@ -24,6 +25,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventFlushScheduler = MockScheduler()
             eventDispatcher = MockUserEventDispatcher()
             sessionManager = MockSessionManager()
+            userManager = MockUserManager()
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             every(eventRepository.countMock).returns(0)
@@ -41,7 +43,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventFlushThreshold: Int = 10,
             eventFlushMaxBatchSize: Int = 21,
             eventDispatcher: UserEventDispatcher = eventDispatcher,
-            sessionManager: SessionManager = sessionManager
+            sessionManager: SessionManager = sessionManager,
+            userManager: UserManager = userManager,
+            appState: AppState = .foreground
         ) -> DefaultUserEventProcessor {
             DefaultUserEventProcessor(
                 eventDedupDeterminer: eventDedupDeterminer,
@@ -53,7 +57,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventFlushThreshold: eventFlushThreshold,
                 eventFlushMaxBatchSize: eventFlushMaxBatchSize,
                 eventDispatcher: eventDispatcher,
-                sessionManager: sessionManager
+                sessionManager: sessionManager,
+                userManager: userManager,
+                appStateManager: MockAppStateManager(currentState: appState)
             )
         }
 
@@ -92,6 +98,23 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 }
 
                 expect(sessionManager.updateLastEventTimeMock.firstInvokation().arguments.timeIntervalSince1970) == 42
+            }
+            
+            it("foreground 가 아닌경우 세션초기화 시도") {
+                // given
+                let sut = processor(appState: .background)
+                let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
+                every(sessionManager.startNewSessionIfNeededMock).returns(Session(id: "session_id"))
+
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    sessionManager.startNewSessionIfNeededMock
+                }
             }
 
             it("중복제거 대상이면 이벤트를 저장하지 않는다") {
@@ -280,20 +303,22 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventFlushThreshold: 10,
                     eventFlushMaxBatchSize: 21,
                     eventDispatcher: eventDispatcher,
-                    sessionManager: sessionManager
+                    sessionManager: sessionManager,
+                    userManager: userManager,
+                    appStateManager: MockAppStateManager(currentState: .foreground)
                 )
             }
 
             context("didEnterBackground 노티인 경우") {
                 it("stop() 을 호출한다") {
-                    spy.onNotified(notification: .didEnterBackground, timestamp: Date())
+                    spy.onChanged(state: .background, timestamp: Date())
                     expect(spy.stopCalled) == true
                 }
             }
 
             context("didBecomeActive 노티인 경우") {
                 it("start() 를 호출한다") {
-                    spy.onNotified(notification: .didBecomeActive, timestamp: Date())
+                    spy.onChanged(state: .foreground, timestamp: Date())
                     expect(spy.startCalled) == true
                 }
             }
@@ -498,5 +523,17 @@ fileprivate class OnNotifiedSpy: DefaultUserEventProcessor {
 
     override func stop() {
         stopCalled = true
+    }
+}
+
+
+fileprivate class MockAppStateManager: AppStateManager {
+    let currentState: AppState
+
+    init(currentState: AppState) {
+        self.currentState = currentState
+    }
+
+    func onChanged(state: AppState, timestamp: Date) {
     }
 }
