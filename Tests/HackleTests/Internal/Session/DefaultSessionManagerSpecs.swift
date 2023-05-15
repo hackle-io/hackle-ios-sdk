@@ -156,7 +156,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
 
                 expect(sut.currentSession).to(beNil())
-                sut.onNotified(notification: .didBecomeActive, timestamp: Date(timeIntervalSince1970: 42))
+                sut.onChanged(state: .foreground, timestamp: Date(timeIntervalSince1970: 42))
 
                 expect(sut.requiredSession.id.hasPrefix("42000."))
             }
@@ -170,7 +170,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 sut.startNewSession(user: User.builder().id("hello").build(), timestamp: Date(timeIntervalSince1970: 42))
 
                 // when
-                sut.onNotified(notification: .didEnterBackground, timestamp: Date(timeIntervalSince1970: 43))
+                sut.onChanged(state: .background, timestamp: Date(timeIntervalSince1970: 43))
 
                 // then
                 expect(repository.getString(key: "session_id")?.hasPrefix("42000.")) == true
@@ -183,7 +183,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 let sut = manager(sessionTimeoutInterval: 10, repository: repository, listener)
 
                 // when
-                sut.onNotified(notification: .didEnterBackground, timestamp: Date(timeIntervalSince1970: 42))
+                sut.onChanged(state: .background, timestamp: Date(timeIntervalSince1970: 42))
 
                 // then
                 expect(repository.getDouble(key: "last_event_time")) == 42.0

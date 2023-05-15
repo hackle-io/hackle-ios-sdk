@@ -9,7 +9,7 @@ protocol WorkspaceFetcher {
     func initialize(completion: @escaping () -> ())
 }
 
-class PollingWorkspaceFetcher: WorkspaceFetcher, AppNotificationListener {
+class PollingWorkspaceFetcher: WorkspaceFetcher, AppStateChangeListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingWorkspaceFetcher.Lock")
 
@@ -75,11 +75,11 @@ class PollingWorkspaceFetcher: WorkspaceFetcher, AppNotificationListener {
         }
     }
 
-    func onNotified(notification: AppNotification, timestamp: Date) {
-        switch notification {
-        case .didBecomeActive:
+    func onChanged(state: AppState, timestamp: Date) {
+        switch state {
+        case .foreground:
             start()
-        case .didEnterBackground:
+        case .background:
             stop()
         }
     }
