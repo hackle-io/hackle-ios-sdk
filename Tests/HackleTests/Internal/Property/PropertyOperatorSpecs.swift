@@ -69,7 +69,7 @@ class PropertyOperatorSpecs: QuickSpec {
                 .add("company", "Hackle")
                 .build()
 
-            sut.verify([:], p1, p1)
+            sut.verify([:], p1, [:])
             sut.verify(p1, [:], p1)
             sut.verify(p1, p2, PropertiesBuilder()
                 .add("name", "Yong")

@@ -39,7 +39,7 @@ class PropertySetOnceOperator: PropertyOperator {
 class PropertyUnsetOperator: PropertyOperator {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any] {
         if base.isEmpty {
-            return properties
+            return [:]
         }
         if properties.isEmpty {
             return base
