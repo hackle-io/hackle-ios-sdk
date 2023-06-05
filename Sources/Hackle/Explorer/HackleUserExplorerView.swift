@@ -15,26 +15,41 @@ class HackleUserExplorerView {
 
     func attach() {
         DispatchQueue.main.async {
-            let rect = UIScreen.main.bounds
-            let width = rect.size.width
-            let height = rect.size.height
-            let offset = self.offset()
-
-            let button = HackleUserExplorerButton(frame: CGRect(
-                x: width - 50,
-                y: height - 50 - offset,
-                width: 35,
-                height: 35
-            ))
-            self.button = button
-
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                self.getKeyWindow()?.addSubview(button)
+            guard let window = self.getKeyWindow() else {
+                return
             }
 
-            button.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.onClick)))
-            button.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.onTouch)))
+            if window.subviews.contains(where: { view in
+                view is HackleUserExplorerButton
+            }) {
+                return
+            }
+
+            if self.button == nil {
+                self.button = self.createButton()
+            }
+            let button = self.button!
+
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+                window.addSubview(button)
+            }
         }
+    }
+
+    private func createButton() -> HackleUserExplorerButton {
+        let rect = UIScreen.main.bounds
+        let width = rect.size.width
+        let height = rect.size.height
+        let offset = offset()
+        let button = HackleUserExplorerButton(frame: CGRect(
+            x: width - 50,
+            y: height - 50 - offset,
+            width: 35,
+            height: 35
+        ))
+        button.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClick)))
+        button.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onTouch)))
+        return button
     }
 
     private func getKeyWindow() -> UIWindow? {
