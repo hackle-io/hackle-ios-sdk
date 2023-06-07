@@ -276,7 +276,34 @@ fileprivate extension PropertyOperator {
         let actual = operate(base: base, properties: properties)
         expect(actual.count) == expected.count
         for (key, value) in actual {
-            expect(PropertyOperators.equals(value, expected[key] as Any)) == true
+            let actualValue = value
+            let expectedValue = expected[key]
+
+            if let expectedValues = expectedValue as? [Any], let actualValues = actualValue as? [Any] {
+                expect(expectedValues.count) == actualValues.count
+                if expectedValues.count != actualValues.count {
+                    return
+                }
+                for (index, ev) in expectedValues.enumerated() {
+                    assertEquals(actualValues[index], ev)
+                }
+            } else {
+                assertEquals(value, expected[key] as Any)
+            }
+        }
+    }
+
+    private func assertEquals(_ actual: Any, _ expected: Any) {
+        let actualValue = HackleValue(value: actual)
+        let expectedValue = HackleValue(value: expected)
+
+        expect(actualValue).toNot(equal(.null))
+        expect(expectedValue).toNot(equal(.null))
+
+        if let a = actualValue.doubleOrNil, let b = expectedValue.doubleOrNil {
+            expect(a) == b
+        } else {
+            expect(actualValue) == expectedValue
         }
     }
 }
