@@ -134,7 +134,7 @@ class PropertyAppendOnceOperator: ArrayPropertyOperator {
         var base = base
         for value in values {
             if !contains(base: base, value: value) {
-                base.append(values)
+                base.append(value)
             }
         }
         return base
@@ -152,7 +152,7 @@ class PropertyPrependOnceOperator: ArrayPropertyOperator {
         var array = [Any]()
         for value in values {
             if !contains(base: array, value: value) && !contains(base: base, value: value) {
-                array.append(values)
+                array.append(value)
             }
         }
         return array + base
@@ -164,7 +164,7 @@ class PropertyRemoveOperator: ArrayPropertyOperator {
         var array = [Any]()
         for value in base {
             if !contains(base: values, value: value) {
-                array.append(values)
+                array.append(value)
             }
         }
         return array
