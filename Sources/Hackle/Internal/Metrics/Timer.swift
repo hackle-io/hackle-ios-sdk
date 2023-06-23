@@ -74,7 +74,7 @@ class TimerSample {
         startTick = clock.tick()
     }
 
-    static func start(clock: Clock = SystemClock.instance) -> TimerSample {
+    static func start(clock: Clock = SystemClock.shared) -> TimerSample {
         TimerSample(clock: clock)
     }
 

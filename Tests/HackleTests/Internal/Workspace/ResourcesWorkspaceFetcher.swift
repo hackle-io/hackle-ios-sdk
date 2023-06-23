@@ -21,7 +21,7 @@ class ResourcesWorkspaceFetcher: WorkspaceFetcher {
         workspace = WorkspaceEntity.from(dto: dto)
     }
 
-    func getWorkspaceOrNil() -> Workspace? {
+    func fetch() -> Workspace? {
         workspace
     }
 

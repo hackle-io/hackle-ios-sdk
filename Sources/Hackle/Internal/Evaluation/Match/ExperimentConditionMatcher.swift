@@ -24,7 +24,7 @@ class ExperimentConditionMatcher: ConditionMatcher {
             return try abTestMatcher.matches(request: request, context: context, condition: condition)
         case .featureFlag:
             return try featureFlagMatcher.matches(request: request, context: context, condition: condition)
-        case .userId, .userProperty, .hackleProperty, .segment:
+        case .userId, .userProperty, .hackleProperty, .eventProperty, .segment:
             throw HackleError.error("Unsupported TargetKeyType [\(condition.key.type)]")
         }
     }

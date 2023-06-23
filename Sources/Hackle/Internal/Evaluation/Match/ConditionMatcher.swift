@@ -11,6 +11,7 @@ protocol ConditionMatcherFactory {
 class DefaultConditionMatcherFactory: ConditionMatcherFactory {
 
     private let userConditionMatcher: ConditionMatcher
+    private let eventConditionMatcher: ConditionMatcher
     private let segmentConditionMatcher: ConditionMatcher
     private let experimentConditionMatcher: ConditionMatcher
 
@@ -22,6 +23,11 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
 
         userConditionMatcher = UserConditionMatcher(
             userValueResolver: DefaultUserValueResolver(),
+            valueOperatorMatcher: valueOperatorMatcher
+        )
+
+        eventConditionMatcher = EventConditionMatcher(
+            eventValueResolver: DefaultEventValueResolver(),
             valueOperatorMatcher: valueOperatorMatcher
         )
 
@@ -39,6 +45,7 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
     func getMatcher(_ type: Target.KeyType) -> ConditionMatcher {
         switch type {
         case .userId, .userProperty, .hackleProperty: return userConditionMatcher
+        case .eventProperty: return eventConditionMatcher
         case .segment: return segmentConditionMatcher
         case .abTest, .featureFlag: return experimentConditionMatcher
         }

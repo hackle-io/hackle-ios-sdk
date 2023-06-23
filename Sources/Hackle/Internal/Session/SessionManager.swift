@@ -18,8 +18,10 @@ protocol SessionManager {
 
     func initialize()
 
+    @discardableResult
     func startNewSession(user: User, timestamp: Date) -> Session
 
+    @discardableResult
     func startNewSessionIfNeeded(user: User, timestamp: Date) -> Session
 
     func updateLastEventTime(timestamp: Date)

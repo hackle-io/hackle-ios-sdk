@@ -17,28 +17,36 @@ protocol HackleCore {
     func track(event: Event, user: HackleUser, timestamp: Date)
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
+
+    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision
 }
 
 class DefaultHackleCore: HackleCore {
 
     private let experimentEvaluator: Evaluator
     private let remoteConfigEvaluator: Evaluator
+    private let inAppMessageEvaluator: Evaluator
     private let workspaceFetcher: WorkspaceFetcher
     private let eventFactory: UserEventFactory
     private let eventProcessor: UserEventProcessor
+    private let clock: Clock
 
     init(
         experimentEvaluator: Evaluator,
         remoteConfigEvaluator: Evaluator,
+        inAppMessageEvaluator: Evaluator,
         workspaceFetcher: WorkspaceFetcher,
         eventFactory: UserEventFactory,
-        eventProcessor: UserEventProcessor
+        eventProcessor: UserEventProcessor,
+        clock: Clock
     ) {
         self.experimentEvaluator = experimentEvaluator
         self.remoteConfigEvaluator = remoteConfigEvaluator
+        self.inAppMessageEvaluator = inAppMessageEvaluator
         self.workspaceFetcher = workspaceFetcher
         self.eventFactory = eventFactory
         self.eventProcessor = eventProcessor
+        self.clock = clock
     }
 
     static func create(
@@ -48,10 +56,18 @@ class DefaultHackleCore: HackleCore {
     ) -> DefaultHackleCore {
 
         let delegatingEvaluator = DelegatingEvaluator()
-        let flowFactory = DefaultEvaluationFlowFactory(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage)
+        let context = EvaluationContext.shared
+        context.initialize(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage)
+        let flowFactory = DefaultEvaluationFlowFactory(context: context)
 
         let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
-        let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: flowFactory.remoteConfigTargetRuleDeterminer)
+        let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)
+        let inAppMessageEvaluator = InAppMessageEvaluator(
+            userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!,
+            hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!,
+            targetMatcher: context.get(InAppMessageTargetMatcher.self)!,
+            inAppMessageResolver: context.get(DefaultInAppMessageResolver.self)!
+        )
 
         delegatingEvaluator.add(experimentEvaluator)
         delegatingEvaluator.add(remoteConfigEvaluator)
@@ -59,9 +75,11 @@ class DefaultHackleCore: HackleCore {
         return DefaultHackleCore(
             experimentEvaluator: experimentEvaluator,
             remoteConfigEvaluator: remoteConfigEvaluator,
+            inAppMessageEvaluator: inAppMessageEvaluator,
             workspaceFetcher: workspaceFetcher,
-            eventFactory: DefaultUserEventFactory(clock: SystemClock.instance),
-            eventProcessor: eventProcessor
+            eventFactory: DefaultUserEventFactory(clock: SystemClock.shared),
+            eventProcessor: eventProcessor,
+            clock: SystemClock.shared
         )
     }
 
@@ -73,7 +91,7 @@ class DefaultHackleCore: HackleCore {
 
     func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
 
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+        guard let workspace = workspaceFetcher.fetch() else {
             return Decision.of(variation: defaultVariationKey, reason: DecisionReason.SDK_NOT_READY)
         }
 
@@ -92,7 +110,7 @@ class DefaultHackleCore: HackleCore {
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {
         var decisions = [(Experiment, Decision)]()
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+        guard let workspace = workspaceFetcher.fetch() else {
             return decisions
         }
         for experiment in workspace.experiments {
@@ -111,7 +129,7 @@ class DefaultHackleCore: HackleCore {
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+        guard let workspace = workspaceFetcher.fetch() else {
             return FeatureFlagDecision.off(reason: DecisionReason.SDK_NOT_READY)
         }
 
@@ -130,7 +148,7 @@ class DefaultHackleCore: HackleCore {
 
     func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
         var decisions = [(Experiment, FeatureFlagDecision)]()
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+        guard let workspace = workspaceFetcher.fetch() else {
             return decisions
         }
         for featureFlag in workspace.featureFlags {
@@ -157,16 +175,16 @@ class DefaultHackleCore: HackleCore {
     }
 
     func track(event: Event, user: HackleUser, timestamp: Date) {
-        let eventType = workspaceFetcher.getWorkspaceOrNil()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
+        let eventType = workspaceFetcher.fetch()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
         let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
         eventProcessor.process(event: userEvent)
     }
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision {
-        guard let workspace = workspaceFetcher.getWorkspaceOrNil() else {
+        guard let workspace = workspaceFetcher.fetch() else {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.SDK_NOT_READY)
         }
-        guard let parameter = workspace.getRemoteConfigParameter(parameterKey: parameterKey) else {
+        guard let parameter = workspace.getRemoteConfigParameterOrNil(parameterKey: parameterKey) else {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.REMOTE_CONFIG_PARAMETER_NOT_FOUND)
         }
 
@@ -177,5 +195,38 @@ class DefaultHackleCore: HackleCore {
         eventProcessor.process(events: events)
 
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
+    }
+
+    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision {
+        guard let workspace = workspaceFetcher.fetch() else {
+            return InAppMessageDecision.of(reason: DecisionReason.SDK_NOT_READY)
+        }
+
+        guard let inAppMessage = workspace.getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) else {
+            return InAppMessageDecision.of(reason: DecisionReason.IN_APP_MESSAGE_NOT_FOUND)
+        }
+
+        let request = InAppMessageRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: clock.now())
+        let evaluation: InAppMessageEvaluation = try inAppMessageEvaluator.evaluate(request: request, context: Evaluators.context())
+
+        return InAppMessageDecision.of(inAppMessage: evaluation.inAppMessage, message: evaluation.message, reason: evaluation.reason)
+    }
+}
+
+extension HackleCore {
+
+    /// Used for event triggered in app message
+    func tryInAppMessage(inAppMessageKey: Int64, user: HackleUser) -> InAppMessageDecision {
+        let sample = TimerSample.start()
+        let decision: InAppMessageDecision
+
+        do {
+            decision = try inAppMessage(inAppMessageKey: inAppMessageKey, user: user)
+        } catch let error {
+            Log.error("Unexpected error while deciding in app message [\(inAppMessageKey)]: \(String(describing: error))")
+            decision = InAppMessageDecision.of(reason: DecisionReason.EXCEPTION)
+        }
+        DecisionMetrics.inAppMessage(sample: sample, key: inAppMessageKey, decision: decision)
+        return decision
     }
 }

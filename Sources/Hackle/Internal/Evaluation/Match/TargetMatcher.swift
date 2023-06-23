@@ -4,6 +4,17 @@ protocol TargetMatcher {
     func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool
 }
 
+extension TargetMatcher {
+    func anyMatches(request: EvaluatorRequest, context: EvaluatorContext, targets: [Target]) throws -> Bool {
+        if targets.isEmpty {
+            return true
+        }
+        return try targets.contains { it in
+            try matches(request: request, context: context, target: it)
+        }
+    }
+}
+
 
 class DefaultTargetMatcher: TargetMatcher {
 

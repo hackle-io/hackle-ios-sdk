@@ -10,6 +10,8 @@ protocol Workspace {
 
     var featureFlags: [Experiment] { get }
 
+    var inAppMessages: [InAppMessage] { get }
+
     func getExperimentOrNil(experimentKey: Experiment.Key) -> Experiment?
 
     func getFeatureFlagOrNil(featureKey: Experiment.Key) -> Experiment?
@@ -24,13 +26,16 @@ protocol Workspace {
 
     func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration?
 
-    func getRemoteConfigParameter(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter?
+    func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter?
+
+    func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage?
 }
 
 class WorkspaceEntity: Workspace {
 
     let experiments: [Experiment]
     let featureFlags: [Experiment]
+    let inAppMessages: [InAppMessage]
     private let buckets: [Bucket.Id: Bucket]
     private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
@@ -40,31 +45,49 @@ class WorkspaceEntity: Workspace {
 
     private let _experiments: [Experiment.Key: Experiment]
     private let _featureFlags: [Experiment.Key: Experiment]
+    private let _inAppMessages: [InAppMessage.Key: InAppMessage]
 
     init(
         experiments: [Experiment],
         featureFlags: [Experiment],
-        buckets: [Bucket.Id: Bucket],
-        eventTypes: [EventType.Key: EventType],
-        segments: [Segment.Key: Segment],
-        containers: [Container.Id: Container],
-        parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration],
-        remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
+        buckets: [Bucket],
+        eventTypes: [EventType],
+        segments: [Segment],
+        containers: [Container],
+        parameterConfigurations: [ParameterConfiguration],
+        remoteConfigParameters: [RemoteConfigParameter],
+        inAppMessages: [InAppMessage]
     ) {
         self.experiments = experiments
         self.featureFlags = featureFlags
-        self.buckets = buckets
-        self.eventTypes = eventTypes
-        self.segments = segments
-        self.containers = containers
-        self.parameterConfigurations = parameterConfigurations
-        self.remoteConfigParameters = remoteConfigParameters
-
-        self._experiments = experiments.associateBy { it in
-            it.key
+        self.inAppMessages = inAppMessages
+        self.buckets = buckets.associateBy {
+            $0.id
         }
-        self._featureFlags = featureFlags.associateBy { it in
-            it.key
+        self.eventTypes = eventTypes.associateBy {
+            $0.key
+        }
+        self.segments = segments.associateBy {
+            $0.key
+        }
+        self.containers = containers.associateBy {
+            $0.id
+        }
+        self.parameterConfigurations = parameterConfigurations.associateBy {
+            $0.id
+        }
+        self.remoteConfigParameters = remoteConfigParameters.associateBy {
+            $0.key
+        }
+
+        _experiments = experiments.associateBy {
+            $0.key
+        }
+        _featureFlags = featureFlags.associateBy {
+            $0.key
+        }
+        _inAppMessages = inAppMessages.associateBy {
+            $0.key
         }
     }
 
@@ -96,57 +119,51 @@ class WorkspaceEntity: Workspace {
         parameterConfigurations[parameterConfigurationId]
     }
 
-    func getRemoteConfigParameter(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
+    func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
         remoteConfigParameters[parameterKey]
+    }
+
+    func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
+        _inAppMessages[inAppMessageKey]
     }
 
     static func from(dto: WorkspaceDto) -> Workspace {
 
-        let buckets = dto.buckets.associate { it in
-            (it.id, it.toBucket())
+        let experiments = dto.experiments.compactMap { it in
+            it.toExperimentOrNil(type: .abTest)
         }
 
-        let experiments = dto.experiments
-            .compactMap { it in
-                it.toExperimentOrNil(type: .abTest)
-            }
-
-        let featureFlags = dto.featureFlags
-            .compactMap { it in
-                it.toExperimentOrNil(type: .featureFlag)
-            }
-
-        let eventTypes: [EventType.Key: EventType] = dto.events.associate { it in
-            (it.key, it.toEventType())
+        let featureFlags = dto.featureFlags.compactMap { it in
+            it.toExperimentOrNil(type: .featureFlag)
         }
 
-        let segments = dto.segments
-            .compactMap { it in
-                it.toSegmentOrNil()
-            }
-            .associateBy { it in
-                it.key
-            }
-
-        let containers = dto.containers.associate { it in
-            (it.id, it.toContainer())
+        let buckets = dto.buckets.map { it in
+            it.toBucket()
         }
 
-        let parameterConfigurations = dto.parameterConfigurations
-            .map { it in
-                it.toParameterConfiguration()
-            }
-            .associateBy { it in
-                it.id
-            }
+        let eventTypes = dto.events.map { it in
+            it.toEventType()
+        }
 
-        let remoteConfigParameters = dto.remoteConfigParameters
-            .compactMap { it in
-                it.toRemoteConfigParameterOrNil()
-            }
-            .associateBy { it in
-                it.key
-            }
+        let segments = dto.segments.compactMap { it in
+            it.toSegmentOrNil()
+        }
+
+        let containers = dto.containers.map { it in
+            it.toContainer()
+        }
+
+        let parameterConfigurations = dto.parameterConfigurations.map { it in
+            it.toParameterConfiguration()
+        }
+
+        let remoteConfigParameters = dto.remoteConfigParameters.compactMap { it in
+            it.toRemoteConfigParameterOrNil()
+        }
+
+        let inAppMessages = dto.inAppMessages.compactMap { it in
+            it.toInAppMessageOrNil()
+        }
 
         return WorkspaceEntity(
             experiments: experiments,
@@ -156,7 +173,8 @@ class WorkspaceEntity: Workspace {
             segments: segments,
             containers: containers,
             parameterConfigurations: parameterConfigurations,
-            remoteConfigParameters: remoteConfigParameters
+            remoteConfigParameters: remoteConfigParameters,
+            inAppMessages: inAppMessages
         )
     }
 }
@@ -170,6 +188,7 @@ class WorkspaceDto: Codable {
     var containers: [ContainerDto]
     var parameterConfigurations: [ParameterConfigurationDto]
     var remoteConfigParameters: [RemoteConfigParameterDto]
+    var inAppMessages: [InAppMessageDto]
 }
 
 class ExperimentDto: Codable {
@@ -321,7 +340,296 @@ class RemoteConfigParameterDto: Codable {
         var id: Int64
         var value: HackleValue
     }
+}
 
+class InAppMessageDto: Codable {
+    var key: Int64
+    var timeUnit: String
+    var startEpochTime: Int64?
+    var endEpochTime: Int64?
+    var status: String
+    var eventTriggerRules: [EventTriggerRuleDto]
+    var targetContext: TargetContextDto
+    var messageContext: MessageContextDto
+
+
+    class EventTriggerRuleDto: Codable {
+        var eventKey: String
+        var targets: [TargetDto]
+    }
+
+    class TargetContextDto: Codable {
+        var targets: [TargetDto]
+        var overrides: [UserOverrideDto]
+
+        class UserOverrideDto: Codable {
+            var identifierType: String
+            var identifiers: [String]
+        }
+    }
+
+    class MessageContextDto: Codable {
+        var defaultLang: String
+        var platformTypes: [String]
+        var exposure: MessageDto.ExposureDto
+        var messages: [MessageDto]
+
+        class MessageDto: Codable {
+            var lang: String
+            var layout: LayoutDto
+            var images: [ImageDto]
+            var text: TextDto?
+            var buttons: [ButtonDto]
+            var closeButton: CloseButtonDto?
+            var background: BackgroundDto
+
+            class LayoutDto: Codable {
+                var displayType: String
+                var layoutType: String
+            }
+
+            class ImageDto: Codable {
+                var orientation: String
+                var imagePath: String
+                var action: ActionDto?
+            }
+
+            class TextDto: Codable {
+                var title: TextAttributeDto
+                var body: TextAttributeDto
+
+                class TextAttributeDto: Codable {
+                    var text: String
+                    var style: StyleDto
+                }
+
+                class StyleDto: Codable {
+                    var textColor: String
+                }
+            }
+
+            class ButtonDto: Codable {
+                var text: String
+                var style: StyleDto
+                var action: ActionDto
+
+
+                class StyleDto: Codable {
+                    var textColor: String
+                    var bgColor: String
+                    var borderColor: String
+                }
+            }
+
+            class CloseButtonDto: Codable {
+                var style: StyleDto
+
+                class StyleDto: Codable {
+                    var color: String
+                }
+            }
+
+            class BackgroundDto: Codable {
+                var color: String
+            }
+
+            class ExposureDto: Codable {
+                var type: String
+                var key: Int64?
+            }
+        }
+
+        class ActionDto: Codable {
+            var behavior: String
+            var type: String
+            var value: String?
+        }
+    }
+}
+
+extension InAppMessageDto {
+    func toInAppMessageOrNil() -> InAppMessage? {
+
+        guard let status: InAppMessage.Status = Enums.parseOrNil(rawValue: status) else {
+            return nil
+        }
+
+        let period: InAppMessage.Period
+        switch timeUnit {
+        case "IMMEDIATE":
+            period = .always
+            break
+        case "CUSTOM":
+            guard let start = startEpochTime else {
+                return nil
+            }
+            guard let end = endEpochTime else {
+                return nil
+            }
+            period = .range(
+                startInclusive: Date(timeIntervalSince1970: TimeInterval(start)),
+                endExclusive: Date(timeIntervalSince1970: TimeInterval(end))
+            )
+            break
+        default:
+            return nil
+        }
+
+        return InAppMessage(
+            id: -1,
+            key: key,
+            status: status,
+            period: period,
+            triggerRules: eventTriggerRules.map {
+                $0.toTriggerRule()
+            },
+            targetContext: targetContext.toTargetContext(),
+            messageContext: messageContext.toMessageContext()
+        )
+    }
+}
+
+extension InAppMessageDto.EventTriggerRuleDto {
+    func toTriggerRule() -> InAppMessage.TriggerRule {
+        InAppMessage.TriggerRule(eventKey: eventKey, targets: targets.compactMap {
+            $0.toTargetOrNil(.property)
+        })
+    }
+}
+
+extension InAppMessageDto.TargetContextDto {
+    func toTargetContext() -> InAppMessage.TargetContext {
+        InAppMessage.TargetContext(
+            overrides: overrides.map {
+                $0.toUserOverride()
+            },
+            targets: targets.compactMap {
+                $0.toTargetOrNil(.property)
+            }
+        )
+    }
+}
+
+extension InAppMessageDto.TargetContextDto.UserOverrideDto {
+    func toUserOverride() -> InAppMessage.UserOverride {
+        InAppMessage.UserOverride(identifierType: identifierType, identifiers: identifiers)
+    }
+}
+
+extension InAppMessageDto.MessageContextDto {
+    func toMessageContext() -> InAppMessage.MessageContext {
+        InAppMessage.MessageContext(
+            defaultLang: defaultLang,
+            platformTypes: platformTypes.compactMap {
+                Enums.parseOrNil(rawValue: $0)
+            },
+            messages: messages.compactMap {
+                $0.toMessageOrNil()
+            }
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto {
+    func toMessageOrNil() -> InAppMessage.Message? {
+
+        guard let layout = layout.toLayoutOrNil() else {
+            return nil
+        }
+        return InAppMessage.Message(
+            lang: lang,
+            layout: layout,
+            images: images.compactMap {
+                $0.toImageOrNil()
+            },
+            text: text?.toText(),
+            buttons: buttons.map {
+                $0.toButton()
+            },
+            closeButton: closeButton?.toButton(),
+            background: InAppMessage.Message.Background(color: background.color)
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.LayoutDto {
+    func toLayoutOrNil() -> InAppMessage.Message.Layout? {
+        guard let displayType: InAppMessage.DisplayType = Enums.parseOrNil(rawValue: displayType) else {
+            return nil
+        }
+        guard let layoutType: InAppMessage.LayoutType = Enums.parseOrNil(rawValue: layoutType) else {
+            return nil
+        }
+        return InAppMessage.Message.Layout(displayType: displayType, layoutType: layoutType)
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.ImageDto {
+    func toImageOrNil() -> InAppMessage.Message.Image? {
+        guard let orientation: InAppMessage.Orientation = Enums.parseOrNil(rawValue: orientation) else {
+            return nil
+        }
+        return InAppMessage.Message.Image(
+            orientation: orientation,
+            imagePath: imagePath,
+            action: action?.toActionOrNil()
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.ActionDto {
+    func toActionOrNil() -> InAppMessage.Action? {
+        guard let behavior: InAppMessage.Behavior = Enums.parseOrNil(rawValue: behavior) else {
+            return nil
+        }
+        guard let type: InAppMessage.ActionType = Enums.parseOrNil(rawValue: type) else {
+            return nil
+        }
+        return InAppMessage.Action(behavior: behavior, type: type, value: value)
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.TextDto {
+    func toText() -> InAppMessage.Message.Text {
+        InAppMessage.Message.Text(
+            title: title.toAttribute(),
+            body: body.toAttribute()
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.TextDto.TextAttributeDto {
+    func toAttribute() -> InAppMessage.Message.Text.Attribute {
+        InAppMessage.Message.Text.Attribute(text: text, style: InAppMessage.Message.Text.Style(textColor: style.textColor))
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.ButtonDto {
+    func toButton() -> InAppMessage.Message.Button {
+        InAppMessage.Message.Button(
+            text: text,
+            style: InAppMessage.Message.Button.Style(
+                textColor: style.textColor,
+                bgColor: style.bgColor,
+                borderColor: style.borderColor
+            ),
+            action: action.toActionOrNil()
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.CloseButtonDto {
+    func toButton() -> InAppMessage.Message.Button {
+        InAppMessage.Message.Button(
+            text: "x",
+            style: InAppMessage.Message.Button.Style(
+                textColor: style.color,
+                bgColor: "#FFFFFF",
+                borderColor: "#FFFFFF"
+            ),
+            action: InAppMessage.Action(behavior: .click, type: .close, value: nil)
+        )
+    }
 }
 
 extension SlotDto {
@@ -332,7 +640,7 @@ extension SlotDto {
 
 extension BucketDto {
     func toBucket() -> Bucket {
-        BucketEntity(seed: seed, slotSize: slotSize, slots: slots.map {
+        BucketEntity(id: id, seed: seed, slotSize: slotSize, slots: slots.map {
             $0.toSlot()
         })
     }
@@ -576,3 +884,4 @@ extension RemoteConfigParameterDto.ValueDto {
         RemoteConfigParameter.Value(id: id, rawValue: value)
     }
 }
+

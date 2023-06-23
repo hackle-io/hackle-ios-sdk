@@ -32,6 +32,7 @@ class Target {
         case userId = "USER_ID"
         case userProperty = "USER_PROPERTY"
         case hackleProperty = "HACKLE_PROPERTY"
+        case eventProperty = "EVENT_PROPERTY"
         case segment = "SEGMENT"
         case abTest = "AB_TEST"
         case featureFlag = "FEATURE_FLAG"

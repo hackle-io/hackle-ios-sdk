@@ -1,7 +1,6 @@
 import Foundation
 
 protocol EvaluationFlowFactory {
-    var remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer { get }
     func getFlow(experimentType: ExperimentType) -> EvaluationFlow
 }
 
@@ -9,39 +8,27 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
 
     private let abTestFlow: EvaluationFlow
     private let featureFlagFlow: EvaluationFlow
-    let remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer
 
-    init(evaluator: Evaluator, manualOverrideStorage: ManualOverrideStorage) {
-
-        let bucketer = DefaultBucketer()
-        let targetMatcher = DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: evaluator))
-        let actionResolver = DefaultActionResolver(bucketer: bucketer)
-        let overrideResolver = DefaultOverrideResolver(manualOverrideStorage: manualOverrideStorage, targetMatcher: targetMatcher, actionResolver: actionResolver)
-        let containerResolver = DefaultContainerResolver(bucketer: bucketer)
-
+    init(context: EvaluationContext) {
         abTestFlow = DefaultEvaluationFlow.of(
-            OverrideEvaluator(overrideResolver: overrideResolver),
+            OverrideEvaluator(overrideResolver: context.get(OverrideResolver.self)!),
             IdentifierEvaluator(),
-            ContainerEvaluator(containerResolver: containerResolver),
-            ExperimentTargetEvaluator(experimentTargetDeterminer: DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)),
+            ContainerEvaluator(containerResolver: context.get(ContainerResolver.self)!),
+            ExperimentTargetEvaluator(experimentTargetDeterminer: context.get(ExperimentTargetDeterminer.self)!),
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),
             CompletedExperimentEvaluator(),
-            TrafficAllocateEvaluator(actionResolver: actionResolver)
+            TrafficAllocateEvaluator(actionResolver: context.get(ActionResolver.self)!)
         )
 
         featureFlagFlow = DefaultEvaluationFlow.of(
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),
             CompletedExperimentEvaluator(),
-            OverrideEvaluator(overrideResolver: overrideResolver),
+            OverrideEvaluator(overrideResolver: context.get(OverrideResolver.self)!),
             IdentifierEvaluator(),
-            TargetRuleEvaluator(targetRuleDeterminer: DefaultExperimentTargetRuleDeterminer(targetMatcher: targetMatcher), actionResolver: actionResolver),
-            DefaultRuleEvaluator(actionResolver: actionResolver)
-        )
-
-        remoteConfigTargetRuleDeterminer = DefaultRemoteConfigTargetRuleDeterminer(
-            matcher: DefaultRemoteConfigTargetRuleMatcher(targetMatcher: targetMatcher, buckter: bucketer)
+            TargetRuleEvaluator(targetRuleDeterminer: context.get(ExperimentTargetRuleDeterminer.self)!, actionResolver: context.get(ActionResolver.self)!),
+            DefaultRuleEvaluator(actionResolver: context.get(ActionResolver.self)!)
         )
     }
 

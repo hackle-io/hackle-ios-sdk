@@ -135,6 +135,16 @@ enum DecisionMetrics {
         let timer = Metrics.timer(name: "remote.config.decision", tags: tags)
         sample.stop(timer: timer)
     }
+
+    static func inAppMessage(sample: TimerSample, key: Int64, decision: InAppMessageDecision) {
+        let tags = [
+            "key": String(key),
+            "show": decision.isShow ? "true" : "false",
+            "reason": decision.reason
+        ]
+        let timer = Metrics.timer(name: "iam.decision", tags: tags)
+        sample.stop(timer: timer)
+    }
 }
 
 enum ApiCallMetrics {

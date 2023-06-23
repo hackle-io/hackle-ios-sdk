@@ -24,6 +24,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
     private let eventDedupDeterminer: ExposureEventDedupDeterminer
+    private let eventPublisher: UserEventPublisher
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
     private let eventRepositoryMaxSize: Int
@@ -40,6 +41,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
 
     init(
         eventDedupDeterminer: ExposureEventDedupDeterminer,
+        eventPublisher: UserEventPublisher,
         eventQueue: DispatchQueue,
         eventRepository: EventRepository,
         eventRepositoryMaxSize: Int,
@@ -52,6 +54,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         userManager: UserManager,
         appStateManager: AppStateManager
     ) {
+        self.eventPublisher = eventPublisher
         self.eventDedupDeterminer = eventDedupDeterminer
         self.eventQueue = eventQueue
         self.eventRepository = eventRepository
@@ -67,6 +70,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     }
 
     func process(event: UserEvent) {
+        eventPublisher.publish(event: event)
         eventQueue.async {
             self.addEventInternal(event: event)
         }

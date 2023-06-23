@@ -5,7 +5,7 @@
 import Foundation
 
 protocol WorkspaceFetcher {
-    func getWorkspaceOrNil() -> Workspace?
+    func fetch() -> Workspace?
     func initialize(completion: @escaping () -> ())
 }
 
@@ -30,7 +30,7 @@ class PollingWorkspaceFetcher: WorkspaceFetcher, AppStateChangeListener {
         self.pollingInterval = pollingInterval
     }
 
-    func getWorkspaceOrNil() -> Workspace? {
+    func fetch() -> Workspace? {
         workspace
     }
 

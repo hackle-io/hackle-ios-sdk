@@ -7,6 +7,8 @@ protocol Evaluator {
 enum EvaluatorType: String {
     case experiment = "EXPERIMENT"
     case remoteConfig = "REMOTE_CONFIG"
+    case inAppMessage = "IN_APP_MESSAGE"
+    case event = "EVENT"
 }
 
 struct EvaluatorKey: Equatable {
@@ -22,6 +24,10 @@ protocol EvaluatorRequest {
     var key: EvaluatorKey { get }
     var workspace: Workspace { get }
     var user: HackleUser { get }
+}
+
+protocol EvaluatorEventRequest: EvaluatorRequest {
+    var event: UserEvent { get }
 }
 
 protocol EvaluatorEvaluation {

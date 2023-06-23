@@ -19,7 +19,7 @@ protocol Clock {
 
 class SystemClock: Clock {
 
-    static let instance = SystemClock()
+    static let shared = SystemClock()
 
     func now() -> Date {
         Date()

@@ -29,14 +29,14 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
 
                 let sut = PollingWorkspaceFetcher(httpWorkspaceFetcher: httpWorkspaceFetcher, pollingScheduler: pollingScheduler, pollingInterval: 10)
 
-                expect(sut.getWorkspaceOrNil()).to(beNil())
+                expect(sut.fetch()).to(beNil())
 
                 var initialized = false
                 sut.initialize {
                     initialized = true
                 }
 
-                expect(sut.getWorkspaceOrNil()).to(beIdenticalTo(workspace))
+                expect(sut.fetch()).to(beIdenticalTo(workspace))
                 expect(initialized) == true
             }
         }
@@ -53,7 +53,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
                 verify(exactly: 0) {
                     pollingScheduler.schedulePeriodicallyMock
                 }
-                expect(sut.getWorkspaceOrNil()).to(beNil())
+                expect(sut.fetch()).to(beNil())
             }
 
             it("polling") {
@@ -71,7 +71,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
                     pollingScheduler.schedulePeriodicallyMock
                 }
                 pollingScheduler.schedulePeriodicallyMock.firstInvokation().arguments.2()
-                expect(sut.getWorkspaceOrNil()).to(beIdenticalTo(workspace))
+                expect(sut.fetch()).to(beIdenticalTo(workspace))
             }
         }
 
@@ -91,7 +91,7 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
                     pollingScheduler.schedulePeriodicallyMock
                 }
                 pollingScheduler.schedulePeriodicallyMock.firstInvokation().arguments.2()
-                expect(sut.getWorkspaceOrNil()).to(beIdenticalTo(workspace))
+                expect(sut.fetch()).to(beIdenticalTo(workspace))
 
                 sut.onChanged(state: .background, timestamp: Date())
                 verify(exactly: 1) {
