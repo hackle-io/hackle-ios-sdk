@@ -55,25 +55,3 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
         }
     }
 }
-
-private class TargetMatcherStub: TargetMatcher {
-
-    private let isMatches: [Bool]
-    private var index = 0
-    var callCount = 0
-
-    init(isMatches: [Bool]) {
-        self.isMatches = isMatches
-    }
-
-    static func of(_ isMatches: Bool...) -> TargetMatcherStub {
-        TargetMatcherStub(isMatches: isMatches)
-    }
-
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
-        let isMatch = isMatches[index]
-        index = index + 1
-        callCount = callCount + 1
-        return isMatch
-    }
-}

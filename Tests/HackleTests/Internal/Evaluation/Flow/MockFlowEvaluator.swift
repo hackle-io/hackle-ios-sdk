@@ -2,11 +2,33 @@ import Foundation
 import Mockery
 @testable import Hackle
 
-class MockFlowEvaluator: Mock, FlowEvaluator {
+class FlowEvaluatorStub: FlowEvaluator {
 
-    lazy var evaluateMock = MockFunction(self, evaluate)
+    private let evaluation: EvaluatorEvaluation
 
-    func evaluate(request: ExperimentRequest, context: EvaluatorContext, nextFlow: EvaluationFlow) throws -> ExperimentEvaluation {
-        call(evaluateMock, args: (request, context, nextFlow))
+    init(evaluation: EvaluatorEvaluation) {
+        self.evaluation = evaluation
+    }
+
+    func evaluate<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+        request: Request,
+        context: EvaluatorContext,
+        nextFlow: EvaluationFlow<Request, Evaluation>
+    ) throws -> Evaluation? {
+        evaluation as? Evaluation
+    }
+}
+
+
+class NextFlowEvaluator: FlowEvaluator {
+    var callCount = 0
+
+    func evaluate<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+        request: Request,
+        context: EvaluatorContext,
+        nextFlow: EvaluationFlow<Request, Evaluation>
+    ) throws -> Evaluation? {
+        callCount += 1
+        return try nextFlow.evaluate(request: request, context: context)
     }
 }

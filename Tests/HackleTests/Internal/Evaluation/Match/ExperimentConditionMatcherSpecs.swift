@@ -73,6 +73,7 @@ class ExperimentConditionMatcherSpecs: QuickSpec {
             check(type: .userProperty)
             check(type: .hackleProperty)
             check(type: .segment)
+            check(type: .eventProperty)
         }
     }
 }

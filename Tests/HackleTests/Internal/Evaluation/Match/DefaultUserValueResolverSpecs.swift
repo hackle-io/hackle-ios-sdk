@@ -40,8 +40,10 @@ class DefaultUserValueResolverSpecs: QuickSpec {
         }
 
         it("SEGMENT") {
-            expect(try sut.resolveOrNil(user: user, key: Target.Key(type: .segment, name: "SEGMENT")))
-                .to(throwError(HackleError.error("Unsupported TargetKeyType [segment]")))
+            expect(try sut.resolveOrNil(user: user, key: Target.Key(type: .eventProperty, name: "a"))).to(throwError())
+            expect(try sut.resolveOrNil(user: user, key: Target.Key(type: .segment, name: "a"))).to(throwError())
+            expect(try sut.resolveOrNil(user: user, key: Target.Key(type: .abTest, name: "a"))).to(throwError())
+            expect(try sut.resolveOrNil(user: user, key: Target.Key(type: .featureFlag, name: "a"))).to(throwError())
         }
     }
 }

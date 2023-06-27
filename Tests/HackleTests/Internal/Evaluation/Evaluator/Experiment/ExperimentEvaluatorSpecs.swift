@@ -40,21 +40,29 @@ class ExperimentEvaluatorSpecs: QuickSpec {
                     .to(throwError())
             }
 
-            it("flow") {
+            context("flow") {
+                it("evaluation") {
+                    let evaluation = experimentEvaluation()
+                    let flow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.create(evaluation)
+                    evaluationFlowFactory.experimentFlow = flow
 
-                let evaluation = experimentEvaluation()
-                let flow = MockEvaluationFlow()
-                every(flow.evaluateMock).returns(evaluation)
-                every(evaluationFlowFactory.getFlowMock).returns(flow)
+                    let request = experimentRequest()
+                    let context = Evaluators.context()
 
-                let request = experimentRequest()
-                let context = Evaluators.context()
+                    let actual: ExperimentEvaluation = try sut.evaluate(request: request, context: context)
 
-                let actual: ExperimentEvaluation = try sut.evaluate(request: request, context: context)
+                    expect(actual).to(beIdenticalTo(evaluation))
+                }
 
-                expect(actual).to(beIdenticalTo(evaluation))
+                it("default") {
+                    let request = experimentRequest()
+                    let context = Evaluators.context()
+
+                    let actual: ExperimentEvaluation = try sut.evaluate(request: request, context: context)
+
+                    expect(actual.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
+                }
             }
         }
-
     }
 }

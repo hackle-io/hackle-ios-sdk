@@ -5,11 +5,18 @@
 import Foundation
 
 protocol UserEvent {
+    var insertId: String { get }
     var type: UserEventType { get }
     var timestamp: Date { get }
     var user: HackleUser { get }
 
     func with(user: HackleUser) -> UserEvent
+}
+
+extension UserEvent {
+    func setScreen(_ screen: String?) {
+        user.setScreen(screen)
+    }
 }
 
 enum UserEventType: Int {
@@ -25,7 +32,7 @@ enum UserEvents {
         evaluation: ExperimentEvaluation,
         properties: [String: Any],
         timestamp: Date
-    ) -> UserEvent {
+    ) -> UserEvents.Exposure {
         Exposure(
             insertId: UUID().uuidString.lowercased(),
             timestamp: timestamp,
@@ -38,7 +45,12 @@ enum UserEvents {
         )
     }
 
-    static func track(eventType: EventType, event: Event, timestamp: Date, user: HackleUser) -> UserEvent {
+    static func track(
+        eventType: EventType,
+        event: Event,
+        timestamp: Date,
+        user: HackleUser
+    ) -> UserEvents.Track {
         Track(
             insertId: UUID().uuidString.lowercased(),
             timestamp: timestamp,
@@ -53,7 +65,7 @@ enum UserEvents {
         evaluation: RemoteConfigEvaluation,
         properties: [String: Any],
         timestamp: Date
-    ) -> UserEvent {
+    ) -> UserEvents.RemoteConfig {
         RemoteConfig(
             insertId: UUID().uuidString.lowercased(),
             timestamp: timestamp,
@@ -61,7 +73,7 @@ enum UserEvents {
             parameter: evaluation.parameter,
             valueId: evaluation.valueId,
             decisionReason: evaluation.reason,
-            properties: evaluation.properties
+            properties: properties
         )
     }
 

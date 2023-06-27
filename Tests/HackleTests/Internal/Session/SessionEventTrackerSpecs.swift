@@ -9,7 +9,7 @@ class SessionEventTrackerSpecs: QuickSpec {
 
         it("onSessionStarted") {
             let userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
-            let internalApp = HackleInternalAppStub()
+            let internalApp = HackleCoreStub()
             let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
 
             let session = Session(id: "42.ffffffff")
@@ -24,7 +24,7 @@ class SessionEventTrackerSpecs: QuickSpec {
 
         it("onSessionEnded") {
             let userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
-            let internalApp = HackleInternalAppStub()
+            let internalApp = HackleCoreStub()
             let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
 
             let session = Session(id: "42.ffffffff")
@@ -47,41 +47,5 @@ class SessionEventTrackerSpecs: QuickSpec {
         func trackEvent(key: String) -> UserEvent {
             UserEvents.track(eventType: UndefinedEventType(key: key), event: Hackle.event(key: key), timestamp: Date(), user: HackleUser.builder().build())
         }
-    }
-}
-
-fileprivate class HackleInternalAppStub: HackleCore {
-
-    var tracked = [(Event, HackleUser, Date)]()
-
-    func initialize(completion: @escaping () -> ()) {
-
-    }
-
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
-        fatalError("experiment(experimentKey:user:defaultVariationKey:) has not been implemented")
-    }
-
-    func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {
-        fatalError("experiments(user:) has not been implemented")
-    }
-
-    func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
-        fatalError("featureFlag(featureKey:user:) has not been implemented")
-    }
-
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
-        fatalError("featureFlags(user:) has not been implemented")
-    }
-
-    func track(event: Event, user: HackleUser) {
-    }
-
-    func track(event: Event, user: HackleUser, timestamp: Date) {
-        tracked.append((event, user, timestamp))
-    }
-
-    func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision {
-        fatalError("remoteConfig(parameterKey:user:defaultValue:) has not been implemented")
     }
 }

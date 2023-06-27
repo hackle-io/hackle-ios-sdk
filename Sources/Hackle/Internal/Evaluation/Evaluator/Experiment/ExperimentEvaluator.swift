@@ -19,7 +19,10 @@ class ExperimentEvaluator: ContextualEvaluator {
     }
 
     func evaluateInternal(request: Request, context: EvaluatorContext) throws -> Evaluation {
-        let evaluationFlow = evaluationFlowFactory.getFlow(experimentType: request.experiment.type)
-        return try evaluationFlow.evaluate(request: request, context: context)
+        let evaluationFlow = evaluationFlowFactory.getExperimentFlow(experimentType: request.experiment.type)
+        guard let evaluation = try evaluationFlow.evaluate(request: request, context: context) else {
+            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+        }
+        return evaluation
     }
 }

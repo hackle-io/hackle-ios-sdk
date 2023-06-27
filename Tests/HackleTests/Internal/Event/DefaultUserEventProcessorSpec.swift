@@ -11,21 +11,25 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         let user = HackleUser.of(userId: "test_id")
 
         var eventDedupDeterminer: MockExposureEventDedupDeterminer!
+        var eventPublisher: UserEventPublisherStub!
         var eventQueue: DispatchQueue!
         var eventRepository: MockEventRepository!
         var eventFlushScheduler: MockScheduler!
         var eventDispatcher: MockUserEventDispatcher!
         var sessionManager: MockSessionManager!
         var userManager: MockUserManager!
+        var appStateManager: AppStateManagerStub!
 
         beforeEach {
             eventDedupDeterminer = MockExposureEventDedupDeterminer()
+            eventPublisher = UserEventPublisherStub()
             eventQueue = DispatchQueue(label: "test.EventQueue")
             eventRepository = MockEventRepository()
             eventFlushScheduler = MockScheduler()
             eventDispatcher = MockUserEventDispatcher()
             sessionManager = MockSessionManager()
             userManager = MockUserManager()
+            appStateManager = AppStateManagerStub(currentState: .foreground)
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             every(eventRepository.countMock).returns(0)
@@ -45,10 +49,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventDispatcher: UserEventDispatcher = eventDispatcher,
             sessionManager: SessionManager = sessionManager,
             userManager: UserManager = userManager,
-            appState: AppState = .foreground
+            appStateManager: AppStateManagerStub = appStateManager
         ) -> DefaultUserEventProcessor {
             DefaultUserEventProcessor(
                 eventDedupDeterminer: eventDedupDeterminer,
+                eventPublisher: eventPublisher,
                 eventQueue: eventQueue,
                 eventRepository: eventRepository,
                 eventRepositoryMaxSize: eventRepositoryMaxSize,
@@ -59,7 +64,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventDispatcher: eventDispatcher,
                 sessionManager: sessionManager,
                 userManager: userManager,
-                appStateManager: MockAppStateManager(currentState: appState)
+                appStateManager: appStateManager
             )
         }
 
@@ -99,10 +104,10 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
                 expect(sessionManager.updateLastEventTimeMock.firstInvokation().arguments.timeIntervalSince1970) == 42
             }
-            
+
             it("foreground 가 아닌경우 세션초기화 시도") {
                 // given
-                let sut = processor(appState: .background)
+                let sut = processor(appStateManager: AppStateManagerStub(currentState: .background))
                 let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
                 every(sessionManager.startNewSessionIfNeededMock).returns(Session(id: "session_id"))
 
@@ -288,6 +293,84 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher.dispatchMock
                 }
             }
+
+            context("setScreen") {
+
+                it("screen 이 없는 경우") {
+                    // given
+                    let sut = processor()
+                    let event = UserEvents.track("test")
+
+                    // when
+                    sut.process(event: event)
+                    eventQueue.sync {
+                    }
+
+                    // then
+                    let actual = eventRepository.saveMock.firstInvokation().arguments
+                    expect(actual.user.hackleProperties["screenClass"]).to(beNil())
+                }
+
+                it("currentScreen 설정후 callback 이 늦게 호출되어 newScreen 을 설정하지 못하는 경우") {
+                    // given
+                    let sut = processor()
+                    let event = UserEvents.track("test")
+                    appStateManager.currentScreen = "current_screen"
+                    appStateManager.callbackScreen = "callback_screen"
+                    appStateManager.delay = 1.0
+
+                    // when
+                    sut.process(event: event)
+                    eventQueue.sync {
+                    }
+
+                    // then
+                    expect(event.user.hackleProperties["screenClass"] as! String) == "current_screen"
+                    let actual = eventRepository.saveMock.firstInvokation().arguments
+                    expect(actual.user.hackleProperties["screenClass"] as! String) == "current_screen"
+
+                    appStateManager.sync()
+                    expect(event.user.hackleProperties["screenClass"] as! String) == "current_screen"
+                }
+
+                it("callback 으로 최신 screen 설정") {
+                    // given
+                    let sut = processor()
+                    let event = UserEvents.track("test")
+                    appStateManager.currentScreen = "current_screen"
+                    appStateManager.callbackScreen = "callback_screen"
+
+                    // when
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        usleep(100000)
+                    }
+
+                    // then
+                    expect(event.user.hackleProperties["screenClass"] as! String) == "callback_screen"
+                    let actual = eventRepository.saveMock.firstInvokation().arguments
+                    expect(actual.user.hackleProperties["screenClass"] as! String) == "callback_screen"
+
+                    appStateManager.sync()
+                    expect(event.user.hackleProperties["screenClass"] as! String) == "callback_screen"
+                }
+            }
+
+            it("publish") {
+                // given
+                let sut = processor()
+                let event: UserEvent = UserEvents.track("test")
+
+                // when
+                sut.process(event: event)
+                eventQueue.sync {
+                }
+
+                // then
+                expect(eventPublisher.events.count) == 1
+                let publishedEvent = eventPublisher.events[0]
+                expect(publishedEvent.insertId) == event.insertId
+            }
         }
 
         describe("onNotified") {
@@ -295,6 +378,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             beforeEach {
                 spy = OnNotifiedSpy(
                     eventDedupDeterminer: eventDedupDeterminer,
+                    eventPublisher: eventPublisher,
                     eventQueue: eventQueue,
                     eventRepository: eventRepository,
                     eventRepositoryMaxSize: 100,
@@ -305,7 +389,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher: eventDispatcher,
                     sessionManager: sessionManager,
                     userManager: userManager,
-                    appStateManager: MockAppStateManager(currentState: .foreground)
+                    appStateManager: appStateManager
                 )
             }
 
@@ -523,17 +607,5 @@ fileprivate class OnNotifiedSpy: DefaultUserEventProcessor {
 
     override func stop() {
         stopCalled = true
-    }
-}
-
-
-fileprivate class MockAppStateManager: AppStateManager {
-    let currentState: AppState
-
-    init(currentState: AppState) {
-        self.currentState = currentState
-    }
-
-    func onChanged(state: AppState, timestamp: Date) {
     }
 }

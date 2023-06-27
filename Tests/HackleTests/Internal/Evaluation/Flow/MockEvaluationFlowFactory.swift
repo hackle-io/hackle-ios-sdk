@@ -6,16 +6,26 @@
 //
 
 import Foundation
-import Mockery
 @testable import Hackle
 
-class MockEvaluationFlowFactory: Mock, EvaluationFlowFactory {
+class MockEvaluationFlowFactory: EvaluationFlowFactory {
 
-    let remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer = MockRemoteConfigTargetRuleDeterminer()
+    var experimentFlow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation>
+    var inAppMessageFlow: EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation>
 
-    lazy var getFlowMock = MockFunction(self, getFlow)
+    init(
+        experimentFlow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.end(),
+        inAppMessageFlow: EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation> = EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation>.end()
+    ) {
+        self.experimentFlow = experimentFlow
+        self.inAppMessageFlow = inAppMessageFlow
+    }
 
-    func getFlow(experimentType: ExperimentType) -> EvaluationFlow {
-        call(getFlowMock, args: experimentType)
+    func getExperimentFlow(experimentType: ExperimentType) -> EvaluationFlow<ExperimentRequest, ExperimentEvaluation> {
+        experimentFlow
+    }
+
+    func getInAppMessageFlow() -> EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation> {
+        inAppMessageFlow
     }
 }

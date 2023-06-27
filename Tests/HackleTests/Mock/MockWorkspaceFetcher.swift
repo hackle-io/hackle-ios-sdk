@@ -10,10 +10,10 @@ import Mockery
 
 class MockWorkspaceFetcher: Mock, WorkspaceFetcher {
 
-    lazy var getWorkspaceOrNilMock = MockFunction(self, fetch)
+    lazy var fetchMock = MockFunction(self, fetch)
 
     func fetch() -> Workspace? {
-        call(getWorkspaceOrNilMock, args: ())
+        call(fetchMock, args: ())
     }
     
     lazy var initializeMock = MockFunction(self, initialize)

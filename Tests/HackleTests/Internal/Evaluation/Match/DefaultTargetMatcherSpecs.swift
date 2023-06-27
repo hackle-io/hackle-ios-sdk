@@ -69,6 +69,66 @@ class DefaultTargetMatcherSpecs: QuickSpec {
             expect(trueMatcher.callCount).to(equal(3))
             expect(falseMatcher.callCount).to(equal(1))
         }
+
+        describe("anyMatches") {
+
+            it("when targets is empty then returns true") {
+                // given
+                let sut = DefaultTargetMatcher(conditionMatcherFactory: MockConditionMatcherFactory([]))
+
+                // when
+                let actual = try sut.anyMatches(request: experimentRequest(), context: Evaluators.context(), targets: [])
+
+                // then
+                expect(actual) == true
+            }
+
+            it("when any target matches then return true") {
+                // given
+                let target = Target(conditions: [self.condition()])
+                let targets = [target, target, target, target, target]
+
+                let trueMatcher = MockConditionMatcher(true)
+                let falseMatcher = MockConditionMatcher(false)
+                let factory = MockConditionMatcherFactory([
+                    falseMatcher,
+                    falseMatcher,
+                    falseMatcher,
+                    trueMatcher,
+                    falseMatcher
+                ])
+
+                let sut = DefaultTargetMatcher(conditionMatcherFactory: factory)
+
+                let actual = try sut.anyMatches(request: experimentRequest(), context: Evaluators.context(), targets: targets)
+
+                // then
+                expect(actual) == true
+                expect(falseMatcher.callCount) == 3
+                expect(trueMatcher.callCount) == 1
+            }
+
+            it("when every targets do not match then return false") {
+                // given
+                let target = Target(conditions: [self.condition()])
+                let targets = [target, target, target]
+
+                let falseMatcher = MockConditionMatcher(false)
+                let factory = MockConditionMatcherFactory([
+                    falseMatcher,
+                    falseMatcher,
+                    falseMatcher
+                ])
+
+                let sut = DefaultTargetMatcher(conditionMatcherFactory: factory)
+
+                let actual = try sut.anyMatches(request: experimentRequest(), context: Evaluators.context(), targets: targets)
+
+                // then
+                expect(actual) == false
+                expect(falseMatcher.callCount) == 3
+            }
+        }
     }
 
     private func condition() -> Target.Condition {

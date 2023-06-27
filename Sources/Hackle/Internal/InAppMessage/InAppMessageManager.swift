@@ -18,7 +18,6 @@ class InAppMessageManager: UserEventListener {
     }
 
     func onEvent(event: UserEvent) {
-        Log.debug("InAppMessageManager.onEvent(\(event))")
         guard let context = determine(event: event) else {
             return
         }

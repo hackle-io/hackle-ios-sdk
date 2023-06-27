@@ -1,16 +1,20 @@
 import Foundation
 
 protocol EvaluationFlowFactory {
-    func getFlow(experimentType: ExperimentType) -> EvaluationFlow
+    func getExperimentFlow(experimentType: ExperimentType) -> ExperimentFlow
+    func getInAppMessageFlow() -> InAppMessageFlow
 }
 
 class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
 
-    private let abTestFlow: EvaluationFlow
-    private let featureFlagFlow: EvaluationFlow
+    private let abTestFlow: ExperimentFlow
+    private let featureFlagFlow: ExperimentFlow
+    private let inAppMessageFlow: InAppMessageFlow
 
     init(context: EvaluationContext) {
-        abTestFlow = DefaultEvaluationFlow.of(
+        let experimentActionResolver = context.get(ActionResolver.self)!
+
+        abTestFlow = ExperimentFlow.of(
             OverrideEvaluator(overrideResolver: context.get(OverrideResolver.self)!),
             IdentifierEvaluator(),
             ContainerEvaluator(containerResolver: context.get(ContainerResolver.self)!),
@@ -18,24 +22,40 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),
             CompletedExperimentEvaluator(),
-            TrafficAllocateEvaluator(actionResolver: context.get(ActionResolver.self)!)
+            TrafficAllocateEvaluator(actionResolver: experimentActionResolver)
         )
 
-        featureFlagFlow = DefaultEvaluationFlow.of(
+        featureFlagFlow = ExperimentFlow.of(
             DraftExperimentEvaluator(),
             PausedExperimentEvaluator(),
             CompletedExperimentEvaluator(),
             OverrideEvaluator(overrideResolver: context.get(OverrideResolver.self)!),
             IdentifierEvaluator(),
-            TargetRuleEvaluator(targetRuleDeterminer: context.get(ExperimentTargetRuleDeterminer.self)!, actionResolver: context.get(ActionResolver.self)!),
+            TargetRuleEvaluator(targetRuleDeterminer: context.get(ExperimentTargetRuleDeterminer.self)!, actionResolver: experimentActionResolver),
             DefaultRuleEvaluator(actionResolver: context.get(ActionResolver.self)!)
+        )
+
+        let inAppMessageResolver = context.get(InAppMessageResolver.self)!
+
+        inAppMessageFlow = InAppMessageFlow.of(
+            PlatformInAppMessageFlowEvaluator(),
+            OverrideInAppMessageFlowEvaluator(userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!, inAppMessageResolver: inAppMessageResolver),
+            DraftInAppMessageFlowEvaluator(),
+            PausedInAppMessageFlowEvaluator(),
+            PeriodInAppMessageFlowEvaluator(),
+            HiddenInAppMessageFlowEvaluator(hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!),
+            TargetInAppMessageFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!, inAppMessageResolver: inAppMessageResolver)
         )
     }
 
-    func getFlow(experimentType: ExperimentType) -> EvaluationFlow {
+    func getExperimentFlow(experimentType: ExperimentType) -> ExperimentFlow {
         switch experimentType {
         case .abTest: return abTestFlow
         case .featureFlag: return featureFlagFlow
         }
+    }
+
+    func getInAppMessageFlow() -> InAppMessageFlow {
+        inAppMessageFlow
     }
 }

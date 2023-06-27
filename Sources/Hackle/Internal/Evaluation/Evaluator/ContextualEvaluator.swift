@@ -23,7 +23,10 @@ extension ContextualEvaluator {
         request is Request
     }
 
-    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
+    func evaluate<Evaluation>(
+        request: EvaluatorRequest,
+        context: EvaluatorContext
+    ) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
         if context.contains(request) {
             throw HackleError.error("Circular evaluation has occurred \(context.stack) - \(request)")
         }

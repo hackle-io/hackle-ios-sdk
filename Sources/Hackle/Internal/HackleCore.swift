@@ -62,12 +62,7 @@ class DefaultHackleCore: HackleCore {
 
         let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
         let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)
-        let inAppMessageEvaluator = InAppMessageEvaluator(
-            userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!,
-            hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!,
-            targetMatcher: context.get(InAppMessageTargetMatcher.self)!,
-            inAppMessageResolver: context.get(DefaultInAppMessageResolver.self)!
-        )
+        let inAppMessageEvaluator = InAppMessageEvaluator(evaluationFlowFactory: flowFactory)
 
         delegatingEvaluator.add(experimentEvaluator)
         delegatingEvaluator.add(remoteConfigEvaluator)
@@ -171,7 +166,7 @@ class DefaultHackleCore: HackleCore {
     }
 
     func track(event: Event, user: HackleUser) {
-        self.track(event: event, user: user, timestamp: Date())
+        self.track(event: event, user: user, timestamp: clock.now())
     }
 
     func track(event: Event, user: HackleUser, timestamp: Date) {

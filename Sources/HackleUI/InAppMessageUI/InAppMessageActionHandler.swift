@@ -47,7 +47,9 @@ extension HackleInAppMessageUI {
         }
 
         func handle(view: InAppMessageView, action: InAppMessage.Action) {
-            guard let value = action.value, let url = URL(string: value) else {
+            guard let value = action.value,
+                  let url = URL(string: value)
+            else {
                 Log.error("Invalid url: \(action.value.orNil)")
                 return
             }

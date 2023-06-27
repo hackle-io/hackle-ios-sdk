@@ -54,12 +54,7 @@ extension HackleInAppMessageUI {
 
         // MARK: - Orientation
 
-//        override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//            context.message.supportedInterfaceOrientations
-//        }
-
         override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-            Log.debug("ViewController.viewWillTransition(\(size))")
             super.viewWillTransition(to: size, with: coordinator)
             coordinator.animate { context in
                 self.messageView.willTransition(orientation: InAppMessage.Orientation(size: size))

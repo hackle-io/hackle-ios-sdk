@@ -215,9 +215,9 @@ enum ActionArea: String, Codable {
         class Button {
             let text: String
             let style: Style
-            let action: Action?
+            let action: Action
 
-            init(text: String, style: Style, action: Action?) {
+            init(text: String, style: Style, action: Action) {
                 self.text = text
                 self.style = style
                 self.action = action

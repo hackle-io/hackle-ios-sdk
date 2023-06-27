@@ -52,3 +52,36 @@ extension UIButton {
         objc_setAssociatedObject(self, UUID().uuidString, listener, .OBJC_ASSOCIATION_RETAIN)
     }
 }
+
+extension UIImageView {
+
+    func loadImage(url: String, completion: (() -> Void)? = nil) {
+        let cacheKey = NSString(string: url)
+        if let cachedImage = ImageCacheManager.shared.object(forKey: cacheKey) {
+            self.image = cachedImage
+            completion?()
+            return
+        }
+
+        guard let url = URL(string: url) else {
+            Log.error("Invalid url: \(url)")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    Log.error("Failed to load image [\(url)]: \(error)")
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    if let data = data, let image = UIImage(data: data) {
+                        ImageCacheManager.shared.setObject(image, forKey: cacheKey)
+                        self.image = image
+                        completion?()
+                    }
+                }
+            }
+            .resume()
+    }
+}

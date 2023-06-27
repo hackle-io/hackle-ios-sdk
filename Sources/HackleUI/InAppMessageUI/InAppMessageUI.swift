@@ -11,8 +11,8 @@ import UIKit
 @objc(HackleInAppMessageUI)
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
 
-    private let actionHandlerFactory: ActionHandlerFactory
-    private let eventTracker: InAppMessageEventTracker
+    let actionHandlerFactory: ActionHandlerFactory
+    let eventTracker: InAppMessageEventTracker
 
     init(actionHandlerFactory: ActionHandlerFactory, eventTracker: InAppMessageEventTracker) {
         self.actionHandlerFactory = actionHandlerFactory
@@ -20,10 +20,8 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         super.init()
     }
 
-    /// The window displaying the current in app message view
     var window: Window?
 
-    /// Thr currently visible message view.
     var currentMessageView: InAppMessageView? {
         window?.messageViewController?.messageView
     }
@@ -81,17 +79,5 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
 
     private func orientationSupported(context: InAppMessageContext) -> Bool {
         context.message.supports(orientation: UIUtils.interfaceOrientation)
-    }
-
-    func track(view: InAppMessageView, event: InAppMessage.Event) {
-        eventTracker.track(context: view.context, event: event)
-    }
-
-    func handleAction(view: InAppMessageView, action: InAppMessage.Action, area: InAppMessage.ActionArea) {
-        guard let handler = actionHandlerFactory.get(action: action) else {
-            return
-        }
-        track(view: view, event: .action(action, area))
-        handler.handle(view: view, action: action)
     }
 }

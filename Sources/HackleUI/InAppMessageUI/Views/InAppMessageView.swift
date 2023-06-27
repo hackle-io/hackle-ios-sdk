@@ -44,7 +44,9 @@ extension InAppMessageView {
     }
 
     func didDismiss() {
-        guard let controller = controller, let ui = controller.ui else {
+        guard let controller = controller,
+              let ui = controller.ui
+        else {
             return
         }
 
@@ -56,19 +58,24 @@ extension InAppMessageView {
         ui.window = nil
     }
 
-    func handleAction(action: InAppMessage.Action?, area: InAppMessage.ActionArea) {
-        guard let action = action, let controller = controller, let ui = controller.ui else {
+    func handleAction(action: InAppMessage.Action) {
+        guard let controller = controller,
+              let ui = controller.ui,
+              let handler = ui.actionHandlerFactory.get(action: action)
+        else {
             return
         }
 
-        ui.handleAction(view: self, action: action, area: area)
+        handler.handle(view: self, action: action)
     }
 
     func track(event: InAppMessage.Event) {
-        guard let controller = controller, let ui = controller.ui else {
+        guard let controller = controller,
+              let ui = controller.ui
+        else {
             return
         }
 
-        ui.track(view: self, event: event)
+        ui.eventTracker.track(context: context, event: event)
     }
 }

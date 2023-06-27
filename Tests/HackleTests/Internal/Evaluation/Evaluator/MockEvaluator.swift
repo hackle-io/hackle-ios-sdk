@@ -6,11 +6,15 @@ import Mockery
 
 class MockEvaluator: Evaluator {
 
-    var returns: EvaluatorEvaluation!
+    var returns: EvaluatorEvaluation? = nil
 
     var call: Int = 0
+
     func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
+        guard let evaluation = returns else {
+            throw HackleError.error("nil")
+        }
         call = call + 1
-        return returns as! Evaluation
+        return evaluation as! Evaluation
     }
 }

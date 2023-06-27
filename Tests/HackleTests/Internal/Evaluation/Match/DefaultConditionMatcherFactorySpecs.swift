@@ -11,6 +11,7 @@ class DefaultConditionMatcherFactorySpecs: QuickSpec {
             expect(sut.getMatcher(.userId)).to(beAnInstanceOf(UserConditionMatcher.self))
             expect(sut.getMatcher(.userProperty)).to(beAnInstanceOf(UserConditionMatcher.self))
             expect(sut.getMatcher(.hackleProperty)).to(beAnInstanceOf(UserConditionMatcher.self))
+            expect(sut.getMatcher(.eventProperty)).to(beAnInstanceOf(EventConditionMatcher.self))
             expect(sut.getMatcher(.segment)).to(beAnInstanceOf(SegmentConditionMatcher.self))
             expect(sut.getMatcher(.abTest)).to(beAnInstanceOf(ExperimentConditionMatcher.self))
             expect(sut.getMatcher(.featureFlag)).to(beAnInstanceOf(ExperimentConditionMatcher.self))

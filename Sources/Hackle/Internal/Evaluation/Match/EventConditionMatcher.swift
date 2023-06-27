@@ -37,7 +37,7 @@ class DefaultEventValueResolver: EventValueResolver {
     func resolveOrNil(event: UserEvent, key: Target.Key) throws -> Any? {
         switch key.type {
         case .eventProperty:
-            guard let properties = event.properties else {
+            guard let properties = event.properties() else {
                 return nil
             }
             return properties[key.name]
@@ -48,7 +48,7 @@ class DefaultEventValueResolver: EventValueResolver {
 }
 
 private extension UserEvent {
-    var properties: [String: Any]? {
+    func properties() -> [String: Any]? {
         switch self {
         case let track as UserEvents.Track:
             return track.event.properties

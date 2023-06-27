@@ -58,13 +58,13 @@ extension HackleInAppMessageUI {
 
         private func bindImage() {
             guard let imageView = imageView,
-                  let image = context.message.image(orientation: attributes.orientation),
-                  let url = URL(string: image.imagePath),
-                  let data = try? Data(contentsOf: url)
+                  let image = context.message.image(orientation: attributes.orientation)
             else {
                 return
             }
-            imageView.image = UIImage(data: data)
+            imageView.loadImage(url: image.imagePath) {
+                self.layoutContent()
+            }
         }
 
         private func bindText() {
@@ -100,8 +100,8 @@ extension HackleInAppMessageUI {
             contentView.anchors.centerY.align()
 
             // ImageView
-            if let imageView = imageView {
-                let size = imageView.image!.size
+            if let imageView = imageView, let image = imageView.image {
+                let size = image.size
                 let ratio = size.width / size.height
                 imageView.anchors.width.equal(imageView.anchors.height.multiply(by: ratio))
             }
@@ -245,11 +245,15 @@ extension HackleInAppMessageUI {
 
         @objc
         func tapImageView(_ gesture: UITapGestureRecognizer) {
-            guard gesture.state == .ended else {
+            guard gesture.state == .ended,
+                  let image = context.message.image(orientation: attributes.orientation),
+                  let action = image.action
+            else {
                 return
             }
-            let action = context.message.image(orientation: attributes.orientation)?.action
-            handleAction(action: action, area: .image)
+
+            track(event: .action(action, .image))
+            handleAction(action: action)
         }
 
 
@@ -265,7 +269,9 @@ extension HackleInAppMessageUI {
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 22)
             button.onClick { [weak self] in
-                self?.handleAction(action: closeButton.action, area: .xButton)
+                self?.track(event: .action(closeButton.action, .xButton))
+                self?.handleAction(action: closeButton.action)
+
             }
             return button
         }()
@@ -312,7 +318,8 @@ extension HackleInAppMessageUI {
             let buttonViews = buttons.map { it in
                 let button = ButtonView(button: it)
                 button.onClick { [weak self] in
-                    self?.handleAction(action: it.action, area: .button)
+                    self?.track(event: .action(it.action, .button, it.text))
+                    self?.handleAction(action: it.action)
                 }
                 return button
             }

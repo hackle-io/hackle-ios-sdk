@@ -70,10 +70,19 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     }
 
     func process(event: UserEvent) {
-        eventPublisher.publish(event: event)
+        setScreen(to: event)
+
         eventQueue.async {
+            self.eventPublisher.publish(event: event)
             self.addEventInternal(event: event)
         }
+    }
+
+    private func setScreen(to event: UserEvent) {
+        let currentScreen = appStateManager.screen { newScreen in
+            event.setScreen(newScreen)
+        }
+        event.setScreen(currentScreen)
     }
 
     func flush() {

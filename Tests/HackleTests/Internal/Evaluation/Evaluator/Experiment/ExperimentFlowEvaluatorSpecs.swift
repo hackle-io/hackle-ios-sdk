@@ -4,19 +4,14 @@ import Nimble
 @testable import Hackle
 
 
-class FlowEvaluatorSpecs: QuickSpec {
+class ExperimentFlowEvaluatorSpecs: QuickSpec {
     override func spec() {
 
-        let user = HackleUser.of(userId: "test_id")
-
-        var nextFlow: MockEvaluationFlow!
-        var evaluation: ExperimentEvaluation!
+        var nextFlow: ExperimentFlow!
         var context: EvaluatorContext!
 
         beforeEach {
-            evaluation = experimentEvaluation()
-            nextFlow = MockEvaluationFlow()
-            every(nextFlow.evaluateMock).returns(evaluation)
+            nextFlow = ExperimentFlow.end()
             context = Evaluators.context()
         }
 
@@ -39,11 +34,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.OVERRIDDEN
-                expect(actual.variationId) == variation?.id
+                expect(actual?.reason) == DecisionReason.OVERRIDDEN
+                expect(actual?.variationId) == variation?.id
             }
 
             it("FeatureFlag 인 경우override된 사용자인 경우 overriddenVariation, INDIVIDUAL_TARGET_MATCH 으로 평가한다") {
@@ -55,11 +50,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.INDIVIDUAL_TARGET_MATCH
-                expect(actual.variationId) == variation?.id
+                expect(actual?.reason) == DecisionReason.INDIVIDUAL_TARGET_MATCH
+                expect(actual?.variationId) == variation?.id
             }
 
             it("override된 사용자가 아닌경우 다음 Flow로 평가한다") {
@@ -70,10 +65,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual).to(beNil())
             }
         }
 
@@ -86,11 +81,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try DraftExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try DraftExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.EXPERIMENT_DRAFT
-                expect(actual.variationId) == variation.id
+                expect(actual?.reason) == DecisionReason.EXPERIMENT_DRAFT
+                expect(actual?.variationId) == variation.id
             }
 
             it("DRAFT상태가 아니면 다름 flow로 평가한다") {
@@ -101,10 +96,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try DraftExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try DraftExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual).to(beNil())
             }
         }
 
@@ -118,11 +113,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try PausedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try PausedExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.EXPERIMENT_PAUSED
-                expect(actual.variationId) == variation.id
+                expect(actual?.reason) == DecisionReason.EXPERIMENT_PAUSED
+                expect(actual?.variationId) == variation.id
             }
 
             it("기능 플래그가 PAUSED 상태면 기본그룹, FEATURE_FLAG_INACTIVE 로 평가한다") {
@@ -133,11 +128,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try PausedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try PausedExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.FEATURE_FLAG_INACTIVE
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.FEATURE_FLAG_INACTIVE
+                expect(actual?.variationKey) == "A"
             }
 
             it("PAUSED 상태가 아니면 다음 플로우 실행한다") {
@@ -146,10 +141,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try PausedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try PausedExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual).to(equal(evaluation))
+                expect(actual).to(beNil())
             }
         }
 
@@ -161,11 +156,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try CompletedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try CompletedExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.EXPERIMENT_COMPLETED
-                expect(actual.variationId) == 2
+                expect(actual?.reason) == DecisionReason.EXPERIMENT_COMPLETED
+                expect(actual?.variationId) == 2
             }
 
             it("COMPLETED 상태지만 winner variation 이 없으면 에러") {
@@ -174,7 +169,7 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = expect(try CompletedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow))
+                let actual = expect(try CompletedExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
 
                 // then
                 actual.to(throwError(HackleError.error("winner variation [42]")))
@@ -186,10 +181,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try CompletedExperimentEvaluator().evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try CompletedExperimentEvaluator().evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
+                expect(actual).to(beNil())
             }
         }
 
@@ -205,7 +200,7 @@ class FlowEvaluatorSpecs: QuickSpec {
             it("abTest 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be abTest [42]")))
             }
 
@@ -216,13 +211,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
-                verify(exactly: 1) {
-                    nextFlow.evaluateMock
-                }
+                expect(actual).to(beNil())
             }
 
             it("사용자가 실험 참여 대상이 아니면 기본그룹으로 평가한다") {
@@ -232,11 +224,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.NOT_IN_EXPERIMENT_TARGET
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.NOT_IN_EXPERIMENT_TARGET
+                expect(actual?.variationKey) == "A"
             }
         }
 
@@ -253,14 +245,14 @@ class FlowEvaluatorSpecs: QuickSpec {
             it("실행중이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .abTest, status: .draft)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("abTest 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .running)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be abTest [42]")))
             }
 
@@ -271,11 +263,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 every(actionResolver.resolveOrNilMock).returns(nil)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
+                expect(actual?.variationKey) == "A"
             }
 
             it("할당된 Variation이 드랍 되었으면 기본그룹으로 평간한다") {
@@ -287,11 +279,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 every(actionResolver.resolveOrNilMock).returns(experiment.getVariationOrNil(variationKey: "B"))
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.VARIATION_DROPPED
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.VARIATION_DROPPED
+                expect(actual?.variationKey) == "A"
             }
 
             it("할당된 Variation 으로 평가한다") {
@@ -301,11 +293,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.TRAFFIC_ALLOCATED
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.TRAFFIC_ALLOCATED
+                expect(actual?.variationKey) == "A"
             }
         }
 
@@ -324,14 +316,14 @@ class FlowEvaluatorSpecs: QuickSpec {
             it("실행중이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .draft)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("featureFlag 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .abTest, status: .running)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
@@ -341,10 +333,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
+                expect(actual).to(beNil())
             }
 
             it("타겟룰에 해당하지 않으면 다음 플로우를 실행한다") {
@@ -354,10 +346,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
+                expect(actual).to(beNil())
             }
 
             it("타겟룰에 매치했지만 Action에 해당하는 Variation이 결정되지 않으면 예외 발생") {
@@ -372,7 +364,7 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                let actual = expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
 
                 // then
                 actual.to(throwError(HackleError.error("FeatureFlag must decide the Variation [42]")))
@@ -391,11 +383,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.TARGET_RULE_MATCH
-                expect(actual.variationId) == variation.id
+                expect(actual?.reason) == DecisionReason.TARGET_RULE_MATCH
+                expect(actual?.variationId) == variation.id
             }
         }
 
@@ -412,14 +404,14 @@ class FlowEvaluatorSpecs: QuickSpec {
             it("실행중이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .draft)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("featureFlag 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .abTest, status: .running)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
@@ -429,11 +421,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.DEFAULT_RULE
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.DEFAULT_RULE
+                expect(actual?.variationKey) == "A"
             }
 
             it("기본 룰에 해당하는 Variation을 결정하지 못하면 예외 발생") {
@@ -442,7 +434,7 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
                 every(actionResolver.resolveOrNilMock).returns(nil)
 
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
                     .to(throwError(HackleError.error("FeatureFlag must decide the Variation [42]")))
             }
 
@@ -455,11 +447,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 every(actionResolver.resolveOrNilMock).returns(variation)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.DEFAULT_RULE
-                expect(actual.variationId) == variation.id
+                expect(actual?.reason) == DecisionReason.DEFAULT_RULE
+                expect(actual?.variationId) == variation.id
             }
         }
 
@@ -479,10 +471,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
+                expect(actual).to(beNil())
             }
 
 
@@ -496,7 +488,7 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                 // when
-                let actual = expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow))
+                let actual = expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
 
                 // then
                 actual.to(throwError(HackleError.error("Container[42]")))
@@ -516,10 +508,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
+                expect(actual).to(beNil())
             }
 
             it("ContainerGroup 에 속해있지 않으면 NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT") {
@@ -534,11 +526,11 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(workspace: workspace, experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT
+                expect(actual?.variationKey) == "A"
             }
         }
 
@@ -556,10 +548,10 @@ class FlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual) == evaluation
+                expect(actual).to(beNil())
             }
 
             it("identifierType 에 해당하는 identifier 가 없으면 IDENTIFIER_NOT_FOUND") {
@@ -569,11 +561,11 @@ class FlowEvaluatorSpecs: QuickSpec {
 
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
+                let actual = try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)
 
                 // then
-                expect(actual.reason) == DecisionReason.IDENTIFIER_NOT_FOUND
-                expect(actual.variationKey) == "A"
+                expect(actual?.reason) == DecisionReason.IDENTIFIER_NOT_FOUND
+                expect(actual?.variationKey) == "A"
             }
         }
     }

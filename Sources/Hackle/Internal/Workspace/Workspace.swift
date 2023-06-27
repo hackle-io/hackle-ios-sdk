@@ -536,16 +536,28 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
         guard let layout = layout.toLayoutOrNil() else {
             return nil
         }
+
+        var messageButtons = [InAppMessage.Message.Button]()
+        for button in buttons {
+            guard let messageButton = button.toButtonOrNil() else {
+                return nil
+            }
+            messageButtons.append(messageButton)
+        }
+
+        var messageImages = [InAppMessage.Message.Image]()
+        for image in images {
+            guard let messageImage = image.toImageOrNil() else {
+                return nil
+            }
+            messageImages.append(messageImage)
+        }
         return InAppMessage.Message(
             lang: lang,
             layout: layout,
-            images: images.compactMap {
-                $0.toImageOrNil()
-            },
+            images: messageImages,
             text: text?.toText(),
-            buttons: buttons.map {
-                $0.toButton()
-            },
+            buttons: messageButtons,
             closeButton: closeButton?.toButton(),
             background: InAppMessage.Message.Background(color: background.color)
         )
@@ -569,10 +581,19 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ImageDto {
         guard let orientation: InAppMessage.Orientation = Enums.parseOrNil(rawValue: orientation) else {
             return nil
         }
+
+        var imageAction: InAppMessage.Action? = nil
+        if action != nil {
+            guard let action = action?.toActionOrNil() else {
+                return nil
+            }
+            imageAction = action
+        }
+
         return InAppMessage.Message.Image(
             orientation: orientation,
             imagePath: imagePath,
-            action: action?.toActionOrNil()
+            action: imageAction
         )
     }
 }
@@ -605,15 +626,18 @@ extension InAppMessageDto.MessageContextDto.MessageDto.TextDto.TextAttributeDto 
 }
 
 extension InAppMessageDto.MessageContextDto.MessageDto.ButtonDto {
-    func toButton() -> InAppMessage.Message.Button {
-        InAppMessage.Message.Button(
+    func toButtonOrNil() -> InAppMessage.Message.Button? {
+        guard let action = action.toActionOrNil() else {
+            return nil
+        }
+        return InAppMessage.Message.Button(
             text: text,
             style: InAppMessage.Message.Button.Style(
                 textColor: style.textColor,
                 bgColor: style.bgColor,
                 borderColor: style.borderColor
             ),
-            action: action.toActionOrNil()
+            action: action
         )
     }
 }

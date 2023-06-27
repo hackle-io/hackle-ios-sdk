@@ -7,12 +7,15 @@ import Mockery
 @testable import Hackle
 
 class MockWorkspace: Mock, Workspace {
+
     let experiments: [Experiment]
     let featureFlags: [Experiment]
+    let inAppMessages: [InAppMessage]
 
-    init(experiments: [Experiment] = [], featureFlags: [Experiment] = []) {
+    init(experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
         self.experiments = experiments
         self.featureFlags = featureFlags
+        self.inAppMessages = inAppMessages
         super.init()
     }
 
@@ -62,5 +65,11 @@ class MockWorkspace: Mock, Workspace {
 
     func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
         call(getRemoteConfigParameterMock, args: parameterKey)
+    }
+
+    lazy var getInAppMessageOrNilMock = MockFunction(self, getInAppMessageOrNil)
+
+    func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
+        call(getInAppMessageOrNilMock, args: inAppMessageKey)
     }
 }

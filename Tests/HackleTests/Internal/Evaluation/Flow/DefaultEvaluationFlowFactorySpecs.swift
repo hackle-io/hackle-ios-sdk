@@ -6,21 +6,25 @@ import Nimble
 
 class DefaultEvaluationFlowFactorySpecs: QuickSpec {
     override func spec() {
-        describe("getFlow()") {
 
-            let sut = DefaultEvaluationFlowFactory(
+
+        var evaluationContext: EvaluationContext!
+        var sut: DefaultEvaluationFlowFactory!
+
+        beforeEach {
+            evaluationContext = EvaluationContext()
+            evaluationContext.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
+            evaluationContext.initialize(
                 evaluator: MockEvaluator(),
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
             )
+            sut = DefaultEvaluationFlowFactory(context: evaluationContext)
+        }
+
+        describe("flow") {
 
             it("AB_TEST") {
-
-                let actual: EvaluationFlow = sut.getFlow(experimentType: .abTest)
-
-                expect(actual).to(beAnInstanceOf(DefaultEvaluationFlow.self))
-
-                let flow = actual as! DefaultEvaluationFlow
-                flow
+                sut.getExperimentFlow(experimentType: .abTest)
                     .isDecisionWith(OverrideEvaluator.self)!
                     .isDecisionWith(IdentifierEvaluator.self)!
                     .isDecisionWith(ContainerEvaluator.self)!
@@ -33,13 +37,7 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
             }
 
             it("FEATURE_FLAG") {
-
-                let actual: EvaluationFlow = sut.getFlow(experimentType: .featureFlag)
-
-                expect(actual).to(beAnInstanceOf(DefaultEvaluationFlow.self))
-
-                let flow = actual as! DefaultEvaluationFlow
-                flow
+                sut.getExperimentFlow(experimentType: .featureFlag)
                     .isDecisionWith(DraftExperimentEvaluator.self)!
                     .isDecisionWith(PausedExperimentEvaluator.self)!
                     .isDecisionWith(CompletedExperimentEvaluator.self)!
@@ -47,6 +45,18 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
                     .isDecisionWith(IdentifierEvaluator.self)!
                     .isDecisionWith(TargetRuleEvaluator.self)!
                     .isDecisionWith(DefaultRuleEvaluator.self)!
+                    .isEnd()
+            }
+
+            it("IN_APP_MESSAGE") {
+                sut.getInAppMessageFlow()
+                    .isDecisionWith(PlatformInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(OverrideInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(DraftInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(PausedInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(PeriodInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(HiddenInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(TargetInAppMessageFlowEvaluator.self)!
                     .isEnd()
             }
         }

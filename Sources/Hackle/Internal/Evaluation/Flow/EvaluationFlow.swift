@@ -1,27 +1,43 @@
 import Foundation
 
-protocol EvaluationFlow {
-    func evaluate(request: ExperimentRequest, context: EvaluatorContext) throws -> ExperimentEvaluation
-}
 
-enum DefaultEvaluationFlow: EvaluationFlow {
+class EvaluationFlow<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation> {
 
-    case end
-    case decision(flowEvaluator: FlowEvaluator, nextFlow: EvaluationFlow)
+    let evaluator: FlowEvaluator?
+    let nextFlow: EvaluationFlow<Request, Evaluation>?
 
-    func evaluate(request: ExperimentRequest, context: EvaluatorContext) throws -> ExperimentEvaluation {
-        switch self {
-        case .end:
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
-        case .decision(let flowEvaluator, let nextFlow):
-            return try flowEvaluator.evaluate(request: request, context: context, nextFlow: nextFlow)
-        }
+    private init(evaluator: FlowEvaluator?, nextFlow: EvaluationFlow<Request, Evaluation>?) {
+        self.evaluator = evaluator
+        self.nextFlow = nextFlow
     }
 
-    static func of(_ flowEvaluators: FlowEvaluator...) -> EvaluationFlow {
-        var flow: EvaluationFlow = DefaultEvaluationFlow.end
-        for flowEvaluator in flowEvaluators.reversed() {
-            flow = DefaultEvaluationFlow.decision(flowEvaluator: flowEvaluator, nextFlow: flow)
+    func evaluate(request: Request, context: EvaluatorContext) throws -> Evaluation? {
+        guard let evaluator = evaluator, let nextFlow = nextFlow else {
+            return nil
+        }
+        return try evaluator.evaluate(request: request, context: context, nextFlow: nextFlow)
+    }
+}
+
+extension EvaluationFlow {
+
+    static func end<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>() -> EvaluationFlow<Request, Evaluation> {
+        EvaluationFlow<Request, Evaluation>(evaluator: nil, nextFlow: nil)
+    }
+
+    static func decision<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+        evaluator: FlowEvaluator,
+        nextFlow: EvaluationFlow<Request, Evaluation>
+    ) -> EvaluationFlow<Request, Evaluation> {
+        EvaluationFlow<Request, Evaluation>(evaluator: evaluator, nextFlow: nextFlow)
+    }
+
+    static func of<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+        _ evaluators: FlowEvaluator...
+    ) -> EvaluationFlow<Request, Evaluation> {
+        var flow: EvaluationFlow<Request, Evaluation> = end()
+        for evaluator in evaluators.reversed() {
+            flow = decision(evaluator: evaluator, nextFlow: flow)
         }
         return flow
     }

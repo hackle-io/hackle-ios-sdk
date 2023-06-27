@@ -176,17 +176,3 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
         }
     }
 }
-
-private class EvaluationFlowFactoryStub: EvaluationFlowFactory {
-    private let flow: EvaluationFlow
-    let remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer
-
-    init(flow: EvaluationFlow = MockEvaluationFlow(), remoteConfigTargetRuleDeterminer: RemoteConfigTargetRuleDeterminer = MockRemoteConfigTargetRuleDeterminer()) {
-        self.flow = flow
-        self.remoteConfigTargetRuleDeterminer = remoteConfigTargetRuleDeterminer
-    }
-
-    func getFlow(experimentType: ExperimentType) -> EvaluationFlow {
-        flow
-    }
-}

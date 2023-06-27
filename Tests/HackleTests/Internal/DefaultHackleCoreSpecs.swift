@@ -10,6 +10,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
 
         var experimentEvaluator: MockEvaluator!
         var remoteConfigEvaluator: MockEvaluator!
+        var inAppMessageEvaluator: MockEvaluator!
         var workspaceFetcher: MockWorkspaceFetcher!
         var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!
@@ -18,15 +19,18 @@ class DefaultHackleCoreSpecs: QuickSpec {
         beforeEach {
             experimentEvaluator = MockEvaluator()
             remoteConfigEvaluator = MockEvaluator()
+            inAppMessageEvaluator = MockEvaluator()
             workspaceFetcher = MockWorkspaceFetcher()
             eventFactory = MockUserEventFactory()
             eventProcessor = MockUserEventProcessor()
             sut = DefaultHackleCore(
                 experimentEvaluator: experimentEvaluator,
                 remoteConfigEvaluator: remoteConfigEvaluator,
+                inAppMessageEvaluator: inAppMessageEvaluator,
                 workspaceFetcher: workspaceFetcher,
                 eventFactory: eventFactory,
-                eventProcessor: eventProcessor
+                eventProcessor: eventProcessor,
+                clock: FixedClock(date: Date(timeIntervalSince1970: 42))
             )
         }
 
@@ -35,7 +39,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
             context("Workspace 를 가져올 수 없으면") {
                 it("기본그룹으로 결졍한다") {
                     // given
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
+                    every(workspaceFetcher.fetchMock).returns(nil)
 
                     // when
                     let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "J")
@@ -52,7 +56,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getExperimentOrNilMock).returns(nil)
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     // when
                     let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "C")
@@ -69,7 +73,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getExperimentOrNilMock).returns(experiment())
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     let config = ParameterConfigurationEntity(id: 32, parameters: [:])
                     let evaluation = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, targetEvaluations: [], experiment: experiment(), variationId: 320, variationKey: "B", config: config)
@@ -89,7 +93,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getExperimentOrNilMock).returns(experiment())
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     let evaluation = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, targetEvaluations: [], experiment: experiment(), variationId: 320, variationKey: "B", config: nil)
                     experimentEvaluator.returns = evaluation
@@ -111,7 +115,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
             context("Workspace 를 가져올 수 없으면") {
                 it("비어있는 list 를 리턴한다") {
                     // given
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
+                    every(workspaceFetcher.fetchMock).returns(nil)
 
                     // when
                     let actual = try sut.experiments(user: user)
@@ -133,9 +137,17 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 ]
                 let evaluator = EvaluatorStub(evaluations: evaluations)
                 let workspace = MockWorkspace(experiments: [MockExperiment(key: 1), MockExperiment(key: 3), MockExperiment(key: 4), MockExperiment(key: 7)])
-                every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                every(workspaceFetcher.fetchMock).returns(workspace)
 
-                let sut = DefaultHackleCore(experimentEvaluator: evaluator, remoteConfigEvaluator: remoteConfigEvaluator, workspaceFetcher: workspaceFetcher, eventFactory: eventFactory, eventProcessor: eventProcessor)
+                let sut = DefaultHackleCore(
+                    experimentEvaluator: evaluator,
+                    remoteConfigEvaluator: remoteConfigEvaluator,
+                    inAppMessageEvaluator: inAppMessageEvaluator,
+                    workspaceFetcher: workspaceFetcher,
+                    eventFactory: eventFactory,
+                    eventProcessor: eventProcessor,
+                    clock: FixedClock(date: Date(timeIntervalSince1970: 42))
+                )
 
                 // when
                 let actual = try sut.experiments(user: user)
@@ -189,7 +201,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
             context("Workspace 를 가져올 수 없으면") {
                 it("off 로 결졍한다") {
                     // given
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
+                    every(workspaceFetcher.fetchMock).returns(nil)
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -207,7 +219,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getFeatureFlagOrNilMock).returns(nil)
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     // when
                     let actual = try sut.featureFlag(featureKey: 42, user: user)
@@ -226,7 +238,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getFeatureFlagOrNilMock).returns(featureFlag)
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     let evaluation = experimentEvaluation(reason: DecisionReason.TARGET_RULE_MATCH, variationId: 320, variationKey: "B")
                     experimentEvaluator.returns = evaluation
@@ -247,7 +259,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getFeatureFlagOrNilMock).returns(featureFlag)
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     let evaluation = experimentEvaluation(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A")
                     experimentEvaluator.returns = evaluation
@@ -267,7 +279,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getFeatureFlagOrNilMock).returns(featureFlag)
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     let config = ParameterConfigurationEntity(id: 32, parameters: [:])
 
@@ -288,7 +300,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     let workspace = MockWorkspace()
                     every(workspace.getFeatureFlagOrNilMock).returns(featureFlag)
 
-                    every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                    every(workspaceFetcher.fetchMock).returns(workspace)
 
                     let evaluation = experimentEvaluation(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A")
                     experimentEvaluator.returns = evaluation
@@ -308,7 +320,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
         describe("featureFlags") {
             it("Workspace 가 없으면 emptyList") {
                 // given
-                every(workspaceFetcher.getWorkspaceOrNilMock).returns(nil)
+                every(workspaceFetcher.fetchMock).returns(nil)
 
                 // when
                 let actual = try sut.featureFlags(user: user)
@@ -329,9 +341,17 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 ]
                 let evaluator = EvaluatorStub(evaluations: evaluations)
                 let workspace = MockWorkspace(featureFlags: [MockExperiment(key: 1), MockExperiment(key: 3), MockExperiment(key: 4), MockExperiment(key: 7)])
-                every(workspaceFetcher.getWorkspaceOrNilMock).returns(workspace)
+                every(workspaceFetcher.fetchMock).returns(workspace)
 
-                let sut = DefaultHackleCore(experimentEvaluator: evaluator, remoteConfigEvaluator: remoteConfigEvaluator, workspaceFetcher: workspaceFetcher, eventFactory: eventFactory, eventProcessor: eventProcessor)
+                let sut = DefaultHackleCore(
+                    experimentEvaluator: evaluator,
+                    remoteConfigEvaluator: remoteConfigEvaluator,
+                    inAppMessageEvaluator: inAppMessageEvaluator,
+                    workspaceFetcher: workspaceFetcher,
+                    eventFactory: eventFactory,
+                    eventProcessor: eventProcessor,
+                    clock: FixedClock(date: Date(timeIntervalSince1970: 42))
+                )
 
                 // when
                 let actual = try sut.featureFlags(user: user)
@@ -362,6 +382,75 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 verify(exactly: 0) {
                     eventProcessor.processMock
                 }
+            }
+        }
+
+        describe("inAppMessage") {
+            it("Workspace 가 없는경우") {
+                // given
+                every(workspaceFetcher.fetchMock).returns(nil)
+
+                // when
+                let actual = try sut.inAppMessage(inAppMessageKey: 42, user: user)
+
+                // then
+                expect(actual.inAppMessage).to(beNil())
+                expect(actual.message).to(beNil())
+                expect(actual.reason) == DecisionReason.SDK_NOT_READY
+            }
+
+            it("InAppMessage 를 찾을 수 없는 경우") {
+                // given
+                let workspace = WorkspaceEntity.create()
+                every(workspaceFetcher.fetchMock).returns(workspace)
+
+                // when
+                let actual = try sut.inAppMessage(inAppMessageKey: 42, user: user)
+
+                // then
+                expect(actual.inAppMessage).to(beNil())
+                expect(actual.message).to(beNil())
+                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_NOT_FOUND
+            }
+
+            it("Evaluator 에서 결정된 결과를 리턴한다") {
+                // given
+                let inAppMessage = InAppMessage.create(key: 42);
+                let message = inAppMessage.messageContext.messages.first!
+
+                let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+                every(workspaceFetcher.fetchMock).returns(workspace)
+
+                let evaluation = InAppMessage.evaluation(reason: DecisionReason.IN_APP_MESSAGE_TARGET, inAppMessage: inAppMessage, message: message)
+                inAppMessageEvaluator.returns = evaluation
+
+                // when
+                let actual = try sut.inAppMessage(inAppMessageKey: 42, user: user)
+
+                // then
+                expect(actual.inAppMessage).to(beIdenticalTo(inAppMessage))
+                expect(actual.message).to(beIdenticalTo(message))
+                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
+            }
+        }
+
+        describe("tryInAppMessage") {
+
+            it("success") {
+                let actual = sut.tryInAppMessage(inAppMessageKey: 42, user: user)
+                expect(actual.reason) == DecisionReason.SDK_NOT_READY
+            }
+
+            it("exception") {
+                // given
+                let inAppMessage = InAppMessage.create(key: 42);
+
+                let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+                every(workspaceFetcher.fetchMock).returns(workspace)
+
+                let actual = sut.tryInAppMessage(inAppMessageKey: 42, user: user)
+
+                expect(actual.reason) == DecisionReason.EXCEPTION
             }
         }
     }

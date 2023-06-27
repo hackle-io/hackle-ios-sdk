@@ -15,7 +15,6 @@ class UIUtils {
         UIApplication.shared
     }
 
-
     static var interfaceOrientation: UIInterfaceOrientation {
         if #available(iOS 13.0, *), let windowScene = activeWindowScene {
             return windowScene.interfaceOrientation
@@ -39,5 +38,31 @@ class UIUtils {
         }
 
         return activeWindowScene ?? windowScene
+    }
+
+    static var keyWindow: UIWindow? {
+        if #available(iOS 13, *) {
+            return UIApplication.shared.windows.first { window in
+                window.isKeyWindow
+            }
+        } else {
+            return UIApplication.shared.keyWindow
+        }
+    }
+
+    static var topViewController: UIViewController? {
+        var top = keyWindow?.rootViewController
+        while true {
+            if let nav = top as? UINavigationController {
+                top = nav.visibleViewController
+            } else if let tab = top as? UITabBarController {
+                top = tab.selectedViewController
+            } else if let presented = top?.presentedViewController {
+                top = presented
+            } else {
+                break
+            }
+        }
+        return top
     }
 }
