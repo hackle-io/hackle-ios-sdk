@@ -18,10 +18,7 @@ class DefaultInAppMessageResolver: InAppMessageResolver {
         let inAppMessage = request.inAppMessage
         let lang = inAppMessage.messageContext.defaultLang
 
-        guard let message = inAppMessage.messageContext.messages.first(where: { message in
-            message.lang == lang
-        })
-        else {
+        guard let message = inAppMessage.messageContext.messages.first(where: { $0.lang == lang }) else {
             throw HackleError.error("InAppMessage must be decided [\(inAppMessage.id)]")
         }
 

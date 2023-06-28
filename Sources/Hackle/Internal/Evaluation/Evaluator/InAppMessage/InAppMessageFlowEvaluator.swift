@@ -58,7 +58,7 @@ class PlatformInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: InAppMessageFlow
     ) throws -> InAppMessageEvaluation? {
-        guard request.inAppMessage.messageContext.platformTypes.contains(.ios) else {
+        guard request.inAppMessage.supports(platform: .ios) else {
             return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.UNSUPPORTED_PLATFORM)
         }
         return try nextFlow.evaluate(request: request, context: context)

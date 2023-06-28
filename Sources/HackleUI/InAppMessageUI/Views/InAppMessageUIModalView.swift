@@ -25,8 +25,6 @@ extension HackleInAppMessageUI {
             layoutContent()
 
             addGestureRecognizer(tapBackgroundGesture)
-            imageView?.addGestureRecognizer(tapImageViewGesture)
-
             backgroundColor = .black.withAlphaComponent(0.3)
             alpha = 0
         }
@@ -38,7 +36,7 @@ extension HackleInAppMessageUI {
         struct Attributes {
             var margin = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
             var padding = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-            var minWidth = 200.0
+            var minWidth = 320.0
             var maxWidth = 450.0
             var maxHeight = 720.0
             var cornerRadius = 8.0
@@ -65,6 +63,8 @@ extension HackleInAppMessageUI {
             imageView.loadImage(url: image.imagePath) {
                 self.layoutContent()
             }
+            imageView.addGestureRecognizer(tapImageViewGesture)
+            imageView.isUserInteractionEnabled = true
         }
 
         private func bindText() {
@@ -125,7 +125,6 @@ extension HackleInAppMessageUI {
                 closeButton.anchors.trailing.pin()
             }
 
-
             setNeedsLayout()
             layoutIfNeeded()
         }
@@ -133,8 +132,6 @@ extension HackleInAppMessageUI {
         // MARK: - Orientation
 
         func willTransition(orientation: InAppMessage.Orientation) {
-            Log.debug("HackleInAppMessageUI.ModalView.willTransition(\(orientation))")
-
             guard context.message.supports(orientation: orientation) else {
                 dismiss()
                 return
@@ -166,7 +163,7 @@ extension HackleInAppMessageUI {
             superview.layoutIfNeeded()
         }
 
-        // MARK: - Presentation / InAppMessageView conformance
+        // MARK: - Presentation
 
         public var presented: Bool = false {
             didSet {
@@ -176,7 +173,6 @@ extension HackleInAppMessageUI {
 
         @objc
         func present() {
-            Log.debug("HackleInAppMessageUI.ModalView.present()")
             layoutConstraintsIfNeeded()
 
             UIView.performWithoutAnimation {
@@ -195,7 +191,6 @@ extension HackleInAppMessageUI {
 
         @objc
         func dismiss() {
-            Log.debug("HackleInAppMessageUI.ModalView.dismiss()")
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0,
@@ -265,7 +260,7 @@ extension HackleInAppMessageUI {
             }
 
             let button = UIButton(type: .custom)
-            button.setTitle("x", for: .normal)
+            button.setTitle("✕", for: .normal)
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 22)
             button.onClick { [weak self] in

@@ -125,11 +125,11 @@ extension InAppMessage {
         case hidden = "HIDDEN"
     }
 
-enum ActionArea: String, Codable {
-    case image = "IMAGE"
-    case button = "BUTTON"
-    case xButton = "X_BUTTON"
-}
+    enum ActionArea: String, Codable {
+        case image = "IMAGE"
+        case button = "BUTTON"
+        case xButton = "X_BUTTON"
+    }
 
     class MessageContext {
         let defaultLang: String
@@ -243,16 +243,6 @@ enum ActionArea: String, Codable {
                 self.color = color
             }
         }
-
-        class Exposure {
-            let type: String
-            let key: Int64?
-
-            init(type: String, key: Int64?) {
-                self.type = type
-                self.key = key
-            }
-        }
     }
 
     class Action {
@@ -265,5 +255,12 @@ enum ActionArea: String, Codable {
             self.type = type
             self.value = value
         }
+    }
+}
+
+
+extension InAppMessage {
+    func supports(platform: PlatformType) -> Bool {
+        messageContext.platformTypes.contains(platform)
     }
 }

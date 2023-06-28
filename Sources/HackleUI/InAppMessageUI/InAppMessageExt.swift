@@ -26,15 +26,6 @@ extension InAppMessage.Orientation {
             return orientation.isLandscape
         }
     }
-
-    var mask: UIInterfaceOrientationMask {
-        switch self {
-        case .vertical:
-            return .portrait
-        case .horizontal:
-            return .landscape
-        }
-    }
 }
 
 extension InAppMessage.Message {
@@ -55,12 +46,6 @@ extension InAppMessage.Message {
         images.map {
             $0.orientation
         }
-    }
-
-    var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        UIInterfaceOrientationMask(images.map {
-            $0.orientation.mask
-        })
     }
 
     func supports(orientation: UIInterfaceOrientation) -> Bool {

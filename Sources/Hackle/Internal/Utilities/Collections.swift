@@ -58,4 +58,15 @@ extension Array {
         }
         return sum
     }
+
+    func mapOrNil<ElementOfResult>(_ transform: (Self.Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult]? {
+        var result = [ElementOfResult]()
+        for element in self {
+            guard let item = try transform(element) else {
+                return nil
+            }
+            result.append(item)
+        }
+        return result
+    }
 }

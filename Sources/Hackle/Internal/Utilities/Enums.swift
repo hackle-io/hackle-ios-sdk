@@ -9,4 +9,15 @@ class Enums {
         }
         return e
     }
+
+    static func parseAllOrNil<E: RawRepresentable>(_ rawValues: [E.RawValue]) -> [E]? {
+        var values = [E]()
+        for rawValue in rawValues {
+            guard let value: E = parseOrNil(rawValue: rawValue) else {
+                return nil
+            }
+            values.append(value)
+        }
+        return values
+    }
 }

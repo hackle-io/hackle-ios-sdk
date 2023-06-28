@@ -343,15 +343,15 @@ class RemoteConfigParameterDto: Codable {
 }
 
 class InAppMessageDto: Codable {
+    var id: Int64
     var key: Int64
     var timeUnit: String
-    var startEpochTime: Int64?
-    var endEpochTime: Int64?
+    var startEpochTimeMillis: Int64?
+    var endEpochTimeMillis: Int64?
     var status: String
     var eventTriggerRules: [EventTriggerRuleDto]
     var targetContext: TargetContextDto
     var messageContext: MessageContextDto
-
 
     class EventTriggerRuleDto: Codable {
         var eventKey: String
@@ -371,7 +371,7 @@ class InAppMessageDto: Codable {
     class MessageContextDto: Codable {
         var defaultLang: String
         var platformTypes: [String]
-        var exposure: MessageDto.ExposureDto
+        var orientations: [String]
         var messages: [MessageDto]
 
         class MessageDto: Codable {
@@ -460,23 +460,24 @@ extension InAppMessageDto {
             period = .always
             break
         case "CUSTOM":
-            guard let start = startEpochTime else {
-                return nil
-            }
-            guard let end = endEpochTime else {
+            guard let start = startEpochTimeMillis, let end = endEpochTimeMillis else {
                 return nil
             }
             period = .range(
-                startInclusive: Date(timeIntervalSince1970: TimeInterval(start)),
-                endExclusive: Date(timeIntervalSince1970: TimeInterval(end))
+                startInclusive: Date(timeIntervalSince1970: TimeInterval(start / 1000)),
+                endExclusive: Date(timeIntervalSince1970: TimeInterval(end / 1000))
             )
             break
         default:
             return nil
         }
 
+        guard let messageContext = messageContext.toMessageContextOrNil() else {
+            return nil
+        }
+
         return InAppMessage(
-            id: -1,
+            id: id,
             key: key,
             status: status,
             period: period,
@@ -484,7 +485,7 @@ extension InAppMessageDto {
                 $0.toTriggerRule()
             },
             targetContext: targetContext.toTargetContext(),
-            messageContext: messageContext.toMessageContext()
+            messageContext: messageContext
         )
     }
 }
@@ -517,15 +518,20 @@ extension InAppMessageDto.TargetContextDto.UserOverrideDto {
 }
 
 extension InAppMessageDto.MessageContextDto {
-    func toMessageContext() -> InAppMessage.MessageContext {
-        InAppMessage.MessageContext(
+
+    func toMessageContextOrNil() -> InAppMessage.MessageContext? {
+        guard let platformTypes: [InAppMessage.PlatformType] = Enums.parseAllOrNil(platformTypes) else {
+            return nil
+        }
+
+        guard let messages = messages.mapOrNil({ $0.toMessageOrNil() }) else {
+            return nil
+        }
+
+        return InAppMessage.MessageContext(
             defaultLang: defaultLang,
-            platformTypes: platformTypes.compactMap {
-                Enums.parseOrNil(rawValue: $0)
-            },
-            messages: messages.compactMap {
-                $0.toMessageOrNil()
-            }
+            platformTypes: platformTypes,
+            messages: messages
         )
     }
 }
@@ -537,27 +543,20 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             return nil
         }
 
-        var messageButtons = [InAppMessage.Message.Button]()
-        for button in buttons {
-            guard let messageButton = button.toButtonOrNil() else {
-                return nil
-            }
-            messageButtons.append(messageButton)
+        guard let images = images.mapOrNil({ $0.toImageOrNil() }) else {
+            return nil
         }
 
-        var messageImages = [InAppMessage.Message.Image]()
-        for image in images {
-            guard let messageImage = image.toImageOrNil() else {
-                return nil
-            }
-            messageImages.append(messageImage)
+        guard let buttons = buttons.mapOrNil({ $0.toButtonOrNil() }) else {
+            return nil
         }
+
         return InAppMessage.Message(
             lang: lang,
             layout: layout,
-            images: messageImages,
+            images: images,
             text: text?.toText(),
-            buttons: messageButtons,
+            buttons: buttons,
             closeButton: closeButton?.toButton(),
             background: InAppMessage.Message.Background(color: background.color)
         )
@@ -645,7 +644,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ButtonDto {
 extension InAppMessageDto.MessageContextDto.MessageDto.CloseButtonDto {
     func toButton() -> InAppMessage.Message.Button {
         InAppMessage.Message.Button(
-            text: "x",
+            text: "✕",
             style: InAppMessage.Message.Button.Style(
                 textColor: style.color,
                 bgColor: "#FFFFFF",
