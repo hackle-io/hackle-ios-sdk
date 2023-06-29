@@ -20,7 +20,7 @@ extension HackleInAppMessageUI {
             fatalError("init(coder:) has not been implemented")
         }
 
-        // MARK: - Layout
+        // Layout
 
         private var layoutConstraintsInstalled = false
 

@@ -13,7 +13,8 @@ extension HackleInAppMessageUI {
     func createMessageView(context: InAppMessageContext) -> InAppMessageView? {
         switch context.message.layout.displayType {
         case .modal:
-            return ModalView(context: context)
+            let attributes = ModalView.Attributes(orientation: InAppMessage.Orientation(UIUtils.interfaceOrientation))
+            return ModalView(context: context, attributes: attributes)
         }
     }
 

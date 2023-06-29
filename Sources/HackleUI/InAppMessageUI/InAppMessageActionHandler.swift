@@ -41,7 +41,7 @@ extension HackleInAppMessageUI {
         }
     }
 
-    class WebLinkActionHandler: InAppMessageActionHandler {
+    class LinkActionHandler: InAppMessageActionHandler {
         func supports(action: InAppMessage.Action) -> Bool {
             action.type == .webLink
         }

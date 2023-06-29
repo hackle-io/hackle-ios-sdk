@@ -25,7 +25,10 @@ extension HackleInAppMessageUI {
             layoutContent()
 
             addGestureRecognizer(tapBackgroundGesture)
-            backgroundColor = .black.withAlphaComponent(0.3)
+            imageView?.addGestureRecognizer(tapImageViewGesture)
+            imageView?.isUserInteractionEnabled = true
+
+            backgroundColor = attributes.backgroundColor
             alpha = 0
         }
 
@@ -35,18 +38,18 @@ extension HackleInAppMessageUI {
 
         struct Attributes {
             var margin = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-            var padding = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
             var minWidth = 320.0
             var maxWidth = 450.0
             var maxHeight = 720.0
             var cornerRadius = 8.0
-            var spacing = 16.0
+            var spacing = 0.0
             var orientation = InAppMessage.Orientation.vertical
+            var backgroundColor = UIColor(hex: "#1c1c1c", alpha: 0.5)
 
             static let defaults = Self()
         }
 
-        // MARK: - Apply Content
+        // Apply Content
 
         private func updateContent() {
             contentView.backgroundColor = context.message.backgroundColor
@@ -63,8 +66,6 @@ extension HackleInAppMessageUI {
             imageView.loadImage(url: image.imagePath) {
                 self.layoutContent()
             }
-            imageView.addGestureRecognizer(tapImageViewGesture)
-            imageView.isUserInteractionEnabled = true
         }
 
         private func bindText() {
@@ -73,66 +74,71 @@ extension HackleInAppMessageUI {
             }
             let text = NSMutableAttributedString()
             text.append(messageText.title.attributed(font: .boldSystemFont(ofSize: 20), color: messageText.title.color))
-            text.append(NSAttributedString(string: "\n"))
-            text.append(NSAttributedString(string: "\n"))
+            text.append(NSAttributedString(string: "\n\n"))
             text.append(messageText.body.attributed(font: .systemFont(ofSize: 16), color: messageText.body.color))
 
             textView.attributedText = text
         }
 
+        private var contentConstraints: Constraints? = nil
+
         private func layoutContent() {
             layoutMargins = attributes.margin
 
-            // ContentView
-            contentView.stack.layoutMargins = .zero
-            contentView.layer.cornerRadius = attributes.cornerRadius
-            contentView.stack.spacing = attributes.spacing
-            // - width
-            contentView.anchors.width.lessThanOrEqual(attributes.maxWidth)
-            contentView.anchors.width.greaterThanOrEqual(attributes.minWidth).priority = .required - 1
-            contentView.anchors.leading.greaterThanOrEqual(layoutMarginsGuide.anchors.leading, constant: attributes.margin.left).priority = .required - 1
-            contentView.anchors.trailing.lessThanOrEqual(layoutMarginsGuide.anchors.trailing, constant: attributes.margin.left).priority = .required - 1
-            contentView.anchors.centerX.align()
-            // - height
-            contentView.anchors.height.lessThanOrEqual(attributes.maxHeight)
-            contentView.anchors.top.greaterThanOrEqual(anchors.top, constant: attributes.margin.top).priority = .required - 1
-            contentView.anchors.bottom.lessThanOrEqual(anchors.bottom, constant: attributes.margin.bottom).priority = .required - 1
-            contentView.anchors.centerY.align()
+            contentConstraints?.deactivate()
+            contentConstraints = Constraints {
 
-            // ImageView
-            if let imageView = imageView, let image = imageView.image {
-                let size = image.size
-                let ratio = size.width / size.height
-                imageView.anchors.width.equal(imageView.anchors.height.multiply(by: ratio))
-            }
+                // ContentView
+                contentView.stack.layoutMargins = .zero
+                contentView.layer.cornerRadius = attributes.cornerRadius
+                contentView.stack.spacing = attributes.spacing
+                // - width
+                contentView.anchors.width.lessThanOrEqual(attributes.maxWidth)
+                contentView.anchors.width.greaterThanOrEqual(attributes.minWidth).priority = .required - 1
+                contentView.anchors.leading.greaterThanOrEqual(layoutMarginsGuide.anchors.leading, constant: attributes.margin.left).priority = .required - 1
+                contentView.anchors.trailing.lessThanOrEqual(layoutMarginsGuide.anchors.trailing, constant: attributes.margin.left).priority = .required - 1
+                contentView.anchors.centerX.align()
+                // - height
+                contentView.anchors.height.lessThanOrEqual(attributes.maxHeight)
+                contentView.anchors.top.greaterThanOrEqual(anchors.top, constant: attributes.margin.top).priority = .required - 1
+                contentView.anchors.bottom.lessThanOrEqual(anchors.bottom, constant: attributes.margin.bottom).priority = .required - 1
+                contentView.anchors.centerY.align()
 
-            // TextView
-            if let textView = textView, let textContainer = textContainer {
-                textContainer.layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
-                textView.textAlignment = .center
-                textView.anchors.pin(to: textContainer.layoutMarginsGuide)
-            }
+                // ImageView
+                if let imageView = imageView, let image = imageView.image {
+                    let size = image.size
+                    let ratio = size.width / size.height
+                    imageView.anchors.width.equal(imageView.anchors.height.multiply(by: ratio))
+                }
 
-            // ButtonView
-            if let buttonContainer = buttonContainer {
-                buttonContainer.stack.layoutMargins = .init(top: 0, left: 16, bottom: 16, right: 16)
-            }
+                // TextView
+                if let textView = textView, let textContainer = textContainer {
+                    textContainer.layoutMargins = .init(top: 16, left: 16, bottom: 0, right: 16)
+                    textView.textAlignment = .center
+                    textView.anchors.pin(to: textContainer.layoutMarginsGuide)
+                }
 
-            // CloseButton
-            if let closeButton = closeButton {
-                closeButton.anchors.height.equal(closeButton.anchors.width)
-                closeButton.anchors.top.pin()
-                closeButton.anchors.trailing.pin()
+                // ButtonView
+                if let buttonContainer = buttonContainer {
+                    buttonContainer.stack.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
+                }
+
+                // CloseButton
+                if let closeButton = closeButton {
+                    closeButton.anchors.height.equal(closeButton.anchors.width)
+                    closeButton.anchors.top.pin()
+                    closeButton.anchors.trailing.pin()
+                }
             }
 
             setNeedsLayout()
             layoutIfNeeded()
         }
 
-        // MARK: - Orientation
+        // Orientation
 
         func willTransition(orientation: InAppMessage.Orientation) {
-            guard context.message.supports(orientation: orientation) else {
+            guard context.inAppMessage.supports(orientation: orientation) else {
                 dismiss()
                 return
             }
@@ -163,7 +169,7 @@ extension HackleInAppMessageUI {
             superview.layoutIfNeeded()
         }
 
-        // MARK: - Presentation
+        // Presentation
 
         public var presented: Bool = false {
             didSet {
@@ -202,7 +208,7 @@ extension HackleInAppMessageUI {
             )
         }
 
-        // MARK: - Interactions
+        // Interactions
 
         class TapGestureDelegate: NSObject, UIGestureRecognizerDelegate {
             private let contentView: UIView
@@ -251,8 +257,7 @@ extension HackleInAppMessageUI {
             handleAction(action: action)
         }
 
-
-        // MARK: - Views
+        // Views
 
         lazy var closeButton: UIButton? = {
             guard let closeButton = context.message.closeButton else {

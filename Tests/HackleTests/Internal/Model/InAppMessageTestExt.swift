@@ -40,11 +40,13 @@ extension InAppMessage {
     static func context(
         defaultLang: String = "ko",
         platformTypes: [PlatformType] = [.ios],
+        orientations: [Orientation] = [.vertical],
         messages: [Message] = [message()]
     ) -> MessageContext {
         MessageContext(
             defaultLang: defaultLang,
             platformTypes: platformTypes,
+            orientations: orientations,
             messages: messages
         )
     }

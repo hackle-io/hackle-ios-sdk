@@ -40,24 +40,24 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
             return
         }
 
-        // - Message View
+        // Message View
         guard let messageView = createMessageView(context: context) else {
             Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType)]")
             return
         }
 
-        // - ViewController
+        // ViewController
         let viewController = ViewController(
             ui: self,
             context: context,
             messageView: messageView
         )
 
-        // - Window
+        // Window
         let window = createWindow(viewController: viewController)
         self.window = window
 
-        // - Display
+        // Display
         if #available(iOS 15.0, *) {
             UIView.animate(withDuration: 0.25) {
                 window.isHidden = false
@@ -67,7 +67,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         }
     }
 
-    // MARK: - Present Validation
+    // Present Validation
 
     private func isMainThread() -> Bool {
         Thread.isMainThread
@@ -78,6 +78,6 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
     }
 
     private func orientationSupported(context: InAppMessageContext) -> Bool {
-        context.message.supports(orientation: UIUtils.interfaceOrientation)
+        context.inAppMessage.supports(orientation: UIUtils.interfaceOrientation)
     }
 }

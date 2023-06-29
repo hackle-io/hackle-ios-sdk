@@ -140,7 +140,7 @@ extension Anchor {
         _ other: Anchor<Item, Delegate>,
         constant: CGFloat = 0
     ) -> NSLayoutConstraint {
-        Constraint.activate(self, other, constant: constant, relation: .equal)
+        Constraints.activate(self, other, constant: constant, relation: .equal)
     }
 
     @discardableResult
@@ -148,7 +148,7 @@ extension Anchor {
         _ other: Anchor<Item, Delegate>,
         constant: CGFloat = 0
     ) -> NSLayoutConstraint {
-        Constraint.activate(self, other, constant: constant, relation: .greaterThanOrEqual)
+        Constraints.activate(self, other, constant: constant, relation: .greaterThanOrEqual)
     }
 
     @discardableResult
@@ -156,66 +156,98 @@ extension Anchor {
         _ other: Anchor<Item, Delegate>,
         constant: CGFloat = 0
     ) -> NSLayoutConstraint {
-        Constraint.activate(self, other, constant: constant, relation: .lessThanOrEqual)
+        Constraints.activate(self, other, constant: constant, relation: .lessThanOrEqual)
     }
 }
 
-// MARK: - Dimension
+// Dimension
 
 extension Anchor where Delegate: NSLayoutDimension {
 
     @discardableResult
     func equal(_ constant: CGFloat) -> NSLayoutConstraint {
-        Constraint.activate(item: item, attribute: attribute, relatedBy: .equal, constant: constant)
+        Constraints.activate(item: item, attribute: attribute, relatedBy: .equal, constant: constant)
     }
 
     @discardableResult
     func greaterThanOrEqual(_ constant: CGFloat) -> NSLayoutConstraint {
-        Constraint.activate(item: item, attribute: attribute, relatedBy: .greaterThanOrEqual, constant: constant)
+        Constraints.activate(item: item, attribute: attribute, relatedBy: .greaterThanOrEqual, constant: constant)
     }
 
     @discardableResult
     func lessThanOrEqual(_ constant: CGFloat) -> NSLayoutConstraint {
-        Constraint.activate(item: item, attribute: attribute, relatedBy: .lessThanOrEqual, constant: constant)
+        Constraints.activate(item: item, attribute: attribute, relatedBy: .lessThanOrEqual, constant: constant)
     }
 }
 
-// MARK: - XAxisAnchor
+// XAxisAnchor
 
 extension Anchor where Delegate: NSLayoutXAxisAnchor {
 
     @discardableResult
     func pin(to container: LayoutItem? = nil, inset: CGFloat = 0) -> NSLayoutConstraint {
         let negative = [NSLayoutConstraint.Attribute.trailing, NSLayoutConstraint.Attribute.right, NSLayoutConstraint.Attribute.bottom].contains(attribute)
-        return Constraint.activate(self, toItem: container ?? item.superview!, attribute: attribute, constant: (negative ? -inset : inset))
+        return Constraints.activate(self, toItem: container ?? item.superview!, attribute: attribute, constant: (negative ? -inset : inset))
     }
 
     @discardableResult
     func align(offset: CGFloat = 0) -> NSLayoutConstraint {
-        Constraint.activate(self, toItem: item.superview!, attribute: attribute, constant: offset)
+        Constraints.activate(self, toItem: item.superview!, attribute: attribute, constant: offset)
     }
 }
 
-// MARK: - YAxisAnchor
+// YAxisAnchor
 
 extension Anchor where Delegate: NSLayoutYAxisAnchor {
 
     @discardableResult
     func pin(to container: LayoutItem? = nil, inset: CGFloat = 0) -> NSLayoutConstraint {
         let negative = [NSLayoutConstraint.Attribute.trailing, NSLayoutConstraint.Attribute.right, NSLayoutConstraint.Attribute.bottom].contains(attribute)
-        return Constraint.activate(self, toItem: container ?? item.superview!, attribute: attribute, constant: (negative ? -inset : inset))
+        return Constraints.activate(self, toItem: container ?? item.superview!, attribute: attribute, constant: (negative ? -inset : inset))
     }
 
     @discardableResult
     func align(offset: CGFloat = 0) -> NSLayoutConstraint {
-        Constraint.activate(self, toItem: item.superview!, attribute: attribute, constant: offset)
+        Constraints.activate(self, toItem: item.superview!, attribute: attribute, constant: offset)
     }
 }
 
 
-// MARK: - Constraint
+// Constraint
 
-class Constraint {
+class Constraints {
+
+    private var constraints = [NSLayoutConstraint]()
+
+    init(_ block: () -> ()) {
+        Constraints.constraints.append(self)
+        block()
+        Constraints.constraints.removeLast()
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    func add(_ constraint: NSLayoutConstraint) {
+        constraints.append(constraint)
+    }
+
+    func activate() {
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    func deactivate() {
+        NSLayoutConstraint.deactivate(constraints)
+    }
+
+    private static var constraints = [Constraints]()
+
+    private static func activate(_ constraint: NSLayoutConstraint) {
+        if let constrains = constraints.last {
+            constrains.add(constraint)
+        } else {
+            constraint.isActive = true
+        }
+    }
+
     @discardableResult
     static func activate(
         item item1: Any,
@@ -236,7 +268,7 @@ class Constraint {
             multiplier: multiplier,
             constant: constant
         )
-        constraint.isActive = true
+        activate(constraint)
         return constraint
     }
 

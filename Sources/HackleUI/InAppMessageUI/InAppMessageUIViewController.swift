@@ -35,7 +35,7 @@ extension HackleInAppMessageUI {
             fatalError("init(coder:) has not been implemented")
         }
 
-        // MARK: - LifeCycle
+        // LifeCycle
 
         override func loadView() {
             self.view = containerView
@@ -52,7 +52,7 @@ extension HackleInAppMessageUI {
             presented = true
         }
 
-        // MARK: - Orientation
+        // Orientation
 
         override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)

@@ -52,7 +52,7 @@ extension HackleInAppMessageUI {
         }
 
         struct Attributes {
-            var padding = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
+            var padding = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 8)
             var minWidth =  80.0
             var maxHeight = 56.0
             var borderWidth = 1.0

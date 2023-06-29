@@ -8,6 +8,19 @@
 import Foundation
 import UIKit
 
+
+extension InAppMessage {
+    func supports(orientation: UIInterfaceOrientation) -> Bool {
+        messageContext.orientations.contains {
+            $0.supports(orientation)
+        }
+    }
+
+    func supports(orientation: Orientation) -> Bool {
+        messageContext.orientations.contains(orientation)
+    }
+}
+
 extension InAppMessage.Orientation {
 
     init(size: CGSize) {
@@ -16,6 +29,14 @@ extension InAppMessage.Orientation {
             return
         }
         self = .horizontal
+    }
+
+    init(_ orientation: UIInterfaceOrientation) {
+        if orientation.isLandscape {
+            self = .horizontal
+            return
+        }
+        self = .vertical
     }
 
     func supports(_ orientation: UIInterfaceOrientation) -> Bool {
@@ -38,24 +59,6 @@ extension InAppMessage.Message {
         images.first {
             $0.orientation == orientation
         }
-    }
-
-    // Orientation
-
-    var supportedOrientations: [InAppMessage.Orientation] {
-        images.map {
-            $0.orientation
-        }
-    }
-
-    func supports(orientation: UIInterfaceOrientation) -> Bool {
-        supportedOrientations.contains {
-            $0.supports(orientation)
-        }
-    }
-
-    func supports(orientation: InAppMessage.Orientation) -> Bool {
-        supportedOrientations.contains(orientation)
     }
 }
 

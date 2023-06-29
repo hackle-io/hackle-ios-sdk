@@ -423,6 +423,7 @@ class InAppMessageDto: Codable {
 
             class CloseButtonDto: Codable {
                 var style: StyleDto
+                var action: ActionDto
 
                 class StyleDto: Codable {
                     var color: String
@@ -524,6 +525,10 @@ extension InAppMessageDto.MessageContextDto {
             return nil
         }
 
+        guard let orientations: [InAppMessage.Orientation] = Enums.parseAllOrNil(orientations) else {
+            return nil
+        }
+
         guard let messages = messages.mapOrNil({ $0.toMessageOrNil() }) else {
             return nil
         }
@@ -531,6 +536,7 @@ extension InAppMessageDto.MessageContextDto {
         return InAppMessage.MessageContext(
             defaultLang: defaultLang,
             platformTypes: platformTypes,
+            orientations: orientations,
             messages: messages
         )
     }
@@ -551,13 +557,21 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             return nil
         }
 
+        var xButton: InAppMessage.Message.Button? = nil
+        if closeButton != nil {
+            guard let b = closeButton?.toButtonOrNil() else {
+                return nil
+            }
+            xButton = b
+        }
+
         return InAppMessage.Message(
             lang: lang,
             layout: layout,
             images: images,
             text: text?.toText(),
             buttons: buttons,
-            closeButton: closeButton?.toButton(),
+            closeButton: xButton,
             background: InAppMessage.Message.Background(color: background.color)
         )
     }
@@ -642,15 +656,19 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ButtonDto {
 }
 
 extension InAppMessageDto.MessageContextDto.MessageDto.CloseButtonDto {
-    func toButton() -> InAppMessage.Message.Button {
-        InAppMessage.Message.Button(
+    func toButtonOrNil() -> InAppMessage.Message.Button? {
+        guard let action = action.toActionOrNil() else {
+            return nil
+        }
+
+        return InAppMessage.Message.Button(
             text: "✕",
             style: InAppMessage.Message.Button.Style(
                 textColor: style.color,
                 bgColor: "#FFFFFF",
                 borderColor: "#FFFFFF"
             ),
-            action: InAppMessage.Action(behavior: .click, type: .close, value: nil)
+            action: action
         )
     }
 }

@@ -134,11 +134,13 @@ extension InAppMessage {
     class MessageContext {
         let defaultLang: String
         let platformTypes: [PlatformType]
+        let orientations: [Orientation]
         let messages: [Message]
 
-        init(defaultLang: String, platformTypes: [PlatformType], messages: [Message]) {
+        init(defaultLang: String, platformTypes: [PlatformType], orientations: [Orientation], messages: [Message]) {
             self.defaultLang = defaultLang
             self.platformTypes = platformTypes
+            self.orientations = orientations
             self.messages = messages
         }
     }

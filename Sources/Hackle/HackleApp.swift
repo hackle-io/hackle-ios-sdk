@@ -389,10 +389,9 @@ extension HackleApp {
             ),
             core: core
         )
-
         let actionHandlerFactory = HackleInAppMessageUI.ActionHandlerFactory(handlers: [
             HackleInAppMessageUI.CloseActionHandler(),
-            HackleInAppMessageUI.WebLinkActionHandler(),
+            HackleInAppMessageUI.LinkActionHandler(),
             HackleInAppMessageUI.HiddenActionHandler(storage: InAppMessageHiddenStorage)
         ])
         let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
@@ -400,8 +399,10 @@ extension HackleApp {
             userManager: userManager,
             userResolver: hackleUserResolver
         )
-        let inAppMessageUI = HackleInAppMessageUI(actionHandlerFactory: actionHandlerFactory, eventTracker: inAppMessageEventTracker)
-
+        let inAppMessageUI = HackleInAppMessageUI(
+            actionHandlerFactory: actionHandlerFactory,
+            eventTracker: inAppMessageEventTracker
+        )
         let inAppMessageManager = InAppMessageManager(
             determiner: inAppMessageDeterminer,
             presenter: inAppMessageUI

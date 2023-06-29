@@ -356,6 +356,9 @@
 		EEF895B52A4AD96D00722CF6 /* AppStateManagerStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895B42A4AD96D00722CF6 /* AppStateManagerStub.swift */; };
 		EEF895B72A4ADD3000722CF6 /* UserEventPublisherStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895B62A4ADD3000722CF6 /* UserEventPublisherStub.swift */; };
 		EEF895B92A4B37C800722CF6 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895B82A4B37C800722CF6 /* ImageCacheManager.swift */; };
+		EEF895DB2A4C09D800722CF6 /* iam.json in Resources */ = {isa = PBXBuildFile; fileRef = EEF895DA2A4C09D800722CF6 /* iam.json */; };
+		EEF895DD2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895DC2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift */; };
+		EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */ = {isa = PBXBuildFile; fileRef = EEF895DE2A4C14D800722CF6 /* iam_invalid.json */; };
 		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
 /* End PBXBuildFile section */
 
@@ -716,6 +719,9 @@
 		EEF895B42A4AD96D00722CF6 /* AppStateManagerStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateManagerStub.swift; sourceTree = "<group>"; };
 		EEF895B62A4ADD3000722CF6 /* UserEventPublisherStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventPublisherStub.swift; sourceTree = "<group>"; };
 		EEF895B82A4B37C800722CF6 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
+		EEF895DA2A4C09D800722CF6 /* iam.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = iam.json; sourceTree = "<group>"; };
+		EEF895DC2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceInAppMessageSpecs.swift; sourceTree = "<group>"; };
+		EEF895DE2A4C14D800722CF6 /* iam_invalid.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = iam_invalid.json; sourceTree = "<group>"; };
 		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1203,6 +1209,8 @@
 				EE789E3429F026D70088D8A6 /* target_experiment_circular.json */,
 				EE789E3629F02AEA0088D8A6 /* container.json */,
 				EE240EEA29F6A9D6006D7414 /* segment_match.json */,
+				EEF895DA2A4C09D800722CF6 /* iam.json */,
+				EEF895DE2A4C14D800722CF6 /* iam_invalid.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1307,6 +1315,7 @@
 			isa = PBXGroup;
 			children = (
 				EE29D9E829CD82C100B1FEAA /* WorkspaceSpecs.swift */,
+				EEF895DC2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift */,
 				EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */,
 				EE789E2E29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift */,
 			);
@@ -1901,6 +1910,8 @@
 				EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */,
 				EE29DA4C29CD82C200B1FEAA /* murmur_alphabetic.csv in Resources */,
 				EE29DA4929CD82C200B1FEAA /* murmur_alphanumeric.csv in Resources */,
+				EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */,
+				EEF895DB2A4C09D800722CF6 /* iam.json in Resources */,
 				EE29DA4F29CD82C200B1FEAA /* bucketing_alphanumeric.csv in Resources */,
 				EE29DA4A29CD82C200B1FEAA /* murmur_uuid.csv in Resources */,
 				EE789E3529F026D70088D8A6 /* target_experiment_circular.json in Resources */,
@@ -2233,6 +2244,7 @@
 				EE29DA7229CD82C200B1FEAA /* DefaultUserValueResolverSpecs.swift in Sources */,
 				EE29DA7D29CD82C200B1FEAA /* UserConditionMatcherSpecs.swift in Sources */,
 				EE29DA6829CD82C200B1FEAA /* DefaultUserManagerSpecs.swift in Sources */,
+				EEF895DD2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift in Sources */,
 				EE29DA3B29CD82C200B1FEAA /* MockWorkspaceFetcher.swift in Sources */,
 				EEF895A82A4A850D00722CF6 /* ModelTestExt.swift in Sources */,
 				EE29DA7629CD82C200B1FEAA /* SegmentConditionMatcherSpecs.swift in Sources */,
