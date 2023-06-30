@@ -39,8 +39,8 @@ extension HackleInAppMessageUI {
         }
 
         private func layout() {
-            titleLabel?.adjustsFontForContentSizeCategory = true
-            titleLabel?.adjustsFontSizeToFitWidth = true
+            titleLabel?.lineBreakMode = .byTruncatingTail
+            titleLabel?.adjustsFontSizeToFitWidth = false
             layer.masksToBounds = true
             setContentCompressionResistancePriority(.required, for: .vertical)
 
@@ -53,7 +53,7 @@ extension HackleInAppMessageUI {
 
         struct Attributes {
             var padding = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 8)
-            var minWidth =  80.0
+            var minWidth = 80.0
             var maxHeight = 56.0
             var borderWidth = 1.0
             var cornerRadius = 4.0
