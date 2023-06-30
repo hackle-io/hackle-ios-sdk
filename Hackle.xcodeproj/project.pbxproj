@@ -773,7 +773,6 @@
 			isa = PBXGroup;
 			children = (
 				EE29D8AA29CD825300B1FEAA /* Hackle */,
-				EE80E0142A2DC64500FB12CC /* HackleUI */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -789,6 +788,7 @@
 		EE29D8AA29CD825300B1FEAA /* Hackle */ = {
 			isa = PBXGroup;
 			children = (
+				EE80E0142A2DC64500FB12CC /* HackleUI */,
 				EE29DAAA29CD83C900B1FEAA /* Resources */,
 				EE29DAA929CD83C400B1FEAA /* Explorer */,
 				EE29D93829CD825300B1FEAA /* Common */,
