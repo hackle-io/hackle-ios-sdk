@@ -1163,10 +1163,10 @@
 		EE29D9B329CD82C100B1FEAA /* HackleTests */ = {
 			isa = PBXGroup;
 			children = (
+				EE29DA3629CD82C200B1FEAA /* Common */,
+				EE29D9CB29CD82C100B1FEAA /* Core */,
 				EE29D9B429CD82C100B1FEAA /* Mock */,
 				EE29D9BF29CD82C100B1FEAA /* Resources */,
-				EE29D9CB29CD82C100B1FEAA /* Internal */,
-				EE29DA3629CD82C200B1FEAA /* Common */,
 				EE29DA3929CD82C200B1FEAA /* HackleConfigSpec.swift */,
 				EE29DA3A29CD82C200B1FEAA /* HackleAppSpec.swift */,
 			);
@@ -1214,7 +1214,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		EE29D9CB29CD82C100B1FEAA /* Internal */ = {
+		EE29D9CB29CD82C100B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
 				EE29D9E429CD82C100B1FEAA /* Database */,
@@ -1233,7 +1233,7 @@
 				EEF8959F2A49BCAF00722CF6 /* HackleCoreStub.swift */,
 				EE29D9EE29CD82C100B1FEAA /* DefaultHackleCoreSpecs.swift */,
 			);
-			path = Internal;
+			path = Core;
 			sourceTree = "<group>";
 		};
 		EE29D9CC29CD82C100B1FEAA /* Metrics */ = {
