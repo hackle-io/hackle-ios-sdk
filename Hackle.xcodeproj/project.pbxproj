@@ -788,11 +788,10 @@
 		EE29D8AA29CD825300B1FEAA /* Hackle */ = {
 			isa = PBXGroup;
 			children = (
-				EE80E0142A2DC64500FB12CC /* HackleUI */,
-				EE29DAAA29CD83C900B1FEAA /* Resources */,
-				EE29DAA929CD83C400B1FEAA /* Explorer */,
 				EE29D93829CD825300B1FEAA /* Common */,
-				EE29D8AE29CD825300B1FEAA /* Internal */,
+				EE29D8AE29CD825300B1FEAA /* Core */,
+				EE29DAAA29CD83C900B1FEAA /* Resources */,
+				EE80E0142A2DC64500FB12CC /* UI */,
 				EE29D8AC29CD825300B1FEAA /* Hackle.swift */,
 				EE29D8AD29CD825300B1FEAA /* HackleApp.swift */,
 				EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */,
@@ -800,7 +799,7 @@
 			path = Hackle;
 			sourceTree = "<group>";
 		};
-		EE29D8AE29CD825300B1FEAA /* Internal */ = {
+		EE29D8AE29CD825300B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
 				EE29D8CD29CD825300B1FEAA /* Database */,
@@ -822,7 +821,7 @@
 				EE29D8AF29CD825300B1FEAA /* HackleError.swift */,
 				EE29D8D729CD825300B1FEAA /* HackleCore.swift */,
 			);
-			path = Internal;
+			path = Core;
 			sourceTree = "<group>";
 		};
 		EE29D8B029CD825300B1FEAA /* Metrics */ = {
@@ -1515,7 +1514,7 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		EE29DAA929CD83C400B1FEAA /* Explorer */ = {
+		EE29DAA929CD83C400B1FEAA /* ExplorerUI */ = {
 			isa = PBXGroup;
 			children = (
 				EE0E925729D2A18F009C7F31 /* Experiment */,
@@ -1526,7 +1525,7 @@
 				EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */,
 				EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */,
 			);
-			path = Explorer;
+			path = ExplorerUI;
 			sourceTree = "<group>";
 		};
 		EE29DAAA29CD83C900B1FEAA /* Resources */ = {
@@ -1623,13 +1622,14 @@
 			path = InAppMessage;
 			sourceTree = "<group>";
 		};
-		EE80E0142A2DC64500FB12CC /* HackleUI */ = {
+		EE80E0142A2DC64500FB12CC /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				EE29DAA929CD83C400B1FEAA /* ExplorerUI */,
 				EE80E0152A2DC67000FB12CC /* InAppMessageUI */,
 				EEA01CBD2A36B9A100E0C021 /* Internal */,
 			);
-			path = HackleUI;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		EE80E0152A2DC67000FB12CC /* InAppMessageUI */ = {
