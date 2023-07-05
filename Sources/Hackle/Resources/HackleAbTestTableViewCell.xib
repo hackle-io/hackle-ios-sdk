@@ -18,13 +18,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Experiment Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R4U-Wj-Y3i">
-                        <rect key="frame" x="12" y="12" width="113" height="20"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <rect key="frame" x="12" y="12" width="160" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Experiment Desc" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vUI-eY-j7P">
-                        <rect key="frame" x="12" y="36" width="96" height="15"/>
+                        <rect key="frame" x="12" y="33" width="96" height="15"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
@@ -63,6 +63,7 @@
                     <constraint firstItem="Bu0-c8-nya" firstAttribute="leading" secondItem="jeh-hU-pw8" secondAttribute="trailing" constant="4" id="UiA-zy-PdW"/>
                     <constraint firstItem="Bu0-c8-nya" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="XmL-xS-M61"/>
                     <constraint firstItem="vUI-eY-j7P" firstAttribute="top" secondItem="R4U-Wj-Y3i" secondAttribute="bottom" constant="4" id="gEe-Mk-Q4m"/>
+                    <constraint firstItem="jeh-hU-pw8" firstAttribute="leading" secondItem="R4U-Wj-Y3i" secondAttribute="trailing" constant="12" id="jAA-vq-44j"/>
                     <constraint firstItem="vUI-eY-j7P" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="tdJ-fi-0s0"/>
                 </constraints>
             </tableViewCellContentView>

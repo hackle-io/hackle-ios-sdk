@@ -40,6 +40,7 @@ class HackleFeatureFlagTableViewCell: UITableViewCell {
         self.overrideResetListener = overrideResetListener
 
         experimentKeyLabel.text = item.keyLabel
+        experimentKeyLabel.lineBreakMode = .byTruncatingTail
         experimentDescLabel.text = item.descLabel
         resetButton.isEnabled = item.overriddenVariation != nil
         initVariationButton()
@@ -78,7 +79,7 @@ class HackleFeatureFlagTableViewCell: UITableViewCell {
 
 private extension HackleFeatureFlagItem {
     var keyLabel: String {
-        "# \(experiment.key)"
+        "[\(experiment.key)] \(experiment.name ?? "")"
     }
 
     var descLabel: String {

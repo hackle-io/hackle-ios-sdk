@@ -18,13 +18,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Experiment Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r9u-hM-KT2">
-                        <rect key="frame" x="12" y="12" width="113" height="20"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <rect key="frame" x="12" y="12" width="160" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Experiment Desc" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckj-Rf-Uwj">
-                        <rect key="frame" x="12" y="36" width="96" height="15"/>
+                        <rect key="frame" x="12" y="33" width="96" height="15"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
@@ -64,6 +64,7 @@
                     <constraint firstItem="N8Z-ZR-xHV" firstAttribute="centerY" secondItem="UgE-9m-Q1j" secondAttribute="centerY" id="d3L-RF-asX"/>
                     <constraint firstItem="UgE-9m-Q1j" firstAttribute="leading" secondItem="N8Z-ZR-xHV" secondAttribute="trailing" constant="4" id="p9t-5A-km0"/>
                     <constraint firstAttribute="trailing" secondItem="UgE-9m-Q1j" secondAttribute="trailing" constant="12" id="rHD-IP-6bY"/>
+                    <constraint firstItem="N8Z-ZR-xHV" firstAttribute="leading" secondItem="r9u-hM-KT2" secondAttribute="trailing" constant="12" id="xTW-gm-NGn"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
