@@ -10,6 +10,7 @@ protocol Experiment {
 
     var id: Id { get }
     var key: Key { get }
+    var name: String? { get }
     var type: ExperimentType { get }
     var identifierType: String { get }
     var status: ExperimentStatus { get }
@@ -43,6 +44,7 @@ enum ExperimentStatus: String {
 class ExperimentEntity: Experiment {
     let id: Id
     let key: Key
+    let name: String?
     let type: ExperimentType
     let identifierType: String
     let status: ExperimentStatus
@@ -59,6 +61,7 @@ class ExperimentEntity: Experiment {
     init(
         id: Id,
         key: Key,
+        name: String?,
         type: ExperimentType,
         identifierType: String,
         status: ExperimentStatus,
@@ -74,6 +77,7 @@ class ExperimentEntity: Experiment {
     ) {
         self.id = id
         self.key = key
+        self.name = name
         self.type = type
         self.identifierType = identifierType
         self.status = status

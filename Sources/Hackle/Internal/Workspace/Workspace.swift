@@ -175,6 +175,7 @@ class WorkspaceDto: Codable {
 class ExperimentDto: Codable {
     var id: Int64
     var key: Int64
+    var name: String?
     var identifierType: String
     var status: String
     var version: Int
@@ -377,6 +378,7 @@ extension ExperimentDto {
         return ExperimentEntity(
             id: id,
             key: key,
+            name: name,
             type: type,
             identifierType: identifierType,
             status: experimentStatus,
