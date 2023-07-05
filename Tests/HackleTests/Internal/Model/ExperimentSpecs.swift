@@ -11,6 +11,7 @@ import Foundation
 func experiment(
     id: Experiment.Id = 1,
     key: Experiment.Key = 1,
+    name: String? = nil,
     type: ExperimentType = .abTest,
     identifierType: String = "$id",
     status: ExperimentStatus = .running,
@@ -26,6 +27,7 @@ func experiment(
     ExperimentEntity(
         id: id,
         key: key,
+        name: name,
         type: type,
         identifierType: identifierType,
         status: status,
