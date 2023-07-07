@@ -85,6 +85,26 @@ final class RemoteConfigDecision {
     }
 }
 
+final class InAppMessageDecision {
+
+    let inAppMessage: InAppMessage?
+    let message: InAppMessage.Message?
+    let reason: String
+
+    var isShow: Bool {
+        inAppMessage != nil && message != nil
+    }
+
+    private init(inAppMessage: InAppMessage?, message: InAppMessage.Message?, reason: String) {
+        self.inAppMessage = inAppMessage
+        self.message = message
+        self.reason = reason
+    }
+
+    static func of(inAppMessage: InAppMessage? = nil, message: InAppMessage.Message? = nil, reason: String) -> InAppMessageDecision {
+        InAppMessageDecision(inAppMessage: inAppMessage, message: message, reason: reason)
+    }
+}
 
 class DecisionReason {
 
@@ -112,4 +132,14 @@ class DecisionReason {
     static let DEFAULT_RULE = "DEFAULT_RULE"
     static let REMOTE_CONFIG_PARAMETER_NOT_FOUND = "REMOTE_CONFIG_PARAMETER_NOT_FOUND"
     static let TYPE_MISMATCH = "TYPE_MISMATCH"
+
+    static let UNSUPPORTED_PLATFORM = "UNSUPPORTED_PLATFORM"
+
+    static let IN_APP_MESSAGE_NOT_FOUND = "IN_APP_MESSAGE_NOT_FOUND"
+    static let IN_APP_MESSAGE_DRAFT = "IN_APP_MESSAGE_DRAFT"
+    static let IN_APP_MESSAGE_PAUSED = "IN_APP_MESSAGE_PAUSED"
+    static let IN_APP_MESSAGE_HIDDEN = "IN_APP_MESSAGE_HIDDEN"
+    static let IN_APP_MESSAGE_TARGET = "IN_APP_MESSAGE_TARGET"
+    static let NOT_IN_IN_APP_MESSAGE_PERIOD = "NOT_IN_IN_APP_MESSAGE_PERIOD"
+    static let NOT_IN_IN_APP_MESSAGE_TARGET = "NOT_IN_IN_APP_MESSAGE_TARGET"
 }
