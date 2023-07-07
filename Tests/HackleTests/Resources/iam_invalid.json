@@ -1,0 +1,2991 @@
+{
+  "workspace": {
+    "id": 1,
+    "environment": {
+      "id": 1,
+      "primary": true
+    }
+  },
+  "experiments": [],
+  "featureFlags": [],
+  "buckets": [],
+  "events": [],
+  "segments": [],
+  "containers": [],
+  "parameterConfigurations": [],
+  "remoteConfigParameters": [],
+  "inAppMessages": [
+    {
+      "id": 1,
+      "key": 1,
+      "timeUnit": "INVALID",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "key": 2,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "INVALID",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "key": 3,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS",
+          "INVALID"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "key": 4,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL",
+          "INVALID"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "key": 5,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "INVALID",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "key": 6,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "INVALID"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "key": 7,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "INVALID",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "key": 8,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "INVALID",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "key": 9,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "INVALID",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "key": 10,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "INVALID",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "key": 11,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "INVALID",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "key": 12,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "INVALID",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "key": 13,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "INVALID",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "key": 14,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "INVALID",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "key": 15,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "INVALID",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "key": 16,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "INVALID",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "key": 17,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "INVALID",
+                "type": "CLOSE",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "key": 18,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "INVALID",
+                "value": null
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

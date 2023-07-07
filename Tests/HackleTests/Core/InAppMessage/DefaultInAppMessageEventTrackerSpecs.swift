@@ -1,0 +1,139 @@
+//
+//  DefaultInAppMessageEventTrackerSpecs.swift
+//  HackleTests
+//
+//  Created by yong on 2023/06/27.
+//
+
+import Foundation
+import Quick
+import Nimble
+@testable import Hackle
+
+
+class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
+    override func spec() {
+        var core: HackleCoreStub!
+        var userManager: MockUserManager!
+        var userResolver: HackleUserResolver!
+        var sut: DefaultInAppMessageEventTracker!
+
+        let user = User.builder().id("user").build()
+
+        beforeEach {
+            core = HackleCoreStub()
+            userManager = MockUserManager(currentUser: user)
+            userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
+            sut = DefaultInAppMessageEventTracker(core: core, userManager: userManager, userResolver: userResolver)
+        }
+
+        it("impression") {
+            // given
+            let message = InAppMessage.message(
+                images: [InAppMessage.image(imagePath: "image_path")],
+                text: InAppMessage.text(title: "text_title", body: "text_body"),
+                buttons: [
+                    InAppMessage.button(text: "button_1"),
+                    InAppMessage.button(text: "button_2")
+                ]
+            )
+            let inAppMessage = InAppMessage.create(
+                id: 42,
+                key: 320,
+                messageContext: InAppMessage.context(messages: [message])
+            )
+            let context = InAppMessageContext(
+                inAppMessage: inAppMessage,
+                message: message,
+                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+            )
+
+            // when
+            sut.track(context: context, event: .impression)
+
+            // then
+            expect(core.tracked.count) == 1
+
+            let (event, _, _) = core.tracked[0]
+            expect(event.key) == "$in_app_impression"
+            expect(event.properties!["in_app_message_id"] as! Int64) == 42
+            expect(event.properties!["in_app_message_key"] as! Int64) == 320
+            expect(event.properties!["title_text"] as! String) == "text_title"
+            expect(event.properties!["body_text"] as! String) == "text_body"
+            expect(event.properties!["image_url"] as! [String]) == ["image_path"]
+            expect(event.properties!["button_text"] as! [String]) == ["button_1", "button_2"]
+            expect(event.properties!["decision_reason"] as! String) == "IN_APP_MESSAGE_TARGET"
+        }
+
+        it("close") {
+            // given
+            let message = InAppMessage.message(
+                images: [InAppMessage.image(imagePath: "image_path")],
+                text: InAppMessage.text(title: "text_title", body: "text_body"),
+                buttons: [
+                    InAppMessage.button(text: "button_1"),
+                    InAppMessage.button(text: "button_2")
+                ]
+            )
+            let inAppMessage = InAppMessage.create(
+                id: 42,
+                key: 320,
+                messageContext: InAppMessage.context(messages: [message])
+            )
+            let context = InAppMessageContext(
+                inAppMessage: inAppMessage,
+                message: message,
+                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+            )
+
+            // when
+            sut.track(context: context, event: .close)
+
+            // then
+            expect(core.tracked.count) == 1
+
+            let (event, _, _) = core.tracked[0]
+            expect(event.key) == "$in_app_close"
+            expect(event.properties!["in_app_message_id"] as! Int64) == 42
+            expect(event.properties!["in_app_message_key"] as! Int64) == 320
+        }
+
+        it("action") {
+            // given
+            let action = InAppMessage.action(type: .webLink, value: "button_link_click")
+            let message = InAppMessage.message(
+                images: [InAppMessage.image(imagePath: "image_path")],
+                text: InAppMessage.text(title: "text_title", body: "text_body"),
+                buttons: [
+                    InAppMessage.button(text: "button_1", action: action),
+                    InAppMessage.button(text: "button_2")
+                ]
+            )
+            let inAppMessage = InAppMessage.create(
+                id: 42,
+                key: 320,
+                messageContext: InAppMessage.context(messages: [message])
+            )
+            let context = InAppMessageContext(
+                inAppMessage: inAppMessage,
+                message: message,
+                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+            )
+
+            // when
+            sut.track(context: context, event: .action(action, .button, "button_text_"))
+
+            // then
+            expect(core.tracked.count) == 1
+
+            let (event, _, _) = core.tracked[0]
+            expect(event.key) == "$in_app_action"
+            expect(event.properties!["in_app_message_id"] as! Int64) == 42
+            expect(event.properties!["in_app_message_key"] as! Int64) == 320
+            expect(event.properties!["action_area"] as! String) == "BUTTON"
+            expect(event.properties!["action_type"] as! String) == "WEB_LINK"
+            expect(event.properties!["button_text"] as! String) == "button_text_"
+            expect(event.properties!["action_value"] as! String) == "button_link_click"
+        }
+    }
+}
