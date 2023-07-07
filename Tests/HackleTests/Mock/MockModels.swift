@@ -43,6 +43,7 @@ class MockSlot: Mock, Slot {
 class MockExperiment: Mock, Experiment {
     let id: Id
     let key: Key
+    let name: String?
     let type: ExperimentType
     let identifierType: String
     let status: ExperimentStatus
@@ -59,6 +60,7 @@ class MockExperiment: Mock, Experiment {
     init(
         id: Id = 42,
         key: Key = 320,
+        name: String? = nil,
         type: ExperimentType = .abTest,
         identifierType: String = IdentifierType.id.rawValue,
         status: ExperimentStatus = .running,
@@ -74,6 +76,7 @@ class MockExperiment: Mock, Experiment {
     ) {
         self.id = id
         self.key = key
+        self.name = name
         self.type = type
         self.identifierType = identifierType
         self.status = status
