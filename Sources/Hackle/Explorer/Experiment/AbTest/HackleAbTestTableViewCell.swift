@@ -40,6 +40,7 @@ class HackleAbTestTableViewCell: UITableViewCell {
         self.overrideResetListener = overrideResetListener
 
         experimentKeyLabel.text = item.keyLabel
+        experimentKeyLabel.lineBreakMode = .byTruncatingTail
         experimentDescLabel.text = item.descLabel
         resetButton.isEnabled = item.overriddenVariation != nil
         initVariationButton()
@@ -79,7 +80,7 @@ class HackleAbTestTableViewCell: UITableViewCell {
 
 private extension HackleAbTestItem {
     var keyLabel: String {
-        "# \(experiment.key)"
+        "[\(experiment.key)] \(experiment.name ?? "")"
     }
 
     var descLabel: String {
