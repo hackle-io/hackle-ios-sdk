@@ -80,5 +80,6 @@
     }
   ],
   "parameterConfigurations": [],
-  "remoteConfigParameters": []
+  "remoteConfigParameters": [],
+  "inAppMessages": []
 }

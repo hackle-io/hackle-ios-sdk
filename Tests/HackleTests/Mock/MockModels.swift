@@ -7,10 +7,12 @@ import Mockery
 @testable import Hackle
 
 class MockBucket: Mock, Bucket {
+    let id: Id
     let seed: Int32
     let slotSize: Int32
 
-    init(seed: Int32 = 0, slotSize: Int32 = 10000) {
+    init(id: Id = 1, seed: Int32 = 0, slotSize: Int32 = 10000) {
+        self.id = id
         self.seed = seed
         self.slotSize = slotSize
         super.init()
