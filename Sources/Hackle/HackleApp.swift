@@ -291,6 +291,8 @@ extension HackleApp {
 
         let httpClient = DefaultHttpClient(sdk: sdk)
 
+        // - WorkspaceFetcher
+
         let httpWorkspaceFetcher = DefaultHttpWorkspaceFetcher(
             sdkBaseUrl: config.sdkUrl,
             httpClient: httpClient
@@ -301,6 +303,8 @@ extension HackleApp {
             pollingScheduler: scheduler,
             pollingInterval: config.pollingInterval
         )
+
+        // - EventProcessor
 
         let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
@@ -315,6 +319,7 @@ extension HackleApp {
             httpClient: httpClient
         )
 
+        let eventPublisher = DefaultUserEventPublisher()
         let userManager = DefaultUserManager(
             device: device,
             repository: UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)")
@@ -330,6 +335,7 @@ extension HackleApp {
         let appStateManager = DefaultAppStateManager()
         let eventProcessor = DefaultUserEventProcessor(
             eventDedupDeterminer: dedupDeterminer,
+            eventPublisher: eventPublisher,
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
@@ -343,15 +349,20 @@ extension HackleApp {
             appStateManager: appStateManager
         )
 
+        // - Core
+
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
         let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ff_override_\(sdkKey)")
+        let InAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: "Hackle_iam_\(sdkKey)")
+        EvaluationContext.shared.register(InAppMessageHiddenStorage)
 
         let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceFetcher,
             eventProcessor: eventProcessor,
             manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
         )
-        let hackleUserResolver = DefaultHackleUserResolver(device: device)
+
+        // -- NotificationObserver
 
         let appNotificationObserver = DefaultAppNotificationObserver(eventQueue: eventQueue, appStateManager: appStateManager)
         appNotificationObserver.addListener(listener: workspaceFetcher)
@@ -360,13 +371,45 @@ extension HackleApp {
         appNotificationObserver.addListener(listener: eventProcessor)
         userManager.addListener(listener: sessionManager)
 
+        // -- UserResolver, SessionEventTracker
+
+        let hackleUserResolver = DefaultHackleUserResolver(device: device)
         let sessionEventTracker = SessionEventTracker(
             hackleUserResolver: hackleUserResolver,
             core: core
         )
         sessionManager.addListener(listener: sessionEventTracker)
 
-        HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
+        // - InAppMessage
+
+        let inAppMessageDeterminer = DefaultInAppMessageDeterminer(
+            workspaceFetcher: workspaceFetcher,
+            eventMatcher: DefaultInAppMessageEventMatcher(
+                targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!
+            ),
+            core: core
+        )
+        let actionHandlerFactory = HackleInAppMessageUI.ActionHandlerFactory(handlers: [
+            HackleInAppMessageUI.CloseActionHandler(),
+            HackleInAppMessageUI.LinkActionHandler(),
+            HackleInAppMessageUI.HiddenActionHandler(storage: InAppMessageHiddenStorage)
+        ])
+        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
+            core: core,
+            userManager: userManager,
+            userResolver: hackleUserResolver
+        )
+        let inAppMessageUI = HackleInAppMessageUI(
+            actionHandlerFactory: actionHandlerFactory,
+            eventTracker: inAppMessageEventTracker
+        )
+        let inAppMessageManager = InAppMessageManager(
+            determiner: inAppMessageDeterminer,
+            presenter: inAppMessageUI
+        )
+        eventPublisher.addListener(listener: inAppMessageManager)
+
+        // - UserExplorer
 
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
@@ -375,6 +418,10 @@ extension HackleApp {
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage
         )
+
+        // - Metrics
+
+        HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
 
         return HackleApp(
             core: core,
