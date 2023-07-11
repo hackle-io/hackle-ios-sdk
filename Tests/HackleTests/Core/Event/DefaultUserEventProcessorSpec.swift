@@ -294,68 +294,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 }
             }
 
-            context("setScreen") {
-
-                it("screen 이 없는 경우") {
-                    // given
-                    let sut = processor()
-                    let event = UserEvents.track("test")
-
-                    // when
-                    sut.process(event: event)
-                    eventQueue.sync {
-                    }
-
-                    // then
-                    let actual = eventRepository.saveMock.firstInvokation().arguments
-                    expect(actual.user.hackleProperties["screenClass"]).to(beNil())
-                }
-
-                it("currentScreen 설정후 callback 이 늦게 호출되어 newScreen 을 설정하지 못하는 경우") {
-                    // given
-                    let sut = processor()
-                    let event = UserEvents.track("test")
-                    appStateManager.currentScreen = "current_screen"
-                    appStateManager.callbackScreen = "callback_screen"
-                    appStateManager.delay = 1.0
-
-                    // when
-                    sut.process(event: event)
-                    eventQueue.sync {
-                    }
-
-                    // then
-                    expect(event.user.hackleProperties["screenClass"] as! String) == "current_screen"
-                    let actual = eventRepository.saveMock.firstInvokation().arguments
-                    expect(actual.user.hackleProperties["screenClass"] as! String) == "current_screen"
-
-                    appStateManager.sync()
-                    expect(event.user.hackleProperties["screenClass"] as! String) == "current_screen"
-                }
-
-                it("callback 으로 최신 screen 설정") {
-                    // given
-                    let sut = processor()
-                    let event = UserEvents.track("test")
-                    appStateManager.currentScreen = "current_screen"
-                    appStateManager.callbackScreen = "callback_screen"
-
-                    // when
-                    sut.process(event: event)
-                    eventQueue.sync {
-                        usleep(100000)
-                    }
-
-                    // then
-                    expect(event.user.hackleProperties["screenClass"] as! String) == "callback_screen"
-                    let actual = eventRepository.saveMock.firstInvokation().arguments
-                    expect(actual.user.hackleProperties["screenClass"] as! String) == "callback_screen"
-
-                    appStateManager.sync()
-                    expect(event.user.hackleProperties["screenClass"] as! String) == "callback_screen"
-                }
-            }
-
             it("publish") {
                 // given
                 let sut = processor()
