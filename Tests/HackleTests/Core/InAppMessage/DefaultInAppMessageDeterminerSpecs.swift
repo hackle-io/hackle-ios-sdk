@@ -72,7 +72,7 @@ class DefaultInAppMessageDeterminerSpecs: QuickSpec {
         it("일치하는 InAppMessage 가 있는 경우") {
             // given
             let message = InAppMessage.message()
-            let iam = InAppMessage.create(id: 42, messageContext: InAppMessage.context(messages: [message]))
+            let iam = InAppMessage.create(id: 42, messageContext: InAppMessage.messageContext(messages: [message]))
 
             determine(
                 decision(true),

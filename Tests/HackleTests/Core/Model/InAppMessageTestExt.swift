@@ -16,8 +16,8 @@ extension InAppMessage {
         status: Status = .active,
         period: Period = .always,
         triggerRules: [TriggerRule] = [TriggerRule(eventKey: "test", targets: [])],
-        targetContext: TargetContext = target(),
-        messageContext: MessageContext = context()
+        targetContext: TargetContext = targetContext(),
+        messageContext: MessageContext = messageContext()
     ) -> InAppMessage {
         InAppMessage(
             id: id,
@@ -30,14 +30,14 @@ extension InAppMessage {
         )
     }
 
-    static func target(
+    static func targetContext(
         overrides: [UserOverride] = [],
         targets: [Target] = []
     ) -> TargetContext {
         TargetContext(overrides: overrides, targets: targets)
     }
 
-    static func context(
+    static func messageContext(
         defaultLang: String = "ko",
         platformTypes: [PlatformType] = [.ios],
         orientations: [Orientation] = [.vertical],
@@ -142,5 +142,13 @@ extension InAppMessage {
         message: InAppMessage.Message? = nil
     ) -> InAppMessageEvaluation {
         InAppMessageEvaluation(reason: reason, targetEvaluations: targetEvaluations, inAppMessage: inAppMessage, message: message)
+    }
+
+    static func context(
+        inAppMessage: InAppMessage = .create(),
+        message: InAppMessage.Message = InAppMessage.message(),
+        properties: [String: Any] = [:]
+    ) -> InAppMessageContext {
+        InAppMessageContext(inAppMessage: inAppMessage, message: message, properties: properties)
     }
 }

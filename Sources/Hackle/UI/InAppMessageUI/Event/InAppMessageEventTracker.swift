@@ -2,46 +2,28 @@
 //  InAppMessageEventTracker.swift
 //  Hackle
 //
-//  Created by yong on 2023/06/20.
+//  Created by yong on 2023/07/18.
 //
 
 import Foundation
 
 
-extension InAppMessage {
-    enum Event {
-        case impression
-        case close
-        case action(Action, ActionArea, String? = nil)
-    }
-}
-
 protocol InAppMessageEventTracker {
-    func track(context: InAppMessageContext, event: InAppMessage.Event)
+    func track(context: InAppMessageContext, event: InAppMessage.Event, user: HackleUser, timestamp: Date)
 }
 
 class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
 
     private let core: HackleCore
-    private let userManager: UserManager
-    private let userResolver: HackleUserResolver
 
-    init(
-        core: HackleCore,
-        userManager: UserManager,
-        userResolver: HackleUserResolver
-    ) {
+    init(core: HackleCore) {
         self.core = core
-        self.userManager = userManager
-        self.userResolver = userResolver
     }
 
-    func track(context: InAppMessageContext, event: InAppMessage.Event) {
+    func track(context: InAppMessageContext, event: InAppMessage.Event, user: HackleUser, timestamp: Date) {
         let trackEvent = createEvent(context: context, event: event)
-        let user = userResolver.resolve(user: userManager.currentUser)
-        core.track(event: trackEvent, user: user)
+        core.track(event: trackEvent, user: user, timestamp: timestamp)
     }
-
 
     private static let IMPRESSION_EVENT_KEY = "$in_app_impression"
     private static let CLOSE_EVENT_KEY = "$in_app_close"

@@ -353,8 +353,8 @@ extension HackleApp {
 
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
         let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ff_override_\(sdkKey)")
-        let InAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: "Hackle_iam_\(sdkKey)")
-        EvaluationContext.shared.register(InAppMessageHiddenStorage)
+        let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: "Hackle_iam_\(sdkKey)")
+        EvaluationContext.shared.register(inAppMessageHiddenStorage)
 
         let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceFetcher,
@@ -389,19 +389,25 @@ extension HackleApp {
             ),
             core: core
         )
-        let actionHandlerFactory = HackleInAppMessageUI.ActionHandlerFactory(handlers: [
-            HackleInAppMessageUI.CloseActionHandler(),
-            HackleInAppMessageUI.LinkActionHandler(),
-            HackleInAppMessageUI.HiddenActionHandler(storage: InAppMessageHiddenStorage)
+        let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
+            InAppMessageCloseActionHandler(),
+            InAppMessageLinkActionHandler(urlHandler: ApplicationUrlHandler()),
+            InAppMessageHiddenActionHandler(clock: SystemClock.shared, storage: inAppMessageHiddenStorage)
         ])
-        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
-            core: core,
+        let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
+            InAppMessageImpressionEventProcessor(),
+            InAppMessageActionEventProcessor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+            InAppMessageCloseEventProcessor()
+        ])
+        let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
+            clock: SystemClock.shared,
             userManager: userManager,
-            userResolver: hackleUserResolver
+            userResolver: hackleUserResolver,
+            eventTracker: DefaultInAppMessageEventTracker(core: core),
+            processorFactory: inAppMessageEventProcessorFactory
         )
         let inAppMessageUI = HackleInAppMessageUI(
-            actionHandlerFactory: actionHandlerFactory,
-            eventTracker: inAppMessageEventTracker
+            eventHandler: inAppMessageEventHandler
         )
         let inAppMessageManager = InAppMessageManager(
             determiner: inAppMessageDeterminer,

@@ -23,7 +23,7 @@ class DefaultInAppMessageResolverSpecs: QuickSpec {
             // given
             let message = InAppMessage.message(lang: "ko")
             let inAppMessage = InAppMessage.create(
-                messageContext: InAppMessage.context(
+                messageContext: InAppMessage.messageContext(
                     defaultLang: "ko",
                     messages: [message]
                 )
@@ -40,7 +40,7 @@ class DefaultInAppMessageResolverSpecs: QuickSpec {
         it("cannot resolve") {
             let message = InAppMessage.message(lang: "ko")
             let inAppMessage = InAppMessage.create(
-                messageContext: InAppMessage.context(
+                messageContext: InAppMessage.messageContext(
                     defaultLang: "en",
                     messages: [message]
                 )

@@ -69,7 +69,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             let sut: PlatformInAppMessageFlowEvaluator = PlatformInAppMessageFlowEvaluator()
 
             it("when inAppMessage does not support ios then evaluated as nil") {
-                let inAppMessage = InAppMessage.create(messageContext: InAppMessage.context(platformTypes: []))
+                let inAppMessage = InAppMessage.create(messageContext: InAppMessage.messageContext(platformTypes: []))
                 let request = InAppMessage.request(inAppMessage: inAppMessage)
 
                 let evaluation = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
