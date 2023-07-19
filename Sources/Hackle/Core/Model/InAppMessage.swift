@@ -123,6 +123,7 @@ extension InAppMessage {
         case close = "CLOSE"
         case webLink = "WEB_LINK"
         case hidden = "HIDDEN"
+        case linkAndClose = "LINK_AND_CLOSE"
     }
 
     enum ActionArea: String, Codable {

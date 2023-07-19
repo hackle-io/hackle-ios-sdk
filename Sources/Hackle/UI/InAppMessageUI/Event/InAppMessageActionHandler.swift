@@ -60,6 +60,31 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
     }
 }
 
+class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
+
+    private let urlHandler: UrlHandler
+
+    init(urlHandler: UrlHandler) {
+        self.urlHandler = urlHandler
+    }
+
+
+    func supports(action: InAppMessage.Action) -> Bool {
+        action.type == .linkAndClose
+    }
+
+    func handle(view: InAppMessageView, action: InAppMessage.Action) {
+        guard let value = action.value,
+              let url = URL(string: value)
+        else {
+            Log.error("Invalid url: \(action.value.orNil)")
+            return
+        }
+        view.dismiss()
+        urlHandler.open(url: url)
+    }
+}
+
 class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
 
     private static let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
