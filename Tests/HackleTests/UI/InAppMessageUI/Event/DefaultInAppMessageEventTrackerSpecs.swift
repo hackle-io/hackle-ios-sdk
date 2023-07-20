@@ -38,14 +38,14 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
                 key: 320,
                 messageContext: InAppMessage.messageContext(messages: [message])
             )
-            let context = InAppMessageContext(
+            let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 
             // when
-            sut.track(context: context, event: .impression, user: user, timestamp: Date())
+            sut.track(context: context, event: .impression, timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1
@@ -76,14 +76,14 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
                 key: 320,
                 messageContext: InAppMessage.messageContext(messages: [message])
             )
-            let context = InAppMessageContext(
+            let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 
             // when
-            sut.track(context: context, event: .close, user: user, timestamp: Date())
+            sut.track(context: context, event: .close, timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1
@@ -110,14 +110,14 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
                 key: 320,
                 messageContext: InAppMessage.messageContext(messages: [message])
             )
-            let context = InAppMessageContext(
+            let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 
             // when
-            sut.track(context: context, event: .action(action, .button, "button_text_"), user: user, timestamp: Date())
+            sut.track(context: context, event: .action(action, .button, "button_text_"), timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1

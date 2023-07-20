@@ -24,6 +24,25 @@
       "startEpochTimeMillis": 42000,
       "endEpochTimeMillis": 43000,
       "status": "ACTIVE",
+      "eventFrequencyCap": {
+        "identifiers": [
+          {
+            "identifierType": "$sessionId",
+            "countPerIdentifier": 42
+          },
+          {
+            "identifierType": "$deviceId",
+            "countPerIdentifier": 43
+          }
+        ],
+        "duration": {
+          "durationUnit": {
+            "timeUnit": "HOURS",
+            "amount": 320
+          },
+          "countPerDuration": 420
+        }
+      },
       "eventTriggerRules": [
         {
           "eventKey": "view_home",

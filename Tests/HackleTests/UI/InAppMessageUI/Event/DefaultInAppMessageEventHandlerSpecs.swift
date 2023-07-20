@@ -8,8 +8,6 @@ class DefaultInAppMessageEventHandlerSpecs: QuickSpec {
     override func spec() {
 
         var clock: Clock!
-        var userManager: MockUserManager!
-        var userResolver: HackleUserResolver!
         var eventTracker: MockInAppMessageEventTracker!
         var eventProcessor: MockInAppMessageEventProcessor!
         var processorFactory: InAppMessageEventProcessorFactory!
@@ -17,15 +15,11 @@ class DefaultInAppMessageEventHandlerSpecs: QuickSpec {
 
         beforeEach {
             clock = FixedClock(date: Date(timeIntervalSince1970: 42))
-            userManager = MockUserManager()
-            userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
             eventTracker = MockInAppMessageEventTracker()
             eventProcessor = MockInAppMessageEventProcessor(true)
             processorFactory = InAppMessageEventProcessorFactory(processors: [eventProcessor])
             sut = DefaultInAppMessageEventHandler(
                 clock: clock,
-                userManager: userManager,
-                userResolver: userResolver,
                 eventTracker: eventTracker,
                 processorFactory: processorFactory
             )

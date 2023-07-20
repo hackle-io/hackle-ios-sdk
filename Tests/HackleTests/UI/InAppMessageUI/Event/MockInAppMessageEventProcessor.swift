@@ -18,7 +18,7 @@ class MockInAppMessageEventProcessor: Mock, InAppMessageEventProcessor {
 
     lazy var processMock = MockFunction(self, process)
 
-    func process(view: InAppMessageView, event: InAppMessage.Event, user: HackleUser, timestamp: Date) {
-        call(processMock, args: (view, event, user, timestamp))
+    func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
+        call(processMock, args: (view, event, timestamp))
     }
 }

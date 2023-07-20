@@ -10,7 +10,7 @@ import Foundation
 
 protocol InAppMessageEventProcessor {
     func supports(event: InAppMessage.Event) -> Bool
-    func process(view: InAppMessageView, event: InAppMessage.Event, user: HackleUser, timestamp: Date)
+    func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date)
 }
 
 class InAppMessageEventProcessorFactory {
@@ -30,6 +30,14 @@ class InAppMessageEventProcessorFactory {
 
 class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
 
+    private static let IMPRESSION_MAX_SIZE = 100
+
+    private let impressionStorage: InAppMessageImpressionStorage
+
+    init(impressionStorage: InAppMessageImpressionStorage) {
+        self.impressionStorage = impressionStorage
+    }
+
     func supports(event: InAppMessage.Event) -> Bool {
         guard case .impression = event else {
             return false
@@ -37,7 +45,24 @@ class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
         return true
     }
 
-    func process(view: InAppMessageView, event: InAppMessage.Event, user: HackleUser, timestamp: Date) {
+    func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
+        do {
+            try saveImpression(inAppMessage: view.context.inAppMessage, user: view.context.user, timestamp: timestamp)
+        } catch {
+            Log.error("Failed to process InAppMessageImpressionEvent: \(error)")
+        }
+    }
+
+    private func saveImpression(inAppMessage: InAppMessage, user: HackleUser, timestamp: Date) throws {
+        var impressions = try impressionStorage.get(inAppMessage: inAppMessage)
+        let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: timestamp.timeIntervalSince1970)
+        impressions.append(impression)
+
+        if impressions.count > InAppMessageImpressionEventProcessor.IMPRESSION_MAX_SIZE {
+            impressions.removeFirst(impressions.count - InAppMessageImpressionEventProcessor.IMPRESSION_MAX_SIZE)
+        }
+
+        try impressionStorage.set(inAppMessage: inAppMessage, impressions: impressions)
     }
 }
 
@@ -56,7 +81,7 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
         return true
     }
 
-    func process(view: InAppMessageView, event: InAppMessage.Event, user: HackleUser, timestamp: Date) {
+    func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
         guard case let .action(action, _, _) = event,
               let handler = actionHandlerFactory.get(action: action)
         else {
@@ -75,7 +100,7 @@ class InAppMessageCloseEventProcessor: InAppMessageEventProcessor {
         return true
     }
 
-    func process(view: InAppMessageView, event: InAppMessage.Event, user: HackleUser, timestamp: Date) {
+    func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
         view.dismiss()
     }
 }
