@@ -392,9 +392,11 @@ extension HackleApp {
             eventMatcher: inAppMessageEventMatcher,
             core: core
         )
+        let urlHandler = ApplicationUrlHandler()
         let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
-            InAppMessageLinkActionHandler(urlHandler: ApplicationUrlHandler()),
+            InAppMessageLinkActionHandler(urlHandler: urlHandler),
+            InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
             InAppMessageHiddenActionHandler(clock: SystemClock.shared, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
