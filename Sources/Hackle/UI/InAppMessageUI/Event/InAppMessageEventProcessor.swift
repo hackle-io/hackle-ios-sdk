@@ -101,6 +101,6 @@ class InAppMessageCloseEventProcessor: InAppMessageEventProcessor {
     }
 
     func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
-        view.dismiss()
+        // Do nothing
     }
 }
