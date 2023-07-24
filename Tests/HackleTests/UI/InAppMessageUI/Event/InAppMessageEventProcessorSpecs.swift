@@ -156,10 +156,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 expect(sut.supports(event: .close)) == true
             }
 
-            it("dismiss view") {
+            it("process do nothing") {
                 let view = MockInAppMessageView(presented: true)
                 sut.process(view: view, event: .close, timestamp: Date())
-                expect(view.presented) == false
             }
         }
     }
