@@ -58,24 +58,12 @@ extension InAppMessageView {
         ui.window = nil
     }
 
-    func handleAction(action: InAppMessage.Action) {
-        guard let controller = controller,
-              let ui = controller.ui,
-              let handler = ui.actionHandlerFactory.get(action: action)
-        else {
-            return
-        }
-
-        handler.handle(view: self, action: action)
-    }
-
-    func track(event: InAppMessage.Event) {
+    func handle(event: InAppMessage.Event) {
         guard let controller = controller,
               let ui = controller.ui
         else {
             return
         }
-
-        ui.eventTracker.track(context: context, event: event)
+        ui.eventHandler.handle(view: self, event: event)
     }
 }

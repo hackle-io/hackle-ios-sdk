@@ -36,7 +36,7 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
             // given
             let user = HackleUser.builder().identifier(.user, "a").build()
             let inAppMessage = InAppMessage.create(
-                targetContext: InAppMessage.target(overrides: [
+                targetContext: InAppMessage.targetContext(overrides: [
                     InAppMessage.UserOverride(identifierType: "$id", identifiers: ["a"]),
                     InAppMessage.UserOverride(identifierType: "$userId", identifiers: ["a"])
                 ])
@@ -54,7 +54,7 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
             // given
             let user = HackleUser.builder().identifier(.device, "a").build()
             let inAppMessage = InAppMessage.create(
-                targetContext: InAppMessage.target(overrides: [
+                targetContext: InAppMessage.targetContext(overrides: [
                     InAppMessage.UserOverride(identifierType: "$id", identifiers: ["a"]),
                     InAppMessage.UserOverride(identifierType: "$userId", identifiers: ["a"])
                 ])
@@ -91,7 +91,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
             let sut = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
             let request = InAppMessage.request(
                 inAppMessage: InAppMessage.create(
-                    targetContext: InAppMessage.target(targets: self.targets()))
+                    targetContext: InAppMessage.targetContext(targets: self.targets()))
             )
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -107,7 +107,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
             let sut = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
             let request = InAppMessage.request(
                 inAppMessage: InAppMessage.create(
-                    targetContext: InAppMessage.target(targets: self.targets()))
+                    targetContext: InAppMessage.targetContext(targets: self.targets()))
             )
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())

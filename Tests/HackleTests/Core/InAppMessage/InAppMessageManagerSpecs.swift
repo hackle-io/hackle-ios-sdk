@@ -52,7 +52,7 @@ class InAppMessageManagerSpecs: QuickSpec {
 
         it("when message is determined then present the message") {
             // given
-            let context = InAppMessageContext(inAppMessage: .create(), message: InAppMessage.message(), properties: [:])
+            let context = InAppMessage.context()
             every(determiner.determineOrNullMock).returns(context)
 
             // when

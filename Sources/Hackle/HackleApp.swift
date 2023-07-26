@@ -353,8 +353,9 @@ extension HackleApp {
 
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
         let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ff_override_\(sdkKey)")
-        let InAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: "Hackle_iam_\(sdkKey)")
-        EvaluationContext.shared.register(InAppMessageHiddenStorage)
+        let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: "Hackle_iam_\(sdkKey)")
+        let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: "Hackle_iam_impression_\(sdkKey)")
+        EvaluationContext.shared.register(inAppMessageHiddenStorage)
 
         let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceFetcher,
@@ -382,26 +383,34 @@ extension HackleApp {
 
         // - InAppMessage
 
+        let inAppMessageEventMatcher = DefaultInAppMessageEventMatcher(
+            ruleDeterminer: InAppMessageEventTriggerRuleDeterminer(targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!),
+            frequencyCapDeterminer: InAppMessageEventTriggerFrequencyCapDeterminer(storage: inAppMessageImpressionStorage)
+        )
         let inAppMessageDeterminer = DefaultInAppMessageDeterminer(
             workspaceFetcher: workspaceFetcher,
-            eventMatcher: DefaultInAppMessageEventMatcher(
-                targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!
-            ),
+            eventMatcher: inAppMessageEventMatcher,
             core: core
         )
-        let actionHandlerFactory = HackleInAppMessageUI.ActionHandlerFactory(handlers: [
-            HackleInAppMessageUI.CloseActionHandler(),
-            HackleInAppMessageUI.LinkActionHandler(),
-            HackleInAppMessageUI.HiddenActionHandler(storage: InAppMessageHiddenStorage)
+        let urlHandler = ApplicationUrlHandler()
+        let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
+            InAppMessageCloseActionHandler(),
+            InAppMessageLinkActionHandler(urlHandler: urlHandler),
+            InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
+            InAppMessageHiddenActionHandler(clock: SystemClock.shared, storage: inAppMessageHiddenStorage)
         ])
-        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
-            core: core,
-            userManager: userManager,
-            userResolver: hackleUserResolver
+        let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
+            InAppMessageImpressionEventProcessor(impressionStorage: inAppMessageImpressionStorage),
+            InAppMessageActionEventProcessor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+            InAppMessageCloseEventProcessor()
+        ])
+        let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
+            clock: SystemClock.shared,
+            eventTracker: DefaultInAppMessageEventTracker(core: core),
+            processorFactory: inAppMessageEventProcessorFactory
         )
         let inAppMessageUI = HackleInAppMessageUI(
-            actionHandlerFactory: actionHandlerFactory,
-            eventTracker: inAppMessageEventTracker
+            eventHandler: inAppMessageEventHandler
         )
         let inAppMessageManager = InAppMessageManager(
             determiner: inAppMessageDeterminer,
