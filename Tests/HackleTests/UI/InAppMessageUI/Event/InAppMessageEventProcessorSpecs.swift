@@ -37,19 +37,49 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
 
         describe("InAppMessageImpressionEventProcessor") {
 
+            var impressionStorage: InAppMessageImpressionStorage!
             var sut: InAppMessageImpressionEventProcessor!
 
             beforeEach {
-                sut = InAppMessageImpressionEventProcessor()
+                impressionStorage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
+                sut = InAppMessageImpressionEventProcessor(impressionStorage: impressionStorage)
             }
             it("supports") {
                 expect(sut.supports(event: .impression)) == true
                 expect(sut.supports(event: .close)) == false
             }
 
-            it("process") {
-                let view = MockInAppMessageView(presented: true)
-                sut.process(view: view, event: .impression, user: HackleUser.builder().build(), timestamp: Date())
+            describe("process") {
+                it("save impression") {
+                    let user = HackleUser.builder()
+                        .identifier("a", "1")
+                        .identifier("b", "2")
+                        .build()
+                    let inAppMessage = InAppMessage.create(id: 42)
+                    let context = InAppMessage.context(inAppMessage: inAppMessage, user: user)
+                    let view = MockInAppMessageView(context: context, presented: true)
+                    let timestamp = Date(timeIntervalSince1970: 320)
+                    sut.process(view: view, event: .impression, timestamp: timestamp)
+
+                    let impressions = try impressionStorage.get(inAppMessage: inAppMessage)
+                    expect(impressions.count) == 1
+                    expect(impressions[0].identifiers) == ["a": "1", "b": "2"]
+                    expect(impressions[0].timestamp) == 320
+                }
+
+                it("when exceed impression limit then remove first") {
+                    let inAppMessage = InAppMessage.create(id: 42)
+                    let context = InAppMessage.context(inAppMessage: inAppMessage)
+                    let view = MockInAppMessageView(context: context, presented: true)
+
+                    for _ in 0..<100 {
+                        sut.process(view: view, event: .impression, timestamp: Date())
+                    }
+                    expect(try impressionStorage.get(inAppMessage: inAppMessage).count) == 100
+
+                    sut.process(view: view, event: .impression, timestamp: Date())
+                    expect(try impressionStorage.get(inAppMessage: inAppMessage).count) == 100
+                }
             }
         }
 
@@ -77,7 +107,7 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 let event = InAppMessage.Event.impression
 
                 // when
-                sut.process(view: view, event: event, user: HackleUser.builder().build(), timestamp: Date())
+                sut.process(view: view, event: event, timestamp: Date())
 
                 // then
                 verify(exactly: 0) {
@@ -91,7 +121,7 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 actionHandler.supportsReturn = false
 
                 // when
-                sut.process(view: view, event: event, user: HackleUser.builder().build(), timestamp: Date())
+                sut.process(view: view, event: event, timestamp: Date())
 
                 // then
                 verify(exactly: 0) {
@@ -104,7 +134,7 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 let event = InAppMessage.Event.action(InAppMessage.action(), .button)
 
                 // when
-                sut.process(view: view, event: event, user: HackleUser.builder().build(), timestamp: Date())
+                sut.process(view: view, event: event, timestamp: Date())
 
                 // then
                 verify(exactly: 1) {
@@ -126,10 +156,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 expect(sut.supports(event: .close)) == true
             }
 
-            it("dismiss view") {
+            it("process do nothing") {
                 let view = MockInAppMessageView(presented: true)
-                sut.process(view: view, event: .close, user: HackleUser.builder().build(), timestamp: Date())
-                expect(view.presented) == false
+                sut.process(view: view, event: .close, timestamp: Date())
             }
         }
     }

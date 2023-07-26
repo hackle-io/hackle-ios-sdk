@@ -85,6 +85,68 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             }
         }
 
+        describe("InAppMessageLinkAndCloseHandler") {
+            var urlHandler: MockUrlHandler!
+            var sut: InAppMessageLinkAndCloseHandler!
+
+            beforeEach {
+                urlHandler = MockUrlHandler()
+                sut = InAppMessageLinkAndCloseHandler(urlHandler: urlHandler)
+            }
+
+            it("supports") {
+                expect(sut.supports(action: InAppMessage.action(type: .close))) == false
+                expect(sut.supports(action: InAppMessage.action(type: .webLink))) == false
+                expect(sut.supports(action: InAppMessage.action(type: .hidden))) == false
+                expect(sut.supports(action: InAppMessage.action(type: .linkAndClose))) == true
+            }
+
+            it("when action value is nil then do nothing") {
+                // given
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessage.action(type: .linkAndClose, value: nil)
+
+                // when
+                sut.handle(view: view, action: action)
+
+                // then
+                verify(exactly: 0) {
+                    urlHandler.openMock
+                }
+                expect(view.presented) == true
+            }
+
+            it("when invalid url then do nothing") {
+                // given
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessage.action(type: .linkAndClose, value: "")
+
+                // when
+                sut.handle(view: view, action: action)
+
+                // then
+                verify(exactly: 0) {
+                    urlHandler.openMock
+                }
+                expect(view.presented) == true
+            }
+
+            it("hackle link and close") {
+                // given
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessage.action(type: .linkAndClose, value: "https://www.hackle.io")
+
+                // when
+                sut.handle(view: view, action: action)
+
+                // then
+                verify {
+                    urlHandler.openMock
+                }
+                expect(view.presented) == false
+            }
+        }
+
         describe("InAppMessageHiddenActionHandler") {
             var repository: KeyValueRepository!
             var storage: InAppMessageHiddenStorage!

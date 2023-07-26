@@ -23,14 +23,26 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.key) == 1
             expect(iam.status) == .active
             expect("\(iam.period)") == "range(startInclusive: 1970-01-01 00:00:42 +0000, endExclusive: 1970-01-01 00:00:43 +0000)"
-            expect(iam.triggerRules.count) == 1
-            expect(iam.triggerRules[0].eventKey) == "view_home"
-            expect(iam.triggerRules[0].targets.count) == 1
-            expect(iam.triggerRules[0].targets[0].conditions.count) == 1
+
+            expect(iam.eventTrigger.frequencyCap!.identifierCaps.count) == 2
+            expect(iam.eventTrigger.frequencyCap!.identifierCaps[0].identifierType) == "$sessionId"
+            expect(iam.eventTrigger.frequencyCap!.identifierCaps[0].count) == 42
+            expect(iam.eventTrigger.frequencyCap!.identifierCaps[1].identifierType) == "$deviceId"
+            expect(iam.eventTrigger.frequencyCap!.identifierCaps[1].count) == 43
+
+            expect(iam.eventTrigger.frequencyCap!.durationCap!.duration) == 60 * 60 * 320
+            expect(iam.eventTrigger.frequencyCap!.durationCap!.count) == 420
+
+            expect(iam.eventTrigger.rules.count) == 1
+            expect(iam.eventTrigger.rules[0].eventKey) == "view_home"
+            expect(iam.eventTrigger.rules[0].targets.count) == 1
+            expect(iam.eventTrigger.rules[0].targets[0].conditions.count) == 1
+
             expect(iam.targetContext.targets.count) == 1
             expect(iam.targetContext.overrides.count) == 1
             expect(iam.targetContext.overrides[0].identifierType) == "$id"
             expect(iam.targetContext.overrides[0].identifiers) == ["user"]
+
             expect(iam.messageContext.platformTypes) == [.android, .ios]
             expect(iam.messageContext.orientations) == [.vertical, .horizontal]
             expect(iam.messageContext.messages.count) == 1

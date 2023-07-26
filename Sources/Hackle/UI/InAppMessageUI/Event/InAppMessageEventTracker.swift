@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol InAppMessageEventTracker {
-    func track(context: InAppMessageContext, event: InAppMessage.Event, user: HackleUser, timestamp: Date)
+    func track(context: InAppMessageContext, event: InAppMessage.Event, timestamp: Date)
 }
 
 class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
@@ -20,9 +20,9 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
         self.core = core
     }
 
-    func track(context: InAppMessageContext, event: InAppMessage.Event, user: HackleUser, timestamp: Date) {
+    func track(context: InAppMessageContext, event: InAppMessage.Event, timestamp: Date) {
         let trackEvent = createEvent(context: context, event: event)
-        core.track(event: trackEvent, user: user, timestamp: timestamp)
+        core.track(event: trackEvent, user: context.user, timestamp: timestamp)
     }
 
     private static let IMPRESSION_EVENT_KEY = "$in_app_impression"

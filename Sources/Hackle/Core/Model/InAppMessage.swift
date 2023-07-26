@@ -17,7 +17,7 @@ class InAppMessage {
     let key: Key
     let status: Status
     let period: Period
-    let triggerRules: [TriggerRule]
+    let eventTrigger: EventTrigger
     let targetContext: TargetContext
     let messageContext: MessageContext
 
@@ -26,7 +26,7 @@ class InAppMessage {
         key: Key,
         status: Status,
         period: Period,
-        triggerRules: [TriggerRule],
+        eventTrigger: EventTrigger,
         targetContext: TargetContext,
         messageContext: MessageContext
     ) {
@@ -34,7 +34,7 @@ class InAppMessage {
         self.key = key
         self.status = status
         self.period = period
-        self.triggerRules = triggerRules
+        self.eventTrigger = eventTrigger
         self.targetContext = targetContext
         self.messageContext = messageContext
     }
@@ -64,13 +64,54 @@ extension InAppMessage {
         }
     }
 
-    class TriggerRule {
-        let eventKey: String
-        let targets: [Target]
+    class EventTrigger {
 
-        init(eventKey: String, targets: [Target]) {
-            self.eventKey = eventKey
-            self.targets = targets
+        let rules: [Rule]
+        let frequencyCap: FrequencyCap?
+
+        init(rules: [Rule], frequencyCap: FrequencyCap?) {
+            self.rules = rules
+            self.frequencyCap = frequencyCap
+        }
+
+        class Rule {
+            let eventKey: String
+            let targets: [Target]
+
+            init(eventKey: String, targets: [Target]) {
+                self.eventKey = eventKey
+                self.targets = targets
+            }
+        }
+
+        class FrequencyCap {
+            let identifierCaps: [IdentifierCap]
+            let durationCap: DurationCap?
+
+            init(identifierCaps: [IdentifierCap], durationCap: DurationCap?) {
+                self.identifierCaps = identifierCaps
+                self.durationCap = durationCap
+            }
+        }
+
+        class IdentifierCap {
+            let identifierType: String
+            let count: Int64
+
+            init(identifierType: String, count: Int64) {
+                self.identifierType = identifierType
+                self.count = count
+            }
+        }
+
+        class DurationCap {
+            let duration: TimeInterval
+            let count: Int64
+
+            init(duration: TimeInterval, count: Int64) {
+                self.duration = duration
+                self.count = count
+            }
         }
     }
 
@@ -123,6 +164,7 @@ extension InAppMessage {
         case close = "CLOSE"
         case webLink = "WEB_LINK"
         case hidden = "HIDDEN"
+        case linkAndClose = "LINK_AND_CLOSE"
     }
 
     enum ActionArea: String, Codable {
