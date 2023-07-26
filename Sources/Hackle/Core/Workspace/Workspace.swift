@@ -343,6 +343,11 @@ class RemoteConfigParameterDto: Codable {
     }
 }
 
+class DurationDto: Codable {
+    var timeUnit: String
+    var amount: Int64
+}
+
 class InAppMessageDto: Codable {
     var id: Int64
     var key: Int64
@@ -351,12 +356,28 @@ class InAppMessageDto: Codable {
     var endEpochTimeMillis: Int64?
     var status: String
     var eventTriggerRules: [EventTriggerRuleDto]
+    var eventFrequencyCap: EventFrequencyCapDto?
     var targetContext: TargetContextDto
     var messageContext: MessageContextDto
 
     class EventTriggerRuleDto: Codable {
         var eventKey: String
         var targets: [TargetDto]
+    }
+
+    class EventFrequencyCapDto: Codable {
+        var identifiers: [IdentifierCapDto]
+        var duration: DurationCapDto?
+    }
+
+    class IdentifierCapDto: Codable {
+        var identifierType: String
+        var countPerIdentifier: Int64
+    }
+
+    class DurationCapDto: Codable {
+        var durationUnit: DurationDto
+        var countPerDuration: Int64
     }
 
     class TargetContextDto: Codable {
@@ -478,25 +499,57 @@ extension InAppMessageDto {
             return nil
         }
 
+        let eventTriggerRules = eventTriggerRules.map({ $0.toTriggerRule() })
+        let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
+
         return InAppMessage(
             id: id,
             key: key,
             status: status,
             period: period,
-            triggerRules: eventTriggerRules.map {
-                $0.toTriggerRule()
-            },
+            eventTrigger: InAppMessage.EventTrigger(
+                rules: eventTriggerRules,
+                frequencyCap: eventFrequencyCap
+            ),
             targetContext: targetContext.toTargetContext(),
             messageContext: messageContext
         )
     }
 }
 
+
 extension InAppMessageDto.EventTriggerRuleDto {
-    func toTriggerRule() -> InAppMessage.TriggerRule {
-        InAppMessage.TriggerRule(eventKey: eventKey, targets: targets.compactMap {
+    func toTriggerRule() -> InAppMessage.EventTrigger.Rule {
+        InAppMessage.EventTrigger.Rule(eventKey: eventKey, targets: targets.compactMap {
             $0.toTargetOrNil(.property)
         })
+    }
+}
+
+extension InAppMessageDto.EventFrequencyCapDto {
+    func toFrequencyCap() -> InAppMessage.EventTrigger.FrequencyCap {
+        InAppMessage.EventTrigger.FrequencyCap(
+            identifierCaps: identifiers.map({ $0.toIdentifierCap() }),
+            durationCap: duration?.toDurationCapOrNil()
+        )
+    }
+}
+
+extension InAppMessageDto.IdentifierCapDto {
+    func toIdentifierCap() -> InAppMessage.EventTrigger.IdentifierCap {
+        InAppMessage.EventTrigger.IdentifierCap(identifierType: identifierType, count: countPerIdentifier)
+    }
+}
+
+extension InAppMessageDto.DurationCapDto {
+    func toDurationCapOrNil() -> InAppMessage.EventTrigger.DurationCap? {
+        guard let timeUnit: TimeUnit = Enums.parseOrNil(rawValue: durationUnit.timeUnit) else {
+            return nil
+        }
+        return InAppMessage.EventTrigger.DurationCap(
+            duration: timeUnit.convert(Double(durationUnit.amount), to: .seconds),
+            count: countPerDuration
+        )
     }
 }
 

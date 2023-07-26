@@ -15,7 +15,7 @@ extension InAppMessage {
         key: Key = 1,
         status: Status = .active,
         period: Period = .always,
-        triggerRules: [TriggerRule] = [TriggerRule(eventKey: "test", targets: [])],
+        eventTrigger: EventTrigger = eventTrigger(),
         targetContext: TargetContext = targetContext(),
         messageContext: MessageContext = messageContext()
     ) -> InAppMessage {
@@ -24,10 +24,38 @@ extension InAppMessage {
             key: key,
             status: status,
             period: period,
-            triggerRules: triggerRules,
+            eventTrigger: eventTrigger,
             targetContext: targetContext,
             messageContext: messageContext
         )
+    }
+
+    static func eventTrigger(
+        rules: [InAppMessage.EventTrigger.Rule] = [InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])],
+        frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil
+    ) -> InAppMessage.EventTrigger {
+        InAppMessage.EventTrigger(rules: rules, frequencyCap: frequencyCap)
+    }
+
+    static func frequencyCap(
+        identifierCaps: [InAppMessage.EventTrigger.IdentifierCap] = [],
+        durationCap: InAppMessage.EventTrigger.DurationCap? = nil
+    ) -> InAppMessage.EventTrigger.FrequencyCap {
+        InAppMessage.EventTrigger.FrequencyCap(identifierCaps: identifierCaps, durationCap: durationCap)
+    }
+
+    static func identifierCap(
+        identifierType: String = "$id",
+        count: Int64 = 1
+    ) -> InAppMessage.EventTrigger.IdentifierCap {
+        InAppMessage.EventTrigger.IdentifierCap(identifierType: identifierType, count: count)
+    }
+
+    static func durationCap(
+        duration: TimeInterval = 60,
+        count: Int64 = 1
+    ) -> InAppMessage.EventTrigger.DurationCap {
+        InAppMessage.EventTrigger.DurationCap(duration: duration, count: count)
     }
 
     static func targetContext(
@@ -147,8 +175,9 @@ extension InAppMessage {
     static func context(
         inAppMessage: InAppMessage = .create(),
         message: InAppMessage.Message = InAppMessage.message(),
+        user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         properties: [String: Any] = [:]
     ) -> InAppMessageContext {
-        InAppMessageContext(inAppMessage: inAppMessage, message: message, properties: properties)
+        InAppMessageContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties)
     }
 }
