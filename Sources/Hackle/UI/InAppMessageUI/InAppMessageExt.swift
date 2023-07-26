@@ -74,12 +74,6 @@ extension InAppMessage.Message.Button {
     var borderColor: UIColor {
         UIColor(hex: style.borderColor) ?? .white
     }
-
-    var trackProperties: [String: Any] {
-        PropertiesBuilder()
-            .add("button_text", text)
-            .build()
-    }
 }
 
 extension InAppMessage.Message.Text.Attribute {

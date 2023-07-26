@@ -15,29 +15,57 @@ extension InAppMessage {
         key: Key = 1,
         status: Status = .active,
         period: Period = .always,
-        triggerRules: [TriggerRule] = [TriggerRule(eventKey: "test", targets: [])],
-        targetContext: TargetContext = target(),
-        messageContext: MessageContext = context()
+        eventTrigger: EventTrigger = eventTrigger(),
+        targetContext: TargetContext = targetContext(),
+        messageContext: MessageContext = messageContext()
     ) -> InAppMessage {
         InAppMessage(
             id: id,
             key: key,
             status: status,
             period: period,
-            triggerRules: triggerRules,
+            eventTrigger: eventTrigger,
             targetContext: targetContext,
             messageContext: messageContext
         )
     }
 
-    static func target(
+    static func eventTrigger(
+        rules: [InAppMessage.EventTrigger.Rule] = [InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])],
+        frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil
+    ) -> InAppMessage.EventTrigger {
+        InAppMessage.EventTrigger(rules: rules, frequencyCap: frequencyCap)
+    }
+
+    static func frequencyCap(
+        identifierCaps: [InAppMessage.EventTrigger.IdentifierCap] = [],
+        durationCap: InAppMessage.EventTrigger.DurationCap? = nil
+    ) -> InAppMessage.EventTrigger.FrequencyCap {
+        InAppMessage.EventTrigger.FrequencyCap(identifierCaps: identifierCaps, durationCap: durationCap)
+    }
+
+    static func identifierCap(
+        identifierType: String = "$id",
+        count: Int64 = 1
+    ) -> InAppMessage.EventTrigger.IdentifierCap {
+        InAppMessage.EventTrigger.IdentifierCap(identifierType: identifierType, count: count)
+    }
+
+    static func durationCap(
+        duration: TimeInterval = 60,
+        count: Int64 = 1
+    ) -> InAppMessage.EventTrigger.DurationCap {
+        InAppMessage.EventTrigger.DurationCap(duration: duration, count: count)
+    }
+
+    static func targetContext(
         overrides: [UserOverride] = [],
         targets: [Target] = []
     ) -> TargetContext {
         TargetContext(overrides: overrides, targets: targets)
     }
 
-    static func context(
+    static func messageContext(
         defaultLang: String = "ko",
         platformTypes: [PlatformType] = [.ios],
         orientations: [Orientation] = [.vertical],
@@ -142,5 +170,14 @@ extension InAppMessage {
         message: InAppMessage.Message? = nil
     ) -> InAppMessageEvaluation {
         InAppMessageEvaluation(reason: reason, targetEvaluations: targetEvaluations, inAppMessage: inAppMessage, message: message)
+    }
+
+    static func context(
+        inAppMessage: InAppMessage = .create(),
+        message: InAppMessage.Message = InAppMessage.message(),
+        user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
+        properties: [String: Any] = [:]
+    ) -> InAppMessageContext {
+        InAppMessageContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties)
     }
 }
