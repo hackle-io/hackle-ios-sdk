@@ -72,7 +72,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     func process(event: UserEvent) {
         eventQueue.async {
             self.addEventInternal(event: event)
-            self.eventPublisher.publish(event: event)
         }
     }
 
@@ -148,6 +147,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         }
         let decoratedEvent = decorateSession(event: event)
         saveEvent(event: decoratedEvent)
+        eventPublisher.publish(event: decoratedEvent)
     }
 
     private func updateEvent(event: UserEvent) {

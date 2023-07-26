@@ -14,17 +14,13 @@ import Nimble
 class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
     override func spec() {
         var core: HackleCoreStub!
-        var userManager: MockUserManager!
-        var userResolver: HackleUserResolver!
         var sut: DefaultInAppMessageEventTracker!
 
-        let user = User.builder().id("user").build()
+        let user = HackleUser.builder().identifier(IdentifierType.user.rawValue, "user").build()
 
         beforeEach {
             core = HackleCoreStub()
-            userManager = MockUserManager(currentUser: user)
-            userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
-            sut = DefaultInAppMessageEventTracker(core: core, userManager: userManager, userResolver: userResolver)
+            sut = DefaultInAppMessageEventTracker(core: core)
         }
 
         it("impression") {
@@ -40,16 +36,16 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             let inAppMessage = InAppMessage.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.context(messages: [message])
+                messageContext: InAppMessage.messageContext(messages: [message])
             )
-            let context = InAppMessageContext(
+            let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 
             // when
-            sut.track(context: context, event: .impression)
+            sut.track(context: context, event: .impression, timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1
@@ -78,16 +74,16 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             let inAppMessage = InAppMessage.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.context(messages: [message])
+                messageContext: InAppMessage.messageContext(messages: [message])
             )
-            let context = InAppMessageContext(
+            let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 
             // when
-            sut.track(context: context, event: .close)
+            sut.track(context: context, event: .close, timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1
@@ -112,16 +108,16 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             let inAppMessage = InAppMessage.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.context(messages: [message])
+                messageContext: InAppMessage.messageContext(messages: [message])
             )
-            let context = InAppMessageContext(
+            let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 
             // when
-            sut.track(context: context, event: .action(action, .button, "button_text_"))
+            sut.track(context: context, event: .action(action, .button, "button_text_"), timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1

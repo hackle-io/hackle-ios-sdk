@@ -11,12 +11,10 @@ import UIKit
 @objc(HackleInAppMessageUI)
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
 
-    let actionHandlerFactory: ActionHandlerFactory
-    let eventTracker: InAppMessageEventTracker
+    let eventHandler: InAppMessageEventHandler
 
-    init(actionHandlerFactory: ActionHandlerFactory, eventTracker: InAppMessageEventTracker) {
-        self.actionHandlerFactory = actionHandlerFactory
-        self.eventTracker = eventTracker
+    init(eventHandler: InAppMessageEventHandler) {
+        self.eventHandler = eventHandler
         super.init()
     }
 

@@ -190,7 +190,7 @@ extension HackleInAppMessageUI {
                 withDuration: 0,
                 animations: { self.presented = true },
                 completion: { _ in
-                    self.track(event: .impression)
+                    self.handle(event: .impression)
                 }
             )
         }
@@ -202,7 +202,7 @@ extension HackleInAppMessageUI {
                 withDuration: 0,
                 animations: { self.presented = false },
                 completion: { _ in
-                    self.track(event: .close)
+                    self.handle(event: .close)
                     self.didDismiss()
                 }
             )
@@ -253,8 +253,7 @@ extension HackleInAppMessageUI {
                 return
             }
 
-            track(event: .action(action, .image))
-            handleAction(action: action)
+            handle(event: .action(action, .image))
         }
 
         // Views
@@ -269,8 +268,7 @@ extension HackleInAppMessageUI {
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 22)
             button.onClick { [weak self] in
-                self?.track(event: .action(closeButton.action, .xButton))
-                self?.handleAction(action: closeButton.action)
+                self?.handle(event: .action(closeButton.action, .xButton))
 
             }
             return button
@@ -318,8 +316,7 @@ extension HackleInAppMessageUI {
             let buttonViews = buttons.map { it in
                 let button = ButtonView(button: it)
                 button.onClick { [weak self] in
-                    self?.track(event: .action(it.action, .button, it.text))
-                    self?.handleAction(action: it.action)
+                    self?.handle(event: .action(it.action, .button, it.text))
                 }
                 return button
             }

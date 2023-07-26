@@ -15,6 +15,20 @@
 		EE0B71EE2A42E84A009D7AF4 /* InAppMessageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */; };
 		EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */; };
 		EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */; };
+		EE0F33F22A665ECD009DE640 /* InAppMessageEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */; };
+		EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F32A665ED7009DE640 /* InAppMessageEventHandler.swift */; };
+		EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F92A66781E009DE640 /* InAppMessageEventProcessor.swift */; };
+		EE0F34012A668F20009DE640 /* MockInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */; };
+		EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34022A6690D2009DE640 /* UrlHandler.swift */; };
+		EE0F34052A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34042A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift */; };
+		EE0F34082A669659009DE640 /* MockUrlHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34072A669659009DE640 /* MockUrlHandler.swift */; };
+		EE0F340A2A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34092A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift */; };
+		EE0F340C2A66B039009DE640 /* InAppMessageEventProcessorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F340B2A66B039009DE640 /* InAppMessageEventProcessorSpecs.swift */; };
+		EE0F340E2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F340D2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift */; };
+		EE0F34102A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F340F2A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift */; };
+		EE0F34122A66C3CF009DE640 /* MockInAppMessageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34112A66C3CF009DE640 /* MockInAppMessageActionHandler.swift */; };
+		EE0F34162A6795E9009DE640 /* InAppMessageImpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */; };
+		EE0F34182A681207009DE640 /* InAppMessageEventMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */; };
 		EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */; };
 		EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */ = {isa = PBXBuildFile; fileRef = EE240EEA29F6A9D6006D7414 /* segment_match.json */; };
 		EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */; };
@@ -320,6 +334,10 @@
 		EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
 		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
 		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
+		EEB2E62C2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB2E62B2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift */; };
+		EEB2E62E2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */; };
+		EEB2E6302A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB2E62F2A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift */; };
+		EEB2E6322A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB2E6312A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift */; };
 		EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */; };
 		EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */; };
 		EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */; };
@@ -381,6 +399,20 @@
 		EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageActionHandler.swift; sourceTree = "<group>"; };
 		EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestViewController.xib; sourceTree = "<group>"; };
 		EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestViewController.swift; sourceTree = "<group>"; };
+		EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventTracker.swift; sourceTree = "<group>"; };
+		EE0F33F32A665ED7009DE640 /* InAppMessageEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventHandler.swift; sourceTree = "<group>"; };
+		EE0F33F92A66781E009DE640 /* InAppMessageEventProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventProcessor.swift; sourceTree = "<group>"; };
+		EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageView.swift; sourceTree = "<group>"; };
+		EE0F34022A6690D2009DE640 /* UrlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlHandler.swift; sourceTree = "<group>"; };
+		EE0F34042A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageActionHandlerSpecs.swift; sourceTree = "<group>"; };
+		EE0F34072A669659009DE640 /* MockUrlHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUrlHandler.swift; sourceTree = "<group>"; };
+		EE0F34092A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageEventHandlerSpecs.swift; sourceTree = "<group>"; };
+		EE0F340B2A66B039009DE640 /* InAppMessageEventProcessorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventProcessorSpecs.swift; sourceTree = "<group>"; };
+		EE0F340D2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageEventTracker.swift; sourceTree = "<group>"; };
+		EE0F340F2A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageEventProcessor.swift; sourceTree = "<group>"; };
+		EE0F34112A66C3CF009DE640 /* MockInAppMessageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageActionHandler.swift; sourceTree = "<group>"; };
+		EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageImpression.swift; sourceTree = "<group>"; };
+		EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventMatcher.swift; sourceTree = "<group>"; };
 		EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInternalResources.swift; sourceTree = "<group>"; };
 		EE240EEA29F6A9D6006D7414 /* segment_match.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = segment_match.json; sourceTree = "<group>"; };
 		EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
@@ -683,6 +715,10 @@
 		EEA01CCA2A37138300E0C021 /* UIKitExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExt.swift; sourceTree = "<group>"; };
 		EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideSetListener.swift; sourceTree = "<group>"; };
 		EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideResetListener.swift; sourceTree = "<group>"; };
+		EEB2E62B2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventTriggerDeterminerSpecs.swift; sourceTree = "<group>"; };
+		EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageImpressionStorageSpecs.swift; sourceTree = "<group>"; };
+		EEB2E62F2A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventTriggerDeterminer.swift; sourceTree = "<group>"; };
+		EEB2E6312A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageEventTriggerDeterminer.swift; sourceTree = "<group>"; };
 		EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
 		EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateManager.swift; sourceTree = "<group>"; };
 		EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingManualOverrideStorageSpecs.swift; sourceTree = "<group>"; };
@@ -769,6 +805,66 @@
 			path = AbTest;
 			sourceTree = "<group>";
 		};
+		EE0F33F02A665E75009DE640 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */,
+				EE0B71E92A419D30009D7AF4 /* InAppMessageEvent.swift */,
+				EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */,
+				EE0F33F32A665ED7009DE640 /* InAppMessageEventHandler.swift */,
+				EE0F33F92A66781E009DE640 /* InAppMessageEventProcessor.swift */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		EE0F33FB2A6689D0009DE640 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				EE0F33FC2A6689EB009DE640 /* InAppMessageUI */,
+				EE0F34062A66962F009DE640 /* Internal */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		EE0F33FC2A6689EB009DE640 /* InAppMessageUI */ = {
+			isa = PBXGroup;
+			children = (
+				EE0F33FD2A6689F6009DE640 /* Event */,
+				EE0F33FF2A668A13009DE640 /* Views */,
+			);
+			path = InAppMessageUI;
+			sourceTree = "<group>";
+		};
+		EE0F33FD2A6689F6009DE640 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				EE0F34092A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift */,
+				EEF895A92A4A8AD200722CF6 /* DefaultInAppMessageEventTrackerSpecs.swift */,
+				EE0F34042A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift */,
+				EE0F340B2A66B039009DE640 /* InAppMessageEventProcessorSpecs.swift */,
+				EE0F340D2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift */,
+				EE0F340F2A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift */,
+				EE0F34112A66C3CF009DE640 /* MockInAppMessageActionHandler.swift */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		EE0F33FF2A668A13009DE640 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EE0F34062A66962F009DE640 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				EE0F34072A669659009DE640 /* MockUrlHandler.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		EE29D8A729CD820900B1FEAA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -790,8 +886,8 @@
 			children = (
 				EE29D93829CD825300B1FEAA /* Common */,
 				EE29D8AE29CD825300B1FEAA /* Core */,
-				EE29DAAA29CD83C900B1FEAA /* Resources */,
 				EE80E0142A2DC64500FB12CC /* UI */,
+				EE29DAAA29CD83C900B1FEAA /* Resources */,
 				EE29D8AC29CD825300B1FEAA /* Hackle.swift */,
 				EE29D8AD29CD825300B1FEAA /* HackleApp.swift */,
 				EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */,
@@ -1165,8 +1261,9 @@
 			children = (
 				EE29DA3629CD82C200B1FEAA /* Common */,
 				EE29D9CB29CD82C100B1FEAA /* Core */,
-				EE29D9B429CD82C100B1FEAA /* Mock */,
+				EE0F33FB2A6689D0009DE640 /* UI */,
 				EE29D9BF29CD82C100B1FEAA /* Resources */,
+				EE29D9B429CD82C100B1FEAA /* Mock */,
 				EE29DA3929CD82C200B1FEAA /* HackleConfigSpec.swift */,
 				EE29DA3A29CD82C200B1FEAA /* HackleAppSpec.swift */,
 			);
@@ -1615,9 +1712,11 @@
 				EEA01CB72A31CEAA00E0C021 /* InAppMessageContext.swift */,
 				EEA01CB52A3069C400E0C021 /* InAppMessageDeterminer.swift */,
 				EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */,
-				EE0B71E92A419D30009D7AF4 /* InAppMessageEvent.swift */,
 				EE80E0122A2DA0CC00FB12CC /* InAppMessageManager.swift */,
 				EEA01CB32A3069B000E0C021 /* InAppMessagePresenter.swift */,
+				EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */,
+				EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */,
+				EEB2E62F2A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -1635,13 +1734,13 @@
 		EE80E0152A2DC67000FB12CC /* InAppMessageUI */ = {
 			isa = PBXGroup;
 			children = (
+				EE0F33F02A665E75009DE640 /* Event */,
 				EE80E0162A2DC74D00FB12CC /* Views */,
 				EE0B71E42A3BF237009D7AF4 /* InAppMessageExt.swift */,
 				EE80E01D2A2DCD3F00FB12CC /* InAppMessageUI.swift */,
 				EEA01CC82A37136900E0C021 /* InAppMessageUIExt.swift */,
 				EEA01CC62A3712CC00E0C021 /* InAppMessageUIWindow.swift */,
 				EE80E0272A2E10F700FB12CC /* InAppMessageUIViewController.swift */,
-				EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */,
 			);
 			path = InAppMessageUI;
 			sourceTree = "<group>";
@@ -1699,6 +1798,7 @@
 				EEA01CCA2A37138300E0C021 /* UIKitExt.swift */,
 				EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */,
 				EEF895B82A4B37C800722CF6 /* ImageCacheManager.swift */,
+				EE0F34022A6690D2009DE640 /* UrlHandler.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -1765,12 +1865,14 @@
 			children = (
 				EEF8959B2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift */,
 				EEF895A52A4A6BA800722CF6 /* DefaultInAppMessageEventMatcherSpecs.swift */,
-				EEF895A92A4A8AD200722CF6 /* DefaultInAppMessageEventTrackerSpecs.swift */,
 				EEF895AB2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift */,
+				EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */,
 				EEF8959D2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift */,
+				EEB2E62B2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift */,
 				EEF895AD2A4A9B6600722CF6 /* InAppMessageManagerSpecs.swift */,
 				EEF895AF2A4A9BAA00722CF6 /* MockInAppMessageDeterminer.swift */,
 				EEF895B12A4A9C0000722CF6 /* MockInAppMessagePresenter.swift */,
+				EEB2E6312A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -1934,6 +2036,7 @@
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
 				EE29D96929CD825400B1FEAA /* HackleUserResolver.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
+				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
 				EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */,
 				EE29D95229CD825400B1FEAA /* Counter.swift in Sources */,
 				EE29D96C29CD825400B1FEAA /* ConcurrentArray.swift in Sources */,
@@ -1944,6 +2047,7 @@
 				EE80DF882A2831E300FB12CC /* InAppMessageEvaluator.swift in Sources */,
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,
 				EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */,
+				EE0F34182A681207009DE640 /* InAppMessageEventMatcher.swift in Sources */,
 				EE29D98F29CD825400B1FEAA /* Evaluator.swift in Sources */,
 				EE29D9AA29CD825500B1FEAA /* SessionEventTracker.swift in Sources */,
 				EE0B71E52A3BF237009D7AF4 /* InAppMessageExt.swift in Sources */,
@@ -1961,6 +2065,7 @@
 				EE29D95B29CD825400B1FEAA /* EventRepository.swift in Sources */,
 				EEA3BF5929D3F7B4008664BA /* OnOverrideSetListener.swift in Sources */,
 				EE29DAD129CDA86200B1FEAA /* HackleUserExplorerViewController.swift in Sources */,
+				EE0F33F22A665ECD009DE640 /* InAppMessageEventTracker.swift in Sources */,
 				EE29D9AD29CD825500B1FEAA /* Event.swift in Sources */,
 				EE29D9A829CD825500B1FEAA /* ExposureEventDedupDeterminer.swift in Sources */,
 				EE29D97229CD825400B1FEAA /* Date.swift in Sources */,
@@ -2018,6 +2123,7 @@
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,
 				EE29D99529CD825400B1FEAA /* ConditionMatcher.swift in Sources */,
 				EE29D96F29CD825400B1FEAA /* Enums.swift in Sources */,
+				EEB2E6302A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift in Sources */,
 				EE29D94E29CD825400B1FEAA /* DelegatingMetric.swift in Sources */,
 				EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */,
 				EE29D97D29CD825400B1FEAA /* HttpResponse.swift in Sources */,
@@ -2027,6 +2133,7 @@
 				EE29D99729CD825500B1FEAA /* OverrideResolver.swift in Sources */,
 				EE29D96429CD825400B1FEAA /* DefaultRemoteConfig.swift in Sources */,
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,
+				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
 				EE29D99B29CD825500B1FEAA /* ActionResolver.swift in Sources */,
 				EE29D94B29CD825400B1FEAA /* Measurement.swift in Sources */,
@@ -2046,6 +2153,7 @@
 				EE29D99829CD825500B1FEAA /* RemoteConfigTargetRuleDeterminer.swift in Sources */,
 				EE0B71EA2A419D30009D7AF4 /* InAppMessageEvent.swift in Sources */,
 				EEA3BF5B29D3F7D4008664BA /* OnOverrideResetListener.swift in Sources */,
+				EE0F34162A6795E9009DE640 /* InAppMessageImpression.swift in Sources */,
 				EE29D95929CD825400B1FEAA /* SQLiteDatabase.swift in Sources */,
 				EE80E0132A2DA0CC00FB12CC /* InAppMessageManager.swift in Sources */,
 				EE29D94329CD825400B1FEAA /* Metric.swift in Sources */,
@@ -2071,6 +2179,7 @@
 				EEA01CC12A36E1DF00E0C021 /* InAppMessageUIStackView.swift in Sources */,
 				EE29D96D29CD825400B1FEAA /* Objects.swift in Sources */,
 				EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */,
+				EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */,
 				EEA01CBC2A32A8C600E0C021 /* EventConditionMatcher.swift in Sources */,
 				EE29D97429CD825400B1FEAA /* TimeUnit.swift in Sources */,
 				EE29D96E29CD825400B1FEAA /* Sdk.swift in Sources */,
@@ -2115,14 +2224,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				EE0F34082A669659009DE640 /* MockUrlHandler.swift in Sources */,
+				EE0F340E2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift in Sources */,
 				EE29DA7F29CD82C200B1FEAA /* MockConditionMatcher.swift in Sources */,
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
+				EE0F34102A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift in Sources */,
 				EE29DA6729CD82C200B1FEAA /* DefaultHackleUserResolverSpecs.swift in Sources */,
 				EE789E2F29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift in Sources */,
 				EEF895A42A4A67CF00722CF6 /* InAppMessageRequestSpecs.swift in Sources */,
+				EE0F340A2A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift in Sources */,
 				EEF895932A49729C00722CF6 /* InAppMessageResolverStub.swift in Sources */,
+				EE0F34052A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift in Sources */,
 				EE29DA9A29CD82C200B1FEAA /* EvaluationFlowTestExt.swift in Sources */,
 				EE29DA7E29CD82C200B1FEAA /* VersionSpecs.swift in Sources */,
+				EEB2E6322A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift in Sources */,
 				EEF895992A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift in Sources */,
 				EE789E3E29F0F9B50088D8A6 /* RemoteConfigRequestSpecs.swift in Sources */,
 				EE29DA5229CD82C200B1FEAA /* NoopCounterSpecs.swift in Sources */,
@@ -2130,6 +2245,7 @@
 				EE29DA8D29CD82C200B1FEAA /* MockContainerResolver.swift in Sources */,
 				EE29DA8029CD82C200B1FEAA /* DefaultTargetMatcherSpecs.swift in Sources */,
 				EE29DA9029CD82C200B1FEAA /* DefaultSlotNumberCalculatorSpec.swift in Sources */,
+				EE0F34122A66C3CF009DE640 /* MockInAppMessageActionHandler.swift in Sources */,
 				EE29DAA429CD82C200B1FEAA /* PropertiesBuilderSpecs.swift in Sources */,
 				EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */,
 				EE29DA5329CD82C200B1FEAA /* FlushCounterSpecs.swift in Sources */,
@@ -2142,6 +2258,8 @@
 				EE29DA4029CD82C200B1FEAA /* MockUserEvent.swift in Sources */,
 				EE29DA5429CD82C200B1FEAA /* FlushTimerSpecs.swift in Sources */,
 				EE29DA9C29CD82C200B1FEAA /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */,
+				EE0F34012A668F20009DE640 /* MockInAppMessageView.swift in Sources */,
+				EEB2E62E2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift in Sources */,
 				EE29DA8129CD82C200B1FEAA /* DefaultSegmentMatcher.swift in Sources */,
 				EE29DA8329CD82C200B1FEAA /* DefaultExperimentTargetRuleDeterminerSpecs.swift in Sources */,
 				EE29DA6329CD82C200B1FEAA /* MockEventRepository.swift in Sources */,
@@ -2177,6 +2295,7 @@
 				EE29DA4229CD82C200B1FEAA /* Mocks.swift in Sources */,
 				EEF8958F2A496F8500722CF6 /* InAppMessageFlowEvaluatorSpecs.swift in Sources */,
 				EE29DA6629CD82C200B1FEAA /* MockUserManager.swift in Sources */,
+				EEB2E62C2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift in Sources */,
 				EE29DA7729CD82C200B1FEAA /* MockTargetMatcher.swift in Sources */,
 				EE789E4A29F1097E0088D8A6 /* AbTestConditionMatcherSpecs.swift in Sources */,
 				EE789E4029F0FD300088D8A6 /* RemoteConfigEvaluatorSpecs.swift in Sources */,
@@ -2220,6 +2339,7 @@
 				EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */,
 				EE29DAA529CD82C200B1FEAA /* UserSpecs.swift in Sources */,
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
+				EE0F340C2A66B039009DE640 /* InAppMessageEventProcessorSpecs.swift in Sources */,
 				EE789E3129F01DF60088D8A6 /* InMemoryUserEventProcessor.swift in Sources */,
 				EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */,
 				EE29DA7529CD82C200B1FEAA /* OperatorMatcherSpecs.swift in Sources */,
