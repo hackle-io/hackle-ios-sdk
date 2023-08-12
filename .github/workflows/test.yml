@@ -1,0 +1,15 @@
+name: Test
+
+on:
+  pull_request:
+jobs:
+  ios-sdk-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test
+        run:  xcodebuild clean test -project Hackle.xcodeproj -scheme Hackle-Package -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' -resultBundlePath TestResults
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: TestResults.xcresult
+        if: success() || failure()
