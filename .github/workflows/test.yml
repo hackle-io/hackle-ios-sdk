@@ -13,6 +13,7 @@ jobs:
         name: Test Result
         with:
           path: TestResults.xcresult
+          show-passed-tests: false
         if: success() || failure()
       - name: Coverage Result
         run: echo "$(cat $GITHUB_STEP_SUMMARY)" >> cov.txt
