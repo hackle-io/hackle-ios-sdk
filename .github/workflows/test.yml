@@ -9,16 +9,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test
         run:  xcodebuild clean test -project Hackle.xcodeproj -scheme Hackle-Package -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' -resultBundlePath TestResults
-      - uses: kishikawakatsumi/xcresulttool@v1
+      - uses: tbartelmess/analyze-xcoderesults-action@0.1.0
         name: Test Result
+        if: always()
         with:
-          path: TestResults.xcresult
-          show-passed-tests: false
-        if: success() || failure()
-      - name: Coverage Result
-        run: echo "$(cat $GITHUB_STEP_SUMMARY)" >> cov.txt
-      - uses: mshick/add-pr-comment@v2
-        name: Post Comment
-        with:
-          message-path: |
-            cov.txt
+          results: TestResults.xcresult
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
