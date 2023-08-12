@@ -19,4 +19,5 @@ jobs:
       - uses: mshick/add-pr-comment@v2
         name: Post Comment
         with:
-          message: ${{ COVERAGE_COMMENT }}
+          message: |
+            ${{ COVERAGE_COMMENT }}
