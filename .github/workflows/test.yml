@@ -6,6 +6,20 @@ jobs:
   ios-sdk-test:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Test
-        run:  xcodebuild clean test -project Hackle.xcodeproj -scheme Hackle-Package -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+      - uses: actions/checkout@v3
+      - name: Run tests
+        uses: sersoft-gmbh/xcodebuild-action@v1
+        with:
+          project: Hackle.xcodeproj
+          scheme: Hackle-Package
+          derived-data-path: ./output
+          destination: "OS=latest,name=iPhone 14"
+          action: test
+          enable-code-coverage: true
+
+      - name: Test Coverage
+        uses: maxep/xcodebuild-lcov-action@0.1.0
+        with:
+          derived-data-path: ./output
+          target: Hackle.app
+          output-file: ./output/lcov.info
