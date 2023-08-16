@@ -31,7 +31,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let evaluation2 = ExperimentEvaluation(
                 reason: DecisionReason.DEFAULT_RULE,
                 targetEvaluations: [],
-                experiment: experiment(id: 2, type: .featureFlag),
+                experiment: experiment(id: 2, type: .featureFlag, version: 2, executionVersion: 3),
                 variationId: 320,
                 variationKey: "A",
                 config: nil
@@ -73,10 +73,12 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.variationId) == 42
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
-            expect(exposure1.properties.count) == 3
+            expect(exposure1.properties.count) == 5
             expect(exposure1.properties["$targetingRootType"] as! String) == "REMOTE_CONFIG"
             expect(exposure1.properties["$targetingRootId"] as! Int64) == 1
             expect(exposure1.properties["$parameterConfigurationId"] as! Int64) == 42
+            expect(exposure1.properties["$experiment_version"] as! Int) == 1
+            expect(exposure1.properties["$execution_version"] as! Int) == 1
 
             expect(events[2]).to(beAnInstanceOf(UserEvents.Exposure.self))
             let exposure2 = events[2] as! UserEvents.Exposure
@@ -86,9 +88,11 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure2.variationId) == 320
             expect(exposure2.variationKey) == "A"
             expect(exposure2.decisionReason) == DecisionReason.DEFAULT_RULE
-            expect(exposure2.properties.count) == 2
+            expect(exposure2.properties.count) == 4
             expect(exposure2.properties["$targetingRootType"] as! String) == "REMOTE_CONFIG"
             expect(exposure2.properties["$targetingRootId"] as! Int64) == 1
+            expect(exposure2.properties["$experiment_version"] as! Int) == 2
+            expect(exposure2.properties["$execution_version"] as! Int) == 3
         }
     }
 
