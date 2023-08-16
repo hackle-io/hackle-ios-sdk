@@ -15,6 +15,7 @@ protocol Experiment {
     var identifierType: String { get }
     var status: ExperimentStatus { get }
     var version: Int { get }
+    var executionVersion: Int { get }
     var variations: [Variation] { get }
     var userOverrides: [User.Id: Variation.Id] { get }
     var segmentOverrides: [TargetRule] { get }
@@ -49,6 +50,7 @@ class ExperimentEntity: Experiment {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
+    let executionVersion: Int
     let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
     let segmentOverrides: [TargetRule]
@@ -66,6 +68,7 @@ class ExperimentEntity: Experiment {
         identifierType: String,
         status: ExperimentStatus,
         version: Int,
+        executionVersion: Int,
         variations: [Variation],
         userOverrides: [User.Id: Variation.Id],
         segmentOverrides: [TargetRule],
@@ -82,6 +85,7 @@ class ExperimentEntity: Experiment {
         self.identifierType = identifierType
         self.status = status
         self.version = version
+        self.executionVersion = executionVersion
         self.variations = variations
         self.userOverrides = userOverrides
         self.segmentOverrides = segmentOverrides
