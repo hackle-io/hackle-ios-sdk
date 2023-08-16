@@ -214,6 +214,7 @@ class VariationDto: Codable {
 
 class ExecutionDto: Codable {
     var status: String
+    var version: Int
     var userOverrides: [UserOverrideDto]
     var segmentOverrides: [TargetRuleDto]
     var targetAudiences: [TargetDto]
@@ -785,6 +786,7 @@ extension ExperimentDto {
             identifierType: identifierType,
             status: experimentStatus,
             version: version,
+            executionVersion: execution.version,
             variations: variation,
             userOverrides: userOverrides,
             segmentOverrides: segmentOverrides,

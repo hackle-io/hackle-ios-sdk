@@ -24,6 +24,9 @@ class DefaultUserEventFactory: UserEventFactory {
     private static let ROOT_TYPE = "$targetingRootType"
     private static let ROOT_ID = "$targetingRootId"
 
+    private static let EXPERIMENT_VERSION_KEY = "$experiment_version"
+    private static let EXECUTION_VERSION_KEY = "$execution_version"
+
     func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) throws -> [UserEvent] {
 
         let timestamp = clock.now()
@@ -52,6 +55,8 @@ class DefaultUserEventFactory: UserEventFactory {
         switch evaluation {
         case let evaluation as ExperimentEvaluation:
             properties.add(DefaultUserEventFactory.CONFIG_ID_PROPERTY_KEY, evaluation.config?.id)
+            properties.add(DefaultUserEventFactory.EXPERIMENT_VERSION_KEY, evaluation.experiment.version)
+            properties.add(DefaultUserEventFactory.EXECUTION_VERSION_KEY, evaluation.experiment.executionVersion)
             return UserEvents.exposure(
                 user: request.user,
                 evaluation: evaluation,

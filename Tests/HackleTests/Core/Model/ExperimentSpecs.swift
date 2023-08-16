@@ -17,6 +17,7 @@ func experiment(
     status: ExperimentStatus = .running,
     containerId: Container.Id? = nil,
     version: Int = 1,
+    executionVersion: Int = 1,
     winnerVariationId: Variation.Id? = nil,
     variations: [Variation] = [
         VariationEntity(id: 1, key: "A", isDropped: false, parameterConfigurationId: nil),
@@ -32,6 +33,7 @@ func experiment(
         identifierType: identifierType,
         status: status,
         version: version,
+        executionVersion: executionVersion,
         variations: variations,
         userOverrides: [:],
         segmentOverrides: [],
