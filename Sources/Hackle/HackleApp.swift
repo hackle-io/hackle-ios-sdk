@@ -119,7 +119,7 @@ import Foundation
             )
         } catch let error {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
-            decision = Decision.of(variation: defaultVariation, reason: DecisionReason.EXCEPTION)
+            decision = Decision.of(experiment: nil, variation: defaultVariation, reason: DecisionReason.EXCEPTION)
         }
         DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
         return decision
@@ -160,7 +160,7 @@ import Foundation
             )
         } catch {
             Log.error("Unexpected error while deciding feature flag[\(featureKey)]: \(String(describing: error))")
-            decision = FeatureFlagDecision.off(reason: DecisionReason.EXCEPTION)
+            decision = FeatureFlagDecision.off(featureFlag: nil, reason: DecisionReason.EXCEPTION)
         }
         DecisionMetrics.featureFlag(sample: sample, key: featureKey, decision: decision)
         return decision

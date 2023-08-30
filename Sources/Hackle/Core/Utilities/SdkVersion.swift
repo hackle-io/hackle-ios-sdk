@@ -5,5 +5,5 @@
 import Foundation
 
 class SdkVersion {
-    static let CURRENT = "2.23.0"
+    static let CURRENT = "2.24.0"
 }
