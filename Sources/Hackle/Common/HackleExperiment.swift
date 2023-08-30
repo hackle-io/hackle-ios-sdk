@@ -9,19 +9,17 @@ import Foundation
 
 @objc public final class HackleExperiment: NSObject {
 
-    @objc public let id: Int64
     @objc public let key: Int64
     @objc public let version: Int
 
-    init(id: Int64, key: Int64, version: Int) {
-        self.id = id
+    init(key: Int64, version: Int) {
         self.key = key
         self.version = version
         super.init()
     }
 
     static func from(experiment: Experiment) -> HackleExperiment {
-        HackleExperiment(id: experiment.id, key: experiment.key, version: experiment.version)
+        HackleExperiment(key: experiment.key, version: experiment.version)
     }
 }
 
