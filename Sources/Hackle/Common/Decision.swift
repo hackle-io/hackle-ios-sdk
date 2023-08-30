@@ -2,20 +2,27 @@ import Foundation
 
 @objc public final class Decision: NSObject, ParameterConfig {
 
+    @objc public let experiment: HackleExperiment?
     @objc public let variation: String
     @objc public let reason: String
     @objc public let config: ParameterConfig
     @objc public let parameters: [String: Any]
 
-    internal init(variation: String, reason: String, config: ParameterConfig) {
+    internal init(experiment: HackleExperiment?, variation: String, reason: String, config: ParameterConfig) {
+        self.experiment = experiment
         self.variation = variation
         self.reason = reason
         self.config = config
         self.parameters = config.parameters
     }
 
-    internal static func of(variation: String, reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> Decision {
-        Decision(variation: variation, reason: reason, config: config)
+    internal static func of(
+        experiment: Experiment?,
+        variation: String,
+        reason: String,
+        config: ParameterConfig = EmptyParameterConfig.instance
+    ) -> Decision {
+        Decision(experiment: experiment?.toPublic(), variation: variation, reason: reason, config: config)
     }
 
     public func getString(forKey: String, defaultValue: String) -> String {
@@ -37,24 +44,34 @@ import Foundation
 
 @objc public final class FeatureFlagDecision: NSObject, ParameterConfig {
 
+    @objc public let featureFlag: HackleExperiment?
     @objc public let isOn: Bool
     @objc public let reason: String
     @objc public let config: ParameterConfig
     @objc public let parameters: [String: Any]
 
-    init(isOn: Bool, reason: String, config: ParameterConfig) {
+    init(featureFlag: HackleExperiment?, isOn: Bool, reason: String, config: ParameterConfig) {
+        self.featureFlag = featureFlag
         self.isOn = isOn
         self.reason = reason
         self.config = config
         self.parameters = config.parameters
     }
 
-    static func on(reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> FeatureFlagDecision {
-        FeatureFlagDecision(isOn: true, reason: reason, config: config)
+    static func on(
+        featureFlag: Experiment?,
+        reason: String,
+        config: ParameterConfig = EmptyParameterConfig.instance
+    ) -> FeatureFlagDecision {
+        FeatureFlagDecision(featureFlag: featureFlag?.toPublic(), isOn: true, reason: reason, config: config)
     }
 
-    static func off(reason: String, config: ParameterConfig = EmptyParameterConfig.instance) -> FeatureFlagDecision {
-        FeatureFlagDecision(isOn: false, reason: reason, config: config)
+    static func off(
+        featureFlag: Experiment?,
+        reason: String,
+        config: ParameterConfig = EmptyParameterConfig.instance
+    ) -> FeatureFlagDecision {
+        FeatureFlagDecision(featureFlag: featureFlag?.toPublic(), isOn: false, reason: reason, config: config)
     }
 
     public func getString(forKey: String, defaultValue: String) -> String {
