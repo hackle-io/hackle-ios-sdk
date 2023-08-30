@@ -87,11 +87,11 @@ class DefaultHackleCore: HackleCore {
     func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
 
         guard let workspace = workspaceFetcher.fetch() else {
-            return Decision.of(variation: defaultVariationKey, reason: DecisionReason.SDK_NOT_READY)
+            return Decision.of(experiment: nil, variation: defaultVariationKey, reason: DecisionReason.SDK_NOT_READY)
         }
 
         guard let experiment = workspace.getExperimentOrNil(experimentKey: experimentKey) else {
-            return Decision.of(variation: defaultVariationKey, reason: DecisionReason.EXPERIMENT_NOT_FOUND)
+            return Decision.of(experiment: nil, variation: defaultVariationKey, reason: DecisionReason.EXPERIMENT_NOT_FOUND)
         }
 
         let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: experiment, defaultVariationKey: defaultVariationKey)
@@ -119,17 +119,17 @@ class DefaultHackleCore: HackleCore {
     private func experimentInternal(request: ExperimentRequest) throws -> (ExperimentEvaluation, Decision) {
         let evaluation: ExperimentEvaluation = try experimentEvaluator.evaluate(request: request, context: Evaluators.context())
         let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
-        let decision = Decision.of(variation: evaluation.variationKey, reason: evaluation.reason, config: config)
+        let decision = Decision.of(experiment: evaluation.experiment, variation: evaluation.variationKey, reason: evaluation.reason, config: config)
         return (evaluation, decision)
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
         guard let workspace = workspaceFetcher.fetch() else {
-            return FeatureFlagDecision.off(reason: DecisionReason.SDK_NOT_READY)
+            return FeatureFlagDecision.off(featureFlag: nil, reason: DecisionReason.SDK_NOT_READY)
         }
 
         guard let featureFlag = workspace.getFeatureFlagOrNil(featureKey: featureKey) else {
-            return FeatureFlagDecision.off(reason: DecisionReason.FEATURE_FLAG_NOT_FOUND)
+            return FeatureFlagDecision.off(featureFlag: nil, reason: DecisionReason.FEATURE_FLAG_NOT_FOUND)
         }
 
         let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: featureFlag, defaultVariationKey: "A")
@@ -159,8 +159,8 @@ class DefaultHackleCore: HackleCore {
         let config: ParameterConfig = evaluation.config ?? EmptyParameterConfig.instance
 
         let decision = evaluation.variationKey == "A"
-            ? FeatureFlagDecision.off(reason: evaluation.reason, config: config)
-            : FeatureFlagDecision.on(reason: evaluation.reason, config: config)
+            ? FeatureFlagDecision.off(featureFlag: evaluation.experiment, reason: evaluation.reason, config: config)
+            : FeatureFlagDecision.on(featureFlag: evaluation.experiment, reason: evaluation.reason, config: config)
 
         return (evaluation, decision)
     }
