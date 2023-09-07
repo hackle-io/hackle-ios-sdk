@@ -77,7 +77,7 @@ class DeviceHelper {
         case .pad:
             return "tablet"
         case .mac:
-            return "desktop"
+            return "pc"
         case .tv:
             return "tv"
         case .carPlay:
