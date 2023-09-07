@@ -1,0 +1,43 @@
+import Foundation
+import UIKit
+import CoreTelephony
+
+protocol Platform {
+    func getBundleInfo() -> BundleInfo
+    func getCurrentDeviceInfo() -> DeviceInfo
+}
+
+class iOSPlatform : Platform {
+    private let bundleInfo: BundleInfo
+    
+    init() {
+        bundleInfo = BundleInfo(
+            bundleId: Bundle.main.bundleIdentifier ?? "",
+            version: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
+            build: Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        )
+    }
+    
+    func getBundleInfo() -> BundleInfo {
+        return bundleInfo
+    }
+    
+    func getCurrentDeviceInfo() -> DeviceInfo {
+        return DeviceInfo(
+            osName: "iOS",
+            osVersion: UIDevice.current.systemVersion,
+            model: DeviceHelper.getDeviceModel(),
+            type: DeviceHelper.getDeviceType(),
+            brand: "Apple",
+            manufacturer: "Apple",
+            locale: Locale.current,
+            timezone: TimeZone.current,
+            screenInfo: DeviceInfo.ScreenInfo(
+                orientation: DeviceHelper.getDeviceOrientation(),
+                width: Int(UIScreen.main.bounds.size.width),
+                height: Int(UIScreen.main.bounds.size.height)
+            ),
+            connectionType: NetworkHelper.getConnectionType()
+        )
+    }
+}
