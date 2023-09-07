@@ -8,7 +8,7 @@ class SessionEventTrackerSpecs: QuickSpec {
     override func spec() {
 
         it("onSessionStarted") {
-            let userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
+            let userResolver = DefaultHackleUserResolver(device: MockDevice(id: "device_id", properties: [:]))
             let internalApp = HackleCoreStub()
             let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
 
@@ -23,7 +23,7 @@ class SessionEventTrackerSpecs: QuickSpec {
         }
 
         it("onSessionEnded") {
-            let userResolver = DefaultHackleUserResolver(device: Device(id: "device_id", properties: [:]))
+            let userResolver = DefaultHackleUserResolver(device: MockDevice(id: "device_id", properties: [:]))
             let internalApp = HackleCoreStub()
             let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
 

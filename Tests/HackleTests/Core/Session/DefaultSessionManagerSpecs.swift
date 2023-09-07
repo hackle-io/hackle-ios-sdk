@@ -15,7 +15,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
         ) -> DefaultSessionManager {
             let sut = DefaultSessionManager(
                 userManager: DefaultUserManager(
-                    device: Device(id: "test_id", properties: [:]),
+                    device: MockDevice(id: "test_id", properties: [:]),
                     repository: MemoryKeyValueRepository()
                 ),
                 keyValueRepository: repository,
