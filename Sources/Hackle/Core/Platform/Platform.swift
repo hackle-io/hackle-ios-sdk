@@ -30,12 +30,19 @@ class IOSPlatform : Platform {
             type: DeviceHelper.getDeviceType(),
             brand: "Apple",
             manufacturer: "Apple",
-            locale: Locale.current,
+            locale: getPreferredLocale(),
             timezone: TimeZone.current,
             screenInfo: DeviceInfo.ScreenInfo(
                 width: Int(UIScreen.main.bounds.size.width),
                 height: Int(UIScreen.main.bounds.size.height)
             )
         )
+    }
+    
+    func getPreferredLocale() -> Locale {
+        guard let preferred = Locale.preferredLanguages.first else {
+            return Locale.current
+        }
+        return Locale(identifier: preferred)
     }
 }
