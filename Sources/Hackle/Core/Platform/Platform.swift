@@ -7,7 +7,7 @@ protocol Platform {
     func getCurrentDeviceInfo() -> DeviceInfo
 }
 
-class iOSPlatform : Platform {
+class IOSPlatform : Platform {
     private let bundleInfo: BundleInfo
     
     init() {

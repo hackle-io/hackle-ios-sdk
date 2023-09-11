@@ -54,7 +54,7 @@ extension DeviceImpl {
         }
         return DeviceImpl(
             id: deviceId,
-            platform: iOSPlatform()
+            platform: IOSPlatform()
         )
     }
 }
