@@ -37,10 +37,8 @@ class DeviceImpl : Device {
                 "locale": "\(languageCode)-\(regionCode)",
                 "language": deviceInfo.locale.languageCode ?? "",
                 "timeZone": deviceInfo.timezone.identifier,
-                "orientation": deviceInfo.screenInfo.orientation.rawValue,
                 "screenWidth": deviceInfo.screenInfo.width,
                 "screenHeight": deviceInfo.screenInfo.height,
-                "isWifi": deviceInfo.connectionType == .wifi,
                 "isApp": true
             ]
         }

@@ -25,10 +25,8 @@ class DeviceSpec : QuickSpec {
             expect(device.properties["locale"] as? String) == "ko-KR"
             expect(device.properties["language"] as? String) == "ko"
             expect(device.properties["timeZone"] as? String) == "Asia/Seoul"
-            expect(device.properties["orientation"] as? String) == "portrait"
             expect(device.properties["screenWidth"] as? Int) == 1080
             expect(device.properties["screenHeight"] as? Int) == 1920
-            expect(device.properties["isWifi"] as? Bool) == true
             expect(device.properties["isApp"] as? Bool) == true
         }
         
@@ -39,48 +37,6 @@ class DeviceSpec : QuickSpec {
             expect(device.id) == deviceId
             self.assertBundleProperties(properties: device.properties, bundleInfo: platform.getBundleInfo())
             self.assertDeviceProperties(properties: device.properties, deviceInfo: platform.getCurrentDeviceInfo())
-        }
-        
-        it("create device with wifi connection case") {
-            let deviceId = UUID().uuidString
-            let platform = MockPlatform(connectionType: .wifi)
-            let device = DeviceImpl(id: deviceId, platform: platform)
-            expect(device.id) == deviceId
-            self.assertBundleProperties(properties: device.properties, bundleInfo: platform.getBundleInfo())
-            self.assertDeviceProperties(properties: device.properties, deviceInfo: platform.getCurrentDeviceInfo())
-            expect(device.properties["isWifi"] as? Bool) == true
-        }
-        
-        it("create device with landscape orientation case") {
-            let deviceId = UUID().uuidString
-            let platform = MockPlatform(orientation: .landscape)
-            let device = DeviceImpl(id: deviceId, platform: platform)
-            expect(device.id) == deviceId
-            self.assertBundleProperties(properties: device.properties, bundleInfo: platform.getBundleInfo())
-            self.assertDeviceProperties(properties: device.properties, deviceInfo: platform.getCurrentDeviceInfo())
-            expect(device.properties["orientation"] as? String) == "landscape"
-        }
-        
-        it("rorate screen case") {
-            let deviceId = UUID().uuidString
-            let platform = MockPlatform(orientation: .portrait)
-            let device = DeviceImpl(id: deviceId, platform: platform)
-            expect(device.properties["orientation"] as? String) == "portrait"
-            platform.rorateScreen()
-            expect(device.properties["orientation"] as? String) == "landscape"
-            platform.rorateScreen()
-            expect(device.properties["orientation"] as? String) == "portrait"
-        }
-        
-        it("change wifi state case") {
-            let deviceId = UUID().uuidString
-            let platform = MockPlatform(connectionType: .mobile)
-            let device = DeviceImpl(id: deviceId, platform: platform)
-            expect(device.properties["isWifi"] as? Bool) == false
-            platform.changeConnectionType(connectionType: .wifi)
-            expect(device.properties["isWifi"] as? Bool) == true
-            platform.changeConnectionType(connectionType: .none)
-            expect(device.properties["isWifi"] as? Bool) == false
         }
     }
     
@@ -101,10 +57,8 @@ class DeviceSpec : QuickSpec {
         expect(properties["locale"] as? String) == "\(deviceInfo.locale.languageCode!)-\(deviceInfo.locale.regionCode!)"
         expect(properties["language"] as? String) == deviceInfo.locale.languageCode
         expect(properties["timeZone"] as? String) == deviceInfo.timezone.identifier
-        expect(properties["orientation"] as? String) == deviceInfo.screenInfo.orientation.rawValue
         expect(properties["screenWidth"] as? Int) == deviceInfo.screenInfo.width
         expect(properties["screenHeight"] as? Int) == deviceInfo.screenInfo.height
-        expect(properties["isWifi"] as? Bool) == (deviceInfo.connectionType == .wifi)
         expect(properties["isApp"] as? Bool) == true
     }
 }

@@ -2,17 +2,6 @@ import Foundation
 @testable import Hackle
 
 class MockPlatform : Platform {
-    var orientation: DeviceInfo.Orientation
-    var connectionType: DeviceInfo.ConnectionType
-    
-    init(
-        orientation: DeviceInfo.Orientation = .portrait,
-        connectionType: DeviceInfo.ConnectionType = .wifi
-    ) {
-        self.orientation = orientation
-        self.connectionType = connectionType
-    }
-    
     func getBundleInfo() -> BundleInfo {
         return BundleInfo(
             bundleId: "io.hackle.app",
@@ -32,23 +21,9 @@ class MockPlatform : Platform {
             locale: Locale.init(identifier: "ko-KR"),
             timezone: TimeZone(identifier: "Asia/Seoul")!,
             screenInfo: DeviceInfo.ScreenInfo(
-                orientation: orientation,
                 width: 1080,
                 height: 1920
-            ),
-            connectionType: connectionType
+            )
         )
-    }
-    
-    func rorateScreen() {
-        if (orientation == .portrait) {
-            orientation = .landscape
-        } else {
-            orientation = .portrait
-        }
-    }
-    
-    func changeConnectionType(connectionType: DeviceInfo.ConnectionType) {
-        self.connectionType = connectionType
     }
 }

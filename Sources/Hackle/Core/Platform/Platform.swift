@@ -33,11 +33,9 @@ class IOSPlatform : Platform {
             locale: Locale.current,
             timezone: TimeZone.current,
             screenInfo: DeviceInfo.ScreenInfo(
-                orientation: DeviceHelper.getDeviceOrientation(),
                 width: Int(UIScreen.main.bounds.size.width),
                 height: Int(UIScreen.main.bounds.size.height)
-            ),
-            connectionType: NetworkHelper.getConnectionType()
+            )
         )
     }
 }
