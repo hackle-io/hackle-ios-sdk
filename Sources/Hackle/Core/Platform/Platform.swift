@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import CoreTelephony
 
 protocol Platform {
     func getBundleInfo() -> BundleInfo
