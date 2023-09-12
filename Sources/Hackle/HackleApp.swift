@@ -287,8 +287,8 @@ extension HackleApp {
 
         let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
-        let device = Device.create(keyValueRepository: globalKeyValueRepository)
-
+        let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
+        
         let httpClient = DefaultHttpClient(sdk: sdk)
 
         // - WorkspaceFetcher
