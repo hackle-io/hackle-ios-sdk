@@ -8,7 +8,7 @@ class DefaultUserManagerSpecs: QuickSpec {
     override func spec() {
         describe("initialize") {
             it("from input") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
 
@@ -19,7 +19,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             }
 
             it("from repository") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
                 let user = HackleUserBuilder()
@@ -52,7 +52,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             }
 
             it("from default user") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
 
@@ -65,7 +65,7 @@ class DefaultUserManagerSpecs: QuickSpec {
         describe("setUser") {
 
             it("기존 사용자와 다른 경우") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
                 let listener = UserListenerStub()
@@ -82,7 +82,7 @@ class DefaultUserManagerSpecs: QuickSpec {
 
 
             it("기존 사용자와 다른 경우 2") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
                 let listener = UserListenerStub()
@@ -103,7 +103,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             }
 
             it("기존 사용자와 같은 사용자인 경우") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
                 let listener = UserListenerStub()
@@ -124,7 +124,7 @@ class DefaultUserManagerSpecs: QuickSpec {
 
         describe("onNotified") {
             it("현재 사용자를 저장한다") {
-                let device = Device(id: "test_device_id", properties: [:])
+                let device = MockDevice(id: "test_device_id", properties: [:])
                 let repository = MemoryKeyValueRepository()
                 let userManager = DefaultUserManager(device: device, repository: repository)
                 let listener = UserListenerStub()
@@ -139,7 +139,7 @@ class DefaultUserManagerSpecs: QuickSpec {
         }
 
         it("resetUser") {
-            let device = Device(id: "test_device_id", properties: [:])
+            let device = MockDevice(id: "test_device_id", properties: [:])
             let repository = MemoryKeyValueRepository()
             let userManager = DefaultUserManager(device: device, repository: repository)
 
@@ -152,7 +152,7 @@ class DefaultUserManagerSpecs: QuickSpec {
         }
 
         it("updateProperties") {
-            let device = Device(id: "test_device_id", properties: [:])
+            let device = MockDevice(id: "test_device_id", properties: [:])
             let repository = MemoryKeyValueRepository()
             let userManager = DefaultUserManager(device: device, repository: repository)
 

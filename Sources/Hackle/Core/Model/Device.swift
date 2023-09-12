@@ -1,63 +1,58 @@
-//
-//  Device.swift
-//  Hackle
-//
-//  Created by yong on 2021/12/13.
-//
-
 import Foundation
 import UIKit
 
-class Device {
+protocol Device {
+    var id: String { get }
+    var properties: [String: Any] { get }
+}
 
-    let id: String
-    let properties: [String: Any]
-
-    init(id: String, properties: [String: Any]) {
+class DeviceImpl : Device {
+    var id: String
+    var platform: Platform
+    
+    private let bundleInfo: BundleInfo
+    
+    init(id: String, platform: Platform) {
         self.id = id
-        self.properties = properties
+        self.platform = platform
+        self.bundleInfo = platform.getBundleInfo()
+    }
+    
+    var properties: [String : Any] {
+        get {
+            let deviceInfo = platform.getCurrentDeviceInfo()
+            let languageCode = deviceInfo.locale.languageCode ?? ""
+            let regionCode = deviceInfo.locale.regionCode ?? ""
+            return [
+                "platform": "iOS",
+                "packageName": bundleInfo.bundleId,
+                "versionName": bundleInfo.version,
+                "versionCode": Int(bundleInfo.build) ?? 0,
+                "osName": deviceInfo.osName,
+                "osVersion": deviceInfo.osVersion,
+                "deviceModel": deviceInfo.model,
+                "deviceType": deviceInfo.type,
+                "deviceBrand": deviceInfo.brand,
+                "deviceManufacturer": deviceInfo.manufacturer,
+                "locale": "\(languageCode)-\(regionCode)",
+                "language": deviceInfo.locale.languageCode ?? "",
+                "timeZone": deviceInfo.timezone.identifier,
+                "screenWidth": deviceInfo.screenInfo.width,
+                "screenHeight": deviceInfo.screenInfo.height,
+                "isApp": true
+            ]
+        }
     }
 }
 
-extension Device {
-
-    private static let idKey = "hackle_device_id"
-
+extension DeviceImpl {
     static func create(keyValueRepository: KeyValueRepository) -> Device {
-        let deviceId = keyValueRepository.getString(key: Device.idKey) { _ in
+        let deviceId = keyValueRepository.getString(key: "hackle_device_id") { _ in
             UUID().uuidString
         }
-        let properties: [String: Any] = [
-            "deviceModel": Device.model(),
-            "deviceVendor": "Apple",
-            "language": Locale.preferredLanguages[0],
-            "osName": "iOS",
-            "osVersion": UIDevice.current.systemVersion,
-            "platform": "Mobile",
-            "isApp": true,
-            "versionName": Device.versionName()
-        ]
-        return Device(id: deviceId, properties: properties)
-    }
-
-    private class func model() -> String {
-        if let simulatorModelIdentifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
-            return simulatorModelIdentifier
-        }
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        if let deviceModel = String(bytes: Data(bytes: &systemInfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)?.trimmingCharacters(in: .controlCharacters) {
-            return deviceModel
-        }
-
-        return UIDevice.current.model
-    }
-
-    private class func versionName() -> String {
-        if let versionName = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            return versionName
-        } else {
-            return "unknown"
-        }
+        return DeviceImpl(
+            id: deviceId,
+            platform: IOSPlatform()
+        )
     }
 }

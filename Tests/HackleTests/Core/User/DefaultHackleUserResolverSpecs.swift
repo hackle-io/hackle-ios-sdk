@@ -14,7 +14,7 @@ import Nimble
 class DefaultHackleUserResolverSpecs: QuickSpec {
     override func spec() {
         it("resolve") {
-            let device = Device(id: "hackleDeviceId", properties: ["key": "hackle_value"])
+            let device = MockDevice(id: "hackleDeviceId", properties: ["key": "hackle_value"])
             let resolver = DefaultHackleUserResolver(device: device)
 
             let user = User.builder()
@@ -42,7 +42,7 @@ class DefaultHackleUserResolverSpecs: QuickSpec {
         }
 
         it("식별자 없는 경우") {
-            let device = Device(id: "hackleDeviceId", properties: ["key": "hackle_value"])
+            let device = MockDevice(id: "hackleDeviceId", properties: ["key": "hackle_value"])
             let resolver = DefaultHackleUserResolver(device: device)
 
             let hackleUser = resolver.resolve(user: User.builder().build())
