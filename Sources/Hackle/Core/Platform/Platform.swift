@@ -32,8 +32,8 @@ class IOSPlatform : Platform {
             locale: getPreferredLocale(),
             timezone: TimeZone.current,
             screenInfo: DeviceInfo.ScreenInfo(
-                width: Int(UIScreen.main.bounds.size.width),
-                height: Int(UIScreen.main.bounds.size.height)
+                width: Int(UIScreen.main.nativeBounds.width),
+                height: Int(UIScreen.main.nativeBounds.height)
             )
         )
     }
