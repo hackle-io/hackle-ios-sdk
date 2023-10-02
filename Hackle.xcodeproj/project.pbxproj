@@ -360,6 +360,10 @@
 		EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */; };
 		EEDC58442AC97E5E001E73DB /* HttpHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58432AC97E5E001E73DB /* HttpHeader.swift */; };
 		EEDC58462AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */; };
+		EEDC585F2ACB1B60001E73DB /* Cohort.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC585E2ACB1B60001E73DB /* Cohort.swift */; };
+		EEDC58612ACB1BD3001E73DB /* CohortConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58602ACB1BD3001E73DB /* CohortConditionMatcher.swift */; };
+		EEDC58632ACB1BF8001E73DB /* CohortConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58622ACB1BF8001E73DB /* CohortConditionMatcherSpecs.swift */; };
+		EEDC58652ACB241D001E73DB /* HackleUserSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58642ACB241D001E73DB /* HackleUserSpecs.swift */; };
 		EEE636792A47458700428681 /* FixedClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE636782A47458600428681 /* FixedClock.swift */; };
 		EEF895872A48586500722CF6 /* InAppMessageEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895862A48586500722CF6 /* InAppMessageEvaluatorSpecs.swift */; };
 		EEF895892A485AA400722CF6 /* InAppMessageTestExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895882A485AA400722CF6 /* InAppMessageTestExt.swift */; };
@@ -753,6 +757,10 @@
 		EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpWorkspaceFetcher.swift; sourceTree = "<group>"; };
 		EEDC58432AC97E5E001E73DB /* HttpHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpHeader.swift; sourceTree = "<group>"; };
 		EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHttpWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
+		EEDC585E2ACB1B60001E73DB /* Cohort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cohort.swift; sourceTree = "<group>"; };
+		EEDC58602ACB1BD3001E73DB /* CohortConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortConditionMatcher.swift; sourceTree = "<group>"; };
+		EEDC58622ACB1BF8001E73DB /* CohortConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortConditionMatcherSpecs.swift; sourceTree = "<group>"; };
+		EEDC58642ACB241D001E73DB /* HackleUserSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserSpecs.swift; sourceTree = "<group>"; };
 		EEE636782A47458600428681 /* FixedClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedClock.swift; sourceTree = "<group>"; };
 		EEF895862A48586500722CF6 /* InAppMessageEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EEF895882A485AA400722CF6 /* InAppMessageTestExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageTestExt.swift; sourceTree = "<group>"; };
@@ -1148,6 +1156,7 @@
 			children = (
 				EE29D8FD29CD825300B1FEAA /* Slot.swift */,
 				EE29D8FE29CD825300B1FEAA /* Bucket.swift */,
+				EEDC585E2ACB1B60001E73DB /* Cohort.swift */,
 				EE29D8FF29CD825300B1FEAA /* ParameterConfiguration.swift */,
 				EE29D90029CD825300B1FEAA /* Target.swift */,
 				EE29D90129CD825300B1FEAA /* RemoteConfigParameter.swift */,
@@ -1163,6 +1172,7 @@
 				EE29D90B29CD825300B1FEAA /* TargetRule.swift */,
 				EE29D90C29CD825300B1FEAA /* Action.swift */,
 				EE80DF842A27836600FB12CC /* InAppMessage.swift */,
+				EE29D91029CD825300B1FEAA /* Version.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1185,7 +1195,6 @@
 		EE29D90F29CD825300B1FEAA /* Match */ = {
 			isa = PBXGroup;
 			children = (
-				EE29D91029CD825300B1FEAA /* Version.swift */,
 				EE86376829ECE947000268DC /* UserConditionMatcher.swift */,
 				EE86376A29ECE950000268DC /* SegmentConditionMatcher.swift */,
 				EE29D91129CD825300B1FEAA /* ValueMatcher.swift */,
@@ -1195,6 +1204,7 @@
 				EE29D91529CD825300B1FEAA /* ConditionMatcher.swift */,
 				EE86377629ED312F000268DC /* ExperimentConditionMatcher.swift */,
 				EEA01CBB2A32A8C600E0C021 /* EventConditionMatcher.swift */,
+				EEDC58602ACB1BD3001E73DB /* CohortConditionMatcher.swift */,
 			);
 			path = Match;
 			sourceTree = "<group>";
@@ -1483,6 +1493,7 @@
 				EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */,
 				EE29D9EC29CD82C100B1FEAA /* DefaultHackleUserResolverSpecs.swift */,
 				EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */,
+				EEDC58642ACB241D001E73DB /* HackleUserSpecs.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -1566,6 +1577,7 @@
 				EE789E4929F1097E0088D8A6 /* AbTestConditionMatcherSpecs.swift */,
 				EE789E4B29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift */,
 				EEF895942A497F3E00722CF6 /* EventConditionMatcherSpecs.swift */,
+				EEDC58622ACB1BF8001E73DB /* CohortConditionMatcherSpecs.swift */,
 			);
 			path = Match;
 			sourceTree = "<group>";
@@ -2111,6 +2123,7 @@
 				EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */,
 				EE0F34182A681207009DE640 /* InAppMessageEventMatcher.swift in Sources */,
 				EE29D98F29CD825400B1FEAA /* Evaluator.swift in Sources */,
+				EEDC585F2ACB1B60001E73DB /* Cohort.swift in Sources */,
 				EE29D9AA29CD825500B1FEAA /* SessionEventTracker.swift in Sources */,
 				EE0B71E52A3BF237009D7AF4 /* InAppMessageExt.swift in Sources */,
 				EE29D99329CD825400B1FEAA /* TargetMatcher.swift in Sources */,
@@ -2239,6 +2252,7 @@
 				EE29D97B29CD825400B1FEAA /* SdkVersion.swift in Sources */,
 				EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */,
 				EE29D94229CD825400B1FEAA /* HackleError.swift in Sources */,
+				EEDC58612ACB1BD3001E73DB /* CohortConditionMatcher.swift in Sources */,
 				EE29D99029CD825400B1FEAA /* Version.swift in Sources */,
 				EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */,
 				EE86376F29ED004C000268DC /* ExperimentEvaluation.swift in Sources */,
@@ -2317,6 +2331,7 @@
 				EE29DAA429CD82C200B1FEAA /* PropertiesBuilderSpecs.swift in Sources */,
 				EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */,
 				EE29DA5329CD82C200B1FEAA /* FlushCounterSpecs.swift in Sources */,
+				EEDC58652ACB241D001E73DB /* HackleUserSpecs.swift in Sources */,
 				EE29DAA029CD82C200B1FEAA /* UserEventSpecs.swift in Sources */,
 				EE29DA9B29CD82C200B1FEAA /* MockFlowEvaluator.swift in Sources */,
 				EE789E2429EFE02E0088D8A6 /* ExperimentRequestSpecs.swift in Sources */,
@@ -2397,6 +2412,7 @@
 				EE29DA3D29CD82C200B1FEAA /* MockWorkspace.swift in Sources */,
 				EE29DA5129CD82C200B1FEAA /* NoopTimerSpecs.swift in Sources */,
 				EE29DA7C29CD82C200B1FEAA /* MockSegmentMatcher.swift in Sources */,
+				EEDC58632ACB1BF8001E73DB /* CohortConditionMatcherSpecs.swift in Sources */,
 				EEF895A22A49BD3500722CF6 /* UserEventsTestExt.swift in Sources */,
 				EE29DA4329CD82C200B1FEAA /* MockUserEventProcessor.swift in Sources */,
 				EEF895AE2A4A9B6600722CF6 /* InAppMessageManagerSpecs.swift in Sources */,

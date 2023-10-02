@@ -22,6 +22,6 @@ class TargetingType {
 
 extension TargetingType {
     static let identifier = TargetingType(.segment)
-    static let property = TargetingType(.segment, .userProperty, .hackleProperty, .eventProperty, .abTest, .featureFlag)
-    static let segment = TargetingType(.userId, .userProperty, .hackleProperty)
+    static let property = TargetingType(.segment, .userProperty, .hackleProperty, .eventProperty, .abTest, .featureFlag, .cohort)
+    static let segment = TargetingType(.userId, .userProperty, .hackleProperty, .cohort)
 }

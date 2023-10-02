@@ -36,6 +36,7 @@ class Target {
         case segment = "SEGMENT"
         case abTest = "AB_TEST"
         case featureFlag = "FEATURE_FLAG"
+        case cohort = "COHORT"
     }
 
     class Match {
