@@ -35,16 +35,26 @@ class PollingWorkspaceFetcher: WorkspaceFetcher, AppStateChangeListener {
     }
 
     func initialize(completion: @escaping () -> ()) {
-        httpWorkspaceFetcher.fetch { [weak self] workspace in
-            self?.workspace = workspace
+        httpWorkspaceFetcher.fetchIfModified { [weak self] workspace, error in
+            self?.handle(workspace: workspace, error: error)
             completion()
         }
     }
 
     private func poll() {
-        httpWorkspaceFetcher.fetch { [weak self] workspace in
-            self?.workspace = workspace
+        httpWorkspaceFetcher.fetchIfModified { [weak self] workspace, error in
+            self?.handle(workspace: workspace, error: error)
         }
+    }
+
+    private func handle(workspace: Workspace?, error: Error?) {
+        if let error = error {
+            Log.error("Failed to fetch Workspace: \(error)")
+        }
+        guard let workspace else {
+            return
+        }
+        self.workspace = workspace
     }
 
     func start() {
@@ -82,66 +92,5 @@ class PollingWorkspaceFetcher: WorkspaceFetcher, AppStateChangeListener {
         case .background:
             stop()
         }
-    }
-}
-
-protocol HttpWorkspaceFetcher {
-    func fetch(completion: @escaping (Workspace?) -> ())
-}
-
-class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
-
-    private let endpoint: URL
-    private let httpClient: HttpClient
-
-    init(sdkBaseUrl: URL, httpClient: HttpClient) {
-        self.endpoint = sdkBaseUrl.appendingPathComponent("/api/v2/workspaces")
-        self.httpClient = httpClient
-    }
-
-    func fetch(completion: @escaping (Workspace?) -> ()) {
-        let request = HttpRequest.get(url: endpoint)
-        let sample = TimerSample.start()
-        httpClient.execute(request: request) { response in
-            ApiCallMetrics.record(operation: "get.workspace", sample: sample, isSuccess: response.isSuccessful)
-            let workspace = self.getWorkspaceOrNil(response: response)
-            Log.debug("Hackle workspace fetched")
-            completion(workspace)
-        }
-    }
-
-    private func getWorkspaceOrNil(response: HttpResponse) -> Workspace? {
-
-        if let error = response.error {
-            Log.error("Failed to fetch Workspace: \(error.localizedDescription)")
-            return nil
-        }
-
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
-            Log.error("Failed to fetch Workspace: Response is empty")
-            return nil
-        }
-
-        guard (200..<300).contains(urlResponse.statusCode) else {
-            Log.error("Failed to fetch Workspace: Http status code: \(urlResponse.statusCode)")
-            return nil
-        }
-
-        guard let responseBody = response.data else {
-            Log.error("Failed to fetch Workspace. Response body is empty")
-            return nil
-        }
-
-        guard let workspaceDto = try? JSONDecoder().decode(WorkspaceDto.self, from: responseBody) else {
-            Log.error("Failed to fetch Workspace. Invalid format")
-            return nil
-        }
-
-        return WorkspaceEntity.from(dto: workspaceDto)
-    }
-
-    private func record(sample: TimerSample, isSuccess: Bool) {
-        let timer = Metrics.timer(name: "workspace.fetch", tags: ["success": String(isSuccess)])
-        sample.stop(timer: timer)
     }
 }

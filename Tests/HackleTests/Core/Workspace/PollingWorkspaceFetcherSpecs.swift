@@ -102,11 +102,10 @@ class PollingWorkspaceFetcherSpecs: QuickSpec {
     }
 
     private class HttpWorkspaceFetcherStub: HttpWorkspaceFetcher {
-
         var workspace: Workspace? = nil
 
-        func fetch(completion: @escaping (Workspace?) -> ()) {
-            completion(workspace)
+        func fetchIfModified(completion: @escaping (Workspace?, Error?) -> ()) {
+            completion(workspace, nil)
         }
     }
 }

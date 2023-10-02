@@ -81,6 +81,7 @@ struct MockFunction<Arguments, Result> {
 
 extension Mockable {
 
+
     func call<Arguments, Result>(
         _ function: MockFunction<Arguments, Result>,
         args: Arguments,
@@ -88,7 +89,20 @@ extension Mockable {
         line: UInt = #line,
         functionCall: StaticString = #function
     ) -> Result {
-        return invoke(function.mockReference, args: args, file: file, line: line, functionCall: functionCall)
+        invoke(function.mockReference, args: args, fallback: fallback())
+    }
+
+    private func fallback<Result>(
+        file: StaticString = #file,
+        line: UInt = #line,
+        functionCall: StaticString = #function
+    ) -> Result {
+        if Result.self == Void.self {
+            let void = unsafeBitCast((), to: Result.self)
+            return void
+        }
+        let message = "You must register a result for '\(functionCall)' with `registerResult(for:)` before calling this function."
+        preconditionFailure(message, file: file, line: line)
     }
 
     func call<Arguments, Result>(
@@ -97,4 +111,5 @@ extension Mockable {
     ) -> Result? {
         return invoke(function.mockReference, args: args)
     }
+
 }

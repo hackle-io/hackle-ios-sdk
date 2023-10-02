@@ -148,12 +148,17 @@ enum DecisionMetrics {
 }
 
 enum ApiCallMetrics {
-    static func record(operation: String, sample: TimerSample, isSuccess: Bool) {
+    static func record(operation: String, sample: TimerSample, response: HttpResponse) {
         let tags = [
             "operation": operation,
-            "success": isSuccess ? "true" : "false"
+            "success": success(response: response)
         ]
         let timer = Metrics.timer(name: "api.call", tags: tags)
         sample.stop(timer: timer)
+    }
+
+    private static func success(response: HttpResponse) -> String {
+        let success = response.isSuccessful || response.isNotModified
+        return success ? "true" : "false"
     }
 }
