@@ -97,4 +97,11 @@ extension Mockable {
     ) -> Result? {
         return invoke(function.mockReference, args: args)
     }
+    
+    func registerResult<Arguments, Result>(
+        for ref: MockFunction<Arguments, Result>,
+        result: @escaping (Arguments) throws -> Result
+    ) {
+        registerResult(for: ref.mockReference, result: result)
+    }
 }
