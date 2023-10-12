@@ -26,6 +26,15 @@ class Json {
     }
 }
 
+extension String {
+    func jsonObject() -> [String: Any]? {
+        guard let data = data(using: .utf8, allowLossyConversion: false) else {
+            return nil
+        }
+        return try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+    }
+}
+
 extension Dictionary {
     func toJson() -> String? {
         guard  let data = Json.serialize(self) else {
