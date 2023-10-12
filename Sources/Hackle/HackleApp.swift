@@ -5,7 +5,7 @@
 import Foundation
 
 /// Entry point of Hackle Sdk.
-@objc public final class HackleApp: NSObject {
+@objc public final class HackleApp: NSObject, HackleAppProtocol {
 
     private let core: HackleCore
     private let eventQueue: DispatchQueue
@@ -16,6 +16,7 @@ import Foundation
     private let eventProcessor: DefaultUserEventProcessor
     private let notificationObserver: AppNotificationObserver
     internal let userExplorer: HackleUserExplorer
+    internal let sdk: Sdk
 
     @objc public var deviceId: String {
         get {
@@ -36,6 +37,7 @@ import Foundation
     }
 
     init(
+        sdk: Sdk,
         core: HackleCore,
         eventQueue: DispatchQueue,
         hackleUserResolver: HackleUserResolver,
@@ -46,6 +48,7 @@ import Foundation
         notificationObserver: AppNotificationObserver,
         userExplorer: HackleUserExplorer
     ) {
+        self.sdk = sdk
         self.core = core
         self.eventQueue = eventQueue
         self.hackleUserResolver = hackleUserResolver
@@ -68,6 +71,12 @@ import Foundation
             self.view?.attach()
         }
         Metrics.counter(name: "user.explorer.show").increment()
+    }
+    
+    @objc public func hideUserExplorer() {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            self.view?.detach()
+        }
     }
 
     @objc public func setUser(user: User) {
@@ -265,7 +274,6 @@ import Foundation
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(user: user, app: core, userManager: userManager, userResolver: hackleUserResolver)
     }
-
 }
 
 extension HackleApp {
@@ -433,6 +441,7 @@ extension HackleApp {
         HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
 
         return HackleApp(
+            sdk: sdk,
             core: core,
             eventQueue: eventQueue,
             hackleUserResolver: hackleUserResolver,
@@ -462,4 +471,68 @@ extension HackleApp {
         observer.addListener(listener: monitoringMetricRegistry)
         Metrics.addRegistry(registry: monitoringMetricRegistry)
     }
+}
+
+protocol HackleAppProtocol {
+    var sdk: Sdk { get }
+    var deviceId: String { get }
+    func setDeviceId(deviceId: String)
+    
+    var sessionId: String { get }
+    var user: User { get }
+    
+    func showUserExplorer()
+    func hideUserExplorer()
+    
+    func setUser(user: User)
+    func setUserId(userId: String?)
+    func setUserProperty(key: String, value: Any?)
+    func updateUserProperties(operations: PropertyOperations)
+    func resetUser()
+    
+    func variation(experimentKey: Int, defaultVariation: String) -> String
+    func variationDetail(experimentKey: Int, defaultVariation: String) -> Decision
+    
+    func allVariationDetails() -> [Int: Decision]
+    
+    func isFeatureOn(featureKey: Int) -> Bool
+    func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision
+    
+    func track(eventKey: String)
+    func track(event: Event)
+    
+    func remoteConfig() -> HackleRemoteConfig
+    
+    @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
+    func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String
+    @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
+    func variation(experimentKey: Int, user: User, defaultVariation: String) -> String
+    @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
+    func variationDetail(experimentKey: Int, userId: String, defaultVariation: String) -> Decision
+    @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
+    func variationDetail(experimentKey: Int, user: User, defaultVariation: String) -> Decision
+
+    @available(*, deprecated, message: "Use allVariationDetails() with setUser(user) instead.")
+    func allVariationDetails(user: User) -> [Int: Decision]
+
+    @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
+    func isFeatureOn(featureKey: Int, userId: String) -> Bool
+    @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
+    func isFeatureOn(featureKey: Int, user: User) -> Bool
+    @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
+    func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision
+    @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
+    func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision
+
+    @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
+    func track(eventKey: String, userId: String)
+    @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
+    func track(eventKey: String, user: User)
+    @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
+    func track(event: Event, userId: String)
+    @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
+    func track(event: Event, user: User)
+    
+    @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
+    func remoteConfig(user: User) -> HackleRemoteConfig
 }
