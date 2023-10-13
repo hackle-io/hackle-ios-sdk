@@ -7,7 +7,7 @@ import Mockery
 class HackleBridgeSpec : QuickSpec {
     
     override func spec() {
-        it("processable") {
+        it("is invocable string") {
             expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{\"_command\":\"\"}}")) == true
             expect(HackleBridge.isInvocableString(string: "{\"_hackle\":\"\"}}")) == false
             expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{}}}")) == false
