@@ -191,6 +191,14 @@ import Foundation
     @objc public func remoteConfig() -> HackleRemoteConfig {
         DefaultRemoteConfig(user: nil, app: core, userManager: userManager, userResolver: hackleUserResolver)
     }
+    
+    @objc func isInvocableString(string: String) -> Bool {
+        return HackleBridge.isInvocableString(string: string)
+    }
+    
+    @objc func invoke(string: String, completionHandler: (String?) -> Void) {
+        HackleBridge.invoke(string: string, completionHandler: completionHandler)
+    }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
@@ -473,7 +481,7 @@ extension HackleApp {
     }
 }
 
-protocol HackleAppProtocol {
+protocol HackleAppProtocol: AnyObject {
     var sdk: Sdk { get }
     var deviceId: String { get }
     func setDeviceId(deviceId: String)
@@ -502,6 +510,9 @@ protocol HackleAppProtocol {
     func track(event: Event)
     
     func remoteConfig() -> HackleRemoteConfig
+    
+    func isInvocableString(string: String) -> Bool
+    func invoke(string: String, completionHandler: (String?) -> Void)
     
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String

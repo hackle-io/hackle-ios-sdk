@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7E3F4FBC2AA6FBA1004E0EB0 /* Platform in Resources */ = {isa = PBXBuildFile; fileRef = 7E3F4FBB2AA6FBA1004E0EB0 /* Platform */; };
+		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
 		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
 		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
+		7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779E2AD50E5200971F20 /* MockHackleApp.swift */; };
+		7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7D2ACE503E00900097 /* HackleBridge.swift */; };
+		7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */; };
 		7E70B5742AA8641900746A5F /* MockDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E70B5732AA8641900746A5F /* MockDevice.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
@@ -400,13 +403,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7E3F4FBB2AA6FBA1004E0EB0 /* Platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Platform; path = Sources/Hackle/Core/Platform; sourceTree = SOURCE_ROOT; };
+		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
 		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
 		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
+		7E64779E2AD50E5200971F20 /* MockHackleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleApp.swift; sourceTree = "<group>"; };
+		7E65EB7D2ACE503E00900097 /* HackleBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridge.swift; sourceTree = "<group>"; };
+		7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegate.swift; sourceTree = "<group>"; };
 		7E70B5732AA8641900746A5F /* MockDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevice.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
@@ -802,6 +808,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E0E2D7E2AD8D8D100578C74 /* Web */ = {
+			isa = PBXGroup;
+			children = (
+				7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */,
+			);
+			path = Web;
+			sourceTree = "<group>";
+		};
 		7E3F4FBF2AA6FBF2004E0EB0 /* Platform */ = {
 			isa = PBXGroup;
 			children = (
@@ -827,6 +841,15 @@
 				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		7E825C7E2ABD56D20003F0B7 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				7E0E2D7E2AD8D8D100578C74 /* Web */,
+				7E65EB7D2ACE503E00900097 /* HackleBridge.swift */,
+			);
+			path = Bridge;
 			sourceTree = "<group>";
 		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
@@ -929,6 +952,7 @@
 		EE29D8AA29CD825300B1FEAA /* Hackle */ = {
 			isa = PBXGroup;
 			children = (
+				7E825C7E2ABD56D20003F0B7 /* Bridge */,
 				EE29D93829CD825300B1FEAA /* Common */,
 				EE29D8AE29CD825300B1FEAA /* Core */,
 				EE80E0142A2DC64500FB12CC /* UI */,
@@ -1088,7 +1112,6 @@
 		EE29D8E529CD825300B1FEAA /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FBB2AA6FBA1004E0EB0 /* Platform */,
 				EE29D8F029CD825300B1FEAA /* Concurrency */,
 				EE29D8EC29CD825300B1FEAA /* Time */,
 				EE29D8E629CD825300B1FEAA /* ConcurrentArray.swift */,
@@ -1307,8 +1330,8 @@
 		EE29D9B329CD82C100B1FEAA /* HackleTests */ = {
 			isa = PBXGroup;
 			children = (
-				EE29DA3629CD82C200B1FEAA /* Common */,
 				EE29D9CB29CD82C100B1FEAA /* Core */,
+				EE29DA3629CD82C200B1FEAA /* Common */,
 				EE0F33FB2A6689D0009DE640 /* UI */,
 				EE29D9BF29CD82C100B1FEAA /* Resources */,
 				EE29D9B429CD82C100B1FEAA /* Mock */,
@@ -1333,6 +1356,8 @@
 				EE29D9BE29CD82C100B1FEAA /* MockScheduler.swift */,
 				7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */,
 				7E70B5732AA8641900746A5F /* MockDevice.swift */,
+				7E64779E2AD50E5200971F20 /* MockHackleApp.swift */,
+				7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -2047,7 +2072,6 @@
 				EE3C165829D43219008177F6 /* HackleFeatureFlagViewController.xib in Resources */,
 				EE29DAC329CD853C00B1FEAA /* hackle_logo.png in Resources */,
 				EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */,
-				7E3F4FBC2AA6FBA1004E0EB0 /* Platform in Resources */,
 				EE29DAC429CD853C00B1FEAA /* hackle_logo@2x.png in Resources */,
 				EE29DAC529CD853C00B1FEAA /* hackle_logo@3x.png in Resources */,
 			);
@@ -2086,6 +2110,7 @@
 			files = (
 				EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */,
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
+				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
 				EE29D96929CD825400B1FEAA /* HackleUserResolver.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
@@ -2131,6 +2156,7 @@
 				EE29D9B029CD825500B1FEAA /* Config.swift in Sources */,
 				EE29D94529CD825400B1FEAA /* NoopCounter.swift in Sources */,
 				EE29D94829CD825400B1FEAA /* FlushCounter.swift in Sources */,
+				7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */,
 				EEA01CC72A3712CC00E0C021 /* InAppMessageUIWindow.swift in Sources */,
 				EE86376B29ECE950000268DC /* SegmentConditionMatcher.swift in Sources */,
 				EEF895B92A4B37C800722CF6 /* ImageCacheManager.swift in Sources */,
@@ -2282,6 +2308,7 @@
 			buildActionMask = 0;
 			files = (
 				EE0F34082A669659009DE640 /* MockUrlHandler.swift in Sources */,
+				7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */,
 				EE0F340E2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift in Sources */,
 				EE29DA7F29CD82C200B1FEAA /* MockConditionMatcher.swift in Sources */,
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
@@ -2329,6 +2356,7 @@
 				EE29DA6B29CD82C200B1FEAA /* ClockSpecs.swift in Sources */,
 				EE29DA9D29CD82C200B1FEAA /* MockExposureEventDedupDeterminer.swift in Sources */,
 				EE29DA9229CD82C200B1FEAA /* DefaultBucketerSpec.swift in Sources */,
+				7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */,
 				EEF895912A4971DE00722CF6 /* InAppMessageMatcherStub.swift in Sources */,
 				EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */,
 				EE29DA6429CD82C200B1FEAA /* WorkspaceSpecs.swift in Sources */,

@@ -184,4 +184,12 @@ class MockHackleApp : Mock, HackleAppProtocol {
     func allVariationDetails(user: User) -> [Int : Decision] {
         fatalError("NOT IMPLEMENTED")
     }
+    
+    func isInvocableString(string: String) -> Bool {
+        fatalError("NOT IMPLEMENTED")
+    }
+    
+    func invoke(string: String, completionHandler: (String?) -> Void) {
+        fatalError("NOT IMPLEMENTED")
+    }
 }
