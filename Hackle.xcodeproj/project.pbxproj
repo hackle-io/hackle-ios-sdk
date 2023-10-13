@@ -14,6 +14,7 @@
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
 		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
+		7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */; };
 		7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779E2AD50E5200971F20 /* MockHackleApp.swift */; };
 		7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7D2ACE503E00900097 /* HackleBridge.swift */; };
 		7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */; };
@@ -410,6 +411,7 @@
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
 		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
+		7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeSpecs.swift; sourceTree = "<group>"; };
 		7E64779E2AD50E5200971F20 /* MockHackleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleApp.swift; sourceTree = "<group>"; };
 		7E65EB7D2ACE503E00900097 /* HackleBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridge.swift; sourceTree = "<group>"; };
 		7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegate.swift; sourceTree = "<group>"; };
@@ -1337,6 +1339,7 @@
 				EE29D9B429CD82C100B1FEAA /* Mock */,
 				EE29DA3929CD82C200B1FEAA /* HackleConfigSpec.swift */,
 				EE29DA3A29CD82C200B1FEAA /* HackleAppSpec.swift */,
+				7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */,
 			);
 			path = HackleTests;
 			sourceTree = "<group>";
@@ -2370,6 +2373,7 @@
 				EE29DA4129CD82C200B1FEAA /* MockHttpClient.swift in Sources */,
 				EE29DA7A29CD82C200B1FEAA /* MockUserValueResolver.swift in Sources */,
 				EEF895972A499C9D00722CF6 /* DefaultInAppMessageResolverSpecs.swift in Sources */,
+				7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */,
 				EED6A1272A0E267D00A8875D /* PropertyOperatorSpecs.swift in Sources */,
 				EE29DA9129CD82C200B1FEAA /* MockBucketer.swift in Sources */,
 				7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */,
