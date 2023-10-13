@@ -1,5 +1,9 @@
 # Hackle SDK for iOS
 
+[![tests](https://github.com/hackle-io/hackle-ios-sdk/actions/workflows/test.yml/badge.svg)](https://github.com/hackle-io/hackle-ios-sdk/actions/workflows/test.yml)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/hackle-io/hackle-ios-sdk)
+
+
 ## Install
 
 ### CocoaPods
