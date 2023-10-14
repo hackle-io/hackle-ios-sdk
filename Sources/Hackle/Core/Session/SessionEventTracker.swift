@@ -9,11 +9,11 @@ import Foundation
 
 class SessionEventTracker: SessionListener {
 
-    private let hackleUserResolver: HackleUserResolver
+    private let userManager: UserManager
     private let core: HackleCore
 
-    init(hackleUserResolver: HackleUserResolver, core: HackleCore) {
-        self.hackleUserResolver = hackleUserResolver
+    init(userManager: UserManager, core: HackleCore) {
+        self.userManager = userManager
         self.core = core
     }
 
@@ -26,9 +26,8 @@ class SessionEventTracker: SessionListener {
     }
 
     private func track(eventKey: String, session: Session, user: User, timestamp: Date) {
-        let event = Event(key: eventKey, properties: ["sessionId": session.id])
-
-        let hackleUser = hackleUserResolver.resolve(user: user)
+        let event = Event.builder(eventKey).build()
+        let hackleUser = userManager.toHackleUser(user: user)
             .toBuilder()
             .identifier(.session, session.id, overwrite: false)
             .build()

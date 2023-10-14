@@ -1,16 +1,59 @@
 //
-//  IdentifiersBuilder.swift
+//  Identifiers.swift
 //  Hackle
 //
-//  Created by yong on 2022/05/24.
+//  Created by yong on 2023/10/03.
 //
 
 import Foundation
 
+enum IdentifierType: String, Codable {
+    case id = "$id"
+    case user = "$userId"
+    case device = "$deviceId"
+    case session = "$sessionId"
+    case hackleDevice = "$hackleDeviceId"
+}
+
+struct Identifier: Hashable, CustomStringConvertible {
+
+    let type: String
+    let value: String
+
+    init(type: String, value: String) {
+        self.type = type
+        self.value = value
+    }
+
+    var description: String {
+        "Identifier(type: \(type), value: \(value))"
+    }
+}
+
+typealias Identifiers = [String: String]
+
+extension Identifiers {
+
+    static func from(user: User) -> Identifiers {
+        IdentifiersBuilder()
+            .add(user.identifiers)
+            .add(.id, user.id)
+            .add(.user, user.userId)
+            .add(.device, user.description)
+            .build()
+    }
+
+    func contains(identifier: Identifier) -> Bool {
+        guard let identifierValue = self[identifier.type] else {
+            return false
+        }
+        return identifierValue == identifier.value
+    }
+}
 
 class IdentifiersBuilder {
 
-    private var identifiers = [String: String]()
+    private var identifiers = Identifiers()
 
     private static let MAX_IDENTIFIER_TYPE_LENGTH = 128
     private static let MAX_IDENTIFIER_VALUE_LENGTH = 512
@@ -56,7 +99,13 @@ class IdentifiersBuilder {
         return true
     }
 
-    func build() -> [String: String] {
+    func build() -> Identifiers {
         identifiers
+    }
+}
+
+extension User {
+    var resolvedIdentifiers: Identifiers {
+        Identifiers.from(user: self)
     }
 }

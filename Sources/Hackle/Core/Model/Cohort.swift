@@ -1,7 +1,7 @@
 import Foundation
 
 
-class Cohort {
+class Cohort: CustomStringConvertible {
 
     typealias Id = Int64
 
@@ -9,5 +9,9 @@ class Cohort {
 
     init(id: Id) {
         self.id = id
+    }
+
+    var description: String {
+        "Cohort(id: \(id))"
     }
 }
