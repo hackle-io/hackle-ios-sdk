@@ -21,21 +21,23 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
         workspace
     }
 
-    func sync(completion: @escaping () -> ()) {
-        httpWorkspaceFetcher.fetchIfModified { [weak self] workspace, error in
-            self?.handle(workspace: workspace, error: error)
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
+        httpWorkspaceFetcher.fetchIfModified { result in
+            self.handle(result: result, completion: completion)
         }
     }
 
-    private func handle(workspace: Workspace?, error: Error?) {
-        if let error {
-            Log.error("Failed to fetch Workspace: \(error)")
+    private func handle(result: Result<Workspace?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+        switch result {
+        case .success(let workspace):
+            if let workspace {
+                self.workspace = workspace
+            }
+            completion(.success(()))
+            return
+        case .failure(let error):
+            completion(.failure(error))
             return
         }
-        guard let workspace else {
-            Log.error("Failed to fetch Workspace: workspace is nil")
-            return
-        }
-        self.workspace = workspace
     }
 }

@@ -13,6 +13,7 @@ struct HttpResponse {
 
 
 extension HttpResponse {
+    
     var isSuccessful: Bool {
         guard let urlResponse = urlResponse as? HTTPURLResponse, error == nil else {
             return false

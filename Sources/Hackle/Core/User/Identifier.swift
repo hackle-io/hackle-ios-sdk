@@ -39,7 +39,7 @@ extension Identifiers {
             .add(user.identifiers)
             .add(.id, user.id)
             .add(.user, user.userId)
-            .add(.device, user.description)
+            .add(.device, user.deviceId)
             .build()
     }
 

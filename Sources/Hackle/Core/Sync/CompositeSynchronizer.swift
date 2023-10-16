@@ -8,15 +8,24 @@
 import Foundation
 
 protocol CompositeSynchronizer: Synchronizer {
-    func sync(type: SynchronizerType, completion: @escaping () -> ()) throws
+    func syncOnly(type: SynchronizerType, completion: @escaping (Result<Void, Error>) -> ())
 }
 
+extension CompositeSynchronizer {
+    func syncOnly(type: SynchronizerType, completion: @escaping () -> ()) {
+        syncOnly(type: type) { result in
+            if case .failure(let error) = result {
+                Log.error("Failed to sync: \(error)")
+            }
+            completion()
+        }
+    }
+}
 
 enum SynchronizerType {
     case workspace
     case cohort
 }
-
 
 fileprivate class Synchronization {
     let type: SynchronizerType
@@ -42,24 +51,28 @@ class DefaultCompositeSynchronizer: CompositeSynchronizer {
         Log.debug("Synchronizer added [\(synchronizer)]")
     }
 
-    func sync(completion: @escaping () -> ()) {
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
         let dispatchGroup = DispatchGroup()
         for synchronization in synchronizations {
             dispatchGroup.enter()
             dispatchQueue.async {
-                synchronization.synchronizer.sync {
+                synchronization.synchronizer.sync { result in
                     dispatchGroup.leave()
+                    if case .failure(let error) = result {
+                        Log.error("Failed to sync: \(error)")
+                    }
                 }
             }
         }
         dispatchGroup.notify(queue: dispatchQueue) {
-            completion()
+            completion(.success(()))
         }
     }
 
-    func sync(type: SynchronizerType, completion: @escaping () -> ()) throws {
+    func syncOnly(type: SynchronizerType, completion: @escaping (Result<(), Error>) -> ()) {
         guard let synchronization = synchronizations.first(where: { it in it.type == type }) else {
-            throw HackleError.error("Unsupported SynchronizerType [\(type)]")
+            completion(.failure(HackleError.error("Unsupported SynchronizerType [\(type)]")))
+            return
         }
         synchronization.synchronizer.sync(completion: completion)
     }

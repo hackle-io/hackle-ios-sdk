@@ -92,19 +92,18 @@ private class MockHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         self.returns = returns
     }
 
-    func fetchIfModified(completion: @escaping (Workspace?, Error?) -> ()) {
-
+    func fetchIfModified(completion: @escaping (Result<Workspace?, Error>) -> ()) {
         let value = returns[count]
 
         switch value {
         case let workspace as Workspace:
-            completion(workspace, nil)
+            completion(.success(workspace))
             break
         case let error as Error:
-            completion(nil, error)
+            completion(.failure(error))
             break
         default:
-            completion(nil, nil)
+            completion(.success(nil))
         }
     }
 }

@@ -5,14 +5,30 @@ import Mockery
 @testable import Hackle
 
 class MockUserManager: Mock, UserManager {
-    private(set) var currentUser: User
+
+    var currentUser: User
 
     init(currentUser: User = HackleUserBuilder().build()) {
         self.currentUser = currentUser
         super.init()
     }
 
+    lazy var initializeMock = MockFunction(self, initialize)
+
     func initialize(user: User?) {
+        call(initializeMock, args: user)
+    }
+
+    lazy var resolveMock = MockFunction(self, resolve)
+
+    func resolve(user: User?) -> HackleUser {
+        call(resolveMock, args: user)
+    }
+
+    lazy var toHackleUserMock = MockFunction(self, toHackleUser)
+
+    func toHackleUser(user: User) -> HackleUser {
+        call(toHackleUserMock, args: user)
     }
 
     lazy var setUserMock = MockFunction(self, setUser)
@@ -43,5 +59,11 @@ class MockUserManager: Mock, UserManager {
 
     func resetUser() -> User {
         call(resetUserMock, args: ())
+    }
+
+    lazy var syncMock = MockFunction(self, sync)
+
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
+        call(syncMock, args: completion)
     }
 }

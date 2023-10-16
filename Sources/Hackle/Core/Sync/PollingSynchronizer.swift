@@ -23,12 +23,12 @@ class PollingSynchronizer: CompositeSynchronizer, AppStateChangeListener {
         self.interval = interval
     }
 
-    func sync(completion: @escaping () -> ()) {
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
         delegate.sync(completion: completion)
     }
 
-    func sync(type: SynchronizerType, completion: @escaping () -> ()) throws {
-        try delegate.sync(type: type, completion: completion)
+    func syncOnly(type: SynchronizerType, completion: @escaping (Result<(), Error>) -> ()) {
+        delegate.syncOnly(type: type, completion: completion)
     }
 
     private func poll() {

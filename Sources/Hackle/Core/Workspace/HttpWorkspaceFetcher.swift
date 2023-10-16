@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol HttpWorkspaceFetcher {
-    func fetchIfModified(completion: @escaping (Workspace?, Error?) -> ())
+    func fetchIfModified(completion: @escaping (Result<Workspace?, Error>) -> ())
 }
 
 class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
@@ -27,7 +27,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
     }
 
-    func fetchIfModified(completion: @escaping (Workspace?, Error?) -> ()) {
+    func fetchIfModified(completion: @escaping (Result<Workspace?, Error>) -> ()) {
         let request = createRequest()
         execute(request: request, completion: completion)
     }
@@ -40,15 +40,15 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func execute(request: HttpRequest, completion: @escaping (Workspace?, Error?) -> ()) {
+    private func execute(request: HttpRequest, completion: @escaping (Result<Workspace?, Error>) -> ()) {
         let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
             do {
                 let workspace = try self.handleResponse(response: response)
-                completion(workspace, nil)
+                completion(.success(workspace))
             } catch let error {
-                completion(nil, error)
+                completion(.failure(error))
             }
         }
     }

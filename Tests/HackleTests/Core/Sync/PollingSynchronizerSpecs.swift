@@ -30,12 +30,29 @@ class PollingSynchronizerSpecs: QuickSpec {
             }
         }
 
+        describe("sync only") {
+            it("delegate") {
+                // given
+                let delegate = MockSynchronizer()
+                let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 10)
+
+                // when
+                sut.syncOnly(type: .cohort) {
+                }
+
+                // then
+                verify(exactly: 1) {
+                    delegate.syncOnlyMock
+                }
+            }
+        }
+
         describe("start") {
 
             it("no polling") {
                 // given
                 let delegate = MockSynchronizer()
-                every(delegate.syncMock).answers({ $0() })
+                every(delegate.syncMock).answers({ $0(.success(())) })
                 let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: -1)
 
                 // when
@@ -51,7 +68,7 @@ class PollingSynchronizerSpecs: QuickSpec {
             it("start scheduling") {
                 // given
                 let delegate = MockSynchronizer()
-                every(delegate.syncMock).answers({ $0() })
+                every(delegate.syncMock).answers({ $0(.success(())) })
                 let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
 
                 // when
@@ -67,7 +84,7 @@ class PollingSynchronizerSpecs: QuickSpec {
             it("start once") {
                 // given
                 let delegate = MockSynchronizer()
-                every(delegate.syncMock).answers({ $0() })
+                every(delegate.syncMock).answers({ $0(.success(())) })
                 let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
 
                 // when
@@ -90,7 +107,7 @@ class PollingSynchronizerSpecs: QuickSpec {
             it("no polling") {
                 // given
                 let delegate = MockSynchronizer()
-                every(delegate.syncMock).answers({ $0() })
+                every(delegate.syncMock).answers({ $0(.success(())) })
                 let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: -1)
 
                 // when
@@ -101,7 +118,7 @@ class PollingSynchronizerSpecs: QuickSpec {
             it("cancel polling job") {
                 // given
                 let delegate = MockSynchronizer()
-                every(delegate.syncMock).answers({ $0() })
+                every(delegate.syncMock).answers({ $0(.success(())) })
                 let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
 
                 // when
@@ -119,7 +136,7 @@ class PollingSynchronizerSpecs: QuickSpec {
 
         it("onChanged") {
             let delegate = MockSynchronizer()
-            every(delegate.syncMock).answers({ $0() })
+            every(delegate.syncMock).answers({ $0(.success(())) })
             let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
 
             sut.onChanged(state: .foreground, timestamp: Date())

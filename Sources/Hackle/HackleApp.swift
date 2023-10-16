@@ -9,10 +9,10 @@ import Foundation
 
     private let core: HackleCore
     private let eventQueue: DispatchQueue
-    private let synchronizer: Synchronizer
+    private let synchronizer: CompositeSynchronizer
     private let userManager: UserManager
     private let sessionManager: SessionManager
-    private let eventProcessor: DefaultUserEventProcessor
+    private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
     private let device: Device
     internal let userExplorer: HackleUserExplorer
@@ -38,10 +38,10 @@ import Foundation
     init(
         core: HackleCore,
         eventQueue: DispatchQueue,
-        synchronizer: Synchronizer,
+        synchronizer: CompositeSynchronizer,
         userManager: UserManager,
         sessionManager: SessionManager,
-        eventProcessor: DefaultUserEventProcessor,
+        eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
         device: Device,
         userExplorer: HackleUserExplorer
@@ -76,21 +76,25 @@ import Foundation
 
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
         userManager.setUser(user: user)
-        synchronizer.sync(completion: completion)
+        synchronizer.syncOnly(type: .cohort, completion: completion)
     }
 
-    @objc public func setUserId(userId: String?, completion: (() -> ())? = nil) {
+    @objc public func setUserId(userId: String?) {
         userManager.setUserId(userId: userId)
-        synchronizer.sync {
-            guard let completion else {
-                return
-            }
-            completion()
-        }
+    }
+
+    @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
+        userManager.setUserId(userId: userId)
+        synchronizer.syncOnly(type: .cohort, completion: completion)
     }
 
     @objc public func setDeviceId(deviceId: String) {
         userManager.setDeviceId(deviceId: deviceId)
+    }
+
+    @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
+        userManager.setDeviceId(deviceId: deviceId)
+        synchronizer.syncOnly(type: .cohort, completion: completion)
     }
 
     @objc public func setUserProperty(key: String, value: Any?) {
@@ -108,6 +112,12 @@ import Foundation
     @objc public func resetUser() {
         userManager.resetUser()
         track(event: PropertyOperations.clearAll().toEvent())
+    }
+
+    @objc public func resetUser(completion: @escaping () -> ()) {
+        userManager.resetUser()
+        track(event: PropertyOperations.clearAll().toEvent())
+        synchronizer.syncOnly(type: .cohort, completion: completion)
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
@@ -290,12 +300,12 @@ extension HackleApp {
 
         // - Synchronizer
 
-        let delegatingSynchronizer = CompositeSynchronizer(
+        let compositeSynchronizer = DefaultCompositeSynchronizer(
             dispatchQueue: DispatchQueue(label: "io.hackle.DelegatingSynchronizer", attributes: .concurrent)
         )
         let pollingSynchronizer = PollingSynchronizer(
-            delegate: delegatingSynchronizer,
-            scheduler: Schedulers.dispatch(),
+            delegate: compositeSynchronizer,
+            scheduler: scheduler,
             interval: config.pollingInterval
         )
 
@@ -310,19 +320,19 @@ extension HackleApp {
         let workspaceManager = WorkspaceManager(
             httpWorkspaceFetcher: httpWorkspaceFetcher
         )
-        delegatingSynchronizer.add(synchronizer: workspaceManager)
+        compositeSynchronizer.add(type: .workspace, synchronizer: workspaceManager)
 
         // - UserManager
 
-        // TODO: UserCohortFetcher
-        let cohortFetcher = EmptyUserCohortFetcher()
+        let cohortFetcher = DefaultUserCohortFetcher(config: config, httpClient: httpClient)
 
         let userManager = DefaultUserManager(
             device: device,
             repository: UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)"),
-            cohortFetcher: cohortFetcher
+            cohortFetcher: cohortFetcher,
+            clock: SystemClock.shared
         )
-        delegatingSynchronizer.add(synchronizer: userManager)
+        compositeSynchronizer.add(type: .cohort, synchronizer: userManager)
 
         // - SessionManager
 
@@ -360,7 +370,7 @@ extension HackleApp {
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
-            eventFlushScheduler: Schedulers.dispatch(),
+            eventFlushScheduler: scheduler,
             eventFlushInterval: config.eventFlushInterval,
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
@@ -391,7 +401,6 @@ extension HackleApp {
         appNotificationObserver.addListener(listener: sessionManager)
         appNotificationObserver.addListener(listener: userManager)
         appNotificationObserver.addListener(listener: eventProcessor)
-//        userManager.addListener(listener: sessionManager)
 
         // - SessionEventTracker
 
@@ -449,7 +458,13 @@ extension HackleApp {
 
         // - Metrics
 
-        HackleApp.metricConfiguration(config: config, observer: appNotificationObserver, eventQueue: eventQueue, httpQueue: httpQueue, httpClient: httpClient)
+        HackleApp.metricConfiguration(
+            config: config,
+            observer: appNotificationObserver,
+            eventQueue: eventQueue,
+            httpQueue: httpQueue,
+            httpClient: httpClient
+        )
 
         return HackleApp(
             core: core,

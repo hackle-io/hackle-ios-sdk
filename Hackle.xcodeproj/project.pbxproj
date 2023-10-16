@@ -194,7 +194,6 @@
 		EE29DA6329CD82C200B1FEAA /* MockEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E629CD82C100B1FEAA /* MockEventRepository.swift */; };
 		EE29DA6429CD82C200B1FEAA /* WorkspaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E829CD82C100B1FEAA /* WorkspaceSpecs.swift */; };
 		EE29DA6629CD82C200B1FEAA /* MockUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */; };
-		EE29DA6729CD82C200B1FEAA /* DefaultHackleUserResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9EC29CD82C100B1FEAA /* DefaultHackleUserResolverSpecs.swift */; };
 		EE29DA6829CD82C200B1FEAA /* DefaultUserManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */; };
 		EE29DA6929CD82C200B1FEAA /* DefaultHackleCoreSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9EE29CD82C100B1FEAA /* DefaultHackleCoreSpecs.swift */; };
 		EE29DA6A29CD82C200B1FEAA /* TimeUnitSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9F129CD82C100B1FEAA /* TimeUnitSpecs.swift */; };
@@ -277,6 +276,13 @@
 		EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */; };
 		EE3C165E29D43246008177F6 /* HackleFeatureFlagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */; };
 		EE3C166029D43253008177F6 /* HackleFeatureFlagItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */; };
+		EE5A78DD2ADAEC83005A0F9E /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78DC2ADAEC83005A0F9E /* Base64.swift */; };
+		EE5A78DF2ADBE8E0005A0F9E /* SynchronizerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78DE2ADBE8E0005A0F9E /* SynchronizerSpecs.swift */; };
+		EE5A78E12ADBECFE005A0F9E /* UserCohortSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */; };
+		EE5A78E32ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78E22ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift */; };
+		EE5A78FC2ADCEF97005A0F9E /* workspace_cohorts.json in Resources */ = {isa = PBXBuildFile; fileRef = EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */; };
+		EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */; };
+		EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */; };
 		EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */; };
 		EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */; };
 		EE789E2429EFE02E0088D8A6 /* ExperimentRequestSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2329EFE02E0088D8A6 /* ExperimentRequestSpecs.swift */; };
@@ -364,7 +370,7 @@
 		EEDC58712ACBD807001E73DB /* PollingSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58702ACBD807001E73DB /* PollingSynchronizer.swift */; };
 		EEDC58732ACBD80B001E73DB /* CompositeSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58722ACBD80B001E73DB /* CompositeSynchronizer.swift */; };
 		EEDC58762ACBD82E001E73DB /* PollingSynchronizerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58752ACBD82D001E73DB /* PollingSynchronizerSpecs.swift */; };
-		EEDC58782ACBD835001E73DB /* CompositeSynchronizerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58772ACBD835001E73DB /* CompositeSynchronizerSpecs.swift */; };
+		EEDC58782ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58772ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift */; };
 		EEDC587A2ACBD90E001E73DB /* MockSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58792ACBD90E001E73DB /* MockSynchronizer.swift */; };
 		EEDC587C2ACBDA78001E73DB /* WorkspaceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC587B2ACBDA78001E73DB /* WorkspaceManager.swift */; };
 		EEDC587E2ACBDA88001E73DB /* WorkspaceManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC587D2ACBDA88001E73DB /* WorkspaceManagerSpecs.swift */; };
@@ -602,7 +608,6 @@
 		EE29D9E629CD82C100B1FEAA /* MockEventRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockEventRepository.swift; sourceTree = "<group>"; };
 		EE29D9E829CD82C100B1FEAA /* WorkspaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceSpecs.swift; sourceTree = "<group>"; };
 		EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserManager.swift; sourceTree = "<group>"; };
-		EE29D9EC29CD82C100B1FEAA /* DefaultHackleUserResolverSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultHackleUserResolverSpecs.swift; sourceTree = "<group>"; };
 		EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultUserManagerSpecs.swift; sourceTree = "<group>"; };
 		EE29D9EE29CD82C100B1FEAA /* DefaultHackleCoreSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultHackleCoreSpecs.swift; sourceTree = "<group>"; };
 		EE29D9F129CD82C100B1FEAA /* TimeUnitSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeUnitSpecs.swift; sourceTree = "<group>"; };
@@ -685,6 +690,13 @@
 		EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleFeatureFlagTableViewCell.xib; sourceTree = "<group>"; };
 		EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagViewController.swift; sourceTree = "<group>"; };
 		EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagItem.swift; sourceTree = "<group>"; };
+		EE5A78DC2ADAEC83005A0F9E /* Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
+		EE5A78DE2ADBE8E0005A0F9E /* SynchronizerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizerSpecs.swift; sourceTree = "<group>"; };
+		EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCohortSpecs.swift; sourceTree = "<group>"; };
+		EE5A78E22ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserCohortFetcherSpecs.swift; sourceTree = "<group>"; };
+		EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workspace_cohorts.json; sourceTree = "<group>"; };
+		EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserListener.swift; sourceTree = "<group>"; };
+		EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserCohortFetcher.swift; sourceTree = "<group>"; };
 		EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentExtensions.swift; sourceTree = "<group>"; };
 		EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventFactory.swift; sourceTree = "<group>"; };
 		EE789E2329EFE02E0088D8A6 /* ExperimentRequestSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRequestSpecs.swift; sourceTree = "<group>"; };
@@ -769,7 +781,7 @@
 		EEDC58702ACBD807001E73DB /* PollingSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingSynchronizer.swift; sourceTree = "<group>"; };
 		EEDC58722ACBD80B001E73DB /* CompositeSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeSynchronizer.swift; sourceTree = "<group>"; };
 		EEDC58752ACBD82D001E73DB /* PollingSynchronizerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingSynchronizerSpecs.swift; sourceTree = "<group>"; };
-		EEDC58772ACBD835001E73DB /* CompositeSynchronizerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeSynchronizerSpecs.swift; sourceTree = "<group>"; };
+		EEDC58772ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCompositeSynchronizerSpecs.swift; sourceTree = "<group>"; };
 		EEDC58792ACBD90E001E73DB /* MockSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSynchronizer.swift; sourceTree = "<group>"; };
 		EEDC587B2ACBDA78001E73DB /* WorkspaceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceManager.swift; sourceTree = "<group>"; };
 		EEDC587D2ACBDA88001E73DB /* WorkspaceManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceManagerSpecs.swift; sourceTree = "<group>"; };
@@ -1106,6 +1118,7 @@
 				EE29D8F529CD825300B1FEAA /* UserDefaults.swift */,
 				EE29D8F629CD825300B1FEAA /* Scheduler.swift */,
 				EE29D8F729CD825300B1FEAA /* SdkVersion.swift */,
+				EE5A78DC2ADAEC83005A0F9E /* Base64.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1366,6 +1379,7 @@
 				EE240EEA29F6A9D6006D7414 /* segment_match.json */,
 				EEF895DA2A4C09D800722CF6 /* iam.json */,
 				EEF895DE2A4C14D800722CF6 /* iam_invalid.json */,
+				EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1484,9 +1498,12 @@
 			isa = PBXGroup;
 			children = (
 				EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */,
-				EE29D9EC29CD82C100B1FEAA /* DefaultHackleUserResolverSpecs.swift */,
+				EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */,
+				EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */,
 				EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */,
 				EEDC58642ACB241D001E73DB /* HackleUserSpecs.swift */,
+				EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */,
+				EE5A78E22ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -1944,9 +1961,10 @@
 		EEDC58742ACBD818001E73DB /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				EEDC58772ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift */,
 				EEDC58752ACBD82D001E73DB /* PollingSynchronizerSpecs.swift */,
-				EEDC58772ACBD835001E73DB /* CompositeSynchronizerSpecs.swift */,
 				EEDC58792ACBD90E001E73DB /* MockSynchronizer.swift */,
+				EE5A78DE2ADBE8E0005A0F9E /* SynchronizerSpecs.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -2123,6 +2141,7 @@
 				EE29DA4829CD82C200B1FEAA /* workspace_config.json in Resources */,
 				EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */,
 				EE29DA4C29CD82C200B1FEAA /* murmur_alphabetic.csv in Resources */,
+				EE5A78FC2ADCEF97005A0F9E /* workspace_cohorts.json in Resources */,
 				EE29DA4929CD82C200B1FEAA /* murmur_alphanumeric.csv in Resources */,
 				EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */,
 				EEF895DB2A4C09D800722CF6 /* iam.json in Resources */,
@@ -2212,6 +2231,7 @@
 				EE29D9A529CD825500B1FEAA /* UserEventDispatcher.swift in Sources */,
 				EE80E00E2A2D9CC500FB12CC /* UserEventListener.swift in Sources */,
 				EEA01CB62A3069C400E0C021 /* InAppMessageDeterminer.swift in Sources */,
+				EE5A78DD2ADAEC83005A0F9E /* Base64.swift in Sources */,
 				EE29D95F29CD825400B1FEAA /* AppNotificationObserver.swift in Sources */,
 				EE29D98329CD825400B1FEAA /* RemoteConfigParameter.swift in Sources */,
 				EE29D9A229CD825500B1FEAA /* EvaluationFlowFactory.swift in Sources */,
@@ -2355,7 +2375,6 @@
 				EE29DA7F29CD82C200B1FEAA /* MockConditionMatcher.swift in Sources */,
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
 				EE0F34102A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift in Sources */,
-				EE29DA6729CD82C200B1FEAA /* DefaultHackleUserResolverSpecs.swift in Sources */,
 				EE789E2F29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift in Sources */,
 				EEF895A42A4A67CF00722CF6 /* InAppMessageRequestSpecs.swift in Sources */,
 				EE0F340A2A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift in Sources */,
@@ -2391,8 +2410,10 @@
 				EE29DA8129CD82C200B1FEAA /* DefaultSegmentMatcher.swift in Sources */,
 				EE29DA8329CD82C200B1FEAA /* DefaultExperimentTargetRuleDeterminerSpecs.swift in Sources */,
 				EE29DA6329CD82C200B1FEAA /* MockEventRepository.swift in Sources */,
+				EE5A78E12ADBECFE005A0F9E /* UserCohortSpecs.swift in Sources */,
 				EE29DA8F29CD82C200B1FEAA /* MockActionResolver.swift in Sources */,
 				EEDC58462AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift in Sources */,
+				EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */,
 				EE29DAA729CD82C200B1FEAA /* HackleAppSpec.swift in Sources */,
 				EE29DA5F29CD82C200B1FEAA /* CumulativeCounterSpecs.swift in Sources */,
 				EE29DA8729CD82C200B1FEAA /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */,
@@ -2413,8 +2434,10 @@
 				EEE636792A47458700428681 /* FixedClock.swift in Sources */,
 				EE29DA4129CD82C200B1FEAA /* MockHttpClient.swift in Sources */,
 				EE29DA7A29CD82C200B1FEAA /* MockUserValueResolver.swift in Sources */,
+				EE5A78DF2ADBE8E0005A0F9E /* SynchronizerSpecs.swift in Sources */,
 				EEF895972A499C9D00722CF6 /* DefaultInAppMessageResolverSpecs.swift in Sources */,
 				EED6A1272A0E267D00A8875D /* PropertyOperatorSpecs.swift in Sources */,
+				EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */,
 				EE29DA9129CD82C200B1FEAA /* MockBucketer.swift in Sources */,
 				7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */,
 				EE789E4229F1004B0088D8A6 /* DelegatingEvaluatorSpecs.swift in Sources */,
@@ -2445,6 +2468,7 @@
 				EE29DA5B29CD82C200B1FEAA /* CounterSpecs.swift in Sources */,
 				EE29DA5629CD82C200B1FEAA /* MetricFieldSpecs.swift in Sources */,
 				7E70B5742AA8641900746A5F /* MockDevice.swift in Sources */,
+				EE5A78E32ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift in Sources */,
 				EE29DA6929CD82C200B1FEAA /* DefaultHackleCoreSpecs.swift in Sources */,
 				EEDC587A2ACBD90E001E73DB /* MockSynchronizer.swift in Sources */,
 				EE789E4C29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift in Sources */,
@@ -2506,7 +2530,7 @@
 				EEF895AA2A4A8AD200722CF6 /* DefaultInAppMessageEventTrackerSpecs.swift in Sources */,
 				EE789E3B29F0F8980088D8A6 /* MockEvaluationFlowFactory.swift in Sources */,
 				EE29DA6129CD82C200B1FEAA /* MetricSpecs.swift in Sources */,
-				EEDC58782ACBD835001E73DB /* CompositeSynchronizerSpecs.swift in Sources */,
+				EEDC58782ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift in Sources */,
 				EE29DA9729CD82C200B1FEAA /* ExperimentFlowEvaluatorSpecs.swift in Sources */,
 				EEF895B72A4ADD3000722CF6 /* UserEventPublisherStub.swift in Sources */,
 				EE29DA4429CD82C200B1FEAA /* MockScheduler.swift in Sources */,

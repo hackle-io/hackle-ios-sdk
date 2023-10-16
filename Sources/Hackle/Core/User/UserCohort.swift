@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct UserCohort: CustomStringConvertible {
+struct UserCohort: Equatable, CustomStringConvertible {
     let identifier: Identifier
     let cohorts: [Cohort]
 
@@ -52,6 +52,16 @@ extension UserCohorts {
 
     static func builder() -> Builder {
         Builder()
+    }
+
+    static func from(dto: UserCohortsResponseDto) -> UserCohorts {
+        dto.cohorts.reduce(builder()) { builder, cohort in
+                builder.put(cohort: UserCohort(
+                    identifier: Identifier(type: cohort.identifier.type, value: cohort.identifier.value),
+                    cohorts: cohort.cohorts.map({ Cohort(id: $0) })
+                ))
+            }
+            .build()
     }
 
     class Builder {

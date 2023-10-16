@@ -42,6 +42,7 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
     private var userListeners: [UserListener]
     private let repository: KeyValueRepository
     private let cohortFetcher: UserCohortFetcher
+    private let clock: Clock
 
     private let device: Device
     private let defaultUser: User
@@ -56,12 +57,13 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
         currentContext.user
     }
 
-    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher) {
+    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
         self.cohortFetcher = cohortFetcher
+        self.clock = clock
         self.device = device
-        self.defaultUser = HackleUserBuilder().deviceId(device.id).build()
+        self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
         self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty())
     }
 
@@ -73,7 +75,7 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
     func initialize(user: User?) {
         lock.write { [weak self] in
             let initUser = (user ?? loadUser() ?? defaultUser)
-            self?.context = UserContext.of(user: initUser, cohorts: UserCohorts.empty())
+            self?.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty())
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
@@ -90,33 +92,31 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
     }
 
     func toHackleUser(user: User) -> HackleUser {
-        let context = currentContext.with(user: user)
+        let context = context.with(user: user)
         return toHackleUser(context: context)
     }
 
-    func sync(completion: @escaping () -> ()) {
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
         sync(user: currentUser, completion: completion)
     }
 
-    private func sync(user: User, completion: @escaping () -> ()) {
-        cohortFetcher.fetch(user: user) { [weak self] cohorts, error in
-            self?.handle(cohorts: cohorts, error: error)
-            completion()
+    private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+        cohortFetcher.fetch(user: user) { result in
+            self.handle(result: result, completion: completion)
         }
     }
 
-    private func handle(cohorts: UserCohorts?, error: Error?) {
-        if let error {
-            Log.error("Failed to sync cohorts: \(error)")
+    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+        switch result {
+        case .success(let cohorts):
+            lock.write {
+                context = context.update(cohorts: cohorts)
+            }
+            completion(.success(()))
             return
-        }
-
-        guard let cohorts else {
+        case .failure(let error):
+            completion(.failure(error))
             return
-        }
-
-        lock.write {
-            context = context.update(cohorts: cohorts)
         }
     }
 

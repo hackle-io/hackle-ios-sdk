@@ -1,7 +1,7 @@
 import Foundation
 
 
-class Cohort: CustomStringConvertible {
+struct Cohort: Equatable, CustomStringConvertible {
 
     typealias Id = Int64
 

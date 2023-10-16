@@ -81,7 +81,6 @@ struct MockFunction<Arguments, Result> {
 
 extension Mockable {
 
-
     func call<Arguments, Result>(
         _ function: MockFunction<Arguments, Result>,
         args: Arguments,
@@ -111,5 +110,4 @@ extension Mockable {
     ) -> Result? {
         return invoke(function.mockReference, args: args)
     }
-
 }
