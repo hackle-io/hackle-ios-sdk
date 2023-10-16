@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7E3F4FBC2AA6FBA1004E0EB0 /* Platform in Resources */ = {isa = PBXBuildFile; fileRef = 7E3F4FBB2AA6FBA1004E0EB0 /* Platform */; };
 		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
 		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
@@ -400,7 +399,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7E3F4FBB2AA6FBA1004E0EB0 /* Platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Platform; path = Sources/Hackle/Core/Platform; sourceTree = SOURCE_ROOT; };
 		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
@@ -802,33 +800,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7E3F4FBF2AA6FBF2004E0EB0 /* Platform */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC32AA6FC2D004E0EB0 /* Helper */,
-				7E3F4FC22AA6FC24004E0EB0 /* Model */,
-				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
-			);
-			path = Platform;
-			sourceTree = "<group>";
-		};
-		7E3F4FC22AA6FC24004E0EB0 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
-				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		7E3F4FC32AA6FC2D004E0EB0 /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
-			);
-			path = Helper;
-			sourceTree = "<group>";
-		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
 			isa = PBXGroup;
 			children = (
@@ -943,7 +914,7 @@
 		EE29D8AE29CD825300B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FBF2AA6FBF2004E0EB0 /* Platform */,
+				EE5A78F82ADCD29B005A0F9E /* Platform */,
 				EE29D8CD29CD825300B1FEAA /* Database */,
 				EE29D90D29CD825300B1FEAA /* Evaluation */,
 				EE29D92D29CD825300B1FEAA /* Event */,
@@ -1088,7 +1059,6 @@
 		EE29D8E529CD825300B1FEAA /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FBB2AA6FBA1004E0EB0 /* Platform */,
 				EE29D8F029CD825300B1FEAA /* Concurrency */,
 				EE29D8EC29CD825300B1FEAA /* Time */,
 				EE29D8E629CD825300B1FEAA /* ConcurrentArray.swift */,
@@ -1706,6 +1676,33 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		EE5A78F82ADCD29B005A0F9E /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				EE5A78F92ADCD2A0005A0F9E /* Helper */,
+				EE5A78FA2ADCD2A5005A0F9E /* Model */,
+				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
+			);
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		EE5A78F92ADCD2A0005A0F9E /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		EE5A78FA2ADCD2A5005A0F9E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
+				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		EE6F8F2929D496B10037C482 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -2047,7 +2044,6 @@
 				EE3C165829D43219008177F6 /* HackleFeatureFlagViewController.xib in Resources */,
 				EE29DAC329CD853C00B1FEAA /* hackle_logo.png in Resources */,
 				EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */,
-				7E3F4FBC2AA6FBA1004E0EB0 /* Platform in Resources */,
 				EE29DAC429CD853C00B1FEAA /* hackle_logo@2x.png in Resources */,
 				EE29DAC529CD853C00B1FEAA /* hackle_logo@3x.png in Resources */,
 			);
