@@ -71,7 +71,7 @@ import Foundation
     }
 
     @objc public func setUser(user: User) {
-        userManager.setUser(user: user)
+        setUser(user: user, completion: {})
     }
 
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
@@ -80,7 +80,7 @@ import Foundation
     }
 
     @objc public func setUserId(userId: String?) {
-        userManager.setUserId(userId: userId)
+        setUserId(userId: userId, completion: {})
     }
 
     @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
@@ -89,7 +89,7 @@ import Foundation
     }
 
     @objc public func setDeviceId(deviceId: String) {
-        userManager.setDeviceId(deviceId: deviceId)
+        setDeviceId(deviceId: deviceId, completion: {})
     }
 
     @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
@@ -104,14 +104,25 @@ import Foundation
         updateUserProperties(operations: operations)
     }
 
+    @objc public func setUserProperty(key: String, value: Any?, completion: @escaping () -> ()) {
+        let operations = PropertyOperations.builder()
+            .set(key, value)
+            .build()
+        updateUserProperties(operations: operations, completion: completion)
+    }
+
     @objc public func updateUserProperties(operations: PropertyOperations) {
+        updateUserProperties(operations: operations, completion: {})
+    }
+
+    @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
         track(event: operations.toEvent())
         userManager.updateProperties(operations: operations)
+        completion()
     }
 
     @objc public func resetUser() {
-        userManager.resetUser()
-        track(event: PropertyOperations.clearAll().toEvent())
+        resetUser(completion: {})
     }
 
     @objc public func resetUser(completion: @escaping () -> ()) {
