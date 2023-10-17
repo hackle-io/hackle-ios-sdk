@@ -93,25 +93,15 @@ class HackleCoreSpecs: QuickSpec {
             let core = DefaultHackleCore.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor, manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
 
             var decisions: [Decision] = []
-            for _ in (1...10000) {
-                let user = HackleUser.builder().identifier(.id, UUID().uuidString).build()
+            for i in (0..<10000) {
+                let user = HackleUser.builder().identifier(.id, String(i)).build()
                 let decision = try core.experiment(experimentKey: 2, user: user, defaultVariationKey: "A")
                 decisions.append(decision)
             }
             expect(eventProcessor.processedEvents.count) == 10000
             expect(decisions.count) == 10000
-            expect(decisions.filter { it in
-                    it.reason == DecisionReason.TRAFFIC_ALLOCATED
-                }
-                .count)
-                .to(beGreaterThan(2400))
-                .to(beLessThan(2600))
-            expect(decisions.filter { it in
-                    it.reason == DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT
-                }
-                .count)
-                .to(beGreaterThan(7400))
-                .to(beLessThan(7600))
+            expect(decisions.filter({ it in it.reason == DecisionReason.TRAFFIC_ALLOCATED }).count) == 2452
+            expect(decisions.filter({ it in it.reason == DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT }).count) == 7548
         }
 
         it("segment_match") {
