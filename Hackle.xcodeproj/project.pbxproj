@@ -284,6 +284,7 @@
 		EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */; };
 		EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */; };
 		EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */; };
+		EE750E2D2ADE704400DCE34F /* MockHackleCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */; };
 		EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */; };
 		EE789E2429EFE02E0088D8A6 /* ExperimentRequestSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2329EFE02E0088D8A6 /* ExperimentRequestSpecs.swift */; };
 		EE789E2629EFE7EB0088D8A6 /* ExperimentSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2529EFE7EB0088D8A6 /* ExperimentSpecs.swift */; };
@@ -698,6 +699,7 @@
 		EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserListener.swift; sourceTree = "<group>"; };
 		EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserCohortFetcher.swift; sourceTree = "<group>"; };
 		EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentExtensions.swift; sourceTree = "<group>"; };
+		EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleCore.swift; sourceTree = "<group>"; };
 		EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventFactory.swift; sourceTree = "<group>"; };
 		EE789E2329EFE02E0088D8A6 /* ExperimentRequestSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRequestSpecs.swift; sourceTree = "<group>"; };
 		EE789E2529EFE7EB0088D8A6 /* ExperimentSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentSpecs.swift; sourceTree = "<group>"; };
@@ -1402,6 +1404,7 @@
 				EE29D9E729CD82C100B1FEAA /* Workspace */,
 				EE789E2C29F01C3A0088D8A6 /* HackleCoreSpecs.swift */,
 				EEF8959F2A49BCAF00722CF6 /* HackleCoreStub.swift */,
+				EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */,
 				EE29D9EE29CD82C100B1FEAA /* DefaultHackleCoreSpecs.swift */,
 			);
 			path = Core;
@@ -2476,6 +2479,7 @@
 				EE29DA5729CD82C200B1FEAA /* HackleTimer.swift in Sources */,
 				EEF8959C2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift in Sources */,
 				EEF895B52A4AD96D00722CF6 /* AppStateManagerStub.swift in Sources */,
+				EE750E2D2ADE704400DCE34F /* MockHackleCore.swift in Sources */,
 				EEF895B02A4A9BAA00722CF6 /* MockInAppMessageDeterminer.swift in Sources */,
 				EEF895952A497F3E00722CF6 /* EventConditionMatcherSpecs.swift in Sources */,
 				EE29DA5029CD82C200B1FEAA /* TimerSpecs.swift in Sources */,

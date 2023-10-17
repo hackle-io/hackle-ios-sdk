@@ -11,6 +11,34 @@ class MockUserManager: Mock, UserManager {
     init(currentUser: User = HackleUserBuilder().build()) {
         self.currentUser = currentUser
         super.init()
+
+        every(setUserMock).answers { user in
+            self.currentUser = user
+            return self.currentUser
+        }
+        every(setUserIdMock).answers { userId in
+            self.currentUser = currentUser.toBuilder().userId(userId).build()
+            return self.currentUser
+        }
+
+        every(setDeviceIdMock).answers { deviceId in
+            self.currentUser = currentUser.toBuilder().deviceId(deviceId).build()
+            return self.currentUser
+        }
+
+        every(updatePropertiesMock).answers { operations in
+            self.currentUser = currentUser.toBuilder().properties(operations.operate(base: [:])).build()
+            return self.currentUser
+        }
+
+        every(resetUserMock).answers {
+            self.currentUser = User.builder().build()
+            return self.currentUser
+        }
+
+        every(resolveMock).answers { user in
+            HackleUser.of(user: user ?? self.currentUser, hackleProperties: [:])
+        }
     }
 
     lazy var initializeMock = MockFunction(self, initialize)

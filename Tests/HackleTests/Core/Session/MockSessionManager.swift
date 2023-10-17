@@ -16,8 +16,10 @@ class MockSessionManager: Mock, SessionManager {
         super.init()
     }
 
-    func initialize() {
+    lazy var initializeMock = MockFunction(self, initialize)
 
+    func initialize() {
+        call(initializeMock, args: ())
     }
 
     lazy var startNewSessionMock = MockFunction(self, startNewSession)
