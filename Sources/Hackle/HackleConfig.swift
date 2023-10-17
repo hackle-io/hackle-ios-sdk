@@ -116,7 +116,7 @@ public class HackleConfigBuilder: NSObject {
 
     @objc public func build() -> HackleConfig {
 
-        if pollingInterval != HackleConfig.NO_POLLING && pollingInterval < 10 {
+        if pollingInterval != HackleConfig.NO_POLLING && pollingInterval < 60 {
             Log.info("Polling interval is outside allowed value [min 60s]. Setting to min value[60s]")
             self.pollingInterval = 60
         }
