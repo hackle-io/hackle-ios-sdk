@@ -237,11 +237,16 @@ class HackleBridgeSpec : QuickSpec {
                             "_command": "updateUserProperties",
                             "_parameters": {
                                 "operations": {
-                                    "null": null,
-                                    "number": 123,
-                                    "string": "text",
-                                    "array": [123, "123", null],
-                                    "map": { "key": "value" }
+                                    "$set": {
+                                        "null": null,
+                                        "number": 123,
+                                        "string": "text",
+                                        "array": [123, "123", null],
+                                        "map": { "key": "value" }
+                                    },
+                                    "$setOnce": {
+                                        "foo": "bar"
+                                    }
                                 }
                             }
                         }
@@ -251,14 +256,16 @@ class HackleBridgeSpec : QuickSpec {
                     expect(mock.updateUserPropertiesRef.invokations().count) == 1
                     let arguments = mock.updateUserPropertiesRef.firstInvokation().arguments
                     let dict = arguments.asDictionary()
-                    let operation = dict[dict.keys.first!]!
-                    expect(operation.count) == 3
-                    expect(operation["number"] as? Double) == 123.0
-                    expect(operation["string"] as? String) == "text"
-                    let array = operation["array"] as! Array<Any>
+                    let set = dict[PropertyOperation.set]!
+                    expect(set.count) == 3
+                    expect(set["number"] as? Double) == 123.0
+                    expect(set["string"] as? String) == "text"
+                    let array = set["array"] as! Array<Any>
                     expect(array.count) == 2
                     expect(array[0] as? Double) == 123.0
                     expect(array[1] as? String) == "123"
+                    let setOnce = dict[PropertyOperation.setOnce]!
+                    expect(setOnce["foo"] as? String) == "bar"
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()

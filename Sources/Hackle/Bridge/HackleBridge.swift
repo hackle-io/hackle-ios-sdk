@@ -127,10 +127,16 @@ fileprivate extension HackleBridge {
     }
     
     static func updateUserProperties(app: HackleAppProtocol, parameters: [String: Any]) {
-        guard let operations = parameters["operations"] as? [String: Any] else { return }
+        guard let operations = parameters["operations"] as? [String: [String: Any]] else { return }
         let builder = PropertyOperationsBuilder()
-        for (key, value) in operations {
-            builder.set(key, value)
+        for (operation, properties) in operations {
+            guard let operation = PropertyOperation(rawValue: operation) else {
+                continue
+            }
+            
+            for (key, value) in properties {
+                builder.add(operation: operation, key: key, value: value)
+            }
         }
         app.updateUserProperties(operations: builder.build())
     }
@@ -312,7 +318,7 @@ fileprivate extension Decision {
         }
         dictionary["variation"] = variation
         dictionary["reason"] = reason
-        dictionary["parameters"] = parameters
+        dictionary["config"] = parameters
         let sanitized = dictionary.compactMapValues { $0 }
         return sanitized.toJson()
     }

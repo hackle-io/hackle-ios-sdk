@@ -1,15 +1,15 @@
 import Foundation
 import WebKit
 
-@objc public class HackleUIDelegate : NSObject, WKUIDelegate {
+class HackleUIDelegate: NSObject, WKUIDelegate {
     
     private let uiDelegate: WKUIDelegate?
     
-    @objc public init(uiDelegate: WKUIDelegate? = nil) {
+    init(uiDelegate: WKUIDelegate? = nil) {
         self.uiDelegate = uiDelegate
     }
     
-    @objc public func webView(
+    func webView(
         _ webView: WKWebView,
         runJavaScriptTextInputPanelWithPrompt prompt: String,
         defaultText: String?,
