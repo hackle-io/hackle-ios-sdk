@@ -12,15 +12,11 @@ class HackleBridge: NSObject {
         guard let dict = string.jsonObject() else {
             return false
         }
-        return isInvocableString(dict: dict)
-    }
-    
-    static func isInvocableString(dict: [String: Any]) -> Bool {
         guard let payload = dict[ReservedKey.hackle.rawValue] as? [String: Any] else {
             return false
         }
         let command = payload[ReservedKey.command.rawValue] as? String
-        return command != nil
+        return command != nil && command?.isEmpty == false
     }
     
     static func invoke(string: String, completionHandler: (String?) -> Void) {

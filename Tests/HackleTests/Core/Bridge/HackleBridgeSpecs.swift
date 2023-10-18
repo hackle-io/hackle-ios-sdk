@@ -8,7 +8,8 @@ class HackleBridgeSpec : QuickSpec {
     
     override func spec() {
         it("is invocable string") {
-            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{\"_command\":\"\"}}")) == true
+            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{\"_command\":\"foo\"}}")) == true
+            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{\"_command\":\"\"}}")) == false
             expect(HackleBridge.isInvocableString(string: "{\"_hackle\":\"\"}}")) == false
             expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{}}}")) == false
             expect(HackleBridge.isInvocableString(string: "{\"something\":{\"_command\":\"\"}}")) == false
