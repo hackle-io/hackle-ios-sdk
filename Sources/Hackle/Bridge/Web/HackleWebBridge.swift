@@ -11,8 +11,8 @@ public extension WKWebView {
     }
     
     private enum ReservedKey: String {
-        case getPlatform = "getPlatform"
-        case getAppSDKKey = "getAppSDKKey"
+        case getAppSdkKey = "getAppSdkKey"
+        case getInvocationType = "getInvocationType"
     }
     
     private var _uiDelegate: HackleUIDelegate? {
@@ -35,11 +35,11 @@ public extension WKWebView {
     func bridgeScript() -> WKUserScript {
         let source = """
             window.\(name) = {
-                \(ReservedKey.getPlatform): function() {
-                    return 'ios';
+                \(ReservedKey.getAppSdkKey): function() {
+                    return '\(Hackle.app()?.sdk.key ?? "")'
                 },
-                \(ReservedKey.getAppSDKKey): function() {
-                    return '\(Hackle.app()?.sdk.key ?? "")';
+                \(ReservedKey.getInvocationType): function() {
+                    return 'prompt'
                 }
             }
             """
