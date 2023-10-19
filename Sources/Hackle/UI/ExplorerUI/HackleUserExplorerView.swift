@@ -35,17 +35,6 @@ class HackleUserExplorerView {
             }
         }
     }
-    
-    func detach() {
-        DispatchQueue.main.async {
-            guard let window = self.getKeyWindow() else {
-                return
-            }
-            
-            self.button?.removeFromSuperview()
-            self.button = nil
-        }
-    }
 
     private func createButton() -> HackleUserExplorerButton {
         let rect = UIScreen.main.bounds

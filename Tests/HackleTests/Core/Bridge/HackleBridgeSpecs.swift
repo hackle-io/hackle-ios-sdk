@@ -1044,18 +1044,6 @@ class HackleBridgeSpec : QuickSpec {
                 expect(result).to(beNil())
                 expect(mock.showUserExplorerRef.invokations().count) == 1
             }
-            it("hide user explorer") {
-                let mock = MockHackleApp()
-                let result = HackleBridge.invoke(app: mock, string: """
-                {
-                    "_hackle": {
-                        "_command": "hideUserExplorer"
-                    }
-                }
-                """)
-                expect(result).to(beNil())
-                expect(mock.hideUserExplorerRef.invokations().count) == 1
-            }
         }
     }
 }

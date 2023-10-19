@@ -79,8 +79,6 @@ extension HackleBridge {
             returnValue = remoteConfig(app: app, parameters: parameters)
         case "showUserExplorer":
             app.showUserExplorer()
-        case "hideUserExplorer":
-            app.hideUserExplorer()
         default:
             returnValue = nil
         }
