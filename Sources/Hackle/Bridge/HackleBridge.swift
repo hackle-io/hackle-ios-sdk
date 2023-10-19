@@ -130,8 +130,27 @@ fileprivate extension HackleBridge {
                 continue
             }
             
-            for (key, value) in properties {
-                builder.add(operation: operation, key: key, value: value)
+            switch operation {
+            case PropertyOperation.set:
+                properties.forEach{ key, value in builder.set(key, value) }
+            case PropertyOperation.setOnce:
+                properties.forEach{ key, value in builder.setOnce(key, value) }
+            case PropertyOperation.unset:
+                properties.forEach{ key, value in builder.unset(key) }
+            case PropertyOperation.increment:
+                properties.forEach{ key, value in builder.increment(key, value) }
+            case PropertyOperation.append:
+                properties.forEach{ key, value in builder.append(key, value) }
+            case .appendOnce:
+                properties.forEach{ key, value in builder.appendOnce(key, value) }
+            case .prepend:
+                properties.forEach{ key, value in builder.prepend(key, value) }
+            case .prependOnce:
+                properties.forEach{ key, value in builder.prependOnce(key, value) }
+            case .remove:
+                properties.forEach{ key, value in builder.remove(key, value) }
+            case .clearAll:
+                properties.forEach{ key, value in builder.clearAll() }
             }
         }
         app.updateUserProperties(operations: builder.build())

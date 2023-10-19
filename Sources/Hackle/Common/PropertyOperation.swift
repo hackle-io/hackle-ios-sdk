@@ -130,7 +130,7 @@ enum PropertyOperation: String {
         return self
     }
 
-    internal func add(operation: PropertyOperation, key: String, value: Any?) {
+    private func add(operation: PropertyOperation, key: String, value: Any?) {
         if containsKey(key) {
             Log.debug("Property already added. Ignore the operation. [operation=\(operation), key=\(key), value=\(value.orNil)]")
             return
