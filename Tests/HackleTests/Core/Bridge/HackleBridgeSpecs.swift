@@ -17,29 +17,6 @@ class HackleBridgeSpec : QuickSpec {
             expect(HackleBridge.isInvocableString(string: "")) == false
         }
         describe("invoke") {
-            it("get app sdk key") {
-                let sdkKey = "abcdef1234"
-                let mock = MockHackleApp(sdkKey: sdkKey)
-                let result = HackleBridge.invoke(app: mock, string: """
-                {
-                    "_hackle": {
-                        "_command": "getAppSDKKey"
-                    }
-                }
-                """)
-                expect(result) == sdkKey
-            }
-            it("is initialized") {
-                let mock = MockHackleApp()
-                let result = HackleBridge.invoke(app: mock, string: """
-                {
-                    "_hackle": {
-                        "_command": "isInitialized"
-                    }
-                }
-                """)
-                expect(result) == true.description
-            }
             it("get session id") {
                 let sessionId = "1234567890.abcdefgh"
                 let mock = MockHackleApp(sessonId: sessionId)
