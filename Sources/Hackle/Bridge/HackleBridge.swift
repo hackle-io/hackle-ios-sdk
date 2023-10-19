@@ -49,10 +49,6 @@ extension HackleBridge {
     static func invoke(app: HackleAppProtocol, command: String, parameters: [String: Any]) -> String? {
         var returnValue: String?
         switch command {
-        case "getAppSDKKey":
-            returnValue = app.sdk.key
-        case "isInitialized":
-            returnValue = true.description
         case "getSessionId":
             returnValue = app.sessionId
         case "getUser":
