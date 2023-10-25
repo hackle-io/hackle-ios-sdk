@@ -333,12 +333,12 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["data"] as? String) == "A"
                     }
                 }
-                context("with user id") {
+                context("with user string") {
                     it("happy case") {
                         let parameters = [
                             "experimentKey": 123,
                             "defaultVariation": "D",
-                            "userId": "abcd1234"
+                            "user": "abcd1234"
                         ] as [String : Any]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -361,7 +361,7 @@ class HackleBridgeSpec : QuickSpec {
                     it("expect 'A' default variation parameter") {
                         let parameters = [
                             "experimentKey": 123,
-                            "userId": "abcd1234"
+                            "user": "abcd1234"
                         ] as [String : Any]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -382,7 +382,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["data"] as? String) == "A"
                     }
                 }
-                context("with user") {
+                context("with user object") {
                     it("happy case") {
                         let parameters = [
                             "experimentKey": 123,
@@ -510,12 +510,12 @@ class HackleBridgeSpec : QuickSpec {
                         expect(config["parameters"]).toNot(beNil())
                     }
                 }
-                context("with user id") {
+                context("with user string") {
                     it("happy case") {
                         let parameters = [
                             "experimentKey": 123,
                             "defaultVariation": "D",
-                            "userId": "abcd1234"
+                            "user": "abcd1234"
                         ] as [String : Any]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -547,7 +547,7 @@ class HackleBridgeSpec : QuickSpec {
                     it("expect 'A' default variation parameter") {
                         let parameters = [
                             "experimentKey": 123,
-                            "userId": "abcd1234"
+                            "user": "abcd1234"
                         ] as [String : Any]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -577,7 +577,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(config["parameters"]).toNot(beNil())
                     }
                 }
-                context("with user") {
+                context("with user object") {
                     it("happy case") {
                         let parameters = [
                             "experimentKey": 123,
@@ -681,10 +681,10 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
                 }
-                it("with user id case") {
+                it("with user string case") {
                     let parameters = [
                         "featureKey": 123,
-                        "userId": "abcd1234"
+                        "user": "abcd1234"
                     ] as [String : Any]
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
@@ -703,7 +703,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
                 }
-                it("with user case") {
+                it("with user object case") {
                     let parameters = [
                         "featureKey": 123,
                         "user": ["id": "foo"]
@@ -771,10 +771,10 @@ class HackleBridgeSpec : QuickSpec {
                     let config = data["config"] as! [String: Any]
                     expect(config["parameters"]).toNot(beNil())
                 }
-                it("with user id case") {
+                it("with user string case") {
                     let parameters = [
                         "featureKey": 123,
-                        "userId": "abcd1234"
+                        "user": "abcd1234"
                     ] as [String : Any]
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
@@ -870,10 +870,10 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
                     }
-                    it("with user id") {
+                    it("with user string") {
                         let parameters = [
                             "event": "abcd1234",
-                            "userId": "foo"
+                            "user": "foo"
                         ]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -891,7 +891,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
                     }
-                    it("with user") {
+                    it("with user object") {
                         let parameters = [
                             "event": "abcd1234",
                             "user": ["id": "foo"]
@@ -953,7 +953,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
                     }
-                    it("with user id") {
+                    it("with user string") {
                         let parameters = [
                             "event": [
                                 "key": "foo",
@@ -966,7 +966,7 @@ class HackleBridgeSpec : QuickSpec {
                                     "map": ["key": "value"]
                                 ] as [String : Any?]
                             ] as [String : Any],
-                            "userId": "abcd1234"
+                            "user": "abcd1234"
                         ] as [String : Any]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -994,7 +994,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
                     }
-                    it("with user") {
+                    it("with user object") {
                         let parameters = [
                             "event": [
                                 "key": "foo",
@@ -1055,10 +1055,9 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
             }
-            
             describe("remote config") {
-                context("number type") {
-                    it("happy case") {
+                context("normal") {
+                    it("number case") {
                         let parameters = [
                             "key": "number",
                             "valueType": "number",
@@ -1071,12 +1070,14 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
+                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "1234.5678"
                     }
-                    it("default value return case") {
+                    it("number default value return case") {
                         let parameters = [
                             "key": "number",
                             "valueType": "number",
@@ -1088,14 +1089,14 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
+                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "0.0"
                     }
-                }
-                context("boolean type") {
-                    it("happy case") {
+                    it("boolean case") {
                         let parameters = [
                             "key": "bool",
                             "valueType": "boolean",
@@ -1108,12 +1109,14 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
+                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "true"
                     }
-                    it("default value return case") {
+                    it("boolean default value return case") {
                         let parameters = [
                             "key": "bool",
                             "valueType": "boolean",
@@ -1125,14 +1128,14 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
+                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "true"
                     }
-                }
-                context("string type") {
-                    it("happy case") {
+                    it("string case") {
                         let parameters = [
                             "key": "string",
                             "valueType": "string",
@@ -1145,12 +1148,14 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
+                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "abcd1234"
                     }
-                    it("default value return case") {
+                    it("string default value return case") {
                         let parameters = [
                             "key": "string",
                             "valueType": "string",
@@ -1162,10 +1167,286 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
+                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "default"
+                    }
+                    context("with user string") {
+                        it("number case") {
+                            let parameters = [
+                                "key": "number",
+                                "valueType": "number",
+                                "defaultValue": 0,
+                                "user": "abcd1234"
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            remoteConfig.config["number"] = 1234.5678
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.userId) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "1234.5678"
+                        }
+                        it("number default value return case") {
+                            let parameters = [
+                                "key": "number",
+                                "valueType": "number",
+                                "defaultValue": 0,
+                                "user": "abcd1234"
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.userId) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "0.0"
+                        }
+                        it("boolean case") {
+                            let parameters = [
+                                "key": "bool",
+                                "valueType": "boolean",
+                                "defaultValue": false,
+                                "user": "abcd1234"
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            remoteConfig.config["bool"] = true
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.userId) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "true"
+                        }
+                        it("boolean default value return case") {
+                            let parameters = [
+                                "key": "bool",
+                                "valueType": "boolean",
+                                "defaultValue": true,
+                                "user": "abcd1234"
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.userId) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "true"
+                        }
+                        it("string case") {
+                            let parameters = [
+                                "key": "string",
+                                "valueType": "string",
+                                "defaultValue": "default",
+                                "user": "abcd1234"
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            remoteConfig.config["string"] = "abcd1234"
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.userId) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "abcd1234"
+                        }
+                        it("string default value return case") {
+                            let parameters = [
+                                "key": "string",
+                                "valueType": "string",
+                                "defaultValue": "default",
+                                "user": "abcd1234"
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.userId) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "default"
+                        }
+                    }
+                    context("with user object") {
+                        it("number case") {
+                            let parameters = [
+                                "key": "number",
+                                "valueType": "number",
+                                "defaultValue": 0,
+                                "user": ["id": "abcd1234"]
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            remoteConfig.config["number"] = 1234.5678
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.id) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "1234.5678"
+                        }
+                        it("number default value return case") {
+                            let parameters = [
+                                "key": "number",
+                                "valueType": "number",
+                                "defaultValue": 0,
+                                "user": ["id": "abcd1234"]
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.id) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "0.0"
+                        }
+                        it("boolean case") {
+                            let parameters = [
+                                "key": "bool",
+                                "valueType": "boolean",
+                                "defaultValue": false,
+                                "user": ["id": "abcd1234"]
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            remoteConfig.config["bool"] = true
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.id) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "true"
+                        }
+                        it("boolean default value return case") {
+                            let parameters = [
+                                "key": "bool",
+                                "valueType": "boolean",
+                                "defaultValue": true,
+                                "user": ["id": "abcd1234"]
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.id) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "true"
+                        }
+                        it("string case") {
+                            let parameters = [
+                                "key": "string",
+                                "valueType": "string",
+                                "defaultValue": "default",
+                                "user": ["id": "abcd1234"]
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            remoteConfig.config["string"] = "abcd1234"
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.id) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "abcd1234"
+                        }
+                        it("string default value return case") {
+                            let parameters = [
+                                "key": "string",
+                                "valueType": "string",
+                                "defaultValue": "default",
+                                "user": ["id": "abcd1234"]
+                            ] as [String : Any]
+                            let remoteConfig = MockRemoteConfig()
+                            let mock = MockHackleApp(remoteConfig: remoteConfig)
+                            let bridge = HackleBridge(app: mock)
+                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let result = bridge.invoke(string: jsonString)
+                            
+                            expect(mock.remoteConfigWithUserRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithUserRef.firstInvokation().arguments
+                            expect(arguments.id) == "abcd1234"
+                            
+                            let dict = result.jsonObject()!
+                            expect(dict["success"] as? Bool) == true
+                            expect(dict["message"] as? String) == "OK"
+                            expect(dict["data"] as? String) == "default"
+                        }
                     }
                 }
                 it("invalid parameters case") {
@@ -1174,6 +1455,8 @@ class HackleBridgeSpec : QuickSpec {
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "remoteConfig", parameters: [:])
                     let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.remoteConfigWithUserRef.invokations().count) == 0
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == false

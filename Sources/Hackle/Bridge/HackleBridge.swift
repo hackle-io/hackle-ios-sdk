@@ -116,7 +116,7 @@ fileprivate extension HackleBridge {
         app.setUserProperty(key: key, value: value)
     }
     
-    func updateUserProperties(parameters: [String: Any]) throws {
+    private func updateUserProperties(parameters: [String: Any]) throws {
         guard let data = parameters["operations"] as? [String: [String: Any]] else {
             throw HackleError.error("Valid 'operations' parameter must be provided.")
         }
@@ -129,7 +129,7 @@ fileprivate extension HackleBridge {
             throw HackleError.error("Valid 'experimentKey' parameter must be provided.")
         }
         let defaultVariation = parameters["defaultVariation"] as? String ?? "A"
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             let result = app.variation(
                 experimentKey: experimentKey,
                 userId: userId,
@@ -137,16 +137,14 @@ fileprivate extension HackleBridge {
             )
             return result
         }
-        if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                if let user = User.deserialize(data: data) {
-                    let result = app.variation(
-                        experimentKey: experimentKey,
-                        user: user,
-                        defaultVariation: defaultVariation
-                    )
-                    return result
-                }
+        if let data = parameters["user"] as? [String: Any] {
+            if let user = User.deserialize(data: data) {
+                let result = app.variation(
+                    experimentKey: experimentKey,
+                    user: user,
+                    defaultVariation: defaultVariation
+                )
+                return result
             }
         }
         return app.variation(experimentKey: experimentKey, defaultVariation: defaultVariation)
@@ -157,7 +155,7 @@ fileprivate extension HackleBridge {
             throw HackleError.error("Valid 'experimentKey' parameter must be provided.")
         }
         let defaultVariation = parameters["defaultVariation"] as? String ?? "A"
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             let decision = app.variationDetail(
                 experimentKey: experimentKey,
                 userId: userId,
@@ -165,16 +163,14 @@ fileprivate extension HackleBridge {
             )
             return decision.asDictionary()
         }
-        if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                if let user = User.deserialize(data: data) {
-                    let decision = app.variationDetail(
-                        experimentKey: experimentKey,
-                        user: user,
-                        defaultVariation: defaultVariation
-                    )
-                    return decision.asDictionary()
-                }
+        if let data = parameters["user"] as? [String: Any] {
+            if let user = User.deserialize(data: data) {
+                let decision = app.variationDetail(
+                    experimentKey: experimentKey,
+                    user: user,
+                    defaultVariation: defaultVariation
+                )
+                return decision.asDictionary()
             }
         }
         let decision = app.variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation)
@@ -185,16 +181,14 @@ fileprivate extension HackleBridge {
         guard let featureKey = parameters["featureKey"] as? Int else {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             let result = app.isFeatureOn(featureKey: featureKey, userId: userId)
             return result
         }
-        if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                if let user = User.deserialize(data: data) {
-                    let result = app.isFeatureOn(featureKey: featureKey, user: user)
-                    return result
-                }
+        if let data = parameters["user"] as? [String: Any] {
+            if let user = User.deserialize(data: data) {
+                let result = app.isFeatureOn(featureKey: featureKey, user: user)
+                return result
             }
         }
         let result = app.isFeatureOn(featureKey: featureKey)
@@ -205,16 +199,14 @@ fileprivate extension HackleBridge {
         guard let featureKey = parameters["featureKey"] as? Int else {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             let decision = app.featureFlagDetail(featureKey: featureKey, userId: userId)
             return decision.asDictionary()
         }
-        if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                if let user = User.deserialize(data: data) {
-                    let decision = app.featureFlagDetail(featureKey: featureKey, user: user)
-                    return decision.asDictionary()
-                }
+        if let data = parameters["user"] as? [String: Any] {
+            if let user = User.deserialize(data: data) {
+                let decision = app.featureFlagDetail(featureKey: featureKey, user: user)
+                return decision.asDictionary()
             }
         }
         let decision = app.featureFlagDetail(featureKey: featureKey)
@@ -235,32 +227,28 @@ fileprivate extension HackleBridge {
     }
     
     private func track(eventKey: String, parameters: [String: Any]) {
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             app.track(eventKey: eventKey, userId: userId)
             return
         }
-        if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                if let user = User.deserialize(data: data) {
-                    app.track(eventKey: eventKey, user: user)
-                    return
-                }
+        if let data = parameters["user"] as? [String: Any] {
+            if let user = User.deserialize(data: data) {
+                app.track(eventKey: eventKey, user: user)
+                return
             }
         }
         app.track(eventKey: eventKey)
     }
     
     private func track(event: Event, parameters: [String: Any]) {
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             app.track(event: event, userId: userId)
             return
         }
-        if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                if let user = User.deserialize(data: data) {
-                    app.track(event: event, user: user)
-                    return
-                }
+        if let data = parameters["user"] as? [String: Any] {
+            if let user = User.deserialize(data: data) {
+                app.track(event: event, user: user)
+                return
             }
         }
         app.track(event: event)
@@ -268,14 +256,12 @@ fileprivate extension HackleBridge {
     
     private func remoteConfig(parameters: [String: Any]) throws -> String? {
         var user: User? = nil
-        if let userId = parameters["userId"] as? String {
+        if let userId = parameters["user"] as? String {
             user = User.builder()
                 .userId(userId)
                 .build()
-        } else if parameters.keys.contains("user") {
-            if let data = parameters["user"] as? [String: Any] {
-                user = User.deserialize(data: data)
-            }
+        } else if let data = parameters["user"] as? [String: Any] {
+            user = User.deserialize(data: data)
         }
         
         let config: HackleRemoteConfig
