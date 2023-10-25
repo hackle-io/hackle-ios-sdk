@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import WebKit
 
 /// Entry point of Hackle Sdk.
 @objc public final class HackleApp: NSObject, HackleAppProtocol {
@@ -184,6 +185,10 @@ import Foundation
 
     @objc public func remoteConfig() -> HackleRemoteConfig {
         DefaultRemoteConfig(user: nil, app: core, userManager: userManager, userResolver: hackleUserResolver)
+    }
+    
+    @objc public func prepareForHackleWebBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
+        webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")

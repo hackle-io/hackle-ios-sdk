@@ -4,15 +4,15 @@ import WebKit
 private let identifier = "/* Hackle App JavaScript Controller */"
 private let name = "_hackleApp"
 
-@objc public extension WKWebView {
-    
-    private struct AssociatedKeys {
-        static var _uiDelegate: UInt8 = 0
-    }
+extension WKWebView {
     
     private enum ReservedKey: String {
         case getAppSdkKey = "getAppSdkKey"
         case getInvocationType = "getInvocationType"
+    }
+    
+    private struct AssociatedKeys {
+        static var _uiDelegate: UInt8 = 0
     }
     
     private var _uiDelegate: HackleUIDelegate? {
@@ -50,7 +50,7 @@ private let name = "_hackleApp"
         )
     }
     
-    func prepareForHackleWebBridge(_ app: HackleApp, _ uiDelegate: WKUIDelegate? = nil) {
+    func prepareForHackleWebBridge(app: HackleApp, uiDelegate: WKUIDelegate? = nil) {
         let userContentController = configuration.userContentController
         let userScripts = userContentController.userScripts.filter {
             !$0.source.hasPrefix(identifier)
@@ -59,10 +59,8 @@ private let name = "_hackleApp"
         userContentController.addUserScript(bridgeScript())
         userScripts.forEach { userContentController.addUserScript($0) }
         
-        let uiDelegate = self.uiDelegate ?? uiDelegate
-        if _uiDelegate == nil {
-            _uiDelegate = HackleUIDelegate(app: app, uiDelegate: uiDelegate)
-        }
+        let uiDelegate = uiDelegate ?? self.uiDelegate
+        _uiDelegate = HackleUIDelegate(app: app, uiDelegate: uiDelegate)
         self.uiDelegate = _uiDelegate
     }
 }

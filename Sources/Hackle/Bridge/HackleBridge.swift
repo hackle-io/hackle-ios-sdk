@@ -39,7 +39,7 @@ extension HackleBridge {
         case .getSessionId:
             return .success(app.sessionId)
         case .getUser:
-            return .success(app.user.asDictionary())
+            return .success(app.user.toDto())
         case .setUser:
             try setUser(parameters: parameters)
             return .success()
@@ -89,7 +89,7 @@ fileprivate extension HackleBridge {
         guard let data = parameters["user"] as? [String: Any] else {
             throw HackleError.error("Valid 'user' parameter must be provided.")
         }
-        if let user = User.deserialize(data: data) {
+        if let user = User.from(dto: data) {
             app.setUser(user: user)
         }
     }
@@ -138,7 +138,7 @@ fileprivate extension HackleBridge {
             return result
         }
         if let data = parameters["user"] as? [String: Any] {
-            if let user = User.deserialize(data: data) {
+            if let user = User.from(dto: data) {
                 let result = app.variation(
                     experimentKey: experimentKey,
                     user: user,
@@ -150,7 +150,7 @@ fileprivate extension HackleBridge {
         return app.variation(experimentKey: experimentKey, defaultVariation: defaultVariation)
     }
     
-    private func variationDetail(parameters: [String: Any]) throws -> [String: Any] {
+    private func variationDetail(parameters: [String: Any]) throws -> DecisionDto {
         guard let experimentKey = parameters["experimentKey"] as? Int else {
             throw HackleError.error("Valid 'experimentKey' parameter must be provided.")
         }
@@ -161,20 +161,20 @@ fileprivate extension HackleBridge {
                 userId: userId,
                 defaultVariation: defaultVariation
             )
-            return decision.asDictionary()
+            return decision.toDto()
         }
         if let data = parameters["user"] as? [String: Any] {
-            if let user = User.deserialize(data: data) {
+            if let user = User.from(dto: data) {
                 let decision = app.variationDetail(
                     experimentKey: experimentKey,
                     user: user,
                     defaultVariation: defaultVariation
                 )
-                return decision.asDictionary()
+                return decision.toDto()
             }
         }
         let decision = app.variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation)
-        return decision.asDictionary()
+        return decision.toDto()
     }
     
     private func isFeatureOn(parameters: [String: Any]) throws -> Bool {
@@ -186,7 +186,7 @@ fileprivate extension HackleBridge {
             return result
         }
         if let data = parameters["user"] as? [String: Any] {
-            if let user = User.deserialize(data: data) {
+            if let user = User.from(dto: data) {
                 let result = app.isFeatureOn(featureKey: featureKey, user: user)
                 return result
             }
@@ -195,29 +195,29 @@ fileprivate extension HackleBridge {
         return result
     }
     
-    private func featureFlagDetail(parameters: [String: Any]) throws -> [String: Any] {
+    private func featureFlagDetail(parameters: [String: Any]) throws -> FeatureFlagDecisionDto {
         guard let featureKey = parameters["featureKey"] as? Int else {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
         if let userId = parameters["user"] as? String {
             let decision = app.featureFlagDetail(featureKey: featureKey, userId: userId)
-            return decision.asDictionary()
+            return decision.toDto()
         }
         if let data = parameters["user"] as? [String: Any] {
-            if let user = User.deserialize(data: data) {
+            if let user = User.from(dto: data) {
                 let decision = app.featureFlagDetail(featureKey: featureKey, user: user)
-                return decision.asDictionary()
+                return decision.toDto()
             }
         }
         let decision = app.featureFlagDetail(featureKey: featureKey)
-        return decision.asDictionary()
+        return decision.toDto()
     }
     
     private func track(parameters: [String: Any]) throws {
         if let eventKey = parameters["event"] as? String {
             track(eventKey: eventKey, parameters: parameters)
         } else if let data = parameters["event"] as? [String: Any] {
-            guard let event = Event.deserialize(data: data) else {
+            guard let event = Event.from(dto: data) else {
                 throw HackleError.error("Valid 'event' parameter must be provided.")
             }
             track(event: event, parameters: parameters)
@@ -232,7 +232,7 @@ fileprivate extension HackleBridge {
             return
         }
         if let data = parameters["user"] as? [String: Any] {
-            if let user = User.deserialize(data: data) {
+            if let user = User.from(dto: data) {
                 app.track(eventKey: eventKey, user: user)
                 return
             }
@@ -246,7 +246,7 @@ fileprivate extension HackleBridge {
             return
         }
         if let data = parameters["user"] as? [String: Any] {
-            if let user = User.deserialize(data: data) {
+            if let user = User.from(dto: data) {
                 app.track(event: event, user: user)
                 return
             }
@@ -261,7 +261,7 @@ fileprivate extension HackleBridge {
                 .userId(userId)
                 .build()
         } else if let data = parameters["user"] as? [String: Any] {
-            user = User.deserialize(data: data)
+            user = User.from(dto: data)
         }
         
         let config: HackleRemoteConfig
@@ -302,6 +302,85 @@ fileprivate extension HackleBridge {
     }
 }
 
+fileprivate typealias UserDto = [String: Any]
+fileprivate typealias EventDto = [String: Any]
+fileprivate typealias DecisionDto = [String: Any]
+fileprivate typealias FeatureFlagDecisionDto = [String: Any]
+
+fileprivate extension User {
+    
+    func toDto() -> UserDto {
+        let dictionary: [String: Any?] = [
+            "id": id,
+            "userId": userId,
+            "deviceId": deviceId,
+            "identifiers": identifiers,
+            "properties": properties
+        ]
+        let sanitized = dictionary.compactMapValues { $0 }
+        return sanitized
+    }
+    
+    static func from(dto: UserDto) -> User? {
+        let builder = User.builder()
+        if let id = dto["id"] as? String {
+            builder.id(id)
+        }
+        if let userId = dto["userId"] as? String {
+            builder.userId(userId)
+        }
+        if let deviceId = dto["deviceId"] as? String {
+            builder.deviceId(deviceId)
+        }
+        if let identifiers = dto["identifiers"] as? [String: String] {
+            builder.identifiers(identifiers)
+        }
+        if let properties = dto["properties"] as? [String: Any] {
+            builder.properties(properties)
+        }
+        return builder.build()
+    }
+}
+
+fileprivate extension Event {
+    
+    static func from(dto: EventDto) -> Event? {
+        guard let key = dto["key"] as? String else {
+            return nil
+        }
+        let builder = Event.builder(key)
+        if let value = dto["value"] as? Double {
+            builder.value(value)
+        }
+        if let properties = dto["properties"] as? [String: Any] {
+            builder.properties(properties)
+        }
+        return builder.build()
+    }
+}
+
+fileprivate extension Decision {
+    
+    func toDto() -> DecisionDto {
+        var dictionary: [String: Any] = [:]
+        dictionary["variation"] = variation
+        dictionary["reason"] = reason
+        dictionary["config"] = ["parameters": parameters]
+        return dictionary.compactMapValues { $0 }
+    }
+}
+
+fileprivate extension FeatureFlagDecision {
+    
+    func toDto() -> FeatureFlagDecisionDto {
+        var dictionary: [String: Any] = [:]
+        dictionary["isOn"] = isOn
+        dictionary["reason"] = reason
+        dictionary["config"] = ["parameters": parameters]
+        return dictionary.compactMapValues { $0 }
+    }
+}
+
 fileprivate extension PropertyOperations {
     
     static func deserialize(data: [String: [String: Any]]) -> PropertyOperations {
@@ -333,80 +412,6 @@ fileprivate extension PropertyOperations {
             case .clearAll:
                 properties.forEach{ key, value in builder.clearAll() }
             }
-        }
-        return builder.build()
-    }
-}
-
-fileprivate extension Decision {
-    
-    func asDictionary() -> [String: Any] {
-        var dictionary: [String: Any] = [:]
-        dictionary["variation"] = variation
-        dictionary["reason"] = reason
-        dictionary["config"] = ["parameters": parameters]
-        return dictionary.compactMapValues { $0 }
-    }
-}
-
-fileprivate extension FeatureFlagDecision {
-    
-    func asDictionary() -> [String: Any] {
-        var dictionary: [String: Any] = [:]
-        dictionary["isOn"] = isOn
-        dictionary["reason"] = reason
-        dictionary["config"] = ["parameters": parameters]
-        return dictionary.compactMapValues { $0 }
-    }
-}
-
-fileprivate extension Event {
-    
-    static func deserialize(data: [String: Any]) -> Event? {
-        guard let key = data["key"] as? String else {
-            return nil
-        }
-        let builder = Event.builder(key)
-        if let value = data["value"] as? Double {
-            builder.value(value)
-        }
-        if let properties = data["properties"] as? [String: Any] {
-            builder.properties(properties)
-        }
-        return builder.build()
-    }
-}
-
-fileprivate extension User {
-    
-    func asDictionary() -> [String: Any] {
-        let dictionary: [String: Any?] = [
-            "id": id,
-            "userId": userId,
-            "deviceId": deviceId,
-            "identifiers": identifiers,
-            "properties": properties
-        ]
-        let sanitized = dictionary.compactMapValues { $0 }
-        return sanitized
-    }
-    
-    static func deserialize(data: [String: Any]) -> User? {
-        let builder = User.builder()
-        if let id = data["id"] as? String {
-            builder.id(id)
-        }
-        if let userId = data["userId"] as? String {
-            builder.userId(userId)
-        }
-        if let deviceId = data["deviceId"] as? String {
-            builder.deviceId(deviceId)
-        }
-        if let identifiers = data["identifiers"] as? [String: String] {
-            builder.identifiers(identifiers)
-        }
-        if let properties = data["properties"] as? [String: Any] {
-            builder.properties(properties)
         }
         return builder.build()
     }
