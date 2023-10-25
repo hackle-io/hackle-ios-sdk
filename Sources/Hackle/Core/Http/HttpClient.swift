@@ -15,7 +15,10 @@ class DefaultHttpClient: HttpClient {
 
     init(sdk: Sdk) {
         self.sdk = sdk
-        self.session = URLSession(configuration: URLSessionConfiguration.default)
+        let configuration = URLSessionConfiguration.default
+        configuration.requestCachePolicy = .reloadIgnoringCacheData
+        configuration.urlCache = nil
+        self.session = URLSession(configuration: configuration)
     }
 
     func execute(request: HttpRequest, completion: @escaping (HttpResponse) -> Void) {
