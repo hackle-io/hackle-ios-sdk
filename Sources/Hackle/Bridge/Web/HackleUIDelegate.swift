@@ -3,9 +3,11 @@ import WebKit
 
 class HackleUIDelegate: NSObject, WKUIDelegate {
     
+    private let bridge: HackleBridge
     private let uiDelegate: WKUIDelegate?
     
-    init(uiDelegate: WKUIDelegate? = nil) {
+    init(app: HackleApp, uiDelegate: WKUIDelegate? = nil) {
+        self.bridge = HackleBridge(app: app)
         self.uiDelegate = uiDelegate
     }
     
@@ -16,9 +18,9 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: @escaping (String?) -> Void
     ) {
-        let processable = Hackle.app()?.isInvocableString(string: prompt) ?? false
+        let processable = bridge.isInvocableString(string: prompt)
         if (processable) {
-            Hackle.app()?.invoke(string: prompt, completionHandler: completionHandler)
+            bridge.invoke(string: prompt, completionHandler: completionHandler)
         } else {
             uiDelegate?.webView?(
                 webView,

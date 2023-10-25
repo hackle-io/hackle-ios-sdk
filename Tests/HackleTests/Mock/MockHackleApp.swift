@@ -24,8 +24,9 @@ class MockHackleApp : Mock, HackleAppProtocol {
         self._remoteConfig = remoteConfig
     }
     
+    lazy var setDeviceIdRef = MockFunction(self, setDeviceId)
     func setDeviceId(deviceId: String) {
-        self.deviceId = deviceId
+        call(setDeviceIdRef, args: deviceId)
     }
 
     lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
@@ -65,73 +66,61 @@ class MockHackleApp : Mock, HackleAppProtocol {
 
     lazy var variationRef = MockFunction(self, variation as (Int, String) -> String)
     func variation(experimentKey: Int, defaultVariation: String) -> String {
-        registerResult(for: variationRef) { _ in defaultVariation }
         return call(variationRef, args: (experimentKey, defaultVariation))
     }
     
     lazy var variationWithUserIdRef = MockFunction(self, variation as (Int, String, String) -> String)
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String {
-        registerResult(for: variationWithUserIdRef) { _ in defaultVariation }
         return call(variationWithUserIdRef, args: (experimentKey, userId, defaultVariation))
     }
     
     lazy var variationWithUserRef = MockFunction(self, variation as (Int, User, String) -> String)
     func variation(experimentKey: Int, user: User, defaultVariation: String) -> String {
-        registerResult(for: variationWithUserRef) { _ in defaultVariation }
         return call(variationWithUserRef, args: (experimentKey, user, defaultVariation))
     }
     
     lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, String) -> Decision)
     func variationDetail(experimentKey: Int, defaultVariation: String) -> Decision {
-        registerResult(for: variationDetailRef) { _ in Decision.of(experiment: nil, variation: defaultVariation, reason: "") }
         return call(variationDetailRef, args: (experimentKey, defaultVariation))
     }
     
     lazy var variationDetailWithUserIdRef = MockFunction(self, variationDetail as (Int, String, String) -> Decision)
     func variationDetail(experimentKey: Int, userId: String, defaultVariation: String) -> Decision {
-        registerResult(for: variationDetailWithUserIdRef) { _ in Decision.of(experiment: nil, variation: defaultVariation, reason: "") }
         return call(variationDetailWithUserIdRef, args: (experimentKey, userId, defaultVariation))
     }
 
     lazy var variationDetailWithUserRef = MockFunction(self, variationDetail as (Int, User, String) -> Decision)
     func variationDetail(experimentKey: Int, user: User, defaultVariation: String) -> Decision {
-        registerResult(for: variationDetailWithUserRef) { _ in Decision.of(experiment: nil, variation: defaultVariation, reason: "") }
         return call(variationDetailWithUserRef, args: (experimentKey, user, defaultVariation))
     }
 
     lazy var isFeatureOnRef = MockFunction(self, isFeatureOn as (Int) -> Bool)
     func isFeatureOn(featureKey: Int) -> Bool {
-        registerResult(for: isFeatureOnRef) { _ in false }
         return call(isFeatureOnRef, args: (featureKey))
     }
     
     lazy var isFeatureOnWithUserIdRef = MockFunction(self, isFeatureOn as (Int, String) -> Bool)
     func isFeatureOn(featureKey: Int, userId: String) -> Bool {
-        registerResult(for: isFeatureOnWithUserIdRef) { _ in false }
         return call(isFeatureOnWithUserIdRef, args: (featureKey, userId))
     }
 
     lazy var isFeatureOnWithUserRef = MockFunction(self, isFeatureOn as (Int, User) -> Bool)
     func isFeatureOn(featureKey: Int, user: User) -> Bool {
-        registerResult(for: isFeatureOnWithUserRef) { _ in false }
         return call(isFeatureOnWithUserRef, args: (featureKey, user))
     }
 
     lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int) -> FeatureFlagDecision)
     func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
-        registerResult(for: featureFlagDetailRef) { _ in FeatureFlagDecision.off(featureFlag: nil, reason: "") }
         return call(featureFlagDetailRef, args: (featureKey))
     }
     
     lazy var featureFlagDetailWithUserIdRef = MockFunction(self, featureFlagDetail as (Int, String) -> FeatureFlagDecision)
     func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision {
-        registerResult(for: featureFlagDetailWithUserIdRef) { _ in FeatureFlagDecision.off(featureFlag: nil, reason: "") }
         return call(featureFlagDetailWithUserIdRef, args: (featureKey, userId))
     }
 
     lazy var featureFlagDetailWithUserRef = MockFunction(self, featureFlagDetail as (Int, User) -> FeatureFlagDecision)
     func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
-        registerResult(for: featureFlagDetailWithUserRef) { _ in FeatureFlagDecision.off(featureFlag: nil, reason: "") }
         return call(featureFlagDetailWithUserRef, args: (featureKey, user))
     }
 
@@ -182,14 +171,6 @@ class MockHackleApp : Mock, HackleAppProtocol {
     }
 
     func allVariationDetails(user: User) -> [Int : Decision] {
-        fatalError("NOT IMPLEMENTED")
-    }
-    
-    func isInvocableString(string: String) -> Bool {
-        fatalError("NOT IMPLEMENTED")
-    }
-    
-    func invoke(string: String, completionHandler: (String?) -> Void) {
         fatalError("NOT IMPLEMENTED")
     }
 }

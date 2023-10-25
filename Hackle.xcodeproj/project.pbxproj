@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */; };
+		7E0E2D922AE75FCD00578C74 /* BridgeInvocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */; };
+		7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */; };
 		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
 		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
@@ -406,6 +408,8 @@
 
 /* Begin PBXFileReference section */
 		7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleWebBridge.swift; sourceTree = "<group>"; };
+		7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeInvocation.swift; sourceTree = "<group>"; };
+		7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeResponse.swift; sourceTree = "<group>"; };
 		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
 		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
@@ -829,6 +833,15 @@
 			path = Bridge;
 			sourceTree = "<group>";
 		};
+		7E0E2D902AE75F1C00578C74 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */,
+				7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		7E3F4FBF2AA6FBF2004E0EB0 /* Platform */ = {
 			isa = PBXGroup;
 			children = (
@@ -859,6 +872,7 @@
 		7E825C7E2ABD56D20003F0B7 /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
+				7E0E2D902AE75F1C00578C74 /* Model */,
 				7E0E2D7E2AD8D8D100578C74 /* Web */,
 				7E65EB7D2ACE503E00900097 /* HackleBridge.swift */,
 			);
@@ -2139,6 +2153,7 @@
 				EE80DF882A2831E300FB12CC /* InAppMessageEvaluator.swift in Sources */,
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,
 				EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */,
+				7E0E2D922AE75FCD00578C74 /* BridgeInvocation.swift in Sources */,
 				EE0F34182A681207009DE640 /* InAppMessageEventMatcher.swift in Sources */,
 				EE29D98F29CD825400B1FEAA /* Evaluator.swift in Sources */,
 				EE29D9AA29CD825500B1FEAA /* SessionEventTracker.swift in Sources */,
@@ -2212,6 +2227,7 @@
 				EE29D99629CD825400B1FEAA /* ExperimentTargetDeterminer.swift in Sources */,
 				EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */,
 				EE80E0282A2E10F700FB12CC /* InAppMessageUIViewController.swift in Sources */,
+				7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */,
 				EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */,
 				EE80DF8E2A28341C00FB12CC /* InAppMessageResolver.swift in Sources */,
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,

@@ -6,82 +6,93 @@ import Mockery
 
 class HackleBridgeSpec : QuickSpec {
     
+    func createJsonString(command: String, parameters: [String: Any]? = nil) -> String {
+        return [
+            "_hackle": [
+                "command": command,
+                "parameters": parameters ?? nil
+            ] as [String : Any?]
+        ].toJson() ?? ""
+    }
+    
     override func spec() {
         it("is invocable string") {
-            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{\"_command\":\"foo\"}}")) == true
-            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{\"_command\":\"\"}}")) == false
-            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":\"\"}}")) == false
-            expect(HackleBridge.isInvocableString(string: "{\"_hackle\":{}}}")) == false
-            expect(HackleBridge.isInvocableString(string: "{\"something\":{\"_command\":\"\"}}")) == false
-            expect(HackleBridge.isInvocableString(string: "{")) == false
-            expect(HackleBridge.isInvocableString(string: "")) == false
+            let mock = MockHackleApp()
+            let bridge = HackleBridge(app: mock)
+            expect(bridge.isInvocableString(string: "{\"_hackle\":{\"command\":\"foo\"}}")) == true
+            expect(bridge.isInvocableString(string: "{\"_hackle\":{\"command\":\"\"}}")) == false
+            expect(bridge.isInvocableString(string: "{\"_hackle\":\"\"}}")) == false
+            expect(bridge.isInvocableString(string: "{\"_hackle\":{}}}")) == false
+            expect(bridge.isInvocableString(string: "{\"something\":{\"command\":\"\"}}")) == false
+            expect(bridge.isInvocableString(string: "{")) == false
+            expect(bridge.isInvocableString(string: "")) == false
         }
         describe("invoke") {
             it("get session id") {
                 let sessionId = "1234567890.abcdefgh"
                 let mock = MockHackleApp(sessonId: sessionId)
-                let result = HackleBridge.invoke(app: mock, string: """
-                {
-                    "_hackle": {
-                        "_command": "getSessionId"
-                    }
-                }
-                """)
-                expect(result) == sessionId
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "getSessionId")
+                let result = bridge.invoke(string: jsonString)
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                expect(dict["data"] as? String) == sessionId
             }
             it("get user") {
                 let user = HackleUserBuilder()
                     .id("myid")
                     .userId("1234")
+                    .deviceId("abcd1234")
                     .identifier("foo", "bar")
                     .property("bar", "foo")
                     .build()
                 let mock = MockHackleApp(user: user)
-                let result = HackleBridge.invoke(app: mock, string: """
-                {
-                    "_hackle": {
-                        "_command": "getUser"
-                    }
-                }
-                """)
-                let dict = result!.jsonObject()!
-                expect(dict["id"] as? String) == user.id
-                expect(dict["userId"] as? String) == user.userId
-                let identifiers = dict["identifiers"] as! [String: String]
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "getUser")
+                let result = bridge.invoke(string: jsonString)
+                
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                
+                let data = dict["data"] as! [String: Any]
+                expect(data["id"] as? String) == user.id
+                expect(data["userId"] as? String) == user.userId
+                expect(data["deviceId"] as? String) == user.deviceId
+                
+                let identifiers = data["identifiers"] as! [String: String]
                 expect(identifiers.count) == 1
-                expect(identifiers).to(equal(user.identifiers))
-                let properties = dict["properties"] as! [String: Any]
+                expect(identifiers["foo"]) == "bar"
+                
+                let properties = data["properties"] as! [String: Any]
                 expect(properties.count) == 1
-                expect(properties["bar"] as? String) == user.properties["bar"] as? String
+                expect(properties["bar"] as? String) == "foo"
             }
-            describe("set user") {
-                it("normal case") {
+            context("set user") {
+                it("happy case") {
+                    let parameters = [
+                        "user": [
+                            "id": "foo",
+                            "userId": "bar",
+                            "identifiers": [
+                                "foobar": "foofoo",
+                                "foobar2": "barbar"
+                            ],
+                            "properties": [
+                                "null": nil,
+                                "number": 123,
+                                "string": "text",
+                                "array": [123, "123", nil] as [Any?],
+                                "map": ["key": "value"]
+                            ] as [String : Any?]
+                        ] as [String : Any]
+                    ]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setUser",
-                            "_parameters": {
-                                "user": {
-                                    "id": "foo",
-                                    "userId": "bar",
-                                    "identifiers": {
-                                        "foobar": "foofoo",
-                                        "foobar2": "barbar"
-                                    },
-                                    "properties": {
-                                        "null": null,
-                                        "number": 123,
-                                        "string": "text",
-                                        "array": [123, "123", null],
-                                        "map": { "key": "value" }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUser", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
                     expect(mock.setUserRef.invokations().count) == 1
                     let arguments = mock.setUserRef.firstInvokation().arguments
                     expect(arguments.id) == "foo"
@@ -89,937 +100,1099 @@ class HackleBridgeSpec : QuickSpec {
                     expect(arguments.identifiers).to(equal(["foobar": "foofoo", "foobar2": "barbar"]))
                     expect(arguments.properties["number"] as? Double) == 123.0
                     expect(arguments.properties["string"] as? String) == "text"
+                    
                     let array = arguments.properties["array"] as! Array<Any>
                     expect(array.count) == 2
                     expect(array[0] as? Double) == 123.0
                     expect(array[1] as? String) == "123"
                     expect(arguments.properties["map"]).to(beNil())
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setUser",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUser", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+                    
                     expect(mock.setUserRef.invokations().count) == 0
-                    expect(mock.setUserIdRef.invokations().count) == 0
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            describe("set user id") {
-                it("normal case") {
+            context("set user id") {
+                it("happy case") {
+                    let parameters = ["userId": "abcd1234"]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setUserId",
-                            "_parameters": {
-                                "userId": "abcd123"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserId", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
                     expect(mock.setUserIdRef.invokations().count) == 1
-                    expect(mock.setUserIdRef.firstInvokation().arguments) == "abcd123"
+                    expect(mock.setUserIdRef.firstInvokation().arguments) == "abcd1234"
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setUserId",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserId", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+                    
                     expect(mock.setUserIdRef.invokations().count) == 0
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            describe("set device id") {
-                it("normal case") {
-                    let mock = MockHackleApp(deviceId: "before")
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setDeviceId",
-                            "_parameters": {
-                                "deviceId": "after"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
-                    expect(mock.deviceId) == "after"
+            context("set device id") {
+                it("happy case") {
+                    let parameters = ["deviceId": "abcd1234"]
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setDeviceId", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.setDeviceIdRef.invokations().count) == 1
+                    expect(mock.setDeviceIdRef.firstInvokation().arguments) == "abcd1234"
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
-                    let mock = MockHackleApp(deviceId: "before")
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setDeviceId",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
-                    expect(mock.deviceId) == "before"
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setDeviceId", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.setDeviceIdRef.invokations().count) == 0
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            describe("set user property") {
-                it("normal case") {
+            context("set user property") {
+                it("happy case") {
+                    let parameters = [
+                        "key": "foo",
+                        "value": "bar",
+                    ]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setUserProperty",
-                            "_parameters": {
-                                "key": "foo",
-                                "value": "bar"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserProperty", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
                     expect(mock.setUserPropertyRef.invokations().count) == 1
                     expect(mock.setUserPropertyRef.firstInvokation().arguments.0) == "foo"
                     expect(mock.setUserPropertyRef.firstInvokation().arguments.1 as? String) == "bar"
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "setUserProperty",
-                            "_parameters": {
-                                "value": "bar"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserProperty", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.setUserPropertyRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            describe("update user properties") {
-                it("normal case") {
+            context("update user properties") {
+                it("happy case") {
+                    let parameters = [
+                        "operations": [
+                            "$set": [
+                                "null": nil,
+                                "number": 123,
+                                "string": "text",
+                                "array": [123, "123", nil] as [Any?],
+                                "map": ["foo": "bar"]
+                            ] as [String : Any?],
+                            "$setOnce": [
+                                "foo": "bar"
+                            ]
+                        ]
+                    ]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "updateUserProperties",
-                            "_parameters": {
-                                "operations": {
-                                    "$set": {
-                                        "null": null,
-                                        "number": 123,
-                                        "string": "text",
-                                        "array": [123, "123", null],
-                                        "map": { "key": "value" }
-                                    },
-                                    "$setOnce": {
-                                        "foo": "bar"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "updateUserProperties", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
                     expect(mock.updateUserPropertiesRef.invokations().count) == 1
-                    let arguments = mock.updateUserPropertiesRef.firstInvokation().arguments
-                    let dict = arguments.asDictionary()
-                    let set = dict[PropertyOperation.set]!
+                    let arguments = mock.updateUserPropertiesRef.firstInvokation().arguments.asDictionary()
+                    
+                    let set = arguments[PropertyOperation.set]!
                     expect(set.count) == 3
                     expect(set["number"] as? Double) == 123.0
                     expect(set["string"] as? String) == "text"
+                    
                     let array = set["array"] as! Array<Any>
                     expect(array.count) == 2
                     expect(array[0] as? Double) == 123.0
                     expect(array[1] as? String) == "123"
-                    let setOnce = dict[PropertyOperation.setOnce]!
+                    
+                    let setOnce = arguments[PropertyOperation.setOnce]!
                     expect(setOnce["foo"] as? String) == "bar"
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "updateUserProperties",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "updateUserProperties", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.updateUserPropertiesRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
             it("reset user") {
                 let mock = MockHackleApp()
-                let result = HackleBridge.invoke(app: mock, string: "{\"_hackle\":{\"_command\":\"resetUser\"}}")
-                expect(result).to(beNil())
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "resetUser", parameters: [:])
+                let result = bridge.invoke(string: jsonString)
+                
                 expect(mock.resetUserRef.invokations().count) == 1
+                
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                expect(dict["data"]).to(beNil())
             }
             describe("variation") {
                 context("normal") {
                     it("happy case") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D"
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variation",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "defaultVariation": "D"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        mock.registerResult(for: mock.variationRef) { _ in "C" }
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationRef.invokations().count) == 1
+                        
                         let arguments = mock.variationRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "D"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "C"
                     }
                     it("expect 'A' default variation parameter") {
+                        let parameters = ["experimentKey": 123] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variation",
-                                "_parameters": {
-                                    "experimentKey": 123
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        mock.registerResult(for: mock.variationRef) { _ in "A" }
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationRef.invokations().count) == 1
+                        
                         let arguments = mock.variationRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "A"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "A"
                     }
                 }
                 context("with user id") {
                     it("happy case") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D",
+                            "userId": "abcd1234"
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variation",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "defaultVariation": "D",
-                                    "userId": "abcd1234"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        mock.registerResult(for: mock.variationWithUserIdRef) { _ in "C" }
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserIdRef.invokations().count) == 1
+                        
                         let arguments = mock.variationWithUserIdRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "abcd1234"
                         expect(arguments.2) == "D"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "C"
                     }
                     it("expect 'A' default variation parameter") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "userId": "abcd1234"
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variation",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "userId": "abcd1234"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        mock.registerResult(for: mock.variationWithUserIdRef) { _ in "A" }
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserIdRef.invokations().count) == 1
+                        
                         let arguments = mock.variationWithUserIdRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "abcd1234"
                         expect(arguments.2) == "A"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "A"
                     }
                 }
                 context("with user") {
-                    it("normal case") {
+                    it("happy case") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D",
+                            "user": ["id": "foo"]
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variation",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "defaultVariation": "D",
-                                    "user": {
-                                        "id": "foo"
-                                    }
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        mock.registerResult(for: mock.variationWithUserRef) { _ in "C" }
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserRef.invokations().count) == 1
+                        
                         let arguments = mock.variationWithUserRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1.id) == "foo"
                         expect(arguments.2) == "D"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "C"
                     }
                     it("expect 'A' default variation parameter") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "user": ["id": "foo"]
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variation",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "user": {
-                                        "id": "foo"
-                                    }
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        mock.registerResult(for: mock.variationWithUserRef) { _ in "A" }
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserRef.invokations().count) == 1
+                        
                         let arguments = mock.variationWithUserRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1.id) == "foo"
                         expect(arguments.2) == "A"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "A"
                     }
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "variation",
-                            "_parameters": {
-                                "defaultVariation": "D"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "variation", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.variationRef.invokations().count) == 0
                     expect(mock.variationWithUserIdRef.invokations().count) == 0
                     expect(mock.variationWithUserRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
             describe("variation detail") {
                 context("normal") {
                     it("happy case") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D"
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variationDetail",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "defaultVariation": "D"
-                                }
-                            }
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        mock.registerResult(for: mock.variationDetailRef) {
+                            _ in Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE")
                         }
-                        """)
-                        expect(result).notTo(beNil())
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
+                        
                         let arguments = mock.variationDetailRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "D"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        
+                        let data = dict["data"] as! [String: Any]
+                        expect(data["variation"] as? String) == "C"
+                        expect(data["reason"] as? String) == "DEFAULT_RULE"
+                        
+                        let config = data["config"] as! [String: Any]
+                        expect(config["parameters"]).toNot(beNil())
                     }
                     it("expect 'A' default variation parameter") {
+                        let parameters = [
+                            "experimentKey": 123
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variationDetail",
-                                "_parameters": {
-                                    "experimentKey": 123
-                                }
-                            }
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        mock.registerResult(for: mock.variationDetailRef) {
+                            _ in Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE")
                         }
-                        """)
-                        expect(result).notTo(beNil())
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
+                        
                         let arguments = mock.variationDetailRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "A"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        
+                        let data = dict["data"] as! [String: Any]
+                        expect(data["experiment"]).to(beNil())
+                        expect(data["variation"] as? String) == "A"
+                        expect(data["reason"] as? String) == "DEFAULT_RULE"
+                        
+                        let config = data["config"] as! [String: Any]
+                        expect(config["parameters"]).toNot(beNil())
                     }
                 }
                 context("with user id") {
                     it("happy case") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D",
+                            "userId": "abcd1234"
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variationDetail",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "defaultVariation": "D",
-                                    "userId": "abcd1234"
-                                }
-                            }
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        mock.registerResult(for: mock.variationDetailWithUserIdRef) {
+                            _ in Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE")
                         }
-                        """)
-                        expect(result).notTo(beNil())
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserIdRef.invokations().count) == 1
+                        
                         let arguments = mock.variationDetailWithUserIdRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "abcd1234"
                         expect(arguments.2) == "D"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        
+                        let data = dict["data"] as! [String: Any]
+                        expect(data["experiment"]).to(beNil())
+                        expect(data["variation"] as? String) == "C"
+                        expect(data["reason"] as? String) == "DEFAULT_RULE"
+                        
+                        let config = data["config"] as! [String: Any]
+                        expect(config["parameters"]).toNot(beNil())
                     }
                     it("expect 'A' default variation parameter") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "userId": "abcd1234"
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variationDetail",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "userId": "abcd1234"
-                                }
-                            }
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        mock.registerResult(for: mock.variationDetailWithUserIdRef) {
+                            _ in Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE")
                         }
-                        """)
-                        expect(result).notTo(beNil())
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserIdRef.invokations().count) == 1
+                        
                         let arguments = mock.variationDetailWithUserIdRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1) == "abcd1234"
                         expect(arguments.2) == "A"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        
+                        let data = dict["data"] as! [String: Any]
+                        expect(data["experiment"]).to(beNil())
+                        expect(data["variation"] as? String) == "A"
+                        expect(data["reason"] as? String) == "DEFAULT_RULE"
+                        
+                        let config = data["config"] as! [String: Any]
+                        expect(config["parameters"]).toNot(beNil())
                     }
                 }
                 context("with user") {
-                    it("normal case") {
+                    it("happy case") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D",
+                            "user": ["id": "foo"]
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variationDetail",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "defaultVariation": "D",
-                                    "user": {
-                                        "id": "foo"
-                                    }
-                                }
-                            }
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        mock.registerResult(for: mock.variationDetailWithUserRef) {
+                            _ in Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE")
                         }
-                        """)
-                        expect(result).notTo(beNil())
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserRef.invokations().count) == 1
+                        
                         let arguments = mock.variationDetailWithUserRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1.id) == "foo"
                         expect(arguments.2) == "D"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        
+                        let data = dict["data"] as! [String: Any]
+                        expect(data["experiment"]).to(beNil())
+                        expect(data["variation"] as? String) == "C"
+                        expect(data["reason"] as? String) == "DEFAULT_RULE"
+                        
+                        let config = data["config"] as! [String: Any]
+                        expect(config["parameters"]).toNot(beNil())
                     }
                     it("expect 'A' default variation parameter") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "user": ["id": "foo"]
+                        ] as [String : Any]
                         let mock = MockHackleApp()
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "variationDetail",
-                                "_parameters": {
-                                    "experimentKey": 123,
-                                    "user": {
-                                        "id": "foo"
-                                    }
-                                }
-                            }
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        mock.registerResult(for: mock.variationDetailWithUserRef) {
+                            _ in Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE")
                         }
-                        """)
-                        expect(result).notTo(beNil())
+                        
+                        let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserRef.invokations().count) == 1
+                        
                         let arguments = mock.variationDetailWithUserRef.firstInvokation().arguments
                         expect(arguments.0) == 123
                         expect(arguments.1.id) == "foo"
                         expect(arguments.2) == "A"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        
+                        let data = dict["data"] as! [String: Any]
+                        expect(data["experiment"]).to(beNil())
+                        expect(data["variation"] as? String) == "A"
+                        expect(data["reason"] as? String) == "DEFAULT_RULE"
+                        
+                        let config = data["config"] as! [String: Any]
+                        expect(config["parameters"]).toNot(beNil())
                     }
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "variationDetail",
-                            "_parameters": {
-                                "defaultVariation": "D"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "variationDetail", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.variationDetailRef.invokations().count) == 0
                     expect(mock.variationDetailWithUserIdRef.invokations().count) == 0
                     expect(mock.variationDetailWithUserRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
             describe("is feature on") {
-                it("normal case") {
+                it("happy case") {
+                    let parameters = [
+                        "featureKey": 123
+                    ] as [String : Any]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "isFeatureOn",
-                            "_parameters": {
-                                "featureKey": 123
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).notTo(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
+                    mock.registerResult(for: mock.isFeatureOnRef) { _ in true }
+                        
+                    let result = bridge.invoke(string: jsonString)
                     expect(mock.isFeatureOnRef.invokations().count) == 1
+                        
                     let arguments = mock.isFeatureOnRef.firstInvokation().arguments
                     expect(arguments) == 123
+                        
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"] as? Bool) == true
                 }
                 it("with user id case") {
+                    let parameters = [
+                        "featureKey": 123,
+                        "userId": "abcd1234"
+                    ] as [String : Any]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "isFeatureOn",
-                            "_parameters": {
-                                "featureKey": 123,
-                                "userId": "abcd1234"
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).notTo(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
+                    mock.registerResult(for: mock.isFeatureOnWithUserIdRef) { _ in true }
+                        
+                    let result = bridge.invoke(string: jsonString)
                     expect(mock.isFeatureOnWithUserIdRef.invokations().count) == 1
+                        
                     let arguments = mock.isFeatureOnWithUserIdRef.firstInvokation().arguments
                     expect(arguments.0) == 123
                     expect(arguments.1) == "abcd1234"
+                        
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"] as? Bool) == true
                 }
                 it("with user case") {
+                    let parameters = [
+                        "featureKey": 123,
+                        "user": ["id": "foo"]
+                    ] as [String : Any]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "isFeatureOn",
-                            "_parameters": {
-                                "featureKey": 123,
-                                "user": {
-                                    "id": "foo"
-                                }
-                            }
-                        }
-                    }
-                    """)
-                    expect(result).notTo(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
+                    mock.registerResult(for: mock.isFeatureOnWithUserRef) { _ in true }
+                        
+                    let result = bridge.invoke(string: jsonString)
                     expect(mock.isFeatureOnWithUserRef.invokations().count) == 1
+                        
                     let arguments = mock.isFeatureOnWithUserRef.firstInvokation().arguments
                     expect(arguments.0) == 123
                     expect(arguments.1.id) == "foo"
+                        
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"] as? Bool) == true
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "isFeatureOn",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.isFeatureOnRef.invokations().count) == 0
                     expect(mock.isFeatureOnWithUserIdRef.invokations().count) == 0
                     expect(mock.isFeatureOnWithUserRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            
             describe("feature flag detail") {
-                it("normal case") {
+                it("happy case") {
+                    let parameters = [
+                        "featureKey": 123
+                    ] as [String : Any]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "featureFlagDetail",
-                            "_parameters": {
-                                "featureKey": 123
-                            }
-                        }
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
+                    mock.registerResult(for: mock.featureFlagDetailRef) {
+                        _ in FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE")
                     }
-                    """)
-                    expect(result).notTo(beNil())
+                        
+                    let result = bridge.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
+                        
                     let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
                     expect(arguments) == 123
+                        
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    
+                    let data = dict["data"] as! [String: Any]
+                    expect(data["featureFlag"]).to(beNil())
+                    expect(data["isOn"] as? Bool) == true
+                    expect(data["reason"] as? String) == "DEFAULT_RULE"
+                    
+                    let config = data["config"] as! [String: Any]
+                    expect(config["parameters"]).toNot(beNil())
                 }
-                it("with user id") {
+                it("with user id case") {
+                    let parameters = [
+                        "featureKey": 123,
+                        "userId": "abcd1234"
+                    ] as [String : Any]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "featureFlagDetail",
-                            "_parameters": {
-                                "featureKey": 123,
-                                "userId": "abcd1234"
-                            }
-                        }
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
+                    mock.registerResult(for: mock.featureFlagDetailWithUserIdRef) {
+                        _ in FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE")
                     }
-                    """)
-                    expect(result).notTo(beNil())
+                        
+                    let result = bridge.invoke(string: jsonString)
                     expect(mock.featureFlagDetailWithUserIdRef.invokations().count) == 1
+                        
                     let arguments = mock.featureFlagDetailWithUserIdRef.firstInvokation().arguments
                     expect(arguments.0) == 123
                     expect(arguments.1) == "abcd1234"
+                        
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    
+                    let data = dict["data"] as! [String: Any]
+                    expect(data["featureFlag"]).to(beNil())
+                    expect(data["isOn"] as? Bool) == true
+                    expect(data["reason"] as? String) == "DEFAULT_RULE"
+                    
+                    let config = data["config"] as! [String: Any]
+                    expect(config["parameters"]).toNot(beNil())
                 }
-                it("with user") {
+                it("with user case") {
+                    let parameters = [
+                        "featureKey": 123,
+                        "user": ["id": "foo"]
+                    ] as [String : Any]
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "featureFlagDetail",
-                            "_parameters": {
-                                "featureKey": 123,
-                                "user": {
-                                    "id": "foo"
-                                }
-                            }
-                        }
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
+                    mock.registerResult(for: mock.featureFlagDetailWithUserRef) {
+                        _ in FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE")
                     }
-                    """)
-                    expect(result).notTo(beNil())
+                        
+                    let result = bridge.invoke(string: jsonString)
                     expect(mock.featureFlagDetailWithUserRef.invokations().count) == 1
+                        
                     let arguments = mock.featureFlagDetailWithUserRef.firstInvokation().arguments
                     expect(arguments.0) == 123
                     expect(arguments.1.id) == "foo"
+                        
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    
+                    let data = dict["data"] as! [String: Any]
+                    expect(data["featureFlag"]).to(beNil())
+                    expect(data["isOn"] as? Bool) == true
+                    expect(data["reason"] as? String) == "DEFAULT_RULE"
+                    
+                    let config = data["config"] as! [String: Any]
+                    expect(config["parameters"]).toNot(beNil())
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "featureFlagDetail",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.featureFlagDetailRef.invokations().count) == 0
                     expect(mock.featureFlagDetailWithUserIdRef.invokations().count) == 0
                     expect(mock.featureFlagDetailWithUserRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            
             describe("track") {
-                it("normal case") {
-                    let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "track",
-                            "_parameters": {
-                                "event": {
-                                    "key": "abcd1234",
-                                    "value": 1234,
-                                    "properties": {
-                                        "null": null,
-                                        "number": 123,
-                                        "string": "text",
-                                        "array": [123, "123", null],
-                                        "map": { "key": "value" }
-                                    }
-                                }
-                            }
-                        }
+                context("with event string") {
+                    it("happy case") {
+                        let parameters = [
+                            "event": "abcd1234"
+                        ]
+                        let mock = MockHackleApp()
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        expect(mock.trackWithEventKeyRef.invokations().count) == 1
+                        
+                        let arguments = mock.trackWithEventKeyRef.firstInvokation().arguments
+                        expect(arguments) == "abcd1234"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"]).to(beNil())
                     }
-                    """)
-                    expect(result).to(beNil())
-                    expect(mock.trackWithEventRef.invokations().count) == 1
-                    let arguments = mock.trackWithEventRef.firstInvokation().arguments
-                    expect(arguments.key) == "abcd1234"
-                    expect(arguments.value) == 1234
-                    expect(arguments.properties!.count) == 3
-                    expect(arguments.properties!["number"] as? Double) == 123.0
-                    expect(arguments.properties!["string"] as? String) == "text"
-                    let array = arguments.properties!["array"] as! Array<Any>
-                    expect(array.count) == 2
-                    expect(array[0] as? Double) == 123.0
-                    expect(array[1] as? String) == "123"
-                    expect(arguments.properties!["map"]).to(beNil())
+                    it("with user id") {
+                        let parameters = [
+                            "event": "abcd1234",
+                            "userId": "foo"
+                        ]
+                        let mock = MockHackleApp()
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        expect(mock.trackWithEventKeyUserIdRef.invokations().count) == 1
+                        
+                        let arguments = mock.trackWithEventKeyUserIdRef.firstInvokation().arguments
+                        expect(arguments.0) == "abcd1234"
+                        expect(arguments.1) == "foo"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"]).to(beNil())
+                    }
+                    it("with user") {
+                        let parameters = [
+                            "event": "abcd1234",
+                            "user": ["id": "foo"]
+                        ] as [String : Any]
+                        let mock = MockHackleApp()
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        expect(mock.trackWithEventKeyUserRef.invokations().count) == 1
+                        
+                        let arguments = mock.trackWithEventKeyUserRef.firstInvokation().arguments
+                        expect(arguments.0) == "abcd1234"
+                        expect(arguments.1.id) == "foo"
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"]).to(beNil())
+                    }
                 }
-                it("with user id case") {
-                    let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "track",
-                            "_parameters": {
-                                "event": {
-                                    "key": "abcd1234",
-                                    "value": 1234,
-                                    "properties": {
-                                        "null": null,
-                                        "number": 123,
-                                        "string": "text",
-                                        "array": [123, "123", null],
-                                        "map": { "key": "value" }
-                                    }
-                                },
-                                "userId": "foo"
-                            }
-                        }
+                context("with event object") {
+                    it("happy case") {
+                        let parameters = [
+                            "event": [
+                                "key": "foo",
+                                "value": 1234,
+                                "properties": [
+                                    "null": nil,
+                                    "number": 123,
+                                    "string": "text",
+                                    "array": [123, "123", nil] as [Any?],
+                                    "map": ["key": "value"]
+                                ] as [String : Any?]
+                            ] as [String : Any]
+                        ]
+                        let mock = MockHackleApp()
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        expect(mock.trackWithEventRef.invokations().count) == 1
+                        
+                        let arguments = mock.trackWithEventRef.firstInvokation().arguments
+                        expect(arguments.key) == "foo"
+                        expect(arguments.value) == 1234
+                        expect(arguments.properties!.count) == 3
+                        expect(arguments.properties!["number"] as? Double) == 123.0
+                        expect(arguments.properties!["string"] as? String) == "text"
+                        
+                        let array = arguments.properties!["array"] as! Array<Any>
+                        expect(array.count) == 2
+                        expect(array[0] as? Double) == 123.0
+                        expect(array[1] as? String) == "123"
+                        expect(arguments.properties!["map"]).to(beNil())
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"]).to(beNil())
                     }
-                    """)
-                    expect(result).to(beNil())
-                    expect(mock.trackWithEventUserIdRef.invokations().count) == 1
-                    let arguments = mock.trackWithEventUserIdRef.firstInvokation().arguments
-                    expect(arguments.0.key) == "abcd1234"
-                    expect(arguments.0.value) == 1234
-                    expect(arguments.0.properties!.count) == 3
-                    expect(arguments.0.properties!["number"] as? Double) == 123.0
-                    expect(arguments.0.properties!["string"] as? String) == "text"
-                    let array = arguments.0.properties!["array"] as! Array<Any>
-                    expect(array.count) == 2
-                    expect(array[0] as? Double) == 123.0
-                    expect(array[1] as? String) == "123"
-                    expect(arguments.0.properties!["map"]).to(beNil())
-                    expect(arguments.1) == "foo"
-                }
-                it("with user case") {
-                    let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "track",
-                            "_parameters": {
-                                "event": {
-                                    "key": "abcd1234",
-                                    "value": 1234,
-                                    "properties": {
-                                        "null": null,
-                                        "number": 123,
-                                        "string": "text",
-                                        "array": [123, "123", null],
-                                        "map": { "key": "value" }
-                                    }
-                                },
-                                "user": {
-                                    "id": "foo"
-                                }
-                            }
-                        }
+                    it("with user id") {
+                        let parameters = [
+                            "event": [
+                                "key": "foo",
+                                "value": 1234,
+                                "properties": [
+                                    "null": nil,
+                                    "number": 123,
+                                    "string": "text",
+                                    "array": [123, "123", nil] as [Any?],
+                                    "map": ["key": "value"]
+                                ] as [String : Any?]
+                            ] as [String : Any],
+                            "userId": "abcd1234"
+                        ] as [String : Any]
+                        let mock = MockHackleApp()
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        expect(mock.trackWithEventUserIdRef.invokations().count) == 1
+                        
+                        let arguments = mock.trackWithEventUserIdRef.firstInvokation().arguments
+                        expect(arguments.0.key) == "foo"
+                        expect(arguments.0.value) == 1234
+                        expect(arguments.0.properties!.count) == 3
+                        expect(arguments.0.properties!["number"] as? Double) == 123.0
+                        expect(arguments.0.properties!["string"] as? String) == "text"
+                        expect(arguments.1) == "abcd1234"
+                        
+                        let array = arguments.0.properties!["array"] as! Array<Any>
+                        expect(array.count) == 2
+                        expect(array[0] as? Double) == 123.0
+                        expect(array[1] as? String) == "123"
+                        expect(arguments.0.properties!["map"]).to(beNil())
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"]).to(beNil())
                     }
-                    """)
-                    expect(result).to(beNil())
-                    expect(mock.trackWithEventUserRef.invokations().count) == 1
-                    let arguments = mock.trackWithEventUserRef.firstInvokation().arguments
-                    expect(arguments.0.key) == "abcd1234"
-                    expect(arguments.0.value) == 1234
-                    expect(arguments.0.properties!.count) == 3
-                    expect(arguments.0.properties!["number"] as? Double) == 123.0
-                    expect(arguments.0.properties!["string"] as? String) == "text"
-                    let array = arguments.0.properties!["array"] as! Array<Any>
-                    expect(array.count) == 2
-                    expect(array[0] as? Double) == 123.0
-                    expect(array[1] as? String) == "123"
-                    expect(arguments.0.properties!["map"]).to(beNil())
-                    expect(arguments.1.id) == "foo"
+                    it("with user") {
+                        let parameters = [
+                            "event": [
+                                "key": "foo",
+                                "value": 1234,
+                                "properties": [
+                                    "null": nil,
+                                    "number": 123,
+                                    "string": "text",
+                                    "array": [123, "123", nil] as [Any?],
+                                    "map": ["key": "value"]
+                                ] as [String : Any?]
+                            ] as [String : Any],
+                            "user": ["id":"abcd1234"]
+                        ] as [String : Any]
+                        let mock = MockHackleApp()
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        expect(mock.trackWithEventUserRef.invokations().count) == 1
+                        
+                        let arguments = mock.trackWithEventUserRef.firstInvokation().arguments
+                        expect(arguments.0.key) == "foo"
+                        expect(arguments.0.value) == 1234
+                        expect(arguments.0.properties!.count) == 3
+                        expect(arguments.0.properties!["number"] as? Double) == 123.0
+                        expect(arguments.0.properties!["string"] as? String) == "text"
+                        expect(arguments.1.id) == "abcd1234"
+                        
+                        let array = arguments.0.properties!["array"] as! Array<Any>
+                        expect(array.count) == 2
+                        expect(array[0] as? Double) == 123.0
+                        expect(array[1] as? String) == "123"
+                        expect(arguments.0.properties!["map"]).to(beNil())
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"]).to(beNil())
+                    }
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
-                    let result = HackleBridge.invoke(app: mock, string: """
-                    {
-                        "_hackle": {
-                            "_command": "track",
-                            "_parameters": {}
-                        }
-                    }
-                    """)
-                    expect(result).to(beNil())
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "track", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+
                     expect(mock.trackWithEventRef.invokations().count) == 0
                     expect(mock.trackWithEventUserIdRef.invokations().count) == 0
                     expect(mock.trackWithEventUserRef.invokations().count) == 0
+                    expect(mock.trackWithEventKeyRef.invokations().count) == 0
+                    expect(mock.trackWithEventKeyUserIdRef.invokations().count) == 0
+                    expect(mock.trackWithEventKeyUserRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
             
             describe("remote config") {
+                context("number type") {
+                    it("happy case") {
+                        let parameters = [
+                            "key": "number",
+                            "valueType": "number",
+                            "defaultValue": 0
+                        ] as [String : Any]
+                        let remoteConfig = MockRemoteConfig()
+                        let mock = MockHackleApp(remoteConfig: remoteConfig)
+                        let bridge = HackleBridge(app: mock)
+                        remoteConfig.config["number"] = 1234.5678
+                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "1234.5678"
+                    }
+                    it("default value return case") {
+                        let parameters = [
+                            "key": "number",
+                            "valueType": "number",
+                            "defaultValue": 0
+                        ] as [String : Any]
+                        let remoteConfig = MockRemoteConfig()
+                        let mock = MockHackleApp(remoteConfig: remoteConfig)
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "0.0"
+                    }
+                }
+                context("boolean type") {
+                    it("happy case") {
+                        let parameters = [
+                            "key": "bool",
+                            "valueType": "boolean",
+                            "defaultValue": false
+                        ] as [String : Any]
+                        let remoteConfig = MockRemoteConfig()
+                        let mock = MockHackleApp(remoteConfig: remoteConfig)
+                        let bridge = HackleBridge(app: mock)
+                        remoteConfig.config["bool"] = true
+                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "true"
+                    }
+                    it("default value return case") {
+                        let parameters = [
+                            "key": "bool",
+                            "valueType": "boolean",
+                            "defaultValue": true
+                        ] as [String : Any]
+                        let remoteConfig = MockRemoteConfig()
+                        let mock = MockHackleApp(remoteConfig: remoteConfig)
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "true"
+                    }
+                }
                 context("string type") {
                     it("happy case") {
+                        let parameters = [
+                            "key": "string",
+                            "valueType": "string",
+                            "defaultValue": "default"
+                        ] as [String : Any]
                         let remoteConfig = MockRemoteConfig()
+                        let mock = MockHackleApp(remoteConfig: remoteConfig)
+                        let bridge = HackleBridge(app: mock)
                         remoteConfig.config["string"] = "abcd1234"
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "string",
-                                    "valueType": "string",
-                                    "defaultValue": "foo"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
-                        expect(result) == "abcd1234"
+                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "abcd1234"
                     }
                     it("default value return case") {
+                        let parameters = [
+                            "key": "string",
+                            "valueType": "string",
+                            "defaultValue": "default"
+                        ] as [String : Any]
                         let remoteConfig = MockRemoteConfig()
                         let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "string",
-                                    "valueType": "string",
-                                    "defaultValue": "foo"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
-                        expect(result) == "foo"
-                    }
-                    it("invalid parameters case") {
-                        let remoteConfig = MockRemoteConfig()
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "string",
-                                    "valueType": "string"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).to(beNil())
+                        let bridge = HackleBridge(app: mock)
+                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let result = bridge.invoke(string: jsonString)
+                        
+                        let dict = result.jsonObject()!
+                        expect(dict["success"] as? Bool) == true
+                        expect(dict["message"] as? String) == "OK"
+                        expect(dict["data"] as? String) == "default"
                     }
                 }
-                context("number") {
-                    it("happy case") {
-                        let remoteConfig = MockRemoteConfig()
-                        remoteConfig.config["number"] = 1234.5678
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "number",
-                                    "valueType": "number",
-                                    "defaultValue": 0
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
-                        expect(result) == "1234.5678"
-                    }
-                    it("default value return case") {
-                        let remoteConfig = MockRemoteConfig()
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "number",
-                                    "valueType": "number",
-                                    "defaultValue": 123
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
-                        expect(result) == "123.0"
-                    }
-                    it("invalid parameters case") {
-                        let remoteConfig = MockRemoteConfig()
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "number",
-                                    "valueType": "number"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).to(beNil())
-                    }
-                }
-                context("boolean") {
-                    it("happy case") {
-                        let remoteConfig = MockRemoteConfig()
-                        remoteConfig.config["boolean"] = true
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "boolean",
-                                    "valueType": "boolean",
-                                    "defaultValue": false
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
-                        expect(result) == "true"
-                    }
-                    it("default value return case") {
-                        let remoteConfig = MockRemoteConfig()
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "boolean",
-                                    "valueType": "boolean",
-                                    "defaultValue": false
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).notTo(beNil())
-                        expect(result) == "false"
-                    }
-                    it("invalid parameters case") {
-                        let remoteConfig = MockRemoteConfig()
-                        let mock = MockHackleApp(remoteConfig: remoteConfig)
-                        let result = HackleBridge.invoke(app: mock, string: """
-                        {
-                            "_hackle": {
-                                "_command": "remoteConfig",
-                                "_parameters": {
-                                    "key": "boolean",
-                                    "valueType": "boolean"
-                                }
-                            }
-                        }
-                        """)
-                        expect(result).to(beNil())
-                    }
+                it("invalid parameters case") {
+                    let remoteConfig = MockRemoteConfig()
+                    let mock = MockHackleApp(remoteConfig: remoteConfig)
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "remoteConfig", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
                 }
             }
-            it("show user explorer") {
+            describe("show user explorer") {
                 let mock = MockHackleApp()
-                let result = HackleBridge.invoke(app: mock, string: """
-                {
-                    "_hackle": {
-                        "_command": "showUserExplorer"
-                    }
-                }
-                """)
-                expect(result).to(beNil())
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "showUserExplorer", parameters: [:])
+                let result = bridge.invoke(string: jsonString)
+                
                 expect(mock.showUserExplorerRef.invokations().count) == 1
+                
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                expect(dict["data"]).to(beNil())
             }
         }
     }
