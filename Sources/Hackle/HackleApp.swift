@@ -187,7 +187,7 @@ import WebKit
         DefaultRemoteConfig(user: nil, app: core, userManager: userManager, userResolver: hackleUserResolver)
     }
     
-    @objc public func prepareForHackleWebBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
+    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
 
