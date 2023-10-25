@@ -120,7 +120,7 @@ fileprivate extension HackleBridge {
         guard let data = parameters["operations"] as? [String: [String: Any]] else {
             throw HackleError.error("Valid 'operations' parameter must be provided.")
         }
-        let operations = PropertyOperations.deserialize(data: data)
+        let operations = PropertyOperations.from(dto: data)
         app.updateUserProperties(operations: operations)
     }
     
@@ -306,6 +306,7 @@ fileprivate typealias UserDto = [String: Any]
 fileprivate typealias EventDto = [String: Any]
 fileprivate typealias DecisionDto = [String: Any]
 fileprivate typealias FeatureFlagDecisionDto = [String: Any]
+fileprivate typealias PropertyOperationsDto = [String: [String: Any]]
 
 fileprivate extension User {
     
@@ -383,9 +384,9 @@ fileprivate extension FeatureFlagDecision {
 
 fileprivate extension PropertyOperations {
     
-    static func deserialize(data: [String: [String: Any]]) -> PropertyOperations {
+    static func from(dto: PropertyOperationsDto) -> PropertyOperations {
         let builder = PropertyOperationsBuilder()
-        for (operation, properties) in data {
+        for (operation, properties) in dto {
             guard let operation = PropertyOperation(rawValue: operation) else {
                 continue
             }
