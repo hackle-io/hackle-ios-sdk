@@ -37,21 +37,23 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
 
     private let core: HackleCore
     private let userManager: UserManager
-    private let userResolver: HackleUserResolver
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
 
-    init(core: HackleCore, userManager: UserManager, userResolver: HackleUserResolver, abTestOverrideStorage: HackleUserManualOverrideStorage, featureFlagOverrideStorage: HackleUserManualOverrideStorage) {
+    init(
+        core: HackleCore,
+        userManager: UserManager,
+        abTestOverrideStorage: HackleUserManualOverrideStorage,
+        featureFlagOverrideStorage: HackleUserManualOverrideStorage
+    ) {
         self.core = core
         self.userManager = userManager
-        self.userResolver = userResolver
         self.abTestOverrideStorage = abTestOverrideStorage
         self.featureFlagOverrideStorage = featureFlagOverrideStorage
     }
 
     func currentUser() -> HackleUser {
-        let currentUser = userManager.currentUser
-        return userResolver.resolve(user: currentUser)
+        userManager.resolve(user: nil)
     }
 
     func getAbTestDecisions() -> [(Experiment, Decision)] {

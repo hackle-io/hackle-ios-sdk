@@ -38,7 +38,7 @@ class DefaultUserValueResolver: UserValueResolver {
             return user.properties[key.name]
         case .hackleProperty:
             return user.hackleProperties[key.name]
-        case .eventProperty, .segment, .abTest, .featureFlag:
+        case .eventProperty, .segment, .abTest, .featureFlag, .cohort:
             throw HackleError.error("Unsupported TargetKeyType [\(key.type)]")
         }
     }

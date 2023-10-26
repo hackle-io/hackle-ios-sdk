@@ -7,34 +7,42 @@ import Mockery
 class SessionEventTrackerSpecs: QuickSpec {
     override func spec() {
 
+        var userManager: MockUserManager!
+        var core: HackleCoreStub!
+        var sut: SessionEventTracker!
+
+        beforeEach {
+            userManager = MockUserManager()
+            core = HackleCoreStub()
+            sut = SessionEventTracker(userManager: userManager, core: core)
+        }
+
         it("onSessionStarted") {
-            let userResolver = DefaultHackleUserResolver(device: MockDevice(id: "device_id", properties: [:]))
-            let internalApp = HackleCoreStub()
-            let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
+            let hackleUser = HackleUser.builder().identifier(.id, "user").build()
+            every(userManager.toHackleUserMock).returns(hackleUser)
 
             let session = Session(id: "42.ffffffff")
             let user = User.builder().id("user_id").build()
             sut.onSessionStarted(session: session, user: user, timestamp: Date(timeIntervalSince1970: 42))
 
-            expect(internalApp.tracked.count) == 1
-            expect(internalApp.tracked[0].0.key) == "$session_start"
-            expect(internalApp.tracked[0].1.sessionId) == "42.ffffffff"
-            expect(internalApp.tracked[0].2.timeIntervalSince1970) == 42
+            expect(core.tracked.count) == 1
+            expect(core.tracked[0].0.key) == "$session_start"
+            expect(core.tracked[0].1.sessionId) == "42.ffffffff"
+            expect(core.tracked[0].2.timeIntervalSince1970) == 42
         }
 
         it("onSessionEnded") {
-            let userResolver = DefaultHackleUserResolver(device: MockDevice(id: "device_id", properties: [:]))
-            let internalApp = HackleCoreStub()
-            let sut = SessionEventTracker(hackleUserResolver: userResolver, core: internalApp)
+            let hackleUser = HackleUser.builder().identifier(.id, "user").build()
+            every(userManager.toHackleUserMock).returns(hackleUser)
 
             let session = Session(id: "42.ffffffff")
             let user = User.builder().id("user_id").build()
             sut.onSessionEnded(session: session, user: user, timestamp: Date(timeIntervalSince1970: 42))
 
-            expect(internalApp.tracked.count) == 1
-            expect(internalApp.tracked[0].0.key) == "$session_end"
-            expect(internalApp.tracked[0].1.sessionId) == "42.ffffffff"
-            expect(internalApp.tracked[0].2.timeIntervalSince1970) == 42
+            expect(core.tracked.count) == 1
+            expect(core.tracked[0].0.key) == "$session_end"
+            expect(core.tracked[0].1.sessionId) == "42.ffffffff"
+            expect(core.tracked[0].2.timeIntervalSince1970) == 42
         }
 
         it("isSessionEvent") {

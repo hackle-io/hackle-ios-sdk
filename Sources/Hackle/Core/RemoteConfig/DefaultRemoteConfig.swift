@@ -13,13 +13,11 @@ class DefaultRemoteConfig: HackleRemoteConfig {
     private let user: User?
     private let app: HackleCore
     private let userManager: UserManager
-    private let userResolver: HackleUserResolver
 
-    init(user: User?, app: HackleCore, userManager: UserManager, userResolver: HackleUserResolver) {
+    init(user: User?, app: HackleCore, userManager: UserManager) {
         self.user = user
         self.app = app
         self.userManager = userManager
-        self.userResolver = userResolver
     }
 
     func getString(forKey: String, defaultValue: String) -> String {
@@ -42,8 +40,7 @@ class DefaultRemoteConfig: HackleRemoteConfig {
         let sample = TimerSample.start()
         let decision: RemoteConfigDecision
         do {
-            let user = resolveUser()
-            let hackleUser = userResolver.resolve(user: user)
+            let hackleUser = userManager.resolve(user: user)
             decision = try app.remoteConfig(parameterKey: key, user: hackleUser, defaultValue: defaultValue)
         } catch let error {
             Log.error("Unexpected exception while deciding remote config parameter[\(key)]. Returning default value: \(String(describing: error))")
@@ -51,13 +48,5 @@ class DefaultRemoteConfig: HackleRemoteConfig {
         }
         DecisionMetrics.remoteConfig(sample: sample, key: key, decision: decision)
         return decision
-    }
-
-    private func resolveUser() -> User {
-        if let user = user {
-            return userManager.setUser(user: user)
-        } else {
-            return userManager.currentUser
-        }
     }
 }
