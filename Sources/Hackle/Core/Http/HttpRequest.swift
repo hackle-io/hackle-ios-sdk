@@ -18,8 +18,8 @@ struct HttpRequest {
         self.body = body
     }
 
-    static func get(url: URL) -> HttpRequest {
-        HttpRequest(url: url, method: "get", headers: nil, body: nil)
+    static func get(url: URL, headers: [String: String]? = nil) -> HttpRequest {
+        HttpRequest(url: url, method: "get", headers: headers, body: nil)
     }
 
     static func post(url: URL, body: Data) -> HttpRequest {

@@ -7,6 +7,11 @@ import Mockery
 
 class MetricsSpecs: QuickSpec {
     override func spec() {
+
+        beforeEach {
+            Metrics.clear()
+        }
+
         it("globalRegistry") {
             expect(Metrics.globalRegistry).to(beAnInstanceOf(DelegatingMetricRegistry.self))
         }

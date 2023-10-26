@@ -5,9 +5,9 @@ import Mockery
 @testable import Hackle
 
 class MockSessionManager: Mock, SessionManager {
-    private(set) var requiredSession: Session
-    private(set) var currentSession: Session? = nil
-    private(set) var lastEventTime: Date? = nil
+    var requiredSession: Session
+    var currentSession: Session? = nil
+    var lastEventTime: Date? = nil
 
     init(requiredSession: Session = Session.UNKNOWN, currentSession: Session? = nil, lastEventTime: Date? = nil) {
         self.requiredSession = requiredSession
@@ -16,8 +16,10 @@ class MockSessionManager: Mock, SessionManager {
         super.init()
     }
 
-    func initialize() {
+    lazy var initializeMock = MockFunction(self, initialize)
 
+    func initialize() {
+        call(initializeMock, args: ())
     }
 
     lazy var startNewSessionMock = MockFunction(self, startNewSession)
