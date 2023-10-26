@@ -8,11 +8,15 @@
 import Foundation
 
 
-protocol UserManager {
+protocol UserManager: Synchronizer {
 
     var currentUser: User { get }
 
     func initialize(user: User?)
+
+    func resolve(user: User?) -> HackleUser
+
+    func toHackleUser(user: User) -> HackleUser
 
     @discardableResult
     func setUser(user: User) -> User
@@ -33,26 +37,34 @@ protocol UserManager {
 class DefaultUserManager: UserManager, AppStateChangeListener {
 
     private static let USER_KEY = "user"
-
     private let lock = ReadWriteLock(label: "io.hackle.DefaultUserManager")
 
-    private let repository: KeyValueRepository
-
     private var userListeners: [UserListener]
-    private let defaultUser: User
+    private let repository: KeyValueRepository
+    private let cohortFetcher: UserCohortFetcher
+    private let clock: Clock
 
-    private var _currentUser: User
-    var currentUser: User {
+    private let device: Device
+    private let defaultUser: User
+    private var context: UserContext
+
+    private var currentContext: UserContext {
         lock.read {
-            _currentUser
+            context
         }
     }
+    var currentUser: User {
+        currentContext.user
+    }
 
-    init(device: Device, repository: KeyValueRepository) {
-        self.repository = repository
+    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, clock: Clock) {
         self.userListeners = []
-        self.defaultUser = HackleUserBuilder().deviceId(device.id).build()
-        self._currentUser = self.defaultUser
+        self.repository = repository
+        self.cohortFetcher = cohortFetcher
+        self.clock = clock
+        self.device = device
+        self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
+        self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty())
     }
 
     func addListener(listener: UserListener) {
@@ -62,34 +74,91 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
 
     func initialize(user: User?) {
         lock.write { [weak self] in
-            self?._currentUser = (user ?? loadUser() ?? defaultUser)
+            let initUser = (user ?? loadUser() ?? defaultUser)
+            self?.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty())
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
 
+    func resolve(user: User?) -> HackleUser {
+        guard let user else {
+            return toHackleUser(context: currentContext)
+        }
+
+        let context = lock.write {
+            updateUser(user: user)
+        }
+        return toHackleUser(context: context)
+    }
+
+    func toHackleUser(user: User) -> HackleUser {
+        let context = context.with(user: user)
+        return toHackleUser(context: context)
+    }
+
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
+        sync(user: currentUser, completion: completion)
+    }
+
+    private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+        cohortFetcher.fetch(user: user) { result in
+            self.handle(result: result, completion: completion)
+        }
+    }
+
+    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+        switch result {
+        case .success(let cohorts):
+            lock.write {
+                context = context.update(cohorts: cohorts)
+            }
+            completion(.success(()))
+            return
+        case .failure(let error):
+            completion(.failure(error))
+            return
+        }
+    }
+
+    private func toHackleUser(context: UserContext) -> HackleUser {
+        HackleUser.builder()
+            .identifiers(context.user.identifiers)
+            .identifier(.id, context.user.id)
+            .identifier(.id, device.id, overwrite: false)
+            .identifier(.user, context.user.userId)
+            .identifier(.device, context.user.deviceId)
+            .identifier(.device, device.id, overwrite: false)
+            .identifier(.hackleDevice, device.id)
+            .properties(context.user.properties)
+            .hackleProperties(device.properties)
+            .cohorts(context.cohorts.rawCohorts)
+            .build()
+    }
+
     func setUser(user: User) -> User {
         lock.write {
-            updateUser(user: user)
+            updateUser(user: user).user
         }
     }
 
     func setUserId(userId: String?) -> User {
         lock.write {
-            updateUser(user: _currentUser.toBuilder().userId(userId).build())
+            updateUser(user: context.user.toBuilder().userId(userId).build()).user
         }
     }
 
     func setDeviceId(deviceId: String) -> User {
         lock.write {
-            updateUser(user: _currentUser.toBuilder().deviceId(deviceId).build())
+            updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).user
         }
     }
 
     func resetUser() -> User {
         lock.write {
-            update { _ in
+            let context = updateContext { _ in
                 defaultUser
             }
+            return context.user
         }
     }
 
@@ -99,30 +168,33 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
         }
     }
 
-    private func updateUser(user: User) -> User {
-        update { currentUser in
-            user.mergeWith(other: currentUser)
+    private func updateUser(user: User) -> UserContext {
+        updateContext { currentUser in
+            user.with(device: device).mergeWith(other: currentUser)
         }
     }
 
     private func operateProperties(operations: PropertyOperations) -> User {
-        update { currentUser in
+        let context = updateContext { currentUser in
             let properties = operations.operate(base: currentUser.properties)
             return currentUser.with(properties: properties)
         }
+        return context.user
     }
 
-    private func update(updater: (User) -> User) -> User {
-        let oldUser = _currentUser
+    private func updateContext(updater: (User) -> User) -> UserContext {
+        let oldUser = context.user
         let newUser = updater(oldUser)
-        _currentUser = newUser
+
+        let newContext = context.with(user: newUser)
+        context = newContext
 
         if !newUser.identifierEquals(other: oldUser) {
             changeUser(oldUser: oldUser, newUser: newUser, timestamp: Date())
         }
 
-        Log.debug("User updated: \(_currentUser)")
-        return newUser
+        Log.debug("UserContext updated: \(newContext)")
+        return newContext
     }
 
     private func changeUser(oldUser: User, newUser: User, timestamp: Date) {
@@ -192,6 +264,17 @@ private extension User {
             identifiers: identifiers,
             properties: properties
         )
+    }
+
+    func with(device: Device) -> User {
+        let builder = toBuilder()
+        if id == nil {
+            builder.id(device.id)
+        }
+        if deviceId == nil {
+            builder.deviceId(device.id)
+        }
+        return builder.build()
     }
 
     func identifierEquals(other: User?) -> Bool {

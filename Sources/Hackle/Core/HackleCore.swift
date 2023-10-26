@@ -2,8 +2,6 @@ import Foundation
 
 protocol HackleCore {
 
-    func initialize(completion: @escaping () -> ())
-
     func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)]
@@ -76,12 +74,6 @@ class DefaultHackleCore: HackleCore {
             eventProcessor: eventProcessor,
             clock: SystemClock.shared
         )
-    }
-
-    func initialize(completion: @escaping () -> ()) {
-        workspaceFetcher.initialize {
-            completion()
-        }
     }
 
     func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
