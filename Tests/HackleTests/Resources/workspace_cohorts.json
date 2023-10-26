@@ -1,0 +1,21 @@
+{
+  "cohorts": [
+    {
+      "identifier": {
+        "type": "$id",
+        "value": "id"
+      },
+      "cohorts": [
+        1,
+        2
+      ]
+    },
+    {
+      "identifier": {
+        "type": "$userId",
+        "value": "user_id"
+      },
+      "cohorts": []
+    }
+  ]
+}

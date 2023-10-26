@@ -14,6 +14,7 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
     private let eventConditionMatcher: ConditionMatcher
     private let segmentConditionMatcher: ConditionMatcher
     private let experimentConditionMatcher: ConditionMatcher
+    private let cohortConditionMatcher: ConditionMatcher
 
     init(evaluator: Evaluator) {
         let valueOperatorMatcher = DefaultValueOperatorMatcher(
@@ -39,6 +40,10 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
             abTestMatcher: AbTestConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher),
             featureFlagMatcher: FeatureFlagConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher)
         )
+
+        cohortConditionMatcher = CohortConditionMatcher(
+            valueOperatorMatcher: valueOperatorMatcher
+        )
     }
 
 
@@ -48,6 +53,7 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
         case .eventProperty: return eventConditionMatcher
         case .segment: return segmentConditionMatcher
         case .abTest, .featureFlag: return experimentConditionMatcher
+        case .cohort: return cohortConditionMatcher
         }
     }
 }

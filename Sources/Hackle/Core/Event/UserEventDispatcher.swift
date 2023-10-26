@@ -54,7 +54,7 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
 
         let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
-            ApiCallMetrics.record(operation: "post.events", sample: sample, isSuccess: response.isSuccessful)
+            ApiCallMetrics.record(operation: "post.events", sample: sample, response: response)
             self.handleResponse(events: events, response: response)
         }
     }
