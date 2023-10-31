@@ -1,11 +1,15 @@
 # Hackle SDK for iOS
 
+[![tests](https://github.com/hackle-io/hackle-ios-sdk/actions/workflows/test.yml/badge.svg)](https://github.com/hackle-io/hackle-ios-sdk/actions/workflows/test.yml)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/hackle-io/hackle-ios-sdk)
+
+
 ## Install
 
 ### CocoaPods
 
 ```
-pod 'Hackle', '~> 2.25.0'
+pod 'Hackle', '~> 2.26.0'
 ```
 
 ### Swift Package Manager
@@ -13,7 +17,7 @@ pod 'Hackle', '~> 2.25.0'
 ```swift
 // ...
 dependencies: [
-    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("2.25.0"))
+    .package(url: "https://github.com/hackle-io/hackle-ios-sdk.git", .upToNextMinor("2.26.0"))
 ],
 targets: [
     .target(

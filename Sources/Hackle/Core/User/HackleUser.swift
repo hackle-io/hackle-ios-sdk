@@ -12,14 +12,15 @@ class HackleUser {
     let identifiers: [String: String]
     let properties: [String: Any]
     private(set) var hackleProperties: [String: Any]
+    let cohorts: [Cohort]
 
-    init(identifiers: [String: String], properties: [String: Any], hackleProperties: [String: Any]) {
+    init(identifiers: [String: String], properties: [String: Any], hackleProperties: [String: Any], cohorts: [Cohort] = []) {
         self.identifiers = identifiers
         self.properties = properties
         self.hackleProperties = hackleProperties
+        self.cohorts = cohorts
     }
 }
-
 
 extension HackleUser {
 
@@ -44,7 +45,7 @@ extension HackleUser {
             .add(user.properties)
             .build()
 
-        return HackleUser(identifiers: identifiers, properties: properties, hackleProperties: hackleProperties)
+        return HackleUser(identifiers: identifiers, properties: properties, hackleProperties: hackleProperties, cohorts: [])
     }
 
     func toBuilder() -> InternalHackleUserBuilder {
@@ -80,6 +81,7 @@ class InternalHackleUserBuilder {
     private let identifiers = IdentifiersBuilder()
     private let properties = PropertiesBuilder()
     private let hackleProperties = PropertiesBuilder()
+    private var cohorts = [Cohort]()
 
     init() {
     }
@@ -88,6 +90,7 @@ class InternalHackleUserBuilder {
         identifiers.add(user.identifiers)
         properties.add(user.properties)
         hackleProperties.add(user.hackleProperties)
+        cohorts.append(contentsOf: user.cohorts)
     }
 
     @discardableResult
@@ -132,11 +135,24 @@ class InternalHackleUserBuilder {
         return self
     }
 
+    @discardableResult
+    func cohort(_ cohort: Cohort) -> InternalHackleUserBuilder {
+        self.cohorts.append(cohort)
+        return self
+    }
+
+    @discardableResult
+    func cohorts(_ cohorts: [Cohort]) -> InternalHackleUserBuilder {
+        self.cohorts.append(contentsOf: cohorts)
+        return self
+    }
+
     func build() -> HackleUser {
         HackleUser(
             identifiers: identifiers.build(),
             properties: properties.build(),
-            hackleProperties: hackleProperties.build()
+            hackleProperties: hackleProperties.build(),
+            cohorts: cohorts
         )
     }
 }

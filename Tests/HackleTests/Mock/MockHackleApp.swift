@@ -156,13 +156,13 @@ class MockHackleApp : Mock, HackleAppProtocol {
 
     lazy var remoteConfigRef = MockFunction(self, remoteConfig as () -> HackleRemoteConfig)
     func remoteConfig() -> HackleRemoteConfig {
-        registerResult(for: remoteConfigRef) { _ in self._remoteConfig }
+        every(remoteConfigRef).returns(self._remoteConfig)
         return call(remoteConfigRef, args: ())
     }
     
     lazy var remoteConfigWithUserRef = MockFunction(self, remoteConfig as (User) -> HackleRemoteConfig)
     func remoteConfig(user: User) -> HackleRemoteConfig {
-        registerResult(for: remoteConfigWithUserRef) { _ in self._remoteConfig }
+        every(remoteConfigWithUserRef).returns(self._remoteConfig)
         return call(remoteConfigWithUserRef, args: (user))
     }
     

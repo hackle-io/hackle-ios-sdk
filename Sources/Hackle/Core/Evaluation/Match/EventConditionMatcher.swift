@@ -41,7 +41,7 @@ class DefaultEventValueResolver: EventValueResolver {
                 return nil
             }
             return properties[key.name]
-        case .userId, .userProperty, .hackleProperty, .segment, .abTest, .featureFlag:
+        case .userId, .userProperty, .hackleProperty, .segment, .abTest, .featureFlag, .cohort:
             throw HackleError.error("Unsupported TargetKeyType [\(key.type)]")
         }
     }

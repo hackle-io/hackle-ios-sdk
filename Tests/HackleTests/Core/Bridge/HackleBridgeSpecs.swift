@@ -299,7 +299,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variation", parameters: parameters)
-                        mock.registerResult(for: mock.variationRef) { _ in "C" }
+                        
+                        every(mock.variationRef).returns("C")
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationRef.invokations().count) == 1
@@ -318,7 +319,7 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variation", parameters: parameters)
-                        mock.registerResult(for: mock.variationRef) { _ in "A" }
+                        every(mock.variationRef).returns("A")
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationRef.invokations().count) == 1
@@ -343,7 +344,7 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variation", parameters: parameters)
-                        mock.registerResult(for: mock.variationWithUserIdRef) { _ in "C" }
+                        every(mock.variationWithUserIdRef).returns("C")
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserIdRef.invokations().count) == 1
@@ -366,7 +367,7 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variation", parameters: parameters)
-                        mock.registerResult(for: mock.variationWithUserIdRef) { _ in "A" }
+                        every(mock.variationWithUserIdRef).returns("A")
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserIdRef.invokations().count) == 1
@@ -392,7 +393,7 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variation", parameters: parameters)
-                        mock.registerResult(for: mock.variationWithUserRef) { _ in "C" }
+                        every(mock.variationWithUserRef).returns("C")
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserRef.invokations().count) == 1
@@ -415,7 +416,7 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variation", parameters: parameters)
-                        mock.registerResult(for: mock.variationWithUserRef) { _ in "A" }
+                        every(mock.variationWithUserRef).returns("A")
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationWithUserRef.invokations().count) == 1
@@ -457,9 +458,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
-                        mock.registerResult(for: mock.variationDetailRef) {
-                            _ in Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE")
-                        }
+                        every(mock.variationDetailRef)
+                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
@@ -486,9 +486,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
-                        mock.registerResult(for: mock.variationDetailRef) {
-                            _ in Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE")
-                        }
+                        every(mock.variationDetailRef)
+                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
@@ -520,9 +519,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
-                        mock.registerResult(for: mock.variationDetailWithUserIdRef) {
-                            _ in Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE")
-                        }
+                        every(mock.variationDetailWithUserIdRef)
+                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserIdRef.invokations().count) == 1
@@ -552,9 +550,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
-                        mock.registerResult(for: mock.variationDetailWithUserIdRef) {
-                            _ in Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE")
-                        }
+                        every(mock.variationDetailWithUserIdRef)
+                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserIdRef.invokations().count) == 1
@@ -587,9 +584,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
-                        mock.registerResult(for: mock.variationDetailWithUserRef) {
-                            _ in Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE")
-                        }
+                        every(mock.variationDetailWithUserRef)
+                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserRef.invokations().count) == 1
@@ -619,9 +615,8 @@ class HackleBridgeSpec : QuickSpec {
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
                         let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
-                        mock.registerResult(for: mock.variationDetailWithUserRef) {
-                            _ in Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE")
-                        }
+                        every(mock.variationDetailWithUserRef)
+                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
                         let result = bridge.invoke(string: jsonString)
                         expect(mock.variationDetailWithUserRef.invokations().count) == 1
@@ -668,7 +663,8 @@ class HackleBridgeSpec : QuickSpec {
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
-                    mock.registerResult(for: mock.isFeatureOnRef) { _ in true }
+                    every(mock.isFeatureOnRef)
+                        .returns(true)
                         
                     let result = bridge.invoke(string: jsonString)
                     expect(mock.isFeatureOnRef.invokations().count) == 1
@@ -689,7 +685,8 @@ class HackleBridgeSpec : QuickSpec {
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
-                    mock.registerResult(for: mock.isFeatureOnWithUserIdRef) { _ in true }
+                    every(mock.isFeatureOnWithUserIdRef)
+                        .returns(true)
                         
                     let result = bridge.invoke(string: jsonString)
                     expect(mock.isFeatureOnWithUserIdRef.invokations().count) == 1
@@ -711,7 +708,8 @@ class HackleBridgeSpec : QuickSpec {
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
-                    mock.registerResult(for: mock.isFeatureOnWithUserRef) { _ in true }
+                    every(mock.isFeatureOnWithUserRef)
+                        .returns(true)
                         
                     let result = bridge.invoke(string: jsonString)
                     expect(mock.isFeatureOnWithUserRef.invokations().count) == 1
@@ -749,9 +747,8 @@ class HackleBridgeSpec : QuickSpec {
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
-                    mock.registerResult(for: mock.featureFlagDetailRef) {
-                        _ in FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE")
-                    }
+                    every(mock.featureFlagDetailRef)
+                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
                     let result = bridge.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
@@ -779,9 +776,8 @@ class HackleBridgeSpec : QuickSpec {
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
-                    mock.registerResult(for: mock.featureFlagDetailWithUserIdRef) {
-                        _ in FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE")
-                    }
+                    every(mock.featureFlagDetailWithUserIdRef)
+                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
                     let result = bridge.invoke(string: jsonString)
                     expect(mock.featureFlagDetailWithUserIdRef.invokations().count) == 1
@@ -810,9 +806,8 @@ class HackleBridgeSpec : QuickSpec {
                     let mock = MockHackleApp()
                     let bridge = HackleBridge(app: mock)
                     let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
-                    mock.registerResult(for: mock.featureFlagDetailWithUserRef) {
-                        _ in FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE")
-                    }
+                    every(mock.featureFlagDetailWithUserRef)
+                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
                     let result = bridge.invoke(string: jsonString)
                     expect(mock.featureFlagDetailWithUserRef.invokations().count) == 1

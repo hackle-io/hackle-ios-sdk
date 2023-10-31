@@ -163,6 +163,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
             check(type: .segment)
             check(type: .abTest)
             check(type: .featureFlag)
+            check(type: .cohort)
         }
     }
 }
