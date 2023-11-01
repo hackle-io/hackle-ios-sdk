@@ -164,6 +164,5 @@ private func resultF<T, R>(_ function: @escaping (T) throws -> R) -> (T) -> Resu
         } catch let error {
             return .failure(error)
         }
-
     }
 }

@@ -7,12 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */; };
+		7E0E2D922AE75FCD00578C74 /* BridgeInvocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */; };
+		7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */; };
+		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
 		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
 		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
+		7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */; };
+		7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779E2AD50E5200971F20 /* MockHackleApp.swift */; };
+		7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7D2ACE503E00900097 /* HackleBridge.swift */; };
+		7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */; };
 		7E70B5742AA8641900746A5F /* MockDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E70B5732AA8641900746A5F /* MockDevice.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
@@ -422,12 +430,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleWebBridge.swift; sourceTree = "<group>"; };
+		7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeInvocation.swift; sourceTree = "<group>"; };
+		7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeResponse.swift; sourceTree = "<group>"; };
+		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
 		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
 		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
+		7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeSpecs.swift; sourceTree = "<group>"; };
+		7E64779E2AD50E5200971F20 /* MockHackleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleApp.swift; sourceTree = "<group>"; };
+		7E65EB7D2ACE503E00900097 /* HackleBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridge.swift; sourceTree = "<group>"; };
+		7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegate.swift; sourceTree = "<group>"; };
 		7E70B5732AA8641900746A5F /* MockDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevice.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
@@ -846,6 +862,69 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E0E2D7E2AD8D8D100578C74 /* Web */ = {
+			isa = PBXGroup;
+			children = (
+				7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */,
+				7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */,
+			);
+			path = Web;
+			sourceTree = "<group>";
+		};
+		7E0E2D8B2ADE532B00578C74 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		7E0E2D902AE75F1C00578C74 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */,
+				7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7E3F4FBF2AA6FBF2004E0EB0 /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				7E3F4FC32AA6FC2D004E0EB0 /* Helper */,
+				7E3F4FC22AA6FC24004E0EB0 /* Model */,
+				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
+			);
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		7E3F4FC22AA6FC24004E0EB0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
+				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7E3F4FC32AA6FC2D004E0EB0 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		7E825C7E2ABD56D20003F0B7 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				7E0E2D902AE75F1C00578C74 /* Model */,
+				7E0E2D7E2AD8D8D100578C74 /* Web */,
+				7E65EB7D2ACE503E00900097 /* HackleBridge.swift */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
 			isa = PBXGroup;
 			children = (
@@ -946,6 +1025,7 @@
 		EE29D8AA29CD825300B1FEAA /* Hackle */ = {
 			isa = PBXGroup;
 			children = (
+				7E825C7E2ABD56D20003F0B7 /* Bridge */,
 				EE29D93829CD825300B1FEAA /* Common */,
 				EE29D8AE29CD825300B1FEAA /* Core */,
 				EE80E0142A2DC64500FB12CC /* UI */,
@@ -1331,8 +1411,8 @@
 		EE29D9B329CD82C100B1FEAA /* HackleTests */ = {
 			isa = PBXGroup;
 			children = (
-				EE29DA3629CD82C200B1FEAA /* Common */,
 				EE29D9CB29CD82C100B1FEAA /* Core */,
+				EE29DA3629CD82C200B1FEAA /* Common */,
 				EE0F33FB2A6689D0009DE640 /* UI */,
 				EE29D9BF29CD82C100B1FEAA /* Resources */,
 				EE29D9B429CD82C100B1FEAA /* Mock */,
@@ -1357,6 +1437,8 @@
 				EE29D9BE29CD82C100B1FEAA /* MockScheduler.swift */,
 				7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */,
 				7E70B5732AA8641900746A5F /* MockDevice.swift */,
+				7E64779E2AD50E5200971F20 /* MockHackleApp.swift */,
+				7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -1389,6 +1471,7 @@
 		EE29D9CB29CD82C100B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				7E0E2D8B2ADE532B00578C74 /* Bridge */,
 				EE29D9E429CD82C100B1FEAA /* Database */,
 				EE29D9F829CD82C100B1FEAA /* Evaluation */,
 				EE29DA2C29CD82C200B1FEAA /* Event */,
@@ -2169,6 +2252,9 @@
 				EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */,
 				EEDC58802ACC0789001E73DB /* UserCohortFetcher.swift in Sources */,
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
+				7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */,
+				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
+				EE29D96929CD825400B1FEAA /* HackleUserResolver.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
 				EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */,
@@ -2183,6 +2269,7 @@
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,
 				EEDC58712ACBD807001E73DB /* PollingSynchronizer.swift in Sources */,
 				EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */,
+				7E0E2D922AE75FCD00578C74 /* BridgeInvocation.swift in Sources */,
 				EE0F34182A681207009DE640 /* InAppMessageEventMatcher.swift in Sources */,
 				EE29D98F29CD825400B1FEAA /* Evaluator.swift in Sources */,
 				EEDC585F2ACB1B60001E73DB /* Cohort.swift in Sources */,
@@ -2218,6 +2305,7 @@
 				EE29D9B029CD825500B1FEAA /* Config.swift in Sources */,
 				EE29D94529CD825400B1FEAA /* NoopCounter.swift in Sources */,
 				EE29D94829CD825400B1FEAA /* FlushCounter.swift in Sources */,
+				7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */,
 				EEA01CC72A3712CC00E0C021 /* InAppMessageUIWindow.swift in Sources */,
 				EE86376B29ECE950000268DC /* SegmentConditionMatcher.swift in Sources */,
 				EEF895B92A4B37C800722CF6 /* ImageCacheManager.swift in Sources */,
@@ -2257,6 +2345,7 @@
 				EE29D99629CD825400B1FEAA /* ExperimentTargetDeterminer.swift in Sources */,
 				EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */,
 				EE80E0282A2E10F700FB12CC /* InAppMessageUIViewController.swift in Sources */,
+				7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */,
 				EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */,
 				EE80DF8E2A28341C00FB12CC /* InAppMessageResolver.swift in Sources */,
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,
@@ -2374,6 +2463,7 @@
 			buildActionMask = 0;
 			files = (
 				EE0F34082A669659009DE640 /* MockUrlHandler.swift in Sources */,
+				7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */,
 				EE0F340E2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift in Sources */,
 				EE29DA7F29CD82C200B1FEAA /* MockConditionMatcher.swift in Sources */,
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
@@ -2425,6 +2515,7 @@
 				EE29DA6B29CD82C200B1FEAA /* ClockSpecs.swift in Sources */,
 				EE29DA9D29CD82C200B1FEAA /* MockExposureEventDedupDeterminer.swift in Sources */,
 				EE29DA9229CD82C200B1FEAA /* DefaultBucketerSpec.swift in Sources */,
+				7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */,
 				EEF895912A4971DE00722CF6 /* InAppMessageMatcherStub.swift in Sources */,
 				EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */,
 				EE29DA6429CD82C200B1FEAA /* WorkspaceSpecs.swift in Sources */,
@@ -2439,6 +2530,7 @@
 				EE29DA7A29CD82C200B1FEAA /* MockUserValueResolver.swift in Sources */,
 				EE5A78DF2ADBE8E0005A0F9E /* SynchronizerSpecs.swift in Sources */,
 				EEF895972A499C9D00722CF6 /* DefaultInAppMessageResolverSpecs.swift in Sources */,
+				7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */,
 				EED6A1272A0E267D00A8875D /* PropertyOperatorSpecs.swift in Sources */,
 				EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */,
 				EE29DA9129CD82C200B1FEAA /* MockBucketer.swift in Sources */,

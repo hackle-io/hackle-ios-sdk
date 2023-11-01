@@ -35,6 +35,7 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository())
             )
             sut = HackleApp(
+                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
                 core: core,
                 eventQueue: eventQueue,
                 synchronizer: synchronizer,
