@@ -1,0 +1,21 @@
+name: publish_to_cocoapods
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3
+      
+      - name: Install cocoapods
+        run: gem install cocoapods
+      
+      - name: Publish to Cocoapods
+        run: |
+          set -eo pipefail
+          pod lib lint --allow-warnings
+          pod trunk push --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: asdf1234 #${{ secrets.COCOAPODS_TRUNK_TOKEN }}
