@@ -18,4 +18,4 @@ jobs:
           pod lib lint --allow-warnings
           pod trunk push --allow-warnings
         env:
-          COCOAPODS_TRUNK_TOKEN: asdf1234 #${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
