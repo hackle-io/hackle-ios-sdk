@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,9 @@
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
 		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
+		7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666282B2C409600B3CDCF /* SharedDatabase.swift */; };
+		7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */; };
+		7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5206012B2BE6A90095DCD9 /* Database.swift */; };
 		7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */; };
 		7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779E2AD50E5200971F20 /* MockHackleApp.swift */; };
 		7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7D2ACE503E00900097 /* HackleBridge.swift */; };
@@ -440,6 +443,9 @@
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
 		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
+		7E4666282B2C409600B3CDCF /* SharedDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDatabase.swift; sourceTree = "<group>"; };
+		7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceDatabase.swift; sourceTree = "<group>"; };
+		7E5206012B2BE6A90095DCD9 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeSpecs.swift; sourceTree = "<group>"; };
 		7E64779E2AD50E5200971F20 /* MockHackleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleApp.swift; sourceTree = "<group>"; };
 		7E65EB7D2ACE503E00900097 /* HackleBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridge.swift; sourceTree = "<group>"; };
@@ -888,31 +894,30 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		7E3F4FBF2AA6FBF2004E0EB0 /* Platform */ = {
+		7E5205F92B2AFF3E0095DCD9 /* Workspace */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FC32AA6FC2D004E0EB0 /* Helper */,
-				7E3F4FC22AA6FC24004E0EB0 /* Model */,
-				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
+				EE29D8CF29CD825300B1FEAA /* EventEntity.swift */,
+				7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */,
 			);
-			path = Platform;
+			path = Workspace;
 			sourceTree = "<group>";
 		};
-		7E3F4FC22AA6FC24004E0EB0 /* Model */ = {
+		7E5205FA2B2AFF770095DCD9 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
-				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
+				EE29D8D029CD825300B1FEAA /* EventRepository.swift */,
+				EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */,
 			);
-			path = Model;
+			path = Repository;
 			sourceTree = "<group>";
 		};
-		7E3F4FC32AA6FC2D004E0EB0 /* Helper */ = {
+		7E5205FB2B2AFF880095DCD9 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+				7E4666282B2C409600B3CDCF /* SharedDatabase.swift */,
 			);
-			path = Helper;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		7E825C7E2ABD56D20003F0B7 /* Bridge */ = {
@@ -1144,10 +1149,11 @@
 		EE29D8CD29CD825300B1FEAA /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				7E5205FB2B2AFF880095DCD9 /* Shared */,
+				7E5205F92B2AFF3E0095DCD9 /* Workspace */,
+				7E5205FA2B2AFF770095DCD9 /* Repository */,
 				EE29D8CE29CD825300B1FEAA /* SQLiteDatabase.swift */,
-				EE29D8CF29CD825300B1FEAA /* EventEntity.swift */,
-				EE29D8D029CD825300B1FEAA /* EventRepository.swift */,
-				EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */,
+				7E5206012B2BE6A90095DCD9 /* Database.swift */,
 				EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */,
 			);
 			path = Database;
@@ -2254,7 +2260,6 @@
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
 				7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */,
 				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
-				EE29D96929CD825400B1FEAA /* HackleUserResolver.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
 				EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */,
@@ -2402,6 +2407,7 @@
 				EE29D98E29CD825400B1FEAA /* Action.swift in Sources */,
 				EE29D98A29CD825400B1FEAA /* ContainerGroup.swift in Sources */,
 				EE29D97329CD825400B1FEAA /* Clock.swift in Sources */,
+				7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */,
 				EE29D95E29CD825400B1FEAA /* AppState.swift in Sources */,
 				EE29D97B29CD825400B1FEAA /* SdkVersion.swift in Sources */,
 				EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */,
@@ -2415,6 +2421,7 @@
 				EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */,
 				EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */,
 				EEA01CBC2A32A8C600E0C021 /* EventConditionMatcher.swift in Sources */,
+				7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */,
 				EE29D97429CD825400B1FEAA /* TimeUnit.swift in Sources */,
 				EE29D96E29CD825400B1FEAA /* Sdk.swift in Sources */,
 				EE80DF8A2A2831E700FB12CC /* InAppMessageRequest.swift in Sources */,
@@ -2436,6 +2443,7 @@
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,
 				EE29D98029CD825400B1FEAA /* Bucket.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
+				7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */,
 				EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */,
 				EE29D98129CD825400B1FEAA /* ParameterConfiguration.swift in Sources */,
 				EE29D96329CD825400B1FEAA /* Workspace.swift in Sources */,

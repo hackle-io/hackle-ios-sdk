@@ -363,9 +363,8 @@ extension HackleApp {
         userManager.addListener(listener: sessionManager)
 
         // - EventProcessor
-
-        let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
-        let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
+        let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: sdkKey)
+        let eventRepository = SQLiteEventRepository(workspaceDatabase: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
 
