@@ -1,6 +1,6 @@
 import Foundation
 
-class SharedDatabase : Database {
+class SharedDatabase: Database {
     init() {
         super.init(
             label: "io.hackle.SharedDatabase",

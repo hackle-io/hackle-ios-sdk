@@ -18,6 +18,8 @@
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
 		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
 		7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666282B2C409600B3CDCF /* SharedDatabase.swift */; };
+		7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */; };
+		7E5205FE2B2B02970095DCD9 /* NotificationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FD2B2B02970095DCD9 /* NotificationEntity.swift */; };
 		7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */; };
 		7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5206012B2BE6A90095DCD9 /* Database.swift */; };
 		7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */; };
@@ -444,6 +446,8 @@
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
 		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
 		7E4666282B2C409600B3CDCF /* SharedDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDatabase.swift; sourceTree = "<group>"; };
+		7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
+		7E5205FD2B2B02970095DCD9 /* NotificationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEntity.swift; sourceTree = "<group>"; };
 		7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceDatabase.swift; sourceTree = "<group>"; };
 		7E5206012B2BE6A90095DCD9 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeSpecs.swift; sourceTree = "<group>"; };
@@ -908,6 +912,7 @@
 			children = (
 				EE29D8D029CD825300B1FEAA /* EventRepository.swift */,
 				EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */,
+				7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -915,6 +920,7 @@
 		7E5205FB2B2AFF880095DCD9 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				7E5205FD2B2B02970095DCD9 /* NotificationEntity.swift */,
 				7E4666282B2C409600B3CDCF /* SharedDatabase.swift */,
 			);
 			path = Shared;
@@ -2269,6 +2275,7 @@
 				EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */,
 				EE29D98229CD825400B1FEAA /* Target.swift in Sources */,
 				EE0B71EE2A42E84A009D7AF4 /* InAppMessageActionHandler.swift in Sources */,
+				7E5205FE2B2B02970095DCD9 /* NotificationEntity.swift in Sources */,
 				EE29D96529CD825400B1FEAA /* UserManager.swift in Sources */,
 				EE80DF882A2831E300FB12CC /* InAppMessageEvaluator.swift in Sources */,
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,
@@ -2459,6 +2466,7 @@
 				EE29D9A929CD825500B1FEAA /* Session.swift in Sources */,
 				EE29DACA29CD988100B1FEAA /* HackleUserManualOverrideStorage.swift in Sources */,
 				EE29D94429CD825400B1FEAA /* NoopTimer.swift in Sources */,
+				7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */,
 				EE29D98D29CD825400B1FEAA /* TargetRule.swift in Sources */,
 				EE29D97029CD825400B1FEAA /* Collections.swift in Sources */,
 				EE29D9AB29CD825500B1FEAA /* SessionListener.swift in Sources */,

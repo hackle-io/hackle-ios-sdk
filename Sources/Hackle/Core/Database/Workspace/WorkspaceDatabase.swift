@@ -1,6 +1,6 @@
 import Foundation
 
-class WorkspaceDatabase : Database {
+class WorkspaceDatabase: Database {
     init(sdkKey: String) {
         super.init(
             label: "io.hackle.WorkspaceDatabase",
