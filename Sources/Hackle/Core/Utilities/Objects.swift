@@ -49,4 +49,12 @@ extension Optional {
         }
         return "\(value)"
     }
+    
+    func requireNotNil() throws -> Wrapped {
+        if let wrapped = self {
+            return wrapped
+        } else {
+            throw HackleError.error("Required value was nil.")
+        }
+    }
 }
