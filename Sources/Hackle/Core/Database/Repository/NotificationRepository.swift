@@ -46,6 +46,7 @@ class NotificationRepositoryImpl: NotificationRepository {
                         try statement.bindString(index: 4, value: entity.clickAction)
                         try statement.bindDouble(index: 5, value: entity.clickTimestamp.timeIntervalSince1970)
                         try statement.bindString(index: 6, value: entity.link)
+                        try statement.execute()
                     }
             }
         } catch {
