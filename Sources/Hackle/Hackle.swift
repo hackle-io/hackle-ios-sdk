@@ -117,8 +117,7 @@ extension Hackle {
     ) -> Bool {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
             print("Hackle notification data detected.")
-            let handler = NotificationHandler()
-            handler.handleNotificationData(data: notificationData)
+            NotificationHandler.handleNotificationData(data: notificationData)
             completionHandler()
             return true
         } else {

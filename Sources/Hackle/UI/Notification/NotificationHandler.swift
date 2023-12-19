@@ -2,8 +2,14 @@ import Foundation
 import UserNotifications
 
 class NotificationHandler {
+    private static var receiver: NotificationDataReceiver =
+        DefaultNotificationDataReceiver(
+            repository: NotificationRepositoryImpl(
+                sharedDatabase: DatabaseHelper.getSharedDatabase()
+            )
+        )
     
-    func handleNotificationData(data: NotificationData) {
-        print("Save notification in local.")
+    static func handleNotificationData(data: NotificationData, timestamp: Date = Date()) {
+        receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
     }
 }

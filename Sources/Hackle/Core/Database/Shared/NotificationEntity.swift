@@ -7,7 +7,7 @@ class NotificationEntity {
     let pushMessageId: Int
     let clickAction: String
     let clickTimestamp: Date
-    let link: String
+    let link: String?
     
     init(
         notificationId: Int64,
@@ -16,7 +16,7 @@ class NotificationEntity {
         pushMessageId: Int,
         clickAction: String,
         clickTimestamp: Date,
-        link: String
+        link: String?
     ) {
         self.notificationId = notificationId
         self.workspaceId = workspaceId
@@ -44,8 +44,8 @@ extension NotificationEntity {
             "\(COLUMN_WORKSPACE_ID) INTEGER NOT NULL," +
             "\(COLUMN_ENVIRONMENT_ID) INTEGER NOT NULL," +
             "\(COLUMN_PUSH_MESSAGE_ID) INTEGER NOT NULL," +
-            "\(COLUMN_CLICK_ACTION) TEXT NOT NULL," +
-            "\(COLUMN_CLICK_TIMESTAMP) INTEGER NOT NULL," +
+            "\(COLUMN_CLICK_ACTION) TEXT," +
+            "\(COLUMN_CLICK_TIMESTAMP) INTEGER," +
             "\(COLUMN_LINK) TEXT" +
         ")"
     

@@ -61,3 +61,17 @@ extension NotificationData {
         }
     }
 }
+
+extension NotificationData {
+    func toEntity(timestamp: Date) -> NotificationEntity {
+        return NotificationEntity(
+            notificationId: 0,
+            workspaceId: workspaceId,
+            environmentId: environmentId,
+            pushMessageId: pushMessageId,
+            clickAction: clickAction.rawValue,
+            clickTimestamp: timestamp,
+            link: link
+        )
+    }
+}
