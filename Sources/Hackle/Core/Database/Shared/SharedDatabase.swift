@@ -6,6 +6,7 @@ class SharedDatabase: Database {
             label: "io.hackle.SharedDatabase",
             filename: "shared_hackle.sqlite"
         )
+        createTable()
     }
     
     private func createTable() {
