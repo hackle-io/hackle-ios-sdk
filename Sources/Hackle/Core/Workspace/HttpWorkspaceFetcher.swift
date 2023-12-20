@@ -77,7 +77,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
             throw HackleError.error("Response body is empty")
         }
 
-        guard let workspaceDto = try? JSONDecoder().decode(WorkspaceDto.self, from: responseBody) else {
+        guard let workspaceDto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
 

@@ -5,6 +5,9 @@
 import Foundation
 
 protocol Workspace {
+    var id: Int64 { get }
+    
+    var environmentId: Int64 { get }
 
     var experiments: [Experiment] { get }
 
@@ -32,7 +35,8 @@ protocol Workspace {
 }
 
 class WorkspaceEntity: Workspace {
-
+    let id: Int64
+    let environmentId: Int64
     let experiments: [Experiment]
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
@@ -48,6 +52,8 @@ class WorkspaceEntity: Workspace {
     private let _inAppMessages: [InAppMessage.Key: InAppMessage]
 
     init(
+        id: Int64,
+        environmentId: Int64,
         experiments: [Experiment],
         featureFlags: [Experiment],
         buckets: [Bucket],
@@ -58,6 +64,8 @@ class WorkspaceEntity: Workspace {
         remoteConfigParameters: [RemoteConfigParameter],
         inAppMessages: [InAppMessage]
     ) {
+        self.id = id
+        self.environmentId = environmentId
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.inAppMessages = inAppMessages
@@ -127,8 +135,10 @@ class WorkspaceEntity: Workspace {
         _inAppMessages[inAppMessageKey]
     }
 
-    static func from(dto: WorkspaceDto) -> Workspace {
-
+    static func from(dto: WorkspaceConfigDto) -> Workspace {
+        let workspaceId = dto.workspace.id
+        let environmentId = dto.workspace.environment.id
+        
         let experiments = dto.experiments.compactMap { it in
             it.toExperimentOrNil(type: .abTest)
         }
@@ -166,6 +176,8 @@ class WorkspaceEntity: Workspace {
         }
 
         return WorkspaceEntity(
+            id: workspaceId,
+            environmentId: environmentId,
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
@@ -179,7 +191,8 @@ class WorkspaceEntity: Workspace {
     }
 }
 
-class WorkspaceDto: Codable {
+class WorkspaceConfigDto: Codable {
+    var workspace: WorkspaceDto
     var experiments: [ExperimentDto]
     var featureFlags: [ExperimentDto]
     var buckets: [BucketDto]
@@ -189,6 +202,15 @@ class WorkspaceDto: Codable {
     var parameterConfigurations: [ParameterConfigurationDto]
     var remoteConfigParameters: [RemoteConfigParameterDto]
     var inAppMessages: [InAppMessageDto]
+}
+
+class WorkspaceDto: Codable {
+    var id: Int64
+    var environment: EnvironmentDto
+}
+
+class EnvironmentDto: Codable {
+    var id: Int64
 }
 
 class ExperimentDto: Codable {

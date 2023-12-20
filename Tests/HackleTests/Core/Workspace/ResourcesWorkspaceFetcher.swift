@@ -17,7 +17,7 @@ class ResourcesWorkspaceFetcher: WorkspaceFetcher {
         let path = Bundle(for: ResourcesWorkspaceFetcher.self).path(forResource: fileName, ofType: "json")!
         let json = try! String(contentsOfFile: path)
 
-        let dto = try! JSONDecoder().decode(WorkspaceDto.self, from: json.data(using: .utf8)!)
+        let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
         workspace = WorkspaceEntity.from(dto: dto)
     }
 
