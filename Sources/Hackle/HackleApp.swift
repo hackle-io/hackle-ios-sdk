@@ -464,6 +464,19 @@ extension HackleApp {
             presenter: inAppMessageUI
         )
         eventPublisher.addListener(listener: inAppMessageManager)
+        
+        // - Notification
+        let notificationQueue = DispatchQueue(label: "io.hackle.NotificationQueue", qos: .utility)
+        let notificationManager = NotificationManager(
+            core: core,
+            dispatchQueue: notificationQueue,
+            workspaceFetcher: workspaceManager,
+            userManager: userManager,
+            repository: NotificationRepositoryImpl(
+                sharedDatabase: DatabaseHelper.getSharedDatabase()
+            )
+        )
+        NotificationHandler.setNotificationDataReceiver(receiver: notificationManager)
 
         // - UserExplorer
 

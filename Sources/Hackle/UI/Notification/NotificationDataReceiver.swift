@@ -5,9 +5,11 @@ protocol NotificationDataReceiver {
 }
 
 class DefaultNotificationDataReceiver: NotificationDataReceiver {
+    let dispatchQueue: DispatchQueue
     let repository: NotificationRepository
     
-    init(repository: NotificationRepository) {
+    init(dispatchQueue: DispatchQueue, repository: NotificationRepository) {
+        self.dispatchQueue = dispatchQueue
         self.repository = repository
     }
     
@@ -16,11 +18,9 @@ class DefaultNotificationDataReceiver: NotificationDataReceiver {
     }
     
     private func saveInLocal(data: NotificationData, timestamp: Date) {
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             let entity = data.toEntity(timestamp: timestamp)
             self.repository.save(entity: entity)
-            
-            print("Saved count \(self.repository.count())")
         }
     }
 }

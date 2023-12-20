@@ -32,20 +32,22 @@ class NotificationRepositoryImpl: NotificationRepository {
                 "\(NotificationEntity.COLUMN_WORKSPACE_ID)," +
                 "\(NotificationEntity.COLUMN_ENVIRONMENT_ID)," +
                 "\(NotificationEntity.COLUMN_PUSH_MESSAGE_ID)," +
-                "\(NotificationEntity.COLUMN_CLICK_ACTION)," +
-                "\(NotificationEntity.COLUMN_CLICK_TIMESTAMP)," +
-                "\(NotificationEntity.COLUMN_LINK)" +
-            ") VALUES (?, ?, ?, ?, ?, ?)"
+                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_KEY)," +
+                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_EXECUTION_ID)," +
+                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_DELIVERY_ID)," +
+                "\(NotificationEntity.COLUMN_CLICK_TIMESTAMP)" +
+            ") VALUES (?, ?, ?, ?, ?, ?, ?)"
         do {
             try sharedDatabase.execute { database in
                 try database.statement(sql: query)
                     .use { statement in
-                        try statement.bindInt(index: 1, value: Int32(entity.workspaceId))
-                        try statement.bindInt(index: 2, value: Int32(entity.environmentId))
-                        try statement.bindInt(index: 3, value: Int32(entity.pushMessageId))
-                        try statement.bindString(index: 4, value: entity.clickAction)
-                        try statement.bindDouble(index: 5, value: entity.clickTimestamp.timeIntervalSince1970)
-                        try statement.bindString(index: 6, value: entity.link ?? "")
+                        try statement.bindInt(index: 1, value: entity.workspaceId)
+                        try statement.bindInt(index: 2, value: entity.environmentId)
+                        try statement.bindInt(index: 3, value: entity.pushMessageId)
+                        try statement.bindInt(index: 4, value: entity.pushMessageKey)
+                        try statement.bindInt(index: 5, value: entity.pushMessageExecutionId)
+                        try statement.bindInt(index: 6, value: entity.pushMessageDeliveryId)
+                        try statement.bindDouble(index: 7, value: entity.clickTimestamp.timeIntervalSince1970)
                         try statement.execute()
                     }
             }

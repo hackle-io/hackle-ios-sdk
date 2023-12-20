@@ -33,6 +33,8 @@
 		7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */; };
 		7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */; };
 		7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */; };
+		7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */; };
+		7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -467,6 +469,8 @@
 		7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataSpecs.swift; sourceTree = "<group>"; };
 		7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFactory.swift; sourceTree = "<group>"; };
 		7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiver.swift; sourceTree = "<group>"; };
+		7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEvent.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -968,6 +972,15 @@
 			path = Bridge;
 			sourceTree = "<group>";
 		};
+		7E9DDDFE2B319EE1006ACFDA /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */,
+				7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
 			isa = PBXGroup;
 			children = (
@@ -1084,6 +1097,7 @@
 		EE29D8AE29CD825300B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				7E9DDDFE2B319EE1006ACFDA /* Notification */,
 				EE5A78F82ADCD29B005A0F9E /* Platform */,
 				EE29D8CD29CD825300B1FEAA /* Database */,
 				EE29D90D29CD825300B1FEAA /* Evaluation */,
@@ -2469,6 +2483,7 @@
 				7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */,
 				EE29D97429CD825400B1FEAA /* TimeUnit.swift in Sources */,
 				EE29D96E29CD825400B1FEAA /* Sdk.swift in Sources */,
+				7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */,
 				EE80DF8A2A2831E700FB12CC /* InAppMessageRequest.swift in Sources */,
 				EE29D94029CD825400B1FEAA /* Hackle.swift in Sources */,
 				EE29D9A429CD825500B1FEAA /* MonitoringMetricRegistry.swift in Sources */,
@@ -2488,6 +2503,7 @@
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,
 				EE29D98029CD825400B1FEAA /* Bucket.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
+				7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */,
 				7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */,
 				EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */,
 				EE29D98129CD825400B1FEAA /* ParameterConfiguration.swift in Sources */,
