@@ -65,9 +65,39 @@ class SQLiteStatement: SQLiteCloseable {
     private let SQLITE_STATIC = unsafeBitCast(0, to: sqlite3_destructor_type.self)
     private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
+    func bindInt(index: Int32, value: Int32?) throws {
+        if let value = value {
+            try bindInt(index: index, value: value)
+        } else {
+            try bindNull(index: index)
+        }
+    }
+    
     func bindInt(index: Int32, value: Int32) throws {
         if sqlite3_bind_int(statement, index, value) != SQLITE_OK {
             throw HackleError.error("Failed to bind int: \(String(cString: sqlite3_errmsg(database.connection))) [index: \(index), value: \(value)]")
+        }
+    }
+    
+    func bindInt(index: Int32, value: Int64?) throws {
+        if let value = value {
+            try bindInt(index: index, value: value)
+        } else {
+            try bindNull(index: index)
+        }
+    }
+    
+    func bindInt(index: Int32, value: Int64) throws {
+        if sqlite3_bind_int64(statement, index, value) != SQLITE_OK {
+            throw HackleError.error("Failed to bind int: \(String(cString: sqlite3_errmsg(database.connection))) [index: \(index), value: \(value)]")
+        }
+    }
+    
+    func bindDouble(index: Int32, value: Double?) throws {
+        if let value = value {
+            try bindDouble(index: index, value: value)
+        } else {
+            try bindNull(index: index)
         }
     }
     
@@ -76,10 +106,24 @@ class SQLiteStatement: SQLiteCloseable {
             throw HackleError.error("Failed to bind double: \(String(cString: sqlite3_errmsg(database.connection))) [index: \(index), value: \(value)]")
         }
     }
+    
+    func bindString(index: Int32, value: String?) throws {
+        if let value = value {
+            try bindString(index: index, value: value)
+        } else {
+            try bindNull(index: index)
+        }
+    }
 
     func bindString(index: Int32, value: String) throws {
         if sqlite3_bind_text(statement, index, (value as NSString).utf8String, -1, SQLITE_STATIC) != SQLITE_OK {
             throw HackleError.error("Failed to bind String: \(String(cString: sqlite3_errmsg(database.connection))) [index: \(index), value: \(value)]")
+        }
+    }
+    
+    func bindNull(index: Int32) throws {
+        if sqlite3_bind_null(statement, index) != SQLITE_OK {
+            throw HackleError.error("Failed to bind nil: \(String(cString: sqlite3_errmsg(database.connection))) [index: \(index), value: nil]")
         }
     }
 
