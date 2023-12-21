@@ -15,6 +15,7 @@ import WebKit
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
+    private let notificationManager: NotificationManager
     private let device: Device
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
@@ -46,6 +47,7 @@ import WebKit
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
+        notificationManager: NotificationManager,
         device: Device,
         userExplorer: HackleUserExplorer
     ) {
@@ -57,6 +59,7 @@ import WebKit
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
         self.notificationObserver = notificationObserver
+        self.notificationManager = notificationManager
         self.device = device
         self.userExplorer = userExplorer
         super.init()
@@ -304,6 +307,7 @@ extension HackleApp {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
             self.synchronizer.sync(completion: completion)
+            self.notificationManager.flush()
         }
     }
 
@@ -506,6 +510,7 @@ extension HackleApp {
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
             notificationObserver: appNotificationObserver,
+            notificationManager: notificationManager,
             device: device,
             userExplorer: userExplorer
         )

@@ -1,9 +1,9 @@
 import Foundation
 
 protocol NotificationRepository {
-    func count() -> Int
+    func count(workspaceId: Int64, environmentId: Int64) -> Int
     func save(entity: NotificationEntity)
-    func getNotifications(workspaceId: Int, environmentId: Int, limit: Int?) -> [NotificationEntity]
+    func getNotifications(workspaceId: Int64, environmentId: Int64, limit: Int?) -> [NotificationEntity]
     func delete(entities: [NotificationEntity])
 }
 
@@ -14,8 +14,11 @@ class NotificationRepositoryImpl: NotificationRepository {
         self.sharedDatabase = sharedDatabase
     }
     
-    func count() -> Int {
-        let query = "SELECT COUNT(*) FROM \(NotificationEntity.TABLE_NAME)"
+    func count(workspaceId: Int64, environmentId: Int64) -> Int {
+        let query = 
+            "SELECT COUNT(*) FROM \(NotificationEntity.TABLE_NAME) " +
+                "WHERE \(NotificationEntity.COLUMN_WORKSPACE_ID) = \(workspaceId) AND " +
+                    "\(NotificationEntity.COLUMN_ENVIRONMENT_ID) = \(environmentId)"
         do {
             return try sharedDatabase.execute { database -> Int in
                 try database.queryForInt(sql: query)
@@ -56,7 +59,7 @@ class NotificationRepositoryImpl: NotificationRepository {
         }
     }
     
-    func getNotifications(workspaceId: Int, environmentId: Int, limit: Int? = nil) -> [NotificationEntity] {
+    func getNotifications(workspaceId: Int64, environmentId: Int64, limit: Int? = nil) -> [NotificationEntity] {
         var query =
             "SELECT * FROM \(NotificationEntity.TABLE_NAME) " +
                 "WHERE \(NotificationEntity.COLUMN_WORKSPACE_ID) = \(workspaceId) AND " +
