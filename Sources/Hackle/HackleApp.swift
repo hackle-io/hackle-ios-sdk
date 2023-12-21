@@ -306,8 +306,10 @@ extension HackleApp {
         eventQueue.async {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
-            self.synchronizer.sync(completion: completion)
-            self.notificationManager.flush()
+            self.synchronizer.sync(completion: {
+                self.notificationManager.flush()
+                completion()
+            })
         }
     }
 

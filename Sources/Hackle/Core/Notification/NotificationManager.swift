@@ -9,7 +9,7 @@ class NotificationManager: NotificationDataReceiver {
     let userManager: UserManager
     let repository: NotificationRepository
     
-    let flusing: AtomicReference<Bool> = AtomicReference(value: false)
+    private let flusing: AtomicReference<Bool> = AtomicReference(value: false)
     
     init(
         core: HackleCore,
