@@ -44,7 +44,8 @@ class NotificationManager: NotificationDataReceiver {
             environmentId: workspace.environmentId
         )
         let loop = Int(ceil(Double(totalCount) / Double(batchSize)))
-        Log.debug("Flush notification data: \(loop)(\(batchSize))")
+        Log.debug("Total notification data: \(totalCount)")
+        
         for _ in 0...loop {
             let notifications = repository.getNotifications(
                 workspaceId: workspace.id,
@@ -67,6 +68,8 @@ class NotificationManager: NotificationDataReceiver {
             repository.delete(entities: notifications)
             Log.debug("Flushed notification data: \(notifications.count) items")
         }
+        
+        Log.debug("Finished notification data flush task.")
     }
     
     func onNotificationDataReceived(data: NotificationData, timestamp: Date) {
