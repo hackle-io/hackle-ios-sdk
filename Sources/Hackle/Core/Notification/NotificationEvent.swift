@@ -10,7 +10,8 @@ class RegisterPushTokenEvent {
 extension RegisterPushTokenEvent {
     func toTrackEvent() -> Event {
         return Event.builder("$push_token")
-            .property("provier_type", "APN")
+            .property("provier_type", NotificationProviderType.ApplePushNotificationService.rawValue)
+            .property("token", token)
             .build()
     }
 }

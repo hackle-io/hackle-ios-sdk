@@ -225,6 +225,10 @@ import WebKit
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
+    
+    @objc public func setAPNSToken(_ deviceToken: Data) {
+        notificationManager.setAPNSToken(deviceToken: deviceToken)
+    }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
@@ -319,6 +323,7 @@ extension HackleApp {
 
         let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
+        let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)")
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
 
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -353,7 +358,7 @@ extension HackleApp {
 
         let userManager = DefaultUserManager(
             device: device,
-            repository: UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)"),
+            repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             clock: SystemClock.shared
         )
@@ -478,11 +483,13 @@ extension HackleApp {
             dispatchQueue: notificationQueue,
             workspaceFetcher: workspaceManager,
             userManager: userManager,
+            preferences: keyValueRepositoryBySdkKey,
             repository: NotificationRepositoryImpl(
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )
         NotificationHandler.setNotificationDataReceiver(receiver: notificationManager)
+        userManager.addListener(listener: notificationManager)
 
         // - UserExplorer
 
