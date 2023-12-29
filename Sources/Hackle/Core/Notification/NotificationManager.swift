@@ -60,7 +60,7 @@ class NotificationManager: NotificationDataReceiver, UserListener {
         Log.debug("New device token provided.")
         
         _apnsToken = deviceTokenString
-        notifyAPNSTokenChanged(timestamp: timestamp)
+        notifyAPNSTokenChanged(user: userManager.currentUser, timestamp: timestamp)
     }
     
     func flush(batchSize: Int = DEFAULT_FLUSH_BATCH_SIZE) {
