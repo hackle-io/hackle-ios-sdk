@@ -14,6 +14,7 @@ class NotificationData {
     let imageUrl: String?
     let clickAction: NotificationClickAction
     let link: String?
+    let debug: Bool
     
     init(
         workspaceId: Int64,
@@ -25,7 +26,8 @@ class NotificationData {
         showForeground: Bool,
         imageUrl: String?,
         clickAction: NotificationClickAction,
-        link: String?
+        link: String?,
+        debug: Bool
     ) {
         self.workspaceId = workspaceId
         self.environmentId = environmentId
@@ -37,6 +39,7 @@ class NotificationData {
         self.imageUrl = imageUrl
         self.clickAction = clickAction
         self.link = link
+        self.debug = debug
     }
 }
 
@@ -52,6 +55,7 @@ extension NotificationData {
     static let KEY_IMAGE_URL = "imageUrl"
     static let KEY_CLICK_ACTION = "clickAction"
     static let KEY_LINK = "link"
+    static let KEY_DEBUG = "debug"
     
     static func from(data: [AnyHashable: Any]) -> NotificationData? {
         guard let hackle = data[KEY_HACKLE] as? [AnyHashable: Any] else {
@@ -71,25 +75,11 @@ extension NotificationData {
                 clickAction: NotificationClickAction.from(
                     rawValue: hackle[KEY_CLICK_ACTION] as? String
                 ),
-                link: hackle[KEY_LINK] as? String
+                link: hackle[KEY_LINK] as? String,
+                debug: hackle[KEY_DEBUG] as? Bool ?? false
             )
         } catch {
             return nil
         }
-    }
-}
-
-extension NotificationData {
-    func toEntity(timestamp: Date) -> NotificationEntity {
-        return NotificationEntity(
-            notificationId: 0,
-            workspaceId: workspaceId,
-            environmentId: environmentId,
-            pushMessageId: pushMessageId,
-            pushMessageKey: pushMessageKey,
-            pushMessageExecutionId: pushMessageExecutionId,
-            pushMessageDeliveryId: pushMessageDeliveryId,
-            clickTimestamp: timestamp
-        )
     }
 }

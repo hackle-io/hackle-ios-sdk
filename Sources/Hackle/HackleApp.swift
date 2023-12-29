@@ -496,6 +496,7 @@ extension HackleApp {
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
             userManager: userManager,
+            notificiationManager: notificationManager,
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage
         )

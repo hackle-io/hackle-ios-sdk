@@ -23,7 +23,7 @@
 		7E4666302B30133400B3CDCF /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662F2B30133400B3CDCF /* NotificationHandler.swift */; };
 		7E4666322B30165100B3CDCF /* NotificationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666312B30165100B3CDCF /* NotificationData.swift */; };
 		7E4666342B3021E400B3CDCF /* NotificationClickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666332B3021E400B3CDCF /* NotificationClickAction.swift */; };
-		7E5205FE2B2B02970095DCD9 /* NotificationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FD2B2B02970095DCD9 /* NotificationEntity.swift */; };
+		7E5205FE2B2B02970095DCD9 /* NotificationHistoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FD2B2B02970095DCD9 /* NotificationHistoryEntity.swift */; };
 		7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */; };
 		7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5206012B2BE6A90095DCD9 /* Database.swift */; };
 		7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */; };
@@ -460,7 +460,7 @@
 		7E46662F2B30133400B3CDCF /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
 		7E4666312B30165100B3CDCF /* NotificationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationData.swift; sourceTree = "<group>"; };
 		7E4666332B3021E400B3CDCF /* NotificationClickAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationClickAction.swift; sourceTree = "<group>"; };
-		7E5205FD2B2B02970095DCD9 /* NotificationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEntity.swift; sourceTree = "<group>"; };
+		7E5205FD2B2B02970095DCD9 /* NotificationHistoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHistoryEntity.swift; sourceTree = "<group>"; };
 		7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceDatabase.swift; sourceTree = "<group>"; };
 		7E5206012B2BE6A90095DCD9 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeSpecs.swift; sourceTree = "<group>"; };
@@ -958,7 +958,7 @@
 		7E5205FB2B2AFF880095DCD9 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				7E5205FD2B2B02970095DCD9 /* NotificationEntity.swift */,
+				7E5205FD2B2B02970095DCD9 /* NotificationHistoryEntity.swift */,
 				7E4666282B2C409600B3CDCF /* SharedDatabase.swift */,
 			);
 			path = Shared;
@@ -2326,7 +2326,7 @@
 				EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */,
 				EE29D98229CD825400B1FEAA /* Target.swift in Sources */,
 				EE0B71EE2A42E84A009D7AF4 /* InAppMessageActionHandler.swift in Sources */,
-				7E5205FE2B2B02970095DCD9 /* NotificationEntity.swift in Sources */,
+				7E5205FE2B2B02970095DCD9 /* NotificationHistoryEntity.swift in Sources */,
 				EE29D96529CD825400B1FEAA /* UserManager.swift in Sources */,
 				EE80DF882A2831E300FB12CC /* InAppMessageEvaluator.swift in Sources */,
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,

@@ -2,9 +2,9 @@ import Foundation
 
 protocol NotificationRepository {
     func count(workspaceId: Int64, environmentId: Int64) -> Int
-    func save(entity: NotificationEntity)
-    func getNotifications(workspaceId: Int64, environmentId: Int64, limit: Int?) -> [NotificationEntity]
-    func delete(entities: [NotificationEntity])
+    func save(data: NotificationData, timestamp: Date)
+    func getEntities(workspaceId: Int64, environmentId: Int64, limit: Int?) -> [NotificationHistoryEntity]
+    func delete(entities: [NotificationHistoryEntity])
 }
 
 class NotificationRepositoryImpl: NotificationRepository {
@@ -16,9 +16,9 @@ class NotificationRepositoryImpl: NotificationRepository {
     
     func count(workspaceId: Int64, environmentId: Int64) -> Int {
         let query = 
-            "SELECT COUNT(*) FROM \(NotificationEntity.TABLE_NAME) " +
-                "WHERE \(NotificationEntity.COLUMN_WORKSPACE_ID) = \(workspaceId) AND " +
-                    "\(NotificationEntity.COLUMN_ENVIRONMENT_ID) = \(environmentId)"
+            "SELECT COUNT(*) FROM \(NotificationHistoryEntity.TABLE_NAME) " +
+                "WHERE \(NotificationHistoryEntity.COLUMN_WORKSPACE_ID) = \(workspaceId) AND " +
+                    "\(NotificationHistoryEntity.COLUMN_ENVIRONMENT_ID) = \(environmentId)"
         do {
             return try sharedDatabase.execute { database -> Int in
                 try database.queryForInt(sql: query)
@@ -29,28 +29,30 @@ class NotificationRepositoryImpl: NotificationRepository {
         }
     }
     
-    func save(entity: NotificationEntity) {
+    func save(data: NotificationData, timestamp: Date) {
         let query =
-            "INSERT INTO \(NotificationEntity.TABLE_NAME) (" +
-                "\(NotificationEntity.COLUMN_WORKSPACE_ID)," +
-                "\(NotificationEntity.COLUMN_ENVIRONMENT_ID)," +
-                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_ID)," +
-                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_KEY)," +
-                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_EXECUTION_ID)," +
-                "\(NotificationEntity.COLUMN_PUSH_MESSAGE_DELIVERY_ID)," +
-                "\(NotificationEntity.COLUMN_CLICK_TIMESTAMP)" +
-            ") VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO \(NotificationHistoryEntity.TABLE_NAME) (" +
+                "\(NotificationHistoryEntity.COLUMN_WORKSPACE_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_ENVIRONMENT_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_KEY)," +
+                "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_EXECUTION_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_DELIVERY_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_TIMESTAMP)" +
+                "\(NotificationHistoryEntity.COLUMN_DEBUG)" +
+            ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         do {
             try sharedDatabase.execute { database in
                 try database.statement(sql: query)
                     .use { statement in
-                        try statement.bindInt(index: 1, value: entity.workspaceId)
-                        try statement.bindInt(index: 2, value: entity.environmentId)
-                        try statement.bindInt(index: 3, value: entity.pushMessageId)
-                        try statement.bindInt(index: 4, value: entity.pushMessageKey)
-                        try statement.bindInt(index: 5, value: entity.pushMessageExecutionId)
-                        try statement.bindInt(index: 6, value: entity.pushMessageDeliveryId)
-                        try statement.bindDouble(index: 7, value: entity.clickTimestamp.timeIntervalSince1970)
+                        try statement.bindInt(index: 1, value: data.workspaceId)
+                        try statement.bindInt(index: 2, value: data.environmentId)
+                        try statement.bindInt(index: 3, value: data.pushMessageId)
+                        try statement.bindInt(index: 4, value: data.pushMessageKey)
+                        try statement.bindInt(index: 5, value: data.pushMessageExecutionId)
+                        try statement.bindInt(index: 6, value: data.pushMessageDeliveryId)
+                        try statement.bindDouble(index: 7, value: timestamp.timeIntervalSince1970)
+                        try statement.bindBool(index: 8, value: data.debug)
                         try statement.execute()
                     }
             }
@@ -59,22 +61,22 @@ class NotificationRepositoryImpl: NotificationRepository {
         }
     }
     
-    func getNotifications(workspaceId: Int64, environmentId: Int64, limit: Int? = nil) -> [NotificationEntity] {
+    func getEntities(workspaceId: Int64, environmentId: Int64, limit: Int? = nil) -> [NotificationHistoryEntity] {
         var query =
-            "SELECT * FROM \(NotificationEntity.TABLE_NAME) " +
-                "WHERE \(NotificationEntity.COLUMN_WORKSPACE_ID) = \(workspaceId) AND " +
-                    "\(NotificationEntity.COLUMN_ENVIRONMENT_ID) = \(environmentId)"
+            "SELECT * FROM \(NotificationHistoryEntity.TABLE_NAME) " +
+                "WHERE \(NotificationHistoryEntity.COLUMN_WORKSPACE_ID) = \(workspaceId) AND " +
+                    "\(NotificationHistoryEntity.COLUMN_ENVIRONMENT_ID) = \(environmentId)"
         if let limit = limit {
             query.append(" LIMIT \(limit)")
         }
         
         do {
-            return try sharedDatabase.execute { database -> [NotificationEntity] in
+            return try sharedDatabase.execute { database -> [NotificationHistoryEntity] in
                 try database.query(sql: query)
                     .use { cursor in
-                        var entities = [NotificationEntity]()
+                        var entities = [NotificationHistoryEntity]()
                         while cursor.moveToNext() {
-                            let entity = NotificationEntity.from(cursor: cursor)
+                            let entity = NotificationHistoryEntity.from(cursor: cursor)
                             entities.append(entity)
                         }
                         return entities
@@ -86,12 +88,12 @@ class NotificationRepositoryImpl: NotificationRepository {
         }
     }
     
-    func delete(entities: [NotificationEntity]) {
-        let ids = entities.map { entity in String(entity.notificationId) }
+    func delete(entities: [NotificationHistoryEntity]) {
+        let ids = entities.map { entity in String(entity.historyId) }
             .joined(separator: ",")
         let query = 
-            "DELETE FROM \(NotificationEntity.TABLE_NAME) " +
-                "WHERE \(NotificationEntity.COLUMN_NOTIFICATION_ID) IN (\(ids))"
+            "DELETE FROM \(NotificationHistoryEntity.TABLE_NAME) " +
+                "WHERE \(NotificationHistoryEntity.COLUMN_HISTORY_ID) IN (\(ids))"
         
         do {
             try sharedDatabase.execute { database in

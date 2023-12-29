@@ -4,14 +4,33 @@ class NotificationManager: NotificationDataReceiver, UserListener {
     private static let KEY_APNS_DEVICE_TOKEN = "apns_device_token"
     private static let DEFAULT_FLUSH_BATCH_SIZE = 5
     
-    let core: HackleCore
-    let dispatchQueue: DispatchQueue
-    let workspaceFetcher: WorkspaceFetcher
-    let userManager: UserManager
-    let preferences: KeyValueRepository
-    let repository: NotificationRepository
+    private let core: HackleCore
+    private let dispatchQueue: DispatchQueue
+    private let workspaceFetcher: WorkspaceFetcher
+    private let userManager: UserManager
+    private let preferences: KeyValueRepository
+    private let repository: NotificationRepository
     
     private let flusing: AtomicReference<Bool> = AtomicReference(value: false)
+    
+    private var _apnsToken: String? {
+        get {
+            return preferences.getString(key: NotificationManager.KEY_APNS_DEVICE_TOKEN)
+        }
+        set {
+            if let value = newValue {
+                preferences.putString(
+                    key: NotificationManager.KEY_APNS_DEVICE_TOKEN,
+                    value: value
+                )
+            } else {
+                preferences.remove(key: NotificationManager.KEY_APNS_DEVICE_TOKEN)
+            }
+        }
+    }
+    var apnsToken: String? {
+        get { return preferences.getString(key: NotificationManager.KEY_APNS_DEVICE_TOKEN) }
+    }
     
     init(
         core: HackleCore,
@@ -33,18 +52,14 @@ class NotificationManager: NotificationDataReceiver, UserListener {
         let deviceTokenString = deviceToken
             .map { String(format: "%.2hhx", $0) }
             .joined()
-        let saved = preferences.getString(key: NotificationManager.KEY_APNS_DEVICE_TOKEN)
-        if saved == deviceTokenString {
+        if _apnsToken == deviceTokenString {
             Log.debug("Provided same device token.")
             return
         }
         
         Log.debug("New device token provided.")
         
-        preferences.putString(
-            key: NotificationManager.KEY_APNS_DEVICE_TOKEN,
-            value: deviceTokenString
-        )
+        _apnsToken = deviceTokenString
         notifyAPNSTokenChanged(timestamp: timestamp)
     }
     
@@ -62,15 +77,21 @@ class NotificationManager: NotificationDataReceiver, UserListener {
             return
         }
         
+        let user = userManager.currentUser
         let totalCount = repository.count(
             workspaceId: workspace.id,
             environmentId: workspace.environmentId
         )
+        if (totalCount <= 0) {
+            Log.debug("Notification data is empty.")
+            return
+        }
+        
         let loop = Int(ceil(Double(totalCount) / Double(batchSize)))
-        Log.debug("Total notification data: \(totalCount)")
+        Log.debug("Notification data: \(totalCount)")
         
         for _ in 0...loop {
-            let notifications = repository.getNotifications(
+            let notifications = repository.getEntities(
                 workspaceId: workspace.id,
                 environmentId: workspace.environmentId,
                 limit: batchSize
@@ -83,9 +104,10 @@ class NotificationManager: NotificationDataReceiver, UserListener {
             for notification in notifications {
                 track(
                     event: notification.toTrackEvent(),
-                    timestamp: notification.clickTimestamp
+                    user: user,
+                    timestamp: notification.timestamp
                 )
-                Log.debug("Notification data[\(notification.notificationId)] successfully processed.")
+                Log.debug("Notification data[\(notification.historyId)] successfully processed.")
             }
             
             repository.delete(entities: notifications)
@@ -96,7 +118,7 @@ class NotificationManager: NotificationDataReceiver, UserListener {
     }
     
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
-        notifyAPNSTokenChanged(timestamp: timestamp)
+        notifyAPNSTokenChanged(user: newUser, timestamp: timestamp)
     }
     
     func onNotificationDataReceived(data: NotificationData, timestamp: Date) {
@@ -104,7 +126,7 @@ class NotificationManager: NotificationDataReceiver, UserListener {
         if let workspace = workspace,
                workspace.id == data.workspaceId,
                workspace.environmentId == data.environmentId {
-            track(event: data.toTrackEvent(), timestamp: timestamp)
+            track(event: data.toTrackEvent(), user: userManager.currentUser, timestamp: timestamp)
         } else {
             if workspace == nil {
                 Log.debug("Workspace data is empty.")
@@ -118,29 +140,25 @@ class NotificationManager: NotificationDataReceiver, UserListener {
         }
     }
     
-    private func notifyAPNSTokenChanged(timestamp: Date) {
-        guard let deviceTokenString = preferences.getString(key: NotificationManager.KEY_APNS_DEVICE_TOKEN) else {
+    private func notifyAPNSTokenChanged(user: User, timestamp: Date) {
+        guard let deviceTokenString = _apnsToken else {
             Log.debug("APNS token is empty.")
             return
         }
         
-        let event = RegisterPushTokenEvent(token: deviceTokenString)
-            .toTrackEvent()
-        track(event: event, timestamp: timestamp)
-        
-        Log.debug("Successfully notify device token changed.")
+        let event = RegisterPushTokenEvent(token: deviceTokenString).toTrackEvent()
+        track(event: event, user: user, timestamp: timestamp)
     }
     
     private func saveInLocal(data: NotificationData, timestamp: Date) {
         DispatchQueue.main.async {
-            let entity = data.toEntity(timestamp: timestamp)
-            self.repository.save(entity: entity)
+            self.repository.save(data: data, timestamp: timestamp)
+            Log.debug("Saved notification data: \(String(describing: data.pushMessageId))[\(timestamp)]")
         }
     }
     
-    private func track(event: Event, timestamp: Date) {
-        let currentUser = userManager.currentUser
-        let hackleUser = userManager.toHackleUser(user: currentUser)
+    private func track(event: Event, user: User, timestamp: Date) {
+        let hackleUser = userManager.toHackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
         Log.debug("\(event.key) event queued.")
     }

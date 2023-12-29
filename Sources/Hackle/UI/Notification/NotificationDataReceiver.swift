@@ -19,8 +19,8 @@ class DefaultNotificationDataReceiver: NotificationDataReceiver {
     
     private func saveInLocal(data: NotificationData, timestamp: Date) {
         dispatchQueue.async {
-            let entity = data.toEntity(timestamp: timestamp)
-            self.repository.save(entity: entity)
+            self.repository.save(data: data, timestamp: timestamp)
+            Log.debug("Saved notification data: \(String(describing: data.pushMessageId))[\(timestamp)]")
         }
     }
 }

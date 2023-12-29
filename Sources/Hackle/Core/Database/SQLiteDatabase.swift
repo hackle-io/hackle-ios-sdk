@@ -107,6 +107,13 @@ class SQLiteStatement: SQLiteCloseable {
         }
     }
     
+    func bindBool(index: Int32, value: Bool) throws {
+        let intVal: Int32 = value ? 1 : 0
+        if sqlite3_bind_int(statement, index, intVal) != SQLITE_OK {
+            throw HackleError.error("Failed to bind bool: \(String(cString: sqlite3_errmsg(database.connection))) [index: \(index), value: \(value)(\(intVal))]")
+        }
+    }
+    
     func bindString(index: Int32, value: String?) throws {
         if let value = value {
             try bindString(index: index, value: value)
@@ -173,6 +180,10 @@ class SQLiteCursor: SQLiteCloseable {
     
     func getDouble(_ columnIndex: Int32) -> Double {
         sqlite3_column_double(statement, columnIndex)
+    }
+    
+    func getBool(_ columnIndex: Int32) -> Bool {
+        sqlite3_column_int(statement, columnIndex) != 0
     }
 
     func getString(_ columnIndex: Int32) -> String {

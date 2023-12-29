@@ -13,7 +13,7 @@ class SharedDatabase: Database {
         do {
             try execute { database in
                 try database.execute(
-                    sql: NotificationEntity.CREATE_TABLE
+                    sql: NotificationHistoryEntity.CREATE_TABLE
                 )
             }
         } catch {
