@@ -130,14 +130,14 @@ extension Hackle {
     @objc static public func populateNotificationContent(
         request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
-    ) {
-        if let bestAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent {
-            guard let attachment = request.attachment else {
-                return
-            }
-            
+    ) -> Bool {
+        if let bestAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent,
+           let attachment = request.attachment {
             bestAttemptContent.attachments = [attachment]
             contentHandler(bestAttemptContent)
+            return true
+        } else {
+            return false
         }
     }
 }
