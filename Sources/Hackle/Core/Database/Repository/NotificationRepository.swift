@@ -38,7 +38,7 @@ class NotificationRepositoryImpl: NotificationRepository {
                 "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_KEY)," +
                 "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_EXECUTION_ID)," +
                 "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_DELIVERY_ID)," +
-                "\(NotificationHistoryEntity.COLUMN_TIMESTAMP)" +
+                "\(NotificationHistoryEntity.COLUMN_TIMESTAMP)," +
                 "\(NotificationHistoryEntity.COLUMN_DEBUG)" +
             ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         do {
