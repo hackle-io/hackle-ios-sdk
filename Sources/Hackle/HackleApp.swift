@@ -375,7 +375,7 @@ extension HackleApp {
 
         // - EventProcessor
         let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: sdkKey)
-        let eventRepository = SQLiteEventRepository(workspaceDatabase: workspaceDatabase)
+        let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
 
