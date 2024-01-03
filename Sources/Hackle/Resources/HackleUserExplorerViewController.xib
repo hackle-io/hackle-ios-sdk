@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,6 +19,8 @@
                 <outlet property="dismissButton" destination="axx-Yo-tsK" id="kRj-OE-LGA"/>
                 <outlet property="experimentPageView" destination="R1v-nV-f9c" id="d6O-gM-QD0"/>
                 <outlet property="featureFlagButton" destination="bkl-tP-9en" id="Mk8-3K-bSb"/>
+                <outlet property="pushTokenCopyButton" destination="DHf-Eq-38J" id="Ifa-fC-iMH"/>
+                <outlet property="pushTokenLabel" destination="4VZ-tj-cOQ" id="n4d-wo-UZz"/>
                 <outlet property="userIdCopyButton" destination="i1U-aA-wwj" id="y0V-gT-a1r"/>
                 <outlet property="userIdLabel" destination="Xjz-Pv-0Rb" id="Sm3-Cd-s1Y"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Kg9-s5-5Cg"/>
@@ -57,52 +59,58 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BMY-MV-oiD">
-                    <rect key="frame" x="0.0" y="119" width="393" height="190"/>
+                    <rect key="frame" x="0.0" y="119" width="393" height="205"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="USER" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WVi-h0-vUi">
-                            <rect key="frame" x="12" y="11.999999999999998" width="41" height="19.333333333333329"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rAc-3G-IfC" userLabel="Label ID Title">
+                            <rect key="frame" x="12" y="7.6666666666666696" width="16" height="19.333333333333329"/>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rAc-3G-IfC">
-                            <rect key="frame" x="12" y="39.333333333333343" width="16" height="19.333333333333329"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="38T-5w-lba">
-                            <rect key="frame" x="12" y="62.666666666666657" width="297" height="17"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="38T-5w-lba" userLabel="Label ID Value">
+                            <rect key="frame" x="12" y="31" width="297" height="17"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DEVICE ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5XI-9x-lGH">
-                            <rect key="frame" x="12" y="87.666666666666657" width="75" height="19.333333333333329"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DEVICE ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5XI-9x-lGH" userLabel="Label Device ID Title">
+                            <rect key="frame" x="12" y="56.000000000000007" width="75" height="19.333333333333336"/>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9p0-XK-vkb">
-                            <rect key="frame" x="12" y="111" width="297" height="17"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9p0-XK-vkb" userLabel="Label Device ID Value">
+                            <rect key="frame" x="12" y="79.333333333333343" width="297" height="17"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="USER ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNe-6n-fAc">
-                            <rect key="frame" x="12.000000000000004" y="136" width="60.333333333333343" height="20"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="USER ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNe-6n-fAc" userLabel="Label User ID Title">
+                            <rect key="frame" x="12.000000000000004" y="104.33333333333334" width="60.333333333333343" height="20"/>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xjz-Pv-0Rb">
-                            <rect key="frame" x="12" y="160" width="297" height="17"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xjz-Pv-0Rb" userLabel="Label User ID Value">
+                            <rect key="frame" x="12" y="128.33333333333334" width="297" height="17"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xhJ-i2-FCw">
-                            <rect key="frame" x="321" y="39.333333333333343" width="60" height="25"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PUSH TOKEN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q9U-mi-LSM" userLabel="Label Push Token Title">
+                            <rect key="frame" x="12" y="153" width="100" height="20"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4VZ-tj-cOQ" userLabel="Label Push Token Value">
+                            <rect key="frame" x="12" y="181" width="297" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xhJ-i2-FCw" userLabel="Button ID Copy">
+                            <rect key="frame" x="321" y="7.6666666666666714" width="60" height="25"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="25" id="0kx-Rv-Sps"/>
                                 <constraint firstAttribute="width" constant="60" id="rui-bq-IIc"/>
@@ -114,8 +122,8 @@
                                 <action selector="defaultIdCopyTapped:" destination="-1" eventType="touchUpInside" id="FSW-DB-57A"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BbM-kG-tfG">
-                            <rect key="frame" x="321" y="87.666666666666657" width="60" height="25"/>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BbM-kG-tfG" userLabel="Button Device ID Copy">
+                            <rect key="frame" x="321" y="56" width="60" height="25"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="ZE9-RI-VJA"/>
                                 <constraint firstAttribute="height" constant="25" id="b3l-yg-AAn"/>
@@ -126,8 +134,8 @@
                                 <action selector="deviceIdCopyTapped:" destination="-1" eventType="touchUpInside" id="40a-1U-xGn"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i1U-aA-wwj">
-                            <rect key="frame" x="321" y="136" width="60" height="25"/>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i1U-aA-wwj" userLabel="Button User ID Copy">
+                            <rect key="frame" x="321" y="104.33333333333334" width="60" height="25"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="25" id="Dh5-IJ-oRK"/>
                                 <constraint firstAttribute="width" constant="60" id="H9F-Uf-xdA"/>
@@ -138,7 +146,7 @@
                                 <action selector="userIdCopyTapped:" destination="-1" eventType="touchUpInside" id="U0i-I1-pZk"/>
                             </connections>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copied" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nja-FG-wWm">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copied" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nja-FG-wWm" userLabel="Label Copied">
                             <rect key="frame" x="156.66666666666666" y="0.0" width="80" height="25"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="25" id="ABp-Ob-dqh"/>
@@ -148,43 +156,60 @@
                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DHf-Eq-38J" userLabel="Button Push Token Copy">
+                            <rect key="frame" x="321" y="153" width="60" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="25" id="Y6e-s6-am3"/>
+                                <constraint firstAttribute="width" constant="60" id="gI8-e0-Hm3"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Copy"/>
+                            <connections>
+                                <action selector="pushTokenCopyTapped:" destination="-1" eventType="touchUpInside" id="Lrq-GE-JoA"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="38T-5w-lba" firstAttribute="top" secondItem="BMY-MV-oiD" secondAttribute="top" constant="31" id="0VE-FS-ELV"/>
                         <constraint firstItem="9p0-XK-vkb" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="6UK-gF-0uP"/>
+                        <constraint firstItem="4VZ-tj-cOQ" firstAttribute="top" secondItem="q9U-mi-LSM" secondAttribute="bottom" constant="8" id="6sa-J1-aWa"/>
                         <constraint firstItem="i1U-aA-wwj" firstAttribute="top" secondItem="KNe-6n-fAc" secondAttribute="top" id="7yJ-la-wE5"/>
                         <constraint firstItem="Nja-FG-wWm" firstAttribute="centerX" secondItem="BMY-MV-oiD" secondAttribute="centerX" id="9dt-F0-3DH"/>
                         <constraint firstItem="xhJ-i2-FCw" firstAttribute="top" secondItem="rAc-3G-IfC" secondAttribute="top" id="BfP-x7-VX4"/>
                         <constraint firstItem="rAc-3G-IfC" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="Bfy-Ts-si5"/>
                         <constraint firstItem="BbM-kG-tfG" firstAttribute="leading" secondItem="9p0-XK-vkb" secondAttribute="trailing" constant="12" id="FWH-rm-XVB"/>
-                        <constraint firstAttribute="height" constant="190" id="JS2-Wq-ybK"/>
+                        <constraint firstAttribute="height" constant="205" id="JS2-Wq-ybK"/>
+                        <constraint firstItem="q9U-mi-LSM" firstAttribute="leading" secondItem="Xjz-Pv-0Rb" secondAttribute="leading" id="Mjz-rL-Nqc"/>
                         <constraint firstItem="Nja-FG-wWm" firstAttribute="top" secondItem="BMY-MV-oiD" secondAttribute="top" id="Nmg-86-qPU"/>
                         <constraint firstItem="Xjz-Pv-0Rb" firstAttribute="top" secondItem="KNe-6n-fAc" secondAttribute="bottom" constant="4" id="Of0-x8-wg7"/>
                         <constraint firstItem="BbM-kG-tfG" firstAttribute="centerX" secondItem="xhJ-i2-FCw" secondAttribute="centerX" id="PpT-1y-H3N"/>
+                        <constraint firstItem="DHf-Eq-38J" firstAttribute="leading" secondItem="i1U-aA-wwj" secondAttribute="leading" id="Rwa-Iz-vw2"/>
                         <constraint firstItem="9p0-XK-vkb" firstAttribute="top" secondItem="5XI-9x-lGH" secondAttribute="bottom" constant="4" id="Sjt-k6-2So"/>
                         <constraint firstItem="KNe-6n-fAc" firstAttribute="top" secondItem="9p0-XK-vkb" secondAttribute="bottom" constant="8" id="U7P-9M-vpa"/>
                         <constraint firstItem="i1U-aA-wwj" firstAttribute="centerX" secondItem="BbM-kG-tfG" secondAttribute="centerX" id="V4I-qX-9pS"/>
                         <constraint firstItem="KNe-6n-fAc" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="XiP-U4-HBI"/>
+                        <constraint firstItem="q9U-mi-LSM" firstAttribute="top" secondItem="Xjz-Pv-0Rb" secondAttribute="bottom" constant="7.6666666666666572" id="Xyz-kP-0TX"/>
                         <constraint firstItem="i1U-aA-wwj" firstAttribute="leading" secondItem="Xjz-Pv-0Rb" secondAttribute="trailing" constant="12" id="Ymd-Ag-Vvs"/>
-                        <constraint firstItem="WVi-h0-vUi" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="YtL-kP-FBF"/>
+                        <constraint firstItem="q9U-mi-LSM" firstAttribute="leading" secondItem="4VZ-tj-cOQ" secondAttribute="leading" id="aUK-n9-xEE"/>
                         <constraint firstItem="5XI-9x-lGH" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="b2B-RE-lD4"/>
                         <constraint firstAttribute="trailing" secondItem="xhJ-i2-FCw" secondAttribute="trailing" constant="12" id="fDt-YN-X8u"/>
                         <constraint firstItem="Xjz-Pv-0Rb" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="fZJ-Ox-KmT"/>
                         <constraint firstItem="xhJ-i2-FCw" firstAttribute="leading" secondItem="38T-5w-lba" secondAttribute="trailing" constant="12" id="g5o-YV-ewY"/>
                         <constraint firstItem="BbM-kG-tfG" firstAttribute="top" secondItem="5XI-9x-lGH" secondAttribute="top" id="g93-hB-Lj2"/>
-                        <constraint firstItem="WVi-h0-vUi" firstAttribute="top" secondItem="BMY-MV-oiD" secondAttribute="top" constant="12" id="jv2-Cc-m1W"/>
+                        <constraint firstItem="4VZ-tj-cOQ" firstAttribute="trailing" secondItem="Xjz-Pv-0Rb" secondAttribute="trailing" id="hO6-9U-6Aj"/>
+                        <constraint firstItem="q9U-mi-LSM" firstAttribute="top" secondItem="DHf-Eq-38J" secondAttribute="top" id="i9V-OH-SUC"/>
                         <constraint firstItem="5XI-9x-lGH" firstAttribute="top" secondItem="38T-5w-lba" secondAttribute="bottom" constant="8" id="mKB-LB-Z7h"/>
-                        <constraint firstItem="rAc-3G-IfC" firstAttribute="top" secondItem="WVi-h0-vUi" secondAttribute="bottom" constant="8" id="qHN-XK-lL6"/>
                         <constraint firstItem="38T-5w-lba" firstAttribute="leading" secondItem="BMY-MV-oiD" secondAttribute="leading" constant="12" id="ufe-WY-d2y"/>
                         <constraint firstItem="38T-5w-lba" firstAttribute="top" secondItem="rAc-3G-IfC" secondAttribute="bottom" constant="4" id="wnE-8x-C78"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R1v-nV-f9c">
-                    <rect key="frame" x="0.0" y="369" width="393" height="449"/>
+                    <rect key="frame" x="0.0" y="384" width="393" height="434"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MBJ-i3-2la">
-                    <rect key="frame" x="0.0" y="321" width="393" height="48"/>
+                    <rect key="frame" x="0.0" y="336" width="393" height="48"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T2j-Kf-St5">
                             <rect key="frame" x="0.0" y="0.0" width="120" height="48"/>

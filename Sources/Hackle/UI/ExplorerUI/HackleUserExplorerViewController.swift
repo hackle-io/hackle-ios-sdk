@@ -15,10 +15,12 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     @IBOutlet weak var defaultIdLabel: UILabel!
     @IBOutlet weak var deviceIdLabel: UILabel!
     @IBOutlet weak var userIdLabel: UILabel!
+    @IBOutlet weak var pushTokenLabel: UILabel!
 
     @IBOutlet weak var defaultIdCopyButton: UIButton!
     @IBOutlet weak var deviceIdCopyButton: UIButton!
     @IBOutlet weak var userIdCopyButton: UIButton!
+    @IBOutlet weak var pushTokenCopyButton: UIButton!
     @IBOutlet weak var copiedLabel: UILabel!
 
     @IBOutlet weak var abTestButton: UIButton!
@@ -64,6 +66,11 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             userIdLabel.text = userId
             userIdCopyButton.isEnabled = true
         }
+        
+        if let pushToken = explorer.apnsToken() {
+            pushTokenLabel.text = pushToken
+            pushTokenCopyButton.isEnabled = true
+        }
 
         copiedLabel.alpha = 0
     }
@@ -83,6 +90,12 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     @IBAction func userIdCopyTapped(_ sender: UIButton) {
         let pasteboard = UIPasteboard.general
         pasteboard.string = userIdLabel.text
+        showCopiedLabel()
+    }
+    
+    @IBAction func pushTokenCopyTapped(_ sender: UIButton) {
+        let pasteboard = UIPasteboard.general
+        pasteboard.string = pushTokenLabel.text
         showCopiedLabel()
     }
 

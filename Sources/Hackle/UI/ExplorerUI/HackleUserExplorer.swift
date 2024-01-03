@@ -11,6 +11,8 @@ import Foundation
 protocol HackleUserExplorer {
 
     func currentUser() -> HackleUser
+    
+    func apnsToken() -> String?
 
     func getAbTestDecisions() -> [(Experiment, Decision)]
 
