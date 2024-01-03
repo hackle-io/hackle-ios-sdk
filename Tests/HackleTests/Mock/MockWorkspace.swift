@@ -7,12 +7,15 @@ import Mockery
 @testable import Hackle
 
 class MockWorkspace: Mock, Workspace {
-
+    let id: Int64
+    let environmentId: Int64
     let experiments: [Experiment]
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
 
-    init(experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
+    init(id: Int64 = 0, environmentId: Int64 = 0, experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
+        self.id = id
+        self.environmentId = environmentId
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.inAppMessages = inAppMessages

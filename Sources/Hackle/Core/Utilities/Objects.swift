@@ -57,4 +57,12 @@ extension Optional {
             throw HackleError.error("Required value was nil.")
         }
     }
+    
+    func asIntOrNil() -> Int64? {
+        if let value = self {
+            return Objects.asIntOrNull(value)
+        } else {
+            return nil
+        }
+    }
 }

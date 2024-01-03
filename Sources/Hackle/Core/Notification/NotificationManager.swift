@@ -1,6 +1,12 @@
 import Foundation
 
-class NotificationManager: NotificationDataReceiver, UserListener {
+protocol NotificationManager: NotificationDataReceiver, UserListener {
+    var apnsToken: String? { get }
+    func setAPNSToken(deviceToken: Data, timestamp: Date)
+    func flush()
+}
+
+class DefaultNotificationManager: NotificationManager {
     private static let KEY_APNS_DEVICE_TOKEN = "apns_device_token"
     private static let DEFAULT_FLUSH_BATCH_SIZE = 5
     
@@ -15,21 +21,21 @@ class NotificationManager: NotificationDataReceiver, UserListener {
     
     private var _apnsToken: String? {
         get {
-            return preferences.getString(key: NotificationManager.KEY_APNS_DEVICE_TOKEN)
+            return preferences.getString(key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN)
         }
         set {
             if let value = newValue {
                 preferences.putString(
-                    key: NotificationManager.KEY_APNS_DEVICE_TOKEN,
+                    key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN,
                     value: value
                 )
             } else {
-                preferences.remove(key: NotificationManager.KEY_APNS_DEVICE_TOKEN)
+                preferences.remove(key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN)
             }
         }
     }
     var apnsToken: String? {
-        get { return preferences.getString(key: NotificationManager.KEY_APNS_DEVICE_TOKEN) }
+        get { return preferences.getString(key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN) }
     }
     
     init(
@@ -48,7 +54,7 @@ class NotificationManager: NotificationDataReceiver, UserListener {
         self.dispatchQueue = dispatchQueue
     }
     
-    func setAPNSToken(deviceToken: Data, timestamp: Date = Date()) {
+    func setAPNSToken(deviceToken: Data, timestamp: Date) {
         let deviceTokenString = deviceToken
             .map { String(format: "%.2hhx", $0) }
             .joined()
@@ -63,7 +69,7 @@ class NotificationManager: NotificationDataReceiver, UserListener {
         notifyAPNSTokenChanged(user: userManager.currentUser, timestamp: timestamp)
     }
     
-    func flush(batchSize: Int = DEFAULT_FLUSH_BATCH_SIZE) {
+    func flush() {
         if (flusing.getAndSet(newValue: true)) {
             return
         }
@@ -87,6 +93,7 @@ class NotificationManager: NotificationDataReceiver, UserListener {
             return
         }
         
+        let batchSize = DefaultNotificationManager.DEFAULT_FLUSH_BATCH_SIZE
         let loop = Int(ceil(Double(totalCount) / Double(batchSize)))
         Log.debug("Notification data: \(totalCount)")
         

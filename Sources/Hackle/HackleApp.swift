@@ -227,7 +227,7 @@ import WebKit
     }
     
     @objc public func setAPNSToken(_ deviceToken: Data) {
-        notificationManager.setAPNSToken(deviceToken: deviceToken)
+        notificationManager.setAPNSToken(deviceToken: deviceToken, timestamp: Date())
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -478,7 +478,7 @@ extension HackleApp {
         
         // - Notification
         let notificationQueue = DispatchQueue(label: "io.hackle.NotificationQueue", qos: .utility)
-        let notificationManager = NotificationManager(
+        let notificationManager = DefaultNotificationManager(
             core: core,
             dispatchQueue: notificationQueue,
             workspaceFetcher: workspaceManager,
@@ -496,7 +496,7 @@ extension HackleApp {
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
             userManager: userManager,
-            notificiationManager: notificationManager,
+            notificationManager: notificationManager,
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage
         )

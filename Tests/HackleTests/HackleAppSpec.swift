@@ -10,6 +10,7 @@ class HackleAppSpecs: QuickSpec {
         var eventQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
         var userManager: MockUserManager!
+        var notificationManager: MockNotificationManager!
         var sessionManager: MockSessionManager!
         var eventProcessor: MockUserEventProcessor!
         var notificationObserver: AppNotificationObserverStub!
@@ -24,6 +25,7 @@ class HackleAppSpecs: QuickSpec {
             eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
             synchronizer = MockSynchronizer()
             userManager = MockUserManager()
+            notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             eventProcessor = MockUserEventProcessor()
             notificationObserver = AppNotificationObserverStub()
@@ -31,6 +33,7 @@ class HackleAppSpecs: QuickSpec {
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,
+                notificationManager: notificationManager,
                 abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository())
             )
@@ -43,6 +46,7 @@ class HackleAppSpecs: QuickSpec {
                 sessionManager: sessionManager,
                 eventProcessor: eventProcessor,
                 notificationObserver: notificationObserver,
+                notificationManager: notificationManager,
                 device: device,
                 userExplorer: userExplorer
             )

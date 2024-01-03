@@ -10,8 +10,12 @@ class NotificationDataSpecs: QuickSpec {
             let data = ["hackle": [
                 "workspaceId": 123,
                 "environmentId": 456,
-                "pushMessageId": 789,
+                "pushMessageId": 1,
+                "pushMessageKey": 2,
+                "pushMessageExecutionId": 3,
+                "pushMessageDeliveryId": 4,
                 "showForeground": true,
+                "debug": true,
                 "imageUrl": "https://foo.bar",
                 "clickAction": "DEEP_LINK",
                 "link": "app://main"
@@ -21,8 +25,12 @@ class NotificationDataSpecs: QuickSpec {
             expect(result).toNot(beNil())
             expect(result?.workspaceId) == 123
             expect(result?.environmentId) == 456
-            expect(result?.pushMessageId) == 789
+            expect(result?.pushMessageId) == 1
+            expect(result?.pushMessageKey) == 2
+            expect(result?.pushMessageExecutionId) == 3
+            expect(result?.pushMessageDeliveryId) == 4
             expect(result?.showForeground) == true
+            expect(result?.debug) == true
             expect(result?.imageUrl) == "https://foo.bar"
             expect(result?.clickAction) == NotificationClickAction.DEEP_LINK
             expect(result?.link) == "app://main"
@@ -39,16 +47,19 @@ class NotificationDataSpecs: QuickSpec {
         it("from dictionary with required values only") {
             let data = ["hackle": [
                 "workspaceId": 123,
-                "environmentId": 456,
-                "pushMessageId": 789
+                "environmentId": 456
             ]]
             let result = NotificationData.from(data: data)
 
             expect(result).toNot(beNil())
             expect(result?.workspaceId) == 123
             expect(result?.environmentId) == 456
-            expect(result?.pushMessageId) == 789
+            expect(result?.pushMessageId).to(beNil())
+            expect(result?.pushMessageKey).to(beNil())
+            expect(result?.pushMessageExecutionId).to(beNil())
+            expect(result?.pushMessageDeliveryId).to(beNil())
             expect(result?.showForeground) == false
+            expect(result?.debug) == false
             expect(result?.imageUrl).to(beNil())
             expect(result?.clickAction) == NotificationClickAction.APP_OPEN
             expect(result?.link).to(beNil())
@@ -56,8 +67,12 @@ class NotificationDataSpecs: QuickSpec {
         it("from dictionary without workspace id") {
             let data = ["hackle": [
                 "environmentId": 456,
-                "pushMessageId": 789,
+                "pushMessageId": 1,
+                "pushMessageKey": 2,
+                "pushMessageExecutionId": 3,
+                "pushMessageDeliveryId": 4,
                 "showForeground": true,
+                "debug": true,
                 "imageUrl": "https://foo.bar",
                 "clickAction": "DEEP_LINK",
                 "link": "app://main"
@@ -68,20 +83,12 @@ class NotificationDataSpecs: QuickSpec {
         it("from dictionary without environment id") {
             let data = ["hackle": [
                 "workspaceId": 123,
-                "pushMessageId": 789,
+                "pushMessageId": 1,
+                "pushMessageKey": 2,
+                "pushMessageExecutionId": 3,
+                "pushMessageDeliveryId": 4,
                 "showForeground": true,
-                "imageUrl": "https://foo.bar",
-                "clickAction": "DEEP_LINK",
-                "link": "app://main"
-            ]]
-            let result = NotificationData.from(data: data)
-            expect(result).to(beNil())
-        }
-        it("from dictionary without push message id") {
-            let data = ["hackle": [
-                "workspaceId": 123,
-                "environmentId": 456,
-                "showForeground": true,
+                "debug": true,
                 "imageUrl": "https://foo.bar",
                 "clickAction": "DEEP_LINK",
                 "link": "app://main"

@@ -64,12 +64,12 @@ extension NotificationData {
         
         do {
             return NotificationData(
-                workspaceId: try (hackle[KEY_WORKSPACE_ID] as? Int64).requireNotNil(),
-                environmentId: try (hackle[KEY_ENVIRONMENT_ID] as? Int64).requireNotNil(),
-                pushMessageId: hackle[KEY_PUSH_MESSAGE_ID] as? Int64,
-                pushMessageKey: hackle[KEY_PUSH_MESSAGE_KEY] as? Int64,
-                pushMessageExecutionId: hackle[KEY_PUSH_MESSAGE_EXECUTION_ID] as? Int64,
-                pushMessageDeliveryId: hackle[KEY_PUSH_MESSAGE_DELIVERY_ID] as? Int64,
+                workspaceId: try (hackle[KEY_WORKSPACE_ID].asIntOrNil()).requireNotNil(),
+                environmentId: try (hackle[KEY_ENVIRONMENT_ID].asIntOrNil()).requireNotNil(),
+                pushMessageId: hackle[KEY_PUSH_MESSAGE_ID].asIntOrNil(),
+                pushMessageKey: hackle[KEY_PUSH_MESSAGE_KEY].asIntOrNil(),
+                pushMessageExecutionId: hackle[KEY_PUSH_MESSAGE_EXECUTION_ID].asIntOrNil(),
+                pushMessageDeliveryId: hackle[KEY_PUSH_MESSAGE_DELIVERY_ID].asIntOrNil(),
                 showForeground: hackle[KEY_SHOW_FOREGROUND] as? Bool ?? false,
                 imageUrl: hackle[KEY_IMAGE_URL] as? String,
                 clickAction: NotificationClickAction.from(
