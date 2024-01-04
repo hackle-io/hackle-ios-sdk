@@ -17,7 +17,7 @@ class DefaultNotificationManager: NotificationManager {
     private let preferences: KeyValueRepository
     private let repository: NotificationRepository
     
-    private let flusing: AtomicReference<Bool> = AtomicReference(value: false)
+    private let flushing: AtomicReference<Bool> = AtomicReference(value: false)
     
     private var _apnsToken: String? {
         get {
@@ -68,12 +68,12 @@ class DefaultNotificationManager: NotificationManager {
     }
     
     func flush() {
-        if (flusing.getAndSet(newValue: true)) {
+        if (flushing.getAndSet(newValue: true)) {
             return
         }
         
         defer {
-            flusing.set(newValue: false)
+            flushing.set(newValue: false)
         }
         
         guard let workspace = workspaceFetcher.fetch() else {
