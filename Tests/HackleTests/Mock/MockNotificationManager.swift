@@ -26,6 +26,4 @@ class MockNotificationManager: NotificationManager {
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
         
     }
-    
-    
 }

@@ -2,7 +2,6 @@ import Foundation
 import Mockery
 @testable import Hackle
 
-
 class MockHackleCore: Mock, HackleCore {
 
     lazy var experimentMock = MockFunction.throwable(self, experiment)

@@ -5,7 +5,7 @@ class NotificationHandler {
     private static var receiver: NotificationDataReceiver =
         DefaultNotificationDataReceiver(
             dispatchQueue: DispatchQueue.main,
-            repository: NotificationRepositoryImpl(
+            repository: DefaultNotificationRepository(
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )

@@ -55,9 +55,7 @@ class DefaultNotificationManager: NotificationManager {
     }
     
     func setAPNSToken(deviceToken: Data, timestamp: Date) {
-        let deviceTokenString = deviceToken
-            .map { String(format: "%.2hhx", $0) }
-            .joined()
+        let deviceTokenString = deviceToken.hexString()
         if _apnsToken == deviceTokenString {
             Log.debug("Provided same device token.")
             return
@@ -158,7 +156,7 @@ class DefaultNotificationManager: NotificationManager {
     }
     
     private func saveInLocal(data: NotificationData, timestamp: Date) {
-        DispatchQueue.main.async {
+        dispatchQueue.async {
             self.repository.save(data: data, timestamp: timestamp)
             Log.debug("Saved notification data: \(String(describing: data.pushMessageId))[\(timestamp)]")
         }

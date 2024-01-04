@@ -484,7 +484,7 @@ extension HackleApp {
             workspaceFetcher: workspaceManager,
             userManager: userManager,
             preferences: keyValueRepositoryBySdkKey,
-            repository: NotificationRepositoryImpl(
+            repository: DefaultNotificationRepository(
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )

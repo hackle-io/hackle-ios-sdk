@@ -7,7 +7,7 @@ protocol NotificationRepository {
     func delete(entities: [NotificationHistoryEntity])
 }
 
-class NotificationRepositoryImpl: NotificationRepository {
+class DefaultNotificationRepository: NotificationRepository {
     private let sharedDatabase: SharedDatabase
     
     init(sharedDatabase: SharedDatabase) {

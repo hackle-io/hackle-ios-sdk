@@ -66,3 +66,10 @@ extension Optional {
         }
     }
 }
+
+extension Data {
+    func hexString(separator: String = "") -> String {
+        return self.map { String(format: "%.2hhx", $0) }
+            .joined(separator: separator)
+    }
+}
