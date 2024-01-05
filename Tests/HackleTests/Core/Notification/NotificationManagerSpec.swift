@@ -43,11 +43,13 @@ class NotificationManagerSpec: QuickSpec {
                 timestamp: timestamp
             )
             
-            expect(core.tracked.count) == 1
-            expect(core.tracked[0].0.key) == "$push_token"
-            expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
-            expect(core.tracked[0].0.properties?["token"] as? String) == hexString
-            expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 1
+                expect(core.tracked[0].0.key) == "$push_token"
+                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
+                expect(core.tracked[0].0.properties?["token"] as? String) == hexString
+                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+            }
         }
         
         it("set another push token") {
@@ -73,13 +75,15 @@ class NotificationManagerSpec: QuickSpec {
                 timestamp: timestamp
             )
             
-            expect(core.tracked.count) == 1
-            expect(core.tracked[0].0.key) == "$push_token"
-            expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
-            expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
-            expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
-            
-            expect(preferences.getString(key: "apns_device_token")) == data.hexString()
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 1
+                expect(core.tracked[0].0.key) == "$push_token"
+                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
+                expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
+                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+                
+                expect(preferences.getString(key: "apns_device_token")) == data.hexString()
+            }
         }
         
         it("set same push token") {
@@ -106,8 +110,10 @@ class NotificationManagerSpec: QuickSpec {
                 timestamp: timestamp
             )
             
-            expect(core.tracked.count) == 0
-            expect(preferences.getString(key: "apns_device_token")) == hexString
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 0
+                expect(preferences.getString(key: "apns_device_token")) == hexString
+            }
         }
         
         it("resend push token when user updated called") {
@@ -135,11 +141,13 @@ class NotificationManagerSpec: QuickSpec {
                 timestamp: timestamp
             )
             
-            expect(core.tracked.count) == 1
-            expect(core.tracked[0].0.key) == "$push_token"
-            expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
-            expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
-            expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 1
+                expect(core.tracked[0].0.key) == "$push_token"
+                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
+                expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
+                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+            }
         }
         
         it("track push click event when notification data received") {
@@ -189,14 +197,16 @@ class NotificationManagerSpec: QuickSpec {
                 timestamp: timestamp
             )
             
-            expect(core.tracked.count) == 1
-            expect(core.tracked[0].0.key) == "$push_click"
-            expect(core.tracked[0].0.properties?["push_message_id"].asIntOrNil()) == 1
-            expect(core.tracked[0].0.properties?["push_message_key"].asIntOrNil()) == 2
-            expect(core.tracked[0].0.properties?["push_message_execution_id"].asIntOrNil()) == 3
-            expect(core.tracked[0].0.properties?["push_message_delivery_id"].asIntOrNil()) == 4
-            expect(core.tracked[0].0.properties?["debug"] as? Bool) == true
-            expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 1
+                expect(core.tracked[0].0.key) == "$push_click"
+                expect(core.tracked[0].0.properties?["push_message_id"].asIntOrNil()) == 1
+                expect(core.tracked[0].0.properties?["push_message_key"].asIntOrNil()) == 2
+                expect(core.tracked[0].0.properties?["push_message_execution_id"].asIntOrNil()) == 3
+                expect(core.tracked[0].0.properties?["push_message_delivery_id"].asIntOrNil()) == 4
+                expect(core.tracked[0].0.properties?["debug"] as? Bool) == true
+                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+            }
         }
         
         it("save notification data if environment is not same") {
@@ -289,16 +299,16 @@ class NotificationManagerSpec: QuickSpec {
             )
             manager.onNotificationDataReceived(data: diffBothData, timestamp: Date())
             
-            expect(core.tracked.count) == 1
-            expect(core.tracked[0].0.key) == "$push_click"
-            expect(core.tracked[0].0.properties?["push_message_id"].asIntOrNil()) == 1
-            expect(core.tracked[0].0.properties?["push_message_key"].asIntOrNil()) == 2
-            expect(core.tracked[0].0.properties?["push_message_execution_id"].asIntOrNil()) == 3
-            expect(core.tracked[0].0.properties?["push_message_delivery_id"].asIntOrNil()) == 4
-            expect(core.tracked[0].0.properties?["debug"] as? Bool) == true
-            expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
-            
             dispatchQueue.sync {
+                expect(core.tracked.count) == 1
+                expect(core.tracked[0].0.key) == "$push_click"
+                expect(core.tracked[0].0.properties?["push_message_id"].asIntOrNil()) == 1
+                expect(core.tracked[0].0.properties?["push_message_key"].asIntOrNil()) == 2
+                expect(core.tracked[0].0.properties?["push_message_execution_id"].asIntOrNil()) == 3
+                expect(core.tracked[0].0.properties?["push_message_delivery_id"].asIntOrNil()) == 4
+                expect(core.tracked[0].0.properties?["debug"] as? Bool) == true
+                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+                
                 expect(repository.count(workspaceId: 123, environmentId: 456)) == 0
                 expect(repository.count(workspaceId: 111, environmentId: 456)) == 1
                 expect(repository.count(workspaceId: 123, environmentId: 222)) == 1
@@ -340,6 +350,7 @@ class NotificationManagerSpec: QuickSpec {
             )
             
             dispatchQueue.sync {
+                expect(core.tracked.count) == 0
                 expect(repository.count(workspaceId: 123, environmentId: 456)) == 1
             }
         }
