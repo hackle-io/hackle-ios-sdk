@@ -3,15 +3,23 @@ import UserNotifications
 
 class NotificationHandler {
     
-    static let shared = NotificationHandler()
+    static let shared = NotificationHandler(
+        dispatchQueue: DispatchQueue(
+            label: "io.hackle.NotificationHandler",
+            qos: .utility
+        )
+    )
     
-    private var receiver: NotificationDataReceiver =
-        DefaultNotificationDataReceiver(
-            dispatchQueue: DispatchQueue.main,
+    private var receiver: NotificationDataReceiver
+    
+    init(dispatchQueue: DispatchQueue) {
+        receiver = DefaultNotificationDataReceiver(
+            dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )
+    }
     
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
