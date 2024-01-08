@@ -190,7 +190,7 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageDeliveryId: 4,
                     showForeground: true,
                     imageUrl: "https://foo.com/bar.png",
-                    clickAction: .DEEP_LINK,
+                    clickAction: .deepLink,
                     link: "foo://bar",
                     debug: true
                 ),
@@ -248,7 +248,7 @@ class NotificationManagerSpec: QuickSpec {
                 pushMessageDeliveryId: 4,
                 showForeground: true,
                 imageUrl: nil,
-                clickAction: .APP_OPEN,
+                clickAction: .appOpen,
                 link: "",
                 debug: true
             )
@@ -263,7 +263,7 @@ class NotificationManagerSpec: QuickSpec {
                 pushMessageDeliveryId: 4,
                 showForeground: true,
                 imageUrl: nil,
-                clickAction: .APP_OPEN,
+                clickAction: .appOpen,
                 link: "",
                 debug: true
             )
@@ -278,7 +278,7 @@ class NotificationManagerSpec: QuickSpec {
                 pushMessageDeliveryId: 4,
                 showForeground: true,
                 imageUrl: nil,
-                clickAction: .APP_OPEN,
+                clickAction: .appOpen,
                 link: "",
                 debug: true
             )
@@ -293,7 +293,7 @@ class NotificationManagerSpec: QuickSpec {
                 pushMessageDeliveryId: 4,
                 showForeground: true,
                 imageUrl: nil,
-                clickAction: .APP_OPEN,
+                clickAction: .appOpen,
                 link: "",
                 debug: true
             )
@@ -342,7 +342,7 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageDeliveryId: 4,
                     showForeground: true,
                     imageUrl: nil,
-                    clickAction: .APP_OPEN,
+                    clickAction: .appOpen,
                     link: "",
                     debug: true
                 ),

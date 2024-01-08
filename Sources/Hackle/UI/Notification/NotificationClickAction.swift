@@ -1,14 +1,14 @@
 import Foundation
 
 enum NotificationClickAction: String {
-    case APP_OPEN = "APP_OPEN"
-    case DEEP_LINK = "DEEP_LINK"
+    case appOpen = "APP_OPEN"
+    case deepLink = "DEEP_LINK"
 }
 
 extension NotificationClickAction {
     static func from(
         rawValue: String?,
-        defaultValue: NotificationClickAction = APP_OPEN
+        defaultValue: NotificationClickAction = appOpen
     ) -> NotificationClickAction {
         guard let rawValue = rawValue else {
             return defaultValue

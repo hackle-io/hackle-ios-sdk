@@ -26,9 +26,9 @@ class NotificationHandler {
 extension NotificationHandler {
     private func trampoline(data: NotificationData) {
         switch (data.clickAction) {
-        case .APP_OPEN:
+        case .appOpen:
             break;
-        case .DEEP_LINK:
+        case .deepLink:
             if let link = data.link,
                let url = URL(string: link) {
                 UIUtils.application.open(url, options: [:]) { success in

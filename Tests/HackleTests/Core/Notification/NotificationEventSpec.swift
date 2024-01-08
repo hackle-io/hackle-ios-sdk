@@ -23,7 +23,7 @@ class NotificationEventSpecs: QuickSpec {
                 pushMessageDeliveryId: 4,
                 showForeground: true,
                 imageUrl: "foo://bar/image",
-                clickAction: NotificationClickAction.DEEP_LINK,
+                clickAction: NotificationClickAction.deepLink,
                 link: "foo://bar",
                 debug: true
             )
