@@ -68,6 +68,14 @@ class DefaultNotificationManager: NotificationManager {
     }
     
     func flush() {
+        dispatchQueue.async{
+            self.flushInternal()
+        }
+    }
+    
+    private func flushInternal(
+        batchSize: Int = DefaultNotificationManager.DEFAULT_FLUSH_BATCH_SIZE
+    ) {
         if (flushing.getAndSet(newValue: true)) {
             return
         }
@@ -91,7 +99,6 @@ class DefaultNotificationManager: NotificationManager {
             return
         }
         
-        let batchSize = DefaultNotificationManager.DEFAULT_FLUSH_BATCH_SIZE
         let loop = Int(ceil(Double(totalCount) / Double(batchSize)))
         Log.debug("Notification data: \(totalCount)")
         
