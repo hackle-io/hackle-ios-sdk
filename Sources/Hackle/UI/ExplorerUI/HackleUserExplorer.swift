@@ -12,7 +12,7 @@ protocol HackleUserExplorer {
 
     func currentUser() -> HackleUser
     
-    func apnsToken() -> String?
+    func registeredPushToken() -> String?
 
     func getAbTestDecisions() -> [(Experiment, Decision)]
 
@@ -61,8 +61,8 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         userManager.resolve(user: nil)
     }
     
-    func apnsToken() -> String? {
-        return notificationManager.apnsToken
+    func registeredPushToken() -> String? {
+        return notificationManager.registeredPushToken
     }
 
     func getAbTestDecisions() -> [(Experiment, Decision)] {

@@ -1,13 +1,13 @@
 import Foundation
 
 protocol NotificationManager: NotificationDataReceiver, UserListener {
-    var apnsToken: String? { get }
-    func setAPNSToken(deviceToken: Data, timestamp: Date)
+    var registeredPushToken: String? { get }
+    func setPushToken(deviceToken: Data, timestamp: Date)
     func flush()
 }
 
 class DefaultNotificationManager: NotificationManager {
-    private static let KEY_APNS_DEVICE_TOKEN = "apns_device_token"
+    private static let KEY_APNS_TOKEN = "apns_token"
     private static let DEFAULT_FLUSH_BATCH_SIZE = 5
     
     private let core: HackleCore
@@ -19,23 +19,23 @@ class DefaultNotificationManager: NotificationManager {
     
     private let flushing: AtomicReference<Bool> = AtomicReference(value: false)
     
-    private var _apnsToken: String? {
+    private var _registeredPushToken: String? {
         get {
-            return preferences.getString(key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN)
+            return preferences.getString(key: DefaultNotificationManager.KEY_APNS_TOKEN)
         }
         set {
             if let value = newValue {
                 preferences.putString(
-                    key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN,
+                    key: DefaultNotificationManager.KEY_APNS_TOKEN,
                     value: value
                 )
             } else {
-                preferences.remove(key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN)
+                preferences.remove(key: DefaultNotificationManager.KEY_APNS_TOKEN)
             }
         }
     }
-    var apnsToken: String? {
-        get { return preferences.getString(key: DefaultNotificationManager.KEY_APNS_DEVICE_TOKEN) }
+    var registeredPushToken: String? {
+        get { return preferences.getString(key: DefaultNotificationManager.KEY_APNS_TOKEN) }
     }
     
     init(
@@ -54,16 +54,14 @@ class DefaultNotificationManager: NotificationManager {
         self.dispatchQueue = dispatchQueue
     }
     
-    func setAPNSToken(deviceToken: Data, timestamp: Date) {
+    func setPushToken(deviceToken: Data, timestamp: Date) {
         let deviceTokenString = deviceToken.hexString()
-        if _apnsToken == deviceTokenString {
-            Log.debug("Provided same device token.")
+        if _registeredPushToken == deviceTokenString {
+            Log.debug("Provided same push token.")
             return
         }
         
-        Log.debug("New device token provided.")
-        
-        _apnsToken = deviceTokenString
+        _registeredPushToken = deviceTokenString
         notifyAPNSTokenChanged(user: userManager.currentUser, timestamp: timestamp)
     }
     
@@ -153,8 +151,8 @@ class DefaultNotificationManager: NotificationManager {
     }
     
     private func notifyAPNSTokenChanged(user: User, timestamp: Date) {
-        guard let deviceTokenString = _apnsToken else {
-            Log.debug("APNS token is empty.")
+        guard let deviceTokenString = _registeredPushToken else {
+            Log.debug("Push token is empty.")
             return
         }
         

@@ -226,8 +226,8 @@ import WebKit
         webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
     
-    @objc public func setAPNSToken(_ deviceToken: Data) {
-        notificationManager.setAPNSToken(deviceToken: deviceToken, timestamp: Date())
+    @objc public func setPushToken(_ deviceToken: Data) {
+        notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -477,7 +477,7 @@ extension HackleApp {
         eventPublisher.addListener(listener: inAppMessageManager)
         
         // - Notification
-        let notificationQueue = DispatchQueue(label: "io.hackle.NotificationQueue", qos: .utility)
+        let notificationQueue = DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility)
         let notificationManager = DefaultNotificationManager(
             core: core,
             dispatchQueue: notificationQueue,

@@ -67,7 +67,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             userIdCopyButton.isEnabled = true
         }
         
-        if let pushToken = explorer.apnsToken() {
+        if let pushToken = explorer.registeredPushToken() {
             pushTokenLabel.text = pushToken
             pushTokenCopyButton.isEnabled = true
         }

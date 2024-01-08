@@ -3,16 +3,14 @@ import Foundation
 
 class MockNotificationManager: NotificationManager {
     
-    private var _apnsToken: String? = nil
-    var apnsToken: String? {
-        get { return _apnsToken }
+    private var _registeredPushToken: String? = nil
+    var registeredPushToken: String? {
+        get { return _registeredPushToken }
     }
     
-    func setAPNSToken(deviceToken: Data, timestamp: Date) {
-        let deviceTokenString = deviceToken
-            .map { String(format: "%.2hhx", $0) }
-            .joined()
-        _apnsToken = deviceTokenString
+    func setPushToken(deviceToken: Data, timestamp: Date) {
+        let deviceTokenString = deviceToken.hexString()
+        _registeredPushToken = deviceTokenString
     }
     
     func flush() {

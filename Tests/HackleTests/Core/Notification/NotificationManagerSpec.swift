@@ -38,7 +38,7 @@ class NotificationManagerSpec: QuickSpec {
             let data = Data([1, 2, 3, 4])
             let hexString = data.hexString()
             let timestamp = Date()
-            manager.setAPNSToken(
+            manager.setPushToken(
                 deviceToken: data,
                 timestamp: timestamp
             )
@@ -53,7 +53,7 @@ class NotificationManagerSpec: QuickSpec {
         }
         
         it("set another push token") {
-            preferences.putString(key: "apns_device_token", value: Data([1, 2, 3, 4]).hexString())
+            preferences.putString(key: "apns_token", value: Data([1, 2, 3, 4]).hexString())
             let userManager = MockUserManager()
             let manager = DefaultNotificationManager(
                 core: core,
@@ -70,7 +70,7 @@ class NotificationManagerSpec: QuickSpec {
             
             let data = Data([5, 6, 7, 8])
             let timestamp = Date()
-            manager.setAPNSToken(
+            manager.setPushToken(
                 deviceToken: data,
                 timestamp: timestamp
             )
@@ -82,14 +82,14 @@ class NotificationManagerSpec: QuickSpec {
                 expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
                 expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
                 
-                expect(preferences.getString(key: "apns_device_token")) == data.hexString()
+                expect(preferences.getString(key: "apns_token")) == data.hexString()
             }
         }
         
         it("set same push token") {
             let data = Data([1, 2, 3, 4])
             let hexString = data.hexString()
-            preferences.putString(key: "apns_device_token", value: hexString)
+            preferences.putString(key: "apns_token", value: hexString)
             let userManager = MockUserManager()
             let manager = DefaultNotificationManager(
                 core: core,
@@ -105,21 +105,21 @@ class NotificationManagerSpec: QuickSpec {
             every(userManager.toHackleUserMock).returns(hackleUser)
             
             let timestamp = Date()
-            manager.setAPNSToken(
+            manager.setPushToken(
                 deviceToken: data,
                 timestamp: timestamp
             )
             
             dispatchQueue.sync {
                 expect(core.tracked.count) == 0
-                expect(preferences.getString(key: "apns_device_token")) == hexString
+                expect(preferences.getString(key: "apns_token")) == hexString
             }
         }
         
         it("resend push token when user updated called") {
             let data = Data([1, 2, 3, 4])
             let hexString = data.hexString()
-            preferences.putString(key: "apns_device_token", value: hexString)
+            preferences.putString(key: "apns_token", value: hexString)
             let userManager = MockUserManager()
             let manager = DefaultNotificationManager(
                 core: core,
