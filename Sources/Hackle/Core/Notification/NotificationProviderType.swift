@@ -1,5 +1,5 @@
 import Foundation
 
 enum NotificationProviderType: String {
-    case APNS = "APNS"
+    case APN = "APN"
 }
