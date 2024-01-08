@@ -117,7 +117,8 @@ extension Hackle {
     ) -> Bool {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
             Log.debug("Notification data received from user action.")
-            NotificationHandler.handleNotificationData(data: notificationData)
+            NotificationHandler.shared
+                .handleNotificationData(data: notificationData)
             completionHandler()
             return true
         } else {

@@ -488,7 +488,7 @@ extension HackleApp {
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )
-        NotificationHandler.setNotificationDataReceiver(receiver: notificationManager)
+        NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
         userManager.addListener(listener: notificationManager)
 
         // - UserExplorer

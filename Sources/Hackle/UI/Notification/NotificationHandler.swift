@@ -2,7 +2,10 @@ import Foundation
 import UserNotifications
 
 class NotificationHandler {
-    private static var receiver: NotificationDataReceiver =
+    
+    static let shared = NotificationHandler()
+    
+    private var receiver: NotificationDataReceiver =
         DefaultNotificationDataReceiver(
             dispatchQueue: DispatchQueue.main,
             repository: DefaultNotificationRepository(
@@ -10,18 +13,18 @@ class NotificationHandler {
             )
         )
     
-    static func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
+    func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
     }
     
-    static func handleNotificationData(data: NotificationData, timestamp: Date = Date()) {
+    func handleNotificationData(data: NotificationData, timestamp: Date = Date()) {
         receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
         trampoline(data: data)
     }
 }
 
 extension NotificationHandler {
-    private static func trampoline(data: NotificationData) {
+    private func trampoline(data: NotificationData) {
         switch (data.clickAction) {
         case .APP_OPEN:
             break;
