@@ -46,7 +46,7 @@ class NotificationManagerSpec: QuickSpec {
             dispatchQueue.sync {
                 expect(core.tracked.count) == 1
                 expect(core.tracked[0].0.key) == "$push_token"
-                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
+                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APN"
                 expect(core.tracked[0].0.properties?["token"] as? String) == hexString
                 expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
             }
@@ -78,7 +78,7 @@ class NotificationManagerSpec: QuickSpec {
             dispatchQueue.sync {
                 expect(core.tracked.count) == 1
                 expect(core.tracked[0].0.key) == "$push_token"
-                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
+                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APN"
                 expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
                 expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
                 
@@ -144,7 +144,7 @@ class NotificationManagerSpec: QuickSpec {
             dispatchQueue.sync {
                 expect(core.tracked.count) == 1
                 expect(core.tracked[0].0.key) == "$push_token"
-                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APNS"
+                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APN"
                 expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
                 expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
             }
