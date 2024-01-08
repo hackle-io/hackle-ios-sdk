@@ -354,5 +354,209 @@ class NotificationManagerSpec: QuickSpec {
                 expect(repository.count(workspaceId: 123, environmentId: 456)) == 1
             }
         }
+        
+        it("flush data until empty") {
+            let userManager = MockUserManager()
+            let manager = DefaultNotificationManager(
+                core: core,
+                dispatchQueue: dispatchQueue,
+                workspaceFetcher: workspaceFetcher,
+                userManager: userManager,
+                preferences: preferences,
+                repository: repository
+            )
+            every(workspaceFetcher.fetchMock)
+                .returns(WorkspaceEntity(
+                    id: 1,
+                    environmentId: 2,
+                    experiments: [],
+                    featureFlags: [],
+                    buckets: [],
+                    eventTypes: [],
+                    segments: [],
+                    containers: [],
+                    parameterConfigurations: [],
+                    remoteConfigParameters: [],
+                    inAppMessages: []
+                ))
+            let hackleUser = HackleUser.builder()
+                .identifier(.id, "user")
+                .build()
+            every(userManager.toHackleUserMock).returns(hackleUser)
+            repository.putAll(entities: [
+                NotificationHistoryEntity(
+                    historyId: 0,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                ),
+                NotificationHistoryEntity(
+                    historyId: 1,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                ),
+                NotificationHistoryEntity(
+                    historyId: 2,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                )
+            ])
+            
+            manager.flush()
+            
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 3
+                expect(repository.count(workspaceId: 1, environmentId: 2)) == 0
+            }
+        }
+        
+        it("flush only same environment data") {
+            let userManager = MockUserManager()
+            let manager = DefaultNotificationManager(
+                core: core,
+                dispatchQueue: dispatchQueue,
+                workspaceFetcher: workspaceFetcher,
+                userManager: userManager,
+                preferences: preferences,
+                repository: repository
+            )
+            every(workspaceFetcher.fetchMock)
+                .returns(WorkspaceEntity(
+                    id: 3,
+                    environmentId: 3,
+                    experiments: [],
+                    featureFlags: [],
+                    buckets: [],
+                    eventTypes: [],
+                    segments: [],
+                    containers: [],
+                    parameterConfigurations: [],
+                    remoteConfigParameters: [],
+                    inAppMessages: []
+                ))
+            let hackleUser = HackleUser.builder()
+                .identifier(.id, "user")
+                .build()
+            every(userManager.toHackleUserMock).returns(hackleUser)
+            repository.putAll(entities: [
+                NotificationHistoryEntity(
+                    historyId: 0,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                ),
+                NotificationHistoryEntity(
+                    historyId: 1,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                ),
+                NotificationHistoryEntity(
+                    historyId: 2,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                )
+            ])
+            
+            manager.flush()
+            
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 0
+                expect(repository.count(workspaceId: 1, environmentId: 2)) == 3
+            }
+        }
+        
+        it("flush only same environment data") {
+            let userManager = MockUserManager()
+            let manager = DefaultNotificationManager(
+                core: core,
+                dispatchQueue: dispatchQueue,
+                workspaceFetcher: workspaceFetcher,
+                userManager: userManager,
+                preferences: preferences,
+                repository: repository
+            )
+            every(workspaceFetcher.fetchMock)
+                .returns(nil)
+            let hackleUser = HackleUser.builder()
+                .identifier(.id, "user")
+                .build()
+            every(userManager.toHackleUserMock).returns(hackleUser)
+            repository.putAll(entities: [
+                NotificationHistoryEntity(
+                    historyId: 0,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                ),
+                NotificationHistoryEntity(
+                    historyId: 1,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                ),
+                NotificationHistoryEntity(
+                    historyId: 2,
+                    workspaceId: 1,
+                    environmentId: 2,
+                    pushMessageId: 3,
+                    pushMessageKey: 4,
+                    pushMessageExecutionId: 5,
+                    pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true
+                )
+            ])
+            
+            manager.flush()
+            
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 0
+                expect(repository.count(workspaceId: 1, environmentId: 2)) == 3
+            }
+        }
     }
 }

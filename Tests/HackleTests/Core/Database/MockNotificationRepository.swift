@@ -3,15 +3,26 @@ import Foundation
 
 class MockNotificationRepository: NotificationRepository {
     private var incrementKey: Int64 = 0
-    private var entityDict: [String: NotificationHistoryEntity] = [:]
+    private var entities: [String: NotificationHistoryEntity] = [:]
     
-    private func getDictKey(workspaceId: Int64, environmentId: Int64, historyId: Int64) -> String {
+    private func dictKey(workspaceId: Int64, environmentId: Int64, historyId: Int64) -> String {
         return "\(workspaceId):\(environmentId):\(historyId)"
+    }
+    
+    func putAll(entities: [NotificationHistoryEntity]) {
+        entities.forEach { entity in
+            let key = dictKey(
+                workspaceId: entity.workspaceId,
+                environmentId: entity.environmentId,
+                historyId: entity.historyId
+            )
+            self.entities[key] = entity
+        }
     }
     
     func count(workspaceId: Int64, environmentId: Int64) -> Int {
         var count = 0
-        self.entityDict.forEach { (key: String, value: NotificationHistoryEntity) in
+        self.entities.forEach { (key: String, value: NotificationHistoryEntity) in
             if value.workspaceId == workspaceId &&
                value.environmentId == environmentId {
                 count += 1
@@ -33,13 +44,13 @@ class MockNotificationRepository: NotificationRepository {
             debug: data.debug
         )
         incrementKey += 1
-        let key = getDictKey(workspaceId: data.workspaceId, environmentId: data.environmentId, historyId: entity.historyId)
-        self.entityDict[key] = entity
+        let key = dictKey(workspaceId: data.workspaceId, environmentId: data.environmentId, historyId: entity.historyId)
+        self.entities[key] = entity
     }
     
     func getEntities(workspaceId: Int64, environmentId: Int64, limit: Int?) -> [NotificationHistoryEntity] {
         var list: [NotificationHistoryEntity] = []
-        entityDict.forEach { (key: String, value: NotificationHistoryEntity) in
+        entities.forEach { (key: String, value: NotificationHistoryEntity) in
             if value.workspaceId == workspaceId &&
                value.environmentId == environmentId {
                 list.append(value)
@@ -55,8 +66,8 @@ class MockNotificationRepository: NotificationRepository {
     
     func delete(entities: [NotificationHistoryEntity]) {
         entities.forEach { entity in
-            let key = getDictKey(workspaceId: entity.workspaceId, environmentId: entity.environmentId, historyId: entity.historyId)
-            self.entityDict.removeValue(forKey: key)
+            let key = dictKey(workspaceId: entity.workspaceId, environmentId: entity.environmentId, historyId: entity.historyId)
+            self.entities.removeValue(forKey: key)
         }
     }
 }
