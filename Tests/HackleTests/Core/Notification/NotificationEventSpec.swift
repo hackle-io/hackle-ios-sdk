@@ -10,7 +10,7 @@ class NotificationEventSpecs: QuickSpec {
             let event = RegisterPushTokenEvent(token: "abcd1234")
                 .toTrackEvent()
             expect(event.key) == "$push_token"
-            expect(event.properties?["provider_type"] as? String) == "APNS"
+            expect(event.properties?["provider_type"] as? String) == "APN"
             expect(event.properties?["token"] as? String) == "abcd1234"
         }
         it("notification data to event") {
