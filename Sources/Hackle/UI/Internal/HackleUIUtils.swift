@@ -12,7 +12,7 @@ import UIKit
 class UIUtils {
 
     static var application: UIApplication {
-        UIApplication.shared
+        UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
     }
 
     static var interfaceOrientation: UIInterfaceOrientation {
@@ -42,11 +42,11 @@ class UIUtils {
 
     static var keyWindow: UIWindow? {
         if #available(iOS 13, *) {
-            return UIApplication.shared.windows.first { window in
+            return application.windows.first { window in
                 window.isKeyWindow
             }
         } else {
-            return UIApplication.shared.keyWindow
+            return application.keyWindow
         }
     }
 
