@@ -54,11 +54,11 @@ class HackleUserExplorerView {
 
     private func getKeyWindow() -> UIWindow? {
         if #available(iOS 13, *) {
-            return UIApplication.shared.windows.first { window in
+            return UIUtils.application.windows.first { window in
                 window.isKeyWindow
             }
         } else {
-            return UIApplication.shared.keyWindow
+            return UIUtils.application.keyWindow
         }
     }
 
@@ -100,7 +100,7 @@ class HackleUserExplorerView {
             }
             return min(size.width, size.height)
         } else {
-            let size = UIApplication.shared.statusBarFrame.size
+            let size = UIUtils.application.statusBarFrame.size
             return min(size.width, size.height)
         }
     }
