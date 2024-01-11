@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import UserNotifications
 
 @objc public class Hackle: NSObject {
 
@@ -85,5 +86,59 @@ extension Hackle {
             .value(value)
             .properties(properties ?? [:])
             .build()
+    }
+}
+
+extension Hackle {
+    @objc static public func userNotificationCenter(
+        center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) -> Bool {
+        if let notificationData = NotificationData.from(data: notification.request.content.userInfo) {
+            Log.debug("Notification data received in foreground: \(notificationData.showForeground)")
+            if (notificationData.showForeground) {
+                if #available(iOS 14.0, *) {
+                    completionHandler([.list, .banner])
+                } else {
+                    completionHandler([.alert])
+                }
+            }
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    @objc static public func userNotificationCenter(
+        center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) -> Bool {
+        if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
+            Log.debug("Notification data received from user action.")
+            NotificationHandler.shared
+                .handleNotificationData(data: notificationData)
+            completionHandler()
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+extension Hackle {
+    @objc static public func populateNotificationContent(
+        request: UNNotificationRequest,
+        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+    ) -> Bool {
+        if let bestAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent,
+           let attachment = request.attachment {
+            bestAttemptContent.attachments = [attachment]
+            contentHandler(bestAttemptContent)
+            return true
+        } else {
+            return false
+        }
     }
 }

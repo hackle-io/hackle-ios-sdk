@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,17 +11,36 @@
 		7E0E2D922AE75FCD00578C74 /* BridgeInvocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */; };
 		7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */; };
 		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
+		7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */; };
 		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
 		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
 		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
+		7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666282B2C409600B3CDCF /* SharedDatabase.swift */; };
+		7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */; };
+		7E4666302B30133400B3CDCF /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662F2B30133400B3CDCF /* NotificationHandler.swift */; };
+		7E4666322B30165100B3CDCF /* NotificationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666312B30165100B3CDCF /* NotificationData.swift */; };
+		7E4666342B3021E400B3CDCF /* NotificationClickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666332B3021E400B3CDCF /* NotificationClickAction.swift */; };
+		7E5205FE2B2B02970095DCD9 /* NotificationHistoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FD2B2B02970095DCD9 /* NotificationHistoryEntity.swift */; };
+		7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */; };
+		7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5206012B2BE6A90095DCD9 /* Database.swift */; };
 		7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */; };
 		7E64779F2AD50E5200971F20 /* MockHackleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E64779E2AD50E5200971F20 /* MockHackleApp.swift */; };
 		7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7D2ACE503E00900097 /* HackleBridge.swift */; };
 		7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */; };
 		7E70B5742AA8641900746A5F /* MockDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E70B5732AA8641900746A5F /* MockDevice.swift */; };
+		7E81DA462B452625003258DA /* MockNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA452B452625003258DA /* MockNotificationManager.swift */; };
+		7E81DA4B2B455E16003258DA /* NotificationEventSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4A2B455E16003258DA /* NotificationEventSpec.swift */; };
+		7E81DA4D2B45640D003258DA /* NotificationManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4C2B45640D003258DA /* NotificationManagerSpec.swift */; };
+		7E81DA4F2B45672B003258DA /* MockNotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */; };
+		7E81DA532B46849C003258DA /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA522B46849C003258DA /* ObjectsSpec.swift */; };
+		7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */; };
+		7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */; };
+		7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */; };
+		7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */; };
+		7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -434,17 +453,36 @@
 		7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeInvocation.swift; sourceTree = "<group>"; };
 		7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeResponse.swift; sourceTree = "<group>"; };
 		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
+		7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationProviderType.swift; sourceTree = "<group>"; };
 		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
 		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
+		7E4666282B2C409600B3CDCF /* SharedDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDatabase.swift; sourceTree = "<group>"; };
+		7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
+		7E46662F2B30133400B3CDCF /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
+		7E4666312B30165100B3CDCF /* NotificationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationData.swift; sourceTree = "<group>"; };
+		7E4666332B3021E400B3CDCF /* NotificationClickAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationClickAction.swift; sourceTree = "<group>"; };
+		7E5205FD2B2B02970095DCD9 /* NotificationHistoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHistoryEntity.swift; sourceTree = "<group>"; };
+		7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceDatabase.swift; sourceTree = "<group>"; };
+		7E5206012B2BE6A90095DCD9 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeSpecs.swift; sourceTree = "<group>"; };
 		7E64779E2AD50E5200971F20 /* MockHackleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleApp.swift; sourceTree = "<group>"; };
 		7E65EB7D2ACE503E00900097 /* HackleBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridge.swift; sourceTree = "<group>"; };
 		7E65EB7F2ACEAE2000900097 /* HackleUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegate.swift; sourceTree = "<group>"; };
 		7E70B5732AA8641900746A5F /* MockDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevice.swift; sourceTree = "<group>"; };
+		7E81DA452B452625003258DA /* MockNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationManager.swift; sourceTree = "<group>"; };
+		7E81DA4A2B455E16003258DA /* NotificationEventSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEventSpec.swift; sourceTree = "<group>"; };
+		7E81DA4C2B45640D003258DA /* NotificationManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerSpec.swift; sourceTree = "<group>"; };
+		7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationRepository.swift; sourceTree = "<group>"; };
+		7E81DA522B46849C003258DA /* ObjectsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
+		7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataSpecs.swift; sourceTree = "<group>"; };
+		7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFactory.swift; sourceTree = "<group>"; };
+		7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiver.swift; sourceTree = "<group>"; };
+		7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEvent.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -888,31 +926,61 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		7E3F4FBF2AA6FBF2004E0EB0 /* Platform */ = {
+		7E46662E2B30096500B3CDCF /* Notification */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FC32AA6FC2D004E0EB0 /* Helper */,
-				7E3F4FC22AA6FC24004E0EB0 /* Model */,
-				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
+				7E46662F2B30133400B3CDCF /* NotificationHandler.swift */,
+				7E4666312B30165100B3CDCF /* NotificationData.swift */,
+				7E4666332B3021E400B3CDCF /* NotificationClickAction.swift */,
+				7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */,
+				7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */,
 			);
-			path = Platform;
+			path = Notification;
 			sourceTree = "<group>";
 		};
-		7E3F4FC22AA6FC24004E0EB0 /* Model */ = {
+		7E4666352B302F7D00B3CDCF /* Notification */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
-				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
+				7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */,
 			);
-			path = Model;
+			path = Notification;
 			sourceTree = "<group>";
 		};
-		7E3F4FC32AA6FC2D004E0EB0 /* Helper */ = {
+		7E5205F92B2AFF3E0095DCD9 /* Workspace */ = {
 			isa = PBXGroup;
 			children = (
-				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+				EE29D8CF29CD825300B1FEAA /* EventEntity.swift */,
+				7E5205FF2B2BE5B40095DCD9 /* WorkspaceDatabase.swift */,
 			);
-			path = Helper;
+			path = Workspace;
+			sourceTree = "<group>";
+		};
+		7E5205FA2B2AFF770095DCD9 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				EE29D8D029CD825300B1FEAA /* EventRepository.swift */,
+				EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */,
+				7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		7E5205FB2B2AFF880095DCD9 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				7E5205FD2B2B02970095DCD9 /* NotificationHistoryEntity.swift */,
+				7E4666282B2C409600B3CDCF /* SharedDatabase.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		7E81DA472B455D9A003258DA /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				7E81DA4A2B455E16003258DA /* NotificationEventSpec.swift */,
+				7E81DA4C2B45640D003258DA /* NotificationManagerSpec.swift */,
+			);
+			path = Notification;
 			sourceTree = "<group>";
 		};
 		7E825C7E2ABD56D20003F0B7 /* Bridge */ = {
@@ -923,6 +991,24 @@
 				7E65EB7D2ACE503E00900097 /* HackleBridge.swift */,
 			);
 			path = Bridge;
+			sourceTree = "<group>";
+		};
+		7E9DDDFE2B319EE1006ACFDA /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */,
+				7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */,
+				7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		D160A65AC13330399B99C7E3 /* xcschemes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = xcschemes;
+			path = Hackle.xcodeproj/project.xcworkspace/xcuserdata/wontak.xcuserdatad/xcschemes;
 			sourceTree = "<group>";
 		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
@@ -961,6 +1047,7 @@
 		EE0F33FB2A6689D0009DE640 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7E4666352B302F7D00B3CDCF /* Notification */,
 				EE0F33FC2A6689EB009DE640 /* InAppMessageUI */,
 				EE0F34062A66962F009DE640 /* Internal */,
 			);
@@ -1040,6 +1127,7 @@
 		EE29D8AE29CD825300B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				7E9DDDFE2B319EE1006ACFDA /* Notification */,
 				EE5A78F82ADCD29B005A0F9E /* Platform */,
 				EE29D8CD29CD825300B1FEAA /* Database */,
 				EE29D90D29CD825300B1FEAA /* Evaluation */,
@@ -1144,10 +1232,11 @@
 		EE29D8CD29CD825300B1FEAA /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				7E5205FB2B2AFF880095DCD9 /* Shared */,
+				7E5205F92B2AFF3E0095DCD9 /* Workspace */,
+				7E5205FA2B2AFF770095DCD9 /* Repository */,
 				EE29D8CE29CD825300B1FEAA /* SQLiteDatabase.swift */,
-				EE29D8CF29CD825300B1FEAA /* EventEntity.swift */,
-				EE29D8D029CD825300B1FEAA /* EventRepository.swift */,
-				EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */,
+				7E5206012B2BE6A90095DCD9 /* Database.swift */,
 				EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */,
 			);
 			path = Database;
@@ -1439,6 +1528,7 @@
 				7E70B5732AA8641900746A5F /* MockDevice.swift */,
 				7E64779E2AD50E5200971F20 /* MockHackleApp.swift */,
 				7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */,
+				7E81DA452B452625003258DA /* MockNotificationManager.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -1471,6 +1561,7 @@
 		EE29D9CB29CD82C100B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				7E81DA472B455D9A003258DA /* Notification */,
 				7E0E2D8B2ADE532B00578C74 /* Bridge */,
 				EE29D9E429CD82C100B1FEAA /* Database */,
 				EE29D9F829CD82C100B1FEAA /* Evaluation */,
@@ -1563,6 +1654,7 @@
 			children = (
 				EE29D9E529CD82C100B1FEAA /* MemoryKeyValueRepository.swift */,
 				EE29D9E629CD82C100B1FEAA /* MockEventRepository.swift */,
+				7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -1599,6 +1691,7 @@
 			children = (
 				EE29D9F029CD82C100B1FEAA /* Time */,
 				EE29D9F329CD82C100B1FEAA /* Concurrency */,
+				7E81DA522B46849C003258DA /* ObjectsSpec.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1919,6 +2012,7 @@
 		EE80E0142A2DC64500FB12CC /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7E46662E2B30096500B3CDCF /* Notification */,
 				EE29DAA929CD83C400B1FEAA /* ExplorerUI */,
 				EE80E0152A2DC67000FB12CC /* InAppMessageUI */,
 				EEA01CBD2A36B9A100E0C021 /* Internal */,
@@ -2116,6 +2210,7 @@
 				EE29D8A729CD820900B1FEAA /* Sources */,
 				EE29D8A829CD821200B1FEAA /* Tests */,
 				OBJ_14 /* Products */,
+				D160A65AC13330399B99C7E3 /* xcschemes */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2254,7 +2349,6 @@
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
 				7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */,
 				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
-				EE29D96929CD825400B1FEAA /* HackleUserResolver.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
 				EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */,
@@ -2264,6 +2358,7 @@
 				EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */,
 				EE29D98229CD825400B1FEAA /* Target.swift in Sources */,
 				EE0B71EE2A42E84A009D7AF4 /* InAppMessageActionHandler.swift in Sources */,
+				7E5205FE2B2B02970095DCD9 /* NotificationHistoryEntity.swift in Sources */,
 				EE29D96529CD825400B1FEAA /* UserManager.swift in Sources */,
 				EE80DF882A2831E300FB12CC /* InAppMessageEvaluator.swift in Sources */,
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,
@@ -2329,6 +2424,7 @@
 				EE29D9A329CD825500B1FEAA /* Log.swift in Sources */,
 				EE29D99D29CD825500B1FEAA /* Hasher.swift in Sources */,
 				EE29D95629CD825400B1FEAA /* Metrics.swift in Sources */,
+				7E4666342B3021E400B3CDCF /* NotificationClickAction.swift in Sources */,
 				EE29D99429CD825400B1FEAA /* OperatorMatcher.swift in Sources */,
 				EE29D99A29CD825500B1FEAA /* ContainerResolver.swift in Sources */,
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
@@ -2343,7 +2439,9 @@
 				EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */,
 				EE29D95029CD825400B1FEAA /* DelegatingMetricRegistry.swift in Sources */,
 				EE29D99629CD825400B1FEAA /* ExperimentTargetDeterminer.swift in Sources */,
+				7E4666322B30165100B3CDCF /* NotificationData.swift in Sources */,
 				EE29D94129CD825400B1FEAA /* HackleApp.swift in Sources */,
+				7E4666302B30133400B3CDCF /* NotificationHandler.swift in Sources */,
 				EE80E0282A2E10F700FB12CC /* InAppMessageUIViewController.swift in Sources */,
 				7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */,
 				EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */,
@@ -2359,6 +2457,7 @@
 				EE29D97A29CD825400B1FEAA /* Scheduler.swift in Sources */,
 				EE29DAC829CD91A400B1FEAA /* ManualOverrideStorage.swift in Sources */,
 				EEA01CBF2A36B9B100E0C021 /* HackleUIUtils.swift in Sources */,
+				7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */,
 				EE29D99729CD825500B1FEAA /* OverrideResolver.swift in Sources */,
 				EE29D96429CD825400B1FEAA /* DefaultRemoteConfig.swift in Sources */,
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,
@@ -2378,6 +2477,7 @@
 				EE29D9B129CD825500B1FEAA /* User.swift in Sources */,
 				EE29D98829CD825400B1FEAA /* Segment.swift in Sources */,
 				EE3C165E29D43246008177F6 /* HackleFeatureFlagViewController.swift in Sources */,
+				7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */,
 				EE29D95C29CD825400B1FEAA /* KeyValueRepository.swift in Sources */,
 				EE29D98929CD825400B1FEAA /* Experiment.swift in Sources */,
 				EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */,
@@ -2402,6 +2502,7 @@
 				EE29D98E29CD825400B1FEAA /* Action.swift in Sources */,
 				EE29D98A29CD825400B1FEAA /* ContainerGroup.swift in Sources */,
 				EE29D97329CD825400B1FEAA /* Clock.swift in Sources */,
+				7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */,
 				EE29D95E29CD825400B1FEAA /* AppState.swift in Sources */,
 				EE29D97B29CD825400B1FEAA /* SdkVersion.swift in Sources */,
 				EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */,
@@ -2415,8 +2516,10 @@
 				EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */,
 				EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */,
 				EEA01CBC2A32A8C600E0C021 /* EventConditionMatcher.swift in Sources */,
+				7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */,
 				EE29D97429CD825400B1FEAA /* TimeUnit.swift in Sources */,
 				EE29D96E29CD825400B1FEAA /* Sdk.swift in Sources */,
+				7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */,
 				EE80DF8A2A2831E700FB12CC /* InAppMessageRequest.swift in Sources */,
 				EE29D94029CD825400B1FEAA /* Hackle.swift in Sources */,
 				EE29D9A429CD825500B1FEAA /* MonitoringMetricRegistry.swift in Sources */,
@@ -2436,6 +2539,8 @@
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,
 				EE29D98029CD825400B1FEAA /* Bucket.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
+				7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */,
+				7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */,
 				EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */,
 				EE29D98129CD825400B1FEAA /* ParameterConfiguration.swift in Sources */,
 				EE29D96329CD825400B1FEAA /* Workspace.swift in Sources */,
@@ -2451,9 +2556,11 @@
 				EE29D9A929CD825500B1FEAA /* Session.swift in Sources */,
 				EE29DACA29CD988100B1FEAA /* HackleUserManualOverrideStorage.swift in Sources */,
 				EE29D94429CD825400B1FEAA /* NoopTimer.swift in Sources */,
+				7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */,
 				EE29D98D29CD825400B1FEAA /* TargetRule.swift in Sources */,
 				EE29D97029CD825400B1FEAA /* Collections.swift in Sources */,
 				EE29D9AB29CD825500B1FEAA /* SessionListener.swift in Sources */,
+				7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */,
 				EE29D97C29CD825400B1FEAA /* HttpRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2491,6 +2598,7 @@
 				EE29DAA029CD82C200B1FEAA /* UserEventSpecs.swift in Sources */,
 				EE29DA9B29CD82C200B1FEAA /* MockFlowEvaluator.swift in Sources */,
 				EE789E2429EFE02E0088D8A6 /* ExperimentRequestSpecs.swift in Sources */,
+				7E81DA532B46849C003258DA /* ObjectsSpec.swift in Sources */,
 				EE789E2629EFE7EB0088D8A6 /* ExperimentSpecs.swift in Sources */,
 				EE29DA5D29CD82C200B1FEAA /* PushMetricRegistrySpecs.swift in Sources */,
 				EEDC58762ACBD82E001E73DB /* PollingSynchronizerSpecs.swift in Sources */,
@@ -2507,6 +2615,7 @@
 				EE29DA8F29CD82C200B1FEAA /* MockActionResolver.swift in Sources */,
 				EEDC58462AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift in Sources */,
 				EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */,
+				7E81DA4D2B45640D003258DA /* NotificationManagerSpec.swift in Sources */,
 				EE29DAA729CD82C200B1FEAA /* HackleAppSpec.swift in Sources */,
 				EE29DA5F29CD82C200B1FEAA /* CumulativeCounterSpecs.swift in Sources */,
 				EE29DA8729CD82C200B1FEAA /* DefaultExperimentTargetDeterminerSpecs.swift in Sources */,
@@ -2554,10 +2663,12 @@
 				EE29DA5929CD82C200B1FEAA /* DelegatingCounterSpecs.swift in Sources */,
 				EE789E4629F106BE0088D8A6 /* ExperimentConditionMatcherSpecs.swift in Sources */,
 				EE29DAA629CD82C200B1FEAA /* HackleConfigSpec.swift in Sources */,
+				7E81DA4F2B45672B003258DA /* MockNotificationRepository.swift in Sources */,
 				EE29DAA229CD82C200B1FEAA /* SessionEventTrackerSpecs.swift in Sources */,
 				EE789E2D29F01C3A0088D8A6 /* HackleCoreSpecs.swift in Sources */,
 				EED6A1292A0E2CD500A8875D /* PropertyOperationSpecs.swift in Sources */,
 				EE29DA7929CD82C200B1FEAA /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
+				7E81DA462B452625003258DA /* MockNotificationManager.swift in Sources */,
 				EE789E4829F107710088D8A6 /* MockExperimentMatcher.swift in Sources */,
 				EE29DA6C29CD82C200B1FEAA /* DispatchQueueExtensions.swift in Sources */,
 				EE29DA5B29CD82C200B1FEAA /* CounterSpecs.swift in Sources */,
@@ -2603,6 +2714,7 @@
 				EE29DA6029CD82C200B1FEAA /* CumulativeTimerSpecs.swift in Sources */,
 				EE29DA3F29CD82C200B1FEAA /* MockModels.swift in Sources */,
 				EE29DA8E29CD82C200B1FEAA /* DefaultActionResolverSpecs.swift in Sources */,
+				7E81DA4B2B455E16003258DA /* NotificationEventSpec.swift in Sources */,
 				EEF8959E2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift in Sources */,
 				EEF895B22A4A9C0000722CF6 /* MockInAppMessagePresenter.swift in Sources */,
 				EE789E2829EFE91C0088D8A6 /* ExperimentEvaluationSpecs.swift in Sources */,
@@ -2625,6 +2737,7 @@
 				EE29DA7629CD82C200B1FEAA /* SegmentConditionMatcherSpecs.swift in Sources */,
 				EEF895AA2A4A8AD200722CF6 /* DefaultInAppMessageEventTrackerSpecs.swift in Sources */,
 				EE789E3B29F0F8980088D8A6 /* MockEvaluationFlowFactory.swift in Sources */,
+				7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */,
 				EE29DA6129CD82C200B1FEAA /* MetricSpecs.swift in Sources */,
 				EEDC58782ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift in Sources */,
 				EE29DA9729CD82C200B1FEAA /* ExperimentFlowEvaluatorSpecs.swift in Sources */,

@@ -49,4 +49,27 @@ extension Optional {
         }
         return "\(value)"
     }
+    
+    func requireNotNil() throws -> Wrapped {
+        if let wrapped = self {
+            return wrapped
+        } else {
+            throw HackleError.error("Required value was nil.")
+        }
+    }
+    
+    func asIntOrNil() -> Int64? {
+        if let value = self {
+            return Objects.asIntOrNull(value)
+        } else {
+            return nil
+        }
+    }
+}
+
+extension Data {
+    func hexString(separator: String = "") -> String {
+        return self.map { String(format: "%.2hhx", $0) }
+            .joined(separator: separator)
+    }
 }

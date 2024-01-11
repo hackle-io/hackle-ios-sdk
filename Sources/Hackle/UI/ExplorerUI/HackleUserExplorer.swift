@@ -11,6 +11,8 @@ import Foundation
 protocol HackleUserExplorer {
 
     func currentUser() -> HackleUser
+    
+    func registeredPushToken() -> String?
 
     func getAbTestDecisions() -> [(Experiment, Decision)]
 
@@ -37,23 +39,30 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
 
     private let core: HackleCore
     private let userManager: UserManager
+    private let notificationManager: NotificationManager
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
 
     init(
         core: HackleCore,
         userManager: UserManager,
+        notificationManager: NotificationManager,
         abTestOverrideStorage: HackleUserManualOverrideStorage,
         featureFlagOverrideStorage: HackleUserManualOverrideStorage
     ) {
         self.core = core
         self.userManager = userManager
+        self.notificationManager = notificationManager
         self.abTestOverrideStorage = abTestOverrideStorage
         self.featureFlagOverrideStorage = featureFlagOverrideStorage
     }
 
     func currentUser() -> HackleUser {
         userManager.resolve(user: nil)
+    }
+    
+    func registeredPushToken() -> String? {
+        return notificationManager.registeredPushToken
     }
 
     func getAbTestDecisions() -> [(Experiment, Decision)] {

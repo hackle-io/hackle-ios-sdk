@@ -28,16 +28,16 @@ protocol EventRepository {
 
 class SQLiteEventRepository: EventRepository {
 
-    private let databaseHelper: DatabaseHelper
+    private let database: WorkspaceDatabase
 
-    init(databaseHelper: DatabaseHelper) {
-        self.databaseHelper = databaseHelper
+    init(database: WorkspaceDatabase) {
+        self.database = database
     }
 
     func count() -> Int {
         let sql = "SELECT COUNT(*) FROM \(EventEntity.TABLE_NAME)"
         do {
-            return try databaseHelper.execute { database -> Int in
+            return try database.execute { database -> Int in
                 try database.queryForInt(sql: sql)
             }
         } catch {
@@ -49,7 +49,7 @@ class SQLiteEventRepository: EventRepository {
     func countBy(status: EventEntityStatus) -> Int {
         let sql = "SELECT COUNT(*) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.STATUS_COLUMN_NAME) = \(status.rawValue)"
         do {
-            return try databaseHelper.execute { database -> Int in
+            return try database.execute { database -> Int in
                 try database.queryForInt(sql: sql)
             }
         } catch {
@@ -67,7 +67,7 @@ class SQLiteEventRepository: EventRepository {
             EventEntity.TABLE_NAME, EventEntity.TYPE_COLUMN_NAME, EventEntity.STATUS_COLUMN_NAME, EventEntity.BODY_COLUMN_NAME
         )
         do {
-            try databaseHelper.execute { database in
+            try database.execute { database in
                 try database.statement(sql: sql).use { statement in
                     try statement.bindInt(index: 1, value: Int32(event.type.rawValue))
                     try statement.bindInt(index: 2, value: Int32(EventEntityStatus.pending.rawValue))
@@ -82,7 +82,7 @@ class SQLiteEventRepository: EventRepository {
 
     func getEventToFlush(limit: Int) -> [EventEntity] {
         do {
-            return try databaseHelper.execute { database -> [EventEntity] in
+            return try database.execute { database -> [EventEntity] in
                 try getEventToFlush(database: database, limit: limit)
             }
         } catch let error {
@@ -133,7 +133,7 @@ class SQLiteEventRepository: EventRepository {
 
     func findAllBy(status: EventEntityStatus) -> [EventEntity] {
         do {
-            return try databaseHelper.execute { database -> [EventEntity] in
+            return try database.execute { database -> [EventEntity] in
                 try getEvents(database: database, status: status)
             }
         } catch {
@@ -144,7 +144,7 @@ class SQLiteEventRepository: EventRepository {
 
     func update(events: [EventEntity], status: EventEntityStatus) {
         do {
-            try databaseHelper.execute { database in
+            try database.execute { database in
                 try update(database: database, events: events, status: status)
             }
         } catch {
@@ -161,7 +161,7 @@ class SQLiteEventRepository: EventRepository {
         let sql = "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.ID_COLUMN_NAME) IN (\(ids))"
 
         do {
-            try databaseHelper.execute { database in
+            try database.execute { database in
                 try database.execute(sql: sql)
             }
         } catch {
@@ -171,7 +171,7 @@ class SQLiteEventRepository: EventRepository {
 
     func deleteOldEvents(count: Int) {
         do {
-            try databaseHelper.execute { database in
+            try database.execute { database in
                 let id = try database.queryForInt(sql: "SELECT \(EventEntity.ID_COLUMN_NAME) FROM \(EventEntity.TABLE_NAME) LIMIT 1 OFFSET \(count - 1)")
                 try database.execute(sql: "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.ID_COLUMN_NAME) <= \(id)")
             }

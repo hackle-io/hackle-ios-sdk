@@ -15,6 +15,7 @@ import WebKit
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
+    private let notificationManager: NotificationManager
     private let device: Device
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
@@ -46,6 +47,7 @@ import WebKit
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
+        notificationManager: NotificationManager,
         device: Device,
         userExplorer: HackleUserExplorer
     ) {
@@ -57,6 +59,7 @@ import WebKit
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
         self.notificationObserver = notificationObserver
+        self.notificationManager = notificationManager
         self.device = device
         self.userExplorer = userExplorer
         super.init()
@@ -222,6 +225,10 @@ import WebKit
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
+    
+    @objc public func setPushToken(_ deviceToken: Data) {
+        notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
+    }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
@@ -303,7 +310,10 @@ extension HackleApp {
         eventQueue.async {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
-            self.synchronizer.sync(completion: completion)
+            self.synchronizer.sync(completion: {
+                self.notificationManager.flush()
+                completion()
+            })
         }
     }
 
@@ -313,6 +323,7 @@ extension HackleApp {
 
         let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
+        let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)")
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
 
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -347,7 +358,7 @@ extension HackleApp {
 
         let userManager = DefaultUserManager(
             device: device,
-            repository: UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)"),
+            repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             clock: SystemClock.shared
         )
@@ -363,9 +374,8 @@ extension HackleApp {
         userManager.addListener(listener: sessionManager)
 
         // - EventProcessor
-
-        let databaseHelper = DatabaseHelper(sdkKey: sdkKey)
-        let eventRepository = SQLiteEventRepository(databaseHelper: databaseHelper)
+        let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: sdkKey)
+        let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
 
@@ -465,12 +475,28 @@ extension HackleApp {
             presenter: inAppMessageUI
         )
         eventPublisher.addListener(listener: inAppMessageManager)
+        
+        // - Notification
+        let notificationQueue = DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility)
+        let notificationManager = DefaultNotificationManager(
+            core: core,
+            dispatchQueue: notificationQueue,
+            workspaceFetcher: workspaceManager,
+            userManager: userManager,
+            preferences: keyValueRepositoryBySdkKey,
+            repository: DefaultNotificationRepository(
+                sharedDatabase: DatabaseHelper.getSharedDatabase()
+            )
+        )
+        NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
+        userManager.addListener(listener: notificationManager)
 
         // - UserExplorer
 
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
             userManager: userManager,
+            notificationManager: notificationManager,
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage
         )
@@ -494,6 +520,7 @@ extension HackleApp {
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
             notificationObserver: appNotificationObserver,
+            notificationManager: notificationManager,
             device: device,
             userExplorer: userExplorer
         )

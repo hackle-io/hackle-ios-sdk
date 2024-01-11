@@ -1,0 +1,85 @@
+import Foundation
+import UserNotifications
+
+class NotificationData {
+    let workspaceId: Int64
+    let environmentId: Int64
+    
+    let pushMessageId: Int64?
+    let pushMessageKey: Int64?
+    let pushMessageExecutionId: Int64?
+    let pushMessageDeliveryId: Int64?
+    
+    let showForeground: Bool
+    let imageUrl: String?
+    let clickAction: NotificationClickAction
+    let link: String?
+    let debug: Bool
+    
+    init(
+        workspaceId: Int64,
+        environmentId: Int64,
+        pushMessageId: Int64?,
+        pushMessageKey: Int64?,
+        pushMessageExecutionId: Int64?,
+        pushMessageDeliveryId: Int64?,
+        showForeground: Bool,
+        imageUrl: String?,
+        clickAction: NotificationClickAction,
+        link: String?,
+        debug: Bool
+    ) {
+        self.workspaceId = workspaceId
+        self.environmentId = environmentId
+        self.pushMessageId = pushMessageId
+        self.pushMessageKey = pushMessageKey
+        self.pushMessageExecutionId = pushMessageExecutionId
+        self.pushMessageDeliveryId = pushMessageDeliveryId
+        self.showForeground = showForeground
+        self.imageUrl = imageUrl
+        self.clickAction = clickAction
+        self.link = link
+        self.debug = debug
+    }
+}
+
+extension NotificationData {
+    static let KEY_HACKLE = "hackle"
+    static let KEY_WORKSPACE_ID = "workspaceId"
+    static let KEY_ENVIRONMENT_ID = "environmentId"
+    static let KEY_PUSH_MESSAGE_ID = "pushMessageId"
+    static let KEY_PUSH_MESSAGE_KEY = "pushMessageKey"
+    static let KEY_PUSH_MESSAGE_EXECUTION_ID = "pushMessageExecutionId"
+    static let KEY_PUSH_MESSAGE_DELIVERY_ID = "pushMessageDeliveryId"
+    static let KEY_SHOW_FOREGROUND = "showForeground"
+    static let KEY_IMAGE_URL = "imageUrl"
+    static let KEY_CLICK_ACTION = "clickAction"
+    static let KEY_LINK = "link"
+    static let KEY_DEBUG = "debug"
+    
+    static func from(data: [AnyHashable: Any]) -> NotificationData? {
+        guard let hackle = data[KEY_HACKLE] as? [AnyHashable: Any] else {
+            return nil
+        }
+        
+        do {
+            return NotificationData(
+                workspaceId: try (hackle[KEY_WORKSPACE_ID].asIntOrNil()).requireNotNil(),
+                environmentId: try (hackle[KEY_ENVIRONMENT_ID].asIntOrNil()).requireNotNil(),
+                pushMessageId: hackle[KEY_PUSH_MESSAGE_ID].asIntOrNil(),
+                pushMessageKey: hackle[KEY_PUSH_MESSAGE_KEY].asIntOrNil(),
+                pushMessageExecutionId: hackle[KEY_PUSH_MESSAGE_EXECUTION_ID].asIntOrNil(),
+                pushMessageDeliveryId: hackle[KEY_PUSH_MESSAGE_DELIVERY_ID].asIntOrNil(),
+                showForeground: hackle[KEY_SHOW_FOREGROUND] as? Bool ?? false,
+                imageUrl: hackle[KEY_IMAGE_URL] as? String,
+                clickAction: NotificationClickAction.from(
+                    rawValue: hackle[KEY_CLICK_ACTION] as? String
+                ),
+                link: hackle[KEY_LINK] as? String,
+                debug: hackle[KEY_DEBUG] as? Bool ?? false
+            )
+        } catch {
+            return nil
+        }
+    }
+}

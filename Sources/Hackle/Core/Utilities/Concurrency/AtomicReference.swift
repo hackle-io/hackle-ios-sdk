@@ -32,4 +32,10 @@ class AtomicReference<T> {
         }
         return oldValue
     }
+    
+    func set(newValue: T) {
+        lock.write {
+            value = newValue
+        }
+    }
 }

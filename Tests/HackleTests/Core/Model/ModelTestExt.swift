@@ -12,6 +12,8 @@ import Foundation
 extension WorkspaceEntity {
 
     static func create(
+        id: Int64 = 0,
+        environmentId: Int64 = 0,
         experiments: [Experiment] = [],
         featureFlags: [Experiment] = [],
         buckets: [Bucket] = [],
@@ -23,6 +25,8 @@ extension WorkspaceEntity {
         inAppMessages: [InAppMessage] = []
     ) -> WorkspaceEntity {
         WorkspaceEntity(
+            id: id,
+            environmentId: environmentId,
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,

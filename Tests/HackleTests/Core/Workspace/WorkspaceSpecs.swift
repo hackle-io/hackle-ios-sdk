@@ -10,7 +10,7 @@ class WorkspaceSpecs: QuickSpec {
             let file = Bundle(for: WorkspaceSpecs.self).path(forResource: "workspace_config", ofType: "json")!
             let json = try! String(contentsOfFile: file)
             let data = json.data(using: .utf8)!
-            let dto = try! JSONDecoder().decode(WorkspaceDto.self, from: data)
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
             let workspace = WorkspaceEntity.from(dto: dto)
             expect(workspace.experiments.count).to(beGreaterThan(1))
 
