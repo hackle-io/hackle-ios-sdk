@@ -1,146 +1,143 @@
 import Foundation
 import Nimble
 import Quick
+import Mockery
 @testable import Hackle
 
 
 class WorkspaceManagerSpecs: QuickSpec {
     override func spec() {
-        describe("fetch") {
-            it("when before sync then return nil") {
-                // given
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: MockFile())
-
-                // when
-                let actual = sut.fetch()
-
-                // then
-                expect(actual).to(beNil())
-            }
-
-            it("when workspace is synced then return that workspace") {
-                // given
-                let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
-                    .path(forResource: "workspace_config", ofType: "json")!)
-                let config = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-                
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [config])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: MockFile())
-
-                // when
-                sut.sync {}
-                let actual = sut.fetch()
-                
-                // then
-                expect(actual?.id) == config.workspace.id
-                expect(actual?.environmentId) == config.workspace.environment.id
-            }
+        it("nil workspace data returns if not sync called") {
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: MockFile())
+            let actual = sut.fetch()
             
-            it("expect saved workspace data return") {
-                let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
-                    .path(forResource: "workspace_config", ofType: "json")!)
-                let config = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-                let file = MockFile(initialData: json);
-                
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: file)
-                
-                let actual = sut.fetch()
-                expect(actual?.id) == config.workspace.id
-                expect(actual?.environmentId) == config.workspace.environment.id
-            }
-            
-            it("expect run correctly even workspace file is nil") {
-                let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
-                    .path(forResource: "workspace_config", ofType: "json")!)
-                let config = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-                
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [config])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: nil)
-                
-                sut.sync { }
-                
-                let actual = sut.fetch()
-                expect(actual?.id) == config.workspace.id
-                expect(actual?.environmentId) == config.workspace.environment.id
-            }
+            expect(actual).to(beNil())
         }
-
-        describe("sync") {
-
-            it("error case") {
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: MockFile())
-
-                // when
-                sut.sync {
-                }
-                let actual = sut.fetch()
-
-                // then
-                expect(actual).to(beNil())
-            }
+        
+        it("workspace data return and write to file") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
+            let mockFile = MockFile()
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
             
-            it("expect write workspace file") {
-                let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
-                    .path(forResource: "workspace_config", ofType: "json")!)
-                let config = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-                let file = MockFile();
-                
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [config])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: file)
-                
-                expect(file.data).to(beNil())
-                
-                sut.sync { }
-                
-                expect(file.data).toNot(beNil())
-            }
+            sut.sync { }
             
-            it("expect overwrite workspace file") {
-                let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
-                    .path(forResource: "workspace_config", ofType: "json")!)
-                let initialDate = Date()
-                let file = MockFile(initialData: json, lastModifiedDate: initialDate);
-                
-                let config = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [config])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: file)
-                
-                sut.sync { }
-                
-                let actual = sut.fetch()
-                expect(actual?.id) == config.workspace.id
-                expect(actual?.environmentId) == config.workspace.environment.id
-                
-                expect(file.lastModifiedDate?.timeIntervalSince1970) != initialDate.timeIntervalSince1970
-            }
+            let actual = sut.fetch()
+            expect(actual?.id) == data.config.workspace.id
+            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(mockFile.currentData).toNot(beNil())
+            expect(mockFile.writeHistories.count) == 1
+        }
+        
+        it("workspace data returns from file") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
+            let mockFile = MockFile(initialData: json)
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
+        
+            let actual = sut.fetch()
+            expect(actual?.id) == data.config.workspace.id
+            expect(actual?.environmentId) == data.config.workspace.environment.id
+        }
+        
+        it("overwrite workspace file") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
+            let mockFile = MockFile(initialData: json)
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
+        
+            sut.sync { }
             
-            it("expect do not change workspace file if fether returns nil") {
-                let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
-                    .path(forResource: "workspace_config", ofType: "json")!)
-                let initialDate = Date()
-                let file = MockFile(initialData: json, lastModifiedDate: initialDate);
-                
-                let config = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-                let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [nil])
-                let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: file)
-                
-                sut.sync { }
-                
-                let actual = sut.fetch()
-                expect(actual?.id) == config.workspace.id
-                expect(actual?.environmentId) == config.workspace.environment.id
-                
-                expect(file.lastModifiedDate?.timeIntervalSince1970) == initialDate.timeIntervalSince1970
-            }
+            let actual = sut.fetch()
+            expect(actual?.id) == data.config.workspace.id
+            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(mockFile.writeHistories.count) == 1
+        }
+        
+        it("last modified with second http request") {
+            let firstJson = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let first = try! JSONDecoder().decode(WorkspaceConfig.self, from: firstJson.data(using: .utf8)!)
+            
+            let secondJson = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let second = try! JSONDecoder().decode(WorkspaceConfig.self, from: secondJson.data(using: .utf8)!)
+            
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [first, second])
+            let mockFile = MockFile()
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
+            
+            sut.sync { }
+            sut.sync { }
+            
+            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments.0) == second.lastModified
+        }
+        
+        it("not change workspace file if http request returns nil") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [nil])
+            let mockFile = MockFile(initialData: json)
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
+        
+            sut.sync { }
+            
+            let actual = sut.fetch()
+            expect(actual?.id) == data.config.workspace.id
+            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(mockFile.writeHistories.count) == 0
+        }
+        
+        it("not any exception even though workspace file is nil") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: nil)
+            
+            sut.sync { }
+            
+            let actual = sut.fetch()
+            expect(actual?.id) == data.config.workspace.id
+            expect(actual?.environmentId) == data.config.workspace.environment.id
+        }
+        
+        it("not any exception even though error occours while http request calling") {
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: MockFile())
+            
+            sut.sync { }
+            
+            let actual = sut.fetch()
+            expect(actual).to(beNil())
+        }
+        
+        it("not overwrite workspace file even though error occours while http request calling") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let mockFile = MockFile(initialData: json)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
+            
+            sut.sync { }
+            
+            let actual = sut.fetch()
+            expect(actual).toNot(beNil())
+            expect(mockFile.writeHistories.count) == 0
         }
     }
 }
 
 
-private class MockHttpWorkspaceFetcher: HttpWorkspaceFetcher {
+private class MockHttpWorkspaceFetcher: Mock, HttpWorkspaceFetcher {
 
     private let returns: [Any?]
     private var count = 0
@@ -149,13 +146,17 @@ private class MockHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         self.returns = returns
     }
 
-    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfigDto?, Error>) -> ()) {
+    
+    lazy var fetchIfModifiedRef = MockFunction(self, fetchIfModified)
+    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
+        call(fetchIfModifiedRef, args: (lastModified, completion))
+        
         let value = returns[count]
         count += 1
 
         switch value {
-        case let workspace as WorkspaceConfigDto:
-            completion(.success(workspace))
+        case let config as WorkspaceConfig:
+            completion(.success(config))
             break
         case let error as Error:
             completion(.failure(error))

@@ -6,25 +6,24 @@ class MockFile: FileReadWriter {
         case NoSuchFileOrDirectory = "No such file or directory"
     }
     
-    var lastModifiedDate: Date? = nil
-    var data: Data? = nil
+    var currentData: Data? = nil
+    var writeHistories: [Date: Data] = [:]
     
-    init(initialData: String? = nil, lastModifiedDate: Date = Date()) {
+    init(initialData: String? = nil) {
         if let initialData = initialData {
-            self.lastModifiedDate = lastModifiedDate
-            data = initialData.data(using: .utf8)
+            currentData = initialData.data(using: .utf8)
         }
     }
     
     func read() throws -> Data {
-        guard let data = data else {
+        guard let data = currentData else {
             throw FileError.NoSuchFileOrDirectory
         }
         return data
     }
     
     func write(data: Data) throws {
-        self.lastModifiedDate = Date()
-        self.data = data
+        writeHistories[Date()] = data
+        currentData = data
     }
 }

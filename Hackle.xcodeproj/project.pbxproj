@@ -43,6 +43,8 @@
 		7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */; };
 		7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */; };
 		7EE320D62B55392F00105A6C /* MockFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE320D52B55392F00105A6C /* MockFile.swift */; };
+		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
+		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -193,7 +195,7 @@
 		EE29DA4529CD82C200B1FEAA /* bucketing_all.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C029CD82C100B1FEAA /* bucketing_all.csv */; };
 		EE29DA4629CD82C200B1FEAA /* bucketing_uuid.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C129CD82C100B1FEAA /* bucketing_uuid.csv */; };
 		EE29DA4729CD82C200B1FEAA /* bucketing_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C229CD82C100B1FEAA /* bucketing_numeric.csv */; };
-		EE29DA4829CD82C200B1FEAA /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C329CD82C100B1FEAA /* workspace_config.json */; };
+		EE29DA4829CD82C200B1FEAA /* workspace_config_modified.json in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C329CD82C100B1FEAA /* workspace_config_modified.json */; };
 		EE29DA4929CD82C200B1FEAA /* murmur_alphanumeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C429CD82C100B1FEAA /* murmur_alphanumeric.csv */; };
 		EE29DA4A29CD82C200B1FEAA /* murmur_uuid.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C529CD82C100B1FEAA /* murmur_uuid.csv */; };
 		EE29DA4B29CD82C200B1FEAA /* murmur_all.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C629CD82C100B1FEAA /* murmur_all.csv */; };
@@ -487,6 +489,8 @@
 		7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEvent.swift; sourceTree = "<group>"; };
 		7EE320D52B55392F00105A6C /* MockFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFile.swift; sourceTree = "<group>"; };
+		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
+		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -637,7 +641,7 @@
 		EE29D9C029CD82C100B1FEAA /* bucketing_all.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bucketing_all.csv; sourceTree = "<group>"; };
 		EE29D9C129CD82C100B1FEAA /* bucketing_uuid.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bucketing_uuid.csv; sourceTree = "<group>"; };
 		EE29D9C229CD82C100B1FEAA /* bucketing_numeric.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bucketing_numeric.csv; sourceTree = "<group>"; };
-		EE29D9C329CD82C100B1FEAA /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
+		EE29D9C329CD82C100B1FEAA /* workspace_config_modified.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config_modified.json; sourceTree = "<group>"; };
 		EE29D9C429CD82C100B1FEAA /* murmur_alphanumeric.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = murmur_alphanumeric.csv; sourceTree = "<group>"; };
 		EE29D9C529CD82C100B1FEAA /* murmur_uuid.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = murmur_uuid.csv; sourceTree = "<group>"; };
 		EE29D9C629CD82C100B1FEAA /* murmur_all.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = murmur_all.csv; sourceTree = "<group>"; };
@@ -1560,7 +1564,9 @@
 				EE29D9C829CD82C100B1FEAA /* bucketing_alphabetic.csv */,
 				EE29D9C929CD82C100B1FEAA /* murmur_numeric.csv */,
 				EE29D9CA29CD82C100B1FEAA /* bucketing_alphanumeric.csv */,
-				EE29D9C329CD82C100B1FEAA /* workspace_config.json */,
+				7EE320D72B56707800105A6C /* workspace_config.json */,
+				EE29D9C329CD82C100B1FEAA /* workspace_config_modified.json */,
+				7EE320D92B5692D900105A6C /* workspace_response.json */,
 				EE789E3229F01FDA0088D8A6 /* target_experiment.json */,
 				EE789E3429F026D70088D8A6 /* target_experiment_circular.json */,
 				EE789E3629F02AEA0088D8A6 /* container.json */,
@@ -2333,17 +2339,19 @@
 				EE29DA4E29CD82C200B1FEAA /* murmur_numeric.csv in Resources */,
 				EE29DA4B29CD82C200B1FEAA /* murmur_all.csv in Resources */,
 				EE29DA4629CD82C200B1FEAA /* bucketing_uuid.csv in Resources */,
-				EE29DA4829CD82C200B1FEAA /* workspace_config.json in Resources */,
+				EE29DA4829CD82C200B1FEAA /* workspace_config_modified.json in Resources */,
 				EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */,
 				EE29DA4C29CD82C200B1FEAA /* murmur_alphabetic.csv in Resources */,
 				EE5A78FC2ADCEF97005A0F9E /* workspace_cohorts.json in Resources */,
 				EE29DA4929CD82C200B1FEAA /* murmur_alphanumeric.csv in Resources */,
+				7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */,
 				EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */,
 				EEF895DB2A4C09D800722CF6 /* iam.json in Resources */,
 				EE29DA4F29CD82C200B1FEAA /* bucketing_alphanumeric.csv in Resources */,
 				EE29DA4A29CD82C200B1FEAA /* murmur_uuid.csv in Resources */,
 				EE789E3529F026D70088D8A6 /* target_experiment_circular.json in Resources */,
 				EE29DA4D29CD82C200B1FEAA /* bucketing_alphabetic.csv in Resources */,
+				7EE320D82B56707800105A6C /* workspace_config.json in Resources */,
 				EE789E3329F01FDA0088D8A6 /* target_experiment.json in Resources */,
 				EE789E3729F02AEA0088D8A6 /* container.json in Resources */,
 				EE29DA4729CD82C200B1FEAA /* bucketing_numeric.csv in Resources */,

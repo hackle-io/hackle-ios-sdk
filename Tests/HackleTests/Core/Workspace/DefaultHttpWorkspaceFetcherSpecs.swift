@@ -38,7 +38,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -51,7 +51,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -64,7 +64,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified(lastModified: "LAST_MODIFIED_HEADER_VALUE") { result in
                 actual = result
             }
@@ -77,7 +77,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -90,7 +90,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -103,7 +103,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -111,13 +111,13 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
         }
 
         it("when success to get workspace then complete with workspace config dto") {
-            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self).path(forResource: "workspace_config", ofType: "json")!)
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
             }
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -125,7 +125,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
         }
 
         it("url") {
-            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self).path(forResource: "workspace_config", ofType: "json")!)
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
             }
@@ -134,7 +134,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
                 .build()
             let sut = DefaultHttpWorkspaceFetcher(config: config, sdk: sdk(key: "SDK_KEY"), httpClient: httpClient)
 
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -144,7 +144,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
         }
 
         it("last modified") {
-            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self).path(forResource: "workspace_config", ofType: "json")!)
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
             var isModified = true
             every(httpClient.executeMock).answers { request, completion in
                 if isModified {
@@ -156,7 +156,7 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
             }
 
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "SDK_KEY"), httpClient: httpClient)
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }
@@ -174,14 +174,14 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
         
         it("result value contains last modified value") {
             let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceFetcherSpecs.self)
-                .path(forResource: "workspace_config", ofType: "json")!)
+                .path(forResource: "workspace_response", ofType: "json")!)
             every(httpClient.executeMock)
                 .answers { request, completion in
                     completion(response(request: request, statusCode: 200, data: json.data(using: .utf8), headers: ["Last-Modified": "LAST_MODIFIED_HEADER_VALUE"]))
                 }
             
             let sut = DefaultHttpWorkspaceFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "SDK_KEY"), httpClient: httpClient)
-            var actual: Result<WorkspaceConfigDto?, Error>!
+            var actual: Result<WorkspaceConfig?, Error>!
             sut.fetchIfModified { result in
                 actual = result
             }

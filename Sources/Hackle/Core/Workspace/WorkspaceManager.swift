@@ -33,31 +33,31 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
         }
     }
     
-    private func setWorkspace(config: WorkspaceConfigDto) {
-        workspace = WorkspaceEntity.from(dto: config)
+    private func setWorkspaceConfig(_ config: WorkspaceConfig) {
+        lastModified = config.lastModified
+        workspace = WorkspaceEntity.from(dto: config.config)
     }
     
     private func readWorkspaceConfigFromLocal() {
         if let data = try? workspaceFile?.read(),
-           let config = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: data) {
-            lastModified = config.lastModified
-            workspace = WorkspaceEntity.from(dto: config)
+           let config = try? JSONDecoder().decode(WorkspaceConfig.self, from: data) {
+            setWorkspaceConfig(config)
             Log.debug("Found workspace config: [last modified: \(lastModified ?? "nil")]")
         }
     }
     
-    private func saveWorkspaceConfigInLocal(config: WorkspaceConfigDto) {
+    private func saveWorkspaceConfigInLocal(_ config: WorkspaceConfig) {
         if let data = try? JSONEncoder().encode(config) {
             try? workspaceFile?.write(data: data)
         }
     }
 
-    private func handle(result: Result<WorkspaceConfigDto?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+    private func handle(result: Result<WorkspaceConfig?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let config):
             if let config {
-                setWorkspace(config: config)
-                saveWorkspaceConfigInLocal(config: config)
+                setWorkspaceConfig(config)
+                saveWorkspaceConfigInLocal(config)
             }
             completion(.success(()))
             return

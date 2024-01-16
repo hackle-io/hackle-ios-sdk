@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol HttpWorkspaceFetcher {
-    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfigDto?, Error>) -> ())
+    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ())
 }
 
 class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
@@ -26,7 +26,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
     }
 
-    func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfigDto?, Error>) -> ()) {
+    func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
         let request = createRequest(lastModified: lastModified)
         execute(request: request, completion: completion)
     }
@@ -39,7 +39,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfigDto?, Error>) -> ()) {
+    private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
         let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
@@ -52,7 +52,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfigDto? {
+    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfig? {
         if let error = response.error {
             throw error
         }
@@ -73,16 +73,14 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-
+        
+        let lastModified = urlResponse.header(.lastModified)
         guard let workspaceDto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
-        
-        let lastModified = urlResponse.header(.lastModified)
-        workspaceDto.lastModified = lastModified
 
         Log.debug("Workspace fetched")
 
-        return workspaceDto
+        return WorkspaceConfig(lastModified: lastModified, config: workspaceDto)
     }
 }
