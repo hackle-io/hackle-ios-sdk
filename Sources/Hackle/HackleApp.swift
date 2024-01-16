@@ -229,6 +229,10 @@ import WebKit
     @objc public func setPushToken(_ deviceToken: Data) {
         notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
     }
+    
+    @objc public func synchronizeConfigurations(_ completion: @escaping () -> ()) {
+        synchronizer.sync(completion: completion)
+    }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
