@@ -192,6 +192,7 @@ class WorkspaceEntity: Workspace {
 }
 
 class WorkspaceConfigDto: Codable {
+    var lastModified: String? = nil
     var workspace: WorkspaceDto
     var experiments: [ExperimentDto]
     var featureFlags: [ExperimentDto]
