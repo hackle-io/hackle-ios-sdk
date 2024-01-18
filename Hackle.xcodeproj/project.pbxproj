@@ -37,6 +37,7 @@
 		7E81DA4D2B45640D003258DA /* NotificationManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4C2B45640D003258DA /* NotificationManagerSpecs.swift */; };
 		7E81DA4F2B45672B003258DA /* MockNotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */; };
 		7E81DA532B46849C003258DA /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA522B46849C003258DA /* ObjectsSpec.swift */; };
+		7E9065B22B58E3AD00FE6E52 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065B12B58E3AD00FE6E52 /* Throttler.swift */; };
 		7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */; };
 		7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */; };
 		7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */; };
@@ -483,6 +484,7 @@
 		7E81DA4C2B45640D003258DA /* NotificationManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerSpecs.swift; sourceTree = "<group>"; };
 		7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationRepository.swift; sourceTree = "<group>"; };
 		7E81DA522B46849C003258DA /* ObjectsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
+		7E9065B12B58E3AD00FE6E52 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataSpecs.swift; sourceTree = "<group>"; };
 		7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFactory.swift; sourceTree = "<group>"; };
 		7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiver.swift; sourceTree = "<group>"; };
@@ -1307,6 +1309,7 @@
 				EE29D8F629CD825300B1FEAA /* Scheduler.swift */,
 				EE29D8F729CD825300B1FEAA /* SdkVersion.swift */,
 				EE5A78DC2ADAEC83005A0F9E /* Base64.swift */,
+				7E9065B12B58E3AD00FE6E52 /* Throttler.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2472,6 +2475,7 @@
 				EE29D99529CD825400B1FEAA /* ConditionMatcher.swift in Sources */,
 				EEDC58732ACBD80B001E73DB /* CompositeSynchronizer.swift in Sources */,
 				EE29D96F29CD825400B1FEAA /* Enums.swift in Sources */,
+				7E9065B22B58E3AD00FE6E52 /* Throttler.swift in Sources */,
 				EEB2E6302A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift in Sources */,
 				EE29D94E29CD825400B1FEAA /* DelegatingMetric.swift in Sources */,
 				EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */,
