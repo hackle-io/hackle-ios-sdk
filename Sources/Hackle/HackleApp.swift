@@ -66,6 +66,10 @@ import WebKit
     }
 
     private var view: HackleUserExplorerView? = nil
+    private var synchronizeConfigurationsThrottler: Throttler = Throttler(
+        intervalInSeconds: 10,
+        dispatchQueue: DispatchQueue(label: "io.hackle.SynchronizeConfigurationsThrottler", qos: .utility)
+    )
 
     @objc public func showUserExplorer() {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
@@ -231,7 +235,13 @@ import WebKit
     }
     
     @objc public func synchronizeConfigurations(_ completion: @escaping () -> ()) {
-        synchronizer.sync(completion: completion)
+        synchronizeConfigurationsThrottler { throttled in
+            if throttled == false {
+                self.synchronizer.sync(completion: completion)
+            } else {
+                Log.debug("Too many quick synchronize configurations requests.")
+            }
+        }
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
