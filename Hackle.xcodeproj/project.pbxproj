@@ -38,6 +38,7 @@
 		7E81DA4F2B45672B003258DA /* MockNotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */; };
 		7E81DA532B46849C003258DA /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA522B46849C003258DA /* ObjectsSpec.swift */; };
 		7E9065B22B58E3AD00FE6E52 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065B12B58E3AD00FE6E52 /* Throttler.swift */; };
+		7E9065B62B59466C00FE6E52 /* ThrottlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065B52B59466C00FE6E52 /* ThrottlerSpecs.swift */; };
 		7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */; };
 		7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */; };
 		7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */; };
@@ -485,6 +486,7 @@
 		7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationRepository.swift; sourceTree = "<group>"; };
 		7E81DA522B46849C003258DA /* ObjectsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
 		7E9065B12B58E3AD00FE6E52 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
+		7E9065B52B59466C00FE6E52 /* ThrottlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottlerSpecs.swift; sourceTree = "<group>"; };
 		7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataSpecs.swift; sourceTree = "<group>"; };
 		7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFactory.swift; sourceTree = "<group>"; };
 		7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiver.swift; sourceTree = "<group>"; };
@@ -1715,6 +1717,7 @@
 				EE29D9F029CD82C100B1FEAA /* Time */,
 				EE29D9F329CD82C100B1FEAA /* Concurrency */,
 				7E81DA522B46849C003258DA /* ObjectsSpec.swift */,
+				7E9065B52B59466C00FE6E52 /* ThrottlerSpecs.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2633,6 +2636,7 @@
 				EE29DA4029CD82C200B1FEAA /* MockUserEvent.swift in Sources */,
 				EE29DA5429CD82C200B1FEAA /* FlushTimerSpecs.swift in Sources */,
 				EE29DA9C29CD82C200B1FEAA /* DefaultExposureEventDedupDeterminerSpec.swift in Sources */,
+				7E9065B62B59466C00FE6E52 /* ThrottlerSpecs.swift in Sources */,
 				EE0F34012A668F20009DE640 /* MockInAppMessageView.swift in Sources */,
 				EEB2E62E2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift in Sources */,
 				EE29DA8129CD82C200B1FEAA /* DefaultSegmentMatcher.swift in Sources */,
