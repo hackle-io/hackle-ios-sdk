@@ -61,6 +61,22 @@ class WorkspaceManagerSpecs: QuickSpec {
             expect(mockFile.writeHistories.count) == 1
         }
         
+        it("overwrite even though invalid json file already exists") {
+            let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
+                .path(forResource: "workspace_config", ofType: "json")!)
+            let mockFile = MockFile(initialData: "{!")
+            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
+            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, workspaceFile: mockFile)
+        
+            sut.sync { }
+            
+            let actual = sut.fetch()
+            expect(actual?.id) == data.config.workspace.id
+            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(mockFile.writeHistories.count) == 1
+        }
+        
         it("last modified with second http request") {
             let firstJson = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self)
                 .path(forResource: "workspace_config", ofType: "json")!)
