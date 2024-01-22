@@ -37,6 +37,9 @@
 		7E81DA4D2B45640D003258DA /* NotificationManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4C2B45640D003258DA /* NotificationManagerSpecs.swift */; };
 		7E81DA4F2B45672B003258DA /* MockNotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */; };
 		7E81DA532B46849C003258DA /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E81DA522B46849C003258DA /* ObjectsSpec.swift */; };
+		7E9065BA2B5E41FC00FE6E52 /* WorkspaceConfigRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065B92B5E41FC00FE6E52 /* WorkspaceConfigRepository.swift */; };
+		7E9065BF2B5E593F00FE6E52 /* MockWorkspaceConfigRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065BE2B5E593F00FE6E52 /* MockWorkspaceConfigRepository.swift */; };
+		7E9065C12B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065C02B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift */; };
 		7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */; };
 		7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */; };
 		7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */; };
@@ -483,6 +486,9 @@
 		7E81DA4C2B45640D003258DA /* NotificationManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerSpecs.swift; sourceTree = "<group>"; };
 		7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationRepository.swift; sourceTree = "<group>"; };
 		7E81DA522B46849C003258DA /* ObjectsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
+		7E9065B92B5E41FC00FE6E52 /* WorkspaceConfigRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceConfigRepository.swift; sourceTree = "<group>"; };
+		7E9065BE2B5E593F00FE6E52 /* MockWorkspaceConfigRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWorkspaceConfigRepository.swift; sourceTree = "<group>"; };
+		7E9065C02B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultWorkspaceConfigRepositorySpecs.swift; sourceTree = "<group>"; };
 		7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataSpecs.swift; sourceTree = "<group>"; };
 		7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFactory.swift; sourceTree = "<group>"; };
 		7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiver.swift; sourceTree = "<group>"; };
@@ -1009,6 +1015,14 @@
 			path = Bridge;
 			sourceTree = "<group>";
 		};
+		7E9065BB2B5E534000FE6E52 /* repository */ = {
+			isa = PBXGroup;
+			children = (
+				7E9065B92B5E41FC00FE6E52 /* WorkspaceConfigRepository.swift */,
+			);
+			path = repository;
+			sourceTree = "<group>";
+		};
 		7E9DDDFE2B319EE1006ACFDA /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -1262,6 +1276,7 @@
 		EE29D8D829CD825300B1FEAA /* Workspace */ = {
 			isa = PBXGroup;
 			children = (
+				7E9065BB2B5E534000FE6E52 /* repository */,
 				EE29D8D929CD825300B1FEAA /* WorkspaceFetcher.swift */,
 				EE29D8DA29CD825300B1FEAA /* Workspace.swift */,
 				EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */,
@@ -1547,6 +1562,7 @@
 				7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */,
 				7E81DA452B452625003258DA /* MockNotificationManager.swift */,
 				7EE320D52B55392F00105A6C /* MockFile.swift */,
+				7E9065BE2B5E593F00FE6E52 /* MockWorkspaceConfigRepository.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -1688,6 +1704,7 @@
 				EE789E2E29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift */,
 				EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */,
 				EEDC587D2ACBDA88001E73DB /* WorkspaceManagerSpecs.swift */,
+				7E9065C02B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift */,
 			);
 			path = Workspace;
 			sourceTree = "<group>";
@@ -2369,6 +2386,7 @@
 				EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */,
 				EEDC58802ACC0789001E73DB /* UserCohortFetcher.swift in Sources */,
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
+				7E9065BA2B5E41FC00FE6E52 /* WorkspaceConfigRepository.swift in Sources */,
 				7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */,
 				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
@@ -2613,6 +2631,7 @@
 				EE29DA8D29CD82C200B1FEAA /* MockContainerResolver.swift in Sources */,
 				EE29DA8029CD82C200B1FEAA /* DefaultTargetMatcherSpecs.swift in Sources */,
 				EE29DA9029CD82C200B1FEAA /* DefaultSlotNumberCalculatorSpec.swift in Sources */,
+				7E9065BF2B5E593F00FE6E52 /* MockWorkspaceConfigRepository.swift in Sources */,
 				EE0F34122A66C3CF009DE640 /* MockInAppMessageActionHandler.swift in Sources */,
 				EE29DAA429CD82C200B1FEAA /* PropertiesBuilderSpecs.swift in Sources */,
 				EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */,
@@ -2765,6 +2784,7 @@
 				EE29DA6129CD82C200B1FEAA /* MetricSpecs.swift in Sources */,
 				EEDC58782ACBD835001E73DB /* DefaultCompositeSynchronizerSpecs.swift in Sources */,
 				EE29DA9729CD82C200B1FEAA /* ExperimentFlowEvaluatorSpecs.swift in Sources */,
+				7E9065C12B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift in Sources */,
 				EEF895B72A4ADD3000722CF6 /* UserEventPublisherStub.swift in Sources */,
 				EE29DA4429CD82C200B1FEAA /* MockScheduler.swift in Sources */,
 			);

@@ -347,9 +347,12 @@ extension HackleApp {
             httpClient: httpClient
         )
 
+        let workspaceFile = try? File(directory: sdkKey, filename: "workspace.json")
         let workspaceManager = WorkspaceManager(
             httpWorkspaceFetcher: httpWorkspaceFetcher,
-            workspaceFile: try? File(directory: sdkKey, filename: "workspace.json")
+            repository: DefaultWorkspaceConfigRepository(
+                file: workspaceFile
+            )
         )
         compositeSynchronizer.add(type: .workspace, synchronizer: workspaceManager)
 
