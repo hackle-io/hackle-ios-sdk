@@ -19,6 +19,12 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
             expect(repository.get()?.config.workspace.environment.id) == 5
         }
         
+        it("get nil") {
+            let mockFile = MockFile()
+            let repository = DefaultWorkspaceConfigRepository(file: mockFile)
+            expect(repository.get()).to(beNil())
+        }
+        
         it("set") {
             let mockFile = MockFile()
             let repository = DefaultWorkspaceConfigRepository(file: mockFile)
