@@ -57,7 +57,7 @@ class Throttler {
             if firstExecutedDateInScope == nil {
                 firstExecutedDateInScope = Date()
             }
-            executedCountInScope.increment()
+            executedCountInScope.incrementAndGet()
         }
         
         dispatchQueue.async {
