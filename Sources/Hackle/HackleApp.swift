@@ -12,6 +12,7 @@ import WebKit
     private let eventQueue: DispatchQueue
     private let synchronizer: CompositeSynchronizer
     private let userManager: UserManager
+    private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
@@ -44,6 +45,7 @@ import WebKit
         eventQueue: DispatchQueue,
         synchronizer: CompositeSynchronizer,
         userManager: UserManager,
+        workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
@@ -56,6 +58,7 @@ import WebKit
         self.eventQueue = eventQueue
         self.synchronizer = synchronizer
         self.userManager = userManager
+        self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
         self.notificationObserver = notificationObserver
@@ -307,6 +310,7 @@ extension HackleApp {
 
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
+        workspaceManager.initialize()
         eventQueue.async {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
@@ -521,6 +525,7 @@ extension HackleApp {
             eventQueue: eventQueue,
             synchronizer: pollingSynchronizer,
             userManager: userManager,
+            workspaceManager: workspaceManager,
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
             notificationObserver: appNotificationObserver,

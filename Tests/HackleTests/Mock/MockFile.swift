@@ -26,4 +26,8 @@ class MockFile: FileReadWriter {
         writeHistories[Date()] = data
         currentData = data
     }
+    
+    func delete() throws {
+        currentData = nil
+    }
 }

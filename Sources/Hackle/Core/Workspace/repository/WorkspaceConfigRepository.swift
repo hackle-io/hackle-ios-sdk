@@ -17,6 +17,7 @@ class DefaultWorkspaceConfigRepository: WorkspaceConfigRepository {
            let config = try? JSONDecoder().decode(WorkspaceConfig.self, from: data) {
             return config
         } else {
+            try? file?.delete()
             return nil
         }
     }

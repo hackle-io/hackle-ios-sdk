@@ -18,7 +18,9 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {
         self.httpWorkspaceFetcher = httpWorkspaceFetcher
         self.repository = repository
-        
+    }
+    
+    func initialize() {
         readWorkspaceConfigFromLocal()
     }
 
@@ -40,7 +42,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     private func readWorkspaceConfigFromLocal() {
         if let config = repository.get() {
             setWorkspaceConfig(config)
-            Log.debug("Found workspace config: [last modified: \(config.lastModified ?? "nil")]")
+            Log.debug("Workspace config loaded: [last modified: \(config.lastModified ?? "nil")]")
         }
     }
 

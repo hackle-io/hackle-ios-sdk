@@ -6,6 +6,7 @@ protocol FileReader {
 
 protocol FileWriter {
     func write(data: Data) throws
+    func delete() throws
 }
 
 protocol FileReadWriter: FileReader, FileWriter { }
@@ -32,6 +33,12 @@ class File: FileReadWriter {
     func read() throws -> Data {
         return try lock.read {
             try Data(contentsOf: fileUrl)
+        }
+    }
+    
+    func delete() throws {
+        try lock.write {
+            try FileManager.default.removeItem(at: fileUrl)
         }
     }
 }

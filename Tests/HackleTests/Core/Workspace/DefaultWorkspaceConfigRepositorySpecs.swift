@@ -52,11 +52,12 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
             expect(repository.get()?.lastModified) == "Mon, 22 Jan 2024 08:37:33 GMT"
         }
         
-        it("invalid json text exists") {
+        it("delete file if invalid json file exists") {
             let mockFile = MockFile(initialData: "{!")
             let repository = DefaultWorkspaceConfigRepository(file: mockFile)
             
             expect(repository.get()).to(beNil())
+            expect(mockFile.currentData).to(beNil())
         }
     }
 }
