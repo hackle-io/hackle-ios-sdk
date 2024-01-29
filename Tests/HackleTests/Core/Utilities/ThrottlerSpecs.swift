@@ -11,38 +11,47 @@ class ThrottlerSpecs: QuickSpec {
         it("not throttle after interval seconds later") {
             DispatchQueue.global(qos: .background).async {
                 let throttler = Throttler(intervalInSeconds: 1, dispatchQueue: self.queue)
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == false
-                }
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == true
-                }
+                var throttledHistories: [Bool] = []
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
                 sleep(1)
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == false
-                }
-                sleep(1)
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
+                expect(throttledHistories) == [false, true, false]
                 self.semaphore.signal()
             }
             self.semaphore.wait()
         }
-        it("throttle more than 1 limits") {
+        it("throttle more than 2 limits") {
             DispatchQueue.global(qos: .background).async {
                 let throttler = Throttler(intervalInSeconds: 1, limitInScope: 2, dispatchQueue: self.queue)
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == false
-                }
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == false
-                }
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == true
-                }
+                var throttledHistories: [Bool] = []
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
                 sleep(1)
-                throttler { throttle, quotesInScope, leftTimeIntervalInScope in
-                    expect(throttle) == false
-                }
-                sleep(1)
+                throttler(
+                    block: { throttledHistories.append(false) },
+                    throttled: { throttledHistories.append(true) }
+                )
+                expect(throttledHistories) == [false, false, true, false]
                 self.semaphore.signal()
             }
             self.semaphore.wait()

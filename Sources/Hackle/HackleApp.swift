@@ -235,13 +235,15 @@ import WebKit
     }
     
     @objc public func synchronizeConfigurations(_ completion: @escaping () -> ()) {
-        synchronizeConfigurationsThrottler { throttled in
-            if throttled == false {
+        synchronizeConfigurationsThrottler(
+            block: {
                 self.synchronizer.sync(completion: completion)
-            } else {
+            },
+            throttled: {
                 Log.debug("Too many quick synchronize configurations requests.")
+                completion()
             }
-        }
+        )
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
