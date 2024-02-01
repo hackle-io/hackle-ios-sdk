@@ -310,8 +310,8 @@ extension HackleApp {
 
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
-        workspaceManager.initialize()
         eventQueue.async {
+            self.workspaceManager.initialize()
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
             self.synchronizer.sync(completion: {
