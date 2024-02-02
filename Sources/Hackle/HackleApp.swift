@@ -66,9 +66,9 @@ import WebKit
     }
 
     private var view: HackleUserExplorerView? = nil
-    private var synchronizeConfigurationsThrottler: Throttler = Throttler(
-        intervalInSeconds: 10,
-        dispatchQueue: DispatchQueue(label: "io.hackle.SynchronizeConfigurationsThrottler", qos: .utility)
+    private var fetchThrottler: Throttler = Throttler(
+        intervalInSeconds: 60,
+        dispatchQueue: DispatchQueue(label: "io.hackle.FetchThrottler", qos: .utility)
     )
 
     @objc public func showUserExplorer() {
@@ -234,8 +234,8 @@ import WebKit
         notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
     }
     
-    @objc public func synchronizeConfigurations(_ completion: @escaping () -> ()) {
-        synchronizeConfigurationsThrottler(
+    @objc public func fetch(_ completion: @escaping () -> ()) {
+        fetchThrottler(
             block: {
                 self.synchronizer.sync(completion: completion)
             },
