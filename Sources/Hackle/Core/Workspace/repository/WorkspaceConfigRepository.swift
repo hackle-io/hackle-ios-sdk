@@ -6,25 +6,25 @@ protocol WorkspaceConfigRepository {
 }
 
 class DefaultWorkspaceConfigRepository: WorkspaceConfigRepository {
-    private let file: FileReadWriter?
+    private let fileStorage: FileStorage?
     
-    init(file: FileReadWriter?) {
-        self.file = file
+    init(fileStorage: FileStorage?) {
+        self.fileStorage = fileStorage
     }
     
     func get() -> WorkspaceConfig? {
-        if let data = try? file?.read(),
+        if let data = try? fileStorage?.read(filename: DefaultWorkspaceConfigRepository.FILE_NAME),
            let config = try? JSONDecoder().decode(WorkspaceConfig.self, from: data) {
             return config
         } else {
-            try? file?.delete()
+            try? fileStorage?.delete(filename: DefaultWorkspaceConfigRepository.FILE_NAME)
             return nil
         }
     }
     
     func set(value: WorkspaceConfig) {
         if let data = try? JSONEncoder().encode(value) {
-            try? file?.write(data: data)
+            try? fileStorage?.write(filename: DefaultWorkspaceConfigRepository.FILE_NAME, data: data)
         }
     }
 }

@@ -11,8 +11,11 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
     override func spec() {
         it("get") {
             let initialData = self.readTextFromRes(filename: "workspace_config")
-            let mockFile = MockFile(initialData: initialData)
-            let repository = DefaultWorkspaceConfigRepository(file: mockFile)
+            let mockFileStorage = MockFileStorage(
+                initialData: ["workspace.json": initialData.data(using: .utf8)!]
+            )
+            let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
+            
             
             expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
             expect(repository.get()?.config.workspace.id) == 3
@@ -20,14 +23,14 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
         }
         
         it("get nil") {
-            let mockFile = MockFile()
-            let repository = DefaultWorkspaceConfigRepository(file: mockFile)
+            let mockFileStorage = MockFileStorage()
+            let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
             expect(repository.get()).to(beNil())
         }
         
         it("set") {
-            let mockFile = MockFile()
-            let repository = DefaultWorkspaceConfigRepository(file: mockFile)
+            let mockFileStorage = MockFileStorage()
+            let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
             
             expect(repository.get()).to(beNil())
             
@@ -40,8 +43,10 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
         
         it("overwrite") {
             let initialData = self.readTextFromRes(filename: "workspace_config")
-            let mockFile = MockFile(initialData: initialData)
-            let repository = DefaultWorkspaceConfigRepository(file: mockFile)
+            let mockFileStorage = MockFileStorage(
+                initialData: ["workspace.json": initialData.data(using: .utf8)!]
+            )
+            let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
             
             expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
             
@@ -53,11 +58,13 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
         }
         
         it("delete file if invalid json file exists") {
-            let mockFile = MockFile(initialData: "{!")
-            let repository = DefaultWorkspaceConfigRepository(file: mockFile)
+            let mockFileStorage = MockFileStorage(
+                initialData: ["workspace.json": "{!".data(using: .utf8)!]
+            )
+            let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
             
             expect(repository.get()).to(beNil())
-            expect(mockFile.currentData).to(beNil())
+            expect(mockFileStorage.data["workspace.json"]).to(beNil())
         }
     }
 }
