@@ -12,17 +12,17 @@ class ThrottlerSpecs: QuickSpec {
             DispatchQueue.global(qos: .background).async {
                 let throttler = Throttler(intervalInSeconds: 1, dispatchQueue: self.queue)
                 var throttledHistories: [Bool] = []
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
                 sleep(1)
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
                 expect(throttledHistories) == [false, true, false]
@@ -32,23 +32,23 @@ class ThrottlerSpecs: QuickSpec {
         }
         it("throttle more than 2 limits") {
             DispatchQueue.global(qos: .background).async {
-                let throttler = Throttler(intervalInSeconds: 1, limitInScope: 2, dispatchQueue: self.queue)
+                let throttler = Throttler(intervalInSeconds: 1, dispatchQueue: self.queue, limitInScope: 2)
                 var throttledHistories: [Bool] = []
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
                 sleep(1)
-                throttler(
-                    block: { throttledHistories.append(false) },
+                throttler.execute(
+                    action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
                 expect(throttledHistories) == [false, false, true, false]

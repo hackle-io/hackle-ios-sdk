@@ -235,12 +235,13 @@ import WebKit
     }
     
     @objc public func fetch(_ completion: @escaping () -> ()) {
-        fetchThrottler(
-            block: {
+        fetchThrottler.execute(
+            action: {
                 self.synchronizer.sync(completion: completion)
             },
             throttled: {
-                Log.debug("Too many quick synchronize configurations requests.")
+                let intervalSeconds = Int(self.fetchThrottler.interval)
+                Log.debug("Too many quick fetch requests: \(intervalSeconds)s")
                 completion()
             }
         )
