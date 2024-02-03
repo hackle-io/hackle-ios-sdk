@@ -432,6 +432,27 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 expect(actual.message).to(beIdenticalTo(message))
                 expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
             }
+
+            it("process event") {
+                // given
+                let inAppMessage = InAppMessage.create(key: 42);
+                let message = inAppMessage.messageContext.messages.first!
+
+                let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+                every(workspaceFetcher.fetchMock).returns(workspace)
+
+                let evaluation = InAppMessage.evaluation(reason: DecisionReason.IN_APP_MESSAGE_TARGET, inAppMessage: inAppMessage, message: message)
+                inAppMessageEvaluator.returns = evaluation
+                eventFactory.events = [MockUserEvent()]
+
+                // when
+                let _ = try sut.inAppMessage(inAppMessageKey: 42, user: user)
+
+                // then
+                verify(exactly: 1) {
+                    eventProcessor.processMock
+                }
+            }
         }
 
         describe("tryInAppMessage") {

@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol InAppMessageEventTracker {
-    func track(context: InAppMessageContext, event: InAppMessage.Event, timestamp: Date)
+    func track(context: InAppMessagePresentationContext, event: InAppMessage.Event, timestamp: Date)
 }
 
 class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
@@ -20,7 +20,7 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
         self.core = core
     }
 
-    func track(context: InAppMessageContext, event: InAppMessage.Event, timestamp: Date) {
+    func track(context: InAppMessagePresentationContext, event: InAppMessage.Event, timestamp: Date) {
         let trackEvent = createEvent(context: context, event: event)
         core.track(event: trackEvent, user: context.user, timestamp: timestamp)
     }
@@ -29,10 +29,11 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
     private static let CLOSE_EVENT_KEY = "$in_app_close"
     private static let ACTION_EVENT_KEY = "$in_app_action"
 
-    private func createEvent(context: InAppMessageContext, event: InAppMessage.Event) -> Event {
+    private func createEvent(context: InAppMessagePresentationContext, event: InAppMessage.Event) -> Event {
         switch event {
         case .impression:
             return Event.builder(DefaultInAppMessageEventTracker.IMPRESSION_EVENT_KEY)
+                .properties(context.properties)
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .property("title_text", context.message.text?.title.text)
@@ -43,15 +44,16 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("image_url", context.message.images.map {
                     $0.imagePath
                 })
-                .properties(context.properties)
                 .build()
         case .close:
             return Event.builder(DefaultInAppMessageEventTracker.CLOSE_EVENT_KEY)
+                .properties(context.properties)
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .build()
         case .action(let action, let area, let text):
             return Event.builder(DefaultInAppMessageEventTracker.ACTION_EVENT_KEY)
+                .properties(context.properties)
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .property("action_area", area.rawValue)

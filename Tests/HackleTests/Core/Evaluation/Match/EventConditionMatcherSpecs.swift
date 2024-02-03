@@ -93,7 +93,7 @@ class EventConditionMatcherSpecs: QuickSpec {
         let event: UserEvent
 
         init(workspace: Workspace, user: HackleUser, event: UserEvent) {
-            self.key = EvaluatorKey(type: .event, id: event.timestamp.epochMillis)
+            self.key = EvaluatorKey(type: .inAppMessage, id: event.timestamp.epochMillis)
             self.workspace = workspace
             self.user = user
             self.event = event

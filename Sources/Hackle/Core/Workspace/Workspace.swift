@@ -6,7 +6,7 @@ import Foundation
 
 protocol Workspace {
     var id: Int64 { get }
-    
+
     var environmentId: Int64 { get }
 
     var experiments: [Experiment] { get }
@@ -138,7 +138,7 @@ class WorkspaceEntity: Workspace {
     static func from(dto: WorkspaceConfigDto) -> Workspace {
         let workspaceId = dto.workspace.id
         let environmentId = dto.workspace.environment.id
-        
+
         let experiments = dto.experiments.compactMap { it in
             it.toExperimentOrNil(type: .abTest)
         }
@@ -415,11 +415,18 @@ class InAppMessageDto: Codable {
 
     class MessageContextDto: Codable {
         var defaultLang: String
+        var exposure: ExposureDto
         var platformTypes: [String]
         var orientations: [String]
         var messages: [MessageDto]
 
+        class ExposureDto: Codable {
+            var type: String
+            var key: Int64?
+        }
+
         class MessageDto: Codable {
+            var variationKey: String?
             var lang: String
             var layout: LayoutDto
             var images: [ImageDto]
@@ -598,6 +605,12 @@ extension InAppMessageDto.TargetContextDto.UserOverrideDto {
 extension InAppMessageDto.MessageContextDto {
 
     func toMessageContextOrNil() -> InAppMessage.MessageContext? {
+
+        var experimentContext: InAppMessage.ExperimentContext? = nil
+        if exposure.type == "AB_TEST", let experimentKey = exposure.key {
+            experimentContext = InAppMessage.ExperimentContext(key: experimentKey)
+        }
+
         guard let platformTypes: [InAppMessage.PlatformType] = Enums.parseAllOrNil(platformTypes) else {
             return nil
         }
@@ -612,6 +625,7 @@ extension InAppMessageDto.MessageContextDto {
 
         return InAppMessage.MessageContext(
             defaultLang: defaultLang,
+            experimentContext: experimentContext,
             platformTypes: platformTypes,
             orientations: orientations,
             messages: messages
@@ -643,6 +657,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
         }
 
         return InAppMessage.Message(
+            variationKey: variationKey,
             lang: lang,
             layout: layout,
             images: images,
