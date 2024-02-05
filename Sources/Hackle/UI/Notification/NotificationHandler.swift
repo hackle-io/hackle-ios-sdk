@@ -2,7 +2,6 @@ import Foundation
 import UserNotifications
 
 class NotificationHandler {
-    
     static let shared = NotificationHandler(
         dispatchQueue: DispatchQueue(
             label: "io.hackle.NotificationHandler",

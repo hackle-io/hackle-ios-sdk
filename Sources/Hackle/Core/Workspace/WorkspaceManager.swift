@@ -9,12 +9,19 @@ import Foundation
 
 
 class WorkspaceManager: WorkspaceFetcher, Synchronizer {
-
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
+    private let repository: WorkspaceConfigRepository
+    
+    private var lastModified: String? = nil
     private var workspace: Workspace? = nil
 
-    init(httpWorkspaceFetcher: HttpWorkspaceFetcher) {
+    init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {
         self.httpWorkspaceFetcher = httpWorkspaceFetcher
+        self.repository = repository
+    }
+    
+    func initialize() {
+        readWorkspaceConfigFromLocal()
     }
 
     func fetch() -> Workspace? {
@@ -22,16 +29,29 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     }
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        httpWorkspaceFetcher.fetchIfModified { result in
+        httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified) { result in
             self.handle(result: result, completion: completion)
         }
     }
+    
+    private func setWorkspaceConfig(_ config: WorkspaceConfig) {
+        lastModified = config.lastModified
+        workspace = WorkspaceEntity.from(dto: config.config)
+    }
+    
+    private func readWorkspaceConfigFromLocal() {
+        if let config = repository.get() {
+            setWorkspaceConfig(config)
+            Log.debug("Workspace config loaded: [last modified: \(config.lastModified ?? "nil")]")
+        }
+    }
 
-    private func handle(result: Result<Workspace?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+    private func handle(result: Result<WorkspaceConfig?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
-        case .success(let workspace):
-            if let workspace {
-                self.workspace = workspace
+        case .success(let config):
+            if let config {
+                setWorkspaceConfig(config)
+                repository.set(value: config)
             }
             completion(.success(()))
             return

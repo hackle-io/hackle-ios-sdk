@@ -7,7 +7,7 @@ class WorkspaceSpecs: QuickSpec {
     override func spec() {
 
         it("parse") {
-            let file = Bundle(for: WorkspaceSpecs.self).path(forResource: "workspace_config", ofType: "json")!
+            let file = Bundle(for: WorkspaceSpecs.self).path(forResource: "workspace_response", ofType: "json")!
             let json = try! String(contentsOfFile: file)
             let data = json.data(using: .utf8)!
             let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)

@@ -10,6 +10,7 @@ class HackleAppSpecs: QuickSpec {
         var eventQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
         var userManager: MockUserManager!
+        var workspaceManager: WorkspaceManager!
         var notificationManager: MockNotificationManager!
         var sessionManager: MockSessionManager!
         var eventProcessor: MockUserEventProcessor!
@@ -25,6 +26,10 @@ class HackleAppSpecs: QuickSpec {
             eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
             synchronizer = MockSynchronizer()
             userManager = MockUserManager()
+            workspaceManager = WorkspaceManager(
+                httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
+                repository: MockWorkspaceConfigRepository()
+            )
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             eventProcessor = MockUserEventProcessor()
@@ -43,6 +48,7 @@ class HackleAppSpecs: QuickSpec {
                 eventQueue: eventQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
+                workspaceManager: workspaceManager,
                 sessionManager: sessionManager,
                 eventProcessor: eventProcessor,
                 notificationObserver: notificationObserver,

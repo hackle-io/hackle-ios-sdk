@@ -12,6 +12,7 @@ import WebKit
     private let eventQueue: DispatchQueue
     private let synchronizer: CompositeSynchronizer
     private let userManager: UserManager
+    private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
@@ -44,6 +45,7 @@ import WebKit
         eventQueue: DispatchQueue,
         synchronizer: CompositeSynchronizer,
         userManager: UserManager,
+        workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
@@ -56,6 +58,7 @@ import WebKit
         self.eventQueue = eventQueue
         self.synchronizer = synchronizer
         self.userManager = userManager
+        self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
         self.notificationObserver = notificationObserver
@@ -66,6 +69,10 @@ import WebKit
     }
 
     private var view: HackleUserExplorerView? = nil
+    private var fetchThrottler: Throttler = Throttler(
+        intervalInSeconds: 60,
+        dispatchQueue: DispatchQueue(label: "io.hackle.FetchThrottler", qos: .utility)
+    )
 
     @objc public func showUserExplorer() {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
@@ -229,6 +236,19 @@ import WebKit
     @objc public func setPushToken(_ deviceToken: Data) {
         notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
     }
+    
+    @objc public func fetch(_ completion: @escaping () -> ()) {
+        fetchThrottler.execute(
+            action: {
+                self.synchronizer.sync(completion: completion)
+            },
+            throttled: {
+                let intervalSeconds = Int(self.fetchThrottler.interval)
+                Log.debug("Too many quick fetch requests: \(intervalSeconds)s")
+                completion()
+            }
+        )
+    }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
@@ -308,6 +328,7 @@ extension HackleApp {
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
         eventQueue.async {
+            self.workspaceManager.initialize()
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
             self.synchronizer.sync(completion: {
@@ -348,7 +369,10 @@ extension HackleApp {
         )
 
         let workspaceManager = WorkspaceManager(
-            httpWorkspaceFetcher: httpWorkspaceFetcher
+            httpWorkspaceFetcher: httpWorkspaceFetcher,
+            repository: DefaultWorkspaceConfigRepository(
+                fileStorage: try? DefaultFileStorage(sdkKey: sdkKey)
+            )
         )
         compositeSynchronizer.add(type: .workspace, synchronizer: workspaceManager)
 
@@ -517,6 +541,7 @@ extension HackleApp {
             eventQueue: eventQueue,
             synchronizer: pollingSynchronizer,
             userManager: userManager,
+            workspaceManager: workspaceManager,
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
             notificationObserver: appNotificationObserver,

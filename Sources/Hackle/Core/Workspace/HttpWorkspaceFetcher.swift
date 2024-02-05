@@ -9,14 +9,13 @@ import Foundation
 
 
 protocol HttpWorkspaceFetcher {
-    func fetchIfModified(completion: @escaping (Result<Workspace?, Error>) -> ())
+    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ())
 }
 
 class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
-    private var lastModified: String? = nil
 
     init(config: HackleConfig, sdk: Sdk, httpClient: HttpClient) {
         self.url = URL(string: DefaultHttpWorkspaceFetcher.url(config: config, sdk: sdk))!
@@ -27,12 +26,12 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
     }
 
-    func fetchIfModified(completion: @escaping (Result<Workspace?, Error>) -> ()) {
-        let request = createRequest()
+    func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
+        let request = createRequest(lastModified: lastModified)
         execute(request: request, completion: completion)
     }
 
-    private func createRequest() -> HttpRequest {
+    private func createRequest(lastModified: String?) -> HttpRequest {
         if let lastModified = lastModified {
             return HttpRequest.get(url: url, headers: HttpHeader.ifModifiedSince.with(value: lastModified))
         } else {
@@ -40,7 +39,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func execute(request: HttpRequest, completion: @escaping (Result<Workspace?, Error>) -> ()) {
+    private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
         let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
@@ -53,7 +52,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func handleResponse(response: HttpResponse) throws -> Workspace? {
+    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfig? {
         if let error = response.error {
             throw error
         }
@@ -63,25 +62,25 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
 
         if urlResponse.isNotModified {
-            Log.debug("Workspace not modified")
+            Log.debug("Workspace is not modified")
             return nil
         }
 
         guard urlResponse.isSuccessful else {
             throw HackleError.error("Http status code: \(urlResponse.statusCode)")
         }
-
-        self.lastModified = urlResponse.header(.lastModified)
-
+        
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-
+        
+        let lastModified = urlResponse.header(.lastModified)
         guard let workspaceDto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
 
         Log.debug("Workspace fetched")
-        return WorkspaceEntity.from(dto: workspaceDto)
+
+        return WorkspaceConfig(lastModified: lastModified, config: workspaceDto)
     }
 }
