@@ -22,7 +22,14 @@ class AtomicInt64 {
             value
         }
     }
+    
+    func set(_ value: Int64) {
+        lock.write {
+            self.value = value
+        }
+    }
 
+    @discardableResult
     func addAndGet(_ delta: Int64) -> Int64 {
         var newValue: Int64!
         lock.write {
@@ -32,8 +39,8 @@ class AtomicInt64 {
         }
         return newValue
     }
-
-
+    
+    @discardableResult
     func incrementAndGet() -> Int64 {
         addAndGet(1)
     }

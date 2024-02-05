@@ -69,6 +69,10 @@ import WebKit
     }
 
     private var view: HackleUserExplorerView? = nil
+    private var fetchThrottler: Throttler = Throttler(
+        intervalInSeconds: 60,
+        dispatchQueue: DispatchQueue(label: "io.hackle.FetchThrottler", qos: .utility)
+    )
 
     @objc public func showUserExplorer() {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
@@ -231,6 +235,19 @@ import WebKit
     
     @objc public func setPushToken(_ deviceToken: Data) {
         notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
+    }
+    
+    @objc public func fetch(_ completion: @escaping () -> ()) {
+        fetchThrottler.execute(
+            action: {
+                self.synchronizer.sync(completion: completion)
+            },
+            throttled: {
+                let intervalSeconds = Int(self.fetchThrottler.interval)
+                Log.debug("Too many quick fetch requests: \(intervalSeconds)s")
+                completion()
+            }
+        )
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
