@@ -9,17 +9,18 @@ import Foundation
 
 
 class WorkspaceManager: WorkspaceFetcher, Synchronizer {
-
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
-    private let workspaceFile: FileReadWriter?
+    private let repository: WorkspaceConfigRepository
     
     private var lastModified: String? = nil
     private var workspace: Workspace? = nil
 
-    init(httpWorkspaceFetcher: HttpWorkspaceFetcher, workspaceFile: FileReadWriter?) {
+    init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {
         self.httpWorkspaceFetcher = httpWorkspaceFetcher
-        self.workspaceFile = workspaceFile
-        
+        self.repository = repository
+    }
+    
+    func initialize() {
         readWorkspaceConfigFromLocal()
     }
 
@@ -39,16 +40,9 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     }
     
     private func readWorkspaceConfigFromLocal() {
-        if let data = try? workspaceFile?.read(),
-           let config = try? JSONDecoder().decode(WorkspaceConfig.self, from: data) {
+        if let config = repository.get() {
             setWorkspaceConfig(config)
-            Log.debug("Found workspace config: [last modified: \(lastModified ?? "nil")]")
-        }
-    }
-    
-    private func saveWorkspaceConfigInLocal(_ config: WorkspaceConfig) {
-        if let data = try? JSONEncoder().encode(config) {
-            try? workspaceFile?.write(data: data)
+            Log.debug("Workspace config loaded: [last modified: \(config.lastModified ?? "nil")]")
         }
     }
 
@@ -57,7 +51,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
         case .success(let config):
             if let config {
                 setWorkspaceConfig(config)
-                saveWorkspaceConfigInLocal(config)
+                repository.set(value: config)
             }
             completion(.success(()))
             return
