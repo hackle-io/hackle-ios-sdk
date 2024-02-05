@@ -25,6 +25,7 @@ class ThrottlerSpecs: QuickSpec {
                     action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
+                sleep(1)
                 expect(throttledHistories) == [false, true, false]
                 self.semaphore.signal()
             }
@@ -51,6 +52,7 @@ class ThrottlerSpecs: QuickSpec {
                     action: { throttledHistories.append(false) },
                     throttled: { throttledHistories.append(true) }
                 )
+                sleep(1)
                 expect(throttledHistories) == [false, false, true, false]
                 self.semaphore.signal()
             }
