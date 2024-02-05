@@ -107,19 +107,31 @@ final class InAppMessageDecision {
     let inAppMessage: InAppMessage?
     let message: InAppMessage.Message?
     let reason: String
+    let properties: [String: Any]
 
     var isShow: Bool {
         inAppMessage != nil && message != nil
     }
 
-    private init(inAppMessage: InAppMessage?, message: InAppMessage.Message?, reason: String) {
+    private init(
+        inAppMessage: InAppMessage?,
+        message: InAppMessage.Message?,
+        reason: String,
+        properties: [String: Any]
+    ) {
         self.inAppMessage = inAppMessage
         self.message = message
         self.reason = reason
+        self.properties = properties
     }
 
-    static func of(inAppMessage: InAppMessage? = nil, message: InAppMessage.Message? = nil, reason: String) -> InAppMessageDecision {
-        InAppMessageDecision(inAppMessage: inAppMessage, message: message, reason: reason)
+    static func of(
+        inAppMessage: InAppMessage? = nil,
+        message: InAppMessage.Message? = nil,
+        reason: String,
+        properties: [String: Any] = [:]
+    ) -> InAppMessageDecision {
+        InAppMessageDecision(inAppMessage: inAppMessage, message: message, reason: reason, properties: properties)
     }
 }
 

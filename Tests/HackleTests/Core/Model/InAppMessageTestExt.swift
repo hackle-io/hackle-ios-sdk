@@ -67,12 +67,14 @@ extension InAppMessage {
 
     static func messageContext(
         defaultLang: String = "ko",
+        experimentContext: ExperimentContext? = nil,
         platformTypes: [PlatformType] = [.ios],
         orientations: [Orientation] = [.vertical],
         messages: [Message] = [message()]
     ) -> MessageContext {
         MessageContext(
             defaultLang: defaultLang,
+            experimentContext: experimentContext,
             platformTypes: platformTypes,
             orientations: orientations,
             messages: messages
@@ -80,6 +82,7 @@ extension InAppMessage {
     }
 
     static func message(
+        variationKey: String? = nil,
         lang: String = "ko",
         images: [Message.Image] = [image()],
         text: Message.Text? = text(),
@@ -87,6 +90,7 @@ extension InAppMessage {
         closeButton: Message.Button? = nil
     ) -> Message {
         Message(
+            variationKey: variationKey,
             lang: lang,
             layout: Message.Layout(
                 displayType: .modal,
@@ -167,9 +171,10 @@ extension InAppMessage {
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        message: InAppMessage.Message? = nil
+        message: InAppMessage.Message? = nil,
+        properties: [String: Any] = [:]
     ) -> InAppMessageEvaluation {
-        InAppMessageEvaluation(reason: reason, targetEvaluations: targetEvaluations, inAppMessage: inAppMessage, message: message)
+        InAppMessageEvaluation(reason: reason, targetEvaluations: targetEvaluations, inAppMessage: inAppMessage, message: message, properties: properties)
     }
 
     static func context(
@@ -177,7 +182,7 @@ extension InAppMessage {
         message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         properties: [String: Any] = [:]
-    ) -> InAppMessageContext {
-        InAppMessageContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties)
+    ) -> InAppMessagePresentationContext {
+        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties)
     }
 }

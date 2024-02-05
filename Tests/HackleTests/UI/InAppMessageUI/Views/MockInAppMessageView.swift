@@ -4,10 +4,10 @@ import UIKit
 
 class MockInAppMessageView: UIView, InAppMessageView {
 
-    let context: InAppMessageContext
+    let context: InAppMessagePresentationContext
     var presented: Bool = false
 
-    init(context: InAppMessageContext = InAppMessage.context(), presented: Bool = false) {
+    init(context: InAppMessagePresentationContext = InAppMessage.context(), presented: Bool = false) {
         self.context = context
         self.presented = presented
         super.init(frame: .zero)

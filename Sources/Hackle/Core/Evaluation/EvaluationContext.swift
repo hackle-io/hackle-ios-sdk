@@ -34,7 +34,7 @@ class EvaluationContext {
         let experimentTargetDeterminer = DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)
         let experimentTargetRuleDeterminer = DefaultExperimentTargetRuleDeterminer(targetMatcher: targetMatcher)
         let remoteConfigTargetRuleDeterminer = DefaultRemoteConfigTargetRuleDeterminer(matcher: DefaultRemoteConfigTargetRuleMatcher(targetMatcher: targetMatcher, buckter: bucketer))
-        let inAppMessageResolver = DefaultInAppMessageResolver()
+        let inAppMessageResolver = DefaultInAppMessageResolver(evaluator: evaluator)
         let inAppMessageUserOverrideMatcher = InAppMessageUserOverrideMatcher()
         let inAppMessageDoNotOpenMatcher = InAppMessageHiddenMatcher(storage: get(InAppMessageHiddenStorage.self)!)
         let inAppMessageTargetMatcher = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
