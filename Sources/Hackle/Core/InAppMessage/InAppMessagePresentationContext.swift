@@ -8,7 +8,7 @@
 import Foundation
 
 
-class InAppMessageContext {
+class InAppMessagePresentationContext {
 
     let inAppMessage: InAppMessage
     let message: InAppMessage.Message

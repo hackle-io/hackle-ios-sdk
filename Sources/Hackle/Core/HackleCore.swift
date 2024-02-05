@@ -196,7 +196,15 @@ class DefaultHackleCore: HackleCore {
         let request = InAppMessageRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: clock.now())
         let evaluation: InAppMessageEvaluation = try inAppMessageEvaluator.evaluate(request: request, context: Evaluators.context())
 
-        return InAppMessageDecision.of(inAppMessage: evaluation.inAppMessage, message: evaluation.message, reason: evaluation.reason)
+        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        eventProcessor.process(events: events)
+
+        return InAppMessageDecision.of(
+            inAppMessage: evaluation.inAppMessage,
+            message: evaluation.message,
+            reason: evaluation.reason,
+            properties: evaluation.properties
+        )
     }
 }
 

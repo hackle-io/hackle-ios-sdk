@@ -175,19 +175,36 @@ extension InAppMessage {
 
     class MessageContext {
         let defaultLang: String
+        let experimentContext: ExperimentContext?
         let platformTypes: [PlatformType]
         let orientations: [Orientation]
         let messages: [Message]
 
-        init(defaultLang: String, platformTypes: [PlatformType], orientations: [Orientation], messages: [Message]) {
+        init(
+            defaultLang: String,
+            experimentContext: ExperimentContext?,
+            platformTypes: [PlatformType],
+            orientations: [Orientation],
+            messages: [Message]
+        ) {
             self.defaultLang = defaultLang
+            self.experimentContext = experimentContext
             self.platformTypes = platformTypes
             self.orientations = orientations
             self.messages = messages
         }
     }
 
+    class ExperimentContext {
+        let key: Int64
+
+        init(key: Int64) {
+            self.key = key
+        }
+    }
+
     class Message {
+        let variationKey: String?
         let lang: String
         let layout: Layout
         let images: [Image]
@@ -196,7 +213,8 @@ extension InAppMessage {
         let closeButton: Button?
         let background: Background
 
-        init(lang: String, layout: Layout, images: [Image], text: Text?, buttons: [Button], closeButton: Button?, background: Background) {
+        init(variationKey: String?, lang: String, layout: Layout, images: [Image], text: Text?, buttons: [Button], closeButton: Button?, background: Background) {
+            self.variationKey = variationKey
             self.lang = lang
             self.layout = layout
             self.images = images

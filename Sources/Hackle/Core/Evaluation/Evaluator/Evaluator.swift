@@ -8,7 +8,6 @@ enum EvaluatorType: String {
     case experiment = "EXPERIMENT"
     case remoteConfig = "REMOTE_CONFIG"
     case inAppMessage = "IN_APP_MESSAGE"
-    case event = "EVENT"
 }
 
 struct EvaluatorKey: Equatable {
@@ -38,6 +37,7 @@ protocol EvaluatorEvaluation {
 protocol EvaluatorContext {
     var stack: [EvaluatorRequest] { get }
     var targetEvaluations: [EvaluatorEvaluation] { get }
+    var properties: [String: Any] { get }
 
     func contains(_ request: EvaluatorRequest) -> Bool
     func add(_ request: EvaluatorRequest)
@@ -45,6 +45,8 @@ protocol EvaluatorContext {
 
     func get(_ experiment: Experiment) -> EvaluatorEvaluation?
     func add(_ evaluation: EvaluatorEvaluation)
+
+    func setProperty(_ key: String, _ value: Any?)
 }
 
 class Evaluators {
@@ -54,27 +56,51 @@ class Evaluators {
     }
 
     private class DefaultContext: EvaluatorContext {
-        private(set) var stack: [EvaluatorRequest] = []
-        private(set) var targetEvaluations: [EvaluatorEvaluation] = []
+        private var _stack: [EvaluatorRequest]
+        private var _targetEvaluations: [EvaluatorEvaluation]
+        private var _properties: PropertiesBuilder
+
+        init() {
+            _stack = []
+            _targetEvaluations = []
+            _properties = PropertiesBuilder()
+        }
+
+        var stack: [EvaluatorRequest] {
+            get {
+                _stack
+            }
+        }
+
+        var targetEvaluations: [EvaluatorEvaluation] {
+            get {
+                _targetEvaluations
+            }
+        }
+        var properties: [String: Any] {
+            get {
+                _properties.build()
+            }
+        }
 
         func contains(_ request: EvaluatorRequest) -> Bool {
-            stack.contains { it in
+            _stack.contains { it in
                 it.key == request.key
             }
         }
 
         func add(_ request: EvaluatorRequest) {
-            stack.append(request)
+            _stack.append(request)
         }
 
         func remove(_ request: EvaluatorRequest) {
-            stack.removeAll { it in
+            _stack.removeAll { it in
                 it.key == request.key
             }
         }
 
         func get(_ experiment: Experiment) -> EvaluatorEvaluation? {
-            targetEvaluations.lazy
+            _targetEvaluations.lazy
                 .compactMap { it in
                     it as? ExperimentEvaluation
                 }
@@ -84,7 +110,11 @@ class Evaluators {
         }
 
         func add(_ evaluation: EvaluatorEvaluation) {
-            targetEvaluations.append(evaluation)
+            _targetEvaluations.append(evaluation)
+        }
+
+        func setProperty(_ key: String, _ value: Any?) {
+            _properties.add(key, value)
         }
     }
 }
