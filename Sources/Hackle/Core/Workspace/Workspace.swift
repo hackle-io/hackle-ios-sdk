@@ -191,6 +191,11 @@ class WorkspaceEntity: Workspace {
     }
 }
 
+struct WorkspaceConfig: Codable {
+    var lastModified: String?
+    var config: WorkspaceConfigDto
+}
+
 class WorkspaceConfigDto: Codable {
     var workspace: WorkspaceDto
     var experiments: [ExperimentDto]
