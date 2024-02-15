@@ -10,7 +10,7 @@ import UIKit
 
 protocol InAppMessageView: UIView {
 
-    var context: InAppMessageContext { get }
+    var context: InAppMessagePresentationContext { get }
 
     var presented: Bool { get }
 

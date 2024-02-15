@@ -24,13 +24,13 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         window?.messageViewController?.messageView
     }
 
-    func present(context: InAppMessageContext) {
+    func present(context: InAppMessagePresentationContext) {
         DispatchQueue.main.async {
             self.presentNow(context: context)
         }
     }
 
-    private func presentNow(context: InAppMessageContext) {
+    private func presentNow(context: InAppMessagePresentationContext) {
         guard isMainThread(),
               checkRootViewController(),
               noMessagePresented(),
@@ -80,7 +80,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         currentMessageView == nil
     }
 
-    private func orientationSupported(context: InAppMessageContext) -> Bool {
+    private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {
         context.inAppMessage.supports(orientation: UIUtils.interfaceOrientation)
     }
 }

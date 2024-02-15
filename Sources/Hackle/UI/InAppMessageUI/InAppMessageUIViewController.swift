@@ -11,7 +11,7 @@ import UIKit
 extension HackleInAppMessageUI {
 
     class ViewController: UIViewController {
-        var context: InAppMessageContext
+        var context: InAppMessagePresentationContext
         var messageView: InAppMessageView
         var containerView: ContainerView
         weak var ui: HackleInAppMessageUI?
@@ -20,7 +20,7 @@ extension HackleInAppMessageUI {
 
         init(
             ui: HackleInAppMessageUI,
-            context: InAppMessageContext,
+            context: InAppMessagePresentationContext,
             messageView: InAppMessageView
         ) {
             self.ui = ui
