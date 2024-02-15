@@ -8,7 +8,7 @@
 import Foundation
 
 protocol InAppMessageDeterminer {
-    func determineOrNull(event: UserEvent) throws -> InAppMessageContext?
+    func determineOrNull(event: UserEvent) throws -> InAppMessagePresentationContext?
 }
 
 class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
@@ -23,7 +23,7 @@ class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
         self.core = core
     }
 
-    func determineOrNull(event: UserEvent) throws -> InAppMessageContext? {
+    func determineOrNull(event: UserEvent) throws -> InAppMessagePresentationContext? {
 
         guard let workspace = workspaceFetcher.fetch() else {
             return nil
@@ -41,17 +41,18 @@ class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
         return nil
     }
 
-    private func context(inAppMessage: InAppMessage, event: UserEvent) -> InAppMessageContext? {
+    private func context(inAppMessage: InAppMessage, event: UserEvent) -> InAppMessagePresentationContext? {
         let decision = core.tryInAppMessage(inAppMessageKey: inAppMessage.key, user: event.user)
         guard let inAppMessage = decision.inAppMessage, let message = decision.message else {
             return nil
         }
 
         let properties = PropertiesBuilder()
+            .add(decision.properties)
             .add("decision_reason", decision.reason)
             .build()
 
-        return InAppMessageContext(
+        return InAppMessagePresentationContext(
             inAppMessage: inAppMessage,
             message: message,
             user: event.user,

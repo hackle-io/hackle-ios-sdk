@@ -78,7 +78,7 @@ class DefaultInAppMessageDeterminerSpecs: QuickSpec {
                 decision(true),
                 decision(true, nil),
                 decision(true, .create(), nil),
-                decision(true, iam, message, DecisionReason.IN_APP_MESSAGE_TARGET),
+                decision(true, iam, message, DecisionReason.IN_APP_MESSAGE_TARGET, ["a": 42]),
                 decision(false)
             )
             let event = UserEvents.track("test")
@@ -91,6 +91,7 @@ class DefaultInAppMessageDeterminerSpecs: QuickSpec {
             expect(actual?.inAppMessage).to(beIdenticalTo(iam))
             expect(actual?.message).to(beIdenticalTo(message))
             expect(actual?.properties["decision_reason"] as! String) == DecisionReason.IN_APP_MESSAGE_TARGET
+            expect(actual?.properties["a"] as! Int) == 42
             expect(inAppMessageEventMatcher.callCount) == 4
             expect(core.inAppMessageCount) == 4
         }
@@ -115,9 +116,10 @@ class DefaultInAppMessageDeterminerSpecs: QuickSpec {
             _ isMatch: Bool,
             _ inAppMessage: InAppMessage? = nil,
             _ message: InAppMessage.Message? = nil,
-            _ reason: String = DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
+            _ reason: String = DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET,
+            _ properties: [String: Any] = [:]
         ) -> Decision {
-            Decision(isEventMatches: isMatch, decision: InAppMessageDecision.of(inAppMessage: inAppMessage, message: message, reason: reason))
+            Decision(isEventMatches: isMatch, decision: InAppMessageDecision.of(inAppMessage: inAppMessage, message: message, reason: reason, properties: properties))
         }
 
         struct Decision {

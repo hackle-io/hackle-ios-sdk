@@ -25,7 +25,7 @@ class InAppMessageManager: UserEventListener {
         presenter.present(context: context)
     }
 
-    private func determine(event: UserEvent) -> InAppMessageContext? {
+    private func determine(event: UserEvent) -> InAppMessagePresentationContext? {
         do {
             return try determiner.determineOrNull(event: event)
         } catch {
