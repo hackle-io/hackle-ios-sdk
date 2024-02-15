@@ -94,6 +94,40 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure2.properties["$experiment_version"] as! Int) == 2
             expect(exposure2.properties["$execution_version"] as! Int) == 3
         }
+
+        it("create in-app message events") {
+            let sut = DefaultUserEventFactory(clock: ClockStub())
+
+            let context = Evaluators.context()
+            let evaluation1 = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, experiment: experiment(id: 1), variationId: 42, variationKey: "B")
+            context.add(evaluation1)
+
+            let request = InAppMessage.request()
+            let evaluation = InAppMessageEvaluation.of(
+                request: request,
+                context: context,
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET,
+                message: request.inAppMessage.messageContext.messages[0]
+            )
+
+            let events = try sut.create(request: request, evaluation: evaluation)
+
+            expect(events.count).to(equal(1))
+
+            expect(events[0]).to(beAnInstanceOf(UserEvents.Exposure.self))
+            let exposure1 = events[0] as! UserEvents.Exposure
+            expect(exposure1.timestamp) == Date(timeIntervalSince1970: 42)
+            expect(exposure1.user).to(beIdenticalTo(request.user))
+            expect(exposure1.experiment).to(beIdenticalTo(evaluation1.experiment))
+            expect(exposure1.variationId) == 42
+            expect(exposure1.variationKey) == "B"
+            expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
+            expect(exposure1.properties.count) == 4
+            expect(exposure1.properties["$targetingRootType"] as! String) == "IN_APP_MESSAGE"
+            expect(exposure1.properties["$targetingRootId"] as! Int64) == 1
+            expect(exposure1.properties["$experiment_version"] as! Int) == 1
+            expect(exposure1.properties["$execution_version"] as! Int) == 1
+        }
     }
 
     class ClockStub: Clock {
