@@ -14,7 +14,7 @@ class MockInAppMessageDeterminer: Mock, InAppMessageDeterminer {
 
     lazy var determineOrNullMock = MockFunction(self, determineOrNull)
 
-    func determineOrNull(event: UserEvent) throws -> InAppMessageContext? {
+    func determineOrNull(event: UserEvent) throws -> InAppMessagePresentationContext? {
         call(determineOrNullMock, args: event)
     }
 }

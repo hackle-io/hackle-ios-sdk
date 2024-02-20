@@ -12,10 +12,10 @@ extension HackleInAppMessageUI {
 
     class ModalView: UIView, InAppMessageView {
 
-        let context: InAppMessageContext
+        let context: InAppMessagePresentationContext
         private var attributes: Attributes
 
-        init(context: InAppMessageContext, attributes: Attributes = .defaults) {
+        init(context: InAppMessagePresentationContext, attributes: Attributes = .defaults) {
             self.context = context
             self.attributes = attributes
             super.init(frame: .zero)

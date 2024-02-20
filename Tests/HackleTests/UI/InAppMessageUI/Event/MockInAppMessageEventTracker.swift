@@ -13,7 +13,7 @@ class MockInAppMessageEventTracker: Mock, InAppMessageEventTracker {
 
     lazy var trackMock = MockFunction(self, track)
 
-    func track(context: InAppMessageContext, event: InAppMessage.Event, timestamp: Date) {
+    func track(context: InAppMessagePresentationContext, event: InAppMessage.Event, timestamp: Date) {
         call(trackMock, args: (context, event, timestamp))
     }
 }

@@ -16,7 +16,7 @@ class InAppMessageRequest: EvaluatorRequest, Equatable, CustomStringConvertible 
     let timestamp: Date
 
     init(workspace: Workspace, user: HackleUser, inAppMessage: InAppMessage, timestamp: Date) {
-        self.key = EvaluatorKey(type: .inAppMessage, id: inAppMessage.key)
+        self.key = EvaluatorKey(type: .inAppMessage, id: inAppMessage.id)
         self.workspace = workspace
         self.user = user
         self.inAppMessage = inAppMessage
