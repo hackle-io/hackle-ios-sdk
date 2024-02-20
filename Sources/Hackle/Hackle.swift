@@ -90,6 +90,11 @@ extension Hackle {
 }
 
 extension Hackle {
+    @objc static public func installPushMessageProxy() {
+        HackleAppDelegateProxy.shared.swizzle()
+        HackleNotificationCenterDelegateProxy.shared.swizzle()
+    }
+    
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         willPresent notification: UNNotification,

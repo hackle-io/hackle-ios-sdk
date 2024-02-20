@@ -39,20 +39,20 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
 
     private let core: HackleCore
     private let userManager: UserManager
-    private let notificationManager: NotificationManager
+    private let pushTokenManager: PushTokenManager
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
 
     init(
         core: HackleCore,
         userManager: UserManager,
-        notificationManager: NotificationManager,
+        pushTokenManager: PushTokenManager,
         abTestOverrideStorage: HackleUserManualOverrideStorage,
         featureFlagOverrideStorage: HackleUserManualOverrideStorage
     ) {
         self.core = core
         self.userManager = userManager
-        self.notificationManager = notificationManager
+        self.pushTokenManager = pushTokenManager
         self.abTestOverrideStorage = abTestOverrideStorage
         self.featureFlagOverrideStorage = featureFlagOverrideStorage
     }
@@ -62,7 +62,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     }
     
     func registeredPushToken() -> String? {
-        return notificationManager.registeredPushToken
+        return pushTokenManager.registeredPushToken
     }
 
     func getAbTestDecisions() -> [(Experiment, Decision)] {

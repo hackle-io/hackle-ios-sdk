@@ -11,6 +11,7 @@ class HackleAppSpecs: QuickSpec {
         var synchronizer: MockSynchronizer!
         var userManager: MockUserManager!
         var workspaceManager: WorkspaceManager!
+        var pushTokenManager: PushTokenManager!
         var notificationManager: MockNotificationManager!
         var sessionManager: MockSessionManager!
         var eventProcessor: MockUserEventProcessor!
@@ -30,6 +31,7 @@ class HackleAppSpecs: QuickSpec {
                 httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
+            pushTokenManager = MockPushTokenManager()
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             eventProcessor = MockUserEventProcessor()
@@ -38,7 +40,7 @@ class HackleAppSpecs: QuickSpec {
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,
-                notificationManager: notificationManager,
+                pushTokenManager: pushTokenManager,
                 abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository())
             )
@@ -52,6 +54,7 @@ class HackleAppSpecs: QuickSpec {
                 sessionManager: sessionManager,
                 eventProcessor: eventProcessor,
                 notificationObserver: notificationObserver,
+                pushTokenManager: pushTokenManager,
                 notificationManager: notificationManager,
                 device: device,
                 userExplorer: userExplorer
