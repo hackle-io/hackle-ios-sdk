@@ -24,11 +24,24 @@ create_xcframework() {
 
     xcodebuild -list
 
-    xcodebuild archive ONLY_ACTIVE_ARCH=NO -scheme ${BUILD_SCHEME} -destination="generic/platform=iOS Simulator" -archivePath "${SIMULATOR_ARCHIVE_PATH}" -sdk iphonesimulator SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+    xcodebuild archive \
+      -scheme ${BUILD_SCHEME} \
+      -destination="generic/platform=iOS Simulator" \
+      -archivePath "${SIMULATOR_ARCHIVE_PATH}" \
+      -sdk iphonesimulator \
+      SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
 
-    xcodebuild archive -scheme ${BUILD_SCHEME} -destination="generic/platform=iOS" -archivePath "${IOS_DEVICE_ARCHIVE_PATH}" -sdk iphoneos SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+    xcodebuild archive \
+      -scheme ${BUILD_SCHEME} \
+      -destination="generic/platform=iOS" \
+      -archivePath "${IOS_DEVICE_ARCHIVE_PATH}" \
+      -sdk iphoneos \
+      SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
 
-    xcodebuild -create-xcframework -framework ${SIMULATOR_ARCHIVE_PATH}/Products/Library/Frameworks/${FRAMEWORK_NAME}.framework -framework ${IOS_DEVICE_ARCHIVE_PATH}/Products/Library/Frameworks/${FRAMEWORK_NAME}.framework -output "${FRAMEWORK_PATH}"
+    xcodebuild -create-xcframework \
+      -framework ${SIMULATOR_ARCHIVE_PATH}/Products/Library/Frameworks/${FRAMEWORK_NAME}.framework \
+      -framework ${IOS_DEVICE_ARCHIVE_PATH}/Products/Library/Frameworks/${FRAMEWORK_NAME}.framework \
+      -output "${FRAMEWORK_PATH}"
 
     rm -rf "${SIMULATOR_ARCHIVE_PATH}"
     rm -rf "${IOS_DEVICE_ARCHIVE_PATH}"

@@ -10,5 +10,6 @@ Pod::Spec.new do |s|
   s.platform      = :ios, "11.0"
   s.requires_arc  = true
   s.ios.vendored_frameworks = 'Hackle/Hackle.xcframework'
+  s.ios.deployment_target = "11.0"
   s.ios.frameworks = ['Foundation']
 end
