@@ -6,19 +6,19 @@
 	<dict>
 		<key>HackleAbTestTableViewCell.nib</key>
 		<data>
-		AFAlcGM8C3OGkrr2XwddMTsghxI=
+		acr43RFcw134AA+yFtrmuFVttic=
 		</data>
 		<key>HackleAbTestViewController.nib</key>
 		<data>
-		HiLYlIBk7gCjaKQjMGhBJaWRNMU=
+		aEdXzEKbUuUOJ9zXRUGOFQShOM8=
 		</data>
 		<key>HackleFeatureFlagTableViewCell.nib</key>
 		<data>
-		yA85vGMUTJ0XwLhxC4/OFqcj2Ag=
+		J0nUN7+L3g0MtmgxL+Av9kGfEmI=
 		</data>
 		<key>HackleFeatureFlagViewController.nib</key>
 		<data>
-		mbdQ3Cr52tsboxPvyp/fZI6Ze2E=
+		wsRtlikGPSig6SOJCRUdddmSOGk=
 		</data>
 		<key>HackleUserExplorerButton.nib</key>
 		<data>
@@ -26,55 +26,55 @@
 		</data>
 		<key>HackleUserExplorerViewController.nib</key>
 		<data>
-		Kd++c015OeB+Oy0B9qxZuFOc9nw=
+		M4aG5YoVk2KTjTtHE05EWo5gIuI=
 		</data>
 		<key>Headers/Hackle-Swift.h</key>
 		<data>
-		2TqUr14FC9+Svz2o74hPYR4DZmM=
+		258nONbg9fyIW8XPU+gctDjbMYQ=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		qO5SHNAVZe0lqcJI6+eWDPvYquQ=
+		EwIOqBxKzIHXAInhX52BLma3GGA=
 		</data>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		Ka2hb+iy/PFrmO3xxvtyr/RWcN8=
+		ol2Uhtqab+giKoq0FWnK+ietjhY=
 		</data>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		TQ4wsFhL7lriu0HvTGfW+T/XUHE=
+		ZIfyAMA4jzbDxyxlfSf6zqpawsQ=
 		</data>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		AW8IQIQHdQNkFqSv8ejF8KIjKHU=
+		7dXr+X0fiMCeTACmsVMiS8UGsXY=
 		</data>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		TQ4wsFhL7lriu0HvTGfW+T/XUHE=
+		ZIfyAMA4jzbDxyxlfSf6zqpawsQ=
 		</data>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		k6ze+i1/w//EmqRXe5U+Y3uF9os=
+		z6DZEqiRVRFv4oswTh6cHKrJA4w=
 		</data>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		Ka2hb+iy/PFrmO3xxvtyr/RWcN8=
+		ol2Uhtqab+giKoq0FWnK+ietjhY=
 		</data>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		+mMGdGDjIbyxDDPcpH1Vi1Fa9d0=
+		7xkf1SVbG42MIpwn40sNL/ga9JM=
 		</data>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		OSQQMN0LBDNcTtSGpfuYhJO7p+E=
+		obcIuUntnG2wlQ3a0bFpxKuwvFo=
 		</data>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		+mMGdGDjIbyxDDPcpH1Vi1Fa9d0=
+		7xkf1SVbG42MIpwn40sNL/ga9JM=
 		</data>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		v2RRpFc6gwNrTMJHmYK+wQ8860A=
+		q7qBDKGxGX9rVBLDR19OlBCDMA0=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -99,28 +99,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			9Pqi0K839wV5Xv1E2M9zAAGhyKiG1qC2MhGiSycsthA=
+			a95ASxOUdXjagY4KSA9RfXyLToUTTKOvJceIxmYcLqs=
 			</data>
 		</dict>
 		<key>HackleAbTestViewController.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4vDtPj5tIkHjvS4PKzwp78qPLGac88ygpF2ChbJ/Aiw=
+			IPPz9PKCeRlZojLl++hryIEQTN1o35fw00Vjx0Upln4=
 			</data>
 		</dict>
 		<key>HackleFeatureFlagTableViewCell.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4KOBw4kB2qnaf9hJ58c1V0ofh60jIs/E9iixtQh89NY=
+			gl2GSxG3XavVyICJ+DLzuhNYe+YdKkQU8mYarMzx1aI=
 			</data>
 		</dict>
 		<key>HackleFeatureFlagViewController.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nD/tPzDJdte+c0E8UeCy8YV/LuFs7RplLdi5/Tyth2o=
+			LjaS6gPH5nNARJGRtkMg5y8WtjQFAT/2KzpwntQDfgo=
 			</data>
 		</dict>
 		<key>HackleUserExplorerButton.nib</key>
@@ -134,84 +134,84 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			/uMKPcVL2lWBP4ydoLsLAhcZDsY9tdYaD8QYPyMeAzA=
+			P4gOAD4Su+HvI8M7fW7GJoNzjKh2ASpM+LUZ9xjGRa4=
 			</data>
 		</dict>
 		<key>Headers/Hackle-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			y5vecSzW6sfpOb0vhP5qlylbgTzHTw8MpENUMzv6p/I=
+			CRBZkHC6a/wuQsJPMJoUgLvXZT6FT2dyZ876ik8Dqh0=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FXKIONQeqFMs0uqSMaztSI/TWXvBCOZkm2Z3JH1IfbI=
+			r1yVzjhoaehEjBiNHTQJbOtaun1zVBCDEBLSg1pEae8=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			045ndKSnzsx0CJzceWNtwQeXXhbX74FOmzbgwjCKL3Y=
+			9Ays7gIlaCQ3ZgRGk7ytpGtJjtuVftmQH/F0w4uV/TI=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			F3G6k1JS+blKssNCUKdvdcpPHaJ/YxHebELGqmm7cos=
+			NuGH4r9BXa0jfy00DDZvMuqH6ZWD0uVtCarMiMc1JaI=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			045ndKSnzsx0CJzceWNtwQeXXhbX74FOmzbgwjCKL3Y=
+			9Ays7gIlaCQ3ZgRGk7ytpGtJjtuVftmQH/F0w4uV/TI=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			CfFuSkNqd3tiFMEL94Zc5V9gnhzczftm/r6VeTnyfo0=
+			tIlU1NbqRPwR0r4AejoUbCIgPI7wpUSqCznd8WVbsT8=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FXKIONQeqFMs0uqSMaztSI/TWXvBCOZkm2Z3JH1IfbI=
+			r1yVzjhoaehEjBiNHTQJbOtaun1zVBCDEBLSg1pEae8=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZHqc3JOUcPZutN4EXe9d0k7hhuF2FIUpp0s7kL6Ja9Q=
+			muji179qdiMon5XLuIcY9SW38kf+jQI/dQFFn5fTIzs=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vIj6uBJYkeeDjkF0PxAm6N0PNtTHjEONc7Fpsn46YZw=
+			looc2e3b+aQH6Ig7Qn3g2SG0bn2nyBXUf/g6h+X4WKs=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZHqc3JOUcPZutN4EXe9d0k7hhuF2FIUpp0s7kL6Ja9Q=
+			muji179qdiMon5XLuIcY9SW38kf+jQI/dQFFn5fTIzs=
 			</data>
 		</dict>
 		<key>Modules/Hackle.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			jecz4myMM7MgMAKK6PQzk4hl6TfMuHj1QC4Hiqxq5gw=
+			5GudRvdksygGaiY57JJZMQaygYFEZFLPchTd4qFLPts=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
