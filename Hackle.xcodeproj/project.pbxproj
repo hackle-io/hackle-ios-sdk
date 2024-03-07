@@ -447,7 +447,6 @@
 		EEF895DB2A4C09D800722CF6 /* iam.json in Resources */ = {isa = PBXBuildFile; fileRef = EEF895DA2A4C09D800722CF6 /* iam.json */; };
 		EEF895DD2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895DC2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift */; };
 		EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */ = {isa = PBXBuildFile; fileRef = EEF895DE2A4C14D800722CF6 /* iam_invalid.json */; };
-		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -917,7 +916,6 @@
 				EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */,
 				EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */,
 				EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */,
-				OBJ_43 /* Hackle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
