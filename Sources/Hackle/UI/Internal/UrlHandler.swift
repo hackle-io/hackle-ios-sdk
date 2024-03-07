@@ -14,6 +14,6 @@ protocol UrlHandler {
 
 class ApplicationUrlHandler: UrlHandler {
     func open(url: URL) {
-        UIUtils.application.open(url)
+        UIUtils.application?.open(url)
     }
 }

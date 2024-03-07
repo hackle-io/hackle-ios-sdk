@@ -38,7 +38,7 @@ extension NotificationHandler {
         case .deepLink:
             if let link = data.link,
                let url = URL(string: link) {
-                UIUtils.application.open(url, options: [:]) { success in
+                UIUtils.application?.open(url, options: [:]) { success in
                     Log.debug("Redirected to: \(link) [success=\(success)]")
                 }
             } else {

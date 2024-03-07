@@ -16,6 +16,7 @@ import WebKit
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
+    private let pushTokenManager: PushTokenManager
     private let notificationManager: NotificationManager
     private let device: Device
     internal let userExplorer: HackleUserExplorer
@@ -49,6 +50,7 @@ import WebKit
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
+        pushTokenManager: PushTokenManager,
         notificationManager: NotificationManager,
         device: Device,
         userExplorer: HackleUserExplorer
@@ -62,6 +64,7 @@ import WebKit
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
         self.notificationObserver = notificationObserver
+        self.pushTokenManager = pushTokenManager
         self.notificationManager = notificationManager
         self.device = device
         self.userExplorer = userExplorer
@@ -234,7 +237,10 @@ import WebKit
     }
     
     @objc public func setPushToken(_ deviceToken: Data) {
-        notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
+        pushTokenManager.setPushToken(
+            pushToken: deviceToken.hexString(),
+            timestamp: Date()
+        )
     }
     
     @objc public func fetch(_ completion: @escaping () -> ()) {
@@ -332,6 +338,7 @@ extension HackleApp {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
             self.synchronizer.sync(completion: {
+                self.pushTokenManager.initialize()
                 self.notificationManager.flush()
                 completion()
             })
@@ -500,27 +507,35 @@ extension HackleApp {
         )
         eventPublisher.addListener(listener: inAppMessageManager)
         
+        // - PushToken
+        let pushTokenManager = DefaultPushTokenManager(
+            core: core,
+            userManager: userManager,
+            preferences: keyValueRepositoryBySdkKey,
+            dataSource: ApnPushTokenDataSource.shared
+        )
+        userManager.addListener(listener: pushTokenManager)
+        
         // - Notification
+        
         let notificationQueue = DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility)
         let notificationManager = DefaultNotificationManager(
             core: core,
             dispatchQueue: notificationQueue,
             workspaceFetcher: workspaceManager,
             userManager: userManager,
-            preferences: keyValueRepositoryBySdkKey,
             repository: DefaultNotificationRepository(
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        userManager.addListener(listener: notificationManager)
 
         // - UserExplorer
 
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
             userManager: userManager,
-            notificationManager: notificationManager,
+            pushTokenManager: pushTokenManager,
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage
         )
@@ -545,6 +560,7 @@ extension HackleApp {
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
             notificationObserver: appNotificationObserver,
+            pushTokenManager: pushTokenManager,
             notificationManager: notificationManager,
             device: device,
             userExplorer: userExplorer

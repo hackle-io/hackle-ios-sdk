@@ -8,146 +8,13 @@ class NotificationManagerSpec: QuickSpec {
     override func spec() {
         let dispatchQueue = DispatchQueue(label: "test")
         var core: HackleCoreStub!
-        var preferences: MemoryKeyValueRepository!
         var workspaceFetcher: MockWorkspaceFetcher!
-        var userManager: MockUserManager!
         var repository: MockNotificationRepository!
         
         beforeEach {
             core = HackleCoreStub()
-            preferences = MemoryKeyValueRepository()
             workspaceFetcher = MockWorkspaceFetcher()
-            userManager = MockUserManager()
             repository = MockNotificationRepository()
-        }
-        
-        it("fresh new push token") {
-            let manager = DefaultNotificationManager(
-                core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
-                userManager: userManager,
-                preferences: preferences,
-                repository: repository
-            )
-            let hackleUser = HackleUser.builder()
-                .identifier(.id, "user")
-                .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
-            
-            let data = Data([1, 2, 3, 4])
-            let hexString = data.hexString()
-            let timestamp = Date()
-            manager.setPushToken(
-                deviceToken: data,
-                timestamp: timestamp
-            )
-            
-            dispatchQueue.sync {
-                expect(core.tracked.count) == 1
-                expect(core.tracked[0].0.key) == "$push_token"
-                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APN"
-                expect(core.tracked[0].0.properties?["token"] as? String) == hexString
-                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
-            }
-        }
-        
-        it("set another push token") {
-            preferences.putString(key: "apns_token", value: Data([1, 2, 3, 4]).hexString())
-            let userManager = MockUserManager()
-            let manager = DefaultNotificationManager(
-                core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
-                userManager: userManager,
-                preferences: preferences,
-                repository: repository
-            )
-            let hackleUser = HackleUser.builder()
-                .identifier(.id, "user")
-                .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
-            
-            let data = Data([5, 6, 7, 8])
-            let timestamp = Date()
-            manager.setPushToken(
-                deviceToken: data,
-                timestamp: timestamp
-            )
-            
-            dispatchQueue.sync {
-                expect(core.tracked.count) == 1
-                expect(core.tracked[0].0.key) == "$push_token"
-                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APN"
-                expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
-                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
-                
-                expect(preferences.getString(key: "apns_token")) == data.hexString()
-            }
-        }
-        
-        it("set same push token") {
-            let data = Data([1, 2, 3, 4])
-            let hexString = data.hexString()
-            preferences.putString(key: "apns_token", value: hexString)
-            let userManager = MockUserManager()
-            let manager = DefaultNotificationManager(
-                core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
-                userManager: userManager,
-                preferences: preferences,
-                repository: repository
-            )
-            let hackleUser = HackleUser.builder()
-                .identifier(.id, "user")
-                .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
-            
-            let timestamp = Date()
-            manager.setPushToken(
-                deviceToken: data,
-                timestamp: timestamp
-            )
-            
-            dispatchQueue.sync {
-                expect(core.tracked.count) == 0
-                expect(preferences.getString(key: "apns_token")) == hexString
-            }
-        }
-        
-        it("resend push token when user updated called") {
-            let data = Data([1, 2, 3, 4])
-            let hexString = data.hexString()
-            preferences.putString(key: "apns_token", value: hexString)
-            let userManager = MockUserManager()
-            let manager = DefaultNotificationManager(
-                core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
-                userManager: userManager,
-                preferences: preferences,
-                repository: repository
-            )
-            let hackleUser = HackleUser.builder()
-                .identifier(.id, "user")
-                .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
-            
-            let timestamp = Date()
-            manager.onUserUpdated(
-                oldUser: User.builder().build(),
-                newUser: User.builder().build(),
-                timestamp: timestamp
-            )
-            
-            dispatchQueue.sync {
-                expect(core.tracked.count) == 1
-                expect(core.tracked[0].0.key) == "$push_token"
-                expect(core.tracked[0].0.properties?["provider_type"] as? String) == "APN"
-                expect(core.tracked[0].0.properties?["token"] as? String) == data.hexString()
-                expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
-            }
         }
         
         it("track push click event when notification data received") {
@@ -157,7 +24,6 @@ class NotificationManagerSpec: QuickSpec {
                 dispatchQueue: dispatchQueue,
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                preferences: preferences,
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
@@ -216,7 +82,6 @@ class NotificationManagerSpec: QuickSpec {
                 dispatchQueue: dispatchQueue,
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                preferences: preferences,
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
@@ -323,7 +188,6 @@ class NotificationManagerSpec: QuickSpec {
                 dispatchQueue: dispatchQueue,
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                preferences: preferences,
                 repository: repository
             )
             every(workspaceFetcher.fetchMock).returns(nil)
@@ -362,7 +226,6 @@ class NotificationManagerSpec: QuickSpec {
                 dispatchQueue: dispatchQueue,
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                preferences: preferences,
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
@@ -434,7 +297,6 @@ class NotificationManagerSpec: QuickSpec {
                 dispatchQueue: dispatchQueue,
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                preferences: preferences,
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
@@ -506,7 +368,6 @@ class NotificationManagerSpec: QuickSpec {
                 dispatchQueue: dispatchQueue,
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                preferences: preferences,
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
