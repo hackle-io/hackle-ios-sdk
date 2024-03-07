@@ -1,0 +1,4 @@
+framework module Hackle {
+  header "Hackle-Swift.h"
+  requires objc
+}

@@ -1,15 +1,13 @@
-Pod::Spec.new do |spec|
-spec.name          = "Hackle"
-spec.module_name   = "Hackle"
-spec.version       = "2.31.0"
-spec.summary       = "Hackle Sdk for iOS"
-spec.homepage      = "https://www.hackle.io"
-spec.license       = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
-spec.author        = { "Hackle" => "platform@hackle.io" }
-spec.ios.deployment_target = "10.0"
-spec.source        = { :git => "https://github.com/hackle-io/hackle-ios-sdk.git", :tag => "#{spec.version}" }
-spec.source_files  = "Sources/**/*.swift"
-spec.resources     = "Sources/**/*.{xib,png}"
-spec.frameworks    = "Foundation"
-spec.swift_version = "5.0"
+Pod::Spec.new do |s|
+  s.name          = "Hackle"
+  s.version       = "2.31.0"
+  s.summary       = "Hackle Sdk for iOS"
+  s.homepage      = "https://www.hackle.io"
+  s.license       = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
+  s.author        = { "Hackle" => "platform@hackle.io" }
+
+  s.source        = { :git => "https://github.com/hackle-io/hackle-ios-sdk.git", :tag => "#{s.version}" }
+  s.platform      = :ios, "10.0"
+  s.requires_arc  = true
+  s.ios.vendored_frameworks = 'Hackle/Hackle.xcframework'
 end
