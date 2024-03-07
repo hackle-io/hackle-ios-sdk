@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
 // swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name Hackle
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import Foundation
@@ -11,7 +11,6 @@ import UserNotifications
 import WebKit
 import _Concurrency
 import _StringProcessing
-import _SwiftConcurrencyShims
 import os.log
 import os
 @objc @_hasMissingDesignatedInitializers public class HackleConfig : ObjectiveC.NSObject {
@@ -63,7 +62,7 @@ import os
   @objc final public let experiment: Hackle.HackleExperiment?
   @objc final public let variation: Swift.String
   @objc final public let reason: Swift.String
-  @objc final public let config: any Hackle.ParameterConfig
+  @objc final public let config: Hackle.ParameterConfig
   @objc final public let parameters: [Swift.String : Any]
   @objc final public func getString(forKey: Swift.String, defaultValue: Swift.String) -> Swift.String
   @objc final public func getInt(forKey: Swift.String, defaultValue: Swift.Int) -> Swift.Int
@@ -75,7 +74,7 @@ import os
   @objc final public let featureFlag: Hackle.HackleExperiment?
   @objc final public let isOn: Swift.Bool
   @objc final public let reason: Swift.String
-  @objc final public let config: any Hackle.ParameterConfig
+  @objc final public let config: Hackle.ParameterConfig
   @objc final public let parameters: [Swift.String : Any]
   @objc final public func getString(forKey: Swift.String, defaultValue: Swift.String) -> Swift.String
   @objc final public func getInt(forKey: Swift.String, defaultValue: Swift.Int) -> Swift.Int
@@ -120,8 +119,8 @@ import os
   @objc final public func featureFlagDetail(featureKey: Swift.Int) -> Hackle.FeatureFlagDecision
   @objc final public func track(eventKey: Swift.String)
   @objc final public func track(event: Hackle.Event)
-  @objc final public func remoteConfig() -> any Hackle.HackleRemoteConfig
-  @objc final public func setWebViewBridge(_ webView: WebKit.WKWebView, _ uiDelegate: (any WebKit.WKUIDelegate)? = nil)
+  @objc final public func remoteConfig() -> Hackle.HackleRemoteConfig
+  @objc final public func setWebViewBridge(_ webView: WebKit.WKWebView, _ uiDelegate: WebKit.WKUIDelegate? = nil)
   @objc final public func setPushToken(_ deviceToken: Foundation.Data)
   @objc final public func fetch(_ completion: @escaping () -> ())
   @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -151,7 +150,7 @@ import os
   @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
   @objc final public func track(event: Hackle.Event, user: Hackle.User)
   @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
-  @objc final public func remoteConfig(user: Hackle.User) -> any Hackle.HackleRemoteConfig
+  @objc final public func remoteConfig(user: Hackle.User) -> Hackle.HackleRemoteConfig
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc final public class HackleExperiment : ObjectiveC.NSObject {
