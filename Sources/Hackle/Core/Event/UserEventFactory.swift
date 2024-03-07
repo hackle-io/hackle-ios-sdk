@@ -32,15 +32,17 @@ class DefaultUserEventFactory: UserEventFactory {
         let timestamp = clock.now()
         var events: [UserEvent] = []
 
-        let rootEvent = try create(request: request, evaluation: evaluation, timestamp: timestamp, properties: PropertiesBuilder())
-        events.append(rootEvent)
+        if let rootEvent = try create(request: request, evaluation: evaluation, timestamp: timestamp, properties: PropertiesBuilder()) {
+            events.append(rootEvent)
+        }
 
         for targetEvaluation in evaluation.targetEvaluations {
             let properties = PropertiesBuilder()
             properties.add(DefaultUserEventFactory.ROOT_TYPE, request.key.type.rawValue)
             properties.add(DefaultUserEventFactory.ROOT_ID, request.key.id)
-            let targetEvent = try create(request: request, evaluation: targetEvaluation, timestamp: timestamp, properties: properties)
-            events.append(targetEvent)
+            if let targetEvent = try create(request: request, evaluation: targetEvaluation, timestamp: timestamp, properties: properties) {
+                events.append(targetEvent)
+            }
         }
         return events
     }
@@ -50,7 +52,7 @@ class DefaultUserEventFactory: UserEventFactory {
         evaluation: EvaluatorEvaluation,
         timestamp: Date,
         properties: PropertiesBuilder
-    ) throws -> UserEvent {
+    ) throws -> UserEvent? {
 
         switch evaluation {
         case let evaluation as ExperimentEvaluation:
@@ -71,6 +73,8 @@ class DefaultUserEventFactory: UserEventFactory {
                 properties: properties.build(),
                 timestamp: timestamp
             )
+        case _ as InAppMessageEvaluation:
+            return nil
         default:
             throw HackleError.error("Unsupported Evaluation [\(evaluation)]")
         }

@@ -379,9 +379,10 @@
 		EE86377329ED0085000268DC /* RemoteConfigEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE86377229ED0085000268DC /* RemoteConfigEvaluation.swift */; };
 		EE86377529ED008C000268DC /* RemoteConfigRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE86377429ED008C000268DC /* RemoteConfigRequest.swift */; };
 		EE86377729ED312F000268DC /* ExperimentConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE86377629ED312F000268DC /* ExperimentConditionMatcher.swift */; };
+		EE9E49102B6B6F0000436530 /* EvaluatorContextSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9E490F2B6B6F0000436530 /* EvaluatorContextSpecs.swift */; };
 		EEA01CB42A3069B000E0C021 /* InAppMessagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CB32A3069B000E0C021 /* InAppMessagePresenter.swift */; };
 		EEA01CB62A3069C400E0C021 /* InAppMessageDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CB52A3069C400E0C021 /* InAppMessageDeterminer.swift */; };
-		EEA01CB82A31CEAA00E0C021 /* InAppMessageContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CB72A31CEAA00E0C021 /* InAppMessageContext.swift */; };
+		EEA01CB82A31CEAA00E0C021 /* InAppMessagePresentationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CB72A31CEAA00E0C021 /* InAppMessagePresentationContext.swift */; };
 		EEA01CBC2A32A8C600E0C021 /* EventConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CBB2A32A8C600E0C021 /* EventConditionMatcher.swift */; };
 		EEA01CBF2A36B9B100E0C021 /* HackleUIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CBE2A36B9B100E0C021 /* HackleUIUtils.swift */; };
 		EEA01CC12A36E1DF00E0C021 /* InAppMessageUIStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */; };
@@ -842,9 +843,10 @@
 		EE86377229ED0085000268DC /* RemoteConfigEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigEvaluation.swift; sourceTree = "<group>"; };
 		EE86377429ED008C000268DC /* RemoteConfigRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigRequest.swift; sourceTree = "<group>"; };
 		EE86377629ED312F000268DC /* ExperimentConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentConditionMatcher.swift; sourceTree = "<group>"; };
+		EE9E490F2B6B6F0000436530 /* EvaluatorContextSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluatorContextSpecs.swift; sourceTree = "<group>"; };
 		EEA01CB32A3069B000E0C021 /* InAppMessagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessagePresenter.swift; sourceTree = "<group>"; };
 		EEA01CB52A3069C400E0C021 /* InAppMessageDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageDeterminer.swift; sourceTree = "<group>"; };
-		EEA01CB72A31CEAA00E0C021 /* InAppMessageContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageContext.swift; sourceTree = "<group>"; };
+		EEA01CB72A31CEAA00E0C021 /* InAppMessagePresentationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessagePresentationContext.swift; sourceTree = "<group>"; };
 		EEA01CBB2A32A8C600E0C021 /* EventConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventConditionMatcher.swift; sourceTree = "<group>"; };
 		EEA01CBE2A36B9B100E0C021 /* HackleUIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIUtils.swift; sourceTree = "<group>"; };
 		EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIStackView.swift; sourceTree = "<group>"; };
@@ -2078,6 +2080,7 @@
 				EE789E3C29F0F9A10088D8A6 /* RemoteConfig */,
 				EE29D9F929CD82C100B1FEAA /* MockEvaluator.swift */,
 				EE789E4129F1004B0088D8A6 /* DelegatingEvaluatorSpecs.swift */,
+				EE9E490F2B6B6F0000436530 /* EvaluatorContextSpecs.swift */,
 			);
 			path = Evaluator;
 			sourceTree = "<group>";
@@ -2116,10 +2119,10 @@
 		EE80E0112A2DA0A700FB12CC /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
-				EEA01CB72A31CEAA00E0C021 /* InAppMessageContext.swift */,
 				EEA01CB52A3069C400E0C021 /* InAppMessageDeterminer.swift */,
 				EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */,
 				EE80E0122A2DA0CC00FB12CC /* InAppMessageManager.swift */,
+				EEA01CB72A31CEAA00E0C021 /* InAppMessagePresentationContext.swift */,
 				EEA01CB32A3069B000E0C021 /* InAppMessagePresenter.swift */,
 				EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */,
 				EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */,
@@ -2595,7 +2598,7 @@
 				7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */,
 				EE86377329ED0085000268DC /* RemoteConfigEvaluation.swift in Sources */,
 				EE1F5D592A9F3593006E17EF /* HackleExperiment.swift in Sources */,
-				EEA01CB82A31CEAA00E0C021 /* InAppMessageContext.swift in Sources */,
+				EEA01CB82A31CEAA00E0C021 /* InAppMessagePresentationContext.swift in Sources */,
 				EE29D97F29CD825400B1FEAA /* Slot.swift in Sources */,
 				EE86377129ED007F000268DC /* RemoteConfigEvaluator.swift in Sources */,
 				EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */,
@@ -2716,6 +2719,7 @@
 				EEB2E6322A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift in Sources */,
 				EEF895992A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift in Sources */,
 				EE789E3E29F0F9B50088D8A6 /* RemoteConfigRequestSpecs.swift in Sources */,
+				EE9E49102B6B6F0000436530 /* EvaluatorContextSpecs.swift in Sources */,
 				EE29DA5229CD82C200B1FEAA /* NoopCounterSpecs.swift in Sources */,
 				EE29DA9F29CD82C200B1FEAA /* DefaultUserEventProcessorSpec.swift in Sources */,
 				EE29DA8D29CD82C200B1FEAA /* MockContainerResolver.swift in Sources */,
