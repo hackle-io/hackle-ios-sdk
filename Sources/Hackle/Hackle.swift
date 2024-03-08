@@ -90,6 +90,12 @@ extension Hackle {
 }
 
 extension Hackle {
+    @objc static public func setPushToken(_ deviceToken: Data) {
+        Log.info("setPushToken()")
+    }
+}
+
+extension Hackle {
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
@@ -109,7 +115,7 @@ extension Hackle {
             return false
         }
     }
-    
+
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
