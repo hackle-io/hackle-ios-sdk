@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -775,6 +775,7 @@
 		EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workspace_cohorts.json; sourceTree = "<group>"; };
 		EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserListener.swift; sourceTree = "<group>"; };
 		EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserCohortFetcher.swift; sourceTree = "<group>"; };
+		EE67C2892B9AB67400E7961A /* Hackle-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Hackle-Bridging-Header.h"; sourceTree = "<group>"; };
 		EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentExtensions.swift; sourceTree = "<group>"; };
 		EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleCore.swift; sourceTree = "<group>"; };
 		EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventFactory.swift; sourceTree = "<group>"; };
@@ -1168,6 +1169,7 @@
 				EE29D8AC29CD825300B1FEAA /* Hackle.swift */,
 				EE29D8AD29CD825300B1FEAA /* HackleApp.swift */,
 				EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */,
+				EE67C2892B9AB67400E7961A /* Hackle-Bridging-Header.h */,
 			);
 			path = Hackle;
 			sourceTree = "<group>";
