@@ -16,6 +16,7 @@ import WebKit
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
     private let notificationObserver: AppNotificationObserver
+    private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let device: Device
     internal let userExplorer: HackleUserExplorer
@@ -49,6 +50,7 @@ import WebKit
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
         notificationObserver: AppNotificationObserver,
+        pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         device: Device,
         userExplorer: HackleUserExplorer
@@ -62,6 +64,7 @@ import WebKit
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
         self.notificationObserver = notificationObserver
+        self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
         self.device = device
         self.userExplorer = userExplorer
@@ -228,15 +231,15 @@ import WebKit
     @objc public func remoteConfig() -> HackleRemoteConfig {
         DefaultRemoteConfig(user: nil, app: core, userManager: userManager)
     }
-    
+
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
-    
+
     @objc public func setPushToken(_ deviceToken: Data) {
-        notificationManager.setPushToken(deviceToken: deviceToken, timestamp: Date())
+        pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
-    
+
     @objc public func fetch(_ completion: @escaping () -> ()) {
         fetchThrottler.execute(
             action: {
@@ -332,6 +335,7 @@ extension HackleApp {
             self.sessionManager.initialize()
             self.eventProcessor.initialize()
             self.synchronizer.sync(completion: {
+                self.pushTokenRegistry.flush()
                 self.notificationManager.flush()
                 completion()
             })
@@ -499,28 +503,37 @@ extension HackleApp {
             presenter: inAppMessageUI
         )
         eventPublisher.addListener(listener: inAppMessageManager)
-        
+
+        // - Push
+
+        let pushTokenRegistry = DefaultPushTokenRegistry.shared
+        let pushTokenManager = DefaultPushTokenManager(
+            core: core,
+            repository: keyValueRepositoryBySdkKey,
+            userManager: userManager
+        )
+        userManager.addListener(listener: pushTokenManager)
+        pushTokenRegistry.addListener(listener: pushTokenManager)
+
         // - Notification
-        let notificationQueue = DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility)
+
         let notificationManager = DefaultNotificationManager(
             core: core,
-            dispatchQueue: notificationQueue,
+            dispatchQueue: DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility),
             workspaceFetcher: workspaceManager,
             userManager: userManager,
-            preferences: keyValueRepositoryBySdkKey,
             repository: DefaultNotificationRepository(
                 sharedDatabase: DatabaseHelper.getSharedDatabase()
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        userManager.addListener(listener: notificationManager)
 
         // - UserExplorer
 
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
             userManager: userManager,
-            notificationManager: notificationManager,
+            pushTokenManager: pushTokenManager,
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage
         )
@@ -545,6 +558,7 @@ extension HackleApp {
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
             notificationObserver: appNotificationObserver,
+            pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             device: device,
             userExplorer: userExplorer
@@ -574,31 +588,31 @@ protocol HackleAppProtocol: AnyObject {
     var sdk: Sdk { get }
     var deviceId: String { get }
     func setDeviceId(deviceId: String)
-    
+
     var sessionId: String { get }
     var user: User { get }
-    
+
     func showUserExplorer()
-    
+
     func setUser(user: User)
     func setUserId(userId: String?)
     func setUserProperty(key: String, value: Any?)
     func updateUserProperties(operations: PropertyOperations)
     func resetUser()
-    
+
     func variation(experimentKey: Int, defaultVariation: String) -> String
     func variationDetail(experimentKey: Int, defaultVariation: String) -> Decision
-    
+
     func allVariationDetails() -> [Int: Decision]
-    
+
     func isFeatureOn(featureKey: Int) -> Bool
     func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision
-    
+
     func track(eventKey: String)
     func track(event: Event)
-    
+
     func remoteConfig() -> HackleRemoteConfig
-    
+
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -628,7 +642,7 @@ protocol HackleAppProtocol: AnyObject {
     func track(event: Event, userId: String)
     @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
     func track(event: Event, user: User)
-    
+
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     func remoteConfig(user: User) -> HackleRemoteConfig
 }
