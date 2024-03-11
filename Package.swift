@@ -19,6 +19,11 @@ let package = Package(
     targets: [
         .target(
             name: "Hackle",
+            exclude: [
+                "Hackle.h",
+                "HackleNotifications.h",
+                "HackleNotifications.m"
+            ],
             resources: [
                 .process("Resources/HackleAbTestTableViewCell.xib"),
                 .process("Resources/HackleAbTestViewController.xib"),
