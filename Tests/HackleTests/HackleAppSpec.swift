@@ -15,6 +15,7 @@ class HackleAppSpecs: QuickSpec {
         var sessionManager: MockSessionManager!
         var eventProcessor: MockUserEventProcessor!
         var notificationObserver: AppNotificationObserverStub!
+        var pushTokenRegistry = DefaultPushTokenRegistry()
         var device: Device!
         var userExplorer: HackleUserExplorer!
 
@@ -34,11 +35,12 @@ class HackleAppSpecs: QuickSpec {
             sessionManager = MockSessionManager()
             eventProcessor = MockUserEventProcessor()
             notificationObserver = AppNotificationObserverStub()
+            pushTokenRegistry = DefaultPushTokenRegistry()
             device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,
-                notificationManager: notificationManager,
+                pushTokenManager: MockPushTokenManager(),
                 abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository())
             )
@@ -52,6 +54,7 @@ class HackleAppSpecs: QuickSpec {
                 sessionManager: sessionManager,
                 eventProcessor: eventProcessor,
                 notificationObserver: notificationObserver,
+                pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
                 device: device,
                 userExplorer: userExplorer
@@ -524,6 +527,13 @@ class HackleAppSpecs: QuickSpec {
                 let user = User.builder().id("user_id").build()
                 let actual = sut.remoteConfig(user: user)
                 expect(actual).to(beAnInstanceOf(DefaultRemoteConfig.self))
+            }
+
+
+            it("setPushToken") {
+                let deviceToken = "token".data(using: .utf8)!
+                sut.setPushToken(deviceToken)
+                expect(pushTokenRegistry.currentToken()).notTo(beNil())
             }
         }
     }
