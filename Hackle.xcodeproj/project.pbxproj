@@ -894,6 +894,9 @@
 		EEDC58852ACC07CF001E73DB /* Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		EEE636782A47458600428681 /* FixedClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedClock.swift; sourceTree = "<group>"; };
 		EEF629B92B9DE0A1002718B7 /* MockPushTokenListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPushTokenListener.swift; sourceTree = "<group>"; };
+		EEF629E12B9EA42E002718B7 /* Hackle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hackle.h; sourceTree = "<group>"; };
+		EEF629E22B9EA437002718B7 /* HackleNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HackleNotification.h; sourceTree = "<group>"; };
+		EEF629E32B9EA443002718B7 /* HackleNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HackleNotification.m; sourceTree = "<group>"; };
 		EEF895862A48586500722CF6 /* InAppMessageEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EEF895882A485AA400722CF6 /* InAppMessageTestExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageTestExt.swift; sourceTree = "<group>"; };
 		EEF8958A2A493AA500722CF6 /* InAppMessageFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageFlowEvaluator.swift; sourceTree = "<group>"; };
@@ -1192,6 +1195,9 @@
 				EE29D8AC29CD825300B1FEAA /* Hackle.swift */,
 				EE29D8AD29CD825300B1FEAA /* HackleApp.swift */,
 				EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */,
+				EEF629E12B9EA42E002718B7 /* Hackle.h */,
+				EEF629E22B9EA437002718B7 /* HackleNotification.h */,
+				EEF629E32B9EA443002718B7 /* HackleNotification.m */,
 			);
 			path = Hackle;
 			sourceTree = "<group>";
