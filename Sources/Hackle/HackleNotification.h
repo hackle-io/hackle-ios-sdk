@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
 
-@interface HackleNotifications : NSObject
+@interface HackleNotification : NSObject
 
 + (void)setPushToken:(NSData *)deviceToken;
 

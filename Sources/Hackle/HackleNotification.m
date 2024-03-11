@@ -1,4 +1,4 @@
-#import "HackleNotifications.h"
+#import "HackleNotification.h"
 
 #if __has_include("Hackle-Swift.h")
 #import "Hackle-Swift.h"
@@ -8,7 +8,7 @@
 
 #endif
 
-@implementation HackleNotifications
+@implementation HackleNotification
 
 + (void)setPushToken:(NSData *)deviceToken {
     [Hackle setPushToken:deviceToken];
