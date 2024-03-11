@@ -21,8 +21,8 @@ let package = Package(
             name: "Hackle",
             exclude: [
                 "Hackle.h",
-                "HackleNotifications.h",
-                "HackleNotifications.m"
+                "HackleNotification.h",
+                "HackleNotification.m"
             ],
             resources: [
                 .process("Resources/HackleAbTestTableViewCell.xib"),
