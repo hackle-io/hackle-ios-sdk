@@ -8,9 +8,9 @@ class NotificationHandler {
             qos: .utility
         )
     )
-    
+
     private var receiver: NotificationDataReceiver
-    
+
     init(dispatchQueue: DispatchQueue) {
         receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
@@ -19,11 +19,11 @@ class NotificationHandler {
             )
         )
     }
-    
+
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
     }
-    
+
     func handleNotificationData(data: NotificationData, timestamp: Date = Date()) {
         receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
         trampoline(data: data)
@@ -38,7 +38,7 @@ extension NotificationHandler {
         case .deepLink:
             if let link = data.link,
                let url = URL(string: link) {
-                UIUtils.application.open(url, options: [:]) { success in
+                UIUtils.application?.open(url, options: [:]) { success in
                     Log.debug("Redirected to: \(link) [success=\(success)]")
                 }
             } else {

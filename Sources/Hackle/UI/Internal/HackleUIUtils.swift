@@ -11,21 +11,30 @@ import UIKit
 
 class UIUtils {
 
-    static var application: UIApplication {
-        UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as! UIApplication
+    static var application: UIApplication? {
+        UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication
     }
 
     static var interfaceOrientation: UIInterfaceOrientation {
         if #available(iOS 13.0, *), let windowScene = activeWindowScene {
             return windowScene.interfaceOrientation
         }
-        return application.statusBarOrientation
+
+        if let application = application {
+            return application.statusBarOrientation
+        } else {
+            return .unknown
+        }
     }
 
     @available(iOS 13.0, *)
     static var activeWindowScene: UIWindowScene? {
         var windowScene: UIWindowScene? = nil
         var activeWindowScene: UIWindowScene? = nil
+
+        guard let application = application else {
+            return nil
+        }
 
         for scene in application.connectedScenes {
             guard let scene = scene as? UIWindowScene else {
@@ -42,11 +51,11 @@ class UIUtils {
 
     static var keyWindow: UIWindow? {
         if #available(iOS 13, *) {
-            return application.windows.first { window in
+            return application?.windows.first { window in
                 window.isKeyWindow
             }
         } else {
-            return application.keyWindow
+            return application?.keyWindow
         }
     }
 
