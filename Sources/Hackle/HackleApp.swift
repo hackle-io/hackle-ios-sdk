@@ -415,7 +415,7 @@ extension HackleApp {
 
         let eventPublisher = DefaultUserEventPublisher()
 
-        let dedupDeterminer = DelegatingUserEventDeterminer(determiners: [
+        let dedupDeterminer = DelegatingUserEventDedupDeterminer(determiners: [
             RemoteConfigEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval),
             ExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval)
         ])

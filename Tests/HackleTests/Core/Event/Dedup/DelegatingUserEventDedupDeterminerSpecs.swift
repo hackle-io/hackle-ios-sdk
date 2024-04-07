@@ -3,11 +3,11 @@ import Quick
 import Nimble
 @testable import Hackle
 
-class DelegatingUserEventDeterminerSpecs: QuickSpec {
+class DelegatingUserEventDedupDeterminerSpecs: QuickSpec {
     override func spec() {
         it("determiner") {
             // given
-            let sut = DelegatingUserEventDeterminer(determiners: [
+            let sut = DelegatingUserEventDedupDeterminer(determiners: [
                 RemoteConfigDeterminerStub(dedupTarget: false),
                 ExposureDeterminerStub(dedupTarget: true),
                 RemoteConfigDeterminerStub(dedupTarget: false)
@@ -34,7 +34,7 @@ class DelegatingUserEventDeterminerSpecs: QuickSpec {
 
         it("empty") {
             // given
-            let sut = DelegatingUserEventDeterminer(determiners: [])
+            let sut = DelegatingUserEventDedupDeterminer(determiners: [])
 
             let event = UserEvents.Exposure(
                 insertId: "insertId",
@@ -57,7 +57,7 @@ class DelegatingUserEventDeterminerSpecs: QuickSpec {
 
         it("not supported") {
             // given
-            let sut = DelegatingUserEventDeterminer(determiners: [
+            let sut = DelegatingUserEventDedupDeterminer(determiners: [
                 RemoteConfigDeterminerStub(dedupTarget: true),
                 RemoteConfigDeterminerStub(dedupTarget: true)
             ])
