@@ -18,6 +18,7 @@ import WebKit
     private let notificationObserver: AppNotificationObserver
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
+    private let fetchThrottler: Throttler
     private let device: Device
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
@@ -52,6 +53,7 @@ import WebKit
         notificationObserver: AppNotificationObserver,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
+        fetchThrottler: Throttler,
         device: Device,
         userExplorer: HackleUserExplorer
     ) {
@@ -66,16 +68,13 @@ import WebKit
         self.notificationObserver = notificationObserver
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
+        self.fetchThrottler = fetchThrottler
         self.device = device
         self.userExplorer = userExplorer
         super.init()
     }
 
     private var view: HackleUserExplorerView? = nil
-    private var fetchThrottler: Throttler = Throttler(
-        intervalInSeconds: 60,
-        dispatchQueue: DispatchQueue(label: "io.hackle.FetchThrottler", qos: .utility)
-    )
 
     @objc public func showUserExplorer() {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
@@ -242,12 +241,11 @@ import WebKit
 
     @objc public func fetch(_ completion: @escaping () -> ()) {
         fetchThrottler.execute(
-            action: {
+            accept: {
                 self.synchronizer.sync(completion: completion)
             },
-            throttled: {
-                let intervalSeconds = Int(self.fetchThrottler.interval)
-                Log.debug("Too many quick fetch requests: \(intervalSeconds)s")
+            reject: {
+                Log.debug("Too many quick fetch requests")
                 completion()
             }
         )
@@ -417,9 +415,10 @@ extension HackleApp {
 
         let eventPublisher = DefaultUserEventPublisher()
 
-        let dedupDeterminer = DefaultExposureEventDedupDeterminer(
-            dedupInterval: config.exposureEventDedupInterval
-        )
+        let dedupDeterminer = DelegatingUserEventDeterminer(determiners: [
+            RemoteConfigEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval),
+            ExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval)
+        ])
         let appStateManager = DefaultAppStateManager()
         let eventProcessor = DefaultUserEventProcessor(
             eventDedupDeterminer: dedupDeterminer,
@@ -548,6 +547,9 @@ extension HackleApp {
             httpClient: httpClient
         )
 
+        let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
+        let throttler = DefaultThrottler(limiter: throttleLimiter)
+
         return HackleApp(
             sdk: sdk,
             core: core,
@@ -560,6 +562,7 @@ extension HackleApp {
             notificationObserver: appNotificationObserver,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
+            fetchThrottler: throttler,
             device: device,
             userExplorer: userExplorer
         )

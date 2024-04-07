@@ -44,6 +44,7 @@ class HackleAppSpecs: QuickSpec {
                 abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository())
             )
+            let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             sut = HackleApp(
                 sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
                 core: core,
@@ -56,6 +57,7 @@ class HackleAppSpecs: QuickSpec {
                 notificationObserver: notificationObserver,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
+                fetchThrottler: throttler,
                 device: device,
                 userExplorer: userExplorer
             )
