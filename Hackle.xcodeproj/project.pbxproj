@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -321,6 +321,7 @@
 		EE5A78FC2ADCEF97005A0F9E /* workspace_cohorts.json in Resources */ = {isa = PBXBuildFile; fileRef = EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */; };
 		EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */; };
 		EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */; };
+		EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */; };
 		EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */; };
 		EE750E2D2ADE704400DCE34F /* MockHackleCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */; };
 		EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */; };
@@ -795,6 +796,7 @@
 		EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workspace_cohorts.json; sourceTree = "<group>"; };
 		EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserListener.swift; sourceTree = "<group>"; };
 		EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserCohortFetcher.swift; sourceTree = "<group>"; };
+		EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentExtensions.swift; sourceTree = "<group>"; };
 		EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleCore.swift; sourceTree = "<group>"; };
 		EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventFactory.swift; sourceTree = "<group>"; };
@@ -1214,6 +1216,7 @@
 				EEF629E12B9EA42E002718B7 /* Hackle.h */,
 				EEF629E22B9EA437002718B7 /* HackleNotification.h */,
 				EEF629E32B9EA443002718B7 /* HackleNotification.m */,
+				EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Hackle;
 			sourceTree = "<group>";
@@ -2474,6 +2477,7 @@
 				EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */,
 				EE29DABF29CD853C00B1FEAA /* hackle_banner@3x.png in Resources */,
 				EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */,
+				EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */,
 				EE29DAC029CD853C00B1FEAA /* hackle_cancel.png in Resources */,
 				EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */,
 				EE29DAC129CD853C00B1FEAA /* hackle_cancel@2x.png in Resources */,
