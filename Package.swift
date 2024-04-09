@@ -40,6 +40,7 @@ let package = Package(
                 .process("Resources/Images/hackle_logo.png"),
                 .process("Resources/Images/hackle_logo@2x.png"),
                 .process("Resources/Images/hackle_logo@3x.png"),
+                .copy("PrivacyInfo.xcprivacy")
             ]
         ),
         .testTarget(

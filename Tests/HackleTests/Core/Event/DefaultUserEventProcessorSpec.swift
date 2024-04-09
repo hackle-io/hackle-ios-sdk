@@ -10,7 +10,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
         let user = HackleUser.of(userId: "test_id")
 
-        var eventDedupDeterminer: MockExposureEventDedupDeterminer!
+        var eventDedupDeterminer: MockUserEventDedupDeterminer!
         var eventPublisher: UserEventPublisherStub!
         var eventQueue: DispatchQueue!
         var eventRepository: MockEventRepository!
@@ -21,7 +21,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var appStateManager: AppStateManagerStub!
 
         beforeEach {
-            eventDedupDeterminer = MockExposureEventDedupDeterminer()
+            eventDedupDeterminer = MockUserEventDedupDeterminer()
             eventPublisher = UserEventPublisherStub()
             eventQueue = DispatchQueue(label: "test.EventQueue")
             eventRepository = MockEventRepository()
@@ -38,7 +38,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         }
 
         func processor(
-            eventDedupDeterminer: ExposureEventDedupDeterminer = eventDedupDeterminer,
+            eventDedupDeterminer: UserEventDedupDeterminer = eventDedupDeterminer,
             eventQueue: DispatchQueue = eventQueue,
             eventRepository: EventRepository = eventRepository,
             eventRepositoryMaxSize: Int = 100,
