@@ -23,7 +23,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
-    private let eventDedupDeterminer: ExposureEventDedupDeterminer
+    private let eventDedupDeterminer: UserEventDedupDeterminer
     private let eventPublisher: UserEventPublisher
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
@@ -40,7 +40,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     private var flushingJob: ScheduledJob? = nil
 
     init(
-        eventDedupDeterminer: ExposureEventDedupDeterminer,
+        eventDedupDeterminer: UserEventDedupDeterminer,
         eventPublisher: UserEventPublisher,
         eventQueue: DispatchQueue,
         eventRepository: EventRepository,
