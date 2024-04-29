@@ -101,7 +101,11 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
     }
 
     private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        cohortFetcher.fetch(user: user) { result in
+        cohortFetcher.fetch(user: user) { [weak self] result in
+            guard let self = self else {
+                completion(.failure(HackleError.error("Failed to user sync: instance deallocated")))
+                return
+            }
             self.handle(result: result, completion: completion)
         }
     }
