@@ -328,16 +328,28 @@ extension HackleApp {
 
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
-        eventQueue.async {
-            self.workspaceManager.initialize()
-            self.sessionManager.initialize()
-            self.eventProcessor.initialize()
-            self.synchronizer.sync(completion: {
-                self.pushTokenRegistry.flush()
-                self.notificationManager.flush()
+        eventQueue.async { [weak self] in
+            guard let self = self else {
                 completion()
-            })
+                return
+            }
+            self.initialize(completion: completion)
         }
+    }
+
+    private func initialize(completion: @escaping () -> ()) {
+        workspaceManager.initialize()
+        sessionManager.initialize()
+        eventProcessor.initialize()
+        synchronizer.sync(completion: { [weak self] in
+            guard let self = self else {
+                completion()
+                return
+            }
+            self.pushTokenRegistry.flush()
+            self.notificationManager.flush()
+            completion()
+        })
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {

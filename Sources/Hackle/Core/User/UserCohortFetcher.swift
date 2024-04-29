@@ -30,7 +30,11 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
         do {
             let request = try createRequest(user: user)
             let sample = TimerSample.start()
-            httpClient.execute(request: request) { response in
+            httpClient.execute(request: request) { [weak self] response in
+                guard let self = self else {
+                    completion(.failure(HackleError.error("Failed to fetch cohorts: instance deallocated")))
+                    return
+                }
                 ApiCallMetrics.record(operation: "get.cohorts", sample: sample, response: response)
                 do {
                     let userCohorts = try self.handleResponse(response: response)
