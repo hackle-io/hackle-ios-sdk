@@ -41,7 +41,11 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
 
     private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
         let sample = TimerSample.start()
-        httpClient.execute(request: request) { response in
+        httpClient.execute(request: request) { [weak self] response in
+            guard let self = self else {
+                completion(.failure(HackleError.error("Failed to fetch workspace: instance deallocated")))
+                return
+            }
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
             do {
                 let workspace = try self.handleResponse(response: response)
@@ -69,11 +73,11 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         guard urlResponse.isSuccessful else {
             throw HackleError.error("Http status code: \(urlResponse.statusCode)")
         }
-        
+
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-        
+
         let lastModified = urlResponse.header(.lastModified)
         guard let workspaceDto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
