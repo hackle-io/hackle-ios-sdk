@@ -2,15 +2,15 @@ import Foundation
 import WebKit
 
 class HackleUIDelegate: NSObject, WKUIDelegate {
-    
+
     private let bridge: HackleBridge
     private let uiDelegate: WKUIDelegate?
-    
+
     init(app: HackleApp, uiDelegate: WKUIDelegate? = nil) {
         self.bridge = HackleBridge(app: app)
         self.uiDelegate = uiDelegate
     }
-    
+
     func webView(
         _ webView: WKWebView,
         runJavaScriptTextInputPanelWithPrompt prompt: String,
@@ -29,6 +29,22 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
                 initiatedByFrame: frame,
                 completionHandler: completionHandler
             )
+        }
+    }
+
+    override func responds(to aSelector: Selector!) -> Bool {
+        if super.responds(to: aSelector) {
+            return true
+        } else {
+            return uiDelegate?.responds(to: aSelector) ?? false
+        }
+    }
+
+    override func forwardingTarget(for aSelector: Selector!) -> Any? {
+        if super.responds(to: aSelector) {
+            return self
+        } else {
+            return uiDelegate
         }
     }
 }
