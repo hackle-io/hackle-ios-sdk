@@ -22,6 +22,7 @@ import WebKit
     private let device: Device
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
+    internal let mode: HackleAppMode
 
     @objc public var deviceId: String {
         get {
@@ -42,6 +43,7 @@ import WebKit
     }
 
     init(
+        mode: HackleAppMode,
         sdk: Sdk,
         core: HackleCore,
         eventQueue: DispatchQueue,
@@ -57,6 +59,7 @@ import WebKit
         device: Device,
         userExplorer: HackleUserExplorer
     ) {
+        self.mode = mode
         self.sdk = sdk
         self.core = core
         self.eventQueue = eventQueue
@@ -427,13 +430,23 @@ extension HackleApp {
 
         let eventPublisher = DefaultUserEventPublisher()
 
+
+        var eventFilters = [UserEventFilter]()
         let dedupDeterminer = DelegatingUserEventDedupDeterminer(determiners: [
             RemoteConfigEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval),
             ExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval)
         ])
+        let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
+        eventFilters.append(dedupEventFilter)
+
+        if config.mode == .web_view_wrapper {
+            eventFilters.append(WebViewWrapperUserEventFilter())
+        }
+
         let appStateManager = DefaultAppStateManager()
+
         let eventProcessor = DefaultUserEventProcessor(
-            eventDedupDeterminer: dedupDeterminer,
+            eventFilters: eventFilters,
             eventPublisher: eventPublisher,
             eventQueue: eventQueue,
             eventRepository: eventRepository,
@@ -476,7 +489,9 @@ extension HackleApp {
             userManager: userManager,
             core: core
         )
-        sessionManager.addListener(listener: sessionEventTracker)
+        if config.sessionTracking {
+            sessionManager.addListener(listener: sessionEventTracker)
+        }
 
         // - InAppMessage
 
@@ -518,10 +533,14 @@ extension HackleApp {
         // - Push
 
         let pushTokenRegistry = DefaultPushTokenRegistry.shared
+        let pushEventTracker = DefaultPushEventTracker(
+            userManager: userManager,
+            core: core
+        )
         let pushTokenManager = DefaultPushTokenManager(
-            core: core,
             repository: keyValueRepositoryBySdkKey,
-            userManager: userManager
+            userManager: userManager,
+            eventTracker: pushEventTracker
         )
         userManager.addListener(listener: pushTokenManager)
         pushTokenRegistry.addListener(listener: pushTokenManager)
@@ -563,6 +582,7 @@ extension HackleApp {
         let throttler = DefaultThrottler(limiter: throttleLimiter)
 
         return HackleApp(
+            mode: config.mode,
             sdk: sdk,
             core: core,
             eventQueue: eventQueue,
