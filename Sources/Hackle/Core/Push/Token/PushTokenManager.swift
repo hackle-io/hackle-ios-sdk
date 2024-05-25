@@ -8,14 +8,14 @@ class DefaultPushTokenManager: PushTokenManager, PushTokenListener, UserListener
 
     private static let PUSH_TOKEN_KEY = "apns_token"
 
-    private let core: HackleCore
     private let repository: KeyValueRepository
     private let userManager: UserManager
+    private let eventTracker: PushEventTracker
 
-    init(core: HackleCore, repository: KeyValueRepository, userManager: UserManager) {
-        self.core = core
+    init(repository: KeyValueRepository, userManager: UserManager, eventTracker: PushEventTracker) {
         self.repository = repository
         self.userManager = userManager
+        self.eventTracker = eventTracker
     }
 
     func currentToken() -> PushToken? {
@@ -30,19 +30,13 @@ class DefaultPushTokenManager: PushTokenManager, PushTokenListener, UserListener
             return
         }
         repository.putString(key: DefaultPushTokenManager.PUSH_TOKEN_KEY, value: token.value)
-        register(token: token, user: userManager.currentUser, timestamp: timestamp)
+        eventTracker.trackPushToken(pushToken: token, user: userManager.currentUser, timestamp: timestamp)
     }
 
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
         guard let token = currentToken() else {
             return
         }
-        register(token: token, user: newUser, timestamp: timestamp)
-    }
-
-    private func register(token: PushToken, user: User, timestamp: Date) {
-        let event = token.toEvent()
-        let hackleUser = userManager.toHackleUser(user: user)
-        core.track(event: event, user: hackleUser, timestamp: timestamp)
+        eventTracker.trackPushToken(pushToken: token, user: newUser, timestamp: timestamp)
     }
 }
