@@ -71,6 +71,10 @@ extension HackleUser {
         identifiers[IdentifierType.device.rawValue]
     }
 
+    var hackleDeviceId: String? {
+        identifiers[IdentifierType.hackleDevice.rawValue]
+    }
+
     var sessionId: String? {
         identifiers[IdentifierType.session.rawValue]
     }
