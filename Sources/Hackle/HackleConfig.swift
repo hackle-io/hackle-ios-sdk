@@ -12,6 +12,8 @@ public class HackleConfig: NSObject {
     var sdkUrl: URL
     var eventUrl: URL
     var monitoringUrl: URL
+    var mode: HackleAppMode
+    var sessionTracking: Bool
     var sessionTimeoutInterval: TimeInterval
     var pollingInterval: TimeInterval
     var eventFlushInterval: TimeInterval
@@ -23,6 +25,8 @@ public class HackleConfig: NSObject {
         sdkUrl = builder.sdkUrl
         eventUrl = builder.eventUrl
         monitoringUrl = builder.monitoringUrl
+        mode = builder.mode
+        sessionTracking = (mode == .native && builder.sessionTracking)
         sessionTimeoutInterval = builder.sessionTimeoutInterval
         pollingInterval = builder.pollingInterval
         eventFlushInterval = builder.eventFlushInterval
@@ -58,6 +62,9 @@ public class HackleConfigBuilder: NSObject {
     var eventUrl: URL = URL(string: "https://event.hackle.io")!
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
 
+    var mode: HackleAppMode = .native
+
+    var sessionTracking: Bool = true
     var sessionTimeoutInterval: TimeInterval = HackleConfig.DEFAULT_SESSION_TIMEOUT_INTERVAL
 
     var pollingInterval: TimeInterval = HackleConfig.NO_POLLING
@@ -81,6 +88,11 @@ public class HackleConfigBuilder: NSObject {
 
     @objc public func monitoringUrl(_ monitoringUrl: URL) -> HackleConfigBuilder {
         self.monitoringUrl = monitoringUrl
+        return self
+    }
+
+    @objc public func mode(_ mode: HackleAppMode) -> HackleConfigBuilder {
+        self.mode = mode
         return self
     }
 
@@ -137,5 +149,21 @@ public class HackleConfigBuilder: NSObject {
         }
 
         return HackleConfig(builder: self)
+    }
+}
+
+@objc public enum HackleAppMode: Int {
+    case native
+    case web_view_wrapper
+}
+
+extension HackleAppMode: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .native:
+            return "native"
+        case .web_view_wrapper:
+            return "web_view_wrapper"
+        }
     }
 }

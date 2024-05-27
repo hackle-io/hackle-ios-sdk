@@ -7,16 +7,16 @@ import Nimble
 class DefaultPushTokenManagerSpecs: QuickSpec {
 
     override func spec() {
-        var core: MockHackleCore!
         var repository: MemoryKeyValueRepository!
         var userManager: MockUserManager!
+        var eventTracker: MockPushEventTracker!
         var sut: DefaultPushTokenManager!
 
         beforeEach {
-            core = MockHackleCore()
             repository = MemoryKeyValueRepository()
             userManager = MockUserManager()
-            sut = DefaultPushTokenManager(core: core, repository: repository, userManager: userManager)
+            eventTracker = MockPushEventTracker()
+            sut = DefaultPushTokenManager(repository: repository, userManager: userManager, eventTracker: eventTracker)
         }
 
         context("currentToken") {
@@ -44,11 +44,11 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
                 // then
                 expect(repository.getString(key: "apns_token")) == "new_token"
                 verify(exactly: 1) {
-                    core.trackMock
+                    eventTracker.trackPushTokenMock
                 }
             }
 
-            it("when current token and new token are same then register token") {
+            it("when current token and new token are difference then register token") {
                 // given
                 repository.putString(key: "apns_token", value: "current_token")
                 every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
@@ -60,11 +60,11 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
                 // then
                 expect(repository.getString(key: "apns_token")) == "new_token"
                 verify(exactly: 1) {
-                    core.trackMock
+                    eventTracker.trackPushTokenMock
                 }
             }
 
-            it("when current token and new token then do nothing") {
+            it("when current token and new token are same then do nothing") {
                 // given
                 repository.putString(key: "apns_token", value: "token")
                 let token = PushToken(platformType: .ios, providerType: .apn, value: "token")
@@ -74,7 +74,7 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
 
                 // then
                 verify(exactly: 0) {
-                    core.trackMock
+                    eventTracker.trackPushTokenMock
                 }
             }
         }
@@ -87,14 +87,13 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
                     timestamp: Date(timeIntervalSince1970: 42)
                 )
                 verify(exactly: 0) {
-                    core.trackMock
+                    eventTracker.trackPushTokenMock
                 }
             }
 
             it("when current token is not nil then register token with new user") {
                 // given
                 repository.putString(key: "apns_token", value: "token")
-                every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
 
                 // when
                 sut.onUserUpdated(
@@ -104,9 +103,8 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
                 )
 
                 // then
-                expect(userManager.toHackleUserMock.firstInvokation().arguments.deviceId) == "new"
                 verify(exactly: 1) {
-                    core.trackMock
+                    eventTracker.trackPushTokenMock
                 }
             }
         }

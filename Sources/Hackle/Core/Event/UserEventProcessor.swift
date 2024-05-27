@@ -23,7 +23,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
-    private let eventDedupDeterminer: UserEventDedupDeterminer
+    private let eventFilters: [UserEventFilter]
     private let eventPublisher: UserEventPublisher
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
@@ -40,7 +40,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     private var flushingJob: ScheduledJob? = nil
 
     init(
-        eventDedupDeterminer: UserEventDedupDeterminer,
+        eventFilters: [UserEventFilter],
         eventPublisher: UserEventPublisher,
         eventQueue: DispatchQueue,
         eventRepository: EventRepository,
@@ -54,8 +54,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         userManager: UserManager,
         appStateManager: AppStateManager
     ) {
+        self.eventFilters = eventFilters
         self.eventPublisher = eventPublisher
-        self.eventDedupDeterminer = eventDedupDeterminer
         self.eventQueue = eventQueue
         self.eventRepository = eventRepository
         self.eventRepositoryMaxSize = eventRepositoryMaxSize
@@ -73,13 +73,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         eventQueue.async {
             self.addEventInternal(event: event)
         }
-    }
-
-    private func setScreen(to event: UserEvent) {
-        let currentScreen = appStateManager.screen { newScreen in
-            event.setScreen(newScreen)
-        }
-        event.setScreen(currentScreen)
     }
 
     func flush() {
@@ -142,7 +135,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
 
     private func addEventInternal(event: UserEvent) {
         updateEvent(event: event)
-        if eventDedupDeterminer.isDedupTarget(event: event) {
+        if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
             return
         }
         let decoratedEvent = decorateSession(event: event)

@@ -46,6 +46,7 @@ class HackleAppSpecs: QuickSpec {
             )
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             sut = HackleApp(
+                mode: .native,
                 sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
                 core: core,
                 eventQueue: eventQueue,
