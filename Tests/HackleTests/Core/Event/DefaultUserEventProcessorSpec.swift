@@ -38,7 +38,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         }
 
         func processor(
-            eventDedupDeterminer: UserEventDedupDeterminer = eventDedupDeterminer,
+            eventFilters: [UserEventFilter] = [],
             eventQueue: DispatchQueue = eventQueue,
             eventRepository: EventRepository = eventRepository,
             eventRepositoryMaxSize: Int = 100,
@@ -52,7 +52,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             appStateManager: AppStateManagerStub = appStateManager
         ) -> DefaultUserEventProcessor {
             DefaultUserEventProcessor(
-                eventDedupDeterminer: eventDedupDeterminer,
+                eventFilters: eventFilters,
                 eventPublisher: eventPublisher,
                 eventQueue: eventQueue,
                 eventRepository: eventRepository,
@@ -124,9 +124,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             it("중복제거 대상이면 이벤트를 저장하지 않는다") {
                 // given
-                let sut = processor()
-
                 every(eventDedupDeterminer.isDedupTargetMock).returns(true)
+
+                let sut = processor(
+                    eventFilters: [DedupUserEventFilter(eventDedupDeterminer: eventDedupDeterminer)]
+                )
                 let event = MockUserEvent(user: user)
 
                 // when
@@ -315,7 +317,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             var spy: OnNotifiedSpy!
             beforeEach {
                 spy = OnNotifiedSpy(
-                    eventDedupDeterminer: eventDedupDeterminer,
+                    eventFilters: [],
                     eventPublisher: eventPublisher,
                     eventQueue: eventQueue,
                     eventRepository: eventRepository,

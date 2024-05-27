@@ -63,5 +63,17 @@ class HackleConfigSpec: QuickSpec {
             expect(config.get("test_key")) == "test_value"
             expect(config.get("test_key2")).to(beNil())
         }
+
+        it("mode") {
+            expect(HackleConfig.builder().mode(.native).build().sessionTracking).to(be(true))
+            expect(HackleConfig.builder().mode(.web_view_wrapper).build().sessionTracking).to(be(false))
+        }
+
+        context("HackleAppMode") {
+            it("description") {
+                expect(HackleAppMode.native.description).to(equal("native"))
+                expect(HackleAppMode.web_view_wrapper.description).to(equal("web_view_wrapper"))
+            }
+        }
     }
 }
