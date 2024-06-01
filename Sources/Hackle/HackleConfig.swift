@@ -13,6 +13,7 @@ public class HackleConfig: NSObject {
     var eventUrl: URL
     var monitoringUrl: URL
     var mode: HackleAppMode
+    var automaticScreenTracking: Bool
     var sessionTracking: Bool
     var sessionTimeoutInterval: TimeInterval
     var pollingInterval: TimeInterval
@@ -26,6 +27,7 @@ public class HackleConfig: NSObject {
         eventUrl = builder.eventUrl
         monitoringUrl = builder.monitoringUrl
         mode = builder.mode
+        automaticScreenTracking = builder.automaticScreenTracking
         sessionTracking = (mode == .native && builder.sessionTracking)
         sessionTimeoutInterval = builder.sessionTimeoutInterval
         pollingInterval = builder.pollingInterval
@@ -64,6 +66,8 @@ public class HackleConfigBuilder: NSObject {
 
     var mode: HackleAppMode = .native
 
+    var automaticScreenTracking: Bool = true
+
     var sessionTracking: Bool = true
     var sessionTimeoutInterval: TimeInterval = HackleConfig.DEFAULT_SESSION_TIMEOUT_INTERVAL
 
@@ -93,6 +97,11 @@ public class HackleConfigBuilder: NSObject {
 
     @objc public func mode(_ mode: HackleAppMode) -> HackleConfigBuilder {
         self.mode = mode
+        return self
+    }
+
+    @objc public func automaticScreenTracking(_ automaticScreenTracking: Bool) -> HackleConfigBuilder {
+        self.automaticScreenTracking = automaticScreenTracking
         return self
     }
 

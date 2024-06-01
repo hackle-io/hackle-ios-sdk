@@ -27,7 +27,7 @@ protocol SessionManager {
     func updateLastEventTime(timestamp: Date)
 }
 
-class DefaultSessionManager: SessionManager, AppStateChangeListener, UserListener {
+class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
 
     private let userManager: UserManager
     private let keyValueRepository: KeyValueRepository
@@ -84,7 +84,6 @@ class DefaultSessionManager: SessionManager, AppStateChangeListener, UserListene
     func updateLastEventTime(timestamp: Date) {
         lastEventTime = timestamp
         keyValueRepository.putDouble(key: DefaultSessionManager.LAST_EVENT_TIME_KEY, value: timestamp.timeIntervalSince1970)
-        Log.debug("LastEventTime updated [\(timestamp)]")
     }
 
     private func endSession(user: User) {
@@ -133,7 +132,7 @@ class DefaultSessionManager: SessionManager, AppStateChangeListener, UserListene
         Log.debug("LastEventTime loaded [\(lastEventTime)]")
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
+    func onState(state: AppState, timestamp: Date) {
         switch state {
         case .foreground:
             startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)

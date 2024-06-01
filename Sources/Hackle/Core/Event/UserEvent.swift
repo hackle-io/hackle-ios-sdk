@@ -13,12 +13,6 @@ protocol UserEvent {
     func with(user: HackleUser) -> UserEvent
 }
 
-extension UserEvent {
-    func setScreen(_ screen: String?) {
-        user.setScreen(screen)
-    }
-}
-
 enum UserEventType: Int {
     case exposure = 0
     case track = 1

@@ -647,11 +647,11 @@ class DefaultUserManagerSpecs: QuickSpec {
 
         describe("onChanged") {
             it("foreground - do nothing") {
-                sut.onChanged(state: .foreground, timestamp: Date())
+                sut.onState(state: .foreground, timestamp: Date())
             }
             it("background") {
                 expect(repository.getData(key: "user")).to(beNil())
-                sut.onChanged(state: .background, timestamp: Date())
+                sut.onState(state: .background, timestamp: Date())
                 expect(repository.getData(key: "user")).notTo(beNil())
             }
         }
