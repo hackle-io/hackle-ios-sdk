@@ -614,7 +614,9 @@ extension HackleApp {
         // - Lifecycle
 
         let lifecycleManager = LifecycleManager.shared
+        lifecycleManager.addObserver(observer: ApplicationLifecycleObserver())
         if config.automaticScreenTracking {
+            lifecycleManager.addObserver(observer: ViewLifecycleObserver())
             lifecycleManager.addListener(listener: screenManager)
         }
         lifecycleManager.addListener(listener: engagementManager)

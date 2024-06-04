@@ -437,6 +437,7 @@
 		EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */; };
 		EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */; };
 		EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */; };
+		EECDF3DD2C0D611A009B2F56 /* LifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3DC2C0D611A009B2F56 /* LifecycleObserver.swift */; };
 		EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */; };
 		EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */; };
 		EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */; };
@@ -942,6 +943,7 @@
 		EEB34F6529D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
 		EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateManager.swift; sourceTree = "<group>"; };
 		EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingManualOverrideStorageSpecs.swift; sourceTree = "<group>"; };
+		EECDF3DC2C0D611A009B2F56 /* LifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleObserver.swift; sourceTree = "<group>"; };
 		EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestTableViewCell.swift; sourceTree = "<group>"; };
 		EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestTableViewCell.xib; sourceTree = "<group>"; };
 		EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperation.swift; sourceTree = "<group>"; };
@@ -2449,6 +2451,7 @@
 				EEA7FCBC2C04AB710004F858 /* Lifecycle.swift */,
 				EEA7FCBE2C04AB760004F858 /* LifecycleListener.swift */,
 				EEA7FCC02C04AE550004F858 /* LifecyclePublisher.swift */,
+				EECDF3DC2C0D611A009B2F56 /* LifecycleObserver.swift */,
 				EEA7FCBA2C04AB6B0004F858 /* LifecycleManager.swift */,
 			);
 			path = Lifecycle;
@@ -2807,6 +2810,7 @@
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,
 				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
+				EECDF3DD2C0D611A009B2F56 /* LifecycleObserver.swift in Sources */,
 				EE29D99B29CD825500B1FEAA /* ActionResolver.swift in Sources */,
 				EE29D94B29CD825400B1FEAA /* Measurement.swift in Sources */,
 				7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */,

@@ -8,7 +8,7 @@ class LifecycleManager: LifecyclePublisher {
         clock: SystemClock.shared
     )
 
-    private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
+    private var observers = [LifecycleObserver]()
     private var listeners = [LifecycleListener]()
 
     private let viewManager: ViewManager
@@ -20,62 +20,25 @@ class LifecycleManager: LifecyclePublisher {
     }
 
     func initialize() {
-        guard initialized.compareAndSet(expect: false, update: true) else {
-            Log.debug("LifecycleManager already initialized.")
-            return
+        for observer in observers {
+            observer.initialize()
         }
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-        swizzle(
-            originalSelector: #selector(UIViewController.viewWillAppear(_:)),
-            swizzledSelector: #selector(UIViewController.hackle_viewWillAppear(_:))
-        )
-
-        swizzle(
-            originalSelector: #selector(UIViewController.viewDidAppear(_:)),
-            swizzledSelector: #selector(UIViewController.hackle_viewDidAppear(_:))
-        )
-        swizzle(
-            originalSelector: #selector(UIViewController.viewWillDisappear(_:)),
-            swizzledSelector: #selector(UIViewController.hackle_viewWillDisappear(_:))
-        )
-        swizzle(
-            originalSelector: #selector(UIViewController.viewDidDisappear(_:)),
-            swizzledSelector: #selector(UIViewController.hackle_viewDidDisappear(_:))
-        )
     }
 
-    private func swizzle(originalSelector: Selector, swizzledSelector: Selector) {
-        let controllerClass = UIViewController.self
-        guard let originalMethod = class_getInstanceMethod(controllerClass, originalSelector) else {
-            return
-        }
-        guard let swizzledMethod = class_getInstanceMethod(controllerClass, swizzledSelector) else {
-            return
-        }
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+    func addObserver(observer: LifecycleObserver) {
+        observers.append(observer)
     }
 
     func addListener(listener: LifecycleListener) {
         listeners.append(listener)
     }
 
-    @objc func didBecomeActive() {
+    func didBecomeActive() {
         let top = viewManager.topViewController()
         publish(lifecycle: .didBecomeActive(top: top), timestamp: clock.now())
     }
 
-    @objc func didEnterBackground() {
+    func didEnterBackground() {
         let top = viewManager.topViewController()
         publish(lifecycle: .didEnterBackground(top: top), timestamp: clock.now())
     }
@@ -114,40 +77,5 @@ class LifecycleManager: LifecyclePublisher {
         for listener in listeners {
             listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
         }
-    }
-}
-
-extension UIViewController {
-    @objc func hackle_viewWillAppear(_ animation: Bool) {
-        hackle_viewWillAppear(animation)
-        guard DefaultViewManager.shared.isOwnedView(vc: self) else {
-            return
-        }
-        LifecycleManager.shared.viewWillAppear(vc: self)
-    }
-
-    @objc func hackle_viewDidAppear(_ animation: Bool) {
-        hackle_viewDidAppear(animation)
-        guard DefaultViewManager.shared.isOwnedView(vc: self) else {
-            return
-        }
-        LifecycleManager.shared.viewDidAppear(vc: self)
-    }
-
-    @objc func hackle_viewWillDisappear(_ animation: Bool) {
-        hackle_viewWillDisappear(animation)
-
-        guard DefaultViewManager.shared.isOwnedView(vc: self) else {
-            return
-        }
-        LifecycleManager.shared.viewWillDisappear(vc: self)
-    }
-
-    @objc func hackle_viewDidDisappear(_ animation: Bool) {
-        hackle_viewDidDisappear(animation)
-        guard DefaultViewManager.shared.isOwnedView(vc: self) else {
-            return
-        }
-        LifecycleManager.shared.viewDidDisappear(vc: self)
     }
 }

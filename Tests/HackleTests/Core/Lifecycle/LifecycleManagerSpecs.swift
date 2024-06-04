@@ -26,7 +26,7 @@ class LifecycleManagerSpecs: QuickSpec {
             verify(exactly: 1) {
                 listener.onLifecycleMock
             }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
+            let (lifecycle, _) = listener.onLifecycleMock.firstInvokation().arguments
             if case let .didBecomeActive(top) = lifecycle {
                 expect(top).to(beIdenticalTo(vc))
             } else {
