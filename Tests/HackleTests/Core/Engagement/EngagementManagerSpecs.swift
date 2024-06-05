@@ -74,12 +74,6 @@ class EngagementManagerSpecs: QuickSpec {
         }
 
         describe("onLifecycle") {
-            context("viewDidAppear") {
-                it("start engagement") {
-                    sut.onLifecycle(lifecycle: .viewDidAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                    expect(sut.lastEngagementTime).to(equal(Date(timeIntervalSince1970: 42)))
-                }
-            }
             context("didBecomeActive") {
                 it("start engagement") {
                     sut.onLifecycle(lifecycle: .didBecomeActive(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
@@ -143,6 +137,7 @@ class EngagementManagerSpecs: QuickSpec {
                 screenManager.currentScreen = screen
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42))
 
+                sut.onLifecycle(lifecycle: .viewDidAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
                 sut.onLifecycle(lifecycle: .viewWillAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 43))
                 sut.onLifecycle(lifecycle: .viewWillDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 43))
 

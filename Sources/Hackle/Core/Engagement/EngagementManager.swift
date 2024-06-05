@@ -60,7 +60,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
 
     func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
         switch lifecycle {
-        case .viewDidAppear, .didBecomeActive:
+        case .didBecomeActive:
             startEngagement(timestamp: timestamp)
             return
         case .viewDidDisappear, .didEnterBackground:
@@ -69,7 +69,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
             }
             endEngagement(screen: screen, timestamp: timestamp)
             return
-        case .viewWillAppear, .viewWillDisappear:
+        case .viewDidAppear, .viewWillAppear, .viewWillDisappear:
             return
         }
     }
