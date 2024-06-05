@@ -19,6 +19,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var sessionManager: MockSessionManager!
         var userManager: MockUserManager!
         var appStateManager: AppStateManagerStub!
+        var screenManager: MockScreeManager!
 
         beforeEach {
             eventDedupDeterminer = MockUserEventDedupDeterminer()
@@ -30,6 +31,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             sessionManager = MockSessionManager()
             userManager = MockUserManager()
             appStateManager = AppStateManagerStub(currentState: .foreground)
+            screenManager = MockScreeManager()
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             every(eventRepository.countMock).returns(0)
@@ -64,12 +66,48 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventDispatcher: eventDispatcher,
                 sessionManager: sessionManager,
                 userManager: userManager,
-                appStateManager: appStateManager
+                appStateManager: appStateManager,
+                screenManager: screenManager
             )
         }
 
         describe("process") {
 
+            it("when current screen is nil then do not decorate") {
+                // given
+                let sut = processor()
+                let event = UserEvents.track("test")
+
+                // when
+                sut.process(event: event)
+                eventQueue.await()
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.saveMock
+                }
+                let savedEvent = eventRepository.saveMock.firstInvokation().arguments
+                expect(savedEvent.user.hackleProperties["screenName"]).to(beNil())
+            }
+
+            it("decorate screenName") {
+                // given
+                let sut = processor()
+                screenManager.currentScreen = Screen(name: "name", className: "class")
+                let event = UserEvents.track("test")
+
+                // when
+                sut.process(event: event)
+                eventQueue.await()
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.saveMock
+                }
+                let savedEvent = eventRepository.saveMock.firstInvokation().arguments
+                expect(savedEvent.user.hackleProperties["screenName"] as! String).to(equal("name"))
+                expect(savedEvent.user.hackleProperties["screenClass"] as! String).to(equal("class"))
+            }
 
             it("SessionEvent 인 경우 lastEventTime 을 업데이트 하지 않는다") {
                 // given
@@ -329,20 +367,21 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher: eventDispatcher,
                     sessionManager: sessionManager,
                     userManager: userManager,
-                    appStateManager: appStateManager
+                    appStateManager: appStateManager,
+                    screenManager: MockScreeManager()
                 )
             }
 
             context("didEnterBackground 노티인 경우") {
                 it("stop() 을 호출한다") {
-                    spy.onChanged(state: .background, timestamp: Date())
+                    spy.onState(state: .background, timestamp: Date())
                     expect(spy.stopCalled) == true
                 }
             }
 
             context("didBecomeActive 노티인 경우") {
                 it("start() 를 호출한다") {
-                    spy.onChanged(state: .foreground, timestamp: Date())
+                    spy.onState(state: .foreground, timestamp: Date())
                     expect(spy.startCalled) == true
                 }
             }

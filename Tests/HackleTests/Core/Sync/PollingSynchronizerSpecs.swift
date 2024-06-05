@@ -139,12 +139,12 @@ class PollingSynchronizerSpecs: QuickSpec {
             every(delegate.syncMock).answers({ $0(.success(())) })
             let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
 
-            sut.onChanged(state: .foreground, timestamp: Date())
+            sut.onState(state: .foreground, timestamp: Date())
             Thread.sleep(forTimeInterval: 0.25)
             verify(exactly: 2) {
                 delegate.syncMock
             }
-            sut.onChanged(state: .background, timestamp: Date())
+            sut.onState(state: .background, timestamp: Date())
             Thread.sleep(forTimeInterval: 0.25)
             verify(exactly: 2) {
                 delegate.syncMock

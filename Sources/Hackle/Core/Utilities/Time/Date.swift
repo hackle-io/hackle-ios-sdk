@@ -11,6 +11,11 @@ extension Date {
 }
 
 extension TimeInterval {
+
+    var millis: Int64 {
+        Int64(self * 1000)
+    }
+
     func format() -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.day, .hour, .minute, .second]

@@ -14,7 +14,6 @@ class HackleAppSpecs: QuickSpec {
         var notificationManager: MockNotificationManager!
         var sessionManager: MockSessionManager!
         var eventProcessor: MockUserEventProcessor!
-        var notificationObserver: AppNotificationObserverStub!
         var pushTokenRegistry = DefaultPushTokenRegistry()
         var device: Device!
         var userExplorer: HackleUserExplorer!
@@ -34,7 +33,6 @@ class HackleAppSpecs: QuickSpec {
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             eventProcessor = MockUserEventProcessor()
-            notificationObserver = AppNotificationObserverStub()
             pushTokenRegistry = DefaultPushTokenRegistry()
             device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
             userExplorer = DefaultHackleUserExplorer(
@@ -55,7 +53,7 @@ class HackleAppSpecs: QuickSpec {
                 workspaceManager: workspaceManager,
                 sessionManager: sessionManager,
                 eventProcessor: eventProcessor,
-                notificationObserver: notificationObserver,
+                lifecycleManager: LifecycleManager.shared,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
                 fetchThrottler: throttler,
@@ -539,10 +537,5 @@ class HackleAppSpecs: QuickSpec {
                 expect(pushTokenRegistry.currentToken()).notTo(beNil())
             }
         }
-    }
-}
-
-private class AppNotificationObserverStub: AppNotificationObserver {
-    func addListener(listener: AppStateChangeListener) {
     }
 }

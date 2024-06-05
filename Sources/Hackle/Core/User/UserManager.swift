@@ -34,7 +34,7 @@ protocol UserManager: Synchronizer {
     func resetUser() -> User
 }
 
-class DefaultUserManager: UserManager, AppStateChangeListener {
+class DefaultUserManager: UserManager, AppStateListener {
 
     private static let USER_KEY = "user"
     private let lock = ReadWriteLock(label: "io.hackle.DefaultUserManager")
@@ -231,7 +231,7 @@ class DefaultUserManager: UserManager, AppStateChangeListener {
         Log.debug("User saved: \(user)")
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
+    func onState(state: AppState, timestamp: Date) {
         switch state {
         case .foreground: return
         case .background: saveUser(user: currentUser)
