@@ -25,7 +25,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
     }
 
     private func startEngagement(timestamp: Date) {
-        Log.debug("startEngagement(timestamp: \(timestamp))")
+        Log.debug("EngagementManager.startEngagement(timestamp: \(timestamp))")
         _lastEngagementTime.set(newValue: timestamp)
     }
 
@@ -44,7 +44,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
     }
 
     private func publish(engagement: Engagement, user: User, timestamp: Date) {
-        Log.debug("onEngagement(engagement: \(engagement))")
+        Log.debug("EngagementManager.onEngagement(engagement: \(engagement))")
         for listener in listeners {
             listener.onEngagement(engagement: engagement, user: user, timestamp: timestamp)
         }

@@ -40,7 +40,7 @@ class DefaultAppStateManager: AppStateManager, LifecycleListener {
     }
 
     private func publish(state: AppState, timestamp: Date) {
-        Log.debug("onState(state: \(state))")
+        Log.debug("AppStateManager.onState(state: \(state))")
         for listener in listeners {
             listener.onState(state: state, timestamp: timestamp)
         }

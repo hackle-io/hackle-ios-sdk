@@ -24,6 +24,7 @@ class DefaultScreenManager: ScreenManager, LifecycleListener {
     }
 
     func updateScreen(screen: Screen, timestamp: Date) {
+        Log.debug("ScreenManager.updateScreen(screen: \(screen))")
         let previousScreen = _currentScreen.getAndSet(newValue: screen)
         if screen == previousScreen {
             return
@@ -36,14 +37,14 @@ class DefaultScreenManager: ScreenManager, LifecycleListener {
     }
 
     private func publishStart(previousScreen: Screen?, screen: Screen, user: User, timestamp: Date) {
-        Log.debug("onScreenStarted(previousScreen: \(previousScreen?.description ?? "nil"), currentScreen: \(screen))")
+        Log.debug("ScreenManager.onScreenStarted(previousScreen: \(previousScreen?.description ?? "nil"), currentScreen: \(screen))")
         for listener in listeners {
             listener.onScreenStarted(previousScreen: previousScreen, currentScreen: screen, user: user, timestamp: timestamp)
         }
     }
 
     private func publishEnd(screen: Screen, user: User, timestamp: Date) {
-        Log.debug("onScreenEnded(screen: \(screen))")
+        Log.debug("ScreenManager.onScreenEnded(screen: \(screen))")
         for listener in listeners {
             listener.onScreenEnded(screen: screen, user: user, timestamp: timestamp)
         }

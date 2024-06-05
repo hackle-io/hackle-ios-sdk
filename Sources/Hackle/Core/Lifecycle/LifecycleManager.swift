@@ -73,7 +73,7 @@ class LifecycleManager: LifecyclePublisher {
 
 
     private func publish(lifecycle: Lifecycle, timestamp: Date) {
-        Log.debug("onLifecycle(lifecycle: \(lifecycle))")
+        Log.debug("LifecycleManager.onLifecycle(lifecycle: \(lifecycle))")
         for listener in listeners {
             listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
         }
