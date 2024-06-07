@@ -5,7 +5,7 @@
 import Foundation
 
 
-class MonitoringMetricRegistry: MetricRegistry, AppStateChangeListener {
+class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
 
     private let endpoint: URL
     private let eventQueue: DispatchQueue
@@ -28,7 +28,7 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateChangeListener {
         FlushTimer(id: id)
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
+    func onState(state: AppState, timestamp: Date) {
         switch state {
         case .foreground: return
         case .background:

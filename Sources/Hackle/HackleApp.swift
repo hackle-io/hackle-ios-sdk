@@ -15,7 +15,7 @@ import WebKit
     private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
     private let eventProcessor: UserEventProcessor
-    private let notificationObserver: AppNotificationObserver
+    private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
@@ -52,7 +52,7 @@ import WebKit
         workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
         eventProcessor: UserEventProcessor,
-        notificationObserver: AppNotificationObserver,
+        lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
@@ -68,7 +68,7 @@ import WebKit
         self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
         self.eventProcessor = eventProcessor
-        self.notificationObserver = notificationObserver
+        self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
@@ -330,6 +330,7 @@ extension HackleApp {
     private static let hackleDeviceId = "hackle_device_id"
 
     func initialize(user: User?, completion: @escaping () -> ()) {
+        lifecycleManager.initialize()
         userManager.initialize(user: user)
         eventQueue.async { [weak self] in
             guard let self = self else {
@@ -414,7 +415,23 @@ extension HackleApp {
         )
         userManager.addListener(listener: sessionManager)
 
+        // - ScreenManager
+
+        let screenManager = DefaultScreenManager(
+            userManager: userManager
+        )
+
+        // - EngagementManager
+
+        let engagementManager = EngagementManager(
+            userManager: userManager,
+            screenManager: screenManager,
+            minimumEngagementDuration: 1.0
+        )
+        screenManager.addListener(listener: engagementManager)
+
         // - EventProcessor
+
         let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
@@ -443,7 +460,7 @@ extension HackleApp {
             eventFilters.append(WebViewWrapperUserEventFilter())
         }
 
-        let appStateManager = DefaultAppStateManager()
+        let appStateManager = DefaultAppStateManager(queue: eventQueue)
 
         let eventProcessor = DefaultUserEventProcessor(
             eventFilters: eventFilters,
@@ -458,7 +475,8 @@ extension HackleApp {
             eventDispatcher: eventDispatcher,
             sessionManager: sessionManager,
             userManager: userManager,
-            appStateManager: appStateManager
+            appStateManager: appStateManager,
+            screenManager: screenManager
         )
 
         // - Core
@@ -475,13 +493,12 @@ extension HackleApp {
             manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
         )
 
-        // - NotificationObserver
+        // - AppStateListener
 
-        let appNotificationObserver = DefaultAppNotificationObserver(eventQueue: eventQueue, appStateManager: appStateManager)
-        appNotificationObserver.addListener(listener: pollingSynchronizer)
-        appNotificationObserver.addListener(listener: sessionManager)
-        appNotificationObserver.addListener(listener: userManager)
-        appNotificationObserver.addListener(listener: eventProcessor)
+        appStateManager.addListener(listener: pollingSynchronizer)
+        appStateManager.addListener(listener: sessionManager)
+        appStateManager.addListener(listener: userManager)
+        appStateManager.addListener(listener: eventProcessor)
 
         // - SessionEventTracker
 
@@ -492,6 +509,22 @@ extension HackleApp {
         if config.sessionTracking {
             sessionManager.addListener(listener: sessionEventTracker)
         }
+
+        // - ScreenEventTracker
+
+        let screenEventTracker = ScreenEventTracker(
+            userManager: userManager,
+            core: core
+        )
+        screenManager.addListener(listener: screenEventTracker)
+
+        // - EngagementEventTracker
+
+        let engagementEventTracker = EngagementEventTracker(
+            userManager: userManager,
+            core: core
+        )
+        engagementManager.addListener(listener: engagementEventTracker)
 
         // - InAppMessage
 
@@ -572,11 +605,22 @@ extension HackleApp {
 
         HackleApp.metricConfiguration(
             config: config,
-            observer: appNotificationObserver,
+            appStateManager: appStateManager,
             eventQueue: eventQueue,
             httpQueue: httpQueue,
             httpClient: httpClient
         )
+
+        // - Lifecycle
+
+        let lifecycleManager = LifecycleManager.shared
+        lifecycleManager.addObserver(observer: ApplicationLifecycleObserver())
+        if config.automaticScreenTracking {
+            lifecycleManager.addObserver(observer: ViewLifecycleObserver())
+            lifecycleManager.addListener(listener: screenManager)
+        }
+        lifecycleManager.addListener(listener: engagementManager)
+        lifecycleManager.addListener(listener: appStateManager)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
@@ -591,7 +635,7 @@ extension HackleApp {
             workspaceManager: workspaceManager,
             sessionManager: sessionManager,
             eventProcessor: eventProcessor,
-            notificationObserver: appNotificationObserver,
+            lifecycleManager: lifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
@@ -602,7 +646,7 @@ extension HackleApp {
 
     private static func metricConfiguration(
         config: HackleConfig,
-        observer: DefaultAppNotificationObserver,
+        appStateManager: DefaultAppStateManager,
         eventQueue: DispatchQueue,
         httpQueue: DispatchQueue,
         httpClient: HttpClient
@@ -614,7 +658,7 @@ extension HackleApp {
             httpClient: httpClient
         )
 
-        observer.addListener(listener: monitoringMetricRegistry)
+        appStateManager.addListener(listener: monitoringMetricRegistry)
         Metrics.addRegistry(registry: monitoringMetricRegistry)
     }
 }
