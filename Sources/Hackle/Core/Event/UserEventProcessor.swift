@@ -19,7 +19,7 @@ extension UserEventProcessor {
     }
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
+class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -36,6 +36,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
     private let sessionManager: SessionManager
     private let userManager: UserManager
     private let appStateManager: AppStateManager
+    private let screenManager: ScreenManager
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -52,7 +53,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         eventDispatcher: UserEventDispatcher,
         sessionManager: SessionManager,
         userManager: UserManager,
-        appStateManager: AppStateManager
+        appStateManager: AppStateManager,
+        screenManager: ScreenManager
     ) {
         self.eventFilters = eventFilters
         self.eventPublisher = eventPublisher
@@ -67,12 +69,28 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         self.sessionManager = sessionManager
         self.userManager = userManager
         self.appStateManager = appStateManager
+        self.screenManager = screenManager
     }
 
     func process(event: UserEvent) {
-        eventQueue.async {
-            self.addEventInternal(event: event)
+        let newEvent = decorateScreenName(event: event)
+        eventQueue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.addEventInternal(event: newEvent)
         }
+    }
+
+    private func decorateScreenName(event: UserEvent) -> UserEvent {
+        guard let screen = screenManager.currentScreen else {
+            return event
+        }
+        let newUser = event.user.toBuilder()
+            .hackleProperty("screenName", screen.name)
+            .hackleProperty("screenClass", screen.className)
+            .build()
+        return event.with(user: newUser)
     }
 
     func flush() {
@@ -124,7 +142,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateChangeListener {
         eventDispatcher.dispatch(events: events)
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
+    func onState(state: AppState, timestamp: Date) {
         switch state {
         case .foreground:
             start()

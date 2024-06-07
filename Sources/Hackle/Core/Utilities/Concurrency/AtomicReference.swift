@@ -32,10 +32,21 @@ class AtomicReference<T> {
         }
         return oldValue
     }
-    
+
     func set(newValue: T) {
         lock.write {
             value = newValue
         }
+    }
+
+    func compareAndSet(expect: T, update: T) -> Bool where T: Equatable {
+        var success = false
+        lock.write {
+            if value == expect {
+                value = update
+                success = true
+            }
+        }
+        return success
     }
 }

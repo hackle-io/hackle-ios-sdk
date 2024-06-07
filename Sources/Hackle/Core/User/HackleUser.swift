@@ -11,7 +11,7 @@ class HackleUser {
 
     let identifiers: [String: String]
     let properties: [String: Any]
-    private(set) var hackleProperties: [String: Any]
+    let hackleProperties: [String: Any]
     let cohorts: [Cohort]
 
     init(identifiers: [String: String], properties: [String: Any], hackleProperties: [String: Any], cohorts: [Cohort] = []) {
@@ -51,14 +51,7 @@ extension HackleUser {
     func toBuilder() -> InternalHackleUserBuilder {
         InternalHackleUserBuilder(user: self)
     }
-
-    func setScreen(_ screen: String?) {
-        guard let screen else {
-            return
-        }
-        hackleProperties["screenClass"] = screen
-    }
-
+    
     var id: String? {
         identifiers[IdentifierType.id.rawValue]
     }

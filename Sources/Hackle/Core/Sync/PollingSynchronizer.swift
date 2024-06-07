@@ -8,7 +8,7 @@
 import Foundation
 
 
-class PollingSynchronizer: CompositeSynchronizer, AppStateChangeListener {
+class PollingSynchronizer: CompositeSynchronizer, AppStateListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingSynchronizer.Lock")
 
@@ -63,7 +63,7 @@ class PollingSynchronizer: CompositeSynchronizer, AppStateChangeListener {
         }
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
+    func onState(state: AppState, timestamp: Date) {
         switch state {
         case .foreground:
             start()
