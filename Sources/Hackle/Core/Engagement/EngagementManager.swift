@@ -63,13 +63,13 @@ class EngagementManager: ScreenListener, LifecycleListener {
         case .didBecomeActive:
             startEngagement(timestamp: timestamp)
             return
-        case .viewDidDisappear, .didEnterBackground:
+        case .didEnterBackground:
             guard let screen = screenManager.currentScreen else {
                 return
             }
             endEngagement(screen: screen, timestamp: timestamp)
             return
-        case .viewDidAppear, .viewWillAppear, .viewWillDisappear:
+        case .viewDidAppear, .viewDidDisappear, .viewWillAppear, .viewWillDisappear:
             return
         }
     }

@@ -80,32 +80,6 @@ class EngagementManagerSpecs: QuickSpec {
                     expect(sut.lastEngagementTime).to(equal(Date(timeIntervalSince1970: 42)))
                 }
             }
-            context("viewDidDisappear") {
-                it("when current screen is nil then do nothing") {
-                    sut.onLifecycle(lifecycle: .viewDidDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                    verify(exactly: 0) {
-                        listener.onEngagementMock
-                    }
-                }
-
-                it("end engagement") {
-                    // given
-                    let screen = Screen(name: "name", className: "class")
-                    screenManager.currentScreen = screen
-                    sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42))
-
-                    // when
-                    sut.onLifecycle(lifecycle: .viewDidDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 43))
-
-                    // then
-                    verify(exactly: 1) {
-                        listener.onEngagementMock
-                    }
-                    let (engagement, _, timestamp) = listener.onEngagementMock.firstInvokation().arguments
-                    expect(engagement).to(equal(Engagement(screen: screen, duration: 1.0)))
-                    expect(timestamp).to(equal(Date(timeIntervalSince1970: 43)))
-                }
-            }
             context("didEnterBackground") {
                 it("when current screen is nil then do nothing") {
                     sut.onLifecycle(lifecycle: .didEnterBackground(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
@@ -138,6 +112,7 @@ class EngagementManagerSpecs: QuickSpec {
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42))
 
                 sut.onLifecycle(lifecycle: .viewDidAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
+                sut.onLifecycle(lifecycle: .viewDidDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
                 sut.onLifecycle(lifecycle: .viewWillAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 43))
                 sut.onLifecycle(lifecycle: .viewWillDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 43))
 
