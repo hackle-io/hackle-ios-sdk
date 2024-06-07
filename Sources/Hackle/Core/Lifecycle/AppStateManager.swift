@@ -7,35 +7,56 @@
 
 import Foundation
 
-protocol AppStateManager: AppStateChangeListener {
+protocol AppStateManager {
     var currentState: AppState { get }
-    func screen(_ callback: @escaping (_ newScreen: String) -> ()) -> String?
 }
 
-class DefaultAppStateManager: AppStateManager {
+class DefaultAppStateManager: AppStateManager, LifecycleListener {
 
     private var _currentState: AppState = .background
     var currentState: AppState {
         _currentState
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
-        _currentState = state
-        Log.debug("AppState changed [\(state)]")
+    private var listeners = [AppStateListener]()
+
+    private let queue: DispatchQueue
+
+    init(queue: DispatchQueue) {
+        self.queue = queue
     }
 
-    private var currentScreen: String?
+    func addListener(listener: AppStateListener) {
+        listeners.append(listener)
+    }
 
-    // Without swizzling, getting top most ViewController from the caller thread is risky.
-    // So, returns the previously VC immediately and updates the current VC asynchronously on main thread
-    func screen(_ callback: @escaping (String) -> ()) -> String? {
-        DispatchQueue.main.async {
-            if let vc = UIUtils.topViewController {
-                let newScreen = vc.classForCoder.description()
-                self.currentScreen = newScreen
-                callback(newScreen)
+    private func onState(state: AppState, timestamp: Date) {
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
             }
+            self.publish(state: state, timestamp: timestamp)
         }
-        return currentScreen
+    }
+
+    private func publish(state: AppState, timestamp: Date) {
+        Log.debug("AppStateManager.onState(state: \(state))")
+        for listener in listeners {
+            listener.onState(state: state, timestamp: timestamp)
+        }
+        _currentState = state
+    }
+
+    func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+        switch lifecycle {
+        case .didBecomeActive:
+            onState(state: .foreground, timestamp: timestamp)
+            return
+        case .didEnterBackground:
+            onState(state: .background, timestamp: timestamp)
+            return
+        case .viewWillAppear, .viewDidAppear, .viewWillDisappear, .viewDidDisappear:
+            return
+        }
     }
 }

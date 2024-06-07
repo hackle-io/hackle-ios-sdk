@@ -8,7 +8,7 @@
 import Foundation
 
 
-class PushMetricRegistry: MetricRegistry, AppStateChangeListener {
+class PushMetricRegistry: MetricRegistry, AppStateListener {
 
     private let lock = ReadWriteLock(label: "io.hackle.PushMetricRegistry.Lock")
 
@@ -23,7 +23,7 @@ class PushMetricRegistry: MetricRegistry, AppStateChangeListener {
         super.init()
     }
 
-    final func onChanged(state: AppState, timestamp: Date) {
+    final func onState(state: AppState, timestamp: Date) {
         switch state {
         case .foreground:
             start()
