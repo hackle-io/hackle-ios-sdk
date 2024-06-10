@@ -58,15 +58,20 @@ class DefaultScreenManagerSpecs: QuickSpec {
             }
 
             it("when current screen and new screen are different then start new screen") {
-                // given
+                let listener2 = ScreenListenerStub(screenManager: sut)
+                sut.addListener(listener: listener2)
+
                 let screen = Screen(name: "name", className: "class")
                 sut.updateScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
-                let newScreen = Screen(name: "new_name", className: "new_class")
+                expect(listener2.onScreenEndedScreens).to(beEmpty())
+                expect(listener2.onScreenStartedScreens[0]).to(equal((screen, screen)))
 
-                // when
+                let newScreen = Screen(name: "new_name", className: "new_class")
                 sut.updateScreen(screen: newScreen, timestamp: Date(timeIntervalSince1970: 43))
 
-                // then
+                expect(listener2.onScreenEndedScreens[0]).to(equal((screen, screen)))
+                expect(listener2.onScreenStartedScreens[1]).to(equal((newScreen, newScreen)))
+
                 expect(sut.currentScreen).to(equal(newScreen))
                 verify(exactly: 1) {
                     listener.onScreenEndedMock
@@ -137,5 +142,25 @@ class DefaultScreenManagerSpecs: QuickSpec {
 
     private class TopViewController: UIViewController {
 
+    }
+
+    private class ScreenListenerStub: ScreenListener {
+
+        private let screenManager: ScreenManager
+
+        init(screenManager: ScreenManager) {
+            self.screenManager = screenManager
+        }
+
+        var onScreenStartedScreens = [(Screen?, Screen)]()
+        var onScreenEndedScreens = [(Screen?, Screen)]()
+
+        func onScreenStarted(previousScreen: Screen?, currentScreen: Screen, user: User, timestamp: Date) {
+            onScreenStartedScreens.append((screenManager.currentScreen, currentScreen))
+        }
+
+        func onScreenEnded(screen: Screen, user: User, timestamp: Date) {
+            onScreenEndedScreens.append((screenManager.currentScreen, screen))
+        }
     }
 }
