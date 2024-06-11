@@ -28,4 +28,10 @@ class Metrics {
     static func timer(name: String, tags: [String: String] = [:]) -> Timer {
         globalRegistry.timer(name: name, tags: tags)
     }
+
+    static func release() {
+        let p = Unmanaged.passUnretained(Metrics.globalRegistry).toOpaque()
+        object_setClass(p, NSNull.self)
+        Unmanaged<DelegatingMetricRegistry>.fromOpaque(p).release()
+    }
 }

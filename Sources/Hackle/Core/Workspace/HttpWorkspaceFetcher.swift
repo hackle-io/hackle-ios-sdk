@@ -42,6 +42,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
     private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
         let sample = TimerSample.start()
         httpClient.execute(request: request) { response in
+            Metrics.release()
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
             do {
                 let workspace = try self.handleResponse(response: response)

@@ -12,6 +12,10 @@ class DelegatingMetricRegistry: MetricRegistry {
 
     private var registries = Set<MetricRegistry>()
 
+    override func timer(name: String, tags: [String: String] = [:]) -> Timer {
+        TimerBuilder(name: name).tags(tags).register(registry: self)
+    }
+
     override func createCounter(id: MetricId) -> Counter {
         let counter = DelegatingCounter(id: id)
         addRegistries(metric: counter)

@@ -30,7 +30,7 @@ class MetricRegistry {
         CounterBuilder(name: name).tags(tags).register(registry: self)
     }
 
-    final func timer(name: String, tags: [String: String] = [:]) -> Timer {
+    func timer(name: String, tags: [String: String] = [:]) -> Timer {
         TimerBuilder(name: name).tags(tags).register(registry: self)
     }
 
