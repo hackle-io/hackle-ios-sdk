@@ -10,7 +10,7 @@ import Foundation
 
 class Metrics {
 
-    static private(set) var globalRegistry = DelegatingMetricRegistry()
+    static var globalRegistry: DelegatingMetricRegistry! = DelegatingMetricRegistry()
 
     static func clear() {
         globalRegistry = DelegatingMetricRegistry()

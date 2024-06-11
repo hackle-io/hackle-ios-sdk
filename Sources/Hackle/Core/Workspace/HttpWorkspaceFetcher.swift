@@ -46,6 +46,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
                 completion(.failure(HackleError.error("Failed to fetch workspace: instance deallocated")))
                 return
             }
+            Metrics.globalRegistry = nil
             ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
             do {
                 let workspace = try self.handleResponse(response: response)
