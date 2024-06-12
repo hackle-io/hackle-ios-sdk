@@ -46,4 +46,10 @@ class DelegatingMetricRegistry: MetricRegistry {
             }
         }
     }
+
+    func clear() {
+        lock {
+            registries.removeAll()
+        }
+    }
 }
