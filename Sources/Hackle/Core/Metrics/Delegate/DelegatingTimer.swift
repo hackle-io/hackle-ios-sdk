@@ -28,11 +28,11 @@ class DelegatingTimer: DelegatingMetric, Timer {
     }
 
     func add(registry: MetricRegistry) {
+        let newTimer = registry.timer(id: id)
         lock.write {
-            if _timers[registry] == nil {
-                let newMetric = registry.timer(id: id)
-                _timers[registry] = newMetric
-            }
+            var newTimers = _timers
+            newTimers[registry] = newTimer
+            _timers = newTimers
         }
     }
 
