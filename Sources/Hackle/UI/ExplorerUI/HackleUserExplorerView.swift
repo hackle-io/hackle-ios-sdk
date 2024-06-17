@@ -14,8 +14,8 @@ class HackleUserExplorerView {
     private var button: HackleUserExplorerButton? = nil
 
     func attach() {
-        DispatchQueue.main.async {
-            guard let window = self.getKeyWindow() else {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self, let window = UIUtils.keyWindow else {
                 return
             }
 
@@ -52,16 +52,6 @@ class HackleUserExplorerView {
         return button
     }
 
-    private func getKeyWindow() -> UIWindow? {
-        if #available(iOS 13, *) {
-            return UIUtils.application?.windows.first { window in
-                window.isKeyWindow
-            }
-        } else {
-            return UIUtils.application?.keyWindow
-        }
-    }
-
     @objc func onTouch(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: button)
 
@@ -83,19 +73,22 @@ class HackleUserExplorerView {
     }
 
     @objc func onClick() {
-        DispatchQueue.main.async {
-            if self.button != nil {
-                let rootViewController = self.getKeyWindow()?.rootViewController
-                let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
-                hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
-                rootViewController?.present(hackleUserExplorerViewController, animated: true)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.button != nil,
+                  let topViewController = UIUtils.topViewController
+            else {
+                return
             }
+            let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
+            hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
+            topViewController.present(hackleUserExplorerViewController, animated: true)
         }
     }
 
     private func barHeight() -> CGFloat {
         if #available(iOS 13.0, *) {
-            guard let size = getKeyWindow()?.windowScene?.statusBarManager?.statusBarFrame.size else {
+            guard let size = UIUtils.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.size else {
                 return 0.0
             }
             return min(size.width, size.height)
