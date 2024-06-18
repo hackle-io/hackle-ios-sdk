@@ -11,10 +11,24 @@ import UIKit
 extension HackleInAppMessageUI {
 
     func createMessageView(context: InAppMessagePresentationContext) -> InAppMessageView? {
-        switch context.message.layout.displayType {
-        case .modal:
+        switch (context.message.layout.displayType, context.message.layout.layoutType) {
+        case (.modal, _):
             let attributes = ModalView.Attributes(orientation: InAppMessage.Orientation(UIUtils.interfaceOrientation))
             return ModalView(context: context, attributes: attributes)
+        case (.banner, .imageText), (.banner, .textOnly):
+            guard let alignment = context.message.layout.alignment else {
+                Log.error("Not found Alignment in banner in-app message [\(context.inAppMessage.id)]")
+                return nil
+            }
+            return BannerView(context: context, alignment: alignment, attributes: .defaults)
+        case (.banner, .image):
+            guard let alignment = context.message.layout.alignment else {
+                Log.error("Not found Alignment in banner in-app message [\(context.inAppMessage.id)]")
+                return nil
+            }
+            return BannerImageView(context: context, alignment: alignment, attributes: .defaults)
+        default:
+            return nil
         }
     }
 

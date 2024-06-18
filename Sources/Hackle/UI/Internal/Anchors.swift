@@ -96,17 +96,144 @@ extension Anchors {
     var bottomMargin: Anchor<Item, NSLayoutYAxisAnchor> {
         Anchor(item, .bottomMargin)
     }
+
+    var size: AnchorSize<Item> {
+        AnchorSize(anchors: self)
+    }
+}
+
+enum AnchorAxis {
+    case vertical, horizontal
+}
+
+struct AnchorAlignment {
+
+    let horizontal: Horizontal
+    let vertical: Vertical
+
+    static let fill = AnchorAlignment(horizontal: .fill, vertical: .fill)
+    static let center = AnchorAlignment(horizontal: .center, vertical: .center)
+    static let leading = AnchorAlignment(horizontal: .leading, vertical: .fill)
+    static let trailing = AnchorAlignment(horizontal: .trailing, vertical: .fill)
+    static let top = AnchorAlignment(horizontal: .fill, vertical: .top)
+    static let bottom = AnchorAlignment(horizontal: .fill, vertical: .bottom)
+
+    enum Horizontal {
+        case fill, leading, center, trailing
+    }
+
+    enum Vertical {
+        case fill, top, center, bottom
+    }
+}
+
+struct AnchorSize<Item: LayoutItem> {
+    let anchors: Anchors<Item>
+
+    @discardableResult
+    func equal(_ size: CGSize) -> [NSLayoutConstraint] {
+        [
+            anchors.width.equal(size.width),
+            anchors.height.equal(size.height)
+        ]
+    }
 }
 
 extension Anchors where Item: UIView {
+
     @discardableResult
-    func pin(to container: LayoutItem? = nil, inset: CGFloat = 0) -> [NSLayoutConstraint] {
-        [
-            leading.pin(to: container, inset: inset),
-            trailing.pin(to: container, inset: inset),
-            top.pin(to: container, inset: inset),
-            bottom.pin(to: container, inset: inset)
-        ]
+    func pin(
+        to item2: LayoutItem? = nil,
+        insets: UIEdgeInsets = .zero,
+        axis: AnchorAxis? = nil,
+        alignment: AnchorAlignment = .fill,
+        priority: UILayoutPriority = .required
+    ) -> [NSLayoutConstraint] {
+        constraints(to: item2, insets: insets, axis: axis, alignment: alignment, priority: priority)
+    }
+
+    @discardableResult
+    func lessThanOrEqual(
+        to item2: LayoutItem? = nil,
+        insets: UIEdgeInsets = .zero,
+        axis: AnchorAxis? = nil,
+        priority: UILayoutPriority = .required
+    ) -> [NSLayoutConstraint] {
+        constraints(to: item2, insets: insets, axis: axis, alignment: .center, priority: priority)
+    }
+
+    private func constraints(
+        to item2: LayoutItem?,
+        insets: UIEdgeInsets,
+        axis: AnchorAxis?,
+        alignment: AnchorAlignment,
+        priority: UILayoutPriority
+    ) -> [NSLayoutConstraint] {
+        let item2 = item2 ?? item.superview!
+        var constraints = [NSLayoutConstraint]()
+
+        func constrain(
+            attribute: NSLayoutConstraint.Attribute,
+            relation: NSLayoutConstraint.Relation,
+            constant: CGFloat
+        ) {
+            let constraint = Constraints.activate(
+                item: item,
+                attribute: attribute,
+                relatedBy: relation,
+                toItem: item2,
+                attribute: attribute,
+                multiplier: 1,
+                constant: constant,
+                priority: priority
+            )
+            constraints.append(constraint)
+        }
+
+        if axis == nil || axis == .horizontal {
+            let horizontal = alignment.horizontal
+            constrain(
+                attribute: .leading,
+                relation: horizontal == .fill || horizontal == .leading ? .equal : .greaterThanOrEqual,
+                constant: insets.left
+            )
+            constrain(
+                attribute: .trailing,
+                relation: horizontal == .fill || horizontal == .trailing ? .equal : .lessThanOrEqual,
+                constant: -insets.right
+            )
+        }
+
+        if axis == nil || axis == .vertical {
+            let vertical = alignment.vertical
+            constrain(
+                attribute: .top,
+                relation: vertical == .fill || vertical == .top ? .equal : .greaterThanOrEqual,
+                constant: insets.top
+            )
+            constrain(
+                attribute: .bottom,
+                relation: vertical == .fill || vertical == .bottom ? .equal : .lessThanOrEqual,
+                constant: -insets.bottom
+            )
+        }
+
+        return constraints
+    }
+}
+
+private extension NSLayoutConstraint.Relation {
+    var negate: NSLayoutConstraint.Relation {
+        switch self {
+        case .lessThanOrEqual:
+            return .greaterThanOrEqual
+        case .equal:
+            return .equal
+        case .greaterThanOrEqual:
+            return .lessThanOrEqual
+        @unknown default:
+            return self
+        }
     }
 }
 
@@ -212,13 +339,13 @@ extension Anchor where Delegate: NSLayoutYAxisAnchor {
     }
 }
 
-
 // Constraint
 
 class Constraints {
 
     private var constraints = [NSLayoutConstraint]()
 
+    @discardableResult
     init(_ block: () -> ()) {
         Constraints.constraints.append(self)
         block()
@@ -256,7 +383,8 @@ class Constraints {
         toItem item2: Any? = nil,
         attribute attr2: NSLayoutConstraint.Attribute? = nil,
         multiplier: CGFloat = 1,
-        constant: CGFloat = 0
+        constant: CGFloat = 0,
+        priority: UILayoutPriority = .required
     ) -> NSLayoutConstraint {
         (item1 as? UIView)?.translatesAutoresizingMaskIntoConstraints = false
         let constraint = NSLayoutConstraint(
@@ -268,6 +396,7 @@ class Constraints {
             multiplier: multiplier,
             constant: constant
         )
+        constraint.priority = priority
         activate(constraint)
         return constraint
     }

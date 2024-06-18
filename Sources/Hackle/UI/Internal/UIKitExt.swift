@@ -85,3 +85,15 @@ extension UIImageView {
             .resume()
     }
 }
+
+extension UIResponder {
+    var responders: AnySequence<UIResponder> {
+        AnySequence { () -> AnyIterator<UIResponder> in
+            var responder: UIResponder? = self
+            return AnyIterator {
+                responder = responder?.next
+                return responder
+            }
+        }
+    }
+}

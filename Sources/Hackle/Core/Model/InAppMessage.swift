@@ -137,12 +137,14 @@ extension InAppMessage {
 
     enum DisplayType: String, Codable {
         case modal = "MODAL"
+        case banner = "BANNER"
     }
 
     enum LayoutType: String, Codable {
         case imageText = "IMAGE_TEXT"
         case imageOnly = "IMAGE_ONLY"
         case textOnly = "TEXT_ONLY"
+        case image = "IMAGE"
     }
 
     enum PlatformType: String, Codable {
@@ -171,6 +173,18 @@ extension InAppMessage {
         case image = "IMAGE"
         case button = "BUTTON"
         case xButton = "X_BUTTON"
+    }
+
+    enum VerticalAlignment: String, Codable {
+        case top = "TOP"
+        case middle = "MIDDLE"
+        case bottom = "BOTTOM"
+    }
+
+    enum HorizontalAlignment: String, Codable {
+        case left = "LEFT"
+        case center = "CENTER"
+        case right = "RIGHT"
     }
 
     class MessageContext {
@@ -212,8 +226,10 @@ extension InAppMessage {
         let buttons: [Button]
         let closeButton: Button?
         let background: Background
+        let action: Action?
+        let outerButtons: [PositionalButton]
 
-        init(variationKey: String?, lang: String, layout: Layout, images: [Image], text: Text?, buttons: [Button], closeButton: Button?, background: Background) {
+        init(variationKey: String?, lang: String, layout: Layout, images: [Image], text: Text?, buttons: [Button], closeButton: Button?, background: Background, action: Action?, outerButtons: [PositionalButton]) {
             self.variationKey = variationKey
             self.lang = lang
             self.layout = layout
@@ -222,15 +238,19 @@ extension InAppMessage {
             self.buttons = buttons
             self.closeButton = closeButton
             self.background = background
+            self.action = action
+            self.outerButtons = outerButtons
         }
 
         class Layout {
             let displayType: DisplayType
             let layoutType: LayoutType
+            let alignment: Alignment?
 
-            init(displayType: DisplayType, layoutType: LayoutType) {
+            init(displayType: DisplayType, layoutType: LayoutType, alignment: Alignment?) {
                 self.displayType = displayType
                 self.layoutType = layoutType
+                self.alignment = alignment
             }
         }
 
@@ -303,6 +323,26 @@ extension InAppMessage {
 
             init(color: String) {
                 self.color = color
+            }
+        }
+
+        class Alignment {
+            let vertical: VerticalAlignment
+            let horizontal: HorizontalAlignment
+
+            init(vertical: VerticalAlignment, horizontal: HorizontalAlignment) {
+                self.vertical = vertical
+                self.horizontal = horizontal
+            }
+        }
+
+        class PositionalButton {
+            let button: Button
+            let alignment: Alignment
+
+            init(button: Button, alignment: Alignment) {
+                self.button = button
+                self.alignment = alignment
             }
         }
     }
