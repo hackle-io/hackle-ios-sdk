@@ -39,7 +39,7 @@ extension HackleInAppMessageUI {
         struct Attributes {
             var margin = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
             var minWidth = 320.0
-            var maxWidth = 450.0
+            var maxWidth = 380.0
             var maxHeight = 720.0
             var cornerRadius = 8.0
             var spacing = 0.0
