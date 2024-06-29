@@ -170,6 +170,7 @@ extension InAppMessage {
     }
 
     enum ActionArea: String, Codable {
+        case message = "MESSAGE"
         case image = "IMAGE"
         case button = "BUTTON"
         case xButton = "X_BUTTON"

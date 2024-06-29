@@ -33,7 +33,7 @@ extension HackleInAppMessageUI {
         }
 
         struct Attributes {
-            var margin = UIEdgeInsets(top: 120, left: 32, bottom: 120, right: 32)
+            var margin = UIEdgeInsets(top: 32, left: 32, bottom: 84, right: 32)
             var padding = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
             var spacing = 8.0
             var maxWidth = 340.0
@@ -232,7 +232,7 @@ extension HackleInAppMessageUI {
             else {
                 return
             }
-            handle(event: .action(action, .image))
+            handle(event: .action(action, .message))
         }
 
         // Views
