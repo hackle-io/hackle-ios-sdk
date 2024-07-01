@@ -20,7 +20,7 @@ extension HackleInAppMessageUI {
             self.attributes = attributes
             super.init(frame: .zero)
 
-            addSubview(contentView)
+            addView()
             updateContent()
             layoutContent()
 
@@ -39,17 +39,25 @@ extension HackleInAppMessageUI {
         struct Attributes {
             var margin = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
             var minWidth = 320.0
-            var maxWidth = 450.0
+            var maxWidth = 380.0
             var maxHeight = 720.0
             var cornerRadius = 8.0
             var spacing = 0.0
             var orientation = InAppMessage.Orientation.vertical
             var backgroundColor = UIColor(hex: "#1c1c1c", alpha: 0.5)
+            var shadow = Shadow.inAppMessage
 
             static let defaults = Self()
         }
 
         // Apply Content
+
+        private func addView() {
+            addSubview(contentView)
+            for button in outerButtons {
+                addSubview(button)
+            }
+        }
 
         private func updateContent() {
             contentView.backgroundColor = context.message.backgroundColor
@@ -88,6 +96,12 @@ extension HackleInAppMessageUI {
             contentConstraints?.deactivate()
             contentConstraints = Constraints {
 
+                // Shadow
+                layer.shadowColor = attributes.shadow.color.cgColor
+                layer.shadowOffset = attributes.shadow.offset
+                layer.shadowRadius = attributes.shadow.radius
+                layer.shadowOpacity = attributes.shadow.opacity
+
                 // ContentView
                 contentView.stack.layoutMargins = .zero
                 contentView.layer.cornerRadius = attributes.cornerRadius
@@ -96,7 +110,7 @@ extension HackleInAppMessageUI {
                 contentView.anchors.width.lessThanOrEqual(attributes.maxWidth)
                 contentView.anchors.width.greaterThanOrEqual(attributes.minWidth).priority = .required - 1
                 contentView.anchors.leading.greaterThanOrEqual(layoutMarginsGuide.anchors.leading, constant: attributes.margin.left).priority = .required - 1
-                contentView.anchors.trailing.lessThanOrEqual(layoutMarginsGuide.anchors.trailing, constant: attributes.margin.left).priority = .required - 1
+                contentView.anchors.trailing.lessThanOrEqual(layoutMarginsGuide.anchors.trailing, constant: attributes.margin.right).priority = .required - 1
                 contentView.anchors.centerX.align()
                 // - height
                 contentView.anchors.height.lessThanOrEqual(attributes.maxHeight)
@@ -128,6 +142,11 @@ extension HackleInAppMessageUI {
                     closeButton.anchors.height.equal(closeButton.anchors.width)
                     closeButton.anchors.top.pin()
                     closeButton.anchors.trailing.pin()
+                }
+
+                // OuterButtons
+                for button in outerButtons {
+                    button.align(to: contentView)
                 }
             }
 
@@ -329,6 +348,16 @@ extension HackleInAppMessageUI {
             container.stack.isLayoutMarginsRelativeArrangement = true
             container.isHidden = false
             return container
+        }()
+
+        lazy var outerButtons: [PositionalButtonView] = {
+            context.message.outerButtons.map { it in
+                let button = PositionalButtonView(button: it.button, alignment: it.alignment)
+                button.onClick { [weak self] in
+                    self?.handle(event: .action(it.button.action, .button, it.button.text))
+                }
+                return button
+            }
         }()
 
         lazy var contentView: StackView = {

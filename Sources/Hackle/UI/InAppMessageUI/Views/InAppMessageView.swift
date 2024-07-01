@@ -24,16 +24,6 @@ protocol InAppMessageView: UIView {
 
 extension InAppMessageView {
 
-    var responders: AnySequence<UIResponder> {
-        AnySequence { () -> AnyIterator<UIResponder> in
-            var responder: UIResponder? = self
-            return AnyIterator {
-                responder = responder?.next
-                return responder
-            }
-        }
-    }
-
     var controller: HackleInAppMessageUI.ViewController? {
         responders
             .lazy

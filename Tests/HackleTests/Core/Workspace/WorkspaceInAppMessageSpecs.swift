@@ -49,6 +49,8 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].lang) == "ko"
             expect(iam.messageContext.messages[0].layout.displayType) == .modal
             expect(iam.messageContext.messages[0].layout.layoutType) == .imageOnly
+            expect(iam.messageContext.messages[0].layout.alignment?.horizontal) == .left
+            expect(iam.messageContext.messages[0].layout.alignment?.vertical) == .top
 
             expect(iam.messageContext.messages[0].images.count) == 2
             expect(iam.messageContext.messages[0].images[0].orientation) == .vertical
@@ -88,6 +90,16 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].closeButton?.style.textColor) == "#000001"
             expect(iam.messageContext.messages[0].closeButton?.action.behavior) == .click
             expect(iam.messageContext.messages[0].closeButton?.action.type) == .close
+
+            expect(iam.messageContext.messages[0].outerButtons.count) == 1
+            expect(iam.messageContext.messages[0].outerButtons[0].button.text) == "outer"
+            expect(iam.messageContext.messages[0].outerButtons[0].button.style.textColor) == "#000000"
+            expect(iam.messageContext.messages[0].outerButtons[0].button.style.bgColor) == "#FFFFFF"
+            expect(iam.messageContext.messages[0].outerButtons[0].button.style.borderColor) == "#FFFFFF"
+            expect(iam.messageContext.messages[0].outerButtons[0].button.action.behavior) == .click
+            expect(iam.messageContext.messages[0].outerButtons[0].button.action.type) == .close
+            expect(iam.messageContext.messages[0].outerButtons[0].alignment.horizontal) == .right
+            expect(iam.messageContext.messages[0].outerButtons[0].alignment.vertical) == .bottom
         }
 
         it("invalid") {

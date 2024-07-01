@@ -439,10 +439,13 @@ class InAppMessageDto: Codable {
             var buttons: [ButtonDto]
             var closeButton: CloseButtonDto?
             var background: BackgroundDto
+            var action: ActionDto?
+            var outerButtons: [PositionalButtonDto]
 
             class LayoutDto: Codable {
                 var displayType: String
                 var layoutType: String
+                var alignment: AlignmentDto?
             }
 
             class ImageDto: Codable {
@@ -494,6 +497,16 @@ class InAppMessageDto: Codable {
             class ExposureDto: Codable {
                 var type: String
                 var key: Int64?
+            }
+
+            class AlignmentDto: Codable {
+                var vertical: String
+                var horizontal: String
+            }
+
+            class PositionalButtonDto: Codable {
+                var button: ButtonDto
+                var alignment: AlignmentDto
             }
         }
 
@@ -661,6 +674,17 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             xButton = b
         }
 
+        var messageAction: InAppMessage.Action? = nil
+        if action != nil {
+            guard let action = action?.toActionOrNil() else {
+                return nil
+            }
+            messageAction = action
+        }
+        guard let outerButtons = outerButtons.mapOrNil({ $0.toPositionalButtonOrNil() }) else {
+            return nil
+        }
+
         return InAppMessage.Message(
             variationKey: variationKey,
             lang: lang,
@@ -669,7 +693,9 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             text: text?.toText(),
             buttons: buttons,
             closeButton: xButton,
-            background: InAppMessage.Message.Background(color: background.color)
+            background: InAppMessage.Message.Background(color: background.color),
+            action: messageAction,
+            outerButtons: outerButtons
         )
     }
 }
@@ -682,7 +708,20 @@ extension InAppMessageDto.MessageContextDto.MessageDto.LayoutDto {
         guard let layoutType: InAppMessage.LayoutType = Enums.parseOrNil(rawValue: layoutType) else {
             return nil
         }
-        return InAppMessage.Message.Layout(displayType: displayType, layoutType: layoutType)
+
+        var messageAlignment: InAppMessage.Message.Alignment? = nil
+        if alignment != nil {
+            guard let alignment = alignment?.toAlignmentOrNil() else {
+                return nil
+            }
+            messageAlignment = alignment
+        }
+
+        return InAppMessage.Message.Layout(
+            displayType: displayType,
+            layoutType: layoutType,
+            alignment: messageAlignment
+        )
     }
 }
 
@@ -748,6 +787,36 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ButtonDto {
                 borderColor: style.borderColor
             ),
             action: action
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.AlignmentDto {
+    func toAlignmentOrNil() -> InAppMessage.Message.Alignment? {
+        guard let vertical: InAppMessage.VerticalAlignment = Enums.parseOrNil(rawValue: vertical) else {
+            return nil
+        }
+        guard let horizontal: InAppMessage.HorizontalAlignment = Enums.parseOrNil(rawValue: horizontal) else {
+            return nil
+        }
+        return InAppMessage.Message.Alignment(
+            vertical: vertical,
+            horizontal: horizontal
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.PositionalButtonDto {
+    func toPositionalButtonOrNil() -> InAppMessage.Message.PositionalButton? {
+        guard let button = button.toButtonOrNil() else {
+            return nil
+        }
+        guard let alignment = alignment.toAlignmentOrNil() else {
+            return nil
+        }
+        return InAppMessage.Message.PositionalButton(
+            button: button,
+            alignment: alignment
         )
     }
 }
