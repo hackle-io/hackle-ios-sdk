@@ -74,4 +74,75 @@ extension HackleInAppMessageUI {
             layout()
         }
     }
+
+    class PositionalButtonView: UIButton {
+        private let button: InAppMessage.Message.Button
+        private let alignment: InAppMessage.Message.Alignment
+        private let attributes: Attributes
+
+        init(button: InAppMessage.Message.Button, alignment: InAppMessage.Message.Alignment, attributes: Attributes = .defaults) {
+            self.button = button
+            self.alignment = alignment
+            self.attributes = attributes
+            super.init(frame: .zero)
+
+            content()
+            layout()
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        private func content() {
+            setTitle(button.text, for: .normal)
+            setTitleColor(button.textColor, for: .normal)
+            titleLabel?.font = attributes.font
+        }
+
+        private func layout() {
+            titleLabel?.lineBreakMode = .byTruncatingTail
+            titleLabel?.adjustsFontSizeToFitWidth = false
+            contentEdgeInsets = attributes.padding
+            invalidateIntrinsicContentSize()
+        }
+
+        func align(to container: UIView) {
+            switch (alignment.vertical, alignment.horizontal) {
+            case (.top, .left):
+                anchors.bottom.equal(container.anchors.top)
+                anchors.left.pin(to: container)
+            case (.top, .center):
+                anchors.bottom.equal(container.anchors.top)
+                anchors.centerX.pin(to: container)
+            case (.top, .right):
+                anchors.bottom.equal(container.anchors.top)
+                anchors.right.pin(to: container)
+            case (.middle, .left):
+                anchors.centerY.pin(to: container)
+                anchors.right.equal(container.anchors.left)
+            case (.middle, .center):
+                anchors.centerY.pin(to: container)
+                anchors.centerX.pin(to: container)
+            case (.middle, .right):
+                anchors.centerY.pin(to: container)
+                anchors.left.equal(container.anchors.right)
+            case (.bottom, .left):
+                anchors.top.equal(container.anchors.bottom)
+                anchors.left.pin(to: container)
+            case (.bottom, .center):
+                anchors.top.equal(container.anchors.bottom)
+                anchors.centerX.pin(to: container)
+            case (.bottom, .right):
+                anchors.top.equal(container.anchors.bottom)
+                anchors.right.pin(to: container)
+            }
+        }
+
+        struct Attributes {
+            var padding = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+            var font = UIFont.boldSystemFont(ofSize: 16)
+            static var defaults = Self()
+        }
+    }
 }

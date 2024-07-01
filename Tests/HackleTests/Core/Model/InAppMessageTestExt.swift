@@ -94,13 +94,16 @@ extension InAppMessage {
             lang: lang,
             layout: Message.Layout(
                 displayType: .modal,
-                layoutType: .imageOnly
+                layoutType: .imageOnly,
+                alignment: nil
             ),
             images: images,
             text: text,
             buttons: buttons,
             closeButton: closeButton,
-            background: Message.Background(color: "#FFFFFF")
+            background: Message.Background(color: "#FFFFFF"),
+            action: nil,
+            outerButtons: []
         )
     }
 
