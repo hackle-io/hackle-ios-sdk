@@ -438,6 +438,9 @@
 		EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */; };
 		EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */; };
 		EECDF3DD2C0D611A009B2F56 /* LifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3DC2C0D611A009B2F56 /* LifecycleObserver.swift */; };
+		EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */; };
+		EECDF3E32C11B271009B2F56 /* InAppMessageUIBannerImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */; };
+		EECDF42E2C145E0E009B2F56 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF42D2C145E0E009B2F56 /* Shadow.swift */; };
 		EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */; };
 		EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */; };
 		EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */; };
@@ -944,6 +947,9 @@
 		EEB7CBED2A0BB6AA000F4B4D /* AppStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateManager.swift; sourceTree = "<group>"; };
 		EEC2FB2D29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingManualOverrideStorageSpecs.swift; sourceTree = "<group>"; };
 		EECDF3DC2C0D611A009B2F56 /* LifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleObserver.swift; sourceTree = "<group>"; };
+		EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBannerView.swift; sourceTree = "<group>"; };
+		EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBannerImageView.swift; sourceTree = "<group>"; };
+		EECDF42D2C145E0E009B2F56 /* Shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
 		EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestTableViewCell.swift; sourceTree = "<group>"; };
 		EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestTableViewCell.xib; sourceTree = "<group>"; };
 		EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperation.swift; sourceTree = "<group>"; };
@@ -2266,6 +2272,8 @@
 				EE80E01B2A2DC79600FB12CC /* InAppMessageView.swift */,
 				EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */,
 				EE80E0252A2DD5EC00FB12CC /* InAppMessageUIModalView.swift */,
+				EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */,
+				EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */,
 				EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */,
 				EEA01CC22A36E56600E0C021 /* InAppMessageUIButtonView.swift */,
 			);
@@ -2309,12 +2317,13 @@
 		EEA01CBD2A36B9A100E0C021 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				EEA01CBE2A36B9B100E0C021 /* HackleUIUtils.swift */,
-				EE543CC92C09745200F64BFA /* ViewManager.swift */,
-				EEA01CCA2A37138300E0C021 /* UIKitExt.swift */,
 				EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */,
-				EEF895B82A4B37C800722CF6 /* ImageCacheManager.swift */,
+				EECDF42D2C145E0E009B2F56 /* Shadow.swift */,
 				EE0F34022A6690D2009DE640 /* UrlHandler.swift */,
+				EE543CC92C09745200F64BFA /* ViewManager.swift */,
+				EEF895B82A4B37C800722CF6 /* ImageCacheManager.swift */,
+				EEA01CCA2A37138300E0C021 /* UIKitExt.swift */,
+				EEA01CBE2A36B9B100E0C021 /* HackleUIUtils.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -2729,6 +2738,7 @@
 				7E9F7E812B6B96ED00A6B0B8 /* FileStorage.swift in Sources */,
 				EEDC58822ACC0793001E73DB /* UserContext.swift in Sources */,
 				EE29D97229CD825400B1FEAA /* Date.swift in Sources */,
+				EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */,
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
 				EE86376129ECD0B5000268DC /* DelegatingEvaluator.swift in Sources */,
 				EE29D98C29CD825400B1FEAA /* HackleValue.swift in Sources */,
@@ -2790,6 +2800,7 @@
 				7E0E2D942AE7A81B00578C74 /* BridgeResponse.swift in Sources */,
 				EEAC3F352B9D54F400DC498E /* PushTokenManager.swift in Sources */,
 				EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */,
+				EECDF42E2C145E0E009B2F56 /* Shadow.swift in Sources */,
 				EE80DF8E2A28341C00FB12CC /* InAppMessageResolver.swift in Sources */,
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,
 				EE29D99529CD825400B1FEAA /* ConditionMatcher.swift in Sources */,
@@ -2798,6 +2809,7 @@
 				7E9065B22B58E3AD00FE6E52 /* Throttler.swift in Sources */,
 				EEB2E6302A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift in Sources */,
 				EE29D94E29CD825400B1FEAA /* DelegatingMetric.swift in Sources */,
+				EECDF3E32C11B271009B2F56 /* InAppMessageUIBannerImageView.swift in Sources */,
 				EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */,
 				EE29D97D29CD825400B1FEAA /* HttpResponse.swift in Sources */,
 				EE29D97A29CD825400B1FEAA /* Scheduler.swift in Sources */,
