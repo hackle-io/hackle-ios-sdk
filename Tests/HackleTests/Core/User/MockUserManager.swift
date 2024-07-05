@@ -13,31 +13,44 @@ class MockUserManager: Mock, UserManager {
         super.init()
 
         every(setUserMock).answers { user in
+            let previous = self.currentUser
             self.currentUser = user
-            return self.currentUser
+            return Updated(previous: previous, current: user)
         }
         every(setUserIdMock).answers { userId in
-            self.currentUser = currentUser.toBuilder().userId(userId).build()
-            return self.currentUser
+            let user = self.currentUser.toBuilder().userId(userId).build()
+            let previous = self.currentUser
+            self.currentUser = user
+            return Updated(previous: previous, current: user)
         }
 
         every(setDeviceIdMock).answers { deviceId in
-            self.currentUser = currentUser.toBuilder().deviceId(deviceId).build()
-            return self.currentUser
+            let user = self.currentUser.toBuilder().deviceId(deviceId).build()
+            let previous = self.currentUser
+            self.currentUser = user
+            return Updated(previous: previous, current: user)
         }
 
         every(updatePropertiesMock).answers { operations in
-            self.currentUser = currentUser.toBuilder().properties(operations.operate(base: [:])).build()
-            return self.currentUser
+            let user = self.currentUser.toBuilder().properties(operations.operate(base: [:])).build()
+            let previous = self.currentUser
+            self.currentUser = user
+            return Updated(previous: previous, current: user)
         }
 
         every(resetUserMock).answers {
-            self.currentUser = User.builder().build()
-            return self.currentUser
+            let user = User.builder().build()
+            let previous = self.currentUser
+            self.currentUser = user
+            return Updated(previous: previous, current: user)
         }
 
         every(resolveMock).answers { user in
             HackleUser.of(user: user ?? self.currentUser, hackleProperties: [:])
+        }
+
+        every(syncIfNeededMock).answers { updated, completion in
+            completion()
         }
     }
 
@@ -61,31 +74,31 @@ class MockUserManager: Mock, UserManager {
 
     lazy var setUserMock = MockFunction(self, setUser)
 
-    func setUser(user: User) -> User {
+    func setUser(user: User) -> Updated<User> {
         call(setUserMock, args: user)
     }
 
     lazy var setUserIdMock = MockFunction(self, setUserId)
 
-    func setUserId(userId: String?) -> User {
+    func setUserId(userId: String?) -> Updated<User> {
         call(setUserIdMock, args: userId)
     }
 
     lazy var setDeviceIdMock = MockFunction(self, setDeviceId)
 
-    func setDeviceId(deviceId: String) -> User {
+    func setDeviceId(deviceId: String) -> Updated<User> {
         call(setDeviceIdMock, args: deviceId)
     }
 
     lazy var updatePropertiesMock = MockFunction(self, updateProperties)
 
-    func updateProperties(operations: PropertyOperations) -> User {
+    func updateProperties(operations: PropertyOperations) -> Updated<User> {
         call(updatePropertiesMock, args: operations)
     }
 
     lazy var resetUserMock = MockFunction(self, resetUser)
 
-    func resetUser() -> User {
+    func resetUser() -> Updated<User> {
         call(resetUserMock, args: ())
     }
 
@@ -93,5 +106,11 @@ class MockUserManager: Mock, UserManager {
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
         call(syncMock, args: completion)
+    }
+
+    lazy var syncIfNeededMock = MockFunction(self, syncIfNeeded)
+
+    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
+        call(syncIfNeededMock, args: (updated, completion))
     }
 }

@@ -26,33 +26,10 @@ class SynchronizerSpecs: QuickSpec {
                 }
             }
         }
-
-        describe("CompositeSynchronizerExtensions") {
-            describe("CompositeSynchronizer.sync(() -> ())") {
-                it("success") {
-                    let counter = CumulativeMetricRegistry().counter(name: "counter")
-                    let sut = SynchronizerStub(.success(()))
-                    sut.syncOnly(type: .workspace) {
-                        counter.increment()
-                    }
-                    expect(counter.count()) == 1
-                }
-
-                it("failure") {
-                    let counter = CumulativeMetricRegistry().counter(name: "counter")
-                    let sut = SynchronizerStub(.failure(HackleError.error("fail")))
-                    sut.syncOnly(type: .workspace) {
-                        counter.increment()
-                    }
-                    expect(counter.count()) == 1
-                }
-            }
-        }
     }
 }
 
-
-class SynchronizerStub: CompositeSynchronizer {
+class SynchronizerStub: Synchronizer {
 
     private let result: Result<Void, Error>
 
@@ -61,10 +38,6 @@ class SynchronizerStub: CompositeSynchronizer {
     }
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        completion(result)
-    }
-
-    func syncOnly(type: SynchronizerType, completion: @escaping (Result<(), Error>) -> ()) {
         completion(result)
     }
 }
