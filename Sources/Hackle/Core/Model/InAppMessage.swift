@@ -136,11 +136,13 @@ extension InAppMessage {
     }
 
     enum DisplayType: String, Codable {
+        case none = "NONE"
         case modal = "MODAL"
         case banner = "BANNER"
     }
 
     enum LayoutType: String, Codable {
+        case none = "NONE"
         case imageText = "IMAGE_TEXT"
         case imageOnly = "IMAGE_ONLY"
         case textOnly = "TEXT_ONLY"
