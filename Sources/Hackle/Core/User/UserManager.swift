@@ -202,10 +202,10 @@ class DefaultUserManager: UserManager, AppStateListener {
     }
 
     private func changeUser(oldUser: User, newUser: User, timestamp: Date) {
+        Log.debug("UserManager.publishUserUpdated()")
         for listener in userListeners {
             listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
         }
-        Log.debug("User changed")
     }
 
     private func loadUser() -> User? {
@@ -232,6 +232,7 @@ class DefaultUserManager: UserManager, AppStateListener {
     }
 
     func onState(state: AppState, timestamp: Date) {
+        Log.debug("UserManager.onState(state: \(state))")
         switch state {
         case .foreground: return
         case .background: saveUser(user: currentUser)
