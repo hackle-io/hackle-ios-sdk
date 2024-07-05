@@ -1,34 +1,26 @@
-//
-//  DelegatingSynchronizerSpecs.swift
-//  HackleTests
-//
-//  Created by yong on 2023/10/02.
-//
-
 import Foundation
 import Nimble
 import Quick
 @testable import Hackle
 
-class DefaultCompositeSynchronizerSpecs: QuickSpec {
+class CompositeSynchronizerSpecs: QuickSpec {
     override func spec() {
 
         var workspaceSynchronizer: MockSynchronizer!
         var cohortSynchronizer: MockSynchronizer!
-        var sut: DefaultCompositeSynchronizer!
+        var sut: CompositeSynchronizer!
 
         beforeEach {
             workspaceSynchronizer = MockSynchronizer()
             cohortSynchronizer = MockSynchronizer()
-            sut = DefaultCompositeSynchronizer(dispatchQueue: DispatchQueue(label: "test", attributes: .concurrent))
-            sut.add(type: .workspace, synchronizer: workspaceSynchronizer)
-            sut.add(type: .cohort, synchronizer: cohortSynchronizer)
+            sut = CompositeSynchronizer(dispatchQueue: DispatchQueue(label: "test", attributes: .concurrent))
+            sut.add(synchronizer: workspaceSynchronizer)
+            sut.add(synchronizer: cohortSynchronizer)
         }
 
         it("sync") {
             // given
             var count = 0
-
             // when
             sut.sync { _ in
                 count += 1
@@ -45,30 +37,10 @@ class DefaultCompositeSynchronizerSpecs: QuickSpec {
             }
         }
 
-        it("sync only") {
-            // given
-            var count = 0
-
-            // when
-            sut.syncOnly(type: .workspace) {
-                count += 1
-            }
-            Thread.sleep(forTimeInterval: 0.1)
-
-            // then
-            expect(count) == 1
-            verify(exactly: 1) {
-                workspaceSynchronizer.syncMock
-            }
-            verify(exactly: 0) {
-                cohortSynchronizer.syncMock
-            }
-        }
-
         it("async") {
             // given
             let dispatchQueue = DispatchQueue(label: "test", attributes: .concurrent)
-            let sut = DefaultCompositeSynchronizer(dispatchQueue: dispatchQueue)
+            let sut = CompositeSynchronizer(dispatchQueue: dispatchQueue)
             every(workspaceSynchronizer.syncMock).answers { completion in
                 Thread.sleep(forTimeInterval: 0.1)
                 completion(.success(()))
@@ -87,21 +59,6 @@ class DefaultCompositeSynchronizerSpecs: QuickSpec {
 
             // then
             expect(count) == 1
-        }
-
-        it("unsupported type") {
-            // given
-            let sut = DefaultCompositeSynchronizer(dispatchQueue: DispatchQueue(label: "test", attributes: .concurrent))
-            sut.add(type: .workspace, synchronizer: workspaceSynchronizer)
-
-            // when
-            var actual: Result<Void, Error>!
-            sut.syncOnly(type: .cohort) { result in
-                actual = result
-            }
-
-            // then
-            expect(try actual.get()).to(throwError(HackleError.error("Unsupported SynchronizerType [cohort]")))
         }
 
         it("safe") {

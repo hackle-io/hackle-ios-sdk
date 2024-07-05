@@ -21,6 +21,9 @@ class DefaultUserManagerSpecs: QuickSpec {
             device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
             sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, clock: clock)
 
+            every(cohortFetcher.fetchMock).answers { user, completion in
+                completion(.success(UserCohorts.empty()))
+            }
             listener = MockUserListener()
             sut.addListener(listener: listener)
         }
@@ -43,6 +46,13 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "saved_device_id",
                     "$userId": "saved_user_id",
                 ]
+            }
+
+            it("when failed to load user then init with default user") {
+                repository.putData(key: "user", value: "invalid json".data(using: .utf8)!)
+                sut.initialize(user: nil)
+                let user = sut.currentUser
+                expect(user.resolvedIdentifiers) == ["$id": "hackle_device_id", "$deviceId": "hackle_device_id"]
             }
 
             it("with init user") {
@@ -174,10 +184,131 @@ class DefaultUserManagerSpecs: QuickSpec {
             }
         }
 
+        describe("syncIfNeeded") {
+            it("no new identifiers") {
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").build(),
+                        current: User.builder().build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").build(),
+                        current: User.builder().id("id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").build(),
+                        current: User.builder().id("id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").build(),
+                        current: User.builder().id("id").deviceId("device_id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                        current: User.builder().id("id").deviceId("device_id").build()
+                    ),
+                    completion: {}
+                )
+
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                        current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
+                    ),
+                    completion: {}
+                )
+                verify(exactly: 0) {
+                    cohortFetcher.fetchMock
+                }
+            }
+            it("new identifiers") {
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().build(),
+                        current: User.builder().id("new_id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").build(),
+                        current: User.builder().id("new_id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").build(),
+                        current: User.builder().id("id").deviceId("new_device_id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").build(),
+                        current: User.builder().id("id").deviceId("new_device_id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").build(),
+                        current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                    ),
+                    completion: {}
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                        current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                    ),
+                    completion: {}
+                )
+                verify(exactly: 6) {
+                    cohortFetcher.fetchMock
+                }
+            }
+
+            it("completion") {
+                var count = 0
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().build(),
+                        current: User.builder().build()
+                    ),
+                    completion: {
+                        count += 1
+                    }
+                )
+                sut.syncIfNeeded(
+                    updated: Updated(
+                        previous: User.builder().build(),
+                        current: User.builder().id("id").build()
+                    ),
+                    completion: {
+                        count += 1
+                    }
+                )
+                expect(count) == 2
+            }
+        }
+
         describe("setUser") {
             it("decorate hackleDeviceId") {
                 let actual = sut.setUser(user: User.builder().build())
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                 ]
@@ -190,7 +321,15 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id").build())
+                let actual = sut.setUser(user: User.builder().deviceId("device_id").build())
+                expect(actual.previous.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -213,7 +352,11 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                let actual = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(actual.previous.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -440,9 +583,9 @@ class DefaultUserManagerSpecs: QuickSpec {
                     .append("c", "cc")
                     .build()
                 let actual = sut.updateProperties(operations: operations)
-                expect(actual.properties["a"] as? Double) == 42.0
-                expect(actual.properties["c"] as? [String]) == ["cc"]
-                expect(actual.properties["d"] as? String) == "d"
+                expect(actual.current.properties["a"] as? Double) == 42.0
+                expect(actual.current.properties["c"] as? [String]) == ["cc"]
+                expect(actual.current.properties["d"] as? String) == "d"
             }
 
             it("existed properties") {
@@ -462,10 +605,10 @@ class DefaultUserManagerSpecs: QuickSpec {
                     .build()
                 let actual = sut.updateProperties(operations: operations)
 
-                expect(actual.properties["a"] as? Double) == 84.0
-                expect(actual.properties["b"] as? String) == "b"
-                expect(actual.properties["c"] as? [String]) == ["c", "cc"]
-                expect(actual.properties["d"] as? String) == "d"
+                expect(actual.current.properties["a"] as? Double) == 84.0
+                expect(actual.current.properties["b"] as? String) == "b"
+                expect(actual.current.properties["c"] as? [String]) == ["c", "cc"]
+                expect(actual.current.properties["d"] as? String) == "d"
             }
         }
 
@@ -473,7 +616,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("new") {
                 sut.initialize(user: nil)
                 let actual = sut.setUserId(userId: "user_id")
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                     "$userId": "user_id",
@@ -497,7 +640,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                 ]
 
                 let actual = sut.setUserId(userId: nil)
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                 ]
@@ -519,7 +662,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                 ]
 
                 let actual = sut.setUserId(userId: "user_id_2")
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                     "$userId": "user_id_2",
@@ -543,7 +686,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                 ]
 
                 let actual = sut.setUserId(userId: "user_id")
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                     "$userId": "user_id",
@@ -563,7 +706,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("new") {
                 sut.initialize(user: nil)
                 let actual = sut.setDeviceId(deviceId: "device_id")
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
                 ]
@@ -579,7 +722,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("change") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
                 let actual = sut.setDeviceId(deviceId: "device_id_2")
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
                 ]
@@ -595,7 +738,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("same") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
                 let actual = sut.setDeviceId(deviceId: "device_id")
-                expect(actual.resolvedIdentifiers) == [
+                expect(actual.current.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
                 ]

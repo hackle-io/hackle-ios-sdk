@@ -1,23 +1,16 @@
-//
-//  PollingSynchronizer.swift
-//  Hackle
-//
-//  Created by yong on 2023/10/02.
-//
-
 import Foundation
 
 
-class PollingSynchronizer: CompositeSynchronizer, AppStateListener {
+class PollingSynchronizer: Synchronizer, AppStateListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingSynchronizer.Lock")
 
-    private let delegate: CompositeSynchronizer
+    private let delegate: Synchronizer
     private let scheduler: Scheduler
     private let interval: TimeInterval
     private var pollingJob: ScheduledJob? = nil
 
-    init(delegate: CompositeSynchronizer, scheduler: Scheduler, interval: TimeInterval) {
+    init(delegate: Synchronizer, scheduler: Scheduler, interval: TimeInterval) {
         self.delegate = delegate
         self.scheduler = scheduler
         self.interval = interval
@@ -25,10 +18,6 @@ class PollingSynchronizer: CompositeSynchronizer, AppStateListener {
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
         delegate.sync(completion: completion)
-    }
-
-    func syncOnly(type: SynchronizerType, completion: @escaping (Result<(), Error>) -> ()) {
-        delegate.syncOnly(type: type, completion: completion)
     }
 
     private func poll() {

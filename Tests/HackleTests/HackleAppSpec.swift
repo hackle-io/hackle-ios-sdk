@@ -89,10 +89,9 @@ class HackleAppSpecs: QuickSpec {
                     userManager.setUserMock
                 }
                 verify(exactly: 1) {
-                    synchronizer.syncOnlyMock
+                    userManager.syncIfNeededMock
                 }
                 expect(userManager.setUserMock.firstInvokation().arguments).to(beIdenticalTo(user))
-                expect(synchronizer.syncOnlyMock.firstInvokation().arguments.0) == .cohort
             }
 
             it("completion") {
@@ -112,10 +111,9 @@ class HackleAppSpecs: QuickSpec {
                     userManager.setUserIdMock
                 }
                 verify(exactly: 1) {
-                    synchronizer.syncOnlyMock
+                    userManager.syncIfNeededMock
                 }
                 expect(userManager.setUserIdMock.firstInvokation().arguments) == "user_id"
-                expect(synchronizer.syncOnlyMock.firstInvokation().arguments.0) == .cohort
             }
 
             it("completion") {
@@ -134,10 +132,9 @@ class HackleAppSpecs: QuickSpec {
                     userManager.setDeviceIdMock
                 }
                 verify(exactly: 1) {
-                    synchronizer.syncOnlyMock
+                    userManager.syncIfNeededMock
                 }
                 expect(userManager.setDeviceIdMock.firstInvokation().arguments) == "device_id"
-                expect(synchronizer.syncOnlyMock.firstInvokation().arguments.0) == .cohort
             }
 
             it("completion") {
@@ -159,10 +156,9 @@ class HackleAppSpecs: QuickSpec {
                     core.trackMock
                 }
                 verify(exactly: 1) {
-                    synchronizer.syncOnlyMock
+                    userManager.syncIfNeededMock
                 }
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$properties"
-                expect(synchronizer.syncOnlyMock.firstInvokation().arguments.0) == .cohort
             }
             it("completion") {
                 var count = 0
@@ -183,7 +179,7 @@ class HackleAppSpecs: QuickSpec {
                     core.trackMock
                 }
                 verify(exactly: 0) {
-                    synchronizer.syncOnlyMock
+                    userManager.syncIfNeededMock
                 }
                 expect(userManager.updatePropertiesMock.firstInvokation().arguments.asDictionary()[.set] as? [String: Int]) == ["age": 42]
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$properties"
@@ -209,7 +205,7 @@ class HackleAppSpecs: QuickSpec {
                     core.trackMock
                 }
                 verify(exactly: 0) {
-                    synchronizer.syncOnlyMock
+                    userManager.syncIfNeededMock
                 }
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$properties"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$set"] as? [String: Int]) == ["age": 42]
