@@ -41,7 +41,6 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
 
         // Message View
         guard let messageView = createMessageView(context: context) else {
-            Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType)]")
             return
         }
 

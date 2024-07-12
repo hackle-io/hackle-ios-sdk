@@ -31,16 +31,13 @@ class DefaultAppStateManager: AppStateManager, LifecycleListener {
     }
 
     private func onState(state: AppState, timestamp: Date) {
-        queue.async { [weak self] in
-            guard let self = self else {
-                return
-            }
+        queue.async {
             self.publish(state: state, timestamp: timestamp)
         }
     }
 
     private func publish(state: AppState, timestamp: Date) {
-        Log.debug("AppStateManager.onState(state: \(state))")
+        Log.debug("AppStateManager.publish(state: \(state))")
         for listener in listeners {
             listener.onState(state: state, timestamp: timestamp)
         }
@@ -48,6 +45,7 @@ class DefaultAppStateManager: AppStateManager, LifecycleListener {
     }
 
     func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+        Log.debug("AppStateManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
         case .didBecomeActive:
             onState(state: .foreground, timestamp: timestamp)

@@ -1,10 +1,3 @@
-//
-//  UserManager.swift
-//  Hackle
-//
-//  Created by yong on 2022/12/16.
-//
-
 import Foundation
 
 
@@ -19,19 +12,21 @@ protocol UserManager: Synchronizer {
     func toHackleUser(user: User) -> HackleUser
 
     @discardableResult
-    func setUser(user: User) -> User
+    func setUser(user: User) -> Updated<User>
 
     @discardableResult
-    func setUserId(userId: String?) -> User
+    func setUserId(userId: String?) -> Updated<User>
 
     @discardableResult
-    func setDeviceId(deviceId: String) -> User
+    func setDeviceId(deviceId: String) -> Updated<User>
 
     @discardableResult
-    func updateProperties(operations: PropertyOperations) -> User
+    func updateProperties(operations: PropertyOperations) -> Updated<User>
 
     @discardableResult
-    func resetUser() -> User
+    func resetUser() -> Updated<User>
+
+    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ())
 }
 
 class DefaultUserManager: UserManager, AppStateListener {
@@ -80,6 +75,8 @@ class DefaultUserManager: UserManager, AppStateListener {
         Log.debug("UserManager initialized [\(currentUser)]")
     }
 
+    // HackleUser resolve
+
     func resolve(user: User?) -> HackleUser {
         guard let user else {
             return toHackleUser(context: currentContext)
@@ -88,40 +85,12 @@ class DefaultUserManager: UserManager, AppStateListener {
         let context = lock.write {
             updateUser(user: user)
         }
-        return toHackleUser(context: context)
+        return toHackleUser(context: context.current)
     }
 
     func toHackleUser(user: User) -> HackleUser {
         let context = context.with(user: user)
         return toHackleUser(context: context)
-    }
-
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        sync(user: currentUser, completion: completion)
-    }
-
-    private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        cohortFetcher.fetch(user: user) { [weak self] result in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to user sync: instance deallocated")))
-                return
-            }
-            self.handle(result: result, completion: completion)
-        }
-    }
-
-    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
-        switch result {
-        case .success(let cohorts):
-            lock.write {
-                context = context.update(cohorts: cohorts)
-            }
-            completion(.success(()))
-            return
-        case .failure(let error):
-            completion(.failure(error))
-            return
-        }
     }
 
     private func toHackleUser(context: UserContext) -> HackleUser {
@@ -139,55 +108,114 @@ class DefaultUserManager: UserManager, AppStateListener {
             .build()
     }
 
-    func setUser(user: User) -> User {
-        lock.write {
-            updateUser(user: user).user
+    // Sync
+
+    func sync(completion: @escaping (Result<(), Error>) -> ()) {
+        sync(user: currentUser, completion: completion)
+    }
+
+    private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+        cohortFetcher.fetch(user: user) { [weak self] result in
+            guard let self = self else {
+                completion(.failure(HackleError.error("Failed to user sync: instance deallocated")))
+                return
+            }
+            self.handle(result: result, completion: completion)
         }
     }
 
-    func setUserId(userId: String?) -> User {
-        lock.write {
-            updateUser(user: context.user.toBuilder().userId(userId).build()).user
+    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
+        guard hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current) else {
+            completion()
+            return
+        }
+        sync(completion: completion)
+    }
+
+    private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
+        let previousIdentifiers = previousUser.resolvedIdentifiers
+        let currentIdentifiers = currentUser.resolvedIdentifiers
+
+        return currentIdentifiers.contains { type, value in
+            !previousIdentifiers.contains(type: type, value: value)
         }
     }
 
-    func setDeviceId(deviceId: String) -> User {
-        lock.write {
-            updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).user
+    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+        switch result {
+        case .success(let cohorts):
+            lock.write {
+                context = context.update(cohorts: cohorts)
+            }
+            completion(.success(()))
+            return
+        case .failure(let error):
+            completion(.failure(error))
+            return
         }
     }
 
-    func resetUser() -> User {
+    // User update
+
+    func setUser(user: User) -> Updated<User> {
+        lock.write {
+            updateUser(user: user).map { it in
+                it.user
+            }
+        }
+    }
+
+    func setUserId(userId: String?) -> Updated<User> {
+        lock.write {
+            updateUser(user: context.user.toBuilder().userId(userId).build()).map { it in
+                it.user
+            }
+        }
+    }
+
+    func setDeviceId(deviceId: String) -> Updated<User> {
+        lock.write {
+            updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).map { it in
+                it.user
+            }
+        }
+    }
+
+    func resetUser() -> Updated<User> {
         lock.write {
             let context = updateContext { _ in
                 defaultUser
             }
-            return context.user
+            return context.map { it in
+                it.user
+            }
         }
     }
 
-    func updateProperties(operations: PropertyOperations) -> User {
+    func updateProperties(operations: PropertyOperations) -> Updated<User> {
         lock.write {
-            operateProperties(operations: operations)
+            operateProperties(operations: operations).map { it in
+                it.user
+            }
         }
     }
 
-    private func updateUser(user: User) -> UserContext {
+    private func updateUser(user: User) -> Updated<UserContext> {
         updateContext { currentUser in
             user.with(device: device).mergeWith(other: currentUser)
         }
     }
 
-    private func operateProperties(operations: PropertyOperations) -> User {
-        let context = updateContext { currentUser in
+    private func operateProperties(operations: PropertyOperations) -> Updated<UserContext> {
+        updateContext { currentUser in
             let properties = operations.operate(base: currentUser.properties)
             return currentUser.with(properties: properties)
         }
-        return context.user
     }
 
-    private func updateContext(updater: (User) -> User) -> UserContext {
-        let oldUser = context.user
+    private func updateContext(updater: (User) -> User) -> Updated<UserContext> {
+        let oldContext = context
+        let oldUser = oldContext.user
         let newUser = updater(oldUser)
 
         let newContext = context.with(user: newUser)
@@ -197,15 +225,15 @@ class DefaultUserManager: UserManager, AppStateListener {
             changeUser(oldUser: oldUser, newUser: newUser, timestamp: Date())
         }
 
-        Log.debug("UserContext updated: \(newContext)")
-        return newContext
+        saveUser(user: newUser)
+        return Updated(previous: oldContext, current: newContext)
     }
 
     private func changeUser(oldUser: User, newUser: User, timestamp: Date) {
+        Log.debug("UserManager.publishUserUpdated()")
         for listener in userListeners {
             listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
         }
-        Log.debug("User changed")
     }
 
     private func loadUser() -> User? {
@@ -232,6 +260,7 @@ class DefaultUserManager: UserManager, AppStateListener {
     }
 
     func onState(state: AppState, timestamp: Date) {
+        Log.debug("UserManager.onState(state: \(state))")
         switch state {
         case .foreground: return
         case .background: saveUser(user: currentUser)

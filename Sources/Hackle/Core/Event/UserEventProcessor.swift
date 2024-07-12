@@ -143,6 +143,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     }
 
     func onState(state: AppState, timestamp: Date) {
+        Log.debug("UserEventProcessor.onState(state: \(state))")
         switch state {
         case .foreground:
             start()

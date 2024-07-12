@@ -39,20 +39,21 @@ class DefaultScreenManager: ScreenManager, LifecycleListener {
     }
 
     private func publishStart(previousScreen: Screen?, screen: Screen, user: User, timestamp: Date) {
-        Log.debug("ScreenManager.onScreenStarted(previousScreen: \(previousScreen?.description ?? "nil"), currentScreen: \(screen))")
+        Log.debug("ScreenManager.publishStart(previousScreen: \(previousScreen?.description ?? "nil"), currentScreen: \(screen))")
         for listener in listeners {
             listener.onScreenStarted(previousScreen: previousScreen, currentScreen: screen, user: user, timestamp: timestamp)
         }
     }
 
     private func publishEnd(screen: Screen, user: User, timestamp: Date) {
-        Log.debug("ScreenManager.onScreenEnded(screen: \(screen))")
+        Log.debug("ScreenManager.publishEnd(screen: \(screen))")
         for listener in listeners {
             listener.onScreenEnded(screen: screen, user: user, timestamp: timestamp)
         }
     }
 
     func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+        Log.debug("ScreenManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
         case .didBecomeActive(let top):
             guard let top = top else {
