@@ -29,6 +29,7 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
     }
 
     func onState(state: AppState, timestamp: Date) {
+        Log.debug("MonitoringMetricRegistry.onState(state: \(state))")
         switch state {
         case .foreground: return
         case .background:

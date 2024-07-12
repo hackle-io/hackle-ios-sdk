@@ -1,10 +1,3 @@
-//
-//  Identifiers.swift
-//  Hackle
-//
-//  Created by yong on 2023/10/03.
-//
-
 import Foundation
 
 enum IdentifierType: String, Codable {
@@ -44,10 +37,11 @@ extension Identifiers {
     }
 
     func contains(identifier: Identifier) -> Bool {
-        guard let identifierValue = self[identifier.type] else {
-            return false
-        }
-        return identifierValue == identifier.value
+        contains(type: identifier.type, value: identifier.value)
+    }
+
+    func contains(type: String, value: String) -> Bool {
+        value == self[type]
     }
 }
 

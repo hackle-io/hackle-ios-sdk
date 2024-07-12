@@ -91,10 +91,10 @@ class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
             return
         }
 
+        Log.debug("SessionManager.publishEnd(session: \(oldSession.id))")
         for listener in sessionListeners {
             listener.onSessionEnded(session: oldSession, user: user, timestamp: lastEventTime)
         }
-        Log.debug("Session ended [$\(oldSession.id)]")
     }
 
     @discardableResult
@@ -105,16 +105,15 @@ class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
 
         updateLastEventTime(timestamp: timestamp)
 
+        Log.debug("SessionManager.publishStart(session: \(newSession.id))")
         for listener in sessionListeners {
             listener.onSessionStarted(session: newSession, user: user, timestamp: timestamp)
         }
-        Log.debug("Session started [\(newSession.id)]")
         return newSession
     }
 
     private func saveSession(session: Session) {
         keyValueRepository.putString(key: DefaultSessionManager.SESSION_ID_KEY, value: session.id)
-        Log.debug("Session saved [\(session.id)]")
     }
 
     private func loadSession() {
@@ -133,6 +132,7 @@ class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
     }
 
     func onState(state: AppState, timestamp: Date) {
+        Log.debug("SessionManager.onState(state: \(state))")
         switch state {
         case .foreground:
             startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
