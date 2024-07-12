@@ -44,7 +44,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
     }
 
     private func publish(engagement: Engagement, user: User, timestamp: Date) {
-        Log.debug("EngagementManager.onEngagement(engagement: \(engagement))")
+        Log.debug("EngagementManager.publish(engagement: \(engagement))")
         for listener in listeners {
             listener.onEngagement(engagement: engagement, user: user, timestamp: timestamp)
         }
@@ -59,6 +59,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
     }
 
     func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+        Log.debug("EngagementManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
         case .didBecomeActive:
             startEngagement(timestamp: timestamp)

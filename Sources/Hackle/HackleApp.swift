@@ -10,7 +10,7 @@ import WebKit
 
     private let core: HackleCore
     private let eventQueue: DispatchQueue
-    private let synchronizer: CompositeSynchronizer
+    private let synchronizer: Synchronizer
     private let userManager: UserManager
     private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
@@ -47,7 +47,7 @@ import WebKit
         sdk: Sdk,
         core: HackleCore,
         eventQueue: DispatchQueue,
-        synchronizer: CompositeSynchronizer,
+        synchronizer: Synchronizer,
         userManager: UserManager,
         workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
@@ -94,8 +94,8 @@ import WebKit
     }
 
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
-        userManager.setUser(user: user)
-        synchronizer.syncOnly(type: .cohort, completion: completion)
+        let updated = userManager.setUser(user: user)
+        userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
     @objc public func setUserId(userId: String?) {
@@ -103,8 +103,8 @@ import WebKit
     }
 
     @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
-        userManager.setUserId(userId: userId)
-        synchronizer.syncOnly(type: .cohort, completion: completion)
+        let updated = userManager.setUserId(userId: userId)
+        userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
     @objc public func setDeviceId(deviceId: String) {
@@ -112,8 +112,8 @@ import WebKit
     }
 
     @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
-        userManager.setDeviceId(deviceId: deviceId)
-        synchronizer.syncOnly(type: .cohort, completion: completion)
+        let updated = userManager.setDeviceId(deviceId: deviceId)
+        userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
     @objc public func setUserProperty(key: String, value: Any?) {
@@ -145,9 +145,9 @@ import WebKit
     }
 
     @objc public func resetUser(completion: @escaping () -> ()) {
-        userManager.resetUser()
+        let updated = userManager.resetUser()
         track(event: PropertyOperations.clearAll().toEvent())
-        synchronizer.syncOnly(type: .cohort, completion: completion)
+        userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
@@ -369,7 +369,7 @@ extension HackleApp {
 
         // - Synchronizer
 
-        let compositeSynchronizer = DefaultCompositeSynchronizer(
+        let compositeSynchronizer = CompositeSynchronizer(
             dispatchQueue: DispatchQueue(label: "io.hackle.DelegatingSynchronizer", attributes: .concurrent)
         )
         let pollingSynchronizer = PollingSynchronizer(
@@ -392,7 +392,7 @@ extension HackleApp {
                 fileStorage: try? DefaultFileStorage(sdkKey: sdkKey)
             )
         )
-        compositeSynchronizer.add(type: .workspace, synchronizer: workspaceManager)
+        compositeSynchronizer.add(synchronizer: workspaceManager)
 
         // - UserManager
 
@@ -404,7 +404,7 @@ extension HackleApp {
             cohortFetcher: cohortFetcher,
             clock: SystemClock.shared
         )
-        compositeSynchronizer.add(type: .cohort, synchronizer: userManager)
+        compositeSynchronizer.add(synchronizer: userManager)
 
         // - SessionManager
 

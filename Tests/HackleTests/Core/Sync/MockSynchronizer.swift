@@ -9,13 +9,10 @@ import Foundation
 import Mockery
 @testable import Hackle
 
-class MockSynchronizer: Mock, CompositeSynchronizer {
+class MockSynchronizer: Mock, Synchronizer {
     override init() {
         super.init()
         every(syncMock).answers { completion in
-            completion(.success(()))
-        }
-        every(syncOnlyMock).answers { type, completion in
             completion(.success(()))
         }
     }
@@ -25,12 +22,4 @@ class MockSynchronizer: Mock, CompositeSynchronizer {
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
         call(syncMock, args: completion)
     }
-
-    lazy var syncOnlyMock = MockFunction(self, syncOnly)
-
-    func syncOnly(type: SynchronizerType, completion: @escaping (Result<(), Error>) -> ()) {
-        call(syncOnlyMock, args: (type, completion))
-    }
 }
-
-

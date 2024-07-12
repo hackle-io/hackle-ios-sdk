@@ -1,10 +1,3 @@
-//
-//  PollingSynchronizerSpecs.swift
-//  HackleTests
-//
-//  Created by yong on 2023/10/02.
-//
-
 import Foundation
 import Nimble
 import Quick
@@ -26,23 +19,6 @@ class PollingSynchronizerSpecs: QuickSpec {
                 // then
                 verify(exactly: 1) {
                     delegate.syncMock
-                }
-            }
-        }
-
-        describe("sync only") {
-            it("delegate") {
-                // given
-                let delegate = MockSynchronizer()
-                let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 10)
-
-                // when
-                sut.syncOnly(type: .cohort) {
-                }
-
-                // then
-                verify(exactly: 1) {
-                    delegate.syncOnlyMock
                 }
             }
         }

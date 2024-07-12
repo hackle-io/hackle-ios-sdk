@@ -1,10 +1,3 @@
-//
-//  InAppMessageUIExt.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/12.
-//
-
 import Foundation
 import UIKit
 
@@ -12,6 +5,8 @@ extension HackleInAppMessageUI {
 
     func createMessageView(context: InAppMessagePresentationContext) -> InAppMessageView? {
         switch (context.message.layout.displayType, context.message.layout.layoutType) {
+        case (.none, _):
+            return nil
         case (.modal, _):
             let attributes = ModalView.Attributes(orientation: InAppMessage.Orientation(UIUtils.interfaceOrientation))
             return ModalView(context: context, attributes: attributes)
@@ -28,6 +23,7 @@ extension HackleInAppMessageUI {
             }
             return BannerImageView(context: context, alignment: alignment, attributes: .defaults)
         default:
+            Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType), \(context.message.layout.layoutType)]")
             return nil
         }
     }
