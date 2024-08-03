@@ -60,6 +60,12 @@ extension InAppMessage.Message {
             $0.orientation == orientation
         }
     }
+
+    func buttonOrNil(horizontal: InAppMessage.HorizontalAlignment, vertical: InAppMessage.VerticalAlignment) -> PositionalButton? {
+        innerButtons.first { it in
+            it.alignment.horizontal == horizontal && it.alignment.vertical == vertical
+        }
+    }
 }
 
 extension InAppMessage.Message.Button {

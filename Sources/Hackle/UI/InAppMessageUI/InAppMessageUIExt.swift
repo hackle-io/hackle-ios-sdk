@@ -22,6 +22,8 @@ extension HackleInAppMessageUI {
                 return nil
             }
             return BannerImageView(context: context, alignment: alignment, attributes: .defaults)
+        case (.bottomSheet, _):
+            return BottomSheetView(context: context)
         default:
             Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType), \(context.message.layout.layoutType)]")
             return nil

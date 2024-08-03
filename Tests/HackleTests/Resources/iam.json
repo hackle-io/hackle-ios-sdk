@@ -224,6 +224,27 @@
                   "vertical": "BOTTOM"
                 }
               }
+            ],
+            "innerButtons": [
+              {
+                "button": {
+                  "text": "inner",
+                  "style": {
+                    "textColor": "#000000",
+                    "bgColor": "#FFFFFF",
+                    "borderColor": "#FFFFFF"
+                  },
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "CLOSE",
+                    "value": ""
+                  }
+                },
+                "alignment": {
+                  "horizontal": "RIGHT",
+                  "vertical": "BOTTOM"
+                }
+              }
             ]
           }
         ]

@@ -100,6 +100,16 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].outerButtons[0].button.action.type) == .close
             expect(iam.messageContext.messages[0].outerButtons[0].alignment.horizontal) == .right
             expect(iam.messageContext.messages[0].outerButtons[0].alignment.vertical) == .bottom
+
+            expect(iam.messageContext.messages[0].innerButtons.count) == 1
+            expect(iam.messageContext.messages[0].innerButtons[0].button.text) == "inner"
+            expect(iam.messageContext.messages[0].innerButtons[0].button.style.textColor) == "#000000"
+            expect(iam.messageContext.messages[0].innerButtons[0].button.style.bgColor) == "#FFFFFF"
+            expect(iam.messageContext.messages[0].innerButtons[0].button.style.borderColor) == "#FFFFFF"
+            expect(iam.messageContext.messages[0].innerButtons[0].button.action.behavior) == .click
+            expect(iam.messageContext.messages[0].innerButtons[0].button.action.type) == .close
+            expect(iam.messageContext.messages[0].innerButtons[0].alignment.horizontal) == .right
+            expect(iam.messageContext.messages[0].innerButtons[0].alignment.vertical) == .bottom
         }
 
         it("invalid") {

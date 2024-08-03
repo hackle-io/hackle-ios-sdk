@@ -97,3 +97,9 @@ extension UIResponder {
         }
     }
 }
+
+extension CGSize {
+    var aspectRatio: Double {
+        width / height
+    }
+}

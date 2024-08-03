@@ -107,7 +107,7 @@ extension HackleInAppMessageUI {
             invalidateIntrinsicContentSize()
         }
 
-        func align(to container: UIView) {
+        func alignOuter(to container: UIView) {
             switch (alignment.vertical, alignment.horizontal) {
             case (.top, .left):
                 anchors.bottom.equal(container.anchors.top)
