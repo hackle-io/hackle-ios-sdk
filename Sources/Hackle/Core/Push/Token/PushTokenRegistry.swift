@@ -1,7 +1,9 @@
 import Foundation
 
+/// This registry manages PushToken for application lifecycle scope.
+/// Persistent storage of PushToken is managed by `PushTokenManager`
 protocol PushTokenRegistry {
-    func currentToken() -> PushToken?
+    func registeredToken() -> PushToken?
     func register(token: PushToken, timestamp: Date)
     func flush()
 }
@@ -19,7 +21,7 @@ class DefaultPushTokenRegistry: PushTokenRegistry {
         listeners.append(listener)
     }
 
-    func currentToken() -> PushToken? {
+    func registeredToken() -> PushToken? {
         lock.read { () -> PushToken? in
             token
         }
@@ -32,18 +34,18 @@ class DefaultPushTokenRegistry: PushTokenRegistry {
             if token == currentToken {
                 return
             }
-            onTokenRegistered(token: token, timestamp: timestamp)
+            publishTokenRegistered(token: token, timestamp: timestamp)
         }
     }
 
     func flush() {
-        guard let token = currentToken() else {
+        guard let token = registeredToken() else {
             return
         }
-        onTokenRegistered(token: token, timestamp: Date())
+        publishTokenRegistered(token: token, timestamp: Date())
     }
 
-    private func onTokenRegistered(token: PushToken, timestamp: Date) {
+    private func publishTokenRegistered(token: PushToken, timestamp: Date) {
         for listener in listeners {
             listener.onTokenRegistered(token: token, timestamp: timestamp)
         }
