@@ -183,9 +183,6 @@ extension HackleInAppMessageUI {
 
             UIView.animate(
                 withDuration: 0.3,
-                delay: 0,
-                usingSpringWithDamping: 1,
-                initialSpringVelocity: 1,
                 animations: {
                     self.presented = true
                     self.superview?.layoutIfNeeded()
@@ -201,9 +198,6 @@ extension HackleInAppMessageUI {
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.3,
-                delay: 0,
-                usingSpringWithDamping: 1,
-                initialSpringVelocity: 1,
                 animations: {
                     self.presented = false
                     self.superview?.layoutIfNeeded()
