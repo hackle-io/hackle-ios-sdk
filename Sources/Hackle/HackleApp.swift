@@ -575,7 +575,7 @@ extension HackleApp {
             userManager: userManager,
             eventTracker: pushEventTracker
         )
-        userManager.addListener(listener: pushTokenManager)
+        sessionManager.addListener(listener: pushTokenManager)
         pushTokenRegistry.addListener(listener: pushTokenManager)
 
         // - Notification

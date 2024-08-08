@@ -103,7 +103,8 @@ extension InAppMessage {
             closeButton: closeButton,
             background: Message.Background(color: "#FFFFFF"),
             action: nil,
-            outerButtons: []
+            outerButtons: [],
+            innerButtons: []
         )
     }
 

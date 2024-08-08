@@ -18,12 +18,13 @@ extension HackleInAppMessageUI {
             self.attributes = attributes
             super.init(frame: .zero)
 
-            addView()
-            updateContent()
-            layoutContent()
+            addSubview(contentView)
 
             imageView?.addGestureRecognizer(tapImageViewGesture)
             imageView?.isUserInteractionEnabled = true
+
+            updateContent()
+            layoutContent()
 
             alpha = 0
         }
@@ -42,12 +43,6 @@ extension HackleInAppMessageUI {
             static let defaults = Self()
         }
 
-        // Apply Content
-
-        private func addView() {
-            addSubview(contentView)
-        }
-
         private func updateContent() {
             bindImage()
         }
@@ -62,6 +57,8 @@ extension HackleInAppMessageUI {
                 self.layoutContent()
             }
         }
+
+        // Layout
 
         private var contentConstraints: Constraints? = nil
 
@@ -99,33 +96,18 @@ extension HackleInAppMessageUI {
             layoutIfNeeded()
         }
 
-        // Orientation
-
-        func willTransition(orientation: InAppMessage.Orientation) {
-            guard context.inAppMessage.supports(orientation: orientation) else {
-                dismiss()
-                return
-            }
-
-            attributes.orientation = orientation
-            updateContent()
-            layoutContent()
-        }
-
-        // Layout
-
-        private var layoutConstraintsInstalled = false
-
         override func layoutSubviews() {
             super.layoutSubviews()
-            layoutConstraintsIfNeeded()
+            layoutFrameIfNeeded()
         }
 
-        private func layoutConstraintsIfNeeded() {
-            guard let superview = superview, !layoutConstraintsInstalled else {
+        private var frameConstraintsInstalled = false
+
+        private func layoutFrameIfNeeded() {
+            guard let superview = superview, !frameConstraintsInstalled else {
                 return
             }
-            layoutConstraintsInstalled = true
+            frameConstraintsInstalled = true
 
             Constraints {
                 // - width
@@ -152,6 +134,19 @@ extension HackleInAppMessageUI {
             superview.layoutIfNeeded()
         }
 
+        // Orientation
+
+        func willTransition(orientation: InAppMessage.Orientation) {
+            guard context.inAppMessage.supports(orientation: orientation) else {
+                dismiss()
+                return
+            }
+
+            attributes.orientation = orientation
+            updateContent()
+            layoutContent()
+        }
+
         // Presentation
 
         public var presented: Bool = false {
@@ -162,7 +157,7 @@ extension HackleInAppMessageUI {
 
         @objc
         func present() {
-            layoutConstraintsIfNeeded()
+            layoutFrameIfNeeded()
 
             UIView.performWithoutAnimation {
                 superview?.layoutIfNeeded()
@@ -170,7 +165,7 @@ extension HackleInAppMessageUI {
 
             window?.makeKey()
             UIView.animate(
-                withDuration: 0,
+                withDuration: 0.05,
                 animations: { self.presented = true },
                 completion: { _ in
                     self.handle(event: .impression)
@@ -182,7 +177,7 @@ extension HackleInAppMessageUI {
         func dismiss() {
             isUserInteractionEnabled = false
             UIView.animate(
-                withDuration: 0,
+                withDuration: 0.05,
                 animations: { self.presented = false },
                 completion: { _ in
                     self.handle(event: .close)

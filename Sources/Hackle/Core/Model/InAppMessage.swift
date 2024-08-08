@@ -139,6 +139,7 @@ extension InAppMessage {
         case none = "NONE"
         case modal = "MODAL"
         case banner = "BANNER"
+        case bottomSheet = "BOTTOM_SHEET"
     }
 
     enum LayoutType: String, Codable {
@@ -231,8 +232,21 @@ extension InAppMessage {
         let background: Background
         let action: Action?
         let outerButtons: [PositionalButton]
+        let innerButtons: [PositionalButton]
 
-        init(variationKey: String?, lang: String, layout: Layout, images: [Image], text: Text?, buttons: [Button], closeButton: Button?, background: Background, action: Action?, outerButtons: [PositionalButton]) {
+        init(
+            variationKey: String?,
+            lang: String,
+            layout: Layout,
+            images: [Image],
+            text: Text?,
+            buttons: [Button],
+            closeButton: Button?,
+            background: Background,
+            action: Action?,
+            outerButtons: [PositionalButton],
+            innerButtons: [PositionalButton]
+        ) {
             self.variationKey = variationKey
             self.lang = lang
             self.layout = layout
@@ -243,6 +257,7 @@ extension InAppMessage {
             self.background = background
             self.action = action
             self.outerButtons = outerButtons
+            self.innerButtons = innerButtons
         }
 
         class Layout {
