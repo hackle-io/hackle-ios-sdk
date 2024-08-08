@@ -441,6 +441,7 @@ class InAppMessageDto: Codable {
             var background: BackgroundDto
             var action: ActionDto?
             var outerButtons: [PositionalButtonDto]
+            var innerButtons: [PositionalButtonDto]
 
             class LayoutDto: Codable {
                 var displayType: String
@@ -684,6 +685,9 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
         guard let outerButtons = outerButtons.mapOrNil({ $0.toPositionalButtonOrNil() }) else {
             return nil
         }
+        guard let innerButtons = innerButtons.mapOrNil({ $0.toPositionalButtonOrNil() }) else {
+            return nil
+        }
 
         return InAppMessage.Message(
             variationKey: variationKey,
@@ -695,7 +699,8 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             closeButton: xButton,
             background: InAppMessage.Message.Background(color: background.color),
             action: messageAction,
-            outerButtons: outerButtons
+            outerButtons: outerButtons,
+            innerButtons: innerButtons
         )
     }
 }
