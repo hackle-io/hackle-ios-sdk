@@ -4,13 +4,14 @@ protocol PushTokenManager {
     func currentToken() -> PushToken?
 }
 
-class DefaultPushTokenManager: PushTokenManager, PushTokenListener, UserListener {
+class DefaultPushTokenManager: PushTokenManager, PushTokenListener, SessionListener {
 
     private static let PUSH_TOKEN_KEY = "apns_token"
 
     private let repository: KeyValueRepository
     private let userManager: UserManager
     private let eventTracker: PushEventTracker
+    private var sessionStarted: Bool = false
 
     init(repository: KeyValueRepository, userManager: UserManager, eventTracker: PushEventTracker) {
         self.repository = repository
@@ -30,13 +31,21 @@ class DefaultPushTokenManager: PushTokenManager, PushTokenListener, UserListener
             return
         }
         repository.putString(key: DefaultPushTokenManager.PUSH_TOKEN_KEY, value: token.value)
-        eventTracker.trackPushToken(pushToken: token, user: userManager.currentUser, timestamp: timestamp)
+
+        if sessionStarted {
+            eventTracker.trackPushToken(pushToken: token, user: userManager.currentUser, timestamp: timestamp)
+        }
     }
 
-    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+    func onSessionStarted(session: Session, user: User, timestamp: Date) {
+        sessionStarted = true
         guard let token = currentToken() else {
             return
         }
-        eventTracker.trackPushToken(pushToken: token, user: newUser, timestamp: timestamp)
+        eventTracker.trackPushToken(pushToken: token, user: user, timestamp: timestamp)
+    }
+
+    func onSessionEnded(session: Session, user: User, timestamp: Date) {
+        // do nothing
     }
 }

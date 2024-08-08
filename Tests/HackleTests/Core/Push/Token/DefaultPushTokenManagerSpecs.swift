@@ -79,11 +79,11 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
             }
         }
 
-        context("onUserUpdated") {
+        context("onSessionStarted") {
             it("when current token is nil then do nothing") {
-                sut.onUserUpdated(
-                    oldUser: User.builder().deviceId("old").build(),
-                    newUser: User.builder().deviceId("new").build(),
+                sut.onSessionStarted(
+                    session: Session.create(timestamp: Date(timeIntervalSince1970: 42)),
+                    user: User.builder().deviceId("device").build(),
                     timestamp: Date(timeIntervalSince1970: 42)
                 )
                 verify(exactly: 0) {
@@ -96,9 +96,9 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
                 repository.putString(key: "apns_token", value: "token")
 
                 // when
-                sut.onUserUpdated(
-                    oldUser: User.builder().deviceId("old").build(),
-                    newUser: User.builder().deviceId("new").build(),
+                sut.onSessionStarted(
+                    session: Session.create(timestamp: Date(timeIntervalSince1970: 42)),
+                    user: User.builder().deviceId("device").build(),
                     timestamp: Date(timeIntervalSince1970: 42)
                 )
 
