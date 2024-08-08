@@ -1,10 +1,3 @@
-//
-//  InAppMessageUiModalView.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/05.
-//
-
 import Foundation
 import UIKit
 
@@ -20,16 +13,26 @@ extension HackleInAppMessageUI {
             self.attributes = attributes
             super.init(frame: .zero)
 
-            addView()
-            updateContent()
-            layoutContent()
-
+            // Frame (outside of modal)
+            backgroundColor = attributes.backgroundColor
             addGestureRecognizer(tapBackgroundGesture)
+            alpha = 0
+
+            // Content (inside of modal)
+            addSubview(contentView)
+            contentView.backgroundColor = messageBackgroundColor
+
+            // Image
             imageView?.addGestureRecognizer(tapImageViewGesture)
             imageView?.isUserInteractionEnabled = true
 
-            backgroundColor = attributes.backgroundColor
-            alpha = 0
+            // OuterButtons
+            for button in outerButtons {
+                addSubview(button)
+            }
+
+            updateContent()
+            layoutContent()
         }
 
         public required init?(coder: NSCoder) {
@@ -50,6 +53,31 @@ extension HackleInAppMessageUI {
             static let defaults = Self()
         }
 
+        var imageAspectRatio: CGSize? {
+            switch context.message.layout.layoutType {
+            case .none, .textOnly:
+                return nil
+            case .imageText:
+                return .init(width: 290, height: 100)
+            case .imageOnly, .image:
+                switch attributes.orientation {
+                case .vertical:
+                    return .init(width: 200, height: 300)
+                case .horizontal:
+                    return .init(width: 300, height: 200)
+                }
+            }
+        }
+
+        var messageBackgroundColor: UIColor? {
+            switch context.message.layout.layoutType {
+            case .none, .image:
+                return nil
+            case .textOnly, .imageText, .imageOnly:
+                return context.message.backgroundColor
+            }
+        }
+
         // Apply Content
 
         private func addView() {
@@ -60,7 +88,6 @@ extension HackleInAppMessageUI {
         }
 
         private func updateContent() {
-            contentView.backgroundColor = context.message.backgroundColor
             bindImage()
             bindText()
         }
@@ -88,6 +115,8 @@ extension HackleInAppMessageUI {
             textView.attributedText = text
         }
 
+        // Layout
+
         private var contentConstraints: Constraints? = nil
 
         private func layoutContent() {
@@ -109,20 +138,21 @@ extension HackleInAppMessageUI {
                 // - width
                 contentView.anchors.width.lessThanOrEqual(attributes.maxWidth)
                 contentView.anchors.width.greaterThanOrEqual(attributes.minWidth).priority = .required - 1
-                contentView.anchors.leading.greaterThanOrEqual(layoutMarginsGuide.anchors.leading, constant: attributes.margin.left).priority = .required - 1
-                contentView.anchors.trailing.lessThanOrEqual(layoutMarginsGuide.anchors.trailing, constant: attributes.margin.right).priority = .required - 1
+                contentView.anchors.pin(to: layoutMarginsGuide, insets: attributes.margin, axis: .horizontal, priority: .required - 1)
                 contentView.anchors.centerX.align()
                 // - height
                 contentView.anchors.height.lessThanOrEqual(attributes.maxHeight)
-                contentView.anchors.top.greaterThanOrEqual(anchors.top, constant: attributes.margin.top).priority = .required - 1
-                contentView.anchors.bottom.lessThanOrEqual(anchors.bottom, constant: attributes.margin.bottom).priority = .required - 1
+                contentView.anchors.lessThanOrEqual(to: layoutMarginsGuide, insets: attributes.margin, axis: .vertical, priority: .required - 1)
                 contentView.anchors.centerY.align()
 
                 // ImageView
-                if let imageView = imageView, let image = imageView.image {
-                    let size = image.size
-                    let ratio = size.width / size.height
-                    imageView.anchors.width.equal(imageView.anchors.height.multiply(by: ratio))
+                if let imageView = imageView {
+                    imageView.anchors.pin(axis: .horizontal)
+                    if let image = imageView.image {
+                        imageView.anchors.size.aspectRatio(image.size)
+                    } else if let imageAspectRatio = imageAspectRatio {
+                        imageView.anchors.size.aspectRatio(imageAspectRatio)
+                    }
                 }
 
                 // TextView
@@ -139,19 +169,38 @@ extension HackleInAppMessageUI {
 
                 // CloseButton
                 if let closeButton = closeButton {
-                    closeButton.anchors.height.equal(closeButton.anchors.width)
+                    closeButton.anchors.size.equal(.init(width: 52, height: 52))
                     closeButton.anchors.top.pin()
                     closeButton.anchors.trailing.pin()
                 }
 
                 // OuterButtons
                 for button in outerButtons {
-                    button.align(to: contentView)
+                    button.alignOuter(to: contentView)
                 }
             }
 
             setNeedsLayout()
             layoutIfNeeded()
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            layoutFrameIfNeeded()
+        }
+
+        private var frameConstraintsInstalled = false
+
+        private func layoutFrameIfNeeded() {
+            guard let superview = superview, !frameConstraintsInstalled else {
+                return
+            }
+            frameConstraintsInstalled = true
+
+            anchors.pin()
+
+            setNeedsLayout()
+            superview.layoutIfNeeded()
         }
 
         // Orientation
@@ -167,27 +216,6 @@ extension HackleInAppMessageUI {
             layoutContent()
         }
 
-        // MARK - Layout
-
-        private var layoutConstraintsInstalled = false
-
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            layoutConstraintsIfNeeded()
-        }
-
-        private func layoutConstraintsIfNeeded() {
-            guard let superview = superview, !layoutConstraintsInstalled else {
-                return
-            }
-            layoutConstraintsInstalled = true
-
-            anchors.pin()
-
-            setNeedsLayout()
-            superview.layoutIfNeeded()
-        }
-
         // Presentation
 
         public var presented: Bool = false {
@@ -198,7 +226,7 @@ extension HackleInAppMessageUI {
 
         @objc
         func present() {
-            layoutConstraintsIfNeeded()
+            layoutFrameIfNeeded()
 
             UIView.performWithoutAnimation {
                 superview?.layoutIfNeeded()
@@ -206,7 +234,7 @@ extension HackleInAppMessageUI {
 
             window?.makeKey()
             UIView.animate(
-                withDuration: 0,
+                withDuration: 0.1,
                 animations: { self.presented = true },
                 completion: { _ in
                     self.handle(event: .impression)
@@ -218,7 +246,7 @@ extension HackleInAppMessageUI {
         func dismiss() {
             isUserInteractionEnabled = false
             UIView.animate(
-                withDuration: 0,
+                withDuration: 0.1,
                 animations: { self.presented = false },
                 completion: { _ in
                     self.handle(event: .close)
@@ -285,7 +313,7 @@ extension HackleInAppMessageUI {
             let button = UIButton(type: .custom)
             button.setTitle("✕", for: .normal)
             button.setTitleColor(closeButton.textColor, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 22)
+            button.titleLabel?.font = .systemFont(ofSize: 20)
             button.onClick { [weak self] in
                 self?.handle(event: .action(closeButton.action, .xButton))
 

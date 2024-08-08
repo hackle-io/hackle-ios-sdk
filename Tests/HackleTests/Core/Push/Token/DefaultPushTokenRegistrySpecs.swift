@@ -11,24 +11,24 @@ class DefaultPushTokenRegistrySpecs: QuickSpec {
             let listener = MockPushTokenListener()
             sut.addListener(listener: listener)
 
-            expect(sut.currentToken()).to(beNil())
+            expect(sut.registeredToken()).to(beNil())
 
             let token = PushToken(platformType: .ios, providerType: .apn, value: "token")
             sut.register(token: token, timestamp: Date(timeIntervalSince1970: 42))
-            expect(sut.currentToken()) == token
+            expect(sut.registeredToken()) == token
             verify(exactly: 1) {
                 listener.onTokenRegisteredMock
             }
 
             sut.register(token: token, timestamp: Date(timeIntervalSince1970: 42))
-            expect(sut.currentToken()) == token
+            expect(sut.registeredToken()) == token
             verify(exactly: 1) {
                 listener.onTokenRegisteredMock
             }
 
             let token2 = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
             sut.register(token: token2, timestamp: Date(timeIntervalSince1970: 43))
-            expect(sut.currentToken()) == token2
+            expect(sut.registeredToken()) == token2
             verify(exactly: 2) {
                 listener.onTokenRegisteredMock
             }
