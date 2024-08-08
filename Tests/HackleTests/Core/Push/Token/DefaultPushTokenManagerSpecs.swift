@@ -33,13 +33,29 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
         }
 
         context("onTokenRegistered") {
+
+            it("when current token and new token are same then do nothing") {
+                // given
+                repository.putString(key: "apns_token", value: "token")
+                let token = PushToken(platformType: .ios, providerType: .apn, value: "token")
+
+                // when
+                sut.onTokenRegistered(token: token, timestamp: Date(timeIntervalSince1970: 42))
+
+                // then
+                verify(exactly: 0) {
+                    eventTracker.trackPushTokenMock
+                }
+            }
+
             it("when current token is nil then register token") {
                 // given
                 let token = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
                 every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
 
                 // when
-                sut.onTokenRegistered(token: token, timestamp: Date(timeIntervalSince1970: 42))
+                sut.onSessionStarted(session: Session.create(timestamp: Date()), user: User.builder().build(), timestamp: Date())
+                sut.onTokenRegistered(token: token, timestamp: Date())
 
                 // then
                 expect(repository.getString(key: "apns_token")) == "new_token"
@@ -55,24 +71,26 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
                 let token = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
 
                 // when
+                sut.onSessionStarted(session: Session.create(timestamp: Date()), user: User.builder().build(), timestamp: Date())
                 sut.onTokenRegistered(token: token, timestamp: Date(timeIntervalSince1970: 42))
 
                 // then
                 expect(repository.getString(key: "apns_token")) == "new_token"
-                verify(exactly: 1) {
+                verify(exactly: 2) {
                     eventTracker.trackPushTokenMock
                 }
             }
 
-            it("when current token and new token are same then do nothing") {
+            it("when session not started then do not register token") {
                 // given
-                repository.putString(key: "apns_token", value: "token")
-                let token = PushToken(platformType: .ios, providerType: .apn, value: "token")
+                let token = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
+                every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
 
                 // when
-                sut.onTokenRegistered(token: token, timestamp: Date(timeIntervalSince1970: 42))
+                sut.onTokenRegistered(token: token, timestamp: Date())
 
                 // then
+                expect(repository.getString(key: "apns_token")) == "new_token"
                 verify(exactly: 0) {
                     eventTracker.trackPushTokenMock
                 }
