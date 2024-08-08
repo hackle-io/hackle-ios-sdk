@@ -128,7 +128,11 @@ struct AnchorAlignment {
 }
 
 struct AnchorSize<Item: LayoutItem> {
-    let anchors: Anchors<Item>
+    private let anchors: Anchors<Item>
+
+    init(anchors: Anchors<Item>) {
+        self.anchors = anchors
+    }
 
     @discardableResult
     func equal(_ size: CGSize) -> [NSLayoutConstraint] {
@@ -136,6 +140,11 @@ struct AnchorSize<Item: LayoutItem> {
             anchors.width.equal(size.width),
             anchors.height.equal(size.height)
         ]
+    }
+
+    @discardableResult
+    func aspectRatio(_ size: CGSize) -> NSLayoutConstraint {
+        anchors.width.equal(anchors.height.multiply(by: size.aspectRatio))
     }
 }
 

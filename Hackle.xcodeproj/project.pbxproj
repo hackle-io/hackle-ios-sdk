@@ -343,6 +343,7 @@
 		EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */; };
 		EE60C0A32C37B13300830F0A /* Updated.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE60C0A22C37B13300830F0A /* Updated.swift */; };
 		EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */; };
+		EE6728202C50BE7000167355 /* InAppMessageUIBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */; };
 		EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */; };
 		EE750E2D2ADE704400DCE34F /* MockHackleCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */; };
 		EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */; };
@@ -857,6 +858,7 @@
 		EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserCohortFetcher.swift; sourceTree = "<group>"; };
 		EE60C0A22C37B13300830F0A /* Updated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updated.swift; sourceTree = "<group>"; };
 		EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBottomSheetView.swift; sourceTree = "<group>"; };
 		EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentExtensions.swift; sourceTree = "<group>"; };
 		EE750E2C2ADE704400DCE34F /* MockHackleCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHackleCore.swift; sourceTree = "<group>"; };
 		EE789E2029EFD7670088D8A6 /* UserEventFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventFactory.swift; sourceTree = "<group>"; };
@@ -2278,6 +2280,7 @@
 				EE80E01B2A2DC79600FB12CC /* InAppMessageView.swift */,
 				EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */,
 				EE80E0252A2DD5EC00FB12CC /* InAppMessageUIModalView.swift */,
+				EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */,
 				EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */,
 				EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */,
 				EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */,
@@ -2849,6 +2852,7 @@
 				EE29D95C29CD825400B1FEAA /* KeyValueRepository.swift in Sources */,
 				EE29D98929CD825400B1FEAA /* Experiment.swift in Sources */,
 				EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */,
+				EE6728202C50BE7000167355 /* InAppMessageUIBottomSheetView.swift in Sources */,
 				EE4B810A2C0075F400719C41 /* WebViewWrapperUserEventFilter.swift in Sources */,
 				EE29DAB829CD842100B1FEAA /* HackleUserExplorerButton.swift in Sources */,
 				EE29D99829CD825500B1FEAA /* RemoteConfigTargetRuleDeterminer.swift in Sources */,

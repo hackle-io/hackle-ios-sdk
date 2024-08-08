@@ -530,7 +530,7 @@ class HackleAppSpecs: QuickSpec {
             it("setPushToken") {
                 let deviceToken = "token".data(using: .utf8)!
                 sut.setPushToken(deviceToken)
-                expect(pushTokenRegistry.currentToken()).notTo(beNil())
+                expect(pushTokenRegistry.registeredToken()).notTo(beNil())
             }
         }
     }

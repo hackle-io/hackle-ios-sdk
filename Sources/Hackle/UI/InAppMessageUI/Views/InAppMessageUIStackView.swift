@@ -18,7 +18,7 @@ extension HackleInAppMessageUI {
             addSubview(stack)
             layoutMargins = .zero
             stack.layoutMargins = .zero
-            stack.anchors.pin(to: layoutMarginsGuide)
+            stack.anchors.pin()
         }
 
         convenience init(arrangedSubviews subviews: [UIView]) {
