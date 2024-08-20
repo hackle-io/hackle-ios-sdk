@@ -65,7 +65,13 @@ class HackleFeatureFlagTableViewCell: UITableViewCell {
     }
 
     @IBAction func resetButtonTapped(_ sender: UIButton) {
-        overrideResetListener.onOverrideReset(experiment: item.experiment)
+        guard let text = variationButton.titleLabel?.text, let isOn = Bool(text) else {
+            return
+        }
+        guard let variation = item.experiment.variations.first(where: { it in it.isOn == isOn }) else {
+            return
+        }
+        overrideResetListener.onOverrideReset(experiment: item.experiment, variation: variation)
     }
 
     private func onOverrideSelected(variation: Variation) {
@@ -83,7 +89,7 @@ private extension HackleFeatureFlagItem {
     }
 
     var descLabel: String {
-        "\(experiment.status.rawValue)"
+        "\(experiment.status.rawValue) | \(experiment.identifierType)"
     }
 }
 

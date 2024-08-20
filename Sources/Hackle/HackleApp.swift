@@ -593,12 +593,15 @@ extension HackleApp {
 
         // - UserExplorer
 
+        let devToolsAPI = DefaultDevToolsAPI(sdk: sdk, url: config.apiUrl, httpClient: httpClient)
+
         let userExplorer = DefaultHackleUserExplorer(
             core: core,
             userManager: userManager,
             pushTokenManager: pushTokenManager,
             abTestOverrideStorage: abOverrideStorage,
-            featureFlagOverrideStorage: ffOverrideStorage
+            featureFlagOverrideStorage: ffOverrideStorage,
+            devToolsAPI: devToolsAPI
         )
 
         // - Metrics
