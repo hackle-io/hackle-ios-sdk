@@ -11,6 +11,7 @@ public class HackleConfig: NSObject {
 
     var sdkUrl: URL
     var eventUrl: URL
+    var apiUrl: URL
     var monitoringUrl: URL
     var mode: HackleAppMode
     var automaticScreenTracking: Bool
@@ -25,6 +26,7 @@ public class HackleConfig: NSObject {
     init(builder: HackleConfigBuilder) {
         sdkUrl = builder.sdkUrl
         eventUrl = builder.eventUrl
+        apiUrl = builder.apiUrl
         monitoringUrl = builder.monitoringUrl
         mode = builder.mode
         automaticScreenTracking = builder.automaticScreenTracking
@@ -62,6 +64,7 @@ public class HackleConfigBuilder: NSObject {
 
     var sdkUrl: URL = URL(string: "https://client-sdk.hackle.io")!
     var eventUrl: URL = URL(string: "https://event.hackle.io")!
+    var apiUrl: URL = URL(string: "https://api.hackle.io")!
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
 
     var mode: HackleAppMode = .native
@@ -87,6 +90,11 @@ public class HackleConfigBuilder: NSObject {
 
     @objc public func eventUrl(_ eventUrl: URL) -> HackleConfigBuilder {
         self.eventUrl = eventUrl
+        return self
+    }
+
+    @objc public func apiUrl(_ apiUrl: URL) -> HackleConfigBuilder {
+        self.apiUrl = apiUrl
         return self
     }
 

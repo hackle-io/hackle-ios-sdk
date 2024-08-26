@@ -13,7 +13,14 @@ struct HttpResponse {
 
 
 extension HttpResponse {
-    
+
+    var statusCode: Int? {
+        guard let urlResponse = urlResponse as? HTTPURLResponse else {
+            return nil
+        }
+        return urlResponse.statusCode
+    }
+
     var isSuccessful: Bool {
         guard let urlResponse = urlResponse as? HTTPURLResponse, error == nil else {
             return false
