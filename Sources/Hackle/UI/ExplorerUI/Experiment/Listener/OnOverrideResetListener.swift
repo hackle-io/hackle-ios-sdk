@@ -9,5 +9,5 @@ import Foundation
 
 
 protocol OnOverrideResetListener {
-    func onOverrideReset(experiment: Experiment)
+    func onOverrideReset(experiment: Experiment, variation: Variation)
 }

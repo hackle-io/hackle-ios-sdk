@@ -18,9 +18,9 @@ protocol HackleUserExplorer {
 
     func getAbTestOverrides() -> [Int64: Int64]
 
-    func setAbTestOverride(experiment: Experiment, variationId: Int64)
+    func setAbTestOverride(experiment: Experiment, variation: Variation)
 
-    func resetAbTestOverride(experiment: Experiment)
+    func resetAbTestOverride(experiment: Experiment, variation: Variation)
 
     func resetAllAbTestOverride()
 
@@ -28,9 +28,9 @@ protocol HackleUserExplorer {
 
     func getFeatureFlagOverrides() -> [Int64: Int64]
 
-    func setFeatureFlagOverride(experiment: Experiment, variationId: Int64)
+    func setFeatureFlagOverride(experiment: Experiment, variation: Variation)
 
-    func resetFeatureFlagOverride(experiment: Experiment)
+    func resetFeatureFlagOverride(experiment: Experiment, variation: Variation)
 
     func resetAllFeatureFlagOverride()
 }
@@ -42,19 +42,22 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     private let pushTokenManager: PushTokenManager
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
+    private let devToolsAPI: DevToolsAPI
 
     init(
         core: HackleCore,
         userManager: UserManager,
         pushTokenManager: PushTokenManager,
         abTestOverrideStorage: HackleUserManualOverrideStorage,
-        featureFlagOverrideStorage: HackleUserManualOverrideStorage
+        featureFlagOverrideStorage: HackleUserManualOverrideStorage,
+        devToolsAPI: DevToolsAPI
     ) {
         self.core = core
         self.userManager = userManager
         self.pushTokenManager = pushTokenManager
         self.abTestOverrideStorage = abTestOverrideStorage
         self.featureFlagOverrideStorage = featureFlagOverrideStorage
+        self.devToolsAPI = devToolsAPI
     }
 
     func currentUser() -> HackleUser {
@@ -77,19 +80,25 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         abTestOverrideStorage.getAll()
     }
 
-    func setAbTestOverride(experiment: Experiment, variationId: Int64) {
-        abTestOverrideStorage.set(experiment: experiment, variationId: variationId)
+    func setAbTestOverride(experiment: Experiment, variation: Variation) {
+        abTestOverrideStorage.set(experiment: experiment, variationId: variation.id)
         increment(experimentType: .abTest, operation: "set")
+
+        devToolsAPI.addExperimentOverrides(experimentKey: experiment.key, request: createOverrideRequest(variation: variation))
     }
 
-    func resetAbTestOverride(experiment: Experiment) {
+    func resetAbTestOverride(experiment: Experiment, variation: Variation) {
         abTestOverrideStorage.remove(experiment: experiment)
         increment(experimentType: .abTest, operation: "reset")
+
+        devToolsAPI.removeExperimentOverrides(experimentKey: experiment.key, request: createOverrideRequest(variation: variation))
     }
 
     func resetAllAbTestOverride() {
         abTestOverrideStorage.clear()
         increment(experimentType: .abTest, operation: "reset.all")
+
+        devToolsAPI.removeAllExperimentOverrides(request: createOverrideRequest())
     }
 
     func getFeatureFlagDecisions() -> [(Experiment, FeatureFlagDecision)] {
@@ -104,19 +113,36 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         featureFlagOverrideStorage.getAll()
     }
 
-    func setFeatureFlagOverride(experiment: Experiment, variationId: Int64) {
-        featureFlagOverrideStorage.set(experiment: experiment, variationId: variationId)
+    func setFeatureFlagOverride(experiment: Experiment, variation: Variation) {
+        featureFlagOverrideStorage.set(experiment: experiment, variationId: variation.id)
         increment(experimentType: .featureFlag, operation: "set")
+
+        devToolsAPI.addFeatureFlagOverrides(experimentKey: experiment.key, request: createOverrideRequest(variation: variation))
     }
 
-    func resetFeatureFlagOverride(experiment: Experiment) {
+    func resetFeatureFlagOverride(experiment: Experiment, variation: Variation) {
         featureFlagOverrideStorage.remove(experiment: experiment)
         increment(experimentType: .featureFlag, operation: "reset")
+
+        devToolsAPI.removeFeatureFlagOverrides(experimentKey: experiment.key, request: createOverrideRequest(variation: variation))
     }
 
     func resetAllFeatureFlagOverride() {
         featureFlagOverrideStorage.clear()
         increment(experimentType: .featureFlag, operation: "reset.all")
+
+        devToolsAPI.removeAllFeatureFlagOverrides(request: createOverrideRequest())
+    }
+
+    private func createOverrideRequest(variation: Variation? = nil) -> OverrideRequest {
+        let hackleUser = currentUser()
+        let user = userManager.currentUser.toBuilder()
+            .id(hackleUser.id)
+            .deviceId(hackleUser.deviceId)
+            .userId(hackleUser.userId)
+            .properties(hackleUser.properties)
+            .build()
+        return OverrideRequest(user: user, variation: variation)
     }
 
     private func increment(experimentType: ExperimentType, operation: String) {
