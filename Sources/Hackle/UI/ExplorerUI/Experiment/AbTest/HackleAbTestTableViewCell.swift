@@ -65,7 +65,13 @@ class HackleAbTestTableViewCell: UITableViewCell {
     }
 
     @IBAction func resetButtonTapped(_ sender: UIButton) {
-        overrideResetListener.onOverrideReset(experiment: item.experiment)
+        guard let variationKey = variationButton.titleLabel?.text else {
+            return
+        }
+        guard let variation = item.experiment.getVariationOrNil(variationKey: variationKey) else {
+            return
+        }
+        overrideResetListener.onOverrideReset(experiment: item.experiment, variation: variation)
     }
 
     private func onOverrideSelected(variation: Variation) {
@@ -90,7 +96,8 @@ private extension HackleAbTestItem {
             experiment.variations.map { it in
                     it.key
                 }
-                .joined(separator: "/")
+                .joined(separator: "/"),
+            experiment.identifierType
         ]
             .joined(separator: " | ")
     }

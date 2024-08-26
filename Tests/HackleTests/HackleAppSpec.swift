@@ -40,7 +40,8 @@ class HackleAppSpecs: QuickSpec {
                 userManager: userManager,
                 pushTokenManager: MockPushTokenManager(),
                 abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository())
+                featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
+                devToolsAPI: MockDevToolsAPI()
             )
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             sut = HackleApp(
