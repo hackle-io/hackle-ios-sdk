@@ -61,12 +61,12 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     func onOverrideSet(experiment: Experiment, variation: Variation) {
-        explorer.setAbTestOverride(experiment: experiment, variationId: variation.id)
+        explorer.setAbTestOverride(experiment: experiment, variation: variation)
         fetchAndUpdate()
     }
 
-    func onOverrideReset(experiment: Experiment) {
-        explorer.resetAbTestOverride(experiment: experiment)
+    func onOverrideReset(experiment: Experiment, variation: Variation) {
+        explorer.resetAbTestOverride(experiment: experiment, variation: variation)
         fetchAndUpdate()
     }
 }

@@ -61,12 +61,12 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
     }
 
     func onOverrideSet(experiment: Experiment, variation: Variation) {
-        explorer.setFeatureFlagOverride(experiment: experiment, variationId: variation.id)
+        explorer.setFeatureFlagOverride(experiment: experiment, variation: variation)
         fetchAndUpdate()
     }
 
-    func onOverrideReset(experiment: Experiment) {
-        explorer.resetFeatureFlagOverride(experiment: experiment)
+    func onOverrideReset(experiment: Experiment, variation: Variation) {
+        explorer.resetFeatureFlagOverride(experiment: experiment, variation: variation)
         fetchAndUpdate()
     }
 }
