@@ -87,6 +87,10 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
         else {
             return
         }
+        
+        if let ui = view.controller?.ui, ui.isRunOnlyCustomAction {
+            return
+        }
 
         handler.handle(view: view, action: action)
     }

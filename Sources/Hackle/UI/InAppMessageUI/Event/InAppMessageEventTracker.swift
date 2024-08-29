@@ -57,7 +57,7 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .property("action_area", area.rawValue)
-                .property("action_type", action.type.rawValue)
+                .property("action_type", action.actionType.rawValue)
                 .property("action_value", action.value)
                 .property("button_text", text)
                 .build()

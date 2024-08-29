@@ -36,9 +36,17 @@ extension HackleInAppMessageUI {
         }
 
         // LifeCycle
-
         override func loadView() {
             self.view = containerView
+        }
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+        }
+        
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            self.ui?.delegate?.onWillOpen?(inAppMessage: self.context.inAppMessage)
         }
 
         override func viewDidAppear(_ animated: Bool) {
@@ -50,10 +58,21 @@ extension HackleInAppMessageUI {
             view.addSubview(messageView)
             messageView.present()
             presented = true
+            
+            self.ui?.delegate?.onDidOpen?(inAppMessage: self.context.inAppMessage)
+        }
+        
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            self.ui?.delegate?.onWillClose?(inAppMessage: self.context.inAppMessage)
+        }
+        
+        override func viewDidDisappear(_ animated: Bool) {
+            super.viewDidDisappear(animated)
+            self.ui?.delegate?.onDidClose?(inAppMessage: self.context.inAppMessage)
         }
 
         // Orientation
-
         override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
             coordinator.animate { context in

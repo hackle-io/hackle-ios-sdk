@@ -50,10 +50,11 @@ extension InAppMessageView {
 
     func handle(event: InAppMessage.Event) {
         guard let controller = controller,
-              let ui = controller.ui
+              let ui = controller.ui,
+                let eventHandler = ui.eventHandler
         else {
             return
         }
-        ui.eventHandler.handle(view: self, event: event)
+        eventHandler.handle(view: self, event: event)
     }
 }

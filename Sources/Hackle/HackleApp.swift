@@ -7,7 +7,6 @@ import WebKit
 
 /// Entry point of Hackle Sdk.
 @objc public final class HackleApp: NSObject, HackleAppProtocol {
-
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
@@ -20,6 +19,7 @@ import WebKit
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
     private let device: Device
+    
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
     internal let mode: HackleAppMode
@@ -41,7 +41,7 @@ import WebKit
             userManager.currentUser
         }
     }
-
+    
     init(
         mode: HackleAppMode,
         sdk: Sdk,
@@ -128,6 +128,11 @@ import WebKit
             .set(key, value)
             .build()
         updateUserProperties(operations: operations, completion: completion)
+    }
+    
+    @objc public func setInAppMessageDeleagte(delegate: HackleInAppMessageDelegate?, isRunOnlyCustomAction: Bool) {
+        HackleInAppMessageUI.shared.delegate = delegate
+        HackleInAppMessageUI.shared.isRunOnlyCustomAction = isRunOnlyCustomAction
     }
 
     @objc public func updateUserProperties(operations: PropertyOperations) {
@@ -241,7 +246,7 @@ import WebKit
     @objc public func setPushToken(_ deviceToken: Data) {
         pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
-
+    
     @objc public func fetch(_ completion: @escaping () -> ()) {
         fetchThrottler.execute(
             accept: {
@@ -554,12 +559,11 @@ extension HackleApp {
             eventTracker: DefaultInAppMessageEventTracker(core: core),
             processorFactory: inAppMessageEventProcessorFactory
         )
-        let inAppMessageUI = HackleInAppMessageUI(
-            eventHandler: inAppMessageEventHandler
-        )
+        
+        HackleInAppMessageUI.shared.setup(eventHandler: inAppMessageEventHandler)
         let inAppMessageManager = InAppMessageManager(
             determiner: inAppMessageDeterminer,
-            presenter: inAppMessageUI
+            presenter: HackleInAppMessageUI.shared
         )
         eventPublisher.addListener(listener: inAppMessageManager)
 

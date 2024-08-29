@@ -10,18 +10,22 @@ import UIKit
 
 @objc(HackleInAppMessageUI)
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
-
-    let eventHandler: InAppMessageEventHandler
-
-    init(eventHandler: InAppMessageEventHandler) {
-        self.eventHandler = eventHandler
-        super.init()
-    }
-
+    static let shared = HackleInAppMessageUI()
+    
+    var eventHandler: InAppMessageEventHandler?
     var window: Window?
-
+    var delegate: HackleInAppMessageDelegate?
+    var isRunOnlyCustomAction: Bool = false
+    
     var currentMessageView: InAppMessageView? {
         window?.messageViewController?.messageView
+    }
+    
+    private override init() {}
+    
+    func setup(eventHandler: InAppMessageEventHandler, delegate: HackleInAppMessageDelegate? = nil) {
+        self.eventHandler = eventHandler
+        self.delegate = delegate
     }
 
     func present(context: InAppMessagePresentationContext) {

@@ -7,12 +7,10 @@
 
 import Foundation
 
-
-class InAppMessage {
-
+class InAppMessage: HackleInAppMessage {
     typealias Id = Int64
     typealias Key = Int64
-
+    
     let id: Id
     let key: Key
     let status: Status
@@ -365,14 +363,36 @@ extension InAppMessage {
         }
     }
 
-    class Action {
+    class Action: HackleInAppMessageAction {
         let behavior: Behavior
-        let type: ActionType
+        let actionType: ActionType
         let value: String?
-
+        
+        var type: HackleInAppMessageActionType {
+            switch actionType {
+            case .close:
+                return .close
+            case .webLink:
+                return .link
+            case .hidden:
+                return .hidden
+            case .linkAndClose:
+                return .linkAndClose
+            }
+        }
+        
+        var url: String? {
+            switch actionType {
+            case .close, .hidden:
+                return nil
+            case .webLink, .linkAndClose:
+                return value
+            }
+        }
+        
         init(behavior: Behavior, type: ActionType, value: String?) {
             self.behavior = behavior
-            self.type = type
+            self.actionType = type
             self.value = value
         }
     }
