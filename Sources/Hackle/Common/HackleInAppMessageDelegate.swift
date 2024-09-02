@@ -9,16 +9,20 @@ import Foundation
 
 @objc public protocol HackleInAppMessageDelegate {
     /// Called before the InAppMessage is presented.
-    @objc optional func inAppMessageWillAppear(inAppMessage: HackleInAppMessage)
+    @objc(inAppMessageWillAppear:)
+    optional func inAppMessageWillAppear(inAppMessage: HackleInAppMessage)
     
     /// Called after an InAppMessage is presented.
-    @objc optional func inAppMessageDidAppear(inAppMessage: HackleInAppMessage)
+    @objc(inAppMessageDidAppear:)
+    optional func inAppMessageDidAppear(inAppMessage: HackleInAppMessage)
     
     /// Called before the InAppMessage is closed.
-    @objc optional func inAppMessageWillDisappear(inAppMessage: HackleInAppMessage)
+    @objc(inAppMessageWillDisappear:)
+    optional func inAppMessageWillDisappear(inAppMessage: HackleInAppMessage)
     
     /// Called after an InAppMessage is closed.
-    @objc optional func inAppMessageDidDisappear(inAppMessage: HackleInAppMessage)
+    @objc(inAppMessageDidDisappear:)
+    optional func inAppMessageDidDisappear(inAppMessage: HackleInAppMessage)
     
     /**
      Called when a clickable element is clicked in an InAppMessage.
@@ -27,5 +31,6 @@ import Foundation
      - parameter action: An action performed by the user by clicking InAppMessage.
      - returns: Indicating whether the click action was custom handled. If true, Hackle SDK only track a click event and do nothing else. If false, track click event and handle the click action.
      */
-    func onClick(inAppMessage: HackleInAppMessage, view: HackleInAppMessageView, action: HackleInAppMessageAction) -> Bool
+    @objc(onInAppMessageClickWith:view:action:)
+    func onInAppMessageClick(inAppMessage: HackleInAppMessage, view: HackleInAppMessageView, action: HackleInAppMessageAction) -> Bool
 }

@@ -82,7 +82,7 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
         }
         
         if let delegate = view.controller?.ui?.delegate,
-            delegate.onClick(inAppMessage: view.context.inAppMessage, view: view, action: action) {
+            delegate.onInAppMessageClick(inAppMessage: view.context.inAppMessage, view: view, action: action) {
             return
         }
 

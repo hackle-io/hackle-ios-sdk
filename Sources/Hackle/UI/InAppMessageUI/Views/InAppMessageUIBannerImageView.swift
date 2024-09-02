@@ -169,7 +169,7 @@ extension HackleInAppMessageUI {
             )
         }
 
-        func dismiss(ignoreEvent: Bool) {
+        func dismiss() {
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.05,
@@ -177,16 +177,16 @@ extension HackleInAppMessageUI {
                     self.presented = false
                 },
                 completion: { _ in
-                    if !ignoreEvent {
-                        self.handle(event: .close)
-                    }
+                    self.handle(event: .close)
                     self.didDismiss()
                 }
             )
         }
 
         func close() {
-            self.dismiss(ignoreEvent: true)
+            if self.presented {
+                self.dismiss()
+            }
         }
 
         // Interactions

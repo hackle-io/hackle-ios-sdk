@@ -133,7 +133,8 @@ import WebKit
         updateUserProperties(operations: operations, completion: completion)
     }
     
-    @objc public func setInAppMessageDeleagte(delegate: HackleInAppMessageDelegate?) {
+    @objc(setInAppMessageDelegate:)
+    public func setInAppMessageDeleagte(delegate: HackleInAppMessageDelegate?) {
         self.inAppMessageUI.delegate = delegate
     }
 

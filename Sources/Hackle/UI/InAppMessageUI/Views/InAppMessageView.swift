@@ -13,7 +13,7 @@ protocol InAppMessageView: UIView, HackleInAppMessageView {
     var presented: Bool { get }
     func willTransition(orientation: InAppMessage.Orientation)
     func present()
-    func dismiss(ignoreEvent: Bool)
+    func dismiss()
 }
 
 extension InAppMessageView {
@@ -26,10 +26,6 @@ extension InAppMessageView {
             .first
     }
     
-    func dismiss(ignoreEvent: Bool = false) {
-        dismiss(ignoreEvent: ignoreEvent)
-    }
-
     func didDismiss() {
         guard let controller = controller, let ui = controller.ui else {
             return

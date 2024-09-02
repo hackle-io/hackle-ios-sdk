@@ -11,9 +11,7 @@ import Foundation
     case close
     case link
     
-    public typealias RawValue = String
-    
-    public init?(rawValue: RawValue) {
+    public init?(rawValue: String) {
         switch rawValue {
         case "CLOSE":
             self = .close
@@ -24,7 +22,7 @@ import Foundation
         }
     }
     
-    public var rawValue: RawValue {
+    public var rawValue: String {
         switch self {
         case .close:
             return "CLOSE"
