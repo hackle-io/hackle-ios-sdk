@@ -39,7 +39,6 @@ class InAppMessage: HackleInAppMessage {
 }
 
 extension InAppMessage {
-
     enum Status: String, Codable {
         case initialized = "INITIALIZED"
         case draft = "DRAFT"
@@ -63,7 +62,6 @@ extension InAppMessage {
     }
 
     class EventTrigger {
-
         let rules: [Rule]
         let frequencyCap: FrequencyCap?
 
@@ -370,14 +368,10 @@ extension InAppMessage {
         
         var type: HackleInAppMessageActionType {
             switch actionType {
-            case .close:
+            case .close, .hidden:
                 return .close
-            case .webLink:
+            case .webLink, .linkAndClose:
                 return .link
-            case .hidden:
-                return .hidden
-            case .linkAndClose:
-                return .linkAndClose
             }
         }
         
@@ -397,7 +391,6 @@ extension InAppMessage {
         }
     }
 }
-
 
 extension InAppMessage {
     func supports(platform: PlatformType) -> Bool {

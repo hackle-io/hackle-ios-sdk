@@ -19,11 +19,12 @@ import WebKit
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
     private let device: Device
+    private let inAppMessageUI: HackleInAppMessageUI
     
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
     internal let mode: HackleAppMode
-
+    
     @objc public var deviceId: String {
         get {
             device.id
@@ -57,6 +58,7 @@ import WebKit
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
         device: Device,
+        inAppMessageUI: HackleInAppMessageUI,
         userExplorer: HackleUserExplorer
     ) {
         self.mode = mode
@@ -73,6 +75,7 @@ import WebKit
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
         self.device = device
+        self.inAppMessageUI = inAppMessageUI
         self.userExplorer = userExplorer
         super.init()
     }
@@ -130,9 +133,8 @@ import WebKit
         updateUserProperties(operations: operations, completion: completion)
     }
     
-    @objc public func setInAppMessageDeleagte(delegate: HackleInAppMessageDelegate?, isRunOnlyCustomAction: Bool) {
-        HackleInAppMessageUI.shared.delegate = delegate
-        HackleInAppMessageUI.shared.isRunOnlyCustomAction = isRunOnlyCustomAction
+    @objc public func setInAppMessageDeleagte(delegate: HackleInAppMessageDelegate?) {
+        self.inAppMessageUI.delegate = delegate
     }
 
     @objc public func updateUserProperties(operations: PropertyOperations) {
@@ -331,7 +333,6 @@ import WebKit
 }
 
 extension HackleApp {
-
     private static let hackleDeviceId = "hackle_device_id"
 
     func initialize(user: User?, completion: @escaping () -> ()) {
@@ -362,7 +363,6 @@ extension HackleApp {
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
-
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
         let scheduler = Schedulers.dispatch()
@@ -560,11 +560,14 @@ extension HackleApp {
             processorFactory: inAppMessageEventProcessorFactory
         )
         
-        HackleInAppMessageUI.shared.setup(eventHandler: inAppMessageEventHandler)
+        let inAppMessageUI = HackleInAppMessageUI(
+            eventHandler: inAppMessageEventHandler
+        )
         let inAppMessageManager = InAppMessageManager(
             determiner: inAppMessageDeterminer,
-            presenter: HackleInAppMessageUI.shared
+            presenter: inAppMessageUI
         )
+
         eventPublisher.addListener(listener: inAppMessageManager)
 
         // - Push
@@ -647,6 +650,7 @@ extension HackleApp {
             notificationManager: notificationManager,
             fetchThrottler: throttler,
             device: device,
+            inAppMessageUI: inAppMessageUI,
             userExplorer: userExplorer
         )
     }

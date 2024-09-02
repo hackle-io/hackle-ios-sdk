@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     class BannerImageView: UIView, InAppMessageView {
         let context: InAppMessagePresentationContext
         private let alignment: InAppMessage.Message.Alignment
@@ -48,9 +47,7 @@ extension HackleInAppMessageUI {
         }
 
         private func bindImage() {
-            guard let imageView = imageView,
-                  let image = context.message.image(orientation: attributes.orientation)
-            else {
+            guard let imageView = imageView, let image = context.message.image(orientation: attributes.orientation) else {
                 return
             }
             imageView.loadImage(url: image.imagePath) {
@@ -155,7 +152,6 @@ extension HackleInAppMessageUI {
             }
         }
 
-        @objc
         func present() {
             layoutFrameIfNeeded()
 
@@ -173,17 +169,24 @@ extension HackleInAppMessageUI {
             )
         }
 
-        @objc
-        func dismiss() {
+        func dismiss(ignoreEvent: Bool) {
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.05,
-                animations: { self.presented = false },
+                animations: {
+                    self.presented = false
+                },
                 completion: { _ in
-                    self.handle(event: .close)
+                    if !ignoreEvent {
+                        self.handle(event: .close)
+                    }
                     self.didDismiss()
                 }
             )
+        }
+
+        func close() {
+            self.dismiss(ignoreEvent: true)
         }
 
         // Interactions
@@ -192,9 +195,7 @@ extension HackleInAppMessageUI {
 
         @objc
         func tapImageView(_ gesture: UITapGestureRecognizer) {
-            guard gesture.state == .ended,
-                  let action = context.message.action
-            else {
+            guard gesture.state == .ended, let action = context.message.action else {
                 return
             }
             handle(event: .action(action, .message))

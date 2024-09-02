@@ -2,9 +2,7 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     class ModalView: UIView, InAppMessageView {
-
         let context: InAppMessagePresentationContext
         private var attributes: Attributes
 
@@ -93,9 +91,7 @@ extension HackleInAppMessageUI {
         }
 
         private func bindImage() {
-            guard let imageView = imageView,
-                  let image = context.message.image(orientation: attributes.orientation)
-            else {
+            guard let imageView = imageView, let image = context.message.image(orientation: attributes.orientation) else {
                 return
             }
             imageView.loadImage(url: image.imagePath) {
@@ -224,7 +220,6 @@ extension HackleInAppMessageUI {
             }
         }
 
-        @objc
         func present() {
             layoutFrameIfNeeded()
 
@@ -242,17 +237,24 @@ extension HackleInAppMessageUI {
             )
         }
 
-        @objc
-        func dismiss() {
+        func dismiss(ignoreEvent: Bool) {
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.1,
-                animations: { self.presented = false },
+                animations: {
+                    self.presented = false
+                },
                 completion: { _ in
-                    self.handle(event: .close)
+                    if !ignoreEvent {
+                        self.handle(event: .close)
+                    }
                     self.didDismiss()
                 }
             )
+        }
+        
+        func close() {
+            self.dismiss(ignoreEvent: true)
         }
 
         // Interactions
@@ -281,8 +283,7 @@ extension HackleInAppMessageUI {
             return tapBackgroundGesture
         }()
 
-        @objc
-        func tapBackground(_ gesture: UITapGestureRecognizer) {
+        @objc func tapBackground(_ gesture: UITapGestureRecognizer) {
             guard case .ended = gesture.state else {
                 return
             }
@@ -291,12 +292,10 @@ extension HackleInAppMessageUI {
 
         lazy var tapImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(tapImageView))
 
-        @objc
-        func tapImageView(_ gesture: UITapGestureRecognizer) {
+        @objc func tapImageView(_ gesture: UITapGestureRecognizer) {
             guard gesture.state == .ended,
-                  let image = context.message.image(orientation: attributes.orientation),
-                  let action = image.action
-            else {
+                    let image = context.message.image(orientation: attributes.orientation),
+                  let action = image.action else {
                 return
             }
 

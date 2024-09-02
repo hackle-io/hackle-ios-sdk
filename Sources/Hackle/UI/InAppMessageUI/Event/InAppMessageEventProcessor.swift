@@ -7,14 +7,12 @@
 
 import Foundation
 
-
 protocol InAppMessageEventProcessor {
     func supports(event: InAppMessage.Event) -> Bool
     func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date)
 }
 
 class InAppMessageEventProcessorFactory {
-
     private let processors: [InAppMessageEventProcessor]
 
     init(processors: [InAppMessageEventProcessor]) {
@@ -29,9 +27,7 @@ class InAppMessageEventProcessorFactory {
 }
 
 class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
-
     private static let IMPRESSION_MAX_SIZE = 100
-
     private let impressionStorage: InAppMessageImpressionStorage
 
     init(impressionStorage: InAppMessageImpressionStorage) {
@@ -67,7 +63,6 @@ class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
 }
 
 class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
-
     private let actionHandlerFactory: InAppMessageActionHandlerFactory
 
     init(actionHandlerFactory: InAppMessageActionHandlerFactory) {
@@ -82,13 +77,12 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
     }
 
     func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
-        guard case let .action(action, _, _) = event,
-              let handler = actionHandlerFactory.get(action: action)
-        else {
+        guard case let .action(action, _, _) = event, let handler = actionHandlerFactory.get(action: action) else {
             return
         }
         
-        if let ui = view.controller?.ui, ui.isRunOnlyCustomAction {
+        if let delegate = view.controller?.ui?.delegate,
+            delegate.onClick(inAppMessage: view.context.inAppMessage, view: view, action: action) {
             return
         }
 

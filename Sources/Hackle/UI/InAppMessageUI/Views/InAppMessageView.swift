@@ -8,22 +8,15 @@
 import Foundation
 import UIKit
 
-protocol InAppMessageView: UIView {
-
+protocol InAppMessageView: UIView, HackleInAppMessageView {
     var context: InAppMessagePresentationContext { get }
-
     var presented: Bool { get }
-
     func willTransition(orientation: InAppMessage.Orientation)
-
     func present()
-
-    func dismiss()
+    func dismiss(ignoreEvent: Bool)
 }
 
-
 extension InAppMessageView {
-
     var controller: HackleInAppMessageUI.ViewController? {
         responders
             .lazy
@@ -32,11 +25,13 @@ extension InAppMessageView {
             }
             .first
     }
+    
+    func dismiss(ignoreEvent: Bool = false) {
+        dismiss(ignoreEvent: ignoreEvent)
+    }
 
     func didDismiss() {
-        guard let controller = controller,
-              let ui = controller.ui
-        else {
+        guard let controller = controller, let ui = controller.ui else {
             return
         }
 
@@ -49,12 +44,9 @@ extension InAppMessageView {
     }
 
     func handle(event: InAppMessage.Event) {
-        guard let controller = controller,
-              let ui = controller.ui,
-                let eventHandler = ui.eventHandler
-        else {
+        guard let controller = controller, let ui = controller.ui else {
             return
         }
-        eventHandler.handle(view: self, event: event)
+        ui.eventHandler.handle(view: self, event: event)
     }
 }

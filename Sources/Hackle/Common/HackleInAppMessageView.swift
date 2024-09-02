@@ -8,6 +8,5 @@
 import Foundation
 
 @objc public protocol HackleInAppMessageView {
-    var inAppMessage: HackleInAppMessage { get }
     func close()
 }

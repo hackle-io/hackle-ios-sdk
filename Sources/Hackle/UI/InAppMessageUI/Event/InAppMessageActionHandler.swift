@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol InAppMessageActionHandler {
     func supports(action: InAppMessage.Action) -> Bool
     func handle(view: InAppMessageView, action: InAppMessage.Action)
@@ -38,7 +37,6 @@ class InAppMessageCloseActionHandler: InAppMessageActionHandler {
 }
 
 class InAppMessageLinkActionHandler: InAppMessageActionHandler {
-
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
@@ -50,9 +48,7 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
-        guard let value = action.value,
-              let url = URL(string: value)
-        else {
+        guard let value = action.value, let url = URL(string: value) else {
             Log.error("Invalid url: \(action.value.orNil)")
             return
         }
@@ -61,22 +57,18 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
 }
 
 class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
-
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
         self.urlHandler = urlHandler
     }
 
-
     func supports(action: InAppMessage.Action) -> Bool {
         action.actionType == .linkAndClose
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
-        guard let value = action.value,
-              let url = URL(string: value)
-        else {
+        guard let value = action.value, let url = URL(string: value) else {
             Log.error("Invalid url: \(action.value.orNil)")
             return
         }
@@ -86,7 +78,6 @@ class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
 }
 
 class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
-
     private static let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
 
     private let clock: Clock

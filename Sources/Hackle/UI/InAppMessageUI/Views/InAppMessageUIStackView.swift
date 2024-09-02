@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     class StackView: UIView {
         let stack = UIStackView()
 

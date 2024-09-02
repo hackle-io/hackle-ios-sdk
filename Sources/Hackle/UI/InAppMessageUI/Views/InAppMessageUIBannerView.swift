@@ -53,9 +53,7 @@ extension HackleInAppMessageUI {
         }
 
         private func bindImage() {
-            guard let imageView = imageView,
-                  let image = context.message.image(orientation: attributes.orientation)
-            else {
+            guard let imageView = imageView, let image = context.message.image(orientation: attributes.orientation) else {
                 return
             }
             imageView.loadImage(url: image.imagePath) {
@@ -184,7 +182,6 @@ extension HackleInAppMessageUI {
             }
         }
 
-        @objc
         func present() {
             layoutFrameIfNeeded()
 
@@ -202,17 +199,24 @@ extension HackleInAppMessageUI {
             )
         }
 
-        @objc
-        func dismiss() {
+        func dismiss(ignoreEvent: Bool) {
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.05,
-                animations: { self.presented = false },
+                animations: {
+                    self.presented = false
+                },
                 completion: { _ in
-                    self.handle(event: .close)
+                    if !ignoreEvent {
+                        self.handle(event: .close)
+                    }
                     self.didDismiss()
                 }
             )
+        }
+        
+        func close() {
+            self.dismiss(ignoreEvent: true)
         }
 
         // Interactions
