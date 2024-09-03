@@ -35,7 +35,6 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .property("in_app_message_display_type", context.message.layout.displayType)
-                .property("in_app_message_layout_type", context.message.layout.layoutType)
                 .property("title_text", context.message.text?.title.text)
                 .property("body_text", context.message.text?.body.text)
                 .property("button_text", context.message.buttons.map {
@@ -51,7 +50,6 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .property("in_app_message_display_type", context.message.layout.displayType)
-                .property("in_app_message_layout_type", context.message.layout.layoutType)
                 .build()
         case .action(let action, let area, let text):
             return Event.builder(DefaultInAppMessageEventTracker.ACTION_EVENT_KEY)
@@ -59,7 +57,6 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("in_app_message_id", context.inAppMessage.id)
                 .property("in_app_message_key", context.inAppMessage.key)
                 .property("in_app_message_display_type", context.message.layout.displayType)
-                .property("in_app_message_layout_type", context.message.layout.layoutType)
                 .property("action_area", area.rawValue)
                 .property("action_type", action.actionType.rawValue)
                 .property("action_value", action.value)
