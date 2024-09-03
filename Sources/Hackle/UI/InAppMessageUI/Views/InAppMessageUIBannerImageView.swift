@@ -170,6 +170,10 @@ extension HackleInAppMessageUI {
         }
 
         func dismiss() {
+            if !self.presented {
+                return
+            }
+            
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.05,
@@ -182,13 +186,7 @@ extension HackleInAppMessageUI {
                 }
             )
         }
-
-        func close() {
-            if self.presented {
-                self.dismiss()
-            }
-        }
-
+        
         // Interactions
 
         lazy var tapImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(tapImageView))

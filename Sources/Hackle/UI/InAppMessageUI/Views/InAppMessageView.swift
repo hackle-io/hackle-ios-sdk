@@ -13,7 +13,6 @@ protocol InAppMessageView: UIView, HackleInAppMessageView {
     var presented: Bool { get }
     func willTransition(orientation: InAppMessage.Orientation)
     func present()
-    func dismiss()
 }
 
 extension InAppMessageView {

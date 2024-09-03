@@ -28,6 +28,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         DispatchQueue.main.async {
             self.presentNow(context: context)
         }
+        
     }
 
     private func presentNow(context: InAppMessagePresentationContext) {

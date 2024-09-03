@@ -78,8 +78,6 @@ class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
 }
 
 class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
-    private static let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
-
     private let clock: Clock
     private let storage: InAppMessageHiddenStorage
 
@@ -93,7 +91,7 @@ class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
-        let expireAt = clock.now() + InAppMessageHiddenActionHandler.DEFAULT_HIDDEN_TIME_INTERVAL
+        let expireAt = clock.now() + action.DEFAULT_HIDDEN_TIME_INTERVAL
         storage.put(inAppMessage: view.context.inAppMessage, expireAt: expireAt)
         view.dismiss()
     }

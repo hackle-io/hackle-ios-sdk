@@ -25,6 +25,12 @@ import WebKit
     internal let sdk: Sdk
     internal let mode: HackleAppMode
     
+    @objc public var hackleInAppMessageDelegate: HackleInAppMessageDelegate? {
+        didSet {
+            self.inAppMessageUI.delegate = hackleInAppMessageDelegate
+        }
+    }
+    
     @objc public var deviceId: String {
         get {
             device.id
@@ -133,11 +139,6 @@ import WebKit
         updateUserProperties(operations: operations, completion: completion)
     }
     
-    @objc(setInAppMessageDelegate:)
-    public func setInAppMessageDeleagte(delegate: HackleInAppMessageDelegate?) {
-        self.inAppMessageUI.delegate = delegate
-    }
-
     @objc public func updateUserProperties(operations: PropertyOperations) {
         updateUserProperties(operations: operations, completion: {})
     }

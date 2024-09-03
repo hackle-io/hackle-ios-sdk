@@ -362,6 +362,8 @@ extension InAppMessage {
     }
 
     class Action: HackleInAppMessageAction {
+        let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
+        
         let behavior: Behavior
         let actionType: ActionType
         let value: String?
@@ -375,12 +377,29 @@ extension InAppMessage {
             }
         }
         
-        var url: String? {
+        var close: HackleInAppMessageActionClose? {
+            switch actionType {
+            case .close:
+                let closeValue = HackleInAppMessageActionClose(hideDurationMills: 0)
+                return closeValue
+            case .hidden:
+                let closeValue = HackleInAppMessageActionClose(hideDurationMills: Int(DEFAULT_HIDDEN_TIME_INTERVAL))
+                return closeValue
+            case .webLink, .linkAndClose:
+                return nil
+            }
+        }
+        
+        var link: HackleInAppMessageActionLink? {
             switch actionType {
             case .close, .hidden:
                 return nil
-            case .webLink, .linkAndClose:
-                return value
+            case .webLink:
+                let hackleInAppMessageActionLink = HackleInAppMessageActionLink(url: value ?? "", shouldCloseAfterLink: false)
+                return hackleInAppMessageActionLink
+            case .linkAndClose:
+                let hackleInAppMessageActionLink = HackleInAppMessageActionLink(url: value ?? "", shouldCloseAfterLink: true)
+                return hackleInAppMessageActionLink
             }
         }
         

@@ -8,5 +8,5 @@
 import Foundation
 
 @objc public protocol HackleInAppMessageView {
-    func close()
+    func dismiss()
 }
