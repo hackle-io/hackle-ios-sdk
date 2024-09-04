@@ -7,22 +7,13 @@
 
 import Foundation
 
-@objc public class HackleInAppMessageActionClose: NSObject {
-    @objc public let hideDurationMills: TimeInterval
-    
-    init(hideDurationMills: TimeInterval) {
-        self.hideDurationMills = hideDurationMills
-    }
+@objc public protocol HackleInAppMessageActionClose {
+    var hideDuration: TimeInterval { get }
 }
 
-@objc public class HackleInAppMessageActionLink: NSObject {
-    @objc public let url: String
-    @objc public let shouldCloseAfterLink: Bool
-    
-    init(url: String, shouldCloseAfterLink: Bool) {
-        self.url = url
-        self.shouldCloseAfterLink = shouldCloseAfterLink
-    }
+@objc public protocol HackleInAppMessageActionLink {
+    var url: String { get }
+    var shouldCloseAfterLink: Bool { get }
 }
 
 @objc public protocol HackleInAppMessageAction {

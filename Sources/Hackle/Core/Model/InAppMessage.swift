@@ -360,6 +360,24 @@ extension InAppMessage {
             }
         }
     }
+    
+    class CloseActionInfo: HackleInAppMessageActionClose {
+        var hideDuration: TimeInterval
+        
+        init(hideDuration: TimeInterval) {
+            self.hideDuration = hideDuration
+        }
+    }
+    
+    class LinkActionInfo: HackleInAppMessageActionLink {
+        var url: String
+        var shouldCloseAfterLink: Bool
+        
+        init(url: String, shouldCloseAfterLink: Bool) {
+            self.url = url
+            self.shouldCloseAfterLink = shouldCloseAfterLink
+        }
+    }
 
     class Action: HackleInAppMessageAction {
         let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
@@ -380,11 +398,9 @@ extension InAppMessage {
         var close: HackleInAppMessageActionClose? {
             switch actionType {
             case .close:
-                let closeValue = HackleInAppMessageActionClose(hideDurationMills: 0)
-                return closeValue
+                return CloseActionInfo(hideDuration: 0)
             case .hidden:
-                let closeValue = HackleInAppMessageActionClose(hideDurationMills: DEFAULT_HIDDEN_TIME_INTERVAL)
-                return closeValue
+                return CloseActionInfo(hideDuration: DEFAULT_HIDDEN_TIME_INTERVAL)
             case .webLink, .linkAndClose:
                 return nil
             }
@@ -395,11 +411,9 @@ extension InAppMessage {
             case .close, .hidden:
                 return nil
             case .webLink:
-                let hackleInAppMessageActionLink = HackleInAppMessageActionLink(url: value ?? "", shouldCloseAfterLink: false)
-                return hackleInAppMessageActionLink
+                return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: false)
             case .linkAndClose:
-                let hackleInAppMessageActionLink = HackleInAppMessageActionLink(url: value ?? "", shouldCloseAfterLink: true)
-                return hackleInAppMessageActionLink
+                return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: true)
             }
         }
         

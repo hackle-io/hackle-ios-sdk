@@ -28,8 +28,4 @@ class MockInAppMessageView: UIView, InAppMessageView {
     func dismiss() {
         presented = false
     }
-    
-    func close() {
-        presented = false
-    }
 }
