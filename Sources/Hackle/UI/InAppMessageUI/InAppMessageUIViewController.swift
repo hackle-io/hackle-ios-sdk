@@ -39,15 +39,6 @@ extension HackleInAppMessageUI {
             self.view = containerView
         }
         
-        override func viewDidLoad() {
-            super.viewDidLoad()
-        }
-        
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            self.ui?.delegate?.inAppMessageWillAppear?(inAppMessage: self.context.inAppMessage)
-        }
-
         override func viewDidAppear(_ animated: Bool) {
             super.viewDidAppear(animated)
             if presented {
@@ -57,17 +48,6 @@ extension HackleInAppMessageUI {
             view.addSubview(messageView)
             messageView.present()
             presented = true
-            self.ui?.delegate?.inAppMessageDidAppear?(inAppMessage: self.context.inAppMessage)
-        }
-        
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            self.ui?.delegate?.inAppMessageWillDisappear?(inAppMessage: self.context.inAppMessage)
-        }
-        
-        override func viewDidDisappear(_ animated: Bool) {
-            super.viewDidDisappear(animated)
-            self.ui?.delegate?.inAppMessageDidDisappear?(inAppMessage: self.context.inAppMessage)
         }
 
         // Orientation

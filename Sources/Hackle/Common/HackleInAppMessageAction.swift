@@ -8,9 +8,9 @@
 import Foundation
 
 @objc public class HackleInAppMessageActionClose: NSObject {
-    @objc public let hideDurationMills: Int
+    @objc public let hideDurationMills: TimeInterval
     
-    init(hideDurationMills: Int) {
+    init(hideDurationMills: TimeInterval) {
         self.hideDurationMills = hideDurationMills
     }
 }

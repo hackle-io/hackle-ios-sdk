@@ -383,7 +383,7 @@ extension InAppMessage {
                 let closeValue = HackleInAppMessageActionClose(hideDurationMills: 0)
                 return closeValue
             case .hidden:
-                let closeValue = HackleInAppMessageActionClose(hideDurationMills: Int(DEFAULT_HIDDEN_TIME_INTERVAL))
+                let closeValue = HackleInAppMessageActionClose(hideDurationMills: DEFAULT_HIDDEN_TIME_INTERVAL)
                 return closeValue
             case .webLink, .linkAndClose:
                 return nil

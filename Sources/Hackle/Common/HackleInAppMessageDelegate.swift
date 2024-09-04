@@ -32,5 +32,5 @@ import Foundation
      - returns: Indicating whether the click action was custom handled. If true, Hackle SDK only track a click event and do nothing else. If false, track click event and handle the click action.
      */
     @objc(onInAppMessageClickWith:view:action:)
-    func onInAppMessageClick(inAppMessage: HackleInAppMessage, view: HackleInAppMessageView, action: HackleInAppMessageAction) -> Bool
+    optional func onInAppMessageClick(inAppMessage: HackleInAppMessage, view: HackleInAppMessageView, action: HackleInAppMessageAction) -> Bool
 }

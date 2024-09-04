@@ -25,9 +25,9 @@ import WebKit
     internal let sdk: Sdk
     internal let mode: HackleAppMode
     
-    @objc public var hackleInAppMessageDelegate: HackleInAppMessageDelegate? {
+    @objc public var inAppMessageDelegate: HackleInAppMessageDelegate? {
         didSet {
-            self.inAppMessageUI.delegate = hackleInAppMessageDelegate
+            self.inAppMessageUI.delegate = inAppMessageDelegate
         }
     }
     

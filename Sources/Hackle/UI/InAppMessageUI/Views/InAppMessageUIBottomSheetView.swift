@@ -170,6 +170,8 @@ extension HackleInAppMessageUI {
         }
         
         func present() {
+            self.controller?.ui?.delegate?.inAppMessageWillAppear?(inAppMessage: self.context.inAppMessage)
+            
             layoutFrameIfNeeded()
 
             UIView.performWithoutAnimation {
@@ -185,6 +187,7 @@ extension HackleInAppMessageUI {
                     self.superview?.layoutIfNeeded()
                 },
                 completion: { _ in
+                    self.controller?.ui?.delegate?.inAppMessageDidAppear?(inAppMessage: self.context.inAppMessage)
                     self.handle(event: .impression)
                 }
             )
@@ -195,6 +198,8 @@ extension HackleInAppMessageUI {
                 return
             }
             
+            self.controller?.ui?.delegate?.inAppMessageWillDisappear?(inAppMessage: self.context.inAppMessage)
+            
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.3,
@@ -203,6 +208,7 @@ extension HackleInAppMessageUI {
                     self.superview?.layoutIfNeeded()
                 },
                 completion: { _ in
+                    self.controller?.ui?.delegate?.inAppMessageDidDisappear?(inAppMessage: self.context.inAppMessage)
                     self.handle(event: .close)
                     self.didDismiss()
                 }
