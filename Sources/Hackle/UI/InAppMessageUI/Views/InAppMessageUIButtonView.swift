@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     class ButtonView: UIButton {
 
         private let button: InAppMessage.Message.Button

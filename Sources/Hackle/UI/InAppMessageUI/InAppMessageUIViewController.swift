@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     class ViewController: UIViewController {
         var context: InAppMessagePresentationContext
         var messageView: InAppMessageView
@@ -36,11 +35,10 @@ extension HackleInAppMessageUI {
         }
 
         // LifeCycle
-
         override func loadView() {
             self.view = containerView
         }
-
+        
         override func viewDidAppear(_ animated: Bool) {
             super.viewDidAppear(animated)
             if presented {
@@ -53,7 +51,6 @@ extension HackleInAppMessageUI {
         }
 
         // Orientation
-
         override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
             coordinator.animate { context in

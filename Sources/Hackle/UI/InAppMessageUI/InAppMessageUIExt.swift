@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     func createMessageView(context: InAppMessagePresentationContext) -> InAppMessageView? {
         switch (context.message.layout.displayType, context.message.layout.layoutType) {
         case (.none, _):

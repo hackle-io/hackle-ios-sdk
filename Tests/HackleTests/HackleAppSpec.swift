@@ -17,6 +17,7 @@ class HackleAppSpecs: QuickSpec {
         var pushTokenRegistry = DefaultPushTokenRegistry()
         var device: Device!
         var userExplorer: HackleUserExplorer!
+        var inAppMessageUI: HackleInAppMessageUI!
 
         var sut: HackleApp!
 
@@ -43,6 +44,15 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
+            
+            let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [])
+            let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
+                clock: SystemClock.shared,
+                eventTracker: DefaultInAppMessageEventTracker(core: core),
+                processorFactory: inAppMessageEventProcessorFactory
+            )
+            inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
+            
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             sut = HackleApp(
                 mode: .native,
@@ -59,6 +69,7 @@ class HackleAppSpecs: QuickSpec {
                 notificationManager: notificationManager,
                 fetchThrottler: throttler,
                 device: device,
+                inAppMessageUI: inAppMessageUI,
                 userExplorer: userExplorer
             )
         }

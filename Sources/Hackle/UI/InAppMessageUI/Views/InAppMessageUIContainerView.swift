@@ -9,9 +9,7 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
     class ContainerView: UIView {
-
         init() {
             super.init(frame: .zero)
         }
