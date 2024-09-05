@@ -7,13 +7,11 @@
 
 import Foundation
 
-
 protocol InAppMessageEventHandler {
     func handle(view: InAppMessageView, event: InAppMessage.Event)
 }
 
 class DefaultInAppMessageEventHandler: InAppMessageEventHandler {
-
     private let clock: Clock
     private let eventTracker: InAppMessageEventTracker
     private let processorFactory: InAppMessageEventProcessorFactory

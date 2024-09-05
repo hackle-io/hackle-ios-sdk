@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-
 extension InAppMessage {
     func supports(orientation: UIInterfaceOrientation) -> Bool {
         messageContext.orientations.contains {
@@ -22,7 +21,6 @@ extension InAppMessage {
 }
 
 extension InAppMessage.Orientation {
-
     init(size: CGSize) {
         if size.height >= size.width {
             self = .vertical
@@ -54,7 +52,6 @@ extension InAppMessage.Message {
         UIColor(hex: background.color) ?? .white
     }
 
-
     func image(orientation: InAppMessage.Orientation) -> Image? {
         images.first {
             $0.orientation == orientation
@@ -83,7 +80,6 @@ extension InAppMessage.Message.Button {
 }
 
 extension InAppMessage.Message.Text.Attribute {
-
     var color: UIColor {
         UIColor(hex: style.textColor) ?? .black
     }

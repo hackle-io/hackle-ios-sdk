@@ -56,12 +56,12 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].images[0].orientation) == .vertical
             expect(iam.messageContext.messages[0].images[0].imagePath) == "https://vertical-image.png"
             expect(iam.messageContext.messages[0].images[0].action?.behavior) == .click
-            expect(iam.messageContext.messages[0].images[0].action?.type) == .webLink
+            expect(iam.messageContext.messages[0].images[0].action?.actionType) == .webLink
             expect(iam.messageContext.messages[0].images[0].action?.value) == "https://www.hackle.io"
             expect(iam.messageContext.messages[0].images[1].orientation) == .horizontal
             expect(iam.messageContext.messages[0].images[1].imagePath) == "https://horizontal-image.png"
             expect(iam.messageContext.messages[0].images[1].action?.behavior) == .click
-            expect(iam.messageContext.messages[0].images[1].action?.type) == .webLink
+            expect(iam.messageContext.messages[0].images[1].action?.actionType) == .webLink
             expect(iam.messageContext.messages[0].images[1].action?.value) == "https://www.hackle.io"
 
             expect(iam.messageContext.messages[0].text?.title.text) == "title_text"
@@ -75,21 +75,21 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].buttons[0].style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].buttons[0].style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].buttons[0].action.behavior) == .click
-            expect(iam.messageContext.messages[0].buttons[0].action.type) == .hidden
+            expect(iam.messageContext.messages[0].buttons[0].action.actionType) == .hidden
             expect(iam.messageContext.messages[0].buttons[0].action.value) == ""
             expect(iam.messageContext.messages[0].buttons[1].text) == "apply"
             expect(iam.messageContext.messages[0].buttons[1].style.textColor) == "#ffffff"
             expect(iam.messageContext.messages[0].buttons[1].style.bgColor) == "#5e5af4"
             expect(iam.messageContext.messages[0].buttons[1].style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].buttons[1].action.behavior) == .click
-            expect(iam.messageContext.messages[0].buttons[1].action.type) == .webLink
+            expect(iam.messageContext.messages[0].buttons[1].action.actionType) == .webLink
             expect(iam.messageContext.messages[0].buttons[1].action.value) == "https://dashboard.hackle.io"
 
             expect(iam.messageContext.messages[0].background.color) == "#FFFFFF"
 
             expect(iam.messageContext.messages[0].closeButton?.style.textColor) == "#000001"
             expect(iam.messageContext.messages[0].closeButton?.action.behavior) == .click
-            expect(iam.messageContext.messages[0].closeButton?.action.type) == .close
+            expect(iam.messageContext.messages[0].closeButton?.action.actionType) == .close
 
             expect(iam.messageContext.messages[0].outerButtons.count) == 1
             expect(iam.messageContext.messages[0].outerButtons[0].button.text) == "outer"
@@ -97,7 +97,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].outerButtons[0].button.style.bgColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].outerButtons[0].button.style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].outerButtons[0].button.action.behavior) == .click
-            expect(iam.messageContext.messages[0].outerButtons[0].button.action.type) == .close
+            expect(iam.messageContext.messages[0].outerButtons[0].button.action.actionType) == .close
             expect(iam.messageContext.messages[0].outerButtons[0].alignment.horizontal) == .right
             expect(iam.messageContext.messages[0].outerButtons[0].alignment.vertical) == .bottom
 
@@ -107,7 +107,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].innerButtons[0].button.style.bgColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].innerButtons[0].button.style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].innerButtons[0].button.action.behavior) == .click
-            expect(iam.messageContext.messages[0].innerButtons[0].button.action.type) == .close
+            expect(iam.messageContext.messages[0].innerButtons[0].button.action.actionType) == .close
             expect(iam.messageContext.messages[0].innerButtons[0].alignment.horizontal) == .right
             expect(iam.messageContext.messages[0].innerButtons[0].alignment.vertical) == .bottom
         }
