@@ -10,16 +10,16 @@ import UIKit
 
 @objc(HackleInAppMessageUI)
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
-
     let eventHandler: InAppMessageEventHandler
-
+    
     init(eventHandler: InAppMessageEventHandler) {
         self.eventHandler = eventHandler
         super.init()
     }
-
+    
     var window: Window?
-
+    var delegate: HackleInAppMessageDelegate?
+    
     var currentMessageView: InAppMessageView? {
         window?.messageViewController?.messageView
     }
@@ -28,14 +28,14 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         DispatchQueue.main.async {
             self.presentNow(context: context)
         }
+        
     }
 
     private func presentNow(context: InAppMessagePresentationContext) {
         guard isMainThread(),
               checkRootViewController(),
               noMessagePresented(),
-              orientationSupported(context: context)
-        else {
+              orientationSupported(context: context) else {
             return
         }
 

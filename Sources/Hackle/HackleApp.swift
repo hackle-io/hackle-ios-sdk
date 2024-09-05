@@ -7,7 +7,6 @@ import WebKit
 
 /// Entry point of Hackle Sdk.
 @objc public final class HackleApp: NSObject, HackleAppProtocol {
-
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
@@ -20,10 +19,18 @@ import WebKit
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
     private let device: Device
+    private let inAppMessageUI: HackleInAppMessageUI
+    
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
     internal let mode: HackleAppMode
-
+    
+    @objc public var inAppMessageDelegate: HackleInAppMessageDelegate? {
+        didSet {
+            self.inAppMessageUI.delegate = inAppMessageDelegate
+        }
+    }
+    
     @objc public var deviceId: String {
         get {
             device.id
@@ -41,7 +48,7 @@ import WebKit
             userManager.currentUser
         }
     }
-
+    
     init(
         mode: HackleAppMode,
         sdk: Sdk,
@@ -57,6 +64,7 @@ import WebKit
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
         device: Device,
+        inAppMessageUI: HackleInAppMessageUI,
         userExplorer: HackleUserExplorer
     ) {
         self.mode = mode
@@ -73,6 +81,7 @@ import WebKit
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
         self.device = device
+        self.inAppMessageUI = inAppMessageUI
         self.userExplorer = userExplorer
         super.init()
     }
@@ -129,7 +138,7 @@ import WebKit
             .build()
         updateUserProperties(operations: operations, completion: completion)
     }
-
+    
     @objc public func updateUserProperties(operations: PropertyOperations) {
         updateUserProperties(operations: operations, completion: {})
     }
@@ -241,7 +250,7 @@ import WebKit
     @objc public func setPushToken(_ deviceToken: Data) {
         pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
-
+    
     @objc public func fetch(_ completion: @escaping () -> ()) {
         fetchThrottler.execute(
             accept: {
@@ -326,7 +335,6 @@ import WebKit
 }
 
 extension HackleApp {
-
     private static let hackleDeviceId = "hackle_device_id"
 
     func initialize(user: User?, completion: @escaping () -> ()) {
@@ -357,7 +365,6 @@ extension HackleApp {
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
-
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
         let scheduler = Schedulers.dispatch()
@@ -554,6 +561,7 @@ extension HackleApp {
             eventTracker: DefaultInAppMessageEventTracker(core: core),
             processorFactory: inAppMessageEventProcessorFactory
         )
+        
         let inAppMessageUI = HackleInAppMessageUI(
             eventHandler: inAppMessageEventHandler
         )
@@ -561,6 +569,7 @@ extension HackleApp {
             determiner: inAppMessageDeterminer,
             presenter: inAppMessageUI
         )
+
         eventPublisher.addListener(listener: inAppMessageManager)
 
         // - Push
@@ -643,6 +652,7 @@ extension HackleApp {
             notificationManager: notificationManager,
             fetchThrottler: throttler,
             device: device,
+            inAppMessageUI: inAppMessageUI,
             userExplorer: userExplorer
         )
     }

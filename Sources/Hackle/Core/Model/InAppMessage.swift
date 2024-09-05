@@ -7,12 +7,10 @@
 
 import Foundation
 
-
-class InAppMessage {
-
+class InAppMessage: HackleInAppMessage {
     typealias Id = Int64
     typealias Key = Int64
-
+    
     let id: Id
     let key: Key
     let status: Status
@@ -41,7 +39,6 @@ class InAppMessage {
 }
 
 extension InAppMessage {
-
     enum Status: String, Codable {
         case initialized = "INITIALIZED"
         case draft = "DRAFT"
@@ -65,7 +62,6 @@ extension InAppMessage {
     }
 
     class EventTrigger {
-
         let rules: [Rule]
         let frequencyCap: FrequencyCap?
 
@@ -364,20 +360,70 @@ extension InAppMessage {
             }
         }
     }
+    
+    class CloseActionInfo: HackleInAppMessageActionClose {
+        var hideDuration: TimeInterval
+        
+        init(hideDuration: TimeInterval) {
+            self.hideDuration = hideDuration
+        }
+    }
+    
+    class LinkActionInfo: HackleInAppMessageActionLink {
+        var url: String
+        var shouldCloseAfterLink: Bool
+        
+        init(url: String, shouldCloseAfterLink: Bool) {
+            self.url = url
+            self.shouldCloseAfterLink = shouldCloseAfterLink
+        }
+    }
 
-    class Action {
+    class Action: HackleInAppMessageAction {
+        let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
+        
         let behavior: Behavior
-        let type: ActionType
+        let actionType: ActionType
         let value: String?
-
+        
+        var type: HackleInAppMessageActionType {
+            switch actionType {
+            case .close, .hidden:
+                return .close
+            case .webLink, .linkAndClose:
+                return .link
+            }
+        }
+        
+        var close: HackleInAppMessageActionClose? {
+            switch actionType {
+            case .close:
+                return CloseActionInfo(hideDuration: 0)
+            case .hidden:
+                return CloseActionInfo(hideDuration: DEFAULT_HIDDEN_TIME_INTERVAL)
+            case .webLink, .linkAndClose:
+                return nil
+            }
+        }
+        
+        var link: HackleInAppMessageActionLink? {
+            switch actionType {
+            case .close, .hidden:
+                return nil
+            case .webLink:
+                return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: false)
+            case .linkAndClose:
+                return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: true)
+            }
+        }
+        
         init(behavior: Behavior, type: ActionType, value: String?) {
             self.behavior = behavior
-            self.type = type
+            self.actionType = type
             self.value = value
         }
     }
 }
-
 
 extension InAppMessage {
     func supports(platform: PlatformType) -> Bool {
