@@ -82,9 +82,16 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
         }
         
         if let delegate = view.controller?.ui?.delegate,
-            let handleEventDirectly = delegate.onInAppMessageClick?(inAppMessage: view.context.inAppMessage, view: view, action: action),
-           handleEventDirectly == true {
-            return
+           let handleEventDirectly = delegate.onInAppMessageClick?(inAppMessage: view.context.inAppMessage, view: view, action: action),
+           let isPresented = view.controller?.ui?.currentMessageView?.presented{
+            
+            if !isPresented {
+                return
+            }
+            
+            if handleEventDirectly {
+                return
+            }
         }
         handler.handle(view: view, action: action)
     }
