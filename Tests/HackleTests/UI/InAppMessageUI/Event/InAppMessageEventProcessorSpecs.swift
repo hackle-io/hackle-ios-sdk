@@ -129,8 +129,21 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 }
             }
 
-            it("handle action") {
+            it("handle action when view's presented is false") {
                 let view = MockInAppMessageView()
+                let event = InAppMessage.Event.action(InAppMessage.action(), .button)
+
+                // when
+                sut.process(view: view, event: event, timestamp: Date())
+
+                // then
+                verify(exactly: 0) {
+                    actionHandler.handleMock
+                }
+            }
+            
+            it("handle action when view's presented is true") {
+                let view = MockInAppMessageView(presented: true)
                 let event = InAppMessage.Event.action(InAppMessage.action(), .button)
 
                 // when
