@@ -82,10 +82,23 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
         }
         
         if let delegate = view.controller?.ui?.delegate,
-            let handleEventDirectly = delegate.onInAppMessageClick?(inAppMessage: view.context.inAppMessage, view: view, action: action),
-           handleEventDirectly == true {
+           let handleEventDirectly = delegate.onInAppMessageClick?(inAppMessage: view.context.inAppMessage, view: view, action: action),
+            handleEventDirectly {
             return
         }
+        
+        /*
+            If the view is dismissed within delegate.onInAppMessageClick,
+            even if the return value of delegate.onInAppMessageClick is false,
+            further execution will stop and not proceed.
+            <Note>
+            The block below must be executed after the delegate.onInAppMessageClick call
+            so that the 'presented' value is updated and works correctly.
+         */
+        if !view.presented {
+            return
+        }
+        
         handler.handle(view: view, action: action)
     }
 }
