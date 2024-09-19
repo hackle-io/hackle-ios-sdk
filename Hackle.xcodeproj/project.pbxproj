@@ -57,6 +57,8 @@
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
 		B2C276172C7EFF6000EEAA2A /* HackleInAppMessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276162C7EFF6000EEAA2A /* HackleInAppMessageAction.swift */; };
 		B2C276192C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */; };
+		B2E7B4AF2C9C025E005FB7A9 /* HacklePushSubscriptionStateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStateType.swift */; };
+		B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperation.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -579,6 +581,8 @@
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
 		B2C276162C7EFF6000EEAA2A /* HackleInAppMessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageAction.swift; sourceTree = "<group>"; };
 		B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageActionType.swift; sourceTree = "<group>"; };
+		B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStateType.swift; sourceTree = "<group>"; };
+		B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionOperation.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -1701,6 +1705,8 @@
 				B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */,
 				B2C276162C7EFF6000EEAA2A /* HackleInAppMessageAction.swift */,
 				B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */,
+				B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStateType.swift */,
+				B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperation.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -2853,6 +2859,7 @@
 				EE80DF8E2A28341C00FB12CC /* InAppMessageResolver.swift in Sources */,
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,
 				EE29D99529CD825400B1FEAA /* ConditionMatcher.swift in Sources */,
+				B2E7B4AF2C9C025E005FB7A9 /* HacklePushSubscriptionStateType.swift in Sources */,
 				EEDC58732ACBD80B001E73DB /* CompositeSynchronizer.swift in Sources */,
 				EE29D96F29CD825400B1FEAA /* Enums.swift in Sources */,
 				7E9065B22B58E3AD00FE6E52 /* Throttler.swift in Sources */,
@@ -2979,6 +2986,7 @@
 				EE29D95429CD825400B1FEAA /* CumulativeTimer.swift in Sources */,
 				EE29D9A929CD825500B1FEAA /* Session.swift in Sources */,
 				EE29DACA29CD988100B1FEAA /* HackleUserManualOverrideStorage.swift in Sources */,
+				B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperation.swift in Sources */,
 				EE29D94429CD825400B1FEAA /* NoopTimer.swift in Sources */,
 				7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */,
 				EE29D98D29CD825400B1FEAA /* TargetRule.swift in Sources */,

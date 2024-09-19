@@ -262,6 +262,14 @@ import WebKit
             }
         )
     }
+    
+    @objc(updatePushSubscriptionState:)
+    public func updatePushSubscriptionState(state: HacklePushSubscriptionStateType) {
+        let operations = HacklePushSubscriptionOperations.builder()
+            .setGlobal(state)
+            .build()
+        track(event: operations.toEvent())
+    }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
