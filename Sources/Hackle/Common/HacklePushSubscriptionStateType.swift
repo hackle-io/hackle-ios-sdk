@@ -14,11 +14,11 @@ import Foundation
     
     public init?(rawValue: String) {
         switch rawValue {
-        case "subscribed":
+        case "SUBSCRIBED":
             self = .subscribed
-        case "unsubscribed":
+        case "UNSUBSCRIBED":
             self = .unsubscribed
-        case "unknown":
+        case "UNKNOWN":
             self = .unknown
         default:
             return nil
@@ -28,11 +28,11 @@ import Foundation
     public var rawValue: String {
         switch self {
         case .subscribed:
-            return "subscribed"
+            return "SUBSCRIBED"
         case .unsubscribed:
-            return "unsubscribed"
+            return "UNSUBSCRIBED"
         case .unknown:
-            return "unknown"
+            return "UNKNOWN"
         }
     }
 }
