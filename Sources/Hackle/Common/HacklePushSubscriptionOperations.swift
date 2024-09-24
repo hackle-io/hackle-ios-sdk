@@ -1,5 +1,5 @@
 //
-//  HacklePushSubsciption.swift
+//  HacklePushSubscriptionOperations.swift
 //  Hackle
 //
 //  Created by hackle on 9/19/24.
@@ -38,8 +38,8 @@ enum HacklePushSubscriptionType: String {
 @objc public class HacklePushSubscriptionOperationsBuilder: NSObject {
     private var operations = [HacklePushSubscriptionType: String]()
     
-    @objc public func global(_ state: HacklePushSubscriptionState) -> HacklePushSubscriptionOperationsBuilder {
-        self.operations[.global] = state.rawValue
+    @objc public func global(_ status: HacklePushSubscriptionStatus) -> HacklePushSubscriptionOperationsBuilder {
+        self.operations[.global] = status.rawValue
         return self
     }
     

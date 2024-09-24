@@ -263,10 +263,10 @@ import WebKit
         )
     }
     
-    @objc(updatePushSubscriptionState:)
-    public func updatePushSubscriptionState(state: HacklePushSubscriptionState) {
+    @objc(updatePushSubscriptionStatus:)
+    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         let operations = HacklePushSubscriptionOperations.builder()
-            .global(state)
+            .global(status)
             .build()
         track(event: operations.toEvent())
     }

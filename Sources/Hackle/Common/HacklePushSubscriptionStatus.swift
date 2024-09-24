@@ -1,5 +1,5 @@
 //
-//  HacklePushSubscriptionStateType.swift
+//  HacklePushSubscriptionStatus.swift
 //  Hackle
 //
 //  Created by hackle on 9/19/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc public enum HacklePushSubscriptionState: Int, RawRepresentable {
+@objc public enum HacklePushSubscriptionStatus: Int, RawRepresentable {
     case subscribed
     case unsubscribed
     case unknown
