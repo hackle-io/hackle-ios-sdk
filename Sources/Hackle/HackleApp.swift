@@ -145,6 +145,8 @@ import WebKit
 
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
         track(event: operations.toEvent())
+        // Call flush to immediately update the property.
+        eventProcessor.flush()
         userManager.updateProperties(operations: operations)
         completion()
     }
