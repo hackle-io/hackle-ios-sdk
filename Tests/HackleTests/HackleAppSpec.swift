@@ -190,6 +190,9 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 1) {
                     core.trackMock
                 }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
                 verify(exactly: 0) {
                     userManager.syncIfNeededMock
                 }
@@ -215,6 +218,9 @@ class HackleAppSpecs: QuickSpec {
                 }
                 verify(exactly: 1) {
                     core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
                 }
                 verify(exactly: 0) {
                     userManager.syncIfNeededMock
