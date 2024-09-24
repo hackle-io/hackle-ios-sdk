@@ -31,4 +31,10 @@ class MockUserEventProcessor: Mock, UserEventProcessor {
     func initialize() {
         call(initializeMock, args: ())
     }
+    
+    lazy var flushMock = MockFunction(self, flush)
+    
+    func flush() {
+        call(flushMock, args: ())
+    }
 }

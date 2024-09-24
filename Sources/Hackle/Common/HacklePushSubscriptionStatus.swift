@@ -12,7 +12,9 @@ import Foundation
     case unsubscribed
     case unknown
     
-    public init?(rawValue: String) {
+    public typealias RawValue = String
+    
+    public init?(rawValue: RawValue) {
         switch rawValue {
         case "SUBSCRIBED":
             self = .subscribed
@@ -25,7 +27,7 @@ import Foundation
         }
     }
     
-    public var rawValue: String {
+    public var rawValue: RawValue {
         switch self {
         case .subscribed:
             return "SUBSCRIBED"

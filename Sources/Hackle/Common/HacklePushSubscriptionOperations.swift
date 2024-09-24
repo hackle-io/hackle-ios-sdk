@@ -12,20 +12,20 @@ enum HacklePushSubscriptionType: String {
 }
 
 @objc public class HacklePushSubscriptionOperations: NSObject {
-    private let operations: [HacklePushSubscriptionType: String]
+    private let operations: [String: HacklePushSubscriptionStatus]
     
     var count: Int {
         return operations.count
     }
     
-    init(operations: [HacklePushSubscriptionType: String]) {
+    init(operations: [String: HacklePushSubscriptionStatus]) {
         self.operations = operations
     }
     
     func toEvent() -> Event {
         let builder = Event.builder("$push_subscriptions")
         for (key, value) in operations {
-            builder.property(key.rawValue, value)
+            builder.property(key, value.rawValue)
         }
         return builder.build()
     }
@@ -36,10 +36,10 @@ enum HacklePushSubscriptionType: String {
 }
 
 @objc public class HacklePushSubscriptionOperationsBuilder: NSObject {
-    private var operations = [HacklePushSubscriptionType: String]()
+    private var operations = [String: HacklePushSubscriptionStatus]()
     
     @objc public func global(_ status: HacklePushSubscriptionStatus) -> HacklePushSubscriptionOperationsBuilder {
-        self.operations[.global] = status.rawValue
+        self.operations[HacklePushSubscriptionType.global.rawValue] = status
         return self
     }
     

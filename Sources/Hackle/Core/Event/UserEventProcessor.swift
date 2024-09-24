@@ -9,6 +9,7 @@ protocol UserEventProcessor {
     func initialize()
     func start()
     func stop()
+    func flush()
 }
 
 extension UserEventProcessor {
