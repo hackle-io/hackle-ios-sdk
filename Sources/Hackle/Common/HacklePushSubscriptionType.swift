@@ -7,18 +7,18 @@
 
 import Foundation
 
-enum HacklePushSubscriptionOperation: String {
+enum HacklePushSubscriptionType: String {
     case global = "$global"
 }
 
 @objc public class HacklePushSubscriptionOperations: NSObject {
-    private let operations: [HacklePushSubscriptionOperation: String]
+    private let operations: [HacklePushSubscriptionType: String]
     
     var count: Int {
         return operations.count
     }
     
-    init(operations: [HacklePushSubscriptionOperation: String]) {
+    init(operations: [HacklePushSubscriptionType: String]) {
         self.operations = operations
     }
     
@@ -36,9 +36,9 @@ enum HacklePushSubscriptionOperation: String {
 }
 
 @objc public class HacklePushSubscriptionOperationsBuilder: NSObject {
-    private var operations = [HacklePushSubscriptionOperation: String]()
+    private var operations = [HacklePushSubscriptionType: String]()
     
-    @objc public func setGlobal(_ state: HacklePushSubscriptionStateType) -> HacklePushSubscriptionOperationsBuilder {
+    @objc public func global(_ state: HacklePushSubscriptionState) -> HacklePushSubscriptionOperationsBuilder {
         self.operations[.global] = state.rawValue
         return self
     }

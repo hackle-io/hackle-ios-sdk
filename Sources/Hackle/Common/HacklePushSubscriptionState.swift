@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc public enum HacklePushSubscriptionStateType: Int, RawRepresentable {
+@objc public enum HacklePushSubscriptionState: Int, RawRepresentable {
     case subscribed
     case unsubscribed
     case unknown
