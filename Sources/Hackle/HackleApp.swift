@@ -145,6 +145,8 @@ import WebKit
 
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
         track(event: operations.toEvent())
+        // Call flush to immediately update the property.
+        eventProcessor.flush()
         userManager.updateProperties(operations: operations)
         completion()
     }
@@ -261,6 +263,15 @@ import WebKit
                 completion()
             }
         )
+    }
+    
+    @objc(updatePushSubscriptionStatus:)
+    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
+        let operations = HacklePushSubscriptionOperations.builder()
+            .global(status)
+            .build()
+        track(event: operations.toEvent())
+        eventProcessor.flush()
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
