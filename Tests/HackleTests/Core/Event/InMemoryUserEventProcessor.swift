@@ -25,4 +25,7 @@ class InMemoryUserEventProcessor: UserEventProcessor {
 
     func stop() {
     }
+    
+    func flush() {
+    }
 }

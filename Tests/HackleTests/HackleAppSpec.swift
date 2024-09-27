@@ -190,6 +190,9 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 1) {
                     core.trackMock
                 }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
                 verify(exactly: 0) {
                     userManager.syncIfNeededMock
                 }
@@ -215,6 +218,9 @@ class HackleAppSpecs: QuickSpec {
                 }
                 verify(exactly: 1) {
                     core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
                 }
                 verify(exactly: 0) {
                     userManager.syncIfNeededMock
@@ -451,7 +457,28 @@ class HackleAppSpecs: QuickSpec {
             let app = HackleApp.create(sdkKey: "sdk_key", config: config)
             expect(app.deviceId) == UserDefaults.standard.string(forKey: "hackle_device_id")
         }
-
+        
+        describe("updatePushSubscriptionStatus") {
+            it("set subscribed") {
+                sut.updatePushSubscriptionStatus(status: .subscribed)
+                verify(exactly: 1) {
+                    core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+            }
+            it("set unsubscribed") {
+                sut.updatePushSubscriptionStatus(status: .unsubscribed)
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
+            }
+            it("set unknown") {
+                sut.updatePushSubscriptionStatus(status: .unknown)
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+            }
+        }
 
         describe("DEPRECATED") {
 
