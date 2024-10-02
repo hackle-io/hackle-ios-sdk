@@ -126,5 +126,134 @@ class DefaultValueOperatorMatcherSpecs: QuickSpec {
 
             expect(actual).to(beFalse())
         }
+
+        it("matches") {
+
+            func check(type: Target.MatchType, userValue: Any, matchValues: [String], expected: Bool) {
+                let match = Target.Match(type: type, matchOperator: ._in, valueType: .string, values: matchValues.map({ .string($0) }))
+                let actual = sut.matches(userValue: userValue, match: match)
+                expect(actual) == expected
+            }
+
+            // A 는 [A] 중 하나
+            check(type: .match, userValue: "A", matchValues: ["A"], expected: true)
+
+            // A 는 [A, B] 중 하나
+            check(type: .match, userValue: "A", matchValues: ["A", "B"], expected: true)
+
+            // B 는 [A, B] 중 하나
+            check(type: .match, userValue: "B", matchValues: ["A", "B"], expected: true)
+
+            // A 는 [B] 중 하나
+            check(type: .match, userValue: "A", matchValues: ["B"], expected: false)
+
+            // A 는 [B, C] 중 하나
+            check(type: .match, userValue: "A", matchValues: ["B", "C"], expected: false)
+
+            // [] 는 [A] 중 하나
+            check(type: .match, userValue: [], matchValues: ["A"], expected: false)
+
+            // [A] 는 [A] 중 하나
+            check(type: .match, userValue: ["A"], matchValues: ["A"], expected: true)
+
+            // [A] 는 [A, B] 중 하나
+            check(type: .match, userValue: ["A"], matchValues: ["A", "B"], expected: true)
+
+            // [B] 는 [A, B] 중 하나
+            check(type: .match, userValue: ["B"], matchValues: ["A", "B"], expected: true)
+
+            // [A] 는 [B] 중 하나
+            check(type: .match, userValue: ["A"], matchValues: ["B"], expected: false)
+
+            // [A] 는 [B, C] 중 하나
+            check(type: .match, userValue: ["A"], matchValues: ["B", "C"], expected: false)
+
+            // [A, B] 는 [A] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["A"], expected: true)
+
+            // [A, B] 는 [B] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["B"], expected: true)
+
+            // [A, B] 는 [C] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["C"], expected: false)
+
+            // [A, B] 는 [A, B] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["A", "B"], expected: true)
+
+            // [A, B] 는 [A, C] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["A", "C"], expected: true)
+
+            // [A, B] 는 [B, C] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["B", "C"], expected: true)
+
+            // [A, B] 는 [A, C] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["A", "C"], expected: true)
+
+            // [A, B] 는 [C, A] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["C", "A"], expected: true)
+
+            // [A, B] 는 [C, D] 중 하나
+            check(type: .match, userValue: ["A", "B"], matchValues: ["C", "D"], expected: false)
+
+            // A 는 [A] 중 하나가 아닌
+            check(type: .notMatch, userValue: "A", matchValues: ["A"], expected: false)
+
+            // A 는 [A, B] 중 하나가 아닌
+            check(type: .notMatch, userValue: "A", matchValues: ["A", "B"], expected: false)
+
+            // B 는 [A, B] 중 하나가 아닌
+            check(type: .notMatch, userValue: "B", matchValues: ["A", "B"], expected: false)
+
+            // A 는 [B] 중 하나가 아닌
+            check(type: .notMatch, userValue: "A", matchValues: ["B"], expected: true)
+
+            // A 는 [B, C] 중 하나가 아닌
+            check(type: .notMatch, userValue: "A", matchValues: ["B", "C"], expected: true)
+
+            // [] 는 [A] 중 하나가 아닌
+            check(type: .notMatch, userValue: [], matchValues: ["A"], expected: true)
+
+            // [A] 는 [A] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A"], matchValues: ["A"], expected: false)
+
+            // [A] 는 [A, B] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A"], matchValues: ["A", "B"], expected: false)
+
+            // [B] 는 [A, B] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["B"], matchValues: ["A", "B"], expected: false)
+
+            // [A] 는 [B] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A"], matchValues: ["B"], expected: true)
+
+            // [A] 는 [B, C] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A"], matchValues: ["B", "C"], expected: true)
+
+            // [A, B] 는 [A] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["A"], expected: false)
+
+            // [A, B] 는 [B] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["B"], expected: false)
+
+            // [A, B] 는 [C] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["C"], expected: true)
+
+            // [A, B] 는 [A, B] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["A", "B"], expected: false)
+
+            // [A, B] 는 [A, C] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["A", "C"], expected: false)
+
+            // [A, B] 는 [B, C] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["B", "C"], expected: false)
+
+            // [A, B] 는 [A, C] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["A", "C"], expected: false)
+
+            // [A, B] 는 [C, A] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["C", "A"], expected: false)
+
+            // [A, B] 는 [C, D] 중 하나가 아닌
+            check(type: .notMatch, userValue: ["A", "B"], matchValues: ["C", "D"], expected: true)
+        }
     }
 }
