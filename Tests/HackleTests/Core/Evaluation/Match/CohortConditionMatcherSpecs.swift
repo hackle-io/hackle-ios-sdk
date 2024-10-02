@@ -84,5 +84,108 @@ class CohortConditionMatcherSpecs: QuickSpec {
             // then
             expect(actual) == true
         }
+
+        it("matches") {
+            func check(type: Target.MatchType, userCohorts: [Cohort.Id], cohorts: [Cohort.Id], expected: Bool) throws {
+                let request = experimentRequest(
+                    user: HackleUser.builder()
+                        .identifier(.id, "user")
+                        .cohorts(userCohorts.map({ Cohort(id: $0) }))
+                        .build()
+                )
+                let condition = Target.Condition(
+                    key: Target.Key(type: .cohort, name: "COHORT"),
+                    match: Target.Match(type: type, matchOperator: ._in, valueType: .number, values: cohorts.map({ HackleValue(value: $0) }))
+                )
+
+                let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
+
+                expect(actual) == expected
+            }
+
+            // UserCohort[] 는 Cohort[1] 중 하나
+            try check(type: .match, userCohorts: [], cohorts: [1], expected: false)
+
+            // UserCohort[1] 는 Cohort[1] 중 하나
+            try check(type: .match, userCohorts: [1], cohorts: [1], expected: true)
+
+            // UserCohort[1] 는 Cohort[1, 2] 중 하나
+            try check(type: .match, userCohorts: [1], cohorts: [1, 2], expected: true)
+
+            // UserCohort[2] 는 Cohort[1, 2] 중 하나
+            try check(type: .match, userCohorts: [2], cohorts: [1, 2], expected: true)
+
+            // UserCohort[1] 는 Cohort[2] 중 하나
+            try check(type: .match, userCohorts: [1], cohorts: [2], expected: false)
+
+            // UserCohort[1] 는 Cohort[2, 3] 중 하나
+            try check(type: .match, userCohorts: [1], cohorts: [2, 3], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[1] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [1], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[2] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [2], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[3] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [3], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[1, 2] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [1, 2], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[1, 3] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [1, 3], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[2, 3] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [2, 3], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[3, 2] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [3, 2], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[3, 4] 중 하나
+            try check(type: .match, userCohorts: [1, 2], cohorts: [3, 4], expected: false)
+
+            // UserCohort[] 는 Cohort[1] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [], cohorts: [1], expected: true)
+
+            // UserCohort[1] 는 Cohort[1] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1], cohorts: [1], expected: false)
+
+            // UserCohort[1] 는 Cohort[1, 2] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1], cohorts: [1, 2], expected: false)
+
+            // UserCohort[2] 는 Cohort[1, 2] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [2], cohorts: [1, 2], expected: false)
+
+            // UserCohort[1] 는 Cohort[2] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1], cohorts: [2], expected: true)
+
+            // UserCohort[1] 는 Cohort[2, 3] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1], cohorts: [2, 3], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[1] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [1], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[2] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [2], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[3] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [3], expected: true)
+
+            // UserCohort[1, 2] 는 Cohort[1, 2] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [1, 2], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[1, 3] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [1, 3], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[2, 3] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [2, 3], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[3, 2] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [3, 2], expected: false)
+
+            // UserCohort[1, 2] 는 Cohort[3, 4] 중 하나가 아닌
+            try check(type: .notMatch, userCohorts: [1, 2], cohorts: [3, 4], expected: true)
+        }
     }
 }

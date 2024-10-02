@@ -20,8 +20,7 @@ class CohortConditionMatcher: ConditionMatcher {
         guard condition.key.type == .cohort else {
             throw HackleError.error("Unsupported TargetKeyType [\(condition.key.type)]")
         }
-        return request.user.cohorts.contains { cohort in
-            valueOperatorMatcher.matches(userValue: cohort.id, match: condition.match)
-        }
+        let cohortIds = request.user.cohorts.map({ $0.id })
+        return valueOperatorMatcher.matches(userValue: cohortIds, match: condition.match)
     }
 }
