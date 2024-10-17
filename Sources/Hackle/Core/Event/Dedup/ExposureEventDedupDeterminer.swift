@@ -7,8 +7,12 @@ class ExposureEventDedupDeterminer: CachedUserEventDedupDeterminer {
 
     private let dedupCache: UserEventDedupCache
 
-    init(dedupInterval: TimeInterval) {
-        dedupCache = UserEventDedupCache(dedupInterval: dedupInterval, clock: SystemClock.shared)
+    init(sdkKey: String, dedupInterval: TimeInterval, appStateManager: DefaultAppStateManager) {
+        let repositorySuiteName = String(format: storageSuiteNameExposureEventDedup, sdkKey)
+        dedupCache = UserEventDedupCache(repositorySuiteName: repositorySuiteName,
+                                         dedupInterval: dedupInterval,
+                                         clock: SystemClock.shared,
+                                         appStateManager: appStateManager)
     }
 
     func cache() -> UserEventDedupCache {

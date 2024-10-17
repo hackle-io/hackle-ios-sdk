@@ -48,6 +48,7 @@ public class HackleConfig: NSObject {
     static let DEFAULT_EVENT_FLUSH_THRESHOLD = 10
     static let DEFAULT_EVENT_REPOSITORY_MAX_SIZE = 1000
     static let DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL: TimeInterval = 60
+    static let EXPOSURE_EVENT_DEDUP_INTERVAL_LIMIT: TimeInterval = 60 * 60 * 24 // 24 hours
 
     @objc public static let DEFAULT: HackleConfig = builder().build()
 
@@ -160,7 +161,8 @@ public class HackleConfigBuilder: NSObject {
             self.eventFlushThreshold = HackleConfig.DEFAULT_EVENT_FLUSH_THRESHOLD
         }
 
-        if exposureEventDedupInterval != HackleConfig.NO_DEDUP && !(1...3600).contains(exposureEventDedupInterval) {
+        if exposureEventDedupInterval != HackleConfig.NO_DEDUP &&
+            !(1...HackleConfig.EXPOSURE_EVENT_DEDUP_INTERVAL_LIMIT).contains(exposureEventDedupInterval) {
             Log.info("Exposure event dedup interval is outside allowed range[1s..3600s]. Setting to default value[60s].")
             self.exposureEventDedupInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
         }
