@@ -17,7 +17,7 @@ class HackleConfigSpec: QuickSpec {
         it("exposureEventDedupInterval") {
             expect(HackleConfigBuilder().build().exposureEventDedupInterval) == 60
             expect(HackleConfigBuilder().exposureEventDedupIntervalSeconds(0.9999).build().exposureEventDedupInterval) == 60
-            expect(HackleConfigBuilder().exposureEventDedupIntervalSeconds(3600.1).build().exposureEventDedupInterval) == 60
+            expect(HackleConfigBuilder().exposureEventDedupIntervalSeconds(86400.1).build().exposureEventDedupInterval) == 60
 
 
             for i in 1...3600 {

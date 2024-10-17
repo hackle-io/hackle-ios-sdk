@@ -33,7 +33,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 let sut = ExposureEventDedupDeterminer(sdkKey: sdkKey, dedupInterval: -1, appStateManager: appStateManager)
 
                 // when
-                let actual = sut.isDedupTarget(event: MockUserEvent(user: HackleUser.of(userId: "test_id")))
+                let actual = sut.isDedupTarget(event: MockUserEvent(user: HackleUser.of(userId: "test_id_A")))
 
                 // then
                 expect(actual) == false
@@ -41,7 +41,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
 
             it("ExposureEvent 가 아니면 중복제거 하지 않는다") {
                 // when
-                let actual = exposureEventDedupDeterminerSut.isDedupTarget(event: MockUserEvent(user: HackleUser.of(userId: "test_id")))
+                let actual = exposureEventDedupDeterminerSut.isDedupTarget(event: MockUserEvent(user: HackleUser.of(userId: "test_id_B")))
 
                 // then
                 expect(actual) == false
@@ -51,7 +51,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 let event = UserEvents.Exposure(
                     insertId: "insertId",
                     timestamp: Date(),
-                    user: HackleUser.of(userId: "test_id"),
+                    user: HackleUser.of(userId: "test_id_C"),
                     experiment: MockExperiment(),
                     variationId: 14,
                     variationKey: "A",
@@ -67,7 +67,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
             }
 
             it("같은 사용자의 같은 노출이벤트에 대해 중복제거 기간 이내에 들어온 이벤트는 중복제거 한다") {
-                let user = HackleUser.of(userId: "test_id")
+                let user = HackleUser.of(userId: "test_id_D")
                 let experiment = MockExperiment()
 
                 let firstEvent = UserEvents.Exposure(
@@ -97,7 +97,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
             }
 
             it("같은 사용자의 같은 노출이벤트지만 중복제거 기간 이후에 들어오면 중복제거 하지 않는다") {
-                let user = HackleUser.of(userId: "test_id")
+                let user = HackleUser.of(userId: "test_id_E")
                 let experiment = MockExperiment()
 
                 let firstEvent = UserEvents.Exposure(
@@ -133,7 +133,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 let firstEvent = UserEvents.Exposure(
                     insertId: "insertId",
                     timestamp: Date(),
-                    user: HackleUser.of(userId: "test_id_01"),
+                    user: HackleUser.of(userId: "test_id_F"),
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -144,7 +144,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 let secondEvent = UserEvents.Exposure(
                     insertId: "insertId",
                     timestamp: Date(),
-                    user: HackleUser.of(userId: "test_id_02"),
+                    user: HackleUser.of(userId: "test_id_G"),
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -157,7 +157,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
             }
 
             it("같은 사용자의 중복제거 기간 이내지만 다른 실험에 대한 분배면 중복제거 하지 않는다") {
-                let user = HackleUser.of(userId: "test_id_01")
+                let user = HackleUser.of(userId: "test_id_H")
 
                 let firstEvent = UserEvents.Exposure(
                     insertId: "insertId",
@@ -186,7 +186,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
             }
 
             it("같은 사용자의 중복제거 기간 이내지만 분배사유가 변경되면 중복제거 하지 않는다") {
-                let user = HackleUser.of(userId: "test_id_01")
+                let user = HackleUser.of(userId: "test_id_I")
 
                 let firstEvent = UserEvents.Exposure(
                     insertId: "insertId",
@@ -218,7 +218,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 let firstEvent = UserEvents.Exposure(
                     insertId: "insertId",
                     timestamp: Date(),
-                    user: HackleUser(identifiers: ["id": "test_id_01"], properties: [:], hackleProperties: [:]),
+                    user: HackleUser(identifiers: ["id": "test_id_J"], properties: [:], hackleProperties: [:]),
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -229,7 +229,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 let secondEvent = UserEvents.Exposure(
                     insertId: "insertId",
                     timestamp: Date(),
-                    user: HackleUser(identifiers: ["id": "test_id_01"], properties: ["age": 30], hackleProperties: [:]),
+                    user: HackleUser(identifiers: ["id": "test_id_J"], properties: ["age": 30], hackleProperties: [:]),
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
