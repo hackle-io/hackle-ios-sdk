@@ -20,7 +20,7 @@ class HackleConfigSpec: QuickSpec {
             expect(HackleConfigBuilder().exposureEventDedupIntervalSeconds(86400.1).build().exposureEventDedupInterval) == 60
 
 
-            for i in 1...3600 {
+            for i in 1...86400 {
                 let config = HackleConfigBuilder()
                     .exposureEventDedupIntervalSeconds(Double(i))
                     .build()
