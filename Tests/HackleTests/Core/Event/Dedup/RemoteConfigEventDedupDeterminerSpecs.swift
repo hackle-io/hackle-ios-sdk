@@ -7,8 +7,9 @@ import Nimble
 class RemoteConfigEventDedupDeterminerSpecs: QuickSpec {
     override func spec() {
         it("cacheKey") {
-
-            let sut = RemoteConfigEventDedupDeterminer(dedupInterval: -1)
+            var queue = DispatchQueue(label: "DefaultAppStateManagerSpecs")
+            let appStateManager = DefaultAppStateManager(queue: queue)
+            let sut = RemoteConfigEventDedupDeterminer(sdkKey: "abcd1234", dedupInterval: -1, appStateManager: appStateManager)
 
             let event = UserEvents.RemoteConfig(
                 insertId: "insert_id",
