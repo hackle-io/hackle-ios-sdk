@@ -4,12 +4,10 @@ class RemoteConfigEventDedupDeterminer: CachedUserEventDedupDeterminer {
     typealias Event = UserEvents.RemoteConfig
     private let dedupCache: UserEventDedupCache
 
-    init(sdkKey: String, dedupInterval: TimeInterval, appStateManager: DefaultAppStateManager) {
-        let repositorySuiteName = String(format: storageSuiteNameRemoteConfigEventDedup, sdkKey)
-        dedupCache = UserEventDedupCache(repositorySuiteName: repositorySuiteName,
+    init(repository: UserDefaultsKeyValueRepository, dedupInterval: TimeInterval) {
+        dedupCache = UserEventDedupCache(repository: repository,
                                          dedupInterval: dedupInterval,
-                                         clock: SystemClock.shared,
-                                         appStateManager: appStateManager)
+                                         clock: SystemClock.shared)
     }
 
     func cache() -> UserEventDedupCache {
@@ -26,5 +24,14 @@ class RemoteConfigEventDedupDeterminer: CachedUserEventDedupDeterminer {
             "\(remoteConfigEvent.valueId ?? 0)",
             remoteConfigEvent.decisionReason
         ].joined(separator: "-")
+    }
+}
+
+extension RemoteConfigEventDedupDeterminer: AppStateListener {
+    func onState(state: AppState, timestamp: Date) {
+        Log.debug("RemoteConfigEventDedupDeterminer.onState(state: \(state))")
+        if state == .background {
+            self.dedupCache.saveCacheToRepository()
+        }
     }
 }

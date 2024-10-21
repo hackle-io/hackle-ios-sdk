@@ -25,85 +25,106 @@ extension CachedUserEventDedupDeterminer {
 }
 
 class UserEventDedupCache {
-    private let repositoryKeyDedup: String = "DEDUP_"
-    private let repositoryKeyCurrentUser: String = "CURRENT_USE_PROPERTIES"
+    private let repositoryKeyDedupCache = "DEDUP_CACHE"
+    private let repositoryKeyCurrentUser = "CURRENT_USE_PROPERTIES"
+    private let cacheSizeLimit = 4 * 1024 * 1024 // UserDefaults storage limit is 4MB.
     
     private let dedupInterval: TimeInterval
     private let clock: Clock
-    
-    private var currentUserIdentifiers: [String: String]? = nil
+    private var currentUserIdentifiers: [String: String]?
     private let repository: UserDefaultsKeyValueRepository
     
-    private let repositoryUpdateInterval: TimeInterval = 60
-    private var repositoryUpdateTime: TimeInterval = 0
+    private var cache = [String: TimeInterval]()
+    private let lock = ReadWriteLock(label: "io.hackle.UserEventDedupCache.Lock")
     
-    init(repositorySuiteName: String, dedupInterval: TimeInterval, clock: Clock, appStateManager: DefaultAppStateManager) {
+    init(repository: UserDefaultsKeyValueRepository, dedupInterval: TimeInterval, clock: Clock) {
+        self.repository = repository
         self.dedupInterval = dedupInterval
         self.clock = clock
-        self.repository = UserDefaultsKeyValueRepository.of(suiteName: repositorySuiteName)
         self.currentUserIdentifiers = loadCurrentUserFromRepository()
-        appStateManager.addListener(listener: self)
-        
         // When the app restarts, the appStateManager cannot detect the state change. So, when initializing, the repository is updated once.
-        self.updateRepository()
+        self.loadCacheFromRepository()
     }
 
     func compute(cacheKey: String, user: HackleUser) -> Bool {
-        if dedupInterval == HackleConfig.NO_DEDUP {
+        if self.dedupInterval == HackleConfig.NO_DEDUP {
             return false
         }
         
-        if user.identifiers != currentUserIdentifiers {
-            repository.clear()
-            currentUserIdentifiers = user.identifiers
-            storeCurrentUserToRepository()
+        return lock.write {
+            if user.identifiers != self.currentUserIdentifiers {
+                self.repository.clear()
+                self.cache.removeAll()
+                self.currentUserIdentifiers = user.identifiers
+                self.saveCurrentUserToRepository()
+            }
+            
+            let now = self.clock.now().timeIntervalSince1970
+            if let firstTime = self.cache[cacheKey], now - firstTime <= self.dedupInterval {
+                return true
+                
+            }
+            self.cache[cacheKey] = now
+            self.trimDictionaryForUserDefaultsCapacity()
+            return false
         }
-         
-        let now = clock.now().timeIntervalSince1970
-        let firstTime = repository.getDouble(key: repositoryKeyDedup + cacheKey)
-        if firstTime > 0, now - firstTime <= dedupInterval {
-            return true
+    }
+    
+    private func trimDictionaryForUserDefaultsCapacity() {
+        if self.cache.dataSizeInBytes() < self.cacheSizeLimit {
+            return
         }
         
-        repository.putDouble(key: repositoryKeyDedup + cacheKey, value: now)
-        return false
+        // Sort dictionary by TimeInterval value in ascending order (oldest first)
+        let sortedCache = self.cache.sorted { $0.value < $1.value }
+        
+        for (key, _) in sortedCache {
+            if self.cache.dataSizeInBytes() < cacheSizeLimit {
+                return
+            }
+            self.cache.removeValue(forKey: key)
+        }
     }
-    
-    func storeCurrentUserToRepository() {
+}
+extension UserEventDedupCache {
+    private func saveCurrentUserToRepository() {
         if let identifiers = self.currentUserIdentifiers?.toJson() {
-            repository.putString(key: repositoryKeyCurrentUser, value: identifiers)
+            self.repository.putString(key: self.repositoryKeyCurrentUser, value: identifiers)
         } else {
-            repository.remove(key: repositoryKeyCurrentUser)
+            self.repository.remove(key: self.repositoryKeyCurrentUser)
         }
     }
     
-    func loadCurrentUserFromRepository() -> [String: String]? {
-        if let identifiers = repository.getString(key: repositoryKeyCurrentUser) {
+    private func loadCurrentUserFromRepository() -> [String: String]? {
+        if let identifiers = self.repository.getString(key: self.repositoryKeyCurrentUser) {
             return identifiers.jsonObject()?.compactMapValues { $0 as? String}
         }
         return nil
     }
-}
-
-extension UserEventDedupCache: AppStateListener {
-    func onState(state: AppState, timestamp: Date) {
-        // Updates the storage when the state changes without distinguishing between foreground and background.
-        updateRepository()
+    
+    func saveCacheToRepository() {
+        self.lock.write {
+            self.updateCacheForIntervalExpiry()
+            if let cacheForSave = self.cache.toJson() {
+                self.repository.putString(key: self.repositoryKeyDedupCache, value: cacheForSave)
+            } else {
+                self.repository.remove(key: self.repositoryKeyDedupCache)
+            }
+        }
     }
     
-    func updateRepository() {
-        let now = clock.now().timeIntervalSince1970
-        // If switching between background and foreground occurs frequently and less than 1 minute has passed since the last update, do not perform the update.
-        if now - repositoryUpdateTime < repositoryUpdateInterval {
-            return
+    private func loadCacheFromRepository() {
+        if let savedCacheStr = self.repository.getString(key: self.repositoryKeyDedupCache),
+            let savedCache = savedCacheStr.jsonObject() {
+            self.cache = savedCache.compactMapValues{ $0 as? Double }
         }
-        
-        repositoryUpdateTime = now
-        for (key, value) in repository.getAll() {
-            if let time: Double = value as? Double , now - time > dedupInterval {
-                if key.hasPrefix(repositoryKeyDedup) {
-                    repository.remove(key: key)
-                }
+    }
+    
+    private func updateCacheForIntervalExpiry() {
+        let now = self.clock.now().timeIntervalSince1970
+        for (key, value) in self.cache {
+            if now - value > self.dedupInterval {
+                self.cache.removeValue(forKey: key)
             }
         }
     }

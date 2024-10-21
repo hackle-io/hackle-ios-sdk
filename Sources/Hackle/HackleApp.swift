@@ -465,11 +465,26 @@ extension HackleApp {
         )
 
         let eventPublisher = DefaultUserEventPublisher()
-
         var eventFilters = [UserEventFilter]()
+        
+        let rcEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameRemoteConfigEventDedup, sdkKey))
+        let exposureEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameExposureEventDedup, sdkKey))
+        
+        
+        let rcEventDedupDeterminer = RemoteConfigEventDedupDeterminer(
+            repository: rcEventDedupRepository,
+            dedupInterval: config.exposureEventDedupInterval)
+        
+        let exposureEventDedupDeterminer = ExposureEventDedupDeterminer(
+            repository: exposureEventDedupRepository,
+            dedupInterval: config.exposureEventDedupInterval)
+        
+        appStateManager.addListener(listener: rcEventDedupDeterminer)
+        appStateManager.addListener(listener: exposureEventDedupDeterminer)
+        
         let dedupDeterminer = DelegatingUserEventDedupDeterminer(determiners: [
-            RemoteConfigEventDedupDeterminer(sdkKey: sdkKey, dedupInterval: config.exposureEventDedupInterval, appStateManager: appStateManager),
-            ExposureEventDedupDeterminer(sdkKey: sdkKey, dedupInterval: config.exposureEventDedupInterval, appStateManager: appStateManager)
+            rcEventDedupDeterminer,
+            exposureEventDedupDeterminer
         ])
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
