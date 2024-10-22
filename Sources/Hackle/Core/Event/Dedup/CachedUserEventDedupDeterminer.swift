@@ -85,15 +85,18 @@ extension UserEventDedupCache {
     private func saveCurrentUserToRepository() {
         if let identifiers = self.currentUserIdentifiers?.toJson() {
             self.repository.putString(key: self.repositoryKeyCurrentUser, value: identifiers)
-        } else {
-            self.repository.remove(key: self.repositoryKeyCurrentUser)
+            return
         }
+        
+        self.repository.remove(key: self.repositoryKeyCurrentUser)
     }
     
     private func loadCurrentUserFromRepository() {
         if let identifiers = self.repository.getString(key: self.repositoryKeyCurrentUser) {
             self.currentUserIdentifiers = identifiers.jsonObject()?.compactMapValues { $0 as? String}
+            return
         }
+        
         self.currentUserIdentifiers = nil
     }
     
