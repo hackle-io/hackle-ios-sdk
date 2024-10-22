@@ -41,9 +41,8 @@ class UserEventDedupCache {
         self.repository = repository
         self.dedupInterval = dedupInterval
         self.clock = clock
-        self.currentUserIdentifiers = loadCurrentUserFromRepository()
-        // When the app restarts, the appStateManager cannot detect the state change. So, when initializing, the repository is updated once.
-        self.loadCacheFromRepository()
+        
+        self.loadFromRepository()
     }
 
     func compute(cacheKey: String, user: HackleUser) -> Bool {
@@ -53,10 +52,8 @@ class UserEventDedupCache {
         
         return lock.write {
             if user.identifiers != self.currentUserIdentifiers {
-                self.repository.clear()
                 self.cache.removeAll()
                 self.currentUserIdentifiers = user.identifiers
-                self.saveCurrentUserToRepository()
             }
             
             let now = self.clock.now().timeIntervalSince1970
@@ -65,28 +62,26 @@ class UserEventDedupCache {
                 
             }
             self.cache[cacheKey] = now
-            self.trimDictionaryForUserDefaultsCapacity()
             return false
         }
     }
-    
-    private func trimDictionaryForUserDefaultsCapacity() {
-        if self.cache.dataSizeInBytes() < self.cacheSizeLimit {
-            return
-        }
-        
-        // Sort dictionary by TimeInterval value in ascending order (oldest first)
-        let sortedCache = self.cache.sorted { $0.value < $1.value }
-        
-        for (key, _) in sortedCache {
-            if self.cache.dataSizeInBytes() < cacheSizeLimit {
-                return
-            }
-            self.cache.removeValue(forKey: key)
+}
+
+extension UserEventDedupCache {
+    func saveToRepository() {
+        self.lock.write {
+            self.saveCurrentUserToRepository()
+            self.saveCacheToRepository()
         }
     }
-}
-extension UserEventDedupCache {
+    
+    func loadFromRepository() {
+        self.lock.write {
+            self.loadCurrentUserFromRepository()
+            self.loadCacheFromRepository()
+        }
+    }
+    
     private func saveCurrentUserToRepository() {
         if let identifiers = self.currentUserIdentifiers?.toJson() {
             self.repository.putString(key: self.repositoryKeyCurrentUser, value: identifiers)
@@ -95,21 +90,25 @@ extension UserEventDedupCache {
         }
     }
     
-    private func loadCurrentUserFromRepository() -> [String: String]? {
+    private func loadCurrentUserFromRepository() {
         if let identifiers = self.repository.getString(key: self.repositoryKeyCurrentUser) {
-            return identifiers.jsonObject()?.compactMapValues { $0 as? String}
+            self.currentUserIdentifiers = identifiers.jsonObject()?.compactMapValues { $0 as? String}
         }
-        return nil
+        self.currentUserIdentifiers = nil
     }
     
-    func saveCacheToRepository() {
-        self.lock.write {
-            self.updateCacheForIntervalExpiry()
-            if let cacheForSave = self.cache.toJson() {
-                self.repository.putString(key: self.repositoryKeyDedupCache, value: cacheForSave)
-            } else {
-                self.repository.remove(key: self.repositoryKeyDedupCache)
-            }
+    private func saveCacheToRepository() {
+        self.updateCacheForIntervalExpiry()
+        
+        if self.cache.dataSizeInBytes() > self.cacheSizeLimit {
+            Log.error("Fail to save event cache. The storage capacity for checking duplicate events has been exceeded.")
+            return
+        }
+        
+        if let cacheForSave = self.cache.toJson() {
+            self.repository.putString(key: self.repositoryKeyDedupCache, value: cacheForSave)
+        } else {
+            self.repository.remove(key: self.repositoryKeyDedupCache)
         }
     }
     
@@ -117,6 +116,7 @@ extension UserEventDedupCache {
         if let savedCacheStr = self.repository.getString(key: self.repositoryKeyDedupCache),
             let savedCache = savedCacheStr.jsonObject() {
             self.cache = savedCache.compactMapValues{ $0 as? Double }
+            self.updateCacheForIntervalExpiry()
         }
     }
     

@@ -31,7 +31,7 @@ extension RemoteConfigEventDedupDeterminer: AppStateListener {
     func onState(state: AppState, timestamp: Date) {
         Log.debug("RemoteConfigEventDedupDeterminer.onState(state: \(state))")
         if state == .background {
-            self.dedupCache.saveCacheToRepository()
+            self.dedupCache.saveToRepository()
         }
     }
 }

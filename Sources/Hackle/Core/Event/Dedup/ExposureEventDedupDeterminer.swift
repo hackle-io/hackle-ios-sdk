@@ -33,7 +33,7 @@ extension ExposureEventDedupDeterminer: AppStateListener {
     func onState(state: AppState, timestamp: Date) {
         Log.debug("ExposureEventDedupDeterminer.onState(state: \(state))")
         if state == .background {
-            self.dedupCache.saveCacheToRepository()
+            self.dedupCache.saveToRepository()
         }
     }
 }
