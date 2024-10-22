@@ -98,18 +98,17 @@ extension UserEventDedupCache {
     }
     
     private func saveCacheToRepository() {
-        self.updateCacheForIntervalExpiry()
+        guard let cacheForSave = self.cache.toJson() else {
+            self.repository.remove(key: self.repositoryKeyDedupCache)
+            return
+        }
         
-        if self.cache.dataSizeInBytes() > self.cacheSizeLimit {
+        if cacheForSave.count > self.cacheSizeLimit {
             Log.error("Fail to save event cache. The storage capacity for checking duplicate events has been exceeded.")
             return
         }
         
-        if let cacheForSave = self.cache.toJson() {
-            self.repository.putString(key: self.repositoryKeyDedupCache, value: cacheForSave)
-        } else {
-            self.repository.remove(key: self.repositoryKeyDedupCache)
-        }
+        self.repository.putString(key: self.repositoryKeyDedupCache, value: cacheForSave)
     }
     
     private func loadCacheFromRepository() {

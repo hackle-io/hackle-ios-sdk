@@ -163,7 +163,7 @@ public class HackleConfigBuilder: NSObject {
 
         if exposureEventDedupInterval != HackleConfig.NO_DEDUP &&
             !(1...HackleConfig.EXPOSURE_EVENT_DEDUP_INTERVAL_LIMIT).contains(exposureEventDedupInterval) {
-            Log.info("Exposure event dedup interval is outside allowed range[1s..3600s]. Setting to default value[60s].")
+            Log.info("Exposure event dedup interval is outside allowed range[1s..\(HackleConfig.EXPOSURE_EVENT_DEDUP_INTERVAL_LIMIT)s]. Setting to default value[60s].")
             self.exposureEventDedupInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
         }
 

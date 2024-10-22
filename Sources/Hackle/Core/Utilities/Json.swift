@@ -42,12 +42,4 @@ extension Dictionary {
         }
         return String(data: data, encoding: .utf8)
     }
-    
-    func dataSizeInBytes() -> Int {
-        if let jsonData = self.toJson() {
-            return jsonData.count
-        }
-        
-        return 0
-    }
 }
