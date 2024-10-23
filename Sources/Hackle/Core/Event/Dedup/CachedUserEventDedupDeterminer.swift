@@ -26,7 +26,7 @@ extension CachedUserEventDedupDeterminer {
 
 class UserEventDedupCache {
     private let repositoryKeyDedupCache = "DEDUP_CACHE"
-    private let repositoryKeyCurrentUser = "CURRENT_USE_PROPERTIES"
+    private let repositoryKeyCurrentUser = "CURRENT_USER_PROPERTIES"
     private let cacheSizeLimit = 4 * 1024 * 1024 // UserDefaults storage limit is 4MB.
     
     private let dedupInterval: TimeInterval
