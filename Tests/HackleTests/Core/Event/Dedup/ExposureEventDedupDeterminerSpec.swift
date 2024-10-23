@@ -231,6 +231,87 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 expect(exposureEventDedupDeterminerSut.isDedupTarget(event: firstEvent)) == false
                 expect(exposureEventDedupDeterminerSut.isDedupTarget(event: secondEvent)) == true
             }
+            
+            it("UserDefaults에 저장 후 중복제거 기간 이후에 불러오면 필터링됨. 따라서 중복제거 하지 않는다") {
+                let user = HackleUser.of(userId: "test_id_02")
+                let experiment = MockExperiment()
+
+                let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
+                    timestamp: Date(),
+                    user: user,
+                    experiment: experiment,
+                    variationId: 14,
+                    variationKey: "A",
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
+                )
+
+                let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
+                    timestamp: Date(),
+                    user: user,
+                    experiment: experiment,
+                    variationId: 14,
+                    variationKey: "A",
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
+                )
+
+                expect(exposureEventDedupDeterminerSut.isDedupTarget(event: firstEvent)) == false
+                expect(exposureEventDedupDeterminerSut.isDedupTarget(event: secondEvent)) == true
+                exposureEventDedupDeterminerSut.cache().saveToRepository()
+                sleep(2)
+                exposureEventDedupDeterminerSut.cache().loadFromRepository()
+                expect(exposureEventDedupDeterminerSut.isDedupTarget(event: firstEvent)) == false
+            }
+            
+            it("제한 용량 초과시 UserDefaults에 저장하지 않는다. 불러오면 저장된 값이 없어 중복제거 하지 않는다") {
+                let sut = ExposureEventDedupDeterminer(repository: repository, dedupInterval: 100)
+                let user = HackleUser.of(userId: "test_id_03")
+                let firstEvent = UserEvents.Exposure(
+                    insertId: "insertId",
+                    timestamp: Date(),
+                    user: user,
+                    experiment: MockExperiment(id: 1),
+                    variationId: 14,
+                    variationKey: "A",
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
+                )
+
+                let secondEvent = UserEvents.Exposure(
+                    insertId: "insertId",
+                    timestamp: Date(),
+                    user: user,
+                    experiment: MockExperiment(id: 1),
+                    variationId: 14,
+                    variationKey: "A",
+                    decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                    properties: [:]
+                )
+                
+                expect(sut.isDedupTarget(event: firstEvent)) == false
+                expect(sut.isDedupTarget(event: secondEvent)) == true
+                
+                for i in 0..<100000 {
+                    let event = UserEvents.Exposure(
+                        insertId: "insertId",
+                        timestamp: Date(),
+                        user: user,
+                        experiment: MockExperiment(id: Int64(i+2)),
+                        variationId: 14,
+                        variationKey: "A",
+                        decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
+                        properties: [:]
+                    )
+                    let result = sut.isDedupTarget(event: event)
+                }
+                
+                sut.cache().saveToRepository()
+                sut.cache().loadFromRepository()
+                expect(sut.isDedupTarget(event: firstEvent)) == false
+            }
 
             it("TC1") {
                 let userA = HackleUser.of(userId: "a")
