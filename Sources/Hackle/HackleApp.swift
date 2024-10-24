@@ -380,7 +380,7 @@ extension HackleApp {
 
         let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
-        let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: "Hackle_\(sdkKey)")
+        let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
 
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -454,7 +454,8 @@ extension HackleApp {
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
-
+        let appStateManager = DefaultAppStateManager(queue: eventQueue)
+        
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,
             eventQueue: eventQueue,
@@ -464,12 +465,26 @@ extension HackleApp {
         )
 
         let eventPublisher = DefaultUserEventPublisher()
-
-
         var eventFilters = [UserEventFilter]()
+        
+        let rcEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameRemoteConfigEventDedup, sdkKey))
+        let exposureEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameExposureEventDedup, sdkKey))
+        
+        
+        let rcEventDedupDeterminer = RemoteConfigEventDedupDeterminer(
+            repository: rcEventDedupRepository,
+            dedupInterval: config.exposureEventDedupInterval)
+        
+        let exposureEventDedupDeterminer = ExposureEventDedupDeterminer(
+            repository: exposureEventDedupRepository,
+            dedupInterval: config.exposureEventDedupInterval)
+        
+        appStateManager.addListener(listener: rcEventDedupDeterminer)
+        appStateManager.addListener(listener: exposureEventDedupDeterminer)
+        
         let dedupDeterminer = DelegatingUserEventDedupDeterminer(determiners: [
-            RemoteConfigEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval),
-            ExposureEventDedupDeterminer(dedupInterval: config.exposureEventDedupInterval)
+            rcEventDedupDeterminer,
+            exposureEventDedupDeterminer
         ])
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
@@ -477,8 +492,6 @@ extension HackleApp {
         if config.mode == .web_view_wrapper {
             eventFilters.append(WebViewWrapperUserEventFilter())
         }
-
-        let appStateManager = DefaultAppStateManager(queue: eventQueue)
 
         let eventProcessor = DefaultUserEventProcessor(
             eventFilters: eventFilters,
@@ -499,10 +512,10 @@ extension HackleApp {
 
         // - Core
 
-        let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ab_override_\(sdkKey)")
-        let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: "Hackle_ff_override_\(sdkKey)")
-        let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: "Hackle_iam_\(sdkKey)")
-        let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: "Hackle_iam_impression_\(sdkKey)")
+        let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
+        let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
+        let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
+        let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
         EvaluationContext.shared.register(inAppMessageHiddenStorage)
 
         let core = DefaultHackleCore.create(
