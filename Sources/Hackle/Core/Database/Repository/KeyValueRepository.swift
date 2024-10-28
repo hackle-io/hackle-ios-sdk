@@ -67,7 +67,6 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
 
     func putString(key: String, value: String) {
         userDefaults.set(value, forKey: key)
-        userDefaults.synchronize()
     }
 
     func getInteger(key: String) -> Int {
@@ -76,7 +75,6 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
 
     func putInteger(key: String, value: Int) {
         userDefaults.set(value, forKey: key)
-        userDefaults.synchronize()
     }
 
     func getDouble(key: String) -> Double {
@@ -85,7 +83,6 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
 
     func putDouble(key: String, value: Double) {
         userDefaults.set(value, forKey: key)
-        userDefaults.synchronize()
     }
 
     func getData(key: String) -> Data? {
@@ -94,12 +91,10 @@ class UserDefaultsKeyValueRepository: KeyValueRepository {
 
     func putData(key: String, value: Data) {
         userDefaults.set(value, forKey: key)
-        userDefaults.synchronize()
     }
 
     func remove(key: String) {
         userDefaults.removeObject(forKey: key)
-        userDefaults.synchronize()
     }
 
     func clear() {
