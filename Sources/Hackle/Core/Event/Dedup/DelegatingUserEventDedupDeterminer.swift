@@ -2,7 +2,6 @@ import Foundation
 
 
 class DelegatingUserEventDedupDeterminer: UserEventDedupDeterminer {
-
     private let determiners: [any CachedUserEventDedupDeterminer]
 
     init(determiners: [any CachedUserEventDedupDeterminer]) {

@@ -24,40 +24,110 @@ extension CachedUserEventDedupDeterminer {
     }
 }
 
-
 class UserEventDedupCache {
+    private let repositoryKeyDedupCache = "DEDUP_CACHE"
+    private let repositoryKeyCurrentUser = "USER_IDENTIFIERS"
+    private let cacheSizeLimit = 4 * 1024 * 1024 // UserDefaults storage limit is 4MB.
+    
     private let dedupInterval: TimeInterval
     private let clock: Clock
-
-    private var cache: [String: TimeInterval] = [String: TimeInterval]()
-    private var currentUser: HackleUser? = nil
-
-    private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.UserEventDedupCache.Lock")
-
-    init(dedupInterval: TimeInterval, clock: Clock) {
+    private var currentUserIdentifiers: [String: String]?
+    private let repository: UserDefaultsKeyValueRepository
+    
+    private var cache = [String: TimeInterval]()
+    private let lock = ReadWriteLock(label: "io.hackle.UserEventDedupCache.Lock")
+    
+    init(repository: UserDefaultsKeyValueRepository, dedupInterval: TimeInterval, clock: Clock) {
+        self.repository = repository
         self.dedupInterval = dedupInterval
         self.clock = clock
+        
+        self.loadFromRepository()
     }
 
     func compute(cacheKey: String, user: HackleUser) -> Bool {
-        if dedupInterval == HackleConfig.NO_DEDUP {
+        if self.dedupInterval == HackleConfig.NO_DEDUP {
             return false
         }
-
+        
         return lock.write {
-            if user.identifiers != currentUser?.identifiers {
-                currentUser = user
-                cache.removeAll()
+            if user.identifiers != self.currentUserIdentifiers {
+                self.cache.removeAll()
+                self.currentUserIdentifiers = user.identifiers
             }
-
-            let now = clock.now().timeIntervalSince1970
-
-            if let firstTime = cache[cacheKey], now - firstTime <= dedupInterval {
+            
+            let now = self.clock.now().timeIntervalSince1970
+            if let firstTime = self.cache[cacheKey], now - firstTime <= self.dedupInterval {
                 return true
+                
             }
-
-            cache[cacheKey] = now
+            self.cache[cacheKey] = now
             return false
+        }
+    }
+}
+
+extension UserEventDedupCache {
+    func saveToRepository() {
+        self.lock.write {
+            self.saveCurrentUserToRepository()
+            self.saveCacheToRepository()
+        }
+    }
+    
+    func loadFromRepository() {
+        self.lock.write {
+            self.loadCurrentUserFromRepository()
+            self.loadCacheFromRepository()
+        }
+    }
+    
+    private func saveCurrentUserToRepository() {
+        if let identifiers = self.currentUserIdentifiers?.toJson() {
+            self.repository.putString(key: self.repositoryKeyCurrentUser, value: identifiers)
+            return
+        }
+        
+        self.repository.remove(key: self.repositoryKeyCurrentUser)
+    }
+    
+    private func loadCurrentUserFromRepository() {
+        if let identifiers = self.repository.getString(key: self.repositoryKeyCurrentUser) {
+            self.currentUserIdentifiers = identifiers.jsonObject()?.compactMapValues { $0 as? String}
+            return
+        }
+        
+        self.currentUserIdentifiers = nil
+    }
+    
+    private func saveCacheToRepository() {
+        guard let cacheForSave = self.cache.toJson() else {
+            self.repository.remove(key: self.repositoryKeyDedupCache)
+            return
+        }
+        
+        if cacheForSave.count > self.cacheSizeLimit {
+            Log.error("Fail to save event cache. The storage capacity for checking duplicate events has been exceeded.")
+            return
+        }
+        
+        self.repository.putString(key: self.repositoryKeyDedupCache, value: cacheForSave)
+    }
+    
+    private func loadCacheFromRepository() {
+        if let savedCacheStr = self.repository.getString(key: self.repositoryKeyDedupCache),
+            let savedCache = savedCacheStr.jsonObject() {
+            self.cache = savedCache.compactMapValues{ $0 as? Double }
+            self.updateCacheForIntervalExpiry()
+        }
+    }
+    
+    private func updateCacheForIntervalExpiry() {
+        let now = self.clock.now().timeIntervalSince1970
+        for (key, value) in self.cache {
+            if now - value > self.dedupInterval {
+                self.cache.removeValue(forKey: key)
+            }
         }
     }
 }
