@@ -6,6 +6,20 @@
 	objectVersion = 54;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		B29A19432CD1C55200E97550 /* Hackle-Aggregate */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B29A19462CD1C55200E97550 /* Build configuration list for PBXAggregateTarget "Hackle-Aggregate" */;
+			buildPhases = (
+				B29A19472CD1C56300E97550 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Hackle-Aggregate";
+			productName = "Hackle-Aggregation";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */; };
 		7E0E2D922AE75FCD00578C74 /* BridgeInvocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */; };
@@ -53,6 +67,7 @@
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
+		B29A19572CD3153000E97550 /* HackleNotificationPresentationOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29A19562CD3153000E97550 /* HackleNotificationPresentationOptions.swift */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
 		B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */; };
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
@@ -578,6 +593,7 @@
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
+		B29A19562CD3153000E97550 /* HackleNotificationPresentationOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleNotificationPresentationOptions.swift; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
 		B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageView.swift; sourceTree = "<group>"; };
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
@@ -1710,6 +1726,7 @@
 				B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */,
 				B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */,
 				B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */,
+				B29A19562CD3153000E97550 /* HackleNotificationPresentationOptions.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -2656,6 +2673,11 @@
 			attributes = {
 				LastSwiftMigration = 9999;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+					B29A19432CD1C55200E97550 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
 			};
 			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "Hackle" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2676,6 +2698,7 @@
 			targets = (
 				"Hackle::Hackle" /* Hackle */,
 				"Hackle::HackleTests" /* HackleTests */,
+				B29A19432CD1C55200E97550 /* Hackle-Aggregate */,
 			);
 		};
 /* End PBXProject section */
@@ -2732,6 +2755,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B29A19472CD1C56300E97550 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n#!/usr/bin/env bash\nIOS_RELEASE_DIR=\"Release\"\nrm -rf ./$IOS_RELEASE_DIR\n\n# Archive\nxcodebuild archive -quiet -scheme Hackle-Package -archivePath \"$IOS_RELEASE_DIR/ios.xcarchive\" -sdk iphoneos -destination generic/platform=iOS SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES ENABLE_BITCODE=YES\nxcodebuild archive -quiet -scheme Hackle-Package -archivePath \"$IOS_RELEASE_DIR/ios_sim.xcarchive\" -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES\n\n# XCFramework\nxcodebuild -quiet -create-xcframework \\\n-framework \"$IOS_RELEASE_DIR/ios.xcarchive/Products/Library/Frameworks/Hackle.framework\" \\\n-framework \"$IOS_RELEASE_DIR/ios_sim.xcarchive/Products/Library/Frameworks/Hackle.framework\" \\\n-output \"$IOS_RELEASE_DIR/Hackle.xcframework\"\n\nfind $IOS_RELEASE_DIR/Hackle.xcframework -name \"*.swiftinterface\" -exec sed -i -e \"s/Hackle\\.//g\" {} \\;\n\nlipo -remove arm64 \\\n    $IOS_RELEASE_DIR/ios_sim.xcarchive/Products/Library/Frameworks/Hackle.framework/Hackle \\\n    -output $IOS_RELEASE_DIR/ios_sim.xcarchive/Products/Library/Frameworks/Hackle.framework/Hackle\n\ncp -r $IOS_RELEASE_DIR/ios_sim.xcarchive/Products/Library/Frameworks/Hackle.framework \\\n    $IOS_RELEASE_DIR/Hackle.framework\n\nrm -rf $IOS_RELEASE_DIR/Hackle.framework/Hackle\n\nlipo -create \\\n        $IOS_RELEASE_DIR/ios_sim.xcarchive/Products/Library/Frameworks/Hackle.framework/Hackle \\\n        $IOS_RELEASE_DIR/ios.xcarchive/Products/Library/Frameworks/Hackle.framework/Hackle \\\n    -output $IOS_RELEASE_DIR/Hackle.framework/Hackle\n#plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator $IOS_RELEASE_DIR/Hackle.framework/Info.plist\n#find \"$IOS_RELEASE_DIR/\" -name '_CodeSignature' -exec rm -rf {} +\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		OBJ_21 /* Sources */ = {
@@ -2831,6 +2874,7 @@
 				EE29D98329CD825400B1FEAA /* RemoteConfigParameter.swift in Sources */,
 				EE29D9A229CD825500B1FEAA /* EvaluationFlowFactory.swift in Sources */,
 				EE29D9A329CD825500B1FEAA /* Log.swift in Sources */,
+				B29A19572CD3153000E97550 /* HackleNotificationPresentationOptions.swift in Sources */,
 				EEA7FCBB2C04AB6B0004F858 /* LifecycleManager.swift in Sources */,
 				EE29D99D29CD825500B1FEAA /* Hasher.swift in Sources */,
 				EE29D95629CD825400B1FEAA /* Metrics.swift in Sources */,
@@ -3231,6 +3275,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		B29A19442CD1C55200E97550 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B29A19452CD1C55200E97550 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		OBJ_19 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3424,6 +3484,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B29A19462CD1C55200E97550 /* Build configuration list for PBXAggregateTarget "Hackle-Aggregate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B29A19442CD1C55200E97550 /* Debug */,
+				B29A19452CD1C55200E97550 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		OBJ_18 /* Build configuration list for PBXNativeTarget "Hackle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
