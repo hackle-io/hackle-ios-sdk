@@ -594,8 +594,10 @@ extension HackleApp {
             presenter: inAppMessageUI
         )
 
-        eventPublisher.addListener(listener: inAppMessageManager)
-
+        if !inAppMessageDisabled(config: config) {
+            eventPublisher.addListener(listener: inAppMessageManager)
+        }
+        
         // - Push
 
         let pushTokenRegistry = DefaultPushTokenRegistry.shared
@@ -679,6 +681,15 @@ extension HackleApp {
             inAppMessageUI: inAppMessageUI,
             userExplorer: userExplorer
         )
+    }
+    
+    private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
+        if let disableInAppMessage = config.extra["$disable_inappmessage"],
+            disableInAppMessage == "true" {
+            return true
+        }
+        
+        return false
     }
 
     private static func metricConfiguration(
