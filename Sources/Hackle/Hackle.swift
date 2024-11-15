@@ -96,7 +96,8 @@ extension Hackle {
 }
 
 extension Hackle {
-    @objc static public func userNotificationCenter(
+    @objc(userNotificationCenter:willPresent:completionHandler:)
+    static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
@@ -116,7 +117,8 @@ extension Hackle {
         }
     }
 
-    @objc static public func userNotificationCenter(
+    @objc(userNotificationCenter:didReceive:completionHandler:)
+    static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
@@ -134,7 +136,8 @@ extension Hackle {
 }
 
 extension Hackle {
-    @objc static public func populateNotificationContent(
+    @objc(populateNotificationContentWithRequest:contentHandler:)
+    static public func populateNotificationContent(
         request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ) -> Bool {
