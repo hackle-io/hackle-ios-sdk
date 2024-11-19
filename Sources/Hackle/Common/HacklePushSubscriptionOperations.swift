@@ -38,7 +38,8 @@ enum HacklePushSubscriptionType: String {
 @objc public class HacklePushSubscriptionOperationsBuilder: NSObject {
     private var operations = [String: HacklePushSubscriptionStatus]()
     
-    @objc public func global(_ status: HacklePushSubscriptionStatus) -> HacklePushSubscriptionOperationsBuilder {
+    @objc(globalWithStatus:)
+    public func global(_ status: HacklePushSubscriptionStatus) -> HacklePushSubscriptionOperationsBuilder {
         self.operations[HacklePushSubscriptionType.global.rawValue] = status
         return self
     }

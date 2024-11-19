@@ -67,7 +67,8 @@ public class PropertyOperations: NSObject {
     }
 }
 
-@objc public class PropertyOperationsBuilder: NSObject {
+@objc(HacklePropertyOperationsBuilder)
+public class PropertyOperationsBuilder: NSObject {
 
     private var operations = [PropertyOperation: PropertiesBuilder]()
 
