@@ -1,6 +1,7 @@
 import Foundation
 
-@objc public final class Decision: NSObject, ParameterConfig {
+@objc(HackleDecision)
+public final class Decision: NSObject, ParameterConfig {
 
     @objc public let experiment: HackleExperiment?
     @objc public let variation: String
@@ -42,7 +43,8 @@ import Foundation
     }
 }
 
-@objc public final class FeatureFlagDecision: NSObject, ParameterConfig {
+@objc(HackleFeatureFlagDecision)
+public final class FeatureFlagDecision: NSObject, ParameterConfig {
 
     @objc public let featureFlag: HackleExperiment?
     @objc public let isOn: Bool

@@ -4,7 +4,8 @@
 
 import Foundation
 
-@objc public class Event: NSObject {
+@objc(HackleEvent)
+public class Event: NSObject {
 
     let key: String
     let value: Double?
@@ -16,7 +17,8 @@ import Foundation
         self.properties = properties
     }
 
-    @objc public static func builder(_ key: String) -> HackleEventBuilder {
+    @objc(builderWithKey:)
+    public static func builder(_ key: String) -> HackleEventBuilder {
         HackleEventBuilder(key: key)
     }
 }
@@ -39,7 +41,8 @@ import Foundation
     }
 
     @discardableResult
-    @objc public func property(_ key: String, _ value: Any?) -> HackleEventBuilder {
+    @objc(propertyWithKey:value:)
+    public func property(_ key: String, _ value: Any?) -> HackleEventBuilder {
         self.properties.add(key, value)
         return self
     }

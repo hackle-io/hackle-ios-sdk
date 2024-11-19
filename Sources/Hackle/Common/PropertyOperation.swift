@@ -22,7 +22,8 @@ enum PropertyOperation: String {
 }
 
 
-@objc public class PropertyOperations: NSObject {
+@objc(HacklePropertyOperations)
+public class PropertyOperations: NSObject {
 
     private let operations: [PropertyOperation: [String: Any]]
 
@@ -71,61 +72,70 @@ enum PropertyOperation: String {
     private var operations = [PropertyOperation: PropertiesBuilder]()
 
     @discardableResult
-    @objc public func set(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(setWithKey:value:)
+    public func set(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .set, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func setOnce(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(setOnceWithKey:value:)
+    public func setOnce(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .setOnce, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func unset(_ key: String) -> PropertyOperationsBuilder {
+    @objc(unsetWithKey:)
+    public func unset(_ key: String) -> PropertyOperationsBuilder {
         add(operation: .unset, key: key, value: "-")
         return self
     }
 
     @discardableResult
-    @objc public func increment(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(incrementWithKey:value:)
+    public func increment(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .increment, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func append(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(appendWithKey:value:)
+    public func append(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .append, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func appendOnce(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(appendOnceWithKey:value:)
+    public func appendOnce(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .appendOnce, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func prepend(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(prependWithKey:value:)
+    public func prepend(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .prepend, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func prependOnce(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(prependOnceWithKey:value:)
+    public func prependOnce(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .prependOnce, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func remove(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
+    @objc(removeWithKey:value:)
+    public func remove(_ key: String, _ value: Any?) -> PropertyOperationsBuilder {
         add(operation: .remove, key: key, value: value)
         return self
     }
 
     @discardableResult
-    @objc public func clearAll() -> PropertyOperationsBuilder {
+    public func clearAll() -> PropertyOperationsBuilder {
         add(operation: .clearAll, key: "clearAll", value: "-")
         return self
     }

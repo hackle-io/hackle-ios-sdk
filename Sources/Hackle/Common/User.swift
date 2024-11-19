@@ -4,7 +4,8 @@
 
 import Foundation
 
-@objc public class User: NSObject {
+@objc(HackleUser)
+public class User: NSObject {
 
     @objc public let id: String?
     @objc public let userId: String?
