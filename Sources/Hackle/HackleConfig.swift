@@ -139,7 +139,8 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
-    @objc public func add(_ key: String, _ value: String) -> HackleConfigBuilder {
+    @objc(addWithKey:value:)
+    public func add(_ key: String, _ value: String) -> HackleConfigBuilder {
         self.extra[key] = value
         return self
     }

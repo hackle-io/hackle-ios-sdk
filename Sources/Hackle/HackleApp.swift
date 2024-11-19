@@ -98,29 +98,35 @@ import WebKit
         Metrics.counter(name: "user.explorer.show").increment()
     }
 
-    @objc public func setUser(user: User) {
+    @objc(setUser:)
+    public func setUser(user: User) {
         setUser(user: user, completion: {})
     }
 
-    @objc public func setUser(user: User, completion: @escaping () -> ()) {
+    @objc(setUser:completion:)
+    public func setUser(user: User, completion: @escaping () -> ()) {
         let updated = userManager.setUser(user: user)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
-
-    @objc public func setUserId(userId: String?) {
+    
+    @objc(setUserId:)
+    public func setUserId(userId: String?) {
         setUserId(userId: userId, completion: {})
     }
 
-    @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
+    @objc(setUserId:completion:)
+    public func setUserId(userId: String?, completion: @escaping () -> ()) {
         let updated = userManager.setUserId(userId: userId)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
-    @objc public func setDeviceId(deviceId: String) {
+    @objc(setDeviceId:)
+    public func setDeviceId(deviceId: String) {
         setDeviceId(deviceId: deviceId, completion: {})
     }
 
-    @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
+    @objc(setDeviceId:completion:)
+    public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
         let updated = userManager.setDeviceId(deviceId: deviceId)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
@@ -203,11 +209,13 @@ import WebKit
         }
     }
 
-    @objc public func isFeatureOn(featureKey: Int) -> Bool {
+    @objc(isFeatureOnWithKey:)
+    public func isFeatureOn(featureKey: Int) -> Bool {
         featureFlagDetail(featureKey: featureKey).isOn
     }
 
-    @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
+    @objc(featureFlagDetailWithKey:)
+    public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
         featureFlagDetailInternal(featureKey: featureKey, user: nil)
     }
 
@@ -245,7 +253,8 @@ import WebKit
         DefaultRemoteConfig(user: nil, app: core, userManager: userManager)
     }
 
-    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
+    @objc(setWebViewBridgeWithWebView:uiDelegate:)
+    public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
     }
 
@@ -253,7 +262,8 @@ import WebKit
         pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
     
-    @objc public func fetch(_ completion: @escaping () -> ()) {
+    @objc(fetchWithCompletion:)
+    public func fetch(_ completion: @escaping () -> ()) {
         fetchThrottler.execute(
             accept: {
                 self.synchronizer.sync(completion: completion)
