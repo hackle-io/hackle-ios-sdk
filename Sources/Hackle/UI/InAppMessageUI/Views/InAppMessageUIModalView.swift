@@ -20,10 +20,6 @@ extension HackleInAppMessageUI {
             addSubview(contentView)
             contentView.backgroundColor = messageBackgroundColor
 
-            // Image
-            imageView?.addGestureRecognizer(tapImageViewGesture)
-            imageView?.isUserInteractionEnabled = true
-
             // OuterButtons
             for button in outerButtons {
                 addSubview(button)
@@ -86,17 +82,7 @@ extension HackleInAppMessageUI {
         }
 
         private func updateContent() {
-            bindImage()
             bindText()
-        }
-
-        private func bindImage() {
-            guard let imageView = imageView, let image = context.message.image(orientation: attributes.orientation) else {
-                return
-            }
-            imageView.loadImage(url: image.imagePath) {
-                self.layoutContent()
-            }
         }
 
         private func bindText() {
@@ -117,7 +103,6 @@ extension HackleInAppMessageUI {
 
         private func layoutContent() {
             layoutMargins = attributes.margin
-
             contentConstraints?.deactivate()
             contentConstraints = Constraints {
 
@@ -141,26 +126,26 @@ extension HackleInAppMessageUI {
                 contentView.anchors.lessThanOrEqual(to: layoutMarginsGuide, insets: attributes.margin, axis: .vertical, priority: .required - 1)
                 contentView.anchors.centerY.align()
 
-                // ImageView
-                if let imageView = imageView {
-                    imageView.anchors.pin(axis: .horizontal)
-                    if let image = imageView.image {
-                        imageView.anchors.size.aspectRatio(image.size)
-                    } else if let imageAspectRatio = imageAspectRatio {
-                        imageView.anchors.size.aspectRatio(imageAspectRatio)
+                // Image
+                if let imageContainer = imageContainer {
+                    imageContainer.anchors.pin(axis: .horizontal)
+                    if let imageAspectRatio = imageAspectRatio {
+                        imageContainer.anchors.size.aspectRatio(imageAspectRatio)
                     }
                 }
 
-                // TextView
+                // Text
                 if let textView = textView, let textContainer = textContainer {
                     textContainer.layoutMargins = .init(top: 16, left: 16, bottom: 0, right: 16)
+                    textContainer.anchors.pin(axis: .horizontal)
                     textView.textAlignment = .center
                     textView.anchors.pin(to: textContainer.layoutMarginsGuide)
                 }
 
-                // ButtonView
+                // Button
                 if let buttonContainer = buttonContainer {
                     buttonContainer.stack.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
+                    buttonContainer.anchors.pin(axis: .horizontal)
                 }
 
                 // CloseButton
@@ -175,9 +160,6 @@ extension HackleInAppMessageUI {
                     button.alignOuter(to: contentView)
                 }
             }
-
-            setNeedsLayout()
-            layoutIfNeeded()
         }
 
         override func layoutSubviews() {
@@ -199,19 +181,6 @@ extension HackleInAppMessageUI {
             superview.layoutIfNeeded()
         }
 
-        // Orientation
-
-        func willTransition(orientation: InAppMessage.Orientation) {
-            guard context.inAppMessage.supports(orientation: orientation) else {
-                dismiss()
-                return
-            }
-
-            attributes.orientation = orientation
-            updateContent()
-            layoutContent()
-        }
-
         // Presentation
 
         public var presented: Bool = false {
@@ -221,8 +190,7 @@ extension HackleInAppMessageUI {
         }
 
         func present() {
-            self.controller?.ui?.delegate?.inAppMessageWillAppear?(inAppMessage: self.context.inAppMessage)
-            
+            willPresent()
             layoutFrameIfNeeded()
 
             UIView.performWithoutAnimation {
@@ -236,8 +204,8 @@ extension HackleInAppMessageUI {
                     self.presented = true
                 },
                 completion: { _ in
-                    self.controller?.ui?.delegate?.inAppMessageDidAppear?(inAppMessage: self.context.inAppMessage)
                     self.handle(event: .impression)
+                    self.didPresent()
                 }
             )
         }
@@ -247,17 +215,15 @@ extension HackleInAppMessageUI {
                 return
             }
 
-            self.controller?.ui?.delegate?.inAppMessageWillDisappear?(inAppMessage: self.context.inAppMessage)
+            willDismiss()
 
             isUserInteractionEnabled = false
-
             UIView.animate(
                 withDuration: 0.1,
                 animations: {
                     self.presented = false
                 },
                 completion: { _ in
-                    self.controller?.ui?.delegate?.inAppMessageDidDisappear?(inAppMessage: self.context.inAppMessage)
                     self.handle(event: .close)
                     self.didDismiss()
                 }
@@ -297,22 +263,14 @@ extension HackleInAppMessageUI {
             dismiss()
         }
 
-        lazy var tapImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(tapImageView))
-
-        @objc func tapImageView(_ gesture: UITapGestureRecognizer) {
-            guard gesture.state == .ended,
-                    let image = context.message.image(orientation: attributes.orientation),
-                  let action = image.action else {
-                return
-            }
-
-            handle(event: .action(action, .image))
-        }
-
         // Views
 
         lazy var closeButton: UIButton? = {
             guard let closeButton = context.message.closeButton else {
+                return nil
+            }
+
+            if context.message.images(orientation: attributes.orientation).count > 1 {
                 return nil
             }
 
@@ -321,19 +279,22 @@ extension HackleInAppMessageUI {
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20)
             button.onClick { [weak self] in
-                self?.handle(event: .action(closeButton.action, .xButton))
-
+                self?.handle(event: .closeButtonAction(action: closeButton.action))
             }
             return button
         }()
 
-        lazy var imageView: UIImageView? = {
-            if context.message.images.isEmpty {
+        lazy var imageContainer: ImageContainerView? = {
+            let items = context.message.imageItems(orientation: attributes.orientation)
+            if items.isEmpty {
                 return nil
             }
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleToFill
-            return imageView
+
+            let attributes = ImageContainerView.Attributes(autoScrollInterval: context.message.imageAutoScroll?.interval)
+            let view = ImageContainerView(items: items, attributes: attributes) { [weak self] event in
+                self?.handle(event: event)
+            }
+            return view
         }()
 
         lazy var textView: UITextView? = {
@@ -369,7 +330,7 @@ extension HackleInAppMessageUI {
             let buttonViews = buttons.map { it in
                 let button = ButtonView(button: it)
                 button.onClick { [weak self] in
-                    self?.handle(event: .action(it.action, .button, it.text))
+                    self?.handle(event: .buttonAction(action: it.action, button: it))
                 }
                 return button
             }
@@ -379,6 +340,7 @@ extension HackleInAppMessageUI {
             container.stack.alignment = .center
             container.stack.axis = .horizontal
             container.stack.spacing = 8
+            container.stack.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
             container.stack.isLayoutMarginsRelativeArrangement = true
             container.isHidden = false
             return container
@@ -388,7 +350,7 @@ extension HackleInAppMessageUI {
             context.message.outerButtons.map { it in
                 let button = PositionalButtonView(button: it.button, alignment: it.alignment)
                 button.onClick { [weak self] in
-                    self?.handle(event: .action(it.button.action, .button, it.button.text))
+                    self?.handle(event: .buttonAction(action: it.button.action, button: it.button))
                 }
                 return button
             }
@@ -397,7 +359,7 @@ extension HackleInAppMessageUI {
         lazy var contentView: StackView = {
             let view = StackView(
                 arrangedSubviews: [
-                    imageView,
+                    imageContainer,
                     textContainer,
                     buttonContainer
                 ].compactMap {

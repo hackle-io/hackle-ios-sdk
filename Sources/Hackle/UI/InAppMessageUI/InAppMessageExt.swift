@@ -58,6 +58,18 @@ extension InAppMessage.Message {
         }
     }
 
+    func images(orientation: InAppMessage.Orientation) -> [Image] {
+        images.filter { image in
+            image.orientation == orientation
+        }
+    }
+
+    func imageItems(orientation: InAppMessage.Orientation) -> [HackleInAppMessageUI.ImageItem] {
+        images(orientation: orientation).enumerated().map { offset, image in
+            .init(image: image, order: offset + 1)
+        }
+    }
+
     func buttonOrNil(horizontal: InAppMessage.HorizontalAlignment, vertical: InAppMessage.VerticalAlignment) -> PositionalButton? {
         innerButtons.first { it in
             it.alignment.horizontal == horizontal && it.alignment.vertical == vertical

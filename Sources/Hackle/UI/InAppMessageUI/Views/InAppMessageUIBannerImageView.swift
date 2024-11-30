@@ -131,19 +131,6 @@ extension HackleInAppMessageUI {
             superview.layoutIfNeeded()
         }
 
-        // Orientation
-
-        func willTransition(orientation: InAppMessage.Orientation) {
-            guard context.inAppMessage.supports(orientation: orientation) else {
-                dismiss()
-                return
-            }
-
-            attributes.orientation = orientation
-            updateContent()
-            layoutContent()
-        }
-
         // Presentation
 
         public var presented: Bool = false {
@@ -153,7 +140,7 @@ extension HackleInAppMessageUI {
         }
 
         func present() {
-            self.controller?.ui?.delegate?.inAppMessageWillAppear?(inAppMessage: self.context.inAppMessage)
+            willPresent()
             layoutFrameIfNeeded()
 
             UIView.performWithoutAnimation {
@@ -165,8 +152,8 @@ extension HackleInAppMessageUI {
                 withDuration: 0.05,
                 animations: { self.presented = true },
                 completion: { _ in
-                    self.controller?.ui?.delegate?.inAppMessageDidAppear?(inAppMessage: self.context.inAppMessage)
                     self.handle(event: .impression)
+                    self.didPresent()
                 }
             )
         }
@@ -175,9 +162,9 @@ extension HackleInAppMessageUI {
             if !self.presented {
                 return
             }
-            
-            self.controller?.ui?.delegate?.inAppMessageWillDisappear?(inAppMessage: self.context.inAppMessage)
-            
+
+            willDismiss()
+
             isUserInteractionEnabled = false
             UIView.animate(
                 withDuration: 0.05,
@@ -185,13 +172,12 @@ extension HackleInAppMessageUI {
                     self.presented = false
                 },
                 completion: { _ in
-                    self.controller?.ui?.delegate?.inAppMessageDidDisappear?(inAppMessage: self.context.inAppMessage)
                     self.handle(event: .close)
                     self.didDismiss()
                 }
             )
         }
-        
+
         // Interactions
 
         lazy var tapImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(tapImageView))
@@ -201,7 +187,7 @@ extension HackleInAppMessageUI {
             guard gesture.state == .ended, let action = context.message.action else {
                 return
             }
-            handle(event: .action(action, .message))
+            handle(event: .messageAction(action: action))
         }
 
         // Views
@@ -216,7 +202,7 @@ extension HackleInAppMessageUI {
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20)
             button.onClick { [weak self] in
-                self?.handle(event: .action(closeButton.action, .xButton))
+                self?.handle(event: .closeButtonAction(action: closeButton.action))
 
             }
             return button

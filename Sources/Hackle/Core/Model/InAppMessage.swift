@@ -10,7 +10,7 @@ import Foundation
 class InAppMessage: HackleInAppMessage {
     typealias Id = Int64
     typealias Key = Int64
-    
+
     let id: Id
     let key: Key
     let status: Status
@@ -222,6 +222,7 @@ extension InAppMessage {
         let lang: String
         let layout: Layout
         let images: [Image]
+        let imageAutoScroll: ImageAutoScroll?
         let text: Text?
         let buttons: [Button]
         let closeButton: Button?
@@ -235,6 +236,7 @@ extension InAppMessage {
             lang: String,
             layout: Layout,
             images: [Image],
+            imageAutoScroll: ImageAutoScroll?,
             text: Text?,
             buttons: [Button],
             closeButton: Button?,
@@ -247,6 +249,7 @@ extension InAppMessage {
             self.lang = lang
             self.layout = layout
             self.images = images
+            self.imageAutoScroll = imageAutoScroll
             self.text = text
             self.buttons = buttons
             self.closeButton = closeButton
@@ -277,6 +280,14 @@ extension InAppMessage {
                 self.orientation = orientation
                 self.imagePath = imagePath
                 self.action = action
+            }
+        }
+
+        class ImageAutoScroll {
+            let interval: TimeInterval
+
+            init(interval: TimeInterval) {
+                self.interval = interval
             }
         }
 
@@ -360,19 +371,19 @@ extension InAppMessage {
             }
         }
     }
-    
+
     class CloseActionInfo: HackleInAppMessageActionClose {
         var hideDuration: TimeInterval
-        
+
         init(hideDuration: TimeInterval) {
             self.hideDuration = hideDuration
         }
     }
-    
+
     class LinkActionInfo: HackleInAppMessageActionLink {
         var url: String
         var shouldCloseAfterLink: Bool
-        
+
         init(url: String, shouldCloseAfterLink: Bool) {
             self.url = url
             self.shouldCloseAfterLink = shouldCloseAfterLink
@@ -381,11 +392,11 @@ extension InAppMessage {
 
     class Action: HackleInAppMessageAction {
         let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
-        
+
         let behavior: Behavior
         let actionType: ActionType
         let value: String?
-        
+
         var type: HackleInAppMessageActionType {
             switch actionType {
             case .close, .hidden:
@@ -394,7 +405,7 @@ extension InAppMessage {
                 return .link
             }
         }
-        
+
         var close: HackleInAppMessageActionClose? {
             switch actionType {
             case .close:
@@ -405,7 +416,7 @@ extension InAppMessage {
                 return nil
             }
         }
-        
+
         var link: HackleInAppMessageActionLink? {
             switch actionType {
             case .close, .hidden:
@@ -416,7 +427,7 @@ extension InAppMessage {
                 return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: true)
             }
         }
-        
+
         init(behavior: Behavior, type: ActionType, value: String?) {
             self.behavior = behavior
             self.actionType = type
