@@ -85,6 +85,7 @@ extension InAppMessage {
         variationKey: String? = nil,
         lang: String = "ko",
         images: [Message.Image] = [image()],
+        imageAutoScroll: Message.ImageAutoScroll? = nil,
         text: Message.Text? = text(),
         buttons: [Message.Button] = [button()],
         closeButton: Message.Button? = nil
@@ -98,6 +99,7 @@ extension InAppMessage {
                 alignment: nil
             ),
             images: images,
+            imageAutoScroll: imageAutoScroll,
             text: text,
             buttons: buttons,
             closeButton: closeButton,

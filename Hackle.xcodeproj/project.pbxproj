@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -97,6 +97,7 @@
 		EE0F34162A6795E9009DE640 /* InAppMessageImpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */; };
 		EE0F34182A681207009DE640 /* InAppMessageEventMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */; };
 		EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */; };
+		EE1D9B082CF8635700D6B74D /* InAppMessageLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1D9B072CF8635700D6B74D /* InAppMessageLifecycle.swift */; };
 		EE1F5D592A9F3593006E17EF /* HackleExperiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1F5D582A9F3593006E17EF /* HackleExperiment.swift */; };
 		EE240EEB29F6A9D6006D7414 /* segment_match.json in Resources */ = {isa = PBXBuildFile; fileRef = EE240EEA29F6A9D6006D7414 /* segment_match.json */; };
 		EE29D93F29CD825400B1FEAA /* HackleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */; };
@@ -365,6 +366,7 @@
 		EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */; };
 		EE5A79002ADCF248005A0F9E /* MockUserCohortFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */; };
 		EE60C0A32C37B13300830F0A /* Updated.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE60C0A22C37B13300830F0A /* Updated.swift */; };
+		EE62927C2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62927B2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift */; };
 		EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */; };
 		EE6728202C50BE7000167355 /* InAppMessageUIBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */; };
 		EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */; };
@@ -524,6 +526,7 @@
 		EEF895DB2A4C09D800722CF6 /* iam.json in Resources */ = {isa = PBXBuildFile; fileRef = EEF895DA2A4C09D800722CF6 /* iam.json */; };
 		EEF895DD2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895DC2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift */; };
 		EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */ = {isa = PBXBuildFile; fileRef = EEF895DE2A4C14D800722CF6 /* iam_invalid.json */; };
+		EEF8D5AB2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8D5AA2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift */; };
 		EEFA31DC2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFA31DB2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift */; };
 		EEFA31E02BC18A5900E133F8 /* UserEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFA31DF2BC18A5900E133F8 /* UserEventDedupDeterminer.swift */; };
 		EEFA31E22BC18A6500E133F8 /* CachedUserEventDedupDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFA31E12BC18A6500E133F8 /* CachedUserEventDedupDeterminer.swift */; };
@@ -622,6 +625,7 @@
 		EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageImpression.swift; sourceTree = "<group>"; };
 		EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventMatcher.swift; sourceTree = "<group>"; };
 		EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInternalResources.swift; sourceTree = "<group>"; };
+		EE1D9B072CF8635700D6B74D /* InAppMessageLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLifecycle.swift; sourceTree = "<group>"; };
 		EE1F5D582A9F3593006E17EF /* HackleExperiment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleExperiment.swift; sourceTree = "<group>"; };
 		EE240EEA29F6A9D6006D7414 /* segment_match.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = segment_match.json; sourceTree = "<group>"; };
 		EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleConfig.swift; sourceTree = "<group>"; };
@@ -890,6 +894,7 @@
 		EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserListener.swift; sourceTree = "<group>"; };
 		EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserCohortFetcher.swift; sourceTree = "<group>"; };
 		EE60C0A22C37B13300830F0A /* Updated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updated.swift; sourceTree = "<group>"; };
+		EE62927B2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIImageContainerView.swift; sourceTree = "<group>"; };
 		EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBottomSheetView.swift; sourceTree = "<group>"; };
 		EE6F8F2A29D496D10037C482 /* ExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentExtensions.swift; sourceTree = "<group>"; };
@@ -1049,6 +1054,7 @@
 		EEF895DA2A4C09D800722CF6 /* iam.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = iam.json; sourceTree = "<group>"; };
 		EEF895DC2A4C0DCC00722CF6 /* WorkspaceInAppMessageSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceInAppMessageSpecs.swift; sourceTree = "<group>"; };
 		EEF895DE2A4C14D800722CF6 /* iam_invalid.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = iam_invalid.json; sourceTree = "<group>"; };
+		EEF8D5AA2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIScrollImageView.swift; sourceTree = "<group>"; };
 		EEFA31DB2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopingThrottleLimiterSpecs.swift; sourceTree = "<group>"; };
 		EEFA31DF2BC18A5900E133F8 /* UserEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDedupDeterminer.swift; sourceTree = "<group>"; };
 		EEFA31E12BC18A6500E133F8 /* CachedUserEventDedupDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedUserEventDedupDeterminer.swift; sourceTree = "<group>"; };
@@ -2318,6 +2324,7 @@
 				EE0F33F02A665E75009DE640 /* Event */,
 				EE80E0162A2DC74D00FB12CC /* Views */,
 				EE0B71E42A3BF237009D7AF4 /* InAppMessageExt.swift */,
+				EE1D9B072CF8635700D6B74D /* InAppMessageLifecycle.swift */,
 				EE80E01D2A2DCD3F00FB12CC /* InAppMessageUI.swift */,
 				EEA01CC82A37136900E0C021 /* InAppMessageUIExt.swift */,
 				EEA01CC62A3712CC00E0C021 /* InAppMessageUIWindow.swift */,
@@ -2331,6 +2338,8 @@
 			children = (
 				EE80E01B2A2DC79600FB12CC /* InAppMessageView.swift */,
 				EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */,
+				EEF8D5AA2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift */,
+				EE62927B2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift */,
 				EE80E0252A2DD5EC00FB12CC /* InAppMessageUIModalView.swift */,
 				EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */,
 				EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */,
@@ -2875,6 +2884,7 @@
 				EE29D99D29CD825500B1FEAA /* Hasher.swift in Sources */,
 				EE29D95629CD825400B1FEAA /* Metrics.swift in Sources */,
 				7E4666342B3021E400B3CDCF /* NotificationClickAction.swift in Sources */,
+				EE1D9B082CF8635700D6B74D /* InAppMessageLifecycle.swift in Sources */,
 				EE929D8D2BFFACD7003B7596 /* DedupUserEventFilter.swift in Sources */,
 				EE29D99429CD825400B1FEAA /* OperatorMatcher.swift in Sources */,
 				EE60C0A32C37B13300830F0A /* Updated.swift in Sources */,
@@ -2972,6 +2982,7 @@
 				EE29D97329CD825400B1FEAA /* Clock.swift in Sources */,
 				7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */,
 				EE29D95E29CD825400B1FEAA /* AppState.swift in Sources */,
+				EEF8D5AB2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift in Sources */,
 				EE29D97B29CD825400B1FEAA /* SdkVersion.swift in Sources */,
 				EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */,
 				B2C276192C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift in Sources */,
@@ -3019,6 +3030,7 @@
 				EE29D9AC29CD825500B1FEAA /* SessionManager.swift in Sources */,
 				EE29D95529CD825400B1FEAA /* CumulativeCounter.swift in Sources */,
 				EEA7FCB32C04AB450004F858 /* Engagement.swift in Sources */,
+				EE62927C2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift in Sources */,
 				EE80E01E2A2DCD3F00FB12CC /* InAppMessageUI.swift in Sources */,
 				EE29D95729CD825400B1FEAA /* LoggingMetricRegistry.swift in Sources */,
 				EE86377529ED008C000268DC /* RemoteConfigRequest.swift in Sources */,

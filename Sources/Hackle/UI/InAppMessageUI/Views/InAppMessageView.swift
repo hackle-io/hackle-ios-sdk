@@ -1,21 +1,24 @@
-//
-//  InAppMessageView.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/05.
-//
-
 import Foundation
 import UIKit
 
+/// Base view protocol for InAppMessage
 protocol InAppMessageView: UIView, HackleInAppMessageView {
-    var context: InAppMessagePresentationContext { get }
+
+    /// Indicates whether the InAppMessageView is currently presented.
     var presented: Bool { get }
-    func willTransition(orientation: InAppMessage.Orientation)
+
+    /// The context in which this InAppMessageView is presented.
+    var context: InAppMessagePresentationContext { get }
+
+    /// Presents the InAppMessageView on the screen.
     func present()
+
+    /// Dismisses the InAppMessageView from the screen.
+    func dismiss()
 }
 
 extension InAppMessageView {
+
     var controller: HackleInAppMessageUI.ViewController? {
         responders
             .lazy
@@ -24,14 +27,43 @@ extension InAppMessageView {
             }
             .first
     }
-    
+
+    private func publish(lifecycle: InAppMessageLifecycle) {
+        publishInAppMessageLifecycle(lifecycle: lifecycle)
+    }
+
+    func willPresent() {
+        guard let controller = controller, let ui = controller.ui else {
+            return
+        }
+        publish(lifecycle: .willPresent)
+        ui.delegate?.inAppMessageWillAppear?(inAppMessage: context.inAppMessage)
+    }
+
+    func didPresent() {
+        guard let controller = controller, let ui = controller.ui else {
+            return
+        }
+        publish(lifecycle: .didPresent)
+        ui.delegate?.inAppMessageDidAppear?(inAppMessage: context.inAppMessage)
+    }
+
+    func willDismiss() {
+        guard let controller = controller, let ui = controller.ui else {
+            return
+        }
+        publish(lifecycle: .willDismiss)
+        ui.delegate?.inAppMessageWillDisappear?(inAppMessage: context.inAppMessage)
+    }
+
     func didDismiss() {
         guard let controller = controller, let ui = controller.ui else {
             return
         }
+        publish(lifecycle: .didDismiss)
+        ui.delegate?.inAppMessageDidDisappear?(inAppMessage: context.inAppMessage)
 
         removeFromSuperview()
-
         if #available(iOS 13.0, *) {
             ui.window?.windowScene = nil
         }
@@ -43,5 +75,38 @@ extension InAppMessageView {
             return
         }
         ui.eventHandler.handle(view: self, event: event)
+    }
+}
+
+@objc protocol InAppMessageViewLifecycleListener {
+    @objc optional func inAppMessageWillPresent()
+    @objc optional func inAppMessageDidPresent()
+    @objc optional func inAppMessageWillDismiss()
+    @objc optional func inAppMessageDidDismiss()
+}
+
+private extension InAppMessageViewLifecycleListener {
+    func onLifecycle(lifecycle: InAppMessageLifecycle) {
+        switch lifecycle {
+        case .willPresent:
+            inAppMessageWillPresent?()
+        case .didPresent:
+            inAppMessageDidPresent?()
+        case .willDismiss:
+            inAppMessageWillDismiss?()
+        case .didDismiss:
+            inAppMessageDidDismiss?()
+        }
+    }
+}
+
+private extension UIView {
+    func publishInAppMessageLifecycle(lifecycle: InAppMessageLifecycle) {
+        if let listener = self as? InAppMessageViewLifecycleListener {
+            listener.onLifecycle(lifecycle: lifecycle)
+        }
+        for subview in subviews {
+            subview.publishInAppMessageLifecycle(lifecycle: lifecycle)
+        }
     }
 }
