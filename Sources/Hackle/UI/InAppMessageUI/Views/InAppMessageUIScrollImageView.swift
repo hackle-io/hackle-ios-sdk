@@ -207,7 +207,6 @@ extension HackleInAppMessageUI {
             }
 
             func configure(image: InAppMessage.Message.Image) {
-                Log.info("ScrollImageView.Cell.configure()")
                 imageView.loadImage(url: image.imagePath) {
                     self.layout()
                 }
