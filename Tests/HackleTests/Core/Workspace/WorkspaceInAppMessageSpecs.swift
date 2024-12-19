@@ -64,6 +64,8 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].images[1].action?.actionType) == .webLink
             expect(iam.messageContext.messages[0].images[1].action?.value) == "https://www.hackle.io"
 
+            expect(iam.messageContext.messages[0].imageAutoScroll?.interval) == 42.0
+
             expect(iam.messageContext.messages[0].text?.title.text) == "title_text"
             expect(iam.messageContext.messages[0].text?.title.style.textColor) == "#0000FF"
             expect(iam.messageContext.messages[0].text?.body.text) == "body_text"

@@ -144,6 +144,12 @@
                 }
               }
             ],
+            "imageAutoScroll": {
+              "interval": {
+                "timeUnit": "SECONDS",
+                "amount": 42
+              }
+            },
             "text": {
               "title": {
                 "text": "title_text",

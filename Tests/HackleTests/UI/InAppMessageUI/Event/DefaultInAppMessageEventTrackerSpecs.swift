@@ -94,7 +94,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.properties!["in_app_message_key"] as! Int64) == 320
         }
 
-        it("action") {
+        it("button action") {
             // given
             let action = InAppMessage.action(type: .webLink, value: "button_link_click")
             let message = InAppMessage.message(
@@ -117,7 +117,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             )
 
             // when
-            sut.track(context: context, event: .action(action, .button, "button_text_"), timestamp: Date())
+            sut.track(context: context, event: .buttonAction(action: action, button: message.buttons[0]), timestamp: Date())
 
             // then
             expect(core.tracked.count) == 1
@@ -128,8 +128,86 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.properties!["in_app_message_key"] as! Int64) == 320
             expect(event.properties!["action_area"] as! String) == "BUTTON"
             expect(event.properties!["action_type"] as! String) == "WEB_LINK"
-            expect(event.properties!["button_text"] as! String) == "button_text_"
             expect(event.properties!["action_value"] as! String) == "button_link_click"
+            expect(event.properties!["button_text"] as! String) == "button_1"
+            expect(event.properties!["image_url"]).to(beNil())
+            expect(event.properties!["image_order"]).to(beNil())
+        }
+
+        it("image action") {
+            // given
+            let action = InAppMessage.action(type: .webLink, value: "image_link_click")
+            let message = InAppMessage.message(
+                images: [InAppMessage.image(imagePath: "image_path")],
+                text: InAppMessage.text(title: "text_title", body: "text_body"),
+                buttons: [
+                    InAppMessage.button(text: "button_1", action: action),
+                    InAppMessage.button(text: "button_2")
+                ]
+            )
+            let inAppMessage = InAppMessage.create(
+                id: 42,
+                key: 320,
+                messageContext: InAppMessage.messageContext(messages: [message])
+            )
+            let context = InAppMessage.context(
+                inAppMessage: inAppMessage,
+                message: message,
+                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+            )
+
+            // when
+            sut.track(context: context, event: .imageAction(action: action, image: message.images[0], order: 42), timestamp: Date())
+
+            // then
+            expect(core.tracked.count) == 1
+
+            let (event, _, _) = core.tracked[0]
+            expect(event.key) == "$in_app_action"
+            expect(event.properties!["in_app_message_id"] as! Int64) == 42
+            expect(event.properties!["in_app_message_key"] as! Int64) == 320
+            expect(event.properties!["action_area"] as! String) == "IMAGE"
+            expect(event.properties!["action_type"] as! String) == "WEB_LINK"
+            expect(event.properties!["action_value"] as! String) == "image_link_click"
+            expect(event.properties!["button_text"]).to(beNil())
+            expect(event.properties!["image_url"] as! String) == "image_path"
+            expect(event.properties!["image_order"] as! Int) == 42
+        }
+
+        it("image impression") {
+            // given
+            let action = InAppMessage.action(type: .webLink, value: "image_link_click")
+            let message = InAppMessage.message(
+                images: [InAppMessage.image(imagePath: "image_path")],
+                text: InAppMessage.text(title: "text_title", body: "text_body"),
+                buttons: [
+                    InAppMessage.button(text: "button_1", action: action),
+                    InAppMessage.button(text: "button_2")
+                ]
+            )
+            let inAppMessage = InAppMessage.create(
+                id: 42,
+                key: 320,
+                messageContext: InAppMessage.messageContext(messages: [message])
+            )
+            let context = InAppMessage.context(
+                inAppMessage: inAppMessage,
+                message: message,
+                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+            )
+
+            // when
+            sut.track(context: context, event: .imageImpression(image: message.images[0], order: 42), timestamp: Date())
+
+            // then
+            expect(core.tracked.count) == 1
+
+            let (event, _, _) = core.tracked[0]
+            expect(event.key) == "$in_app_image_impression"
+            expect(event.properties!["in_app_message_id"] as! Int64) == 42
+            expect(event.properties!["in_app_message_key"] as! Int64) == 320
+            expect(event.properties!["image_url"] as! String) == "image_path"
+            expect(event.properties!["image_order"] as! Int) == 42
         }
     }
 }
