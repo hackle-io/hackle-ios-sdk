@@ -17,10 +17,6 @@ class MockInAppMessageView: UIView, InAppMessageView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func willTransition(orientation: InAppMessage.Orientation) {
-
-    }
-
     func present() {
         presented = true
     }
