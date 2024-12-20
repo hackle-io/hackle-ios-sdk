@@ -435,6 +435,7 @@ class InAppMessageDto: Codable {
             var lang: String
             var layout: LayoutDto
             var images: [ImageDto]
+            var imageAutoScroll: ImageAutoScrollDto?
             var text: TextDto?
             var buttons: [ButtonDto]
             var closeButton: CloseButtonDto?
@@ -453,6 +454,10 @@ class InAppMessageDto: Codable {
                 var orientation: String
                 var imagePath: String
                 var action: ActionDto?
+            }
+
+            class ImageAutoScrollDto: Codable {
+                var interval: DurationDto
             }
 
             class TextDto: Codable {
@@ -663,6 +668,14 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             return nil
         }
 
+        var autoScroll: InAppMessage.Message.ImageAutoScroll? = nil
+        if imageAutoScroll != nil {
+            guard let s = imageAutoScroll?.toImageAutoScrollOrNil() else {
+                return nil
+            }
+            autoScroll = s
+        }
+
         guard let buttons = buttons.mapOrNil({ $0.toButtonOrNil() }) else {
             return nil
         }
@@ -694,6 +707,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             lang: lang,
             layout: layout,
             images: images,
+            imageAutoScroll: autoScroll,
             text: text?.toText(),
             buttons: buttons,
             closeButton: xButton,
@@ -748,6 +762,17 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ImageDto {
             orientation: orientation,
             imagePath: imagePath,
             action: imageAction
+        )
+    }
+}
+
+extension InAppMessageDto.MessageContextDto.MessageDto.ImageAutoScrollDto {
+    func toImageAutoScrollOrNil() -> InAppMessage.Message.ImageAutoScroll? {
+        guard let timeUnit: TimeUnit = Enums.parseOrNil(rawValue: interval.timeUnit) else {
+            return nil
+        }
+        return InAppMessage.Message.ImageAutoScroll(
+            interval: timeUnit.convert(Double(interval.amount), to: .seconds)
         )
     }
 }
