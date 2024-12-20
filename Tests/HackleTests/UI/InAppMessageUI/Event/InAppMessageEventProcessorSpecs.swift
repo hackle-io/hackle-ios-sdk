@@ -96,7 +96,7 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
             }
 
             it("supports") {
-                expect(sut.supports(event: .action(InAppMessage.action(), .button))) == true
+                expect(sut.supports(event: .action(action: InAppMessage.action(), area: .button, button: nil, image: nil, imageOrder: nil))) == true
                 expect(sut.supports(event: .impression)) == false
                 expect(sut.supports(event: .close)) == false
             }
@@ -117,7 +117,7 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
 
             it("when cannot found action handler then do nothing") {
                 let view = MockInAppMessageView()
-                let event = InAppMessage.Event.action(InAppMessage.action(), .button)
+                let event = InAppMessage.Event.buttonAction(action: InAppMessage.action(), button: InAppMessage.button())
                 actionHandler.supportsReturn = false
 
                 // when
@@ -131,7 +131,7 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
 
             it("handle action when view's presented is false") {
                 let view = MockInAppMessageView()
-                let event = InAppMessage.Event.action(InAppMessage.action(), .button)
+                let event = InAppMessage.Event.buttonAction(action: InAppMessage.action(), button: InAppMessage.button())
 
                 // when
                 sut.process(view: view, event: event, timestamp: Date())
@@ -141,10 +141,10 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                     actionHandler.handleMock
                 }
             }
-            
+
             it("handle action when view's presented is true") {
                 let view = MockInAppMessageView(presented: true)
-                let event = InAppMessage.Event.action(InAppMessage.action(), .button)
+                let event = InAppMessage.Event.buttonAction(action: InAppMessage.action(), button: InAppMessage.button())
 
                 // when
                 sut.process(view: view, event: event, timestamp: Date())
@@ -164,7 +164,8 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
             }
 
             it("supports") {
-                expect(sut.supports(event: .action(InAppMessage.action(), .button))) == false
+
+                expect(sut.supports(event: .buttonAction(action: InAppMessage.action(), button: InAppMessage.button()))) == false
                 expect(sut.supports(event: .impression)) == false
                 expect(sut.supports(event: .close)) == true
             }

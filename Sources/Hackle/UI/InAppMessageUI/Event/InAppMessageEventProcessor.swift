@@ -77,16 +77,16 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
     }
 
     func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
-        guard case let .action(action, _, _) = event, let handler = actionHandlerFactory.get(action: action) else {
+        guard case let .action(action, _, _, _, _) = event, let handler = actionHandlerFactory.get(action: action) else {
             return
         }
-        
+
         if let delegate = view.controller?.ui?.delegate,
-           let handleEventDirectly = delegate.onInAppMessageClick?(inAppMessage: view.context.inAppMessage, view: view, action: action),
-            handleEventDirectly {
+           let isProcessed = delegate.onInAppMessageClick?(inAppMessage: view.context.inAppMessage, view: view, action: action),
+           isProcessed {
             return
         }
-        
+
         /*
             If the view is dismissed within delegate.onInAppMessageClick,
             even if the return value of delegate.onInAppMessageClick is false,
@@ -98,7 +98,7 @@ class InAppMessageActionEventProcessor: InAppMessageEventProcessor {
         if !view.presented {
             return
         }
-        
+
         handler.handle(view: view, action: action)
     }
 }
