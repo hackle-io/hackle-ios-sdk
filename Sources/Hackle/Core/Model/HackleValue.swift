@@ -159,7 +159,7 @@ extension HackleValue {
         case .string(let value): return value.toBool()
         case .int(let value): return nil
         case .double(let value): return nil
-        case .bool: return value
+        case .bool(let value): return value
         case .null: return nil
         }
     }
