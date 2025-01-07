@@ -70,13 +70,28 @@ class ValueMatcherSpecs: QuickSpec {
             }
 
             it("userValue가 Bool타입이 아니면 false") {
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "true", matchValue: HackleValue(value: true))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "string", matchValue: HackleValue(value: true))).to(beFalse())
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: 1, matchValue: HackleValue(value: true))).to(beFalse())
             }
 
             it("userValue가 Bool타입이지만 matchValue가 Bool타입이 아니면 false") {
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: 1))).to(beFalse())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "true"))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "string"))).to(beFalse())
+            }
+            
+            it("userValue 혹은 matchValue가 String타입이지만 true이거나 false이면 BoolMatcher의 일치 결과로 평가한다.") {
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "true", matchValue: HackleValue(value: true))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "TRUE", matchValue: HackleValue(value: true))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "false", matchValue: HackleValue(value: false))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "FALSE", matchValue: HackleValue(value: false))).to(beTrue())
+                
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "True"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "tRuE"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: false, matchValue: HackleValue(value: "False"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: false, matchValue: HackleValue(value: "fAlSE"))).to(beTrue())
+                
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "FALSE", matchValue: HackleValue(value: true))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "True", matchValue: HackleValue(value: false))).to(beFalse())
             }
         }
 
