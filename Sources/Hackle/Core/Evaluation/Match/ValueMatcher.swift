@@ -26,8 +26,8 @@ class NumberMatcher: ValueMatcher {
 
 class BoolMatcher: ValueMatcher {
     func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue: Bool = Objects.asBoolOrNil(userValue),
-              let matchValue: Bool = matchValue.boolOrNil else {
+        guard let userValue: Bool = HackleValue(value: userValue).asBool(),
+              let matchValue: Bool = matchValue.asBool() else {
             return false
         }
         return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
