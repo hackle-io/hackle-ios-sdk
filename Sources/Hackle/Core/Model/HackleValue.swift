@@ -153,6 +153,16 @@ extension HackleValue {
         case .null: return nil
         }
     }
+    
+    func asBool() -> Bool? {
+        switch self {
+        case .string(let value): return value.toBool()
+        case .int(let value): return nil
+        case .double(let value): return nil
+        case .bool: return value
+        case .null: return nil
+        }
+    }
 
     func asVersion() -> Version? {
         Version.tryParse(value: rawValue)
@@ -166,4 +176,16 @@ enum HackleValueType: String, Codable {
     case bool = "BOOLEAN"
     case version = "VERSION"
     case json = "JSON"
+}
+
+extension String {
+    fileprivate func toBool() -> Bool? {
+        guard count <= 5 else { return nil }
+        
+        switch lowercased() {
+        case "true": return true
+        case "false": return false
+        default: return nil
+        }
+    }
 }
