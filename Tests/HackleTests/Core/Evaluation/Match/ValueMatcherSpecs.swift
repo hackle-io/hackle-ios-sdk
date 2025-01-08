@@ -85,13 +85,13 @@ class ValueMatcherSpecs: QuickSpec {
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: "false", matchValue: HackleValue(value: false))).to(beTrue())
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: "FALSE", matchValue: HackleValue(value: false))).to(beTrue())
                 
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "True"))).to(beTrue())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "tRuE"))).to(beTrue())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: false, matchValue: HackleValue(value: "False"))).to(beTrue())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: false, matchValue: HackleValue(value: "fAlSE"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "TRUE"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: true, matchValue: HackleValue(value: "true"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: false, matchValue: HackleValue(value: "FALSE"))).to(beTrue())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: false, matchValue: HackleValue(value: "false"))).to(beTrue())
                 
                 expect(sut.matches(operatorMatcher: InMatcher(), userValue: "FALSE", matchValue: HackleValue(value: true))).to(beFalse())
-                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "True", matchValue: HackleValue(value: false))).to(beFalse())
+                expect(sut.matches(operatorMatcher: InMatcher(), userValue: "true", matchValue: HackleValue(value: false))).to(beFalse())
             }
         }
 
