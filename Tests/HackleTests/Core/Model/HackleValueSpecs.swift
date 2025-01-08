@@ -51,7 +51,8 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: Int64(42)).asString()) == "42"
             expect(HackleValue(value: Double(42.0)).asString()) == "42.0"
             expect(HackleValue(value: Double(42.42)).asString()) == "42.42"
-            expect(HackleValue(value: true).asString()).to(beNil())
+            expect(HackleValue(value: true).asString()) == "true"
+            expect(HackleValue(value: false).asString()) == "false"
         }
 
         it("asDouble") {
@@ -67,10 +68,10 @@ class HackleValueSpecs: QuickSpec {
         
         it("asBool") {
             expect(HackleValue(value: "true").asBool()) == true
-            expect(HackleValue(value: "TRUE").asBool()) == true
             expect(HackleValue(value: "false").asBool()) == false
-            expect(HackleValue(value: "FALSE").asBool()) == false
             
+            expect(HackleValue(value: "TRUE").asBool()).to(beNil())
+            expect(HackleValue(value: "FALSE").asBool()).to(beNil())
             expect(HackleValue(value: "trues").asBool()).to(beNil())
             expect(HackleValue(value: "strings").asBool()).to(beNil())
         }
