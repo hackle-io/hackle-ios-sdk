@@ -64,6 +64,16 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: "42.0").asDouble()) == 42.0
             expect(HackleValue(value: "42.42").asDouble()) == 42.42
         }
+        
+        it("asBool") {
+            expect(HackleValue(value: "true").asBool()) == true
+            expect(HackleValue(value: "TRUE").asBool()) == true
+            expect(HackleValue(value: "false").asBool()) == false
+            expect(HackleValue(value: "FALSE").asBool()) == false
+            
+            expect(HackleValue(value: "trues").asBool()).to(beNil())
+            expect(HackleValue(value: "strings").asBool()).to(beNil())
+        }
 
         it("decode") {
             expect(try! JSONDecoder().decode(HackleValue.self, from: "\"42\"".data(using: .utf8)!)) == .string("42")
