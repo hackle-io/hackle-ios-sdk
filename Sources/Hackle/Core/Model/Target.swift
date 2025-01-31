@@ -37,9 +37,10 @@ class Target {
         case abTest = "AB_TEST"
         case featureFlag = "FEATURE_FLAG"
         case cohort = "COHORT"
+        case numberOfEventsInDays = "NUMBER_OF_EVENTS_IN_DAYS"
     }
 
-    class Match {
+    class Match: Codable {
 
         var type: MatchType
         var matchOperator: Operator

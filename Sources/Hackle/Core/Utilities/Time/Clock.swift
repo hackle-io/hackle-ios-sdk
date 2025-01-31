@@ -32,4 +32,11 @@ class SystemClock: Clock {
     func tick() -> UInt64 {
         UInt64(Date().timeIntervalSince1970 * 1000 * 1000 * 1000)
     }
+    
+    /// daysToMillis
+    /// - Parameter days: 변환 할 일자 수
+    /// - Returns: days를 millisecond로 변환한 값
+    func daysToMillis(days: Int) -> Int64 {
+        Int64(days) * 24 * 60 * 60 * 1000
+    }
 }
