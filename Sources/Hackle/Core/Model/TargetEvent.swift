@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Audience 타겟팅을 위한 Event 객체
-struct TargetEvent: Decodable {
+struct TargetEvent: Codable {
     /// 타겟팅 할 이벤트
     let eventKey: String
     /// 이벤트 통계
@@ -17,14 +17,19 @@ struct TargetEvent: Decodable {
     /// 타겟팅에 추가로 이용 할 이벤트 프로퍼티
     let property: Property?
     
-    
-    struct Property: Decodable {
+    /// 프로퍼티 정보
+    struct Property: Codable {
         let key: String
         let value: HackleValue
     }
     
-    struct Stat: Decodable {
+    /// 이벤트 발생 통계
+    struct Stat: Codable {
+        /// 발생 일자
+        ///
+        /// Unix Timestamp
         let date: Int64
+        /// 발생 횟수
         let count: Int
     }
 }
