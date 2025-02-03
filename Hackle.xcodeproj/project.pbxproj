@@ -75,9 +75,6 @@
 		B2C276192C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */; };
 		B2E7B4AF2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */; };
 		B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */; };
-		B2F9D5B82D4C8B2900F0C0E0 /* TargetSegmentationOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5B72D4C8B1500F0C0E0 /* TargetSegmentationOption.swift */; };
-		B2F9D5BA2D4C8CEC00F0C0E0 /* PropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5B92D4C8CE900F0C0E0 /* PropertyKey.swift */; };
-		B2F9D5BC2D4C8D9700F0C0E0 /* TargetSegmentationExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5BB2D4C8D8900F0C0E0 /* TargetSegmentationExpression.swift */; };
 		B2F9D5BF2D4C912700F0C0E0 /* TargetEventConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
@@ -608,9 +605,6 @@
 		B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageActionType.swift; sourceTree = "<group>"; };
 		B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStatus.swift; sourceTree = "<group>"; };
 		B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionOperations.swift; sourceTree = "<group>"; };
-		B2F9D5B72D4C8B1500F0C0E0 /* TargetSegmentationOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetSegmentationOption.swift; sourceTree = "<group>"; };
-		B2F9D5B92D4C8CE900F0C0E0 /* PropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyKey.swift; sourceTree = "<group>"; };
-		B2F9D5BB2D4C8D8900F0C0E0 /* TargetSegmentationExpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetSegmentationExpression.swift; sourceTree = "<group>"; };
 		B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatcher.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
@@ -1568,9 +1562,6 @@
 		EE29D8FC29CD825300B1FEAA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B2F9D5BB2D4C8D8900F0C0E0 /* TargetSegmentationExpression.swift */,
-				B2F9D5B92D4C8CE900F0C0E0 /* PropertyKey.swift */,
-				B2F9D5B72D4C8B1500F0C0E0 /* TargetSegmentationOption.swift */,
 				EE29D8FD29CD825300B1FEAA /* Slot.swift */,
 				EE29D8FE29CD825300B1FEAA /* Bucket.swift */,
 				EEDC585E2ACB1B60001E73DB /* Cohort.swift */,
@@ -2812,7 +2803,6 @@
 				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
 				EEA7FCBF2C04AB760004F858 /* LifecycleListener.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
-				B2F9D5BC2D4C8D9700F0C0E0 /* TargetSegmentationExpression.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
 				EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */,
 				EE29D95229CD825400B1FEAA /* Counter.swift in Sources */,
@@ -2886,7 +2876,6 @@
 				EE29D9A729CD825500B1FEAA /* UserEvent.swift in Sources */,
 				EE29D96829CD825400B1FEAA /* PropertiesBuilder.swift in Sources */,
 				EE29D9A529CD825500B1FEAA /* UserEventDispatcher.swift in Sources */,
-				B2F9D5BA2D4C8CEC00F0C0E0 /* PropertyKey.swift in Sources */,
 				EEA7FCAD2C04AB330004F858 /* ScreenManager.swift in Sources */,
 				EE80E00E2A2D9CC500FB12CC /* UserEventListener.swift in Sources */,
 				EEA01CB62A3069C400E0C021 /* InAppMessageDeterminer.swift in Sources */,
@@ -3068,7 +3057,6 @@
 				EEA7FCAB2C04AB290004F858 /* Screen.swift in Sources */,
 				EE29D97029CD825400B1FEAA /* Collections.swift in Sources */,
 				EE929D8B2BFFAC70003B7596 /* UserEventFilter.swift in Sources */,
-				B2F9D5B82D4C8B2900F0C0E0 /* TargetSegmentationOption.swift in Sources */,
 				EE29D9AB29CD825500B1FEAA /* SessionListener.swift in Sources */,
 				7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */,
 				EEAC3F332B9D54ED00DC498E /* PushTokenListener.swift in Sources */,
