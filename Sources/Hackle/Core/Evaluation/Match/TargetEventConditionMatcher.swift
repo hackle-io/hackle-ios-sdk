@@ -136,7 +136,7 @@ extension TargetEvent {
     /// - Parameter daysAgoUtc: 시작 기간
     /// - Returns: 횟수
     fileprivate func countWithinDays(daysAgoUtc: Int64) -> Int {
-        return self.stats.filter { $0.date >= daysAgoUtc }.sumOf {
+        return self.stats.filter { $0.date > daysAgoUtc }.sumOf {
             $0.count
         }
     }
