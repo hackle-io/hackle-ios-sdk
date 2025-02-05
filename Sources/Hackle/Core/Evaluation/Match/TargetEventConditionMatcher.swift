@@ -35,6 +35,7 @@ protocol TargetSegmentationExpressionMatcher {
     associatedtype TargetSegmentationExpression: Target.TargetSegmentationExpression
     
     var valueOperatorMatcher: ValueOperatorMatcher { get }
+    var clock: Clock { get }
     
     /// Target.Key to TargetSegmentationExpression
     func toSegmentationExpression(key: String) throws -> TargetSegmentationExpression
@@ -58,9 +59,11 @@ class NumberOfEventsInDaysMatcher: NumberOfEventInDayMatcher {
     typealias TargetSegmentationExpression = Target.NumberOfEventsInDays
     
     var valueOperatorMatcher: ValueOperatorMatcher
+    var clock: Clock
     
-    init(valueOperatorMatcher: ValueOperatorMatcher) {
+    init(valueOperatorMatcher: ValueOperatorMatcher, clock: Clock) {
         self.valueOperatorMatcher = valueOperatorMatcher
+        self.clock = clock
     }
     
     func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentationExpression) -> Bool {
@@ -80,9 +83,11 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
     typealias TargetSegmentationExpression = Target.NumberOfEventsWithPropertyInDays
     
     var valueOperatorMatcher: ValueOperatorMatcher
+    var clock: Clock
     
-    init(valueOperatorMatcher: ValueOperatorMatcher) {
+    init(valueOperatorMatcher: ValueOperatorMatcher, clock: Clock) {
         self.valueOperatorMatcher = valueOperatorMatcher
+        self.clock = clock
     }
     
     func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentationExpression) -> Bool {
@@ -115,7 +120,7 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
 extension NumberOfEventInDayMatcher {
     func match(targetEvents: [TargetEvent], condition: Target.Condition) throws -> Bool {
         let targetEventSegmentation = try toSegmentationExpression(key: condition.key.name)
-        let daysAgoUtc = SystemClock.shared.currentMillis() - targetEventSegmentation.days.getDaysToMillis() //TODO: inject clock
+        let daysAgoUtc = clock.currentMillis() - targetEventSegmentation.days.getDaysToMillis()
         let eventCount = targetEvents
             .filter { match(targetEvent: $0, targetSegmentationExpression: targetEventSegmentation)}
             .sumOf {$0.countWithinDays(daysAgoUtc: daysAgoUtc)}

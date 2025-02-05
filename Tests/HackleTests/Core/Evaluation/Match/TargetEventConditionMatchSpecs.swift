@@ -15,13 +15,15 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             valueMatcherFactory: ValueMatcherFactory(),
             operatorMatcherFactory: OperatorMatcherFactory()
         )
+        
+        let clock = SystemClock.shared
 
         let sut = TargetEventConditionMatcher(
-            numberOfEventsInDaysMatcher: NumberOfEventsInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher),
-            numberOfEventsWithPropertyInDaysMatcher: NumberOfEventsWithPropertyInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher)
+            numberOfEventsInDaysMatcher: NumberOfEventsInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock),
+            numberOfEventsWithPropertyInDaysMatcher: NumberOfEventsWithPropertyInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock)
         )
 
-        it("올바르지 않는 type이 들어온 경우 실패") {
+        it("unsupported TargetKeyType") {
             let request = experimentRequest()
             let condition = Target.Condition(
                 key: Target.Key(type: .featureFlag, name: "purchase"),

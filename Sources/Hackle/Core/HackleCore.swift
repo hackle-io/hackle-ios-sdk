@@ -55,7 +55,7 @@ class DefaultHackleCore: HackleCore {
 
         let delegatingEvaluator = DelegatingEvaluator()
         let context = EvaluationContext.shared
-        context.initialize(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage)
+        context.initialize(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage, clock: SystemClock.shared)
         let flowFactory = DefaultEvaluationFlowFactory(context: context)
 
         let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
