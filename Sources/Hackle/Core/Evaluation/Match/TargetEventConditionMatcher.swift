@@ -144,6 +144,6 @@ extension TargetEvent {
 
 extension Int {
     func getDaysToMillis() -> Int64 {
-        return TimeUnit.daysToUnit(days: Double(self), unit: .days).toInt64OrNil() ?? 0
+        return TimeUnit.daysToUnit(days: Double(self), unit: .milliseconds).toInt64OrNil() ?? 0
     }
 }
