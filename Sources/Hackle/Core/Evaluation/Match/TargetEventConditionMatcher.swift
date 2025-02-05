@@ -109,7 +109,7 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
     ///   - propertyCondition: 조건 프로퍼티
     /// - Returns: 만족 여부
     private func propertyMatch(property: TargetEvent.Property, propertyCondition: Target.Condition) -> Bool {
-        if propertyCondition.key.name != property.key {
+        if property.type == propertyCondition.key.type && propertyCondition.key.name != property.key {
             return false
         }
         

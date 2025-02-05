@@ -19,7 +19,13 @@ struct TargetEvent: Codable {
     
     /// 프로퍼티 정보
     struct Property: Codable {
+        /// 키
         let key: String
+        /// 타입
+        ///
+        /// 현재는 EVENT_PROPERTY만 지원
+        let type: Target.KeyType
+        /// 값
         let value: HackleValue
     }
     
