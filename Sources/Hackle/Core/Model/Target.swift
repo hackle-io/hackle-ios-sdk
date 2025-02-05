@@ -73,11 +73,18 @@ class Target {
     }
     
     protocol TargetSegmentationExpression {
-
+        
+    }
+    
+    protocol NumberOfEventInDay: TargetSegmentationExpression {
+        /// 이벤트 키
+        var eventKey: String { get }
+        /// 기간
+        var days: Int { get }
     }
 
     /// 기간 동안 이벤트 발생 횟수
-    class NumberOfEventsInDays: TargetSegmentationExpression, Codable {
+    class NumberOfEventsInDays: NumberOfEventInDay, Codable {
         /// 이벤트 키
         let eventKey: String
         /// 기간
@@ -90,7 +97,7 @@ class Target {
     }
     
     /// 기간 동안 프로퍼티를 포함한 이벤트 발생 횟수
-    class NumberOfEventsWithPropertyInDays: TargetSegmentationExpression, Codable {
+    class NumberOfEventsWithPropertyInDays: NumberOfEventInDay, Codable {
         /// 이벤트 키
         let eventKey: String
         /// 기간
@@ -112,17 +119,5 @@ extension Target.MatchType {
         case .match: return isMatched
         case .notMatch: return !isMatched
         }
-    }
-}
-
-extension String {
-    func toNumberOfEventsInDays() throws -> Target.NumberOfEventsInDays {
-        let data = self.data(using: .utf8)!
-        return try JSONDecoder().decode(Target.NumberOfEventsInDays.self, from: data)
-    }
-    
-    func toNumberOfEventsWithPropertyInDays() throws -> Target.NumberOfEventsWithPropertyInDays {
-        let data = self.data(using: .utf8)!
-        return try JSONDecoder().decode(Target.NumberOfEventsWithPropertyInDays.self, from: data)
     }
 }
