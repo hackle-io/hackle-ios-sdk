@@ -120,7 +120,7 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
 extension NumberOfEventInDayMatcher {
     func match(targetEvents: [TargetEvent], condition: Target.Condition) throws -> Bool {
         let targetEventSegmentation = try toSegmentationExpression(key: condition.key.name)
-        let daysAgoUtc = clock.currentMillis() - targetEventSegmentation.days.getDaysToMillis()
+        let daysAgoUtc = clock.currentMillis() - (try targetEventSegmentation.days.getDaysToMillis())
         let eventCount = targetEvents
             .filter { match(targetEvent: $0, targetSegmentationExpression: targetEventSegmentation)}
             .sumOf {$0.countWithinDays(daysAgoUtc: daysAgoUtc)}
@@ -143,7 +143,11 @@ extension TargetEvent {
 }
 
 extension Int {
-    func getDaysToMillis() -> Int64 {
-        return TimeUnit.daysToUnit(days: Double(self), unit: .milliseconds).toInt64OrNil() ?? 0
+    /// 일을 밀리초로 변환합니다.
+    fileprivate func getDaysToMillis() throws -> Int64 {
+        guard let millis = TimeUnit.daysToUnit(days: Double(self), unit: .milliseconds).toInt64OrNil() else {
+            throw HackleError.error("Invalid days [\(self)]")
+        }
+        return millis
     }
 }
