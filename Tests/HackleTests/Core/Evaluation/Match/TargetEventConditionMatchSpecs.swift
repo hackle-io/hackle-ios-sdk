@@ -479,16 +479,16 @@ class TargetEventConditionMatchSpecs: QuickSpec {
     private class TestClock: Clock {
         var kstTime: Int = 9
         private let kstOffset = TimeInterval(9 * 60 * 60 * 1000)
-        private let dayMillis = (try? 1.getDaysToMilliseconds()) ?? 0
         
         func now() -> Date {
-            let currentUTC = Date()
-                    
-            let baseDate = currentUTC.addingTimeInterval(kstOffset)
-            let startOfDay = Calendar.current.startOfDay(for: baseDate)
-            
-            let targetTimeInterval = TimeInterval(kstTime * 3600)
-            return startOfDay.addingTimeInterval(targetTimeInterval - kstOffset)
+            let now = Date()
+            let components = kstCalendar.dateComponents([.year, .month, .day], from: now)
+            var targetComponents = DateComponents()
+            targetComponents.year = components.year
+            targetComponents.month = components.month
+            targetComponents.day = components.day
+            targetComponents.hour = kstTime
+            return kstCalendar.date(from: targetComponents)!
         }
         
         func currentMillis() -> Int64 {
@@ -505,5 +505,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             }
             self.kstTime = kstTime
         }
+        
+        private let kstCalendar: Calendar = {
+            var cal = Calendar(identifier: .gregorian)
+            cal.timeZone = TimeZone(identifier: "Asia/Seoul")!
+            return cal
+        }()
     }
 }
