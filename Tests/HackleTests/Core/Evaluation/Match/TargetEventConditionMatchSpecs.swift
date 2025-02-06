@@ -470,7 +470,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
     /// - Returns: timestamp
     private func getTimeStamp(daysAgo: Int) -> Int64 {
         let currentMills = SystemClock.shared.currentMillis()
-        let daysAgoMillis = daysAgo.getDaysToMillis()
+        let daysAgoMillis = (try? daysAgo.getDaysToMilliseconds()) ?? 0
         let timeStamp = currentMills - (currentMills % (24 * 60 * 60 * 1000)) - daysAgoMillis
         return timeStamp
     }
@@ -479,7 +479,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
     private class TestClock: Clock {
         var kstTime: Int = 9
         private let kstOffset = TimeInterval(9 * 60 * 60 * 1000)
-        private let dayMillis = 1.getDaysToMillis()
+        private let dayMillis = (try? 1.getDaysToMilliseconds()) ?? 0
         
         func now() -> Date {
             let currentUTC = Date()

@@ -144,7 +144,7 @@ extension TargetEvent {
 
 extension Int {
     /// 일을 밀리초로 변환합니다.
-    fileprivate func getDaysToMilliseconds() throws -> Int64 {
+    func getDaysToMilliseconds() throws -> Int64 {
         guard let millis = TimeUnit.daysToUnit(days: Double(self), unit: .milliseconds).toInt64OrNil() else {
             throw HackleError.error("Invalid days [\(self)]")
         }
