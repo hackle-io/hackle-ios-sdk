@@ -69,8 +69,12 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     func initialize(user: User?) {
         lock.write { [weak self] in
-            let initUser = (user ?? loadUser() ?? defaultUser)
-            self?.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+            guard let self = self else {
+                Log.debug("UserManager instance deallocated")
+                return
+            }
+            let initUser = (user ?? self.loadUser() ?? self.defaultUser)
+            self.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
