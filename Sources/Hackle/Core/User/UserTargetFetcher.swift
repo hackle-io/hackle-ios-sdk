@@ -1,42 +1,40 @@
 //
-//  UserCohortFetcher.swift
+//  UserTargetFetcher.swift
 //  Hackle
 //
-//  Created by yong on 2023/10/03.
+//  Created by sungwoo.yeo on 2/7/25.
 //
 
 import Foundation
 
-@available(*, deprecated, message: "Use UserTargetFetcher instead")
-protocol UserCohortFetcher {
-    func fetch(user: User, completion: @escaping (Result<UserCohorts, Error>) -> ())
+protocol UserTargetFetcher {
+    func fetch(user: User, completion: @escaping (Result<UserTarget, Error>) -> ())
 }
 
-@available(*, deprecated, message: "Use DefaultUserTargetFetcher instead")
-class DefaultUserCohortFetcher: UserCohortFetcher {
+class DefaultUserTargetFetcher: UserTargetFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
 
     init(config: HackleConfig, httpClient: HttpClient) {
-        self.url = URL(string: DefaultUserCohortFetcher.url(config: config))!
+        self.url = URL(string: DefaultUserTargetFetcher.url(config: config))!
         self.httpClient = httpClient
     }
 
     private static func url(config: HackleConfig) -> String {
-        "\(config.sdkUrl)/api/v1/cohorts"
+        "\(config.sdkUrl)/api/v1/user-targets"
     }
 
-    func fetch(user: User, completion: @escaping (Result<UserCohorts, Error>) -> ()) {
+    func fetch(user: User, completion: @escaping (Result<UserTarget, Error>) -> ()) {
         do {
             let request = try createRequest(user: user)
             let sample = TimerSample.start()
             httpClient.execute(request: request) { [weak self] response in
                 guard let self = self else {
-                    completion(.failure(HackleError.error("Failed to fetch cohorts: instance deallocated")))
+                    completion(.failure(HackleError.error("Failed to fetch user target: instance deallocated")))
                     return
                 }
-                ApiCallMetrics.record(operation: "get.cohorts", sample: sample, response: response)
+                ApiCallMetrics.record(operation: "get.user-targets", sample: sample, response: response)
                 do {
                     let userCohorts = try self.handleResponse(response: response)
                     completion(.success(userCohorts))
@@ -58,7 +56,7 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
         return HttpRequest.get(url: self.url, headers: headers)
     }
 
-    private func handleResponse(response: HttpResponse) throws -> UserCohorts {
+    private func handleResponse(response: HttpResponse) throws -> UserTarget {
         if let error = response.error {
             throw error
         }
@@ -75,14 +73,25 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
             throw HackleError.error("Response body is empty")
         }
 
-        guard let dto = try? JSONDecoder().decode(UserCohortsResponseDto.self, from: responseBody) else {
+        guard let dto = try? JSONDecoder().decode(UserTargetResponseDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
 
-        return UserCohorts.from(dto: dto)
+        return UserTarget.from(dto: dto)
     }
 }
 
-class UserCohortsResponseDto: Codable {
+class IdentifierDto: Codable {
+    var type: String
+    var value: String
+}
+
+class UserCohortDto: Codable {
+    var identifier: IdentifierDto
+    var cohorts: [Int64]
+}
+
+class UserTargetResponseDto: Codable {
     var cohorts: [UserCohortDto]
+    var events: [TargetEvent]
 }

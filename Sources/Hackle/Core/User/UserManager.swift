@@ -59,7 +59,7 @@ class DefaultUserManager: UserManager, AppStateListener {
         self.clock = clock
         self.device = device
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
-        self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty())
+        self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
     }
 
     func addListener(listener: UserListener) {
@@ -70,7 +70,7 @@ class DefaultUserManager: UserManager, AppStateListener {
     func initialize(user: User?) {
         lock.write { [weak self] in
             let initUser = (user ?? loadUser() ?? defaultUser)
-            self?.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty())
+            self?.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
@@ -145,7 +145,7 @@ class DefaultUserManager: UserManager, AppStateListener {
         switch result {
         case .success(let cohorts):
             lock.write {
-                context = context.update(cohorts: cohorts)
+                context = context.update(cohorts: cohorts, targetEvents: UserTargetEvents.empty())
             }
             completion(.success(()))
             return
