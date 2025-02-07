@@ -6,15 +6,15 @@
 //
 
 struct UserTarget {
-    let userTargetEvents: UserTargetEvents
-    let userCohorts: UserCohorts
+    let cohorts: UserCohorts
+    let targetEvents: UserTargetEvents
 }
 
 extension UserTarget {
     static func from(dto: UserTargetResponseDto) -> UserTarget {
         UserTarget(
-            userTargetEvents: UserTargetEvents.from(dto: dto),
-            userCohorts: UserCohorts.from(dto: dto)
+            cohorts: UserCohorts.from(dto: dto),
+            targetEvents: UserTargetEvents.from(dto: dto)
         )
     }
 }

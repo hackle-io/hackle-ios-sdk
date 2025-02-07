@@ -36,7 +36,7 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     private var userListeners: [UserListener]
     private let repository: KeyValueRepository
-    private let cohortFetcher: UserCohortFetcher
+    private let targetFetcher: UserTargetFetcher
     private let clock: Clock
 
     private let device: Device
@@ -52,10 +52,10 @@ class DefaultUserManager: UserManager, AppStateListener {
         currentContext.user
     }
 
-    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, clock: Clock) {
+    init(device: Device, repository: KeyValueRepository, targetFetcher: UserTargetFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
-        self.cohortFetcher = cohortFetcher
+        self.targetFetcher = targetFetcher
         self.clock = clock
         self.device = device
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
@@ -109,6 +109,7 @@ class DefaultUserManager: UserManager, AppStateListener {
             .properties(context.user.properties)
             .hackleProperties(device.properties)
             .cohorts(context.cohorts.rawCohorts)
+            .targetEvents(context.targetEvents)
             .build()
     }
 
@@ -119,7 +120,7 @@ class DefaultUserManager: UserManager, AppStateListener {
     }
 
     private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        cohortFetcher.fetch(user: user) { [weak self] result in
+        targetFetcher.fetch(user: user) { [weak self] result in
             guard let self = self else {
                 completion(.failure(HackleError.error("Failed to user sync: instance deallocated")))
                 return
@@ -145,11 +146,11 @@ class DefaultUserManager: UserManager, AppStateListener {
         }
     }
 
-    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+    private func handle(result: Result<UserTarget, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
-        case .success(let cohorts):
+        case .success(let target):
             lock.write {
-                context = context.update(cohorts: cohorts, targetEvents: UserTargetEvents.empty())
+                context = context.update(cohorts: target.cohorts, targetEvents: target.targetEvents)
             }
             completion(.success(()))
             return

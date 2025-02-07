@@ -72,6 +72,10 @@
 		B290E6552D5592D300F68D35 /* UserTargetEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6542D5592CF00F68D35 /* UserTargetEvents.swift */; };
 		B290E6572D55C1C400F68D35 /* UserTargetFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6562D55C1BE00F68D35 /* UserTargetFetcher.swift */; };
 		B290E65A2D55C98A00F68D35 /* UserTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6592D55C98800F68D35 /* UserTarget.swift */; };
+		B290E65C2D55D5D600F68D35 /* MockUserTargetFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65B2D55D5CE00F68D35 /* MockUserTargetFetcher.swift */; };
+		B290E65E2D55DA2E00F68D35 /* UserTargetEventsSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */; };
+		B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */; };
+		B290E6622D55DF9700F68D35 /* workspace_target.json in Resources */ = {isa = PBXBuildFile; fileRef = B290E6612D55DF9700F68D35 /* workspace_target.json */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
 		B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */; };
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
@@ -606,6 +610,10 @@
 		B290E6542D5592CF00F68D35 /* UserTargetEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEvents.swift; sourceTree = "<group>"; };
 		B290E6562D55C1BE00F68D35 /* UserTargetFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetFetcher.swift; sourceTree = "<group>"; };
 		B290E6592D55C98800F68D35 /* UserTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTarget.swift; sourceTree = "<group>"; };
+		B290E65B2D55D5CE00F68D35 /* MockUserTargetFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserTargetFetcher.swift; sourceTree = "<group>"; };
+		B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEventsSpecs.swift; sourceTree = "<group>"; };
+		B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserTargetFetcherSpecs.swift; sourceTree = "<group>"; };
+		B290E6612D55DF9700F68D35 /* workspace_target.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workspace_target.json; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
 		B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageView.swift; sourceTree = "<group>"; };
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
@@ -1813,6 +1821,7 @@
 				EEF895DA2A4C09D800722CF6 /* iam.json */,
 				EEF895DE2A4C14D800722CF6 /* iam_invalid.json */,
 				EE5A78FB2ADCEF97005A0F9E /* workspace_cohorts.json */,
+				B290E6612D55DF9700F68D35 /* workspace_target.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1941,6 +1950,9 @@
 		EE29D9EA29CD82C100B1FEAA /* User */ = {
 			isa = PBXGroup;
 			children = (
+				B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */,
+				B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */,
+				B290E65B2D55D5CE00F68D35 /* MockUserTargetFetcher.swift */,
 				EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */,
 				EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */,
 				EE93FF8D2C37F1C1008A317D /* IdentifierSpecs.swift */,
@@ -2764,6 +2776,7 @@
 				EE5A78FC2ADCEF97005A0F9E /* workspace_cohorts.json in Resources */,
 				EE29DA4929CD82C200B1FEAA /* murmur_alphanumeric.csv in Resources */,
 				7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */,
+				B290E6622D55DF9700F68D35 /* workspace_target.json in Resources */,
 				EEF895DF2A4C14D800722CF6 /* iam_invalid.json in Resources */,
 				EEF895DB2A4C09D800722CF6 /* iam.json in Resources */,
 				EE29DA4F29CD82C200B1FEAA /* bucketing_alphanumeric.csv in Resources */,
@@ -3212,6 +3225,7 @@
 				7E70B5742AA8641900746A5F /* MockDevice.swift in Sources */,
 				EE5A78E32ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift in Sources */,
 				EE29DA6929CD82C200B1FEAA /* DefaultHackleCoreSpecs.swift in Sources */,
+				B290E65C2D55D5D600F68D35 /* MockUserTargetFetcher.swift in Sources */,
 				EEDC587A2ACBD90E001E73DB /* MockSynchronizer.swift in Sources */,
 				EE543CC62C08C20600F64BFA /* MockScreenManager.swift in Sources */,
 				EE789E4C29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift in Sources */,
@@ -3236,6 +3250,7 @@
 				EEF895AE2A4A9B6600722CF6 /* InAppMessageManagerSpecs.swift in Sources */,
 				EE29DA3C29CD82C200B1FEAA /* MockUserEventDispatcher.swift in Sources */,
 				EE29DA6D29CD82C200B1FEAA /* HackleValueSpecs.swift in Sources */,
+				B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */,
 				EE29DAA129CD82C200B1FEAA /* DefaultSessionManagerSpecs.swift in Sources */,
 				EE29DA5E29CD82C200B1FEAA /* CumulativeMetricRegistrySpecs.swift in Sources */,
 				EE29DA8829CD82C200B1FEAA /* MockExperimentTargetRuleDeterminer.swift in Sources */,
@@ -3249,6 +3264,7 @@
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
 				EEDC587E2ACBDA88001E73DB /* WorkspaceManagerSpecs.swift in Sources */,
 				EE0F340C2A66B039009DE640 /* InAppMessageEventProcessorSpecs.swift in Sources */,
+				B290E65E2D55DA2E00F68D35 /* UserTargetEventsSpecs.swift in Sources */,
 				EE543CD32C099D7300F64BFA /* MockAppStateManager.swift in Sources */,
 				EE789E3129F01DF60088D8A6 /* InMemoryUserEventProcessor.swift in Sources */,
 				EEB34F6629D992DA000C4D8E /* PollingWorkspaceFetcherSpecs.swift in Sources */,
