@@ -118,38 +118,20 @@ class DefaultUserManager: UserManager, AppStateListener {
     // Sync
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        sync(user: currentUser, completion: completion)
-    }
-
-    
-    private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        syncCohort(user: user, completion: {result in
-            if case .failure(let error) = result {
-                Log.error("Failed to sync cohort: \(error)")
-            }
-            
+        sync(user: currentUser, completion: {
             // NOTE:
-            // 지금은 complition이 하나만 리턴되고 있는데 api 호출 2번 이상 했을 때 비동기 처리하는 플로우가 없어
-            // complition에서 다른 api 호출하도록 처리
-            self.syncTargetEvent(user: user, completion: { result in
-                if case .failure(let error) = result {
-                    Log.error("Failed to sync target event: \(error)")
-                }
-                // NOTE:
-                // complition fail 시 단순 로깅만 하는데,
-                // 이미 sync cohort / target event 호출하면서 로깅 처리를 해서
-                // 성공으로 리턴
-                completion(.success(()))
-            })
+            // complition fail 시 단순 로깅만 하는데,
+            // 이미 sync 호출하면서 로깅 처리를 해서
+            // 성공으로 리턴
+            completion(.success(()))
         })
-        
     }
-
+    
     func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
         if hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current) {
-            sync(completion: completion)
+            sync(user: updated.current, completion: completion)
         } else {
-            syncTargetEvent(user: currentUser, completion: { result in
+            syncTargetEvent(user: updated.current, completion: { result in
                 if case .failure(let error) = result {
                     Log.error("Failed to sync target event: \(error)")
                 }
@@ -165,6 +147,24 @@ class DefaultUserManager: UserManager, AppStateListener {
         return currentIdentifiers.contains { type, value in
             !previousIdentifiers.contains(type: type, value: value)
         }
+    }
+    
+    private func sync(user: User, completion: @escaping () -> ()) {
+        syncCohort(user: user, completion: {result in
+            if case .failure(let error) = result {
+                Log.error("Failed to sync cohort: \(error)")
+            }
+            
+            // NOTE:
+            // 지금은 complition이 하나만 리턴되고 있는데 api 호출 2번 이상 했을 때 비동기 처리하는 플로우가 없어
+            // complition에서 다른 api 호출하도록 처리
+            self.syncTargetEvent(user: user, completion: { result in
+                if case .failure(let error) = result {
+                    Log.error("Failed to sync target event: \(error)")
+                }
+                completion()
+            })
+        })
     }
     
     private func syncCohort(user: User, completion: @escaping (Result<(), Error>) -> ()) {
