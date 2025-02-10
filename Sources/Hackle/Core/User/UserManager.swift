@@ -125,7 +125,7 @@ class DefaultUserManager: UserManager, AppStateListener {
     private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
         syncCohort(user: user, completion: {result in
             if case .failure(let error) = result {
-                Log.error("Failed to sync: \(error)")
+                Log.error("Failed to sync cohort: \(error)")
             }
             
             // NOTE:
@@ -133,7 +133,7 @@ class DefaultUserManager: UserManager, AppStateListener {
             // complition에서 다른 api 호출하도록 처리
             self.syncTargetEvent(user: user, completion: { result in
                 if case .failure(let error) = result {
-                    Log.error("Failed to sync: \(error)")
+                    Log.error("Failed to sync target event: \(error)")
                 }
                 // NOTE:
                 // complition fail 시 단순 로깅만 하는데,
@@ -151,7 +151,7 @@ class DefaultUserManager: UserManager, AppStateListener {
         } else {
             syncTargetEvent(user: currentUser, completion: { result in
                 if case .failure(let error) = result {
-                    Log.error("Failed to sync: \(error)")
+                    Log.error("Failed to sync target event: \(error)")
                 }
                 completion()
             })
