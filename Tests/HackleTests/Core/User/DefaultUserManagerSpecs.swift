@@ -222,6 +222,50 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
                 expect(sut.resolve(user: nil).cohorts) == []
             }
+            
+            it("when sync target event, overwrite") {
+                let targetEvent = TargetEvent(
+                    eventKey: "purchase",
+                    stats: [
+                        TargetEvent.Stat(
+                            date: 1737361789000,
+                            count: 10)
+                    ],
+                    property: TargetEvent.Property(
+                        key: "product_name",
+                        type: .eventProperty,
+                        value: HackleValue.string("shampo")
+                    )
+                )
+                let targetEvent2 = TargetEvent(
+                    eventKey: "login",
+                    stats: [
+                        TargetEvent.Stat(
+                            date: 1737361789000,
+                            count: 10)
+                    ],
+                    property: nil
+                )
+                let targetEvents = [targetEvent, targetEvent2]
+                
+                
+                // given
+                every(targetFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build()))
+                }
+                sut.initialize(user: nil)
+                sut.sync { }
+                expect(sut.resolve(user: nil).targetEvents) == targetEvents
+                expect(sut.resolve(user: nil).targetEvents.count) == 2
+                
+                let newTargetEvents = [targetEvent]
+                every(targetFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build()))
+                }
+                sut.sync { }
+                expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
+                expect(sut.resolve(user: nil).targetEvents.count) == 1
+            }
         }
 
         describe("syncIfNeeded") {

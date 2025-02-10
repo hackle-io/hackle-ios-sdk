@@ -14,7 +14,7 @@ import Quick
 
 class UserTargetEventsSpecs: QuickSpec {
     override func spec() {
-        it("UserCohorts") {
+        it("UserTargetEvents") {
             expect(UserTargetEvents.empty().count) == 0
 
             let userTargetEvents = UserTargetEvents.builder()
