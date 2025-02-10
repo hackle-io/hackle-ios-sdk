@@ -13,11 +13,11 @@ import Foundation
 class DefaultUserTargetFetcherSpecs: QuickSpec {
     override func spec() {
         var httpClient: MockHttpClient!
-        var sut: DefaultUserTargetFetcher!
+        var sut: DefaultUserTargetEventsFetcher!
 
         beforeEach {
             httpClient = MockHttpClient()
-            sut = DefaultUserTargetFetcher(config: HackleConfig.DEFAULT, httpClient: httpClient)
+            sut = DefaultUserTargetEventsFetcher(config: HackleConfig.DEFAULT, httpClient: httpClient)
         }
 
         it("when error on fetch then complete with error") {
@@ -25,7 +25,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 500, error: HackleError.error("fail")))
             }
 
-            var actual: Result<UserTarget, Error>!
+            var actual: Result<UserTargetEvents, Error>!
             sut.fetch(user: User.builder().id("42").build()) { result in
                 actual = result
             }
@@ -38,7 +38,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(HttpResponse(request: request, data: nil, urlResponse: nil, error: nil))
             }
 
-            var actual: Result<UserTarget, Error>!
+            var actual: Result<UserTargetEvents, Error>!
             sut.fetch(user: User.builder().id("42").build()) { result in
                 actual = result
             }
@@ -51,7 +51,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 500))
             }
 
-            var actual: Result<UserTarget, Error>!
+            var actual: Result<UserTargetEvents, Error>!
             sut.fetch(user: User.builder().id("42").build()) { result in
                 actual = result
             }
@@ -64,7 +64,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200))
             }
 
-            var actual: Result<UserTarget, Error>!
+            var actual: Result<UserTargetEvents, Error>!
             sut.fetch(user: User.builder().id("42").build()) { result in
                 actual = result
             }
@@ -77,7 +77,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200, data: "INVALID".data(using: .utf8)))
             }
 
-            var actual: Result<UserTarget, Error>!
+            var actual: Result<UserTargetEvents, Error>!
             sut.fetch(user: User.builder().id("42").build()) { result in
                 actual = result
             }
@@ -91,13 +91,13 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200, data: json.data(using: .utf8)))
             }
 
-            var actual: Result<UserTarget, Error>!
+            var actual: Result<UserTargetEvents, Error>!
             sut.fetch(user: User.builder().id("42").build()) { result in
                 actual = result
             }
 
             let target = try actual.get()
-            expect(target.targetEvents.count) == 2
+            expect(target.count) == 2
         }
 
         it("request header") {

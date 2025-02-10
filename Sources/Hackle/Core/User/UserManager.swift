@@ -36,7 +36,8 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     private var userListeners: [UserListener]
     private let repository: KeyValueRepository
-    private let targetFetcher: UserTargetFetcher
+    private let cohortFetcher: UserCohortFetcher
+    private let targetFetcher: UserTargetEventsFetcher
     private let clock: Clock
 
     private let device: Device
@@ -52,9 +53,10 @@ class DefaultUserManager: UserManager, AppStateListener {
         currentContext.user
     }
 
-    init(device: Device, repository: KeyValueRepository, targetFetcher: UserTargetFetcher, clock: Clock) {
+    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
+        self.cohortFetcher = cohortFetcher
         self.targetFetcher = targetFetcher
         self.clock = clock
         self.device = device
@@ -119,24 +121,43 @@ class DefaultUserManager: UserManager, AppStateListener {
         sync(user: currentUser, completion: completion)
     }
 
+    
     private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        targetFetcher.fetch(user: user) { [weak self] result in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to user sync: instance deallocated")))
-                return
+        syncCohort(user: user, completion: {result in
+            if case .failure(let error) = result {
+                Log.error("Failed to sync: \(error)")
             }
-            self.handle(result: result, completion: completion)
-        }
+            
+            // NOTE:
+            // 지금은 complition이 하나만 리턴되고 있는데 api 호출 2번 이상 했을 때 비동기 처리하는 플로우가 없어
+            // complition에서 다른 api 호출하도록 처리
+            self.syncTargetEvent(user: user, completion: { result in
+                if case .failure(let error) = result {
+                    Log.error("Failed to sync: \(error)")
+                }
+                // NOTE:
+                // complition fail 시 단순 로깅만 하는데,
+                // 이미 sync cohort / target event 호출하면서 로깅 처리를 해서
+                // 성공으로 리턴
+                completion(.success(()))
+            })
+        })
+        
     }
 
     func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
-        guard hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current) else {
-            completion()
-            return
+        if hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current) {
+            sync(completion: completion)
+        } else {
+            syncTargetEvent(user: currentUser, completion: { result in
+                if case .failure(let error) = result {
+                    Log.error("Failed to sync: \(error)")
+                }
+                completion()
+            })
         }
-        sync(completion: completion)
     }
-
+    
     private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
         let previousIdentifiers = previousUser.resolvedIdentifiers
         let currentIdentifiers = currentUser.resolvedIdentifiers
@@ -145,12 +166,46 @@ class DefaultUserManager: UserManager, AppStateListener {
             !previousIdentifiers.contains(type: type, value: value)
         }
     }
+    
+    private func syncCohort(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+        cohortFetcher.fetch(user: user) { [weak self] result in
+            guard let self = self else {
+                completion(.failure(HackleError.error("Failed to user cohort sync: instance deallocated")))
+                return
+            }
+            self.handle(result: result, completion: completion)
+        }
+    }
+    
+    private func syncTargetEvent(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+        targetFetcher.fetch(user: user) { [weak self] result in
+            guard let self = self else {
+                completion(.failure(HackleError.error("Failed to user target event sync: instance deallocated")))
+                return
+            }
+            self.handle(result: result, completion: completion)
+        }
+    }
+    
+    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+        switch result {
+        case .success(let cohorts):
+            lock.write {
+                context = context.update(cohorts: cohorts)
+            }
+            completion(.success(()))
+            return
+        case .failure(let error):
+            completion(.failure(error))
+            return
+        }
+    }
 
-    private func handle(result: Result<UserTarget, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+    private func handle(result: Result<UserTargetEvents, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let target):
             lock.write {
-                context = context.update(cohorts: target.cohorts, targetEvents: target.targetEvents)
+                context = context.update(targetEvents: target)
             }
             completion(.success(()))
             return

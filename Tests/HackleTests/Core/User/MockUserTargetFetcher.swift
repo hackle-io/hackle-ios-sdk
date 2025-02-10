@@ -8,9 +8,9 @@
 @testable import Hackle
 import Mockery
 
-class MockUserTargetFetcher: Mock, UserTargetFetcher {
+class MockUserTargetFetcher: Mock, UserTargetEventsFetcher {
 
-    init(result: Result<UserTarget, Error>? = nil) {
+    init(result: Result<UserTargetEvents, Error>? = nil) {
         super.init()
         if let result {
             every(fetchMock).answers { user, completion in
@@ -21,7 +21,7 @@ class MockUserTargetFetcher: Mock, UserTargetFetcher {
 
     lazy var fetchMock = MockFunction(self, fetch)
 
-    func fetch(user: User, completion: @escaping (Result<UserTarget, Error>) -> ()) {
+    func fetch(user: User, completion: @escaping (Result<UserTargetEvents, Error>) -> ()) {
         call(fetchMock, args: (user, completion))
     }
 }

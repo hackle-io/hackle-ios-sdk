@@ -39,3 +39,15 @@ struct TargetEvent: Codable {
         let count: Int
     }
 }
+
+extension TargetEvent: Equatable {
+    static func == (lhs: TargetEvent, rhs: TargetEvent) -> Bool {
+        lhs.eventKey == rhs.eventKey && lhs.property == rhs.property
+    }
+}
+
+extension TargetEvent.Property: Equatable {
+    static func == (lhs: TargetEvent.Property, rhs: TargetEvent.Property) -> Bool {
+        lhs.key == rhs.key && lhs.type == rhs.type && lhs.value == rhs.value
+    }
+}

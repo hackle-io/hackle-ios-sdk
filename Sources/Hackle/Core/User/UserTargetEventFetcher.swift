@@ -7,17 +7,17 @@
 
 import Foundation
 
-protocol UserTargetFetcher {
-    func fetch(user: User, completion: @escaping (Result<UserTarget, Error>) -> ())
+protocol UserTargetEventsFetcher {
+    func fetch(user: User, completion: @escaping (Result<UserTargetEvents, Error>) -> ())
 }
 
-class DefaultUserTargetFetcher: UserTargetFetcher {
+class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
 
     init(config: HackleConfig, httpClient: HttpClient) {
-        self.url = URL(string: DefaultUserTargetFetcher.url(config: config))!
+        self.url = URL(string: DefaultUserTargetEventsFetcher.url(config: config))!
         self.httpClient = httpClient
     }
 
@@ -25,7 +25,7 @@ class DefaultUserTargetFetcher: UserTargetFetcher {
         "\(config.sdkUrl)/api/v1/user-targets"
     }
 
-    func fetch(user: User, completion: @escaping (Result<UserTarget, Error>) -> ()) {
+    func fetch(user: User, completion: @escaping (Result<UserTargetEvents, Error>) -> ()) {
         do {
             let request = try createRequest(user: user)
             let sample = TimerSample.start()
@@ -56,7 +56,7 @@ class DefaultUserTargetFetcher: UserTargetFetcher {
         return HttpRequest.get(url: self.url, headers: headers)
     }
 
-    private func handleResponse(response: HttpResponse) throws -> UserTarget {
+    private func handleResponse(response: HttpResponse) throws -> UserTargetEvents {
         if let error = response.error {
             throw error
         }
@@ -77,21 +77,10 @@ class DefaultUserTargetFetcher: UserTargetFetcher {
             throw HackleError.error("Invalid format")
         }
 
-        return UserTarget.from(dto: dto)
+        return UserTargetEvents.from(dto: dto)
     }
 }
 
-class IdentifierDto: Codable {
-    var type: String
-    var value: String
-}
-
-class UserCohortDto: Codable {
-    var identifier: IdentifierDto
-    var cohorts: [Int64]
-}
-
 class UserTargetResponseDto: Codable {
-    var cohorts: [UserCohortDto]
     var events: [TargetEvent]
 }

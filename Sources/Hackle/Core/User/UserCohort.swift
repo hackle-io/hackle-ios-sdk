@@ -63,16 +63,6 @@ extension UserCohorts {
             }
             .build()
     }
-    
-    static func from(dto: UserTargetResponseDto) -> UserCohorts {
-        dto.cohorts.reduce(builder()) { builder, cohort in
-                builder.put(cohort: UserCohort(
-                    identifier: Identifier(type: cohort.identifier.type, value: cohort.identifier.value),
-                    cohorts: cohort.cohorts.map({ Cohort(id: $0) })
-                ))
-            }
-            .build()
-    }
 
     class Builder {
 

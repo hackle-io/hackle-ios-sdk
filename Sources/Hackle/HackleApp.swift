@@ -413,12 +413,13 @@ extension HackleApp {
         compositeSynchronizer.add(synchronizer: workspaceManager)
 
         // - UserManager
-
-        let targetFetcher = DefaultUserTargetFetcher(config: config, httpClient: httpClient)
+        let cohortFetcher = DefaultUserCohortFetcher(config: config, httpClient: httpClient)
+        let targetFetcher = DefaultUserTargetEventsFetcher(config: config, httpClient: httpClient)
 
         let userManager = DefaultUserManager(
             device: device,
             repository: keyValueRepositoryBySdkKey,
+            cohortFetcher: cohortFetcher,
             targetFetcher: targetFetcher,
             clock: SystemClock.shared
         )

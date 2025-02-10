@@ -7,12 +7,10 @@
 
 import Foundation
 
-@available(*, deprecated, message: "Use UserTargetFetcher instead")
 protocol UserCohortFetcher {
     func fetch(user: User, completion: @escaping (Result<UserCohorts, Error>) -> ())
 }
 
-@available(*, deprecated, message: "Use DefaultUserTargetFetcher instead")
 class DefaultUserCohortFetcher: UserCohortFetcher {
 
     private let url: URL
@@ -81,6 +79,16 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
 
         return UserCohorts.from(dto: dto)
     }
+}
+
+class IdentifierDto: Codable {
+    var type: String
+    var value: String
+}
+
+class UserCohortDto: Codable {
+    var identifier: IdentifierDto
+    var cohorts: [Int64]
 }
 
 class UserCohortsResponseDto: Codable {

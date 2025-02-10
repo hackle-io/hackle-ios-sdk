@@ -36,15 +36,16 @@ extension UserContext {
         let filtered = cohorts.filterBy(user: user)
         return UserContext.of(user: user, cohorts: filtered, targetEvents: targetEvents)
     }
-
-    func update(cohorts: UserCohorts, targetEvents: UserTargetEvents) -> UserContext {
+    
+    func update(cohorts: UserCohorts) -> UserContext {
         let filtered = cohorts.filterBy(user: self.user)
         let newCohorts = cohorts.toBuilder()
             .putAll(cohorts: filtered)
             .build()
-        let newTargetEvents = targetEvents.toBuilder()
-            .putAll(targetEvents: targetEvents)
-            .build()
-        return UserContext.of(user: self.user, cohorts: newCohorts, targetEvents: newTargetEvents)
+        return UserContext.of(user: self.user, cohorts: newCohorts, targetEvents: targetEvents)
+    }
+    
+    func update(targetEvents: UserTargetEvents) -> UserContext {
+        return UserContext.of(user: self.user, cohorts: cohorts, targetEvents: targetEvents)
     }
 }

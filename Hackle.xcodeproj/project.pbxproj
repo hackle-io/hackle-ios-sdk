@@ -69,9 +69,8 @@
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
-		B290E6552D5592D300F68D35 /* UserTargetEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6542D5592CF00F68D35 /* UserTargetEvents.swift */; };
-		B290E6572D55C1C400F68D35 /* UserTargetFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6562D55C1BE00F68D35 /* UserTargetFetcher.swift */; };
-		B290E65A2D55C98A00F68D35 /* UserTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6592D55C98800F68D35 /* UserTarget.swift */; };
+		B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */; };
+		B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6562D55C1BE00F68D35 /* UserTargetEventFetcher.swift */; };
 		B290E65C2D55D5D600F68D35 /* MockUserTargetFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65B2D55D5CE00F68D35 /* MockUserTargetFetcher.swift */; };
 		B290E65E2D55DA2E00F68D35 /* UserTargetEventsSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */; };
 		B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */; };
@@ -607,9 +606,8 @@
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
-		B290E6542D5592CF00F68D35 /* UserTargetEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEvents.swift; sourceTree = "<group>"; };
-		B290E6562D55C1BE00F68D35 /* UserTargetFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetFetcher.swift; sourceTree = "<group>"; };
-		B290E6592D55C98800F68D35 /* UserTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTarget.swift; sourceTree = "<group>"; };
+		B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEvent.swift; sourceTree = "<group>"; };
+		B290E6562D55C1BE00F68D35 /* UserTargetEventFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEventFetcher.swift; sourceTree = "<group>"; };
 		B290E65B2D55D5CE00F68D35 /* MockUserTargetFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserTargetFetcher.swift; sourceTree = "<group>"; };
 		B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEventsSpecs.swift; sourceTree = "<group>"; };
 		B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserTargetFetcherSpecs.swift; sourceTree = "<group>"; };
@@ -1510,9 +1508,8 @@
 		EE29D8DD29CD825300B1FEAA /* User */ = {
 			isa = PBXGroup;
 			children = (
-				B290E6592D55C98800F68D35 /* UserTarget.swift */,
-				B290E6562D55C1BE00F68D35 /* UserTargetFetcher.swift */,
-				B290E6542D5592CF00F68D35 /* UserTargetEvents.swift */,
+				B290E6562D55C1BE00F68D35 /* UserTargetEventFetcher.swift */,
+				B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */,
 				EE29D8E029CD825300B1FEAA /* HackleUser.swift */,
 				EEDC58852ACC07CF001E73DB /* Identifier.swift */,
 				EEDC58832ACC07C4001E73DB /* UserCohort.swift */,
@@ -2925,7 +2922,7 @@
 				EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */,
 				EE80DF8C2A2831EC00FB12CC /* InAppMessageEvaluation.swift in Sources */,
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
-				B290E6572D55C1C400F68D35 /* UserTargetFetcher.swift in Sources */,
+				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
@@ -2989,7 +2986,6 @@
 				EE6728202C50BE7000167355 /* InAppMessageUIBottomSheetView.swift in Sources */,
 				EE4B810A2C0075F400719C41 /* WebViewWrapperUserEventFilter.swift in Sources */,
 				EE29DAB829CD842100B1FEAA /* HackleUserExplorerButton.swift in Sources */,
-				B290E65A2D55C98A00F68D35 /* UserTarget.swift in Sources */,
 				EE29D99829CD825500B1FEAA /* RemoteConfigTargetRuleDeterminer.swift in Sources */,
 				EE0B71EA2A419D30009D7AF4 /* InAppMessageEvent.swift in Sources */,
 				EEA3BF5B29D3F7D4008664BA /* OnOverrideResetListener.swift in Sources */,
@@ -3046,7 +3042,7 @@
 				EE29D99929CD825500B1FEAA /* ExperimentTargetRuleDeterminer.swift in Sources */,
 				EE29D96029CD825400B1FEAA /* AppStateListener.swift in Sources */,
 				EE29D97729CD825400B1FEAA /* AtomicInt64.swift in Sources */,
-				B290E6552D5592D300F68D35 /* UserTargetEvents.swift in Sources */,
+				B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */,
 				EEFA31E62BC18A7B00E133F8 /* RemoteConfigEventDedupDeterminer.swift in Sources */,
 				EEDC587C2ACBDA78001E73DB /* WorkspaceManager.swift in Sources */,
 				7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */,
