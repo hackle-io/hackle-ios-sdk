@@ -36,8 +36,8 @@ class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
                 }
                 ApiCallMetrics.record(operation: "get.user-targets", sample: sample, response: response)
                 do {
-                    let userCohorts = try self.handleResponse(response: response)
-                    completion(.success(userCohorts))
+                    let userTargets = try self.handleResponse(response: response)
+                    completion(.success(userTargets))
                 } catch let error {
                     completion(.failure(error))
                 }
