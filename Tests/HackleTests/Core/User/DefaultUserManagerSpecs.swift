@@ -8,6 +8,7 @@ class DefaultUserManagerSpecs: QuickSpec {
     override func spec() {
         var repository: KeyValueRepository!
         var cohortFetcher: MockUserCohortFetcher!
+        var targetFetcher: MockUserTargetFetcher!
         var clock: Clock!
         var device: Device!
         var sut: DefaultUserManager!
@@ -17,12 +18,15 @@ class DefaultUserManagerSpecs: QuickSpec {
         beforeEach {
             repository = MemoryKeyValueRepository()
             cohortFetcher = MockUserCohortFetcher()
+            targetFetcher = MockUserTargetFetcher()
             clock = FixedClock(date: Date(timeIntervalSince1970: 42))
             device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
-            sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, clock: clock)
-
-            every(cohortFetcher.fetchMock).answers { user, completion in
-                completion(.success(UserCohorts.empty()))
+            sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
+            every(cohortFetcher.fetchMock).answers({ _, completion in
+                completion(.success(UserCohorts()))
+            })
+            every(targetFetcher.fetchMock).answers { _, completion in
+                completion(.success(UserTargetEvents()))
             }
             listener = MockUserListener()
             sut.addListener(listener: listener)
@@ -98,8 +102,26 @@ class DefaultUserManagerSpecs: QuickSpec {
                 let userCohorts = UserCohorts.builder()
                     .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "id"), cohorts: [Cohort(id: 42)]))
                     .build()
-                every(cohortFetcher.fetchMock).answers { user, completion in
-                    completion(.success(userCohorts))
+                let userTargetEvents = UserTargetEvents.builder()
+                    .put(targetEvent: TargetEvent(
+                        eventKey: "purchase",
+                        stats: [
+                            TargetEvent.Stat(
+                                date: 1737361789000,
+                                count: 10)
+                        ],
+                        property: TargetEvent.Property(
+                            key: "product_name",
+                            type: .eventProperty,
+                            value: HackleValue.string("shampo")
+                        )
+                    ))
+                    .build()
+                every(cohortFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
+                }
+                every(targetFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: userTargetEvents).build()))
                 }
 
                 // when
@@ -159,8 +181,26 @@ class DefaultUserManagerSpecs: QuickSpec {
                 let userCohorts = UserCohorts.builder()
                     .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "hackle_device_id"), cohorts: [Cohort(id: 42)]))
                     .build()
-                every(cohortFetcher.fetchMock).answers { user, completion in
-                    completion(.success(userCohorts))
+                let userTargetEvents = UserTargetEvents.builder()
+                    .put(targetEvent: TargetEvent(
+                        eventKey: "purchase",
+                        stats: [
+                            TargetEvent.Stat(
+                                date: 1737361789000,
+                                count: 10)
+                        ],
+                        property: TargetEvent.Property(
+                            key: "product_name",
+                            type: .eventProperty,
+                            value: HackleValue.string("shampo")
+                        )
+                    ))
+                    .build()
+                every(cohortFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
+                }
+                every(targetFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: userTargetEvents).build()))
                 }
 
                 sut.initialize(user: nil)
@@ -172,7 +212,7 @@ class DefaultUserManagerSpecs: QuickSpec {
 
             it("when error on fetch cohort then do not update cohort") {
                 // given
-                every(cohortFetcher.fetchMock).answers { user, completion in
+                every(targetFetcher.fetchMock).answers { _, completion in
                     completion(.failure(HackleError.error("fail")))
                 }
 
@@ -181,6 +221,50 @@ class DefaultUserManagerSpecs: QuickSpec {
                 sut.sync {
                 }
                 expect(sut.resolve(user: nil).cohorts) == []
+            }
+            
+            it("when sync target event, overwrite") {
+                let targetEvent = TargetEvent(
+                    eventKey: "purchase",
+                    stats: [
+                        TargetEvent.Stat(
+                            date: 1737361789000,
+                            count: 10)
+                    ],
+                    property: TargetEvent.Property(
+                        key: "product_name",
+                        type: .eventProperty,
+                        value: HackleValue.string("shampo")
+                    )
+                )
+                let targetEvent2 = TargetEvent(
+                    eventKey: "login",
+                    stats: [
+                        TargetEvent.Stat(
+                            date: 1737361789000,
+                            count: 10)
+                    ],
+                    property: nil
+                )
+                let targetEvents = [targetEvent, targetEvent2]
+                
+                
+                // given
+                every(targetFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build()))
+                }
+                sut.initialize(user: nil)
+                sut.sync { }
+                expect(sut.resolve(user: nil).targetEvents) == targetEvents
+                expect(sut.resolve(user: nil).targetEvents.count) == 2
+                
+                let newTargetEvents = [targetEvent]
+                every(targetFetcher.fetchMock).answers { _, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build()))
+                }
+                sut.sync { }
+                expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
+                expect(sut.resolve(user: nil).targetEvents.count) == 1
             }
         }
 
@@ -232,6 +316,9 @@ class DefaultUserManagerSpecs: QuickSpec {
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
                 }
+                verify(exactly: 6) {
+                    targetFetcher.fetchMock
+                }
             }
             it("new identifiers") {
                 sut.syncIfNeeded(
@@ -277,7 +364,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     completion: {}
                 )
                 verify(exactly: 6) {
-                    cohortFetcher.fetchMock
+                    targetFetcher.fetchMock
                 }
             }
 
@@ -381,7 +468,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "device_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -404,7 +491,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "device_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -429,7 +516,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "device_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -455,7 +542,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$userId": "user_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -480,7 +567,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$userId": "user_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -505,7 +592,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$userId": "user_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -532,7 +619,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$userId": "user_id",
                 ]
 
-                sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -557,19 +644,49 @@ class DefaultUserManagerSpecs: QuickSpec {
                     .put(cohort: UserCohort(identifier: Identifier(type: "$deviceId", value: "hackle_device_id"), cohorts: [Cohort(id: 43)]))
                     .build()
                 every(cohortFetcher.fetchMock).answers { user, completion in
-                    completion(.success(userCohorts))
+                    completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
                 }
 
                 sut.initialize(user: nil)
                 sut.sync {
                 }
 
-                sut.setUser(user: User.builder().deviceId("device_id").build())
+                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
                 ]
                 expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
+            }
+            
+            it("update target event") {
+                let userTargetEvents = UserTargetEvents.builder()
+                    .put(targetEvent: TargetEvent(
+                        eventKey: "purchase",
+                        stats: [
+                            TargetEvent.Stat(
+                                date: 1737361789000,
+                                count: 10)
+                        ],
+                        property: TargetEvent.Property(
+                            key: "product_name",
+                            type: .eventProperty,
+                            value: HackleValue.string("shampo")
+                        )
+                    ))
+                    .build()
+                every(targetFetcher.fetchMock).answers { user, completion in
+                    completion(.success(UserTargetEvents.Builder(targetEvents: userTargetEvents).build()))
+                }
+
+                sut.initialize(user: nil)
+                sut.sync {
+                }
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
+                expect(sut.resolve(user: nil).targetEvents.count) == 1
+                expect(sut.resolve(user: nil).targetEvents[0].eventKey) == "purchase"
+                expect(sut.resolve(user: nil).targetEvents[0].property?.key) == "product_name"
             }
         }
 
@@ -760,7 +877,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                sut.resetUser()
+                _ = sut.resetUser()
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -777,7 +894,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     "$deviceId": "device_id",
                 ]
 
-                sut.resetUser()
+                _ = sut.resetUser()
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
