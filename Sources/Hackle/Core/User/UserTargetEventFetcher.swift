@@ -29,7 +29,7 @@ class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
         do {
             let request = try createRequest(user: user)
             let sample = TimerSample.start()
-            httpClient.execute(request: request) { [weak self] response in
+            httpClient.execute(request: request, timeout: 5) { [weak self] response in
                 guard let self = self else {
                     completion(.failure(HackleError.error("Failed to fetch user target: instance deallocated")))
                     return
