@@ -1,0 +1,45 @@
+{
+  "cohorts": [
+    {
+      "identifier": {
+        "type": "$id",
+        "value": "id"
+      },
+      "cohorts": [
+        1,
+        2
+      ]
+    },
+    {
+      "identifier": {
+        "type": "$userId",
+        "value": "user_id"
+      },
+      "cohorts": []
+    }
+  ],
+  "events": [
+    {
+      "eventKey": "purchase",
+      "property": {
+        "type": "EVENT_PROPERTY",
+        "key": "product_name",
+        "value": "shampoo"
+      },
+      "stats": [
+        {"date": 1737361789000, "count": 10},
+        {"date": 1737361790000, "count": 20},
+        {"date": 1737361793000, "count": 30}
+      ]
+    },
+    {
+      "eventKey": "cart",
+      "property": null,
+      "stats": [
+        {"date": 1737361789000, "count": 10},
+        {"date": 1737361790000, "count": 20},
+        {"date": 1737361793000, "count": 30}
+      ]
+    }
+  ]
+}

@@ -40,6 +40,14 @@ class Objects {
         }
         return value
     }
+    
+    static func asHackleValueOrNil(_ value: Any) -> HackleValue? {
+        guard let value = value as? HackleValue else {
+            return nil
+        }
+        
+        return value
+    }
 }
 
 extension Optional {

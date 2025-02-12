@@ -54,4 +54,12 @@ extension Double {
             return nil
         }
     }
+    
+    func toInt64OrNil() -> Int64? {
+        if Double(Int64.min) < self && self < Double(Int64.max) {
+            return Int64(self)
+        } else {
+            return nil
+        }
+    }
 }

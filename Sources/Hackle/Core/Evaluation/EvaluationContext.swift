@@ -24,10 +24,10 @@ class EvaluationContext {
         instances.append(instance)
     }
 
-    func initialize(evaluator: Evaluator, manualOverrideStorage: ManualOverrideStorage) {
+    func initialize(evaluator: Evaluator, manualOverrideStorage: ManualOverrideStorage, clock: Clock) {
 
         let bucketer = DefaultBucketer()
-        let targetMatcher = DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: evaluator))
+        let targetMatcher = DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: evaluator, clock: clock))
         let actionResolver = DefaultActionResolver(bucketer: bucketer)
         let overrideResolver = DefaultOverrideResolver(manualOverrideStorage: manualOverrideStorage, targetMatcher: targetMatcher, actionResolver: actionResolver)
         let containerResolver = DefaultContainerResolver(bucketer: bucketer)

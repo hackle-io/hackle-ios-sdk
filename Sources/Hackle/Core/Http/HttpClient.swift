@@ -6,6 +6,7 @@ import Foundation
 
 protocol HttpClient {
     func execute(request: HttpRequest, completion: @escaping (HttpResponse) -> Void)
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping (HttpResponse) -> Void)
 }
 
 class DefaultHttpClient: HttpClient {
@@ -22,7 +23,10 @@ class DefaultHttpClient: HttpClient {
     }
 
     func execute(request: HttpRequest, completion: @escaping (HttpResponse) -> Void) {
-
+        execute(request: request, timeout: session.configuration.timeoutIntervalForRequest, completion: completion)
+    }
+    
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping (HttpResponse) -> Void) {
         var req = URLRequest(url: request.url)
         req.httpMethod = request.method
         req.httpBody = request.body

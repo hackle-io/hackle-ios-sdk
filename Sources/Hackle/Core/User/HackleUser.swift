@@ -13,12 +13,14 @@ class HackleUser {
     let properties: [String: Any]
     let hackleProperties: [String: Any]
     let cohorts: [Cohort]
+    let targetEvents: [TargetEvent]
 
-    init(identifiers: [String: String], properties: [String: Any], hackleProperties: [String: Any], cohorts: [Cohort] = []) {
+    init(identifiers: [String: String], properties: [String: Any], hackleProperties: [String: Any], cohorts: [Cohort] = [], targetEvents: [TargetEvent] = []) {
         self.identifiers = identifiers
         self.properties = properties
         self.hackleProperties = hackleProperties
         self.cohorts = cohorts
+        self.targetEvents = targetEvents
     }
 }
 
@@ -79,6 +81,7 @@ class InternalHackleUserBuilder {
     private let properties = PropertiesBuilder()
     private let hackleProperties = PropertiesBuilder()
     private var cohorts = [Cohort]()
+    private var targetEvents = [TargetEvent]()
 
     init() {
     }
@@ -88,6 +91,7 @@ class InternalHackleUserBuilder {
         properties.add(user.properties)
         hackleProperties.add(user.hackleProperties)
         cohorts.append(contentsOf: user.cohorts)
+        targetEvents.append(contentsOf: user.targetEvents)
     }
 
     @discardableResult
@@ -143,13 +147,26 @@ class InternalHackleUserBuilder {
         self.cohorts.append(contentsOf: cohorts)
         return self
     }
+    
+    @discardableResult
+    func targetEvent(_ targetEvent: TargetEvent) -> InternalHackleUserBuilder {
+        self.targetEvents.append(targetEvent)
+        return self
+    }
+    
+    @discardableResult
+    func targetEvents(_ targetEvents: [TargetEvent]) -> InternalHackleUserBuilder {
+        self.targetEvents.append(contentsOf: targetEvents)
+        return self
+    }
 
     func build() -> HackleUser {
         HackleUser(
             identifiers: identifiers.build(),
             properties: properties.build(),
             hackleProperties: hackleProperties.build(),
-            cohorts: cohorts
+            cohorts: cohorts,
+            targetEvents: targetEvents
         )
     }
 }

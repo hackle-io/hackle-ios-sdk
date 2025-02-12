@@ -194,7 +194,6 @@ class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
 }
 
 private class HttpClientStub: HttpClient {
-
     private let statusCode: Int?
     private let data: Data?
     private let error: Error?
@@ -212,5 +211,9 @@ private class HttpClientStub: HttpClient {
         }
         let response = HttpResponse(request: request, data: data, urlResponse: urlResponse, error: error)
         completion(response)
+    }
+    
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping (HttpResponse) -> Void) {
+        execute(request: request, completion: completion)
     }
 }
