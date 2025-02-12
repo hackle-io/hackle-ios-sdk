@@ -270,6 +270,7 @@ class DefaultUserManagerSpecs: QuickSpec {
 
         describe("syncIfNeeded") {
             it("no new identifiers") {
+                // cohort not sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").build(),
@@ -277,6 +278,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort not sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").build(),
@@ -284,6 +286,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort not sync and target event sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").build(),
@@ -291,6 +294,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort not sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").build(),
@@ -298,6 +302,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort not sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
@@ -305,7 +310,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
-
+                // cohort not sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
@@ -316,11 +321,12 @@ class DefaultUserManagerSpecs: QuickSpec {
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
                 }
-                verify(exactly: 6) {
+                verify(exactly: 1) {
                     targetFetcher.fetchMock
                 }
             }
             it("new identifiers") {
+                // cohort sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().build(),
@@ -328,6 +334,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").build(),
@@ -335,6 +342,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort sync and target event sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").build(),
@@ -342,6 +350,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort sync and target event sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").build(),
@@ -349,6 +358,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").build(),
@@ -356,6 +366,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     ),
                     completion: {}
                 )
+                // cohort sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
@@ -364,12 +375,17 @@ class DefaultUserManagerSpecs: QuickSpec {
                     completion: {}
                 )
                 verify(exactly: 6) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 2) {
                     targetFetcher.fetchMock
                 }
             }
 
             it("completion") {
                 var count = 0
+                // cohort not sync and target event not sync
+                // so no completion called
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().build(),
@@ -379,6 +395,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                         count += 1
                     }
                 )
+                // cohort sync and target event not sync
+                // so completion called
                 sut.syncIfNeeded(
                     updated: Updated(
                         previous: User.builder().build(),
@@ -388,7 +406,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                         count += 1
                     }
                 )
-                expect(count) == 2
+                expect(count) == 1
             }
         }
 
