@@ -13,7 +13,9 @@ jobs:
         name: Test Result
         with:
           path: TestResults.xcresult
+          upload-bundles: 'never'
         if: success() || failure()
+        
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:

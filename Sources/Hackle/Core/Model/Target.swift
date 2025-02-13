@@ -37,6 +37,8 @@ class Target {
         case abTest = "AB_TEST"
         case featureFlag = "FEATURE_FLAG"
         case cohort = "COHORT"
+        case numberOfEventsInDays = "NUMBER_OF_EVENTS_IN_DAYS"
+        case numberOfEventsWithPropertyInDays = "NUMBER_OF_EVENTS_WITH_PROPERTY_IN_DAYS"
     }
 
     class Match {
@@ -68,6 +70,46 @@ class Target {
     enum MatchType: String, Codable {
         case match = "MATCH"
         case notMatch = "NOT_MATCH"
+    }
+    
+    protocol TargetSegmentationExpression {
+        
+    }
+    
+    protocol NumberOfEventInDay: TargetSegmentationExpression {
+        /// 이벤트 키
+        var eventKey: String { get }
+        /// 기간
+        var days: Int { get }
+    }
+
+    /// 기간 동안 이벤트 발생 횟수
+    class NumberOfEventsInDays: NumberOfEventInDay {
+        /// 이벤트 키
+        let eventKey: String
+        /// 기간
+        let days: Int
+        
+        init(eventKey: String, days: Int) {
+            self.eventKey = eventKey
+            self.days = days
+        }
+    }
+    
+    /// 기간 동안 프로퍼티를 포함한 이벤트 발생 횟수
+    class NumberOfEventsWithPropertyInDays: NumberOfEventInDay {
+        /// 이벤트 키
+        let eventKey: String
+        /// 기간
+        let days: Int
+        /// 추가 필터
+        let propertyFilter: Condition
+        
+        init(eventKey: String, days: Int, propertyFilter: Condition) {
+            self.eventKey = eventKey
+            self.days = days
+            self.propertyFilter = propertyFilter
+        }
     }
 }
 

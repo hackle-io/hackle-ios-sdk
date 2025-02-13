@@ -42,6 +42,14 @@ extension Array {
             Array(self[$0..<Swift.min($0 + size, count)])
         }
     }
+    
+    func sumOf(selector: (Element) -> Int) -> Int {
+        var sum = 0
+        for element in self {
+            sum += selector(element)
+        }
+        return sum
+    }
 
     func sumOf(selector: (Element) -> Int64) -> Int64 {
         var sum: Int64 = 0
