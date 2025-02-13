@@ -30,6 +30,7 @@ class DefaultHttpClient: HttpClient {
         var req = URLRequest(url: request.url)
         req.httpMethod = request.method
         req.httpBody = request.body
+        req.timeoutInterval = timeout
         request.headers?.forEach { k, v in
             req.setValue(v, forHTTPHeaderField: k)
         }
