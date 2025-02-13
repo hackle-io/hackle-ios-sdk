@@ -215,12 +215,16 @@ class DefaultUserManagerSpecs: QuickSpec {
                 every(targetFetcher.fetchMock).answers { _, completion in
                     completion(.failure(HackleError.error("fail")))
                 }
+                every(cohortFetcher.fetchMock).answers { _, completion in
+                    completion(.failure(HackleError.error("fail")))
+                }
 
                 sut.initialize(user: nil)
-                expect(sut.resolve(user: nil).cohorts) == []
+
                 sut.sync {
+                    expect(sut.resolve(user: nil).cohorts) == []
+                    expect(sut.resolve(user: nil).targetEvents) == []
                 }
-                expect(sut.resolve(user: nil).cohorts) == []
             }
             
             it("when sync target event, overwrite") {
@@ -254,9 +258,12 @@ class DefaultUserManagerSpecs: QuickSpec {
                     completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build()))
                 }
                 sut.initialize(user: nil)
-                sut.sync { }
-                expect(sut.resolve(user: nil).targetEvents) == targetEvents
-                expect(sut.resolve(user: nil).targetEvents.count) == 2
+                sut.sync {
+                    expect(sut.resolve(user: nil).targetEvents) == targetEvents
+                    expect(sut.resolve(user: nil).targetEvents.count) == 2
+                }
+                
+                Thread.sleep(forTimeInterval: 0.1)
                 
                 let newTargetEvents = [targetEvent]
                 every(targetFetcher.fetchMock).answers { _, completion in
@@ -317,14 +324,15 @@ class DefaultUserManagerSpecs: QuickSpec {
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
                         current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
                     ),
-                    completion: {}
+                    completion: {
+                        verify(exactly: 0) {
+                            cohortFetcher.fetchMock
+                        }
+                        verify(exactly: 1) {
+                            targetFetcher.fetchMock
+                        }
+                    }
                 )
-                verify(exactly: 0) {
-                    cohortFetcher.fetchMock
-                }
-                verify(exactly: 1) {
-                    targetFetcher.fetchMock
-                }
             }
             it("new identifiers") {
                 // cohort sync and target event not sync
@@ -641,16 +649,14 @@ class DefaultUserManagerSpecs: QuickSpec {
                     completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
                 }
 
-                sut.initialize(user: nil)
+                sut.initialize(user: User.builder().deviceId("device_id").build())
                 sut.sync {
+                    expect(sut.currentUser.resolvedIdentifiers) == [
+                        "$id": "hackle_device_id",
+                        "$deviceId": "device_id",
+                    ]
+                    expect(sut.resolve(user: sut.currentUser).cohorts) == [Cohort(id: 42)]
                 }
-
-                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
-                expect(sut.currentUser.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "device_id",
-                ]
-                expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
             }
             
             it("update target event") {
