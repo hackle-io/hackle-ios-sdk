@@ -174,15 +174,6 @@ class DefaultUserManager: UserManager, AppStateListener {
         }
     }
     
-    private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
-        let previousIdentifiers = previousUser.resolvedIdentifiers
-        let currentIdentifiers = currentUser.resolvedIdentifiers
-
-        return currentIdentifiers.contains { type, value in
-            !previousIdentifiers.contains(type: type, value: value)
-        }
-    }
-    
     private func syncCohort(user: User, completion: @escaping (Result<(), Error>) -> ()) {
         cohortFetcher.fetch(user: user) { [weak self] result in
             guard let self = self else {
@@ -200,6 +191,15 @@ class DefaultUserManager: UserManager, AppStateListener {
                 return
             }
             self.handle(result: result, completion: completion)
+        }
+    }
+    
+    private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
+        let previousIdentifiers = previousUser.resolvedIdentifiers
+        let currentIdentifiers = currentUser.resolvedIdentifiers
+
+        return currentIdentifiers.contains { type, value in
+            !previousIdentifiers.contains(type: type, value: value)
         }
     }
     

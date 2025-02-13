@@ -15,6 +15,7 @@ class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
+    private let timeout: TimeInterval = 2 // watchdog mainthread crash 회피를 위해 2초 설정
 
     init(config: HackleConfig, httpClient: HttpClient) {
         self.url = URL(string: DefaultUserTargetEventsFetcher.url(config: config))!
@@ -29,7 +30,7 @@ class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
         do {
             let request = try createRequest(user: user)
             let sample = TimerSample.start()
-            httpClient.execute(request: request, timeout: 5) { [weak self] response in
+            httpClient.execute(request: request, timeout: timeout) { [weak self] response in
                 guard let self = self else {
                     completion(.failure(HackleError.error("Failed to fetch user target: instance deallocated")))
                     return
