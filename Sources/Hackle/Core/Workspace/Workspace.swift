@@ -307,6 +307,22 @@ class TargetDto: Codable {
             values = try container.decode([HackleValue].self, forKey: .values)
         }
     }
+    
+    class NumberOfEventsInDaysDto: Codable {
+        /// 이벤트 키
+        var eventKey: String
+        /// 기간
+        var days: Int
+    }
+    
+    class NumberOfEventsWithPropertyInDaysDto: Codable {
+        /// 이벤트 키
+        var eventKey: String
+        /// 기간
+        var days: Int
+        /// 프로퍼티 필터
+        var propertyFilter: ConditionDto
+    }
 }
 
 
@@ -1007,6 +1023,21 @@ extension TargetDto.MatchDto {
         }
 
         return Target.Match(type: matchType, matchOperator: matchOperator, valueType: valueType, values: values)
+    }
+}
+
+extension TargetDto.NumberOfEventsInDaysDto {
+    func toNumberOfEventInDay() -> Target.NumberOfEventsInDays {
+        return Target.NumberOfEventsInDays(eventKey: eventKey, days: days)
+    }
+}
+
+extension TargetDto.NumberOfEventsWithPropertyInDaysDto {
+    func toNumberOfEventWithPropertyInDay() throws -> Target.NumberOfEventsWithPropertyInDays {
+        guard let propertyFilter = propertyFilter.toConditionOrNil(.property) else {
+            throw HackleError.error("propertyFilter is nil")
+        }
+        return Target.NumberOfEventsWithPropertyInDays(eventKey: eventKey, days: days, propertyFilter: propertyFilter)
     }
 }
 

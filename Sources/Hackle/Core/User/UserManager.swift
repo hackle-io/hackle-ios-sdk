@@ -33,10 +33,12 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     private static let USER_KEY = "user"
     private let lock = ReadWriteLock(label: "io.hackle.DefaultUserManager")
+    private let dispatchQueue: DispatchQueue = DispatchQueue(label: "io.hackle.DefaultUserManager.dispatchQueue")
 
     private var userListeners: [UserListener]
     private let repository: KeyValueRepository
     private let cohortFetcher: UserCohortFetcher
+    private let targetFetcher: UserTargetEventsFetcher
     private let clock: Clock
 
     private let device: Device
@@ -52,14 +54,15 @@ class DefaultUserManager: UserManager, AppStateListener {
         currentContext.user
     }
 
-    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, clock: Clock) {
+    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
         self.cohortFetcher = cohortFetcher
+        self.targetFetcher = targetFetcher
         self.clock = clock
         self.device = device
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
-        self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty())
+        self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
     }
 
     func addListener(listener: UserListener) {
@@ -69,8 +72,12 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     func initialize(user: User?) {
         lock.write { [weak self] in
-            let initUser = (user ?? loadUser() ?? defaultUser)
-            self?.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty())
+            guard let self = self else {
+                Log.debug("UserManager instance deallocated")
+                return
+            }
+            let initUser = (user ?? self.loadUser() ?? self.defaultUser)
+            self.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
@@ -105,33 +112,89 @@ class DefaultUserManager: UserManager, AppStateListener {
             .properties(context.user.properties)
             .hackleProperties(device.properties)
             .cohorts(context.cohorts.rawCohorts)
+            .targetEvents(context.targetEvents)
             .build()
     }
 
     // Sync
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        sync(user: currentUser, completion: completion)
+        sync(
+            user: currentUser,
+            shouldSyncCohort: true,
+            shouldSyncTargetEvent: true,
+            completion: {
+                completion(.success(()))
+            }
+        )
+    }
+    
+    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
+        sync(
+            user: updated.current,
+            shouldSyncCohort: hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current),
+            shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current),
+            completion: completion
+        )
     }
 
-    private func sync(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+    private func sync(
+        user: User,
+        shouldSyncCohort: Bool,
+        shouldSyncTargetEvent: Bool,
+        completion: @escaping () -> Void
+    ) {
+        let dispatchGroup = DispatchGroup()
+        
+        if shouldSyncCohort {
+            dispatchGroup.enter()
+            dispatchQueue.async { [weak self] in
+                self?.syncCohort(user: user) { result in
+                    defer { dispatchGroup.leave() }
+                    if case .failure(let error) = result {
+                        Log.error("Cohort sync failed: \(error)")
+                    }
+                }
+            }
+        }
+        
+        if shouldSyncTargetEvent {
+            dispatchGroup.enter()
+            dispatchQueue.async { [weak self] in
+                self?.syncTargetEvent(user: user) { result in
+                    defer { dispatchGroup.leave() }
+                    if case .failure(let error) = result {
+                        Log.error("Target event sync failed: \(error)")
+                    }
+                }
+            }
+        }
+        
+        dispatchGroup.notify(queue: dispatchQueue) {
+            completion()
+        }
+    }
+    
+    private func syncCohort(user: User, completion: @escaping (Result<(), Error>) -> ()) {
         cohortFetcher.fetch(user: user) { [weak self] result in
             guard let self = self else {
-                completion(.failure(HackleError.error("Failed to user sync: instance deallocated")))
+                completion(.failure(HackleError.error("Failed to user cohort sync: instance deallocated")))
                 return
             }
             self.handle(result: result, completion: completion)
         }
     }
-
-    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
-        guard hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current) else {
-            completion()
-            return
+    
+    private func syncTargetEvent(user: User, completion: @escaping (Result<(), Error>) -> ()) {
+        targetFetcher.fetch(user: user) { [weak self] result in
+            guard let self = self else {
+                completion(.failure(HackleError.error("Failed to user target event sync: instance deallocated")))
+                return
+            }
+            self.handle(result: result, completion: completion)
         }
-        sync(completion: completion)
     }
-
+    
     private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
         let previousIdentifiers = previousUser.resolvedIdentifiers
         let currentIdentifiers = currentUser.resolvedIdentifiers
@@ -140,12 +203,26 @@ class DefaultUserManager: UserManager, AppStateListener {
             !previousIdentifiers.contains(type: type, value: value)
         }
     }
-
+    
     private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let cohorts):
             lock.write {
                 context = context.update(cohorts: cohorts)
+            }
+            completion(.success(()))
+            return
+        case .failure(let error):
+            completion(.failure(error))
+            return
+        }
+    }
+
+    private func handle(result: Result<UserTargetEvents, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+        switch result {
+        case .success(let target):
+            lock.write {
+                context = context.update(targetEvents: target)
             }
             completion(.success(()))
             return
