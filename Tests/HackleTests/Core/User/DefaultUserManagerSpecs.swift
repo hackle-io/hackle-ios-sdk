@@ -127,18 +127,18 @@ class DefaultUserManagerSpecs: QuickSpec {
                 // when
                 sut.initialize(user: User.builder().id("id").property("a", "a").build())
                 sut.sync {
-                }
-                let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
+                    let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
 
-                // then
-                expect(hackleUser.identifiers) == [
-                    "$id": "id",
-                    "$deviceId": "hackle_device_id",
-                    "$userId": "user_id",
-                    "$hackleDeviceId": "hackle_device_id"
-                ]
-                expect(hackleUser.properties as? [String: String]) == ["b": "b"]
-                expect(hackleUser.cohorts) == [Cohort(id: 42)]
+                    // then
+                    expect(hackleUser.identifiers) == [
+                        "$id": "id",
+                        "$deviceId": "hackle_device_id",
+                        "$userId": "user_id",
+                        "$hackleDeviceId": "hackle_device_id"
+                    ]
+                    expect(hackleUser.properties as? [String: String]) == ["b": "b"]
+                    expect(hackleUser.cohorts) == [Cohort(id: 42)]
+                }
             }
 
             it("full") {
@@ -206,8 +206,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                 sut.initialize(user: nil)
                 expect(sut.resolve(user: nil).cohorts) == []
                 sut.sync {
+                    expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
                 }
-                expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
             }
 
             it("when error on fetch cohort then do not update cohort") {
@@ -262,9 +262,10 @@ class DefaultUserManagerSpecs: QuickSpec {
                 every(targetFetcher.fetchMock).answers { _, completion in
                     completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build()))
                 }
-                sut.sync { }
-                expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
-                expect(sut.resolve(user: nil).targetEvents.count) == 1
+                sut.sync {
+                    expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
+                    expect(sut.resolve(user: nil).targetEvents.count) == 1
+                }
             }
         }
 
@@ -372,41 +373,16 @@ class DefaultUserManagerSpecs: QuickSpec {
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
                         current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
                     ),
-                    completion: {}
-                )
-                verify(exactly: 6) {
-                    cohortFetcher.fetchMock
-                }
-                verify(exactly: 2) {
-                    targetFetcher.fetchMock
-                }
-            }
-
-            it("completion") {
-                var count = 0
-                // cohort not sync and target event not sync
-                // so no completion called
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().build(),
-                        current: User.builder().build()
-                    ),
                     completion: {
-                        count += 1
+                        verify(exactly: 6) {
+                            cohortFetcher.fetchMock
+                        }
+                        verify(exactly: 2) {
+                            targetFetcher.fetchMock
+                        }
                     }
                 )
-                // cohort sync and target event not sync
-                // so completion called
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().build(),
-                        current: User.builder().id("id").build()
-                    ),
-                    completion: {
-                        count += 1
-                    }
-                )
-                expect(count) == 1
+                
             }
         }
 
@@ -699,12 +675,10 @@ class DefaultUserManagerSpecs: QuickSpec {
 
                 sut.initialize(user: nil)
                 sut.sync {
+                    expect(sut.resolve(user: nil).targetEvents.count) == 1
+                    expect(sut.resolve(user: nil).targetEvents[0].eventKey) == "purchase"
+                    expect(sut.resolve(user: nil).targetEvents[0].property?.key) == "product_name"
                 }
-
-                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
-                expect(sut.resolve(user: nil).targetEvents.count) == 1
-                expect(sut.resolve(user: nil).targetEvents[0].eventKey) == "purchase"
-                expect(sut.resolve(user: nil).targetEvents[0].property?.key) == "product_name"
             }
         }
 

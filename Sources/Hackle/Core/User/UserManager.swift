@@ -148,29 +148,29 @@ class DefaultUserManager: UserManager, AppStateListener {
         
         if shouldSyncCohort {
             dispatchGroup.enter()
-            syncCohort(user: user) { result in
-                defer { dispatchGroup.leave() }
-                if case .failure(let error) = result {
-                    Log.error("Cohort sync failed: \(error)")
+            dispatchQueue.async { [weak self] in
+                self?.syncCohort(user: user) { result in
+                    defer { dispatchGroup.leave() }
+                    if case .failure(let error) = result {
+                        Log.error("Cohort sync failed: \(error)")
+                    }
                 }
             }
         }
         
         if shouldSyncTargetEvent {
             dispatchGroup.enter()
-            syncTargetEvent(user: user) { result in
-                defer { dispatchGroup.leave() }
-                if case .failure(let error) = result {
-                    Log.error("Target event sync failed: \(error)")
+            dispatchQueue.async { [weak self] in
+                self?.syncTargetEvent(user: user) { result in
+                    defer { dispatchGroup.leave() }
+                    if case .failure(let error) = result {
+                        Log.error("Target event sync failed: \(error)")
+                    }
                 }
             }
         }
         
-        if shouldSyncCohort || shouldSyncTargetEvent {
-            dispatchGroup.notify(queue: dispatchQueue) {
-                completion()
-            }
-        } else {
+        dispatchGroup.notify(queue: dispatchQueue) {
             completion()
         }
     }
