@@ -29,6 +29,11 @@ enum HackleValue: Codable, Equatable {
             self = .bool(value)
             return
         }
+        
+        if let value = Objects.asHackleValueOrNil(value) {
+            self = value
+            return
+        }
 
         self = .null
     }

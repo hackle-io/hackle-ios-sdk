@@ -64,13 +64,16 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 let screen = Screen(name: "name", className: "class")
                 sut.updateScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
                 expect(listener2.onScreenEndedScreens).to(beEmpty())
-                expect(listener2.onScreenStartedScreens[0]).to(equal((screen, screen)))
+                expect(listener2.onScreenStartedScreens[0].0).to(equal(screen))
+                expect(listener2.onScreenStartedScreens[0].1).to(equal(screen))
 
                 let newScreen = Screen(name: "new_name", className: "new_class")
                 sut.updateScreen(screen: newScreen, timestamp: Date(timeIntervalSince1970: 43))
 
-                expect(listener2.onScreenEndedScreens[0]).to(equal((screen, screen)))
-                expect(listener2.onScreenStartedScreens[1]).to(equal((newScreen, newScreen)))
+                expect(listener2.onScreenEndedScreens[0].0).to(equal(screen))
+                expect(listener2.onScreenEndedScreens[0].1).to(equal(screen))
+                expect(listener2.onScreenStartedScreens[1].0).to(equal(newScreen))
+                expect(listener2.onScreenStartedScreens[1].1).to(equal(newScreen))
 
                 expect(sut.currentScreen).to(equal(newScreen))
                 verify(exactly: 1) {
@@ -164,3 +167,5 @@ class DefaultScreenManagerSpecs: QuickSpec {
         }
     }
 }
+
+
