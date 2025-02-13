@@ -16,7 +16,8 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
             evaluationContext.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
             evaluationContext.initialize(
                 evaluator: MockEvaluator(),
-                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+                manualOverrideStorage: DelegatingManualOverrideStorage(storages: []),
+                clock: SystemClock.shared
             )
             sut = DefaultEvaluationFlowFactory(context: evaluationContext)
         }
