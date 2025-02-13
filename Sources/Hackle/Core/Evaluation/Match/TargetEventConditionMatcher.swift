@@ -72,7 +72,8 @@ class NumberOfEventsInDaysMatcher: NumberOfEventInDayMatcher {
     
     func toSegmentationExpression(key: String) throws -> TargetSegmentationExpression {
         let data = key.data(using: .utf8)!
-        return try JSONDecoder().decode(TargetSegmentationExpression.self, from: data)
+        let numberOfEventsInDaysDto = try JSONDecoder().decode(TargetDto.NumberOfEventsInDaysDto.self, from: data)
+        return numberOfEventsInDaysDto.toNumberOfEventInDay()
     }
 }
 
@@ -100,7 +101,8 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
     
     func toSegmentationExpression(key: String) throws -> TargetSegmentationExpression {
         let data = key.data(using: .utf8)!
-        return try JSONDecoder().decode(TargetSegmentationExpression.self, from: data)
+        let numberOfEventsWithPropertyInDaysDto = try JSONDecoder().decode(TargetDto.NumberOfEventsWithPropertyInDaysDto.self, from: data)
+        return try numberOfEventsWithPropertyInDaysDto.toNumberOfEventWithPropertyInDay()
     }
     
     /// 프로퍼티 일치 여부를 확인합니다.

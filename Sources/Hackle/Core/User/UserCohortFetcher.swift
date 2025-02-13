@@ -15,7 +15,7 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
-    private let timeout: TimeInterval = 2 // watchdog mainthread crash 회피를 위해 2초 설정
+    private let timeout: TimeInterval = 10 // watchdog mainthread crash 회피를 위해 10초 설정
 
     init(config: HackleConfig, httpClient: HttpClient) {
         self.url = URL(string: DefaultUserCohortFetcher.url(config: config))!

@@ -26,7 +26,17 @@ extension UserTargetEvents {
 
     static func from(dto: UserTargetResponseDto) -> UserTargetEvents {
         dto.events.reduce(builder()) { builder, targetEvent in
-            builder.put(targetEvent: targetEvent)
+            let property = targetEvent.property.map { property in
+                TargetEvent.Property(key: property.key, type: property.type, value: property.value)
+            }
+            
+            return builder.put(targetEvent: TargetEvent(
+                eventKey: targetEvent.eventKey,
+                stats: targetEvent.stats.map { stat in
+                    TargetEvent.Stat(date: stat.date, count: stat.count)
+                },
+                property: property
+            ))
         }
         .build()
     }

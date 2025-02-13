@@ -33,6 +33,7 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     private static let USER_KEY = "user"
     private let lock = ReadWriteLock(label: "io.hackle.DefaultUserManager")
+    private let dispatchQueue: DispatchQueue = DispatchQueue(label: "io.hackle.DefaultUserManager.dispatchQueue")
 
     private var userListeners: [UserListener]
     private let repository: KeyValueRepository
@@ -166,7 +167,7 @@ class DefaultUserManager: UserManager, AppStateListener {
         }
         
         if shouldSyncCohort || shouldSyncTargetEvent {
-            dispatchGroup.notify(queue: .main) {
+            dispatchGroup.notify(queue: dispatchQueue) {
                 completion()
             }
         } else {

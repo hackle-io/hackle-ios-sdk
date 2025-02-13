@@ -410,7 +410,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             expect { try sut.matches(request: request, context: Evaluators.context(), condition: condition) }.to(equal(expected))
         }
     }
-    
+
     /// NumberOfEventsInDays Json String
     /// - Parameters:
     ///   - eventKey: event key
@@ -511,5 +511,66 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             cal.timeZone = TimeZone(identifier: "Asia/Seoul")!
             return cal
         }()
+    }
+}
+
+
+extension Target.NumberOfEventsInDays: @retroactive Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case eventKey, days
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(eventKey, forKey: .eventKey)
+        try container.encode(days, forKey: .days)
+    }
+}
+
+extension Target.NumberOfEventsWithPropertyInDays: @retroactive Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case eventKey, days, propertyFilter
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(eventKey, forKey: .eventKey)
+        try container.encode(days, forKey: .days)
+        try container.encode(propertyFilter, forKey: .propertyFilter)
+    }
+}
+
+extension Target.Condition: @retroactive Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case key, match
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+        try container.encode(match, forKey: .match)
+    }
+}
+
+extension Target.Key: @retroactive Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case type, name
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encode(name, forKey: .name)
+    }
+}
+
+extension Target.Match: @retroactive Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case type, valueType, values
+        case matchOperator = "operator"
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encode(matchOperator, forKey: .matchOperator)
+        try container.encode(valueType, forKey: .valueType)
+        try container.encode(values, forKey: .values)
     }
 }

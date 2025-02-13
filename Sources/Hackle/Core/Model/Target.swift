@@ -8,7 +8,7 @@ class Target {
         self.conditions = conditions
     }
 
-    class Condition: Codable {
+    class Condition {
         var key: Key
         var match: Match
 
@@ -18,7 +18,7 @@ class Target {
         }
     }
 
-    class Key: Codable {
+    class Key {
         var type: KeyType
         var name: String
 
@@ -41,7 +41,7 @@ class Target {
         case numberOfEventsWithPropertyInDays = "NUMBER_OF_EVENTS_WITH_PROPERTY_IN_DAYS"
     }
 
-    class Match: Codable {
+    class Match {
 
         var type: MatchType
         var matchOperator: Operator
@@ -84,7 +84,7 @@ class Target {
     }
 
     /// 기간 동안 이벤트 발생 횟수
-    class NumberOfEventsInDays: NumberOfEventInDay, Codable {
+    class NumberOfEventsInDays: NumberOfEventInDay {
         /// 이벤트 키
         let eventKey: String
         /// 기간
@@ -97,7 +97,7 @@ class Target {
     }
     
     /// 기간 동안 프로퍼티를 포함한 이벤트 발생 횟수
-    class NumberOfEventsWithPropertyInDays: NumberOfEventInDay, Codable {
+    class NumberOfEventsWithPropertyInDays: NumberOfEventInDay {
         /// 이벤트 키
         let eventKey: String
         /// 기간

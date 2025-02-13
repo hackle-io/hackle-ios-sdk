@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Audience 타겟팅을 위한 Event 객체
-struct TargetEvent: Codable {
+struct TargetEvent {
     /// 타겟팅 할 이벤트
     let eventKey: String
     /// 이벤트 통계
@@ -18,7 +18,7 @@ struct TargetEvent: Codable {
     let property: Property?
     
     /// 프로퍼티 정보
-    struct Property: Codable {
+    struct Property {
         /// 키
         let key: String
         /// 타입
@@ -30,7 +30,7 @@ struct TargetEvent: Codable {
     }
     
     /// 이벤트 발생 통계
-    struct Stat: Codable {
+    struct Stat {
         /// 발생 일자
         ///
         /// Unix Timestamp
