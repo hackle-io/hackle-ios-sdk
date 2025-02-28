@@ -278,6 +278,9 @@ class DefaultUserManagerSpecs: QuickSpec {
 
         describe("syncIfNeeded") {
             it("no new identifiers") {
+                let cohortFetcher = MockUserCohortFetcher()
+                let targetFetcher = MockUserTargetFetcher()
+                let sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
                 // cohort not sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
@@ -324,17 +327,20 @@ class DefaultUserManagerSpecs: QuickSpec {
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
                         current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
                     ),
-                    completion: {
-                        verify(exactly: 0) {
-                            cohortFetcher.fetchMock
-                        }
-                        verify(exactly: 1) {
-                            targetFetcher.fetchMock
-                        }
-                    }
+                    completion: {}
                 )
+                Thread.sleep(forTimeInterval: 2)
+                verify(exactly: 0) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 1) {
+                    targetFetcher.fetchMock
+                }
             }
             it("new identifiers") {
+                let cohortFetcher = MockUserCohortFetcher()
+                let targetFetcher = MockUserTargetFetcher()
+                let sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
                 // cohort sync and target event not sync
                 sut.syncIfNeeded(
                     updated: Updated(
@@ -381,16 +387,15 @@ class DefaultUserManagerSpecs: QuickSpec {
                         previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
                         current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
                     ),
-                    completion: {
-                        verify(exactly: 6) {
-                            cohortFetcher.fetchMock
-                        }
-                        verify(exactly: 2) {
-                            targetFetcher.fetchMock
-                        }
-                    }
+                    completion: {}
                 )
-                
+                Thread.sleep(forTimeInterval: 2)
+                verify(exactly: 6) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 2) {
+                    targetFetcher.fetchMock
+                }
             }
         }
 
@@ -641,6 +646,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             }
 
             it("update cohorts") {
+                let sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
                 let userCohorts = UserCohorts.builder()
                     .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "hackle_device_id"), cohorts: [Cohort(id: 42)]))
                     .put(cohort: UserCohort(identifier: Identifier(type: "$deviceId", value: "hackle_device_id"), cohorts: [Cohort(id: 43)]))
