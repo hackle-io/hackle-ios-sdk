@@ -71,17 +71,6 @@ class Target {
         case match = "MATCH"
         case notMatch = "NOT_MATCH"
     }
-    
-    protocol TargetSegmentationExpression {
-        
-    }
-    
-    protocol NumberOfEventInDay: TargetSegmentationExpression {
-        /// 이벤트 키
-        var eventKey: String { get }
-        /// 기간
-        var days: Int { get }
-    }
 
     /// 기간 동안 이벤트 발생 횟수
     class NumberOfEventsInDays: NumberOfEventInDay {
@@ -111,6 +100,17 @@ class Target {
             self.propertyFilter = propertyFilter
         }
     }
+}
+
+protocol TargetSegmentationExpression {
+    
+}
+
+protocol NumberOfEventInDay: TargetSegmentationExpression {
+    /// 이벤트 키
+    var eventKey: String { get }
+    /// 기간
+    var days: Int { get }
 }
 
 extension Target.MatchType {
