@@ -32,31 +32,31 @@ class TargetEventConditionMatcher: ConditionMatcher {
 
 /// Targeting Segmentation Expression Matcher
 protocol TargetSegmentationExpressionMatcher {
-    associatedtype TargetSegmentationExpression: Target.TargetSegmentationExpression
+    associatedtype TargetSegmentation: TargetSegmentationExpression
     
     var valueOperatorMatcher: ValueOperatorMatcher { get }
     var clock: Clock { get }
     
     /// Target.Key to TargetSegmentationExpression
-    func toSegmentationExpression(key: String) throws -> TargetSegmentationExpression
+    func toSegmentationExpression(key: String) throws -> TargetSegmentation
 }
 
 /// NumberOfEvent InDay Matcher
 ///
 /// NumberOfEventInDay타입의 TargetSegmentationExpression에 대한 Matcher입니다.
-protocol NumberOfEventInDayMatcher: TargetSegmentationExpressionMatcher where TargetSegmentationExpression: Target.NumberOfEventInDay {
+protocol NumberOfEventInDayMatcher: TargetSegmentationExpressionMatcher where TargetSegmentation: NumberOfEventInDay {
     /// 조건에 만족하는 이벤트가 있는지 확인합니다.
     func match(targetEvents: [TargetEvent], condition: Target.Condition) throws -> Bool
     
     /// TargetEvent와 NumberOfEventInDay에 해당하는 이벤트가 있는지 확인합니다.
-    func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentationExpression) -> Bool
+    func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentation) -> Bool
 }
 
 /// NumberOfEventInDayMatcher
 ///
 /// 기간 내 이벤트 발생 횟수를 확인합니다.
 class NumberOfEventsInDaysMatcher: NumberOfEventInDayMatcher {
-    typealias TargetSegmentationExpression = Target.NumberOfEventsInDays
+    typealias TargetSegmentation = Target.NumberOfEventsInDays
     
     var valueOperatorMatcher: ValueOperatorMatcher
     var clock: Clock
@@ -66,11 +66,11 @@ class NumberOfEventsInDaysMatcher: NumberOfEventInDayMatcher {
         self.clock = clock
     }
     
-    func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentationExpression) -> Bool {
+    func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentation) -> Bool {
         return targetEvent.eventKey == targetSegmentationExpression.eventKey && targetEvent.property == nil
     }
     
-    func toSegmentationExpression(key: String) throws -> TargetSegmentationExpression {
+    func toSegmentationExpression(key: String) throws -> TargetSegmentation {
         let data = key.data(using: .utf8)!
         let numberOfEventsInDaysDto = try JSONDecoder().decode(TargetDto.NumberOfEventsInDaysDto.self, from: data)
         return numberOfEventsInDaysDto.toNumberOfEventInDay()
@@ -81,7 +81,7 @@ class NumberOfEventsInDaysMatcher: NumberOfEventInDayMatcher {
 ///
 /// 기간 내 프로퍼티 조건을 만족하는 이벤트 발생 횟수를 확인합니다.
 class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
-    typealias TargetSegmentationExpression = Target.NumberOfEventsWithPropertyInDays
+    typealias TargetSegmentation = Target.NumberOfEventsWithPropertyInDays
     
     var valueOperatorMatcher: ValueOperatorMatcher
     var clock: Clock
@@ -91,7 +91,7 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
         self.clock = clock
     }
     
-    func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentationExpression) -> Bool {
+    func match(targetEvent: TargetEvent, targetSegmentationExpression: TargetSegmentation) -> Bool {
         guard let property = targetEvent.property else {
             return false
         }
@@ -99,7 +99,7 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
         return targetEvent.eventKey == targetSegmentationExpression.eventKey && propertyMatch(property: property, propertyCondition: targetSegmentationExpression.propertyFilter)
     }
     
-    func toSegmentationExpression(key: String) throws -> TargetSegmentationExpression {
+    func toSegmentationExpression(key: String) throws -> TargetSegmentation {
         let data = key.data(using: .utf8)!
         let numberOfEventsWithPropertyInDaysDto = try JSONDecoder().decode(TargetDto.NumberOfEventsWithPropertyInDaysDto.self, from: data)
         return try numberOfEventsWithPropertyInDaysDto.toNumberOfEventWithPropertyInDay()
