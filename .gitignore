@@ -6,3 +6,5 @@ xcuserdata
 /Packages
 /Release
 /.idea
+.github/workflows/.idea
+Hackle.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
