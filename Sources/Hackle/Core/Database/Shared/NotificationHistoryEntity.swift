@@ -11,6 +11,11 @@ class NotificationHistoryEntity {
     let pushMessageExecutionId: Int64?
     let pushMessageDeliveryId: Int64?
     
+    let journeyId: Int64?
+    let journeyKey: Int64?
+    let journeyNodeId: Int64?
+    let campaignType: String?
+    
     let timestamp: Date
     let debug: Bool
     
@@ -22,6 +27,10 @@ class NotificationHistoryEntity {
         pushMessageKey: Int64?,
         pushMessageExecutionId: Int64?,
         pushMessageDeliveryId: Int64?,
+        journeyId: Int64?,
+        journeyKey: Int64?,
+        journeyNodeId: Int64?,
+        campaignType: String?,
         timestamp: Date,
         debug: Bool
     ) {
@@ -32,6 +41,10 @@ class NotificationHistoryEntity {
         self.pushMessageKey = pushMessageKey
         self.pushMessageExecutionId = pushMessageExecutionId
         self.pushMessageDeliveryId = pushMessageDeliveryId
+        self.journeyId = journeyId
+        self.journeyKey = journeyKey
+        self.journeyNodeId = journeyNodeId
+        self.campaignType = campaignType
         self.timestamp = timestamp
         self.debug = debug
     }
@@ -47,6 +60,10 @@ extension NotificationHistoryEntity {
     static let COLUMN_PUSH_MESSAGE_KEY = "push_message_key"
     static let COLUMN_PUSH_MESSAGE_EXECUTION_ID = "push_message_execution_id"
     static let COLUMN_PUSH_MESSAGE_DELIVERY_ID = "push_message_delivery_id"
+    static let COLUMN_JOURNEY_ID = "journey_id"
+    static let COLUMN_JOURNEY_KEY = "journey_key"
+    static let COLUMN_JOURNEY_NODE_ID = "journey_node_id"
+    static let COLUMN_CAMPAIGN_TYPE = "campaign_type"
     static let COLUMN_TIMESTAMP = "timestamp"
     static let COLUMN_DEBUG = "debug"
     
@@ -59,6 +76,10 @@ extension NotificationHistoryEntity {
             "\(COLUMN_PUSH_MESSAGE_KEY) INTEGER," +
             "\(COLUMN_PUSH_MESSAGE_EXECUTION_ID) INTEGER," +
             "\(COLUMN_PUSH_MESSAGE_DELIVERY_ID) INTEGER," +
+            "\(COLUMN_JOURNEY_ID) INTEGER," +
+            "\(COLUMN_JOURNEY_KEY) INTEGER," +
+            "\(COLUMN_JOURNEY_NODE_ID) INTEGER," +
+            "\(COLUMN_CAMPAIGN_TYPE) TEXT," +
             "\(COLUMN_TIMESTAMP) INTEGER," +
             "\(COLUMN_DEBUG) INTEGER" +
         ")"
@@ -72,8 +93,12 @@ extension NotificationHistoryEntity {
             pushMessageKey: cursor.getInt64(4),
             pushMessageExecutionId: cursor.getInt64(5),
             pushMessageDeliveryId: cursor.getInt64(6),
-            timestamp: Date(timeIntervalSince1970: cursor.getDouble(7)),
-            debug: cursor.getBool(8)
+            journeyId: cursor.getInt64(7),
+            journeyKey: cursor.getInt64(8),
+            journeyNodeId: cursor.getInt64(9),
+            campaignType: cursor.getString(10),
+            timestamp: Date(timeIntervalSince1970: cursor.getDouble(11)),
+            debug: cursor.getBool(12)
         )
     }
 }
