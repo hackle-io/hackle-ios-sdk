@@ -10,7 +10,7 @@ class Objects {
     }
 
     static func asIntOrNull(_ value: Any) -> Int64? {
-        if CFGetTypeID(value as CFTypeRef) != CFNumberGetTypeID() {
+        if isBoolType(value) {
             return nil
         }
         
@@ -30,7 +30,7 @@ class Objects {
     }
 
     static func asDoubleOrNil(_ value: Any) -> Double? {
-        if CFGetTypeID(value as CFTypeRef) != CFNumberGetTypeID() {
+        if isBoolType(value) {
             return nil
         }
         
@@ -46,12 +46,19 @@ class Objects {
         if let swiftBool = value as? Bool {
             return swiftBool
         }
-        
-        if CFGetTypeID(value as CFTypeRef) == CFBooleanGetTypeID() {
-            return (value as! CFBoolean) == kCFBooleanTrue
-        }
-            
         return nil
+    }
+    
+    static func isBoolType(_ value: Any) -> Bool {
+        let isBool = value is Bool
+        let isNSNumberType = isNSNumberType(value)
+        return isBool && !isNSNumberType
+    }
+
+    static func isNSNumberType(_ value: Any) -> Bool {
+        let valueType = type(of: value)
+        let nsNumberType = type(of: NSNumber(value: 0))
+        return valueType == nsNumberType
     }
 }
 
