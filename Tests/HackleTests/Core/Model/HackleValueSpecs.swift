@@ -27,6 +27,11 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue.double(42.42).intOrNil) == 42
             expect(HackleValue.bool(true).intOrNil).to(beNil())
             expect(HackleValue.null.intOrNil).to(beNil())
+        
+            expect(HackleValue.int(1).intOrNil) == 1
+            expect(HackleValue(value: 1).asDouble()) == 1
+            expect(HackleValue.int(0).intOrNil) == 0
+            expect(HackleValue(value: 0).asDouble()) == 0
         }
 
         it("doubleValue") {
@@ -35,6 +40,11 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue.double(42.42).doubleOrNil) == 42.42
             expect(HackleValue.bool(true).doubleOrNil).to(beNil())
             expect(HackleValue.null.doubleOrNil).to(beNil())
+            
+            expect(HackleValue.double(1).doubleOrNil) == 1
+            expect(HackleValue(value: 1).asDouble()) == 1
+            expect(HackleValue.double(0).doubleOrNil) == 0
+            expect(HackleValue(value: 0).asDouble()) == 0
         }
 
         it("boolValue") {
@@ -64,6 +74,16 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: "42").asDouble()) == 42.0
             expect(HackleValue(value: "42.0").asDouble()) == 42.0
             expect(HackleValue(value: "42.42").asDouble()) == 42.42
+            
+            expect(HackleValue.int(1).boolOrNil).to(beNil())
+            expect(HackleValue(value: 1).asBool()).to(beNil())
+            expect(HackleValue.int(0).boolOrNil).to(beNil())
+            expect(HackleValue(value: 0).asBool()).to(beNil())
+            
+            expect(HackleValue.string("1").asBool()).to(beNil())
+            expect(HackleValue.string("0").asBool()).to(beNil())
+            expect(HackleValue(value: "1").asBool()).to(beNil())
+            expect(HackleValue(value: "0").asBool()).to(beNil())
         }
         
         it("asBool") {
@@ -74,6 +94,11 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: "FALSE").asBool()).to(beNil())
             expect(HackleValue(value: "trues").asBool()).to(beNil())
             expect(HackleValue(value: "strings").asBool()).to(beNil())
+            
+            let cfBooleanTrue: CFBoolean = true as CFBoolean // like 1
+            let cfBooleanFalse: CFBoolean = false as CFBoolean // like 0
+            expect(HackleValue(value: cfBooleanTrue).asBool()) == true
+            expect(HackleValue(value: cfBooleanFalse).asBool()) == false
         }
 
         it("decode") {

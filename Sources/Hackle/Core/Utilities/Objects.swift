@@ -10,6 +10,10 @@ class Objects {
     }
 
     static func asIntOrNull(_ value: Any) -> Int64? {
+        if CFGetTypeID(value as CFTypeRef) != CFNumberGetTypeID() {
+            return nil
+        }
+        
         switch value {
         case is Int: return Int64(value as! Int)
         case is Int8: return Int64(value as! Int8)
@@ -26,6 +30,10 @@ class Objects {
     }
 
     static func asDoubleOrNil(_ value: Any) -> Double? {
+        if CFGetTypeID(value as CFTypeRef) != CFNumberGetTypeID() {
+            return nil
+        }
+        
         switch value {
         case is Double: return Double(value as! Double)
         case is Float: return Double(value as! Float)
@@ -35,10 +43,15 @@ class Objects {
     }
 
     static func asBoolOrNil(_ value: Any) -> Bool? {
-        guard let value = value as? Bool else {
-            return nil
+        if let swiftBool = value as? Bool {
+            return swiftBool
         }
-        return value
+        
+        if CFGetTypeID(value as CFTypeRef) == CFBooleanGetTypeID() {
+            return (value as! CFBoolean) == kCFBooleanTrue
+        }
+            
+        return nil
     }
 }
 
