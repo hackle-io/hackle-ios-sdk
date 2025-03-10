@@ -55,6 +55,8 @@ class ValueMatcherSpecs: QuickSpec {
             it("지원하지 않는 type") {
                 self.verify(sut: sut, userValue: true, matchValue: HackleValue(value: "1"), expected: false)
                 self.verify(sut: sut, userValue: "1", matchValue: HackleValue(value: true), expected: false)
+                self.verify(sut: sut, userValue: false, matchValue: HackleValue(value: "0"), expected: false)
+                self.verify(sut: sut, userValue: "0", matchValue: HackleValue(value: false), expected: false)
             }
         }
 
@@ -121,6 +123,22 @@ class ValueMatcherSpecs: QuickSpec {
                 self.verify(sut: sut, userValue: false, matchValue: HackleValue(value: "FALSE"), expected: false)
                 self.verify(sut: sut, userValue: "FALSE", matchValue: HackleValue(value: true), expected: false)
                 self.verify(sut: sut, userValue: "true", matchValue: HackleValue(value: false), expected: false)
+            }
+            
+            it("bool all type checker") {
+                self.verify(sut: sut, userValue: true, matchValue: HackleValue(value: true), expected: true)
+                self.verify(sut: sut, userValue: true, matchValue: HackleValue(value: 1), expected: false)
+                self.verify(sut: sut, userValue: true, matchValue: HackleValue(value: "true"), expected: true)
+                self.verify(sut: sut, userValue: 1, matchValue: HackleValue(value: true), expected: false)
+                self.verify(sut: sut, userValue: true, matchValue: HackleValue(value: true), expected: true)
+                self.verify(sut: sut, userValue: "true", matchValue: HackleValue(value: true), expected: true)
+                
+                self.verify(sut: sut, userValue: false, matchValue: HackleValue(value: false), expected: true)
+                self.verify(sut: sut, userValue: false, matchValue: HackleValue(value: 0), expected: false)
+                self.verify(sut: sut, userValue: false, matchValue: HackleValue(value: "false"), expected: true)
+                self.verify(sut: sut, userValue: 0, matchValue: HackleValue(value: false), expected: false)
+                self.verify(sut: sut, userValue: false, matchValue: HackleValue(value: false), expected: true)
+                self.verify(sut: sut, userValue: "false", matchValue: HackleValue(value: false), expected: true)
             }
         }
 

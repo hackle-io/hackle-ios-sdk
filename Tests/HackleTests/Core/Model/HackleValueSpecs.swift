@@ -115,5 +115,23 @@ class HackleValueSpecs: QuickSpec {
             expect(String(data: try! JSONEncoder().encode(HackleValue.double(42.25)), encoding: .utf8)) == "42.25"
             expect(String(data: try! JSONEncoder().encode(HackleValue.bool(true)), encoding: .utf8)) == "true"
         }
+        
+        it("check boolean in json case") {
+            func v(_ value: Any) -> Any {
+                let tmp = ["tmp": value]
+                let data = Json.serialize(tmp)!
+                let dict = try! JSONSerialization.jsonObject(with: data) as! [String: Any]
+                return dict["tmp"]!
+            }
+            
+            expect(HackleValue(value: v(true)).asBool()) == true
+            expect(HackleValue(value: v(false)).asBool()) == false
+            expect(HackleValue(value: v("true")).asBool()) == true
+            expect(HackleValue(value: v("false")).asBool()) == false
+            expect(HackleValue(value: v(0)).asBool()).to(beNil())
+            expect(HackleValue(value: v(1)).asBool()).to(beNil())
+            expect(HackleValue(value: v(1)).asDouble()) == 1
+            expect(HackleValue(value: v(0)).asDouble()) == 0
+        }
     }
 }
