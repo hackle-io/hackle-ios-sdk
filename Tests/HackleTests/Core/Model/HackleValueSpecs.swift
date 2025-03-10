@@ -136,6 +136,12 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: v(1)).asBool()).to(beNil())
             expect(HackleValue(value: v(1)).asDouble()) == 1
             expect(HackleValue(value: v(0)).asDouble()) == 0
+            expect(HackleValue(value: v(NSNumber(true))).asBool()) == true
+            expect(HackleValue(value: v(NSNumber(false))).asBool()) == false
+            expect(HackleValue(value: v(NSNumber(0))).asDouble()) == 0
+            expect(HackleValue(value: v(NSNumber(1))).asDouble()) == 1
+            expect(HackleValue(value: v(NSNumber(0))).asBool()).to(beNil())
+            expect(HackleValue(value: v(NSNumber(1))).asBool()).to(beNil())
         }
         
         it("check is boolean") {
@@ -157,6 +163,11 @@ class HackleValueSpecs: QuickSpec {
             
             expect(Objects.isBoolType(NSNumber(true))) == true
             expect(Objects.isBoolType(NSNumber(false))) == true
+            
+            expect(Objects.asBoolOrNil(NSNumber(0))).to(beNil())
+            expect(Objects.asBoolOrNil(NSNumber(1))).to(beNil())
+            expect(Objects.asBoolOrNil(NSNumber(true))) == true
+            expect(Objects.asBoolOrNil(NSNumber(false))) == false
         }
     }
 }

@@ -43,6 +43,10 @@ class Objects {
     }
 
     static func asBoolOrNil(_ value: Any) -> Bool? {
+        if !isBoolType(value) {
+            return nil
+        }
+        
         if let swiftBool = value as? Bool {
             return swiftBool
         }
