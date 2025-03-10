@@ -138,6 +138,8 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: v(0)).asDouble()) == 0
             expect(HackleValue(value: v(NSNumber(true))).asBool()) == true
             expect(HackleValue(value: v(NSNumber(false))).asBool()) == false
+            expect(HackleValue(value: v(NSNumber(true))).asDouble()).to(beNil())
+            expect(HackleValue(value: v(NSNumber(false))).asDouble()).to(beNil())
             expect(HackleValue(value: v(NSNumber(0))).asDouble()) == 0
             expect(HackleValue(value: v(NSNumber(1))).asDouble()) == 1
             expect(HackleValue(value: v(NSNumber(0))).asBool()).to(beNil())
