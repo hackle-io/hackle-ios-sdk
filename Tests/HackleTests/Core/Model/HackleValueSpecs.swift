@@ -27,6 +27,15 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue.double(42.42).intOrNil) == 42
             expect(HackleValue.bool(true).intOrNil).to(beNil())
             expect(HackleValue.null.intOrNil).to(beNil())
+        
+            expect(HackleValue.int(1).intOrNil) == 1
+            expect(HackleValue(value: 1).asDouble()) == 1
+            expect(HackleValue.int(0).intOrNil) == 0
+            expect(HackleValue(value: 0).asDouble()) == 0
+            
+            expect(HackleValue(value: Int64.max).intOrNil) == Int64.max
+            expect(HackleValue(value: Int64.min).intOrNil) == Int64.min
+     
         }
 
         it("doubleValue") {
@@ -35,6 +44,11 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue.double(42.42).doubleOrNil) == 42.42
             expect(HackleValue.bool(true).doubleOrNil).to(beNil())
             expect(HackleValue.null.doubleOrNil).to(beNil())
+            
+            expect(HackleValue.double(1).doubleOrNil) == 1
+            expect(HackleValue(value: 1).asDouble()) == 1
+            expect(HackleValue.double(0).doubleOrNil) == 0
+            expect(HackleValue(value: 0).asDouble()) == 0
         }
 
         it("boolValue") {
@@ -64,6 +78,16 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: "42").asDouble()) == 42.0
             expect(HackleValue(value: "42.0").asDouble()) == 42.0
             expect(HackleValue(value: "42.42").asDouble()) == 42.42
+            
+            expect(HackleValue.int(1).boolOrNil).to(beNil())
+            expect(HackleValue(value: 1).asBool()).to(beNil())
+            expect(HackleValue.int(0).boolOrNil).to(beNil())
+            expect(HackleValue(value: 0).asBool()).to(beNil())
+            
+            expect(HackleValue.string("1").asBool()).to(beNil())
+            expect(HackleValue.string("0").asBool()).to(beNil())
+            expect(HackleValue(value: "1").asBool()).to(beNil())
+            expect(HackleValue(value: "0").asBool()).to(beNil())
         }
         
         it("asBool") {
@@ -74,6 +98,11 @@ class HackleValueSpecs: QuickSpec {
             expect(HackleValue(value: "FALSE").asBool()).to(beNil())
             expect(HackleValue(value: "trues").asBool()).to(beNil())
             expect(HackleValue(value: "strings").asBool()).to(beNil())
+            
+            let cfBooleanTrue: CFBoolean = true as CFBoolean // like 1
+            let cfBooleanFalse: CFBoolean = false as CFBoolean // like 0
+            expect(HackleValue(value: cfBooleanTrue).asBool()) == true
+            expect(HackleValue(value: cfBooleanFalse).asBool()) == false
         }
 
         it("decode") {
@@ -89,6 +118,58 @@ class HackleValueSpecs: QuickSpec {
             expect(String(data: try! JSONEncoder().encode(HackleValue.int(42)), encoding: .utf8)) == "42"
             expect(String(data: try! JSONEncoder().encode(HackleValue.double(42.25)), encoding: .utf8)) == "42.25"
             expect(String(data: try! JSONEncoder().encode(HackleValue.bool(true)), encoding: .utf8)) == "true"
+        }
+        
+        it("check boolean in json case") {
+            func v(_ value: Any) -> Any {
+                let tmp = ["tmp": value]
+                let data = Json.serialize(tmp)!
+                let dict = try! JSONSerialization.jsonObject(with: data) as! [String: Any]
+                return dict["tmp"]!
+            }
+            
+            expect(HackleValue(value: v(true)).asBool()) == true
+            expect(HackleValue(value: v(false)).asBool()) == false
+            expect(HackleValue(value: v("true")).asBool()) == true
+            expect(HackleValue(value: v("false")).asBool()) == false
+            expect(HackleValue(value: v(0)).asBool()).to(beNil())
+            expect(HackleValue(value: v(1)).asBool()).to(beNil())
+            expect(HackleValue(value: v(1)).asDouble()) == 1
+            expect(HackleValue(value: v(0)).asDouble()) == 0
+            expect(HackleValue(value: v(NSNumber(true))).asBool()) == true
+            expect(HackleValue(value: v(NSNumber(false))).asBool()) == false
+            expect(HackleValue(value: v(NSNumber(true))).asDouble()).to(beNil())
+            expect(HackleValue(value: v(NSNumber(false))).asDouble()).to(beNil())
+            expect(HackleValue(value: v(NSNumber(0))).asDouble()) == 0
+            expect(HackleValue(value: v(NSNumber(1))).asDouble()) == 1
+            expect(HackleValue(value: v(NSNumber(0))).asBool()).to(beNil())
+            expect(HackleValue(value: v(NSNumber(1))).asBool()).to(beNil())
+        }
+        
+        it("check is boolean") {
+            let cfBooleanTrue: CFBoolean = true as CFBoolean // like 1
+            let cfBooleanFalse: CFBoolean = false as CFBoolean // like 0
+            
+            expect(Objects.isBoolType(true)) == true
+            expect(Objects.isBoolType(false)) == true
+           
+            expect(Objects.isBoolType(cfBooleanTrue)) == true
+            expect(Objects.isBoolType(cfBooleanFalse)) == true
+            
+            expect(Objects.isBoolType(0)) == false
+            expect(Objects.isBoolType(1)) == false
+            expect(Objects.isBoolType(999)) == false
+            
+            expect(Objects.isBoolType(NSNumber(0))) == false
+            expect(Objects.isBoolType(NSNumber(1))) == false
+            
+            expect(Objects.isBoolType(NSNumber(true))) == true
+            expect(Objects.isBoolType(NSNumber(false))) == true
+            
+            expect(Objects.asBoolOrNil(NSNumber(0))).to(beNil())
+            expect(Objects.asBoolOrNil(NSNumber(1))).to(beNil())
+            expect(Objects.asBoolOrNil(NSNumber(true))) == true
+            expect(Objects.asBoolOrNil(NSNumber(false))) == false
         }
     }
 }
