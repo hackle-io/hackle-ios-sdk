@@ -83,6 +83,21 @@ extension NotificationHistoryEntity {
             "\(COLUMN_TIMESTAMP) INTEGER," +
             "\(COLUMN_DEBUG) INTEGER" +
         ")"
+
+    static let ADD_JOURNEY_ID =
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(COLUMN_JOURNEY_ID) INTEGER"
+
+    static let ADD_JOURNEY_KEY =
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(COLUMN_JOURNEY_KEY) INTEGER"
+
+    static let ADD_JOURNEY_NODE_ID =
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(COLUMN_JOURNEY_NODE_ID) INTEGER"
+
+    static let ADD_CAMPAIGN_TYPE =
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(COLUMN_CAMPAIGN_TYPE) TEXT"
+    
+    static let TABLE_EXISTS =
+        "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='\(TABLE_NAME)')"
     
     static func from(cursor: SQLiteCursor) -> NotificationHistoryEntity {
         return NotificationHistoryEntity(
