@@ -50,7 +50,7 @@ class Database {
     private func getVersion() -> Int {
         do {
             return try execute { database in
-                let version = try database.queryForInt(sql: "PRAGMA user_version")
+                let version = try database.queryForInt(sql: Database.GET_USER_VERSION)
                 return version
             }
         } catch {
@@ -72,6 +72,7 @@ class Database {
         
     }
 
+    private static let GET_USER_VERSION = "PRAGMA user_version"
     private static let SET_USER_VERSION = "PRAGMA user_version = %d"
     private static let DEFAULT_VERSION = 0
 }
