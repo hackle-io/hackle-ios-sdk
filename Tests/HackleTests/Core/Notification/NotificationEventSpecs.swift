@@ -25,6 +25,10 @@ class NotificationEventSpecs: QuickSpec {
                 imageUrl: "foo://bar/image",
                 clickAction: NotificationClickAction.deepLink,
                 link: "foo://bar",
+                journeyId: 5,
+                journeyKey: 6,
+                journeyNodeId: 7,
+                campaignType: "JOURNEY",
                 debug: true
             )
             let event = data.toTrackEvent()
@@ -45,6 +49,10 @@ class NotificationEventSpecs: QuickSpec {
                 pushMessageKey: 4,
                 pushMessageExecutionId: 5,
                 pushMessageDeliveryId: 6,
+                journeyId: 7,
+                journeyKey: 8,
+                journeyNodeId: 9,
+                campaignType: "PUSH_MESSAGE",
                 timestamp: timestamp,
                 debug: true
             )

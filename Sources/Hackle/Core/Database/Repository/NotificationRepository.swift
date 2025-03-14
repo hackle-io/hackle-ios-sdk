@@ -38,6 +38,10 @@ class DefaultNotificationRepository: NotificationRepository {
                 "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_KEY)," +
                 "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_EXECUTION_ID)," +
                 "\(NotificationHistoryEntity.COLUMN_PUSH_MESSAGE_DELIVERY_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_JOURNEY_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_JOURNEY_KEY)," +
+                "\(NotificationHistoryEntity.COLUMN_JOURNEY_NODE_ID)," +
+                "\(NotificationHistoryEntity.COLUMN_CAMPAIGN_TYPE)," +
                 "\(NotificationHistoryEntity.COLUMN_TIMESTAMP)," +
                 "\(NotificationHistoryEntity.COLUMN_DEBUG)" +
             ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
@@ -51,8 +55,12 @@ class DefaultNotificationRepository: NotificationRepository {
                         try statement.bindInt(index: 4, value: data.pushMessageKey)
                         try statement.bindInt(index: 5, value: data.pushMessageExecutionId)
                         try statement.bindInt(index: 6, value: data.pushMessageDeliveryId)
-                        try statement.bindDouble(index: 7, value: timestamp.timeIntervalSince1970)
-                        try statement.bindBool(index: 8, value: data.debug)
+                        try statement.bindInt(index: 7, value: data.journeyId)
+                        try statement.bindInt(index: 8, value: data.journeyKey)
+                        try statement.bindInt(index: 9, value: data.journeyNodeId)
+                        try statement.bindString(index: 10, value: data.campaignType)
+                        try statement.bindDouble(index: 11, value: timestamp.timeIntervalSince1970)
+                        try statement.bindBool(index: 12, value: data.debug)
                         try statement.execute()
                     }
             }
