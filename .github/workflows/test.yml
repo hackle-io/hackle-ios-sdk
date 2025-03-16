@@ -75,7 +75,7 @@ jobs:
                 RetryResults.xcresult \
                 --output-path TestResults.xcresult
           else
-            cp InitialResults.xcresult TestResults.xcresult
+            cp -R InitialResults.xcresult TestResults.xcresult
           fi
 
       - uses: kishikawakatsumi/xcresulttool@v1
