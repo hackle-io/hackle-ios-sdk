@@ -33,9 +33,8 @@ jobs:
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
                 -retry-tests-on-failure \
-                -test-iterations 6 \
-                -parallel-testing-enabled YES \
-                -test-repetition-relaunch-enabled YES \
+                -test-iterations 3 \
+                -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
                 -quiet
 

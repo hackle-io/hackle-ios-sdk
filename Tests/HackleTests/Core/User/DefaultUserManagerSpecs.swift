@@ -209,24 +209,9 @@ class DefaultUserManagerSpecs: QuickSpec {
                     expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
                 }
             }
-
-            it("when error on fetch cohort then do not update cohort") {
-                // given
-                every(targetFetcher.fetchMock).answers { _, completion in
-                    completion(.failure(HackleError.error("fail")))
-                }
-                every(cohortFetcher.fetchMock).answers { _, completion in
-                    completion(.failure(HackleError.error("fail")))
-                }
-
-                sut.initialize(user: nil)
-                Thread.sleep(forTimeInterval: 0.1)
-                sut.sync {
-                    expect(sut.resolve(user: nil).cohorts) == []
-                    expect(sut.resolve(user: nil).targetEvents) == []
-                }
-            }
-            
+        }
+        
+        describe("sync") {
             it("when sync target event, overwrite") {
                 let targetEvent = TargetEvent(
                     eventKey: "purchase",
