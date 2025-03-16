@@ -220,7 +220,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
 
                 sut.initialize(user: nil)
-
+                Thread.sleep(forTimeInterval: 0.1)
                 sut.sync {
                     expect(sut.resolve(user: nil).cohorts) == []
                     expect(sut.resolve(user: nil).targetEvents) == []
