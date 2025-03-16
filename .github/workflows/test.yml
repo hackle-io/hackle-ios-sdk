@@ -29,25 +29,26 @@ jobs:
       - name: Test
         continue-on-error: true
         run: |
+            echo "HAS_TEST_FAILURE=0" >> $GITHUB_ENV
             xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
                 -retry-tests-on-failure \
-                -test-iterations 2 \
+                -test-iterations 3 \
                 -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
-                -quiet
+                -quiet || echo "HAS_TEST_FAILURE=1" >> $GITHUB_ENV
                 
       - name: Retry when failed # 실패 시 명시적으로 다시 시도
-        if: ${{ failure() }}
+        if: ${{ env.HAS_TEST_FAILURE == '1' }}
         run: |
             xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
                 -retry-tests-on-failure \
-                -test-iterations 2 \
+                -test-iterations 3 \
                 -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
                 -quiet
