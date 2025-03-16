@@ -21,7 +21,7 @@ jobs:
         if: ${{ startsWith(github.event.pull_request.base.ref, 'release-') }}
         run: |
             rm -rf ~/Library/Developer/Xcode/DerivedData/*
- 
+            rm -rf .build/*
       - name: Test
         run: |
             xcodebuild test \
