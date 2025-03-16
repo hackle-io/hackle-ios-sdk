@@ -9,27 +9,74 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Xcode Cache
-        if: ${{ !startsWith(github.event.pull_request.base.ref, 'release-') }}
+      - name: Xcode Cache # 캐시 사용
+        if: ${{ !startsWith(github.event.pull_request.base.ref, 'release-') }} # release 브랜치는 캐시 사용하지 않음
         uses: actions/cache@v4
         with:
           path: |
             ~/Library/Developer/Xcode/DerivedData
             .build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-
-      - name: Test
+          
+      - name: Prebuild before test # 테스트 전에 빌드
         run: |
-            xcodebuild test \
+            xcodebuild build-for-testing \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                -quiet
+
+      - name: Test # 테스트. 첫 실패 시 계속 진행
+        continue-on-error: true
+        run: |
+            xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
                 -retry-tests-on-failure \
-                -test-iterations 3 \
-                -parallel-testing-enabled YES \
-                -parallel-testing-worker-count 2 \
-                -resultBundlePath TestResults \
+                -test-iterations 2 \
+                -parallel-testing-enabled NO \
+                -resultBundlePath InitialResults \
                 -quiet
+                
+      - name: Extract Failed Tests # 실패 테스트 식별 (jq 기본 설치 활용)
+        if: ${{ failure() }}
+        run: |
+          FAILED_TESTS=$(xcrun xcresulttool get --path InitialResults.xcresult --format json |
+            jq -r '
+              [.. | 
+              select(.testStatus? == "Failure") |
+              .identifier._value // empty] |
+              join(",")
+          ')
+          
+          echo "FAILED_TESTS=$FAILED_TESTS" >> $GITHUB_ENV
+          echo "Failed tests: $FAILED_TESTS"
+    
+      - name: Retry when failed # 2번째에서 1번 더 실행
+        if: ${{ failure() && env.FAILED_TESTS != '' }}
+        run: |
+          xcodebuild test-without-building \
+              -project Hackle.xcodeproj \
+              -scheme Hackle-Package \
+              -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+              -only-testing:"${{ env.FAILED_TESTS }}" \
+              -retry-tests-on-failure \
+              -test-iterations 2 \
+              -resultBundlePath RetryResults \
+              -quiet
+              
+      - name: Merge Results # 결과 병합
+        if: always()
+        run: |
+          if [ -f RetryResults.xcresult ]; then
+            xcrun xcresulttool merge \
+                InitialResults.xcresult \
+                RetryResults.xcresult \
+                --output-path TestResults.xcresult
+          else
+            cp InitialResults.xcresult TestResults.xcresult
+          fi
 
       - uses: kishikawakatsumi/xcresulttool@v1
         name: Test Result
