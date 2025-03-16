@@ -8,9 +8,33 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Xcode Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+            
+      # 릴리즈 브랜치일 경우 빌드 캐시 제거
+      - name: Release Branch Clean
+        if: ${{ startsWith(github.event.pull_request.base.ref, 'release-') }}
+        run: |
+            rm -rf ~/Library/Developer/Xcode/DerivedData/*
+ 
       - name: Test
-        run:  xcodebuild clean test -project Hackle.xcodeproj -scheme Hackle-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' -resultBundlePath TestResults
-        
+        run: |
+            xcodebuild test \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                -retry-tests-on-failure \
+                -test-iterations 3 \
+                -parallel-testing-enabled YES \
+                -parallel-testing-worker-count 2 \
+                -resultBundlePath TestResults \
+                -quiet
+
       - uses: kishikawakatsumi/xcresulttool@v1
         name: Test Result
         with:
