@@ -40,6 +40,10 @@ class MockNotificationRepository: NotificationRepository {
             pushMessageKey: data.pushMessageKey,
             pushMessageExecutionId: data.pushMessageExecutionId,
             pushMessageDeliveryId: data.pushMessageDeliveryId,
+            journeyId: data.journeyId,
+            journeyKey: data.journeyKey,
+            journeyNodeId: data.journeyNodeId,
+            campaignType: data.campaignType,
             timestamp: timestamp,
             debug: data.debug
         )

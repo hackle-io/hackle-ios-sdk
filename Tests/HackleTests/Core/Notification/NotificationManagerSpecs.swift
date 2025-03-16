@@ -9,13 +9,11 @@ class NotificationManagerSpec: QuickSpec {
         let dispatchQueue = DispatchQueue(label: "test")
         var core: HackleCoreStub!
         var workspaceFetcher: MockWorkspaceFetcher!
-        var userManager: MockUserManager!
         var repository: MockNotificationRepository!
 
         beforeEach {
             core = HackleCoreStub()
             workspaceFetcher = MockWorkspaceFetcher()
-            userManager = MockUserManager()
             repository = MockNotificationRepository()
         }
 
@@ -60,6 +58,10 @@ class NotificationManagerSpec: QuickSpec {
                     imageUrl: "https://foo.com/bar.png",
                     clickAction: .deepLink,
                     link: "foo://bar",
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: nil,
                     debug: true
                 ),
                 timestamp: timestamp
@@ -117,6 +119,10 @@ class NotificationManagerSpec: QuickSpec {
                 imageUrl: nil,
                 clickAction: .appOpen,
                 link: "",
+                journeyId: 0,
+                journeyKey: 1,
+                journeyNodeId: 2,
+                campaignType: "JOURNEY",
                 debug: true
             )
             manager.onNotificationDataReceived(data: matchData, timestamp: timestamp)
@@ -132,6 +138,10 @@ class NotificationManagerSpec: QuickSpec {
                 imageUrl: nil,
                 clickAction: .appOpen,
                 link: "",
+                journeyId: nil,
+                journeyKey: nil,
+                journeyNodeId: nil,
+                campaignType: "PUSH_MESSAGE",
                 debug: true
             )
             manager.onNotificationDataReceived(data: diffWorkspaceData, timestamp: Date())
@@ -147,6 +157,10 @@ class NotificationManagerSpec: QuickSpec {
                 imageUrl: nil,
                 clickAction: .appOpen,
                 link: "",
+                journeyId: 3,
+                journeyKey: 4,
+                journeyNodeId: 5,
+                campaignType: "JOURNEY",
                 debug: true
             )
             manager.onNotificationDataReceived(data: diffEnvironmentData, timestamp: Date())
@@ -162,6 +176,10 @@ class NotificationManagerSpec: QuickSpec {
                 imageUrl: nil,
                 clickAction: .appOpen,
                 link: "",
+                journeyId: 0,
+                journeyKey: 1,
+                journeyNodeId: 2,
+                campaignType: "JOURNEY",
                 debug: true
             )
             manager.onNotificationDataReceived(data: diffBothData, timestamp: Date())
@@ -174,6 +192,10 @@ class NotificationManagerSpec: QuickSpec {
                 expect(core.tracked[0].0.properties?["push_message_execution_id"].asIntOrNil()) == 3
                 expect(core.tracked[0].0.properties?["push_message_delivery_id"].asIntOrNil()) == 4
                 expect(core.tracked[0].0.properties?["debug"] as? Bool) == true
+                expect(core.tracked[0].0.properties?["journey_id"].asIntOrNil()) == 0
+                expect(core.tracked[0].0.properties?["journey_key"].asIntOrNil()) == 1
+                expect(core.tracked[0].0.properties?["journey_node_id"].asIntOrNil()) == 2
+                expect(core.tracked[0].0.properties?["campaign_type"] as? String) == "JOURNEY"
                 expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
 
                 expect(repository.count(workspaceId: 123, environmentId: 456)) == 0
@@ -210,6 +232,10 @@ class NotificationManagerSpec: QuickSpec {
                     imageUrl: nil,
                     clickAction: .appOpen,
                     link: "",
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "JOURNEY",
                     debug: true
                 ),
                 timestamp: Date()
@@ -257,6 +283,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: 7,
+                    journeyKey: 8,
+                    journeyNodeId: 9,
+                    campaignType: "JOURNEY",
                     timestamp: Date(),
                     debug: true
                 ),
@@ -268,6 +298,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
                     timestamp: Date(),
                     debug: true
                 ),
@@ -279,6 +313,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: 1,
+                    journeyKey: 2,
+                    journeyNodeId: 3,
+                    campaignType: "JOURNEY",
                     timestamp: Date(),
                     debug: true
                 )
@@ -328,6 +366,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: 7,
+                    journeyKey: 8,
+                    journeyNodeId: 9,
+                    campaignType: "JOURNEY",
                     timestamp: Date(),
                     debug: true
                 ),
@@ -339,6 +381,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
                     timestamp: Date(),
                     debug: true
                 ),
@@ -350,6 +396,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: 17,
+                    journeyKey: 18,
+                    journeyNodeId: 19,
+                    campaignType: "JOURNEY",
                     timestamp: Date(),
                     debug: true
                 )
@@ -387,6 +437,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
                     timestamp: Date(),
                     debug: true
                 ),
@@ -398,6 +452,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
                     timestamp: Date(),
                     debug: true
                 ),
@@ -409,6 +467,10 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
                     timestamp: Date(),
                     debug: true
                 )
