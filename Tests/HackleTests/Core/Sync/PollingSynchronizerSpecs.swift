@@ -24,7 +24,6 @@ class PollingSynchronizerSpecs: QuickSpec {
         }
 
         describe("start") {
-
             it("no polling") {
                 // given
                 let delegate = MockSynchronizer()

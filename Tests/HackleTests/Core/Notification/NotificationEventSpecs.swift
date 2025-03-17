@@ -49,12 +49,12 @@ class NotificationEventSpecs: QuickSpec {
                 pushMessageKey: 4,
                 pushMessageExecutionId: 5,
                 pushMessageDeliveryId: 6,
+                timestamp: timestamp,
+                debug: true,
                 journeyId: 7,
                 journeyKey: 8,
                 journeyNodeId: 9,
-                campaignType: "PUSH_MESSAGE",
-                timestamp: timestamp,
-                debug: true
+                campaignType: "PUSH_MESSAGE"
             )
             let event = entity.toTrackEvent()
             expect(event.key) == "$push_click"

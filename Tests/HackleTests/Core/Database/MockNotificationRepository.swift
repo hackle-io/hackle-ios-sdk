@@ -40,12 +40,12 @@ class MockNotificationRepository: NotificationRepository {
             pushMessageKey: data.pushMessageKey,
             pushMessageExecutionId: data.pushMessageExecutionId,
             pushMessageDeliveryId: data.pushMessageDeliveryId,
+            timestamp: timestamp,
+            debug: data.debug,
             journeyId: data.journeyId,
             journeyKey: data.journeyKey,
             journeyNodeId: data.journeyNodeId,
-            campaignType: data.campaignType,
-            timestamp: timestamp,
-            debug: data.debug
+            campaignType: data.campaignType
         )
         incrementKey += 1
         let key = dictKey(workspaceId: data.workspaceId, environmentId: data.environmentId, historyId: entity.historyId)

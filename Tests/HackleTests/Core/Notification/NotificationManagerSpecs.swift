@@ -283,12 +283,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: 7,
                     journeyKey: 8,
                     journeyNodeId: 9,
-                    campaignType: "JOURNEY",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "JOURNEY"
                 ),
                 NotificationHistoryEntity(
                     historyId: 1,
@@ -298,12 +298,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: nil,
                     journeyKey: nil,
                     journeyNodeId: nil,
-                    campaignType: "PUSH_MESSAGE",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "PUSH_MESSAGE"
                 ),
                 NotificationHistoryEntity(
                     historyId: 2,
@@ -313,12 +313,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: 1,
                     journeyKey: 2,
                     journeyNodeId: 3,
-                    campaignType: "JOURNEY",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "JOURNEY"
                 )
             ])
 
@@ -366,12 +366,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: 7,
                     journeyKey: 8,
                     journeyNodeId: 9,
-                    campaignType: "JOURNEY",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "JOURNEY"
                 ),
                 NotificationHistoryEntity(
                     historyId: 1,
@@ -381,12 +381,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: nil,
                     journeyKey: nil,
                     journeyNodeId: nil,
-                    campaignType: "PUSH_MESSAGE",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "PUSH_MESSAGE"
                 ),
                 NotificationHistoryEntity(
                     historyId: 2,
@@ -396,12 +396,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: 17,
                     journeyKey: 18,
                     journeyNodeId: 19,
-                    campaignType: "JOURNEY",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "JOURNEY"
                 )
             ])
 
@@ -437,12 +437,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: nil,
                     journeyKey: nil,
                     journeyNodeId: nil,
-                    campaignType: "PUSH_MESSAGE",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "PUSH_MESSAGE"
                 ),
                 NotificationHistoryEntity(
                     historyId: 1,
@@ -452,12 +452,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: nil,
                     journeyKey: nil,
                     journeyNodeId: nil,
-                    campaignType: "PUSH_MESSAGE",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "PUSH_MESSAGE"
                 ),
                 NotificationHistoryEntity(
                     historyId: 2,
@@ -467,12 +467,12 @@ class NotificationManagerSpec: QuickSpec {
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
                     pushMessageDeliveryId: 6,
+                    timestamp: Date(),
+                    debug: true,
                     journeyId: nil,
                     journeyKey: nil,
                     journeyNodeId: nil,
-                    campaignType: "PUSH_MESSAGE",
-                    timestamp: Date(),
-                    debug: true
+                    campaignType: "PUSH_MESSAGE"
                 )
             ])
 
