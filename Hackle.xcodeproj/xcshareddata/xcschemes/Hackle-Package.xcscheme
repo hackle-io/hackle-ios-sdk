@@ -41,8 +41,7 @@
       <Testables>
          <TestableReference
             skipped = "NO"
-            parallelizable = "NO"
-            testExecutionOrdering = "random">
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "Hackle::HackleTests"
