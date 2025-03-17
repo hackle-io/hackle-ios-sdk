@@ -20,6 +20,9 @@ class Database {
         } else if currentVersion < self.version {
             onUpdate(oldVersion: currentVersion, newVersion: self.version)
         }
+        
+        // 테이블 생성/업데이트 완료 후 버전을 DB에 반영
+        setVersion()
     }
     
     func execute<T>(command: (SQLiteDatabase) throws -> T) rethrows -> T {
@@ -34,14 +37,14 @@ class Database {
     ///
     /// 이 메소드를 override하여 table을 생성합니다.
     func onCreate() {
-        setVersion()
+        // nothing to do
     }
     
     /// version이 변경되었을 때 호출됩니다.
     ///
     /// 이 메소드를 override하여 version 변경 시 수행할 작업을 정의합니다.
     func onUpdate(oldVersion: Int, newVersion: Int) {
-        setVersion()
+        // nothing to do
     }
 
     /// 현재 database의 version을 가져옵니다.
