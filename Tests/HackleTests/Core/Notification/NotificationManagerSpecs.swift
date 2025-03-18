@@ -10,11 +10,17 @@ class NotificationManagerSpec: QuickSpec {
         var core: HackleCoreStub!
         var workspaceFetcher: MockWorkspaceFetcher!
         var repository: MockNotificationRepository!
+        
+        beforeSuite {
+            // 최초에 버전값을 초기화 해서 강제로 최신테이블 재생성
+            UserDefaults.standard.removeObject(forKey: "io.hackle.SharedDatabase")
+        }
 
         beforeEach {
             core = HackleCoreStub()
             workspaceFetcher = MockWorkspaceFetcher()
             repository = MockNotificationRepository()
+            repository.deleteAll()
         }
 
         it("track push click event when notification data received") {
@@ -197,6 +203,7 @@ class NotificationManagerSpec: QuickSpec {
                 expect(core.tracked[0].0.properties?["journey_node_id"].asIntOrNil()) == 2
                 expect(core.tracked[0].0.properties?["campaign_type"] as? String) == "JOURNEY"
                 expect(core.tracked[0].2.timeIntervalSince1970) == timestamp.timeIntervalSince1970
+                
 
                 expect(repository.count(workspaceId: 123, environmentId: 456)) == 0
                 expect(repository.count(workspaceId: 111, environmentId: 456)) == 1
@@ -258,8 +265,8 @@ class NotificationManagerSpec: QuickSpec {
             )
             every(workspaceFetcher.fetchMock)
                 .returns(WorkspaceEntity(
-                    id: 1,
-                    environmentId: 2,
+                    id: 123,
+                    environmentId: 222,
                     experiments: [],
                     featureFlags: [],
                     buckets: [],
@@ -277,8 +284,8 @@ class NotificationManagerSpec: QuickSpec {
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -292,8 +299,8 @@ class NotificationManagerSpec: QuickSpec {
                 ),
                 NotificationHistoryEntity(
                     historyId: 1,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -307,8 +314,8 @@ class NotificationManagerSpec: QuickSpec {
                 ),
                 NotificationHistoryEntity(
                     historyId: 2,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -326,7 +333,7 @@ class NotificationManagerSpec: QuickSpec {
 
             dispatchQueue.sync {
                 expect(core.tracked.count) == 3
-                expect(repository.count(workspaceId: 1, environmentId: 2)) == 0
+                expect(repository.count(workspaceId: 123, environmentId: 222)) == 0
             }
         }
 
@@ -342,7 +349,7 @@ class NotificationManagerSpec: QuickSpec {
             every(workspaceFetcher.fetchMock)
                 .returns(WorkspaceEntity(
                     id: 3,
-                    environmentId: 3,
+                    environmentId: 456,
                     experiments: [],
                     featureFlags: [],
                     buckets: [],
@@ -360,8 +367,8 @@ class NotificationManagerSpec: QuickSpec {
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -375,8 +382,8 @@ class NotificationManagerSpec: QuickSpec {
                 ),
                 NotificationHistoryEntity(
                     historyId: 1,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -390,8 +397,8 @@ class NotificationManagerSpec: QuickSpec {
                 ),
                 NotificationHistoryEntity(
                     historyId: 2,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -409,7 +416,7 @@ class NotificationManagerSpec: QuickSpec {
 
             dispatchQueue.sync {
                 expect(core.tracked.count) == 0
-                expect(repository.count(workspaceId: 1, environmentId: 2)) == 3
+                expect(repository.count(workspaceId: 123, environmentId: 222)) == 3
             }
         }
 
@@ -431,8 +438,8 @@ class NotificationManagerSpec: QuickSpec {
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -446,8 +453,8 @@ class NotificationManagerSpec: QuickSpec {
                 ),
                 NotificationHistoryEntity(
                     historyId: 1,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -461,8 +468,8 @@ class NotificationManagerSpec: QuickSpec {
                 ),
                 NotificationHistoryEntity(
                     historyId: 2,
-                    workspaceId: 1,
-                    environmentId: 2,
+                    workspaceId: 123,
+                    environmentId: 222,
                     pushMessageId: 3,
                     pushMessageKey: 4,
                     pushMessageExecutionId: 5,
@@ -480,7 +487,7 @@ class NotificationManagerSpec: QuickSpec {
 
             dispatchQueue.sync {
                 expect(core.tracked.count) == 0
-                expect(repository.count(workspaceId: 1, environmentId: 2)) == 3
+                expect(repository.count(workspaceId: 123, environmentId: 222)) == 3
             }
         }
     }

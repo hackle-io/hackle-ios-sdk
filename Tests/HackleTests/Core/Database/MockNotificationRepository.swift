@@ -1,77 +1,46 @@
 import Foundation
 @testable import Hackle
 
-class MockNotificationRepository: NotificationRepository {
-    private var incrementKey: Int64 = 0
-    private var entities: [String: NotificationHistoryEntity] = [:]
+class MockNotificationRepository: DefaultNotificationRepository {
+    private let reservedWorkspaceIdList: [Int64] = [123, 111]
+    private let reservedEnvironmentIdList: [Int64] = [456, 222]
     
-    private func dictKey(workspaceId: Int64, environmentId: Int64, historyId: Int64) -> String {
-        return "\(workspaceId):\(environmentId):\(historyId)"
+    init() {
+        super.init(sharedDatabase: SharedDatabase())
     }
-    
+
     func putAll(entities: [NotificationHistoryEntity]) {
         entities.forEach { entity in
-            let key = dictKey(
-                workspaceId: entity.workspaceId,
-                environmentId: entity.environmentId,
-                historyId: entity.historyId
+            save(
+                data: NotificationData(
+                    workspaceId: entity.workspaceId,
+                    environmentId: entity.environmentId,
+                    pushMessageId: entity.pushMessageId,
+                    pushMessageKey: entity.pushMessageKey,
+                    pushMessageExecutionId: entity.pushMessageExecutionId,
+                    pushMessageDeliveryId: entity.pushMessageDeliveryId,
+                    showForeground: true,
+                    imageUrl: nil,
+                    clickAction: .appOpen,
+                    link: nil,
+                    journeyId: entity.journeyId,
+                    journeyKey: entity.journeyKey,
+                    journeyNodeId: entity.journeyNodeId,
+                    campaignType: entity.campaignType,
+                    debug: entity.debug
+                ),
+                timestamp: entity.timestamp
             )
-            self.entities[key] = entity
         }
     }
     
-    func count(workspaceId: Int64, environmentId: Int64) -> Int {
-        var count = 0
-        self.entities.forEach { (key: String, value: NotificationHistoryEntity) in
-            if value.workspaceId == workspaceId &&
-               value.environmentId == environmentId {
-                count += 1
+    func deleteAll() {
+        for workspaceId in reservedWorkspaceIdList {
+            for environmentId in reservedEnvironmentIdList {
+                let entities = getEntities(workspaceId: workspaceId, environmentId: environmentId)
+                delete(entities: entities)
             }
         }
-        return count
-    }
-    
-    func save(data: NotificationData, timestamp: Date) {
-        let entity = NotificationHistoryEntity(
-            historyId: incrementKey,
-            workspaceId: data.workspaceId,
-            environmentId: data.environmentId,
-            pushMessageId: data.pushMessageId,
-            pushMessageKey: data.pushMessageKey,
-            pushMessageExecutionId: data.pushMessageExecutionId,
-            pushMessageDeliveryId: data.pushMessageDeliveryId,
-            timestamp: timestamp,
-            debug: data.debug,
-            journeyId: data.journeyId,
-            journeyKey: data.journeyKey,
-            journeyNodeId: data.journeyNodeId,
-            campaignType: data.campaignType
-        )
-        incrementKey += 1
-        let key = dictKey(workspaceId: data.workspaceId, environmentId: data.environmentId, historyId: entity.historyId)
-        self.entities[key] = entity
-    }
-    
-    func getEntities(workspaceId: Int64, environmentId: Int64, limit: Int?) -> [NotificationHistoryEntity] {
-        var list: [NotificationHistoryEntity] = []
-        entities.forEach { (key: String, value: NotificationHistoryEntity) in
-            if value.workspaceId == workspaceId &&
-               value.environmentId == environmentId {
-                list.append(value)
-            }
-        }
-        if let limit = limit,
-           list.count > limit {
-            return Array(list[0..<limit])
-        } else {
-            return list
-        }
-    }
-    
-    func delete(entities: [NotificationHistoryEntity]) {
-        entities.forEach { entity in
-            let key = dictKey(workspaceId: entity.workspaceId, environmentId: entity.environmentId, historyId: entity.historyId)
-            self.entities.removeValue(forKey: key)
-        }
+
     }
 }
