@@ -51,32 +51,32 @@ class Database {
     ///
     /// - Throws: table 생성에 실패했을 때 발생하는 error
     func onCreate() throws {
-        Log.error("onCreate() must be overridden")
+        fatalError("onCreate() has not been implemented")
     }
     
     /// version이 변경되었을 때 호출됩니다.
     ///
     /// 이 메소드를 override하여 version 변경 시 수행할 작업을 정의합니다.
     func onMigration(oldVersion: Int, newVersion: Int) throws {
-        Log.error("onMigration(oldVersion: Int, newVersion: Int) must be overridden")
+        fatalError("onMigration(oldVersion: Int, newVersion: Int) has not been implemented")
     }
     
     /// database를 삭제해야할 때 호출됩니다.
     func onDrop() {
-        Log.error("onDrop() must be overridden")
+        fatalError("onDrop() has not been implemented")
     }
     
     /// 최신 버전의 table을 생성해야할 때 호출됩니다.
     ///
     /// 반드시 drop table 후에만 호출해야 합니다.
     func onCreateLatest() {
-        Log.error("onCreateLatest() must be overridden")
+        fatalError("onCreateLatest() has not been implemented")
     }
 
     /// 현재 database의 version을 가져옵니다.
     ///
     /// - Returns: 현재 database의 version
-    private func getVersion(label: String) -> Int {
+    func getVersion(label: String) -> Int {
         return userDefaults.integer(forKey: label)
     }
 

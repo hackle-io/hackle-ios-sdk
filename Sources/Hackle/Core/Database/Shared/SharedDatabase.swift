@@ -21,15 +21,16 @@ class SharedDatabase: Database {
     }
     
     override func onMigration(oldVersion: Int, newVersion: Int) throws {
-        if newVersion <= SharedDatabase.MAX_DATABASE_VERSION {
-            switch oldVersion {
-            case Database.DEFAULT_VERSION, 1:
-                migrationTableFrom1To2()
-                break
-            default:
-                Log.error("Unsupported database version: \(oldVersion)")
-                throw HackleError.error("Unsupported database version: \(oldVersion)")
-            }
+        guard newVersion <= SharedDatabase.MAX_DATABASE_VERSION else {
+            throw HackleError.error("Unsupported database version: \(newVersion)")
+        }
+        
+        switch oldVersion {
+        case Database.DEFAULT_VERSION, 1:
+            migrationTableFrom1To2()
+            break
+        default:
+            throw HackleError.error("unknown database version: \(oldVersion)")
         }
     }
     
