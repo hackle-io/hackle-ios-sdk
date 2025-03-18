@@ -104,10 +104,10 @@ class SQLiteEventRepository: EventRepository {
             var events = [EventEntity]()
             while cursor.moveToNext() {
                 let event = EventEntity(
-                    id: cursor.getInt64(0),
-                    type: UserEventType(rawValue: cursor.getInt(1))!,
-                    status: EventEntityStatus(rawValue: cursor.getInt(2))!,
-                    body: cursor.getString(3)
+                    id: cursor.getInt64(EventEntity.Column.id.index),
+                    type: UserEventType(rawValue: cursor.getInt(EventEntity.Column.type.index))!,
+                    status: EventEntityStatus(rawValue: cursor.getInt(EventEntity.Column.status.index))!,
+                    body: cursor.getString(EventEntity.Column.body.index)
                 )
                 events.append(event)
             }

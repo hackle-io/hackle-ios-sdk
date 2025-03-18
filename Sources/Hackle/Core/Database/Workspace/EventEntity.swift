@@ -73,8 +73,8 @@ extension EventEntity {
     
     static let INSERT_TABLE =
         "INSERT INTO \(TABLE_NAME) (" +
-            "\(Column.status.rawValue)," +
             "\(Column.type.rawValue)," +
+            "\(Column.status.rawValue)," +
             "\(Column.body.rawValue)" +
         ") VALUES (?, ?, ?)"
     

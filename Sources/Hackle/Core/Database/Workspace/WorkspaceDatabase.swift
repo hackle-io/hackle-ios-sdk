@@ -20,6 +20,7 @@ class WorkspaceDatabase: Database {
     }
     
     override func onDrop() {
+        dropTable()
     }
     
     override func onCreateLatest() {
