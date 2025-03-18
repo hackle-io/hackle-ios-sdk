@@ -67,6 +67,7 @@
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
 		B24234AF2D89122E00878096 /* DatabaseSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234AE2D89122500878096 /* DatabaseSpecs.swift */; };
+		B24234B32D89616600878096 /* MockSQLiteEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
@@ -604,6 +605,7 @@
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
 		B24234AE2D89122500878096 /* DatabaseSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseSpecs.swift; sourceTree = "<group>"; };
+		B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSQLiteEventRepository.swift; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
@@ -1926,6 +1928,7 @@
 				B24234AE2D89122500878096 /* DatabaseSpecs.swift */,
 				EE29D9E529CD82C100B1FEAA /* MemoryKeyValueRepository.swift */,
 				EE29D9E629CD82C100B1FEAA /* MockEventRepository.swift */,
+				B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */,
 				7E81DA4E2B45672B003258DA /* MockNotificationRepository.swift */,
 			);
 			path = Database;
@@ -3254,6 +3257,7 @@
 				EE4B81152C00829C00719C41 /* WebViewWrapperUserEventFilterSpecs.swift in Sources */,
 				EE29DA8229CD82C200B1FEAA /* MockOverrideResolver.swift in Sources */,
 				EE543CCD2C098D7600F64BFA /* EngagementEventTrackerSpecs.swift in Sources */,
+				B24234B32D89616600878096 /* MockSQLiteEventRepository.swift in Sources */,
 				EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */,
 				EE29DAA529CD82C200B1FEAA /* UserSpecs.swift in Sources */,
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
