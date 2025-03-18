@@ -19,16 +19,6 @@ class EventEntity {
         self.status = status
         self.body = body
     }
-
-    static let TABLE_NAME = "events"
-    static let ID_COLUMN_NAME = "id"
-    static let TYPE_COLUMN_NAME = "type"
-    static let STATUS_COLUMN_NAME = "status"
-    static let BODY_COLUMN_NAME = "body"
-
-    static let CREATE_TABLE = "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (\(ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT, \(STATUS_COLUMN_NAME) INTEGER, \(TYPE_COLUMN_NAME) INTEGER, \(BODY_COLUMN_NAME) TEXT)"
-    
-    static let DROP_TABLE = "DROP TABLE IF EXISTS \(TABLE_NAME)"
 }
 
 enum EventEntityStatus: Int {
@@ -48,5 +38,50 @@ extension UserEvent {
         default:
             return nil
         }
+    }
+}
+
+extension EventEntity {
+    static let TABLE_NAME = "events"
+    
+    enum Column: String {
+        case id = "id"
+        case type = "type"
+        case status = "status"
+        case body = "body"
+        
+        var index: Int32 {
+            switch self {
+            case .id: return 0
+            case .type: return 1
+            case .status: return 2
+            case .body: return 3
+            }
+        }
+    }
+
+    static let CREATE_TABLE =
+        "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
+            "\(Column.id.rawValue) INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "\(Column.status.rawValue) INTEGER," +
+            "\(Column.type.rawValue) INTEGER," +
+            "\(Column.body.rawValue) TEXT" +
+        ")"
+    
+    static let DROP_TABLE = 
+        "DROP TABLE IF EXISTS \(TABLE_NAME)"
+    
+    static let INSERT_TABLE =
+        "INSERT INTO \(TABLE_NAME) (" +
+            "\(Column.status.rawValue)," +
+            "\(Column.type.rawValue)," +
+            "\(Column.body.rawValue)" +
+        ") VALUES (?, ?, ?)"
+    
+    static func bind(statement: SQLiteStatement, type: UserEventType, body: String) throws {
+        try statement.bindInt(index: Column.type.index, value: Int32(type.rawValue))
+        try statement.bindInt(index: Column.status.index, value: Int32(EventEntityStatus.pending.rawValue))
+        try statement.bindString(index: Column.body.index, value: body)
+        try statement.execute()
     }
 }

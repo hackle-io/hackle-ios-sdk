@@ -11,6 +11,10 @@ class WorkspaceDatabase: Database {
             version: WorkspaceDatabase.DATABASE_VERSION
         )
     }
+    
+    override func onCreate() throws {
+        try createTable()
+    }
 
     override func onMigration(oldVersion: Int, newVersion: Int) throws {
     }
