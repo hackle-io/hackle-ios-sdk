@@ -46,7 +46,8 @@ class Database {
     ///
     /// override하여 table을 생성합니다.
     ///
-    /// 이 메소드에서는 **반드시** v1 버전의 table을 생성해야 합니다.<br/>
+    /// 이 메소드에서는 **반드시** v1 버전의 table을 생성해야 합니다.
+    ///
     /// v1 이후의 버전 데이터 반영은 `onMigration(oldVersion: Int, newVersion: Int)` 에서 수행합니다.
     ///
     /// - Throws: table 생성에 실패했을 때 발생하는 error
@@ -54,21 +55,31 @@ class Database {
         fatalError("onCreate() has not been implemented")
     }
     
-    /// version이 변경되었을 때 호출됩니다.
+    /// 마이그레이션 해야할 때 호출합니다.
     ///
-    /// 이 메소드를 override하여 version 변경 시 수행할 작업을 정의합니다.
+    /// 테이블 최초 생성 시, version이 변경되었을 시 모두 호출됩니다.
+    ///
+    /// 이 메소드를 override하여 마이그레이션에서 수행할 작업을 정의합니다.
+    /// - Parameters:
+    ///  - oldVersion: 이전 버전
+    ///  - newVersion: 새 버전
+    /// - Throws: 마이그레이션에 실패했을 때 발생하는 error
     func onMigration(oldVersion: Int, newVersion: Int) throws {
         fatalError("onMigration(oldVersion: Int, newVersion: Int) has not been implemented")
     }
     
     /// database를 삭제해야할 때 호출됩니다.
+    ///
+    /// 이 메소드를 override하여 database를 삭제합니다.
     func onDrop() {
         fatalError("onDrop() has not been implemented")
     }
     
     /// 최신 버전의 table을 생성해야할 때 호출됩니다.
     ///
-    /// 반드시 drop table 후에만 호출해야 합니다.
+    /// **반드시 drop table 후에만 호출**해야 합니다.
+    ///
+    /// 이 메소드를 override하여 최신 버전의 table을 생성합니다.
     func onCreateLatest() {
         fatalError("onCreateLatest() has not been implemented")
     }
