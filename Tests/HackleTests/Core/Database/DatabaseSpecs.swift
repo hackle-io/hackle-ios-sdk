@@ -49,8 +49,8 @@ class DatabaseSpec: QuickSpec {
                     mockDB = MockDatabase(label: testLabel, filename: "test.db", version: 3)
                 }
                 
-                it("onCreate가 호출되면 안됨") {
-                    expect(mockDB.onCreateCalled).to(beFalse())
+                it("onCreate 호출되어야 함") {
+                    expect(mockDB.onCreateCalled).to(beTrue())
                 }
                 
                 it("onMigration이 호출되어야 함") {

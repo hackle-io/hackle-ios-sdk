@@ -14,11 +14,11 @@ class Database {
         self.version = version
 
         do {
-            let currentVersion = getVersion(label: label)
-            if currentVersion == Database.DEFAULT_VERSION {
-                try onCreate()
-            }
+            // 항상 create 호출
+            // 단, create 할 때 if exist 필수
+            try onCreate()
             
+            let currentVersion = getVersion(label: label)
             if currentVersion < version {
                 try onMigration(oldVersion: currentVersion, newVersion: version)
             }
@@ -85,7 +85,6 @@ class Database {
     /// 임의로 버전을 파라미터로 받지 않고, `version` 을 사용합니다.
     private func setVersion(label: String) {
         userDefaults.set(version, forKey: label)
-        
     }
 
     static let DEFAULT_VERSION = 0

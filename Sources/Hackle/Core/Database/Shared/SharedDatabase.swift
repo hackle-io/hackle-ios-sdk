@@ -16,10 +16,6 @@ class SharedDatabase: Database {
         try createTable()
     }
     
-    override func onCreateLatest() {
-        createLatestTable()
-    }
-    
     override func onMigration(oldVersion: Int, newVersion: Int) throws {
         guard newVersion <= SharedDatabase.MAX_DATABASE_VERSION else {
             throw HackleError.error("Unsupported database version: \(newVersion)")
@@ -27,7 +23,7 @@ class SharedDatabase: Database {
         
         switch oldVersion {
         case Database.DEFAULT_VERSION, 1:
-            migrationTableFrom1To2()
+            try migrationTableFrom1To2()
             break
         default:
             throw HackleError.error("unknown database version: \(oldVersion)")
@@ -36,6 +32,10 @@ class SharedDatabase: Database {
     
     override func onDrop() {
         dropTable()
+    }
+    
+    override func onCreateLatest() {
+        createLatestTable()
     }
     
     private func createTable() throws {
@@ -80,7 +80,7 @@ class SharedDatabase: Database {
     /// 버전 1에서 버전 2로 마이그레이션합니다.
     ///
     /// Journey ID, Journey Key, Journey Node ID, Campaign Type 컬럼을 추가합니다.
-    private func migrationTableFrom1To2() {
+    private func migrationTableFrom1To2() throws {
         do {
             try execute { database in
                 try database.execute(
@@ -107,6 +107,7 @@ class SharedDatabase: Database {
             }
         } catch {
             Log.error("Failed to migrate tables:\n\(error)")
+            throw error
         }
     }
 }

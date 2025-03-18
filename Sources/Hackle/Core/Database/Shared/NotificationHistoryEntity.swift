@@ -68,7 +68,7 @@ extension NotificationHistoryEntity {
         case journeyNodeId = "journey_node_id"
         case campaignType = "campaign_type"
         
-        public var index: Int32 {
+        var index: Int32 {
             switch self {
             case .historyId: return 0
             case .workspaceId: return 1
@@ -110,12 +110,15 @@ extension NotificationHistoryEntity {
             "\(Column.pushMessageExecutionId.rawValue) INTEGER," +
             "\(Column.pushMessageDeliveryId.rawValue) INTEGER," +
             "\(Column.timestamp.rawValue) string," +
-            "\(Column.debug.rawValue) INTEGER" +
+            "\(Column.debug.rawValue) INTEGER," +
             "\(Column.journeyId.rawValue) INTEGER," +
             "\(Column.journeyKey.rawValue) INTEGER," +
             "\(Column.journeyNodeId.rawValue) INTEGER," +
-            "\(Column.campaignType.rawValue) TEXT," +
+            "\(Column.campaignType.rawValue) TEXT" +
         ")"
+    
+    static let DROP_TABLE =
+        "DROP TABLE IF EXISTS \(TABLE_NAME)"
 
     static let ADD_JOURNEY_ID =
         "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(Column.journeyId.rawValue) INTEGER"
@@ -147,8 +150,6 @@ extension NotificationHistoryEntity {
             "\(NotificationHistoryEntity.Column.journeyNodeId.rawValue)," +
             "\(NotificationHistoryEntity.Column.campaignType.rawValue)" +
         ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    
-    static let DROP_TABLE = "DROP TABLE IF EXISTS \(TABLE_NAME)"
     
     static func bind(statement: SQLiteStatement, data: NotificationData, timestamp: Date) throws {
         try statement.bindInt(index: Column.workspaceId.index, value: data.workspaceId)
