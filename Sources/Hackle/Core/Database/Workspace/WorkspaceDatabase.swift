@@ -2,6 +2,7 @@ import Foundation
 
 class WorkspaceDatabase: Database {
     static let DATABASE_VERSION = 1
+    static let MAX_DATABASE_VERSION = 1
 
     init(sdkKey: String) {
         super.init(
@@ -9,19 +10,19 @@ class WorkspaceDatabase: Database {
             filename: "\(sdkKey)_hackle.sqlite",
             version: WorkspaceDatabase.DATABASE_VERSION
         )
-        createTable()
+    }
+
+    override func onMigration(oldVersion: Int, newVersion: Int) throws {
     }
     
-    override func onCreate() {
-        super.onCreate()
-        createTable()
+    override func onDrop() {
     }
     
-    override func onUpdate(oldVersion: Int, newVersion: Int) {
-        super.onUpdate(oldVersion: oldVersion, newVersion: newVersion)
+    override func onCreateLatest() {
+        try? createTable()
     }
     
-    private func createTable() {
+    private func createTable() throws {
         do {
             try execute { database in
                 try database.execute(
@@ -30,6 +31,19 @@ class WorkspaceDatabase: Database {
             }
         } catch {
             Log.error("Failed to create tables: \(error)")
+            throw error
+        }
+    }
+    
+    private func dropTable() {
+        do {
+            try execute { database in
+                try database.execute(
+                    sql: EventEntity.DROP_TABLE
+                )
+            }
+        } catch {
+            Log.error("Failed to delete tables: \(error)")
         }
     }
 }

@@ -87,7 +87,20 @@ extension NotificationHistoryEntity {
         }
     }
     
-    static let CREATE_TABLE =
+    static let CREATE_TABLE_V1 =
+        "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
+            "\(Column.historyId.rawValue) INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "\(Column.workspaceId.rawValue) INTEGER NOT NULL," +
+            "\(Column.environmentId.rawValue) INTEGER NOT NULL," +
+            "\(Column.pushMessageId.rawValue) INTEGER," +
+            "\(Column.pushMessageKey.rawValue) INTEGER," +
+            "\(Column.pushMessageExecutionId.rawValue) INTEGER," +
+            "\(Column.pushMessageDeliveryId.rawValue) INTEGER," +
+            "\(Column.timestamp.rawValue) string," +
+            "\(Column.debug.rawValue) INTEGER" +
+        ")"
+    
+    static let CREATE_LATEST_TABLE =
         "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
             "\(Column.historyId.rawValue) INTEGER PRIMARY KEY AUTOINCREMENT," +
             "\(Column.workspaceId.rawValue) INTEGER NOT NULL," +
@@ -134,6 +147,8 @@ extension NotificationHistoryEntity {
             "\(NotificationHistoryEntity.Column.journeyNodeId.rawValue)," +
             "\(NotificationHistoryEntity.Column.campaignType.rawValue)" +
         ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    
+    static let DROP_TABLE = "DROP TABLE IF EXISTS \(TABLE_NAME)"
     
     static func bind(statement: SQLiteStatement, data: NotificationData, timestamp: Date) throws {
         try statement.bindInt(index: Column.workspaceId.index, value: data.workspaceId)
