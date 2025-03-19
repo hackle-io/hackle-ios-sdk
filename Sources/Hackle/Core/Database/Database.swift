@@ -15,16 +15,12 @@ class Database {
 
         do {
             let currentVersion = getVersion(key: filename)
-            let ddls = getDDLs()
-                .filter { $0.version > currentVersion && $0.version <= version }
-            try executeDDLs(ddls: ddls)
+            try executeDDLs(oldVersion: currentVersion, newVersion: version)
         } catch {
             do {
                 Log.error("drop and recreate database \(label), because of error: \(error)")
                 try onDrop()
-                let ddls = getDDLs()
-                    .filter { $0.version > Database.DEFAULT_VERSION && $0.version <= version }
-                try executeDDLs(ddls: ddls)
+                try executeDDLs(oldVersion: Database.DEFAULT_VERSION, newVersion: version)
             } catch {
                 Log.error("failed to create database \(label), because of error: \(error)")
                 setVersion(key: filename, version: Database.DEFAULT_VERSION)
@@ -72,7 +68,14 @@ class Database {
         versionRepository.putInteger(key: key, value: version)
     }
     
-    private func executeDDLs(ddls: [DatabaseDDL]) throws {
+    /// oldVersion ~ newVersion까지의 DDL을 실행합니다.
+    /// - Parameters:
+    ///   - oldVersion: ddl 반영 직전 버전 (ddl 반영 x)
+    ///   - newVersion: ddl을 반영 할 최신 버전
+    private func executeDDLs(oldVersion: Int, newVersion: Int) throws {
+        let ddls = getDDLs()
+            .filter { $0.version > oldVersion && $0.version <= newVersion }
+        
         for ddl in ddls {
             for query in ddl.statements {
                 try execute { database in
