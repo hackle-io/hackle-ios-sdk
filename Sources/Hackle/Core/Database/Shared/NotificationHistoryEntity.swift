@@ -79,7 +79,7 @@ extension NotificationHistoryEntity {
                     "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
                     "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
                     "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
-                    "\(TIMESTAMP_COLUMN_NAME) string," +
+                    "\(TIMESTAMP_COLUMN_NAME) INTEGER," +
                     "\(DEBUG_COLUMN_NAME) INTEGER" +
                 ")"
             ]
@@ -90,7 +90,7 @@ extension NotificationHistoryEntity {
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_ID_COLUMN_NAME) INTEGER",
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_KEY_COLUMN_NAME) INTEGER",
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER",
-                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) string"
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) TEXT"
             ]
          )
     ]
