@@ -42,6 +42,7 @@ jobs:
         name: Test Result
         with:
           path: TestResults.xcresult
+          show-code-coverage: false
           upload-bundles: 'never'
         if: success() || failure()
 
