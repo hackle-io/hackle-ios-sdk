@@ -13,7 +13,7 @@ class NotificationManagerSpec: QuickSpec {
         
         beforeSuite {
             // 최초에 버전값을 초기화 해서 강제로 최신테이블 재생성
-            UserDefaults.standard.removeObject(forKey: "io.hackle.SharedDatabase")
+            UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameVersion).remove(key: "shared_hackle.sqlite")
         }
 
         beforeEach {

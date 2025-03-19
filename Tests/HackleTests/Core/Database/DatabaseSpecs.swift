@@ -18,70 +18,125 @@ class DatabaseSpec: QuickSpec {
             let fileName = "test.db"
             
             beforeEach {
-                UserDefaults.standard.removeObject(forKey: testLabel)
+                UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameVersion).remove(key: fileName)
+                mockDB = MockDatabase(
+                    label: testLabel,
+                    filename: fileName,
+                    version: 0,
+                    ddl: [
+                        DatabaseDDL(
+                            version: 0,
+                            statements: [
+                                "DROP TABLE IF EXISTS Users",
+                            ])
+                    ]
+                )
             }
             
-            context("처음 초기화 시") {
-                it("onCreate가 호출되어야 함") {
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 1)
-                    expect(mockDB.onCreateCalled).toEventually(beTrue())
-                }
-                
-                it("버전이 최신으로 설정되고 onCreate, onMigration이 호출되어야 함") {
-                    let version = MockDatabase.MAX_DATABASE_VERSION
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: version)
-                    expect(mockDB.onCreateCalled).toEventually(beTrue())
-                    expect(mockDB.onMigrationCalled).to(beTrue())
-                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(version))
-                }
-            }
-            
-            context("버전이 UserDefault에 저장되어야 함") {
-                it("버전이 저장되어야 함") {
-                    let version = 2
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: version)
-                    expect(mockDB.getVersion(key: fileName)).to(equal(version))
-                }
-            }
-            
-            context("버전 업그레이드 시") {
-                beforeEach {
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 3)
-                }
-                
-                it("onCreate 호출되어야 함") {
-                    expect(mockDB.onCreateCalled).to(beTrue())
-                }
-                
-                it("onMigration이 호출되어야 함") {
-                    expect(mockDB.onMigrationCalled).to(beTrue())
-                }
-                
-                it("새 버전이 저장되어야 함") {
-                    expect(mockDB.getVersion(key: fileName)).to(equal(3))
-                }
-            }
-            
-            context("에러 발생 시") {
-                beforeEach {
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
-                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: MockDatabase.MAX_DATABASE_VERSION + 1)
-                }
-                
-                it("onMigration이 호출되어야 함") {
-                    expect(mockDB.onMigrationCalled).to(beTrue())
-                }
-                
-                it("onDrop이 호출되어야 함") {
-                    expect(mockDB.onDropCalled).to(beTrue())
-                }
-                
-                it("onCreateLatest가 호출되어야 함") {
-                    expect(mockDB.onCreateLatestCalled).to(beTrue())
+            context("신규 데이터베이스 생성 시") {
+                it("DDL 순차 실행 및 스키마 업데이트") {
+                    mockDB = MockDatabase(
+                        label: testLabel,
+                        filename: fileName,
+                        version: 2,
+                        ddl: [
+                            DatabaseDDL(
+                                version: 1,
+                                statements: [
+                                    "CREATE TABLE Users(id INTEGER PRIMARY KEY)",
+                                ]
+                            ),
+                            DatabaseDDL(
+                                version: 2,
+                                statements: [
+                                    "CREATE INDEX user_index ON Users(id)"
+                                ]
+                            )
+                        ]
+                    )
+                    
+                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(2))
+                    
+                    // ddl 리스트 갯수 검증
+                    expect(mockDB.returnedDDLListCount).to(equal(2))
+                    
+                    // 테이블 존재 여부 검증
+                    var tableExists = false
+                    try mockDB.execute { db in
+                        try db.execute(sql: "SELECT * FROM Users")
+                        tableExists = true
+                    }
+                    expect(tableExists).to(beTrue())
                 }
             }
             
+            context("버전 업데이트 필요 시") {
+                it("DDL 순차 실행 및 스키마 업데이트") {
+                    mockDB = MockDatabase(
+                        label: testLabel,
+                        filename: fileName,
+                        version: 0
+                    )
+                    
+                    
+                    mockDB = MockDatabase(
+                        label: testLabel,
+                        filename: fileName,
+                        version: 2,
+                        ddl: [
+                            DatabaseDDL(
+                                version: 2,
+                                statements: [
+                                    "CREATE TABLE Users(id INTEGER PRIMARY KEY)",
+                                ]
+                            ),
+                            DatabaseDDL(
+                                version: 3,
+                                statements: [
+                                    "CREATE INDEX user_index ON Users(id)"
+                                ]
+                            )
+                        ]
+                    )
+                    // ddl 리스트 갯수 검증
+                    expect(mockDB.returnedDDLListCount).to(equal(1))
+                    
+                    // 테이블 존재 여부 검증
+                    var tableExists = false
+                    try mockDB.execute { db in
+                        try db.execute(sql: "SELECT * FROM Users")
+                        tableExists = true
+                    }
+                    expect(tableExists).to(beTrue())
+                }
+            }
+            
+            context("마이그레이션 실패 시") {
+                it("onDrop 호출") {
+                    mockDB = MockDatabase(
+                        label: testLabel,
+                        filename: fileName,
+                        version: 2
+                    )
+                    
+                    
+                    mockDB = MockDatabase(
+                        label: testLabel,
+                        filename: fileName,
+                        version: 3,
+                        ddl: [
+                            DatabaseDDL(
+                                version: 3,
+                                statements: ["INVALID SQL"]
+                            )
+                        ]
+                    )
+                    
+                    expect(mockDB.onDropCalled).toEventually(beTrue())
+                    expect(mockDB.getVersion(key: fileName)).to(equal(0))
+                }
+            }
+
             context("execute 메서드") {
                 it("잠금이 정상 작동해야 함") {
                     mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
@@ -97,39 +152,58 @@ class DatabaseSpec: QuickSpec {
                     expect(result).to(equal(42))
                 }
             }
+            
+            it("배타적 락 획득") {
+                mockDB = MockDatabase(label: testLabel, filename: fileName, version: 1)
+                
+                let concurrentQueue = DispatchQueue(
+                    label: "test.concurrent",
+                    attributes: .concurrent
+                )
+                
+                var executionLog = [Int]()
+                
+                concurrentQueue.async {
+                    mockDB.execute { _ in
+                        executionLog.append(1)
+                        sleep(1)
+                        executionLog.append(2)
+                    }
+                }
+                
+                concurrentQueue.async {
+                    mockDB.execute { _ in
+                        executionLog.append(3)
+                    }
+                }
+                
+
+                expect(executionLog).toEventually(
+                    equal([1,2,3]),
+                    timeout: .seconds(2)
+                )
+            }
         }
     }
     
     class MockDatabase: Database {
-        static let MAX_DATABASE_VERSION = 5
-        
-        var onCreateCalled = false
-        var onMigrationCalled = false
         var onDropCalled = false
-        var onCreateLatestCalled = false
+        var ddl: [DatabaseDDL]
+        var returnedDDLListCount = 0
         
-        override init(label: String, filename: String, version: Int) {
+        init(label: String, filename: String, version: Int, ddl: [DatabaseDDL] = []) {
+            self.ddl = ddl
             super.init(label: label, filename: filename, version: version)
         }
         
-        override func onCreate() throws {
-            onCreateCalled = true
+        override func getDDLs(oldVersion: Int, newVersion: Int) -> [DatabaseDDL] {
+            let list = ddl.filter { $0.version >= oldVersion && $0.version <= newVersion }
+            returnedDDLListCount = list.count
+            return list
         }
-        
-        override func onMigration(oldVersion: Int, newVersion: Int) throws {
-            onMigrationCalled = true
-            
-            guard newVersion <= MockDatabase.MAX_DATABASE_VERSION else {
-                throw HackleError.error("Unsupported database version: \(newVersion)")
-            }
-        }
-        
-        override func onDrop() {
+
+        override func onDrop() throws {
             onDropCalled = true
-        }
-        
-        override func onCreateLatest() {
-            onCreateLatestCalled = true
         }
     }
 }

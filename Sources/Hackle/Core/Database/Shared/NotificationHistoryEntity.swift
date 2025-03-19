@@ -67,53 +67,36 @@ extension NotificationHistoryEntity {
     static let JOURNEY_NODE_ID_COLUMN_NAME = "journey_node_id"
     static let CAMPAIGN_TYPE_COLUMN_NAME = "campaign_type"
     
-    static let CREATE_TABLE_V1 =
-        "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(HISTORY_ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(WORKSPACE_ID_COLUMN_NAME) INTEGER NOT NULL," +
-            "\(ENVIRONMENT_ID_COLUMN_NAME) INTEGER NOT NULL," +
-            "\(PUSH_MESSAGE_ID_COLUMN_NAME) INTEGER," +
-            "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
-            "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
-            "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
-            "\(TIMESTAMP_COLUMN_NAME) string," +
-            "\(DEBUG_COLUMN_NAME) INTEGER" +
-        ")"
-    
-    static let CREATE_LATEST_TABLE =
-        "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(HISTORY_ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(WORKSPACE_ID_COLUMN_NAME) INTEGER NOT NULL," +
-            "\(ENVIRONMENT_ID_COLUMN_NAME) INTEGER NOT NULL," +
-            "\(PUSH_MESSAGE_ID_COLUMN_NAME) INTEGER," +
-            "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
-            "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
-            "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
-            "\(TIMESTAMP_COLUMN_NAME) string," +
-            "\(DEBUG_COLUMN_NAME) INTEGER," +
-            "\(JOURNEY_ID_COLUMN_NAME) INTEGER," +
-            "\(JOURNEY_KEY_COLUMN_NAME) INTEGER," +
-            "\(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER," +
-            "\(CAMPAIGN_TYPE_COLUMN_NAME) TEXT" +
-        ")"
-    
+    static let DDL_LIST = [
+        DatabaseDDL(
+            version: 1,
+            statements: [
+                "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
+                    "\(HISTORY_ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "\(WORKSPACE_ID_COLUMN_NAME) INTEGER NOT NULL," +
+                    "\(ENVIRONMENT_ID_COLUMN_NAME) INTEGER NOT NULL," +
+                    "\(PUSH_MESSAGE_ID_COLUMN_NAME) INTEGER," +
+                    "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
+                    "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
+                    "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
+                    "\(TIMESTAMP_COLUMN_NAME) string," +
+                    "\(DEBUG_COLUMN_NAME) INTEGER" +
+                ")"
+            ]
+        ),
+        DatabaseDDL(
+            version: 2,
+            statements: [
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_ID_COLUMN_NAME) INTEGER",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_KEY_COLUMN_NAME) INTEGER",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) string"
+            ]
+         )
+    ]
+
     static let DROP_TABLE =
         "DROP TABLE IF EXISTS \(TABLE_NAME)"
-
-    static let ADD_JOURNEY_ID =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_ID_COLUMN_NAME) INTEGER"
-
-    static let ADD_JOURNEY_KEY =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_KEY_COLUMN_NAME) INTEGER"
-
-    static let ADD_JOURNEY_NODE_ID =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER"
-
-    static let ADD_CAMPAIGN_TYPE =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) TEXT"
-    
-    static let TABLE_EXISTS =
-        "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='\(TABLE_NAME)')"
     
     static let INSERT_TABLE =
         "INSERT INTO \(NotificationHistoryEntity.TABLE_NAME) (" +

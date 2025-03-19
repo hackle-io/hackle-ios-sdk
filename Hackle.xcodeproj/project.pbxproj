@@ -68,6 +68,7 @@
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
 		B24234AF2D89122E00878096 /* DatabaseSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234AE2D89122500878096 /* DatabaseSpecs.swift */; };
 		B24234B32D89616600878096 /* MockSQLiteEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */; };
+		B24234B52D8A646E00878096 /* DatabaseDDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234B42D8A646900878096 /* DatabaseDDL.swift */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
@@ -606,6 +607,7 @@
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
 		B24234AE2D89122500878096 /* DatabaseSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseSpecs.swift; sourceTree = "<group>"; };
 		B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSQLiteEventRepository.swift; sourceTree = "<group>"; };
+		B24234B42D8A646900878096 /* DatabaseDDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDDL.swift; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
@@ -1481,6 +1483,7 @@
 				7E5205FA2B2AFF770095DCD9 /* Repository */,
 				EE29D8CE29CD825300B1FEAA /* SQLiteDatabase.swift */,
 				7E5206012B2BE6A90095DCD9 /* Database.swift */,
+				B24234B42D8A646900878096 /* DatabaseDDL.swift */,
 				EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */,
 				B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */,
 			);
@@ -3007,6 +3010,7 @@
 				EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */,
 				EE29D95829CD825400B1FEAA /* MetricField.swift in Sources */,
 				EEFA31E22BC18A6500E133F8 /* CachedUserEventDedupDeterminer.swift in Sources */,
+				B24234B52D8A646E00878096 /* DatabaseDDL.swift in Sources */,
 				EEA01CCB2A37138300E0C021 /* UIKitExt.swift in Sources */,
 				EE29D98E29CD825400B1FEAA /* Action.swift in Sources */,
 				EE42A53B2BBC42B30008B003 /* ThrottleLimiter.swift in Sources */,

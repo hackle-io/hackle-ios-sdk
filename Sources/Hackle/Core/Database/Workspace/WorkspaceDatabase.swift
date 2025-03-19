@@ -12,35 +12,12 @@ class WorkspaceDatabase: Database {
         )
     }
     
-    override func onCreate() throws {
-        try createTable()
+    override func getDDLs(oldVersion: Int, newVersion: Int) -> [DatabaseDDL] {
+        return EventEntity.DDL_LIST
+            .filter { $0.version >= oldVersion && $0.version <= newVersion }
     }
 
-    override func onMigration(oldVersion: Int, newVersion: Int) throws {
-    }
-    
-    override func onDrop() {
-        dropTable()
-    }
-    
-    override func onCreateLatest() {
-        try? createTable()
-    }
-    
-    private func createTable() throws {
-        do {
-            try execute { database in
-                try database.execute(
-                    sql: EventEntity.CREATE_TABLE
-                )
-            }
-        } catch {
-            Log.error("Failed to create tables: \(error)")
-            throw error
-        }
-    }
-    
-    private func dropTable() {
+    override func onDrop() throws {
         do {
             try execute { database in
                 try database.execute(
@@ -49,6 +26,7 @@ class WorkspaceDatabase: Database {
             }
         } catch {
             Log.error("Failed to delete tables: \(error)")
+            throw error
         }
     }
 }

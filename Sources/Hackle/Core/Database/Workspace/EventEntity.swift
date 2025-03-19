@@ -48,14 +48,21 @@ extension EventEntity {
     static let TYPE_COLUMN_NAME = "type"
     static let STATUS_COLUMN_NAME = "status"
     static let BODY_COLUMN_NAME = "body"
-
-    static let CREATE_TABLE =
-        "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(STATUS_COLUMN_NAME) INTEGER," +
-            "\(TYPE_COLUMN_NAME) INTEGER," +
-            "\(BODY_COLUMN_NAME) TEXT" +
-        ")"
+    
+    static let DDL_LIST = [
+        DatabaseDDL(
+            version: 1,
+            statements: [
+                "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
+                    "\(ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "\(STATUS_COLUMN_NAME) INTEGER," +
+                    "\(TYPE_COLUMN_NAME) INTEGER," +
+                    "\(BODY_COLUMN_NAME) TEXT" +
+                ")"
+            ]
+        )
+    ]
+        
     
     static let DROP_TABLE = 
         "DROP TABLE IF EXISTS \(TABLE_NAME)"
