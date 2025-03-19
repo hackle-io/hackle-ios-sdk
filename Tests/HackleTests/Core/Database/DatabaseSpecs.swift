@@ -18,14 +18,14 @@ class DatabaseSpec: QuickSpec {
             let fileName = "test.db"
             
             beforeEach {
-                UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameVersion).remove(key: fileName)
+                UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameDatabaseVersion).remove(key: fileName)
                 mockDB = MockDatabase(
                     label: testLabel,
                     filename: fileName,
-                    version: 0,
+                    version: 1,
                     ddl: [
                         DatabaseDDL(
-                            version: 0,
+                            version: 1,
                             statements: [
                                 "DROP TABLE IF EXISTS Users",
                             ])
@@ -38,16 +38,16 @@ class DatabaseSpec: QuickSpec {
                     mockDB = MockDatabase(
                         label: testLabel,
                         filename: fileName,
-                        version: 2,
+                        version: 3,
                         ddl: [
                             DatabaseDDL(
-                                version: 1,
+                                version: 2,
                                 statements: [
                                     "CREATE TABLE Users(id INTEGER PRIMARY KEY)",
                                 ]
                             ),
                             DatabaseDDL(
-                                version: 2,
+                                version: 3,
                                 statements: [
                                     "CREATE INDEX user_index ON Users(id)"
                                 ]
@@ -55,10 +55,11 @@ class DatabaseSpec: QuickSpec {
                         ]
                     )
                     
-                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(2))
+                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(3))
                     
                     // ddl 리스트 갯수 검증
-                    expect(mockDB.returnedDDLListCount).to(equal(2))
+                    let ddlCount = mockDB.ddl.filter { $0.version > 1 && $0.version <= 3 }
+                    expect(ddlCount.count).to(equal(2))
                     
                     // 테이블 존재 여부 검증
                     var tableExists = false
@@ -98,8 +99,10 @@ class DatabaseSpec: QuickSpec {
                             )
                         ]
                     )
+
                     // ddl 리스트 갯수 검증
-                    expect(mockDB.returnedDDLListCount).to(equal(1))
+                    let ddlCount = mockDB.ddl.filter { $0.version > 0 && $0.version <= 2 }
+                    expect(ddlCount.count).to(equal(1))
                     
                     // 테이블 존재 여부 검증
                     var tableExists = false
@@ -189,17 +192,14 @@ class DatabaseSpec: QuickSpec {
     class MockDatabase: Database {
         var onDropCalled = false
         var ddl: [DatabaseDDL]
-        var returnedDDLListCount = 0
         
         init(label: String, filename: String, version: Int, ddl: [DatabaseDDL] = []) {
             self.ddl = ddl
             super.init(label: label, filename: filename, version: version)
         }
         
-        override func getDDLs(oldVersion: Int, newVersion: Int) -> [DatabaseDDL] {
-            let list = ddl.filter { $0.version >= oldVersion && $0.version <= newVersion }
-            returnedDDLListCount = list.count
-            return list
+        override func getDDLs() -> [DatabaseDDL] {
+            return ddl
         }
 
         override func onDrop() throws {

@@ -63,21 +63,6 @@ extension EventEntity {
         )
     ]
         
-    
     static let DROP_TABLE = 
         "DROP TABLE IF EXISTS \(TABLE_NAME)"
-    
-    static let INSERT_TABLE =
-        "INSERT INTO \(TABLE_NAME) (" +
-            "\(TYPE_COLUMN_NAME)," +
-            "\(STATUS_COLUMN_NAME)," +
-            "\(BODY_COLUMN_NAME)" +
-        ") VALUES (?, ?, ?)"
-    
-    static func bind(statement: SQLiteStatement, type: UserEventType, body: String) throws {
-        try statement.bindInt(index: 1, value: Int32(type.rawValue))
-        try statement.bindInt(index: 2, value: Int32(EventEntityStatus.pending.rawValue))
-        try statement.bindString(index: 3, value: body)
-        try statement.execute()
-    }
 }

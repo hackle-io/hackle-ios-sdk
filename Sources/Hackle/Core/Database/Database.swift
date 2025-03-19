@@ -4,7 +4,7 @@ class Database {
     private let lock: ReadWriteLock
     private let filepath: String?
     private(set) var version: Int
-    private let versionRepository = UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameVersion)
+    private let versionRepository = UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameDatabaseVersion)
 
     init(label: String, filename: String, version: Int) {
         self.lock = ReadWriteLock(label: label)
@@ -15,13 +15,15 @@ class Database {
 
         do {
             let currentVersion = getVersion(key: filename)
-            let ddls = getDDLs(oldVersion: currentVersion, newVersion: version)
+            let ddls = getDDLs()
+                .filter { $0.version > currentVersion && $0.version <= version }
             try executeDDLs(ddls: ddls)
         } catch {
             do {
                 Log.error("drop and recreate database \(label), because of error: \(error)")
                 try onDrop()
-                let ddls = getDDLs(oldVersion: Database.DEFAULT_VERSION, newVersion: version)
+                let ddls = getDDLs()
+                    .filter { $0.version > Database.DEFAULT_VERSION && $0.version <= version }
                 try executeDDLs(ddls: ddls)
             } catch {
                 Log.error("failed to create database \(label), because of error: \(error)")
@@ -44,12 +46,8 @@ class Database {
         }
     }
 
-    /// oldVersion ~ newVersion 사이의 DDL을 반환합니다.
-    /// - Parameters:
-    ///  - oldVersion: 이전 버전
-    ///  - newVersion: 새 버전
-    ///  - Returns: DDL 리스트
-    func getDDLs(oldVersion: Int, newVersion: Int) -> [DatabaseDDL] {
+    /// DDL을 반환합니다.
+    func getDDLs() -> [DatabaseDDL] {
         fatalError("getDDL(oldVersion: Int, newVersion: Int) has not been implemented")
     }
     
@@ -77,14 +75,10 @@ class Database {
     private func executeDDLs(ddls: [DatabaseDDL]) throws {
         for ddl in ddls {
             for query in ddl.statements {
-                do {
-                    try execute { database in
-                        try database.execute(
-                            sql: query
-                        )
-                    }
-                } catch {
-                    throw error
+                try execute { database in
+                    try database.execute(
+                        sql: query
+                    )
                 }
             }
         }

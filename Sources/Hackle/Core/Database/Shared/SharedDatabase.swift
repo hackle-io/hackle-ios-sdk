@@ -12,21 +12,15 @@ class SharedDatabase: Database {
         )
     }
     
-    override func getDDLs(oldVersion: Int, newVersion: Int) -> [DatabaseDDL] {
+    override func getDDLs() -> [DatabaseDDL] {
         return NotificationHistoryEntity.DDL_LIST
-            .filter { $0.version >= oldVersion && $0.version <= newVersion }
     }
     
     override func onDrop() throws {
-        do {
-            try execute { database in
-                try database.execute(
-                    sql: NotificationHistoryEntity.DROP_TABLE
-                )
-            }
-        } catch {
-            Log.error("Failed to delete tables: \(error)")
-            throw error
+        try execute { database in
+            try database.execute(
+                sql: NotificationHistoryEntity.DROP_TABLE
+            )
         }
     }
 }

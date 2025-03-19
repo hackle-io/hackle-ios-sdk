@@ -63,9 +63,19 @@ class SQLiteEventRepository: EventRepository {
             return
         }
         do {
+            let query =
+                "INSERT INTO \(EventEntity.TABLE_NAME) (" +
+                    "\(EventEntity.TYPE_COLUMN_NAME)," +
+                    "\(EventEntity.STATUS_COLUMN_NAME)," +
+                    "\(EventEntity.BODY_COLUMN_NAME)" +
+                ") VALUES (?, ?, ?)"
+            
             try database.execute { database in
-                try database.statement(sql: EventEntity.INSERT_TABLE).use { statement in
-                    try EventEntity.bind(statement: statement, type: event.type, body: body)
+                try database.statement(sql: query).use { statement in
+                    try statement.bindInt(index: 1, value: Int32(event.type.rawValue))
+                    try statement.bindInt(index: 2, value: Int32(EventEntityStatus.pending.rawValue))
+                    try statement.bindString(index: 3, value: body)
+                    try statement.execute()
                 }
             }
         } catch {

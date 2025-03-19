@@ -31,10 +31,38 @@ class DefaultNotificationRepository: NotificationRepository {
     
     func save(data: NotificationData, timestamp: Date) {
         do {
+            let query =
+                "INSERT INTO \(NotificationHistoryEntity.TABLE_NAME) (" +
+                    "\(NotificationHistoryEntity.WORKSPACE_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.ENVIRONMENT_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.PUSH_MESSAGE_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.PUSH_MESSAGE_KEY_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.TIMESTAMP_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.DEBUG_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.JOURNEY_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.JOURNEY_KEY_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.JOURNEY_NODE_ID_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.CAMPAIGN_TYPE_COLUMN_NAME)" +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            
             try sharedDatabase.execute { database in
-                try database.statement(sql: NotificationHistoryEntity.INSERT_TABLE)
+                try database.statement(sql: query)
                     .use { statement in
-                        try NotificationHistoryEntity.bind(statement: statement, data: data, timestamp: timestamp)
+                        try statement.bindInt(index: 1, value: data.workspaceId)
+                        try statement.bindInt(index: 2, value: data.environmentId)
+                        try statement.bindInt(index: 3, value: data.pushMessageId)
+                        try statement.bindInt(index: 4, value: data.pushMessageKey)
+                        try statement.bindInt(index: 5, value: data.pushMessageExecutionId)
+                        try statement.bindInt(index: 6, value: data.pushMessageDeliveryId)
+                        try statement.bindDouble(index: 7, value: timestamp.timeIntervalSince1970)
+                        try statement.bindBool(index: 8, value: data.debug)
+                        try statement.bindInt(index: 9, value: data.journeyId)
+                        try statement.bindInt(index: 10, value: data.journeyKey)
+                        try statement.bindInt(index: 11, value: data.journeyNodeId)
+                        try statement.bindString(index: 12, value: data.campaignType)
+                        try statement.execute()
                     }
             }
         } catch {
