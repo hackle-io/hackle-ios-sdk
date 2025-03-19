@@ -44,28 +44,17 @@ extension UserEvent {
 extension EventEntity {
     static let TABLE_NAME = "events"
     
-    enum Column: String {
-        case id = "id"
-        case type = "type"
-        case status = "status"
-        case body = "body"
-        
-        var index: Int32 {
-            switch self {
-            case .id: return 0
-            case .type: return 1
-            case .status: return 2
-            case .body: return 3
-            }
-        }
-    }
+    static let ID_COLUMN_NAME = "id"
+    static let TYPE_COLUMN_NAME = "type"
+    static let STATUS_COLUMN_NAME = "status"
+    static let BODY_COLUMN_NAME = "body"
 
     static let CREATE_TABLE =
         "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(Column.id.rawValue) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(Column.status.rawValue) INTEGER," +
-            "\(Column.type.rawValue) INTEGER," +
-            "\(Column.body.rawValue) TEXT" +
+            "\(ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "\(STATUS_COLUMN_NAME) INTEGER," +
+            "\(TYPE_COLUMN_NAME) INTEGER," +
+            "\(BODY_COLUMN_NAME) TEXT" +
         ")"
     
     static let DROP_TABLE = 
@@ -73,15 +62,15 @@ extension EventEntity {
     
     static let INSERT_TABLE =
         "INSERT INTO \(TABLE_NAME) (" +
-            "\(Column.type.rawValue)," +
-            "\(Column.status.rawValue)," +
-            "\(Column.body.rawValue)" +
+            "\(TYPE_COLUMN_NAME)," +
+            "\(STATUS_COLUMN_NAME)," +
+            "\(BODY_COLUMN_NAME)" +
         ") VALUES (?, ?, ?)"
     
     static func bind(statement: SQLiteStatement, type: UserEventType, body: String) throws {
-        try statement.bindInt(index: Column.type.index, value: Int32(type.rawValue))
-        try statement.bindInt(index: Column.status.index, value: Int32(EventEntityStatus.pending.rawValue))
-        try statement.bindString(index: Column.body.index, value: body)
+        try statement.bindInt(index: 1, value: Int32(type.rawValue))
+        try statement.bindInt(index: 2, value: Int32(EventEntityStatus.pending.rawValue))
+        try statement.bindString(index: 3, value: body)
         try statement.execute()
     }
 }

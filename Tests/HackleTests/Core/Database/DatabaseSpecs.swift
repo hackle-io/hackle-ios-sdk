@@ -15,6 +15,7 @@ class DatabaseSpec: QuickSpec {
         describe("Database") {
             var mockDB: MockDatabase!
             let testLabel = "TestDatabase"
+            let fileName = "test.db"
             
             beforeEach {
                 UserDefaults.standard.removeObject(forKey: testLabel)
@@ -22,31 +23,31 @@ class DatabaseSpec: QuickSpec {
             
             context("처음 초기화 시") {
                 it("onCreate가 호출되어야 함") {
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: 1)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 1)
                     expect(mockDB.onCreateCalled).toEventually(beTrue())
                 }
                 
                 it("버전이 최신으로 설정되고 onCreate, onMigration이 호출되어야 함") {
                     let version = MockDatabase.MAX_DATABASE_VERSION
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: version)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: version)
                     expect(mockDB.onCreateCalled).toEventually(beTrue())
                     expect(mockDB.onMigrationCalled).to(beTrue())
-                    expect(mockDB.getVersion(label: testLabel)).toEventually(equal(version))
+                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(version))
                 }
             }
             
             context("버전이 UserDefault에 저장되어야 함") {
                 it("버전이 저장되어야 함") {
                     let version = 2
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: version)
-                    expect(mockDB.getVersion(label: testLabel)).to(equal(version))
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: version)
+                    expect(mockDB.getVersion(key: fileName)).to(equal(version))
                 }
             }
             
             context("버전 업그레이드 시") {
                 beforeEach {
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: 2)
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: 3)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 3)
                 }
                 
                 it("onCreate 호출되어야 함") {
@@ -58,14 +59,14 @@ class DatabaseSpec: QuickSpec {
                 }
                 
                 it("새 버전이 저장되어야 함") {
-                    expect(mockDB.getVersion(label: testLabel)).to(equal(3))
+                    expect(mockDB.getVersion(key: fileName)).to(equal(3))
                 }
             }
             
             context("에러 발생 시") {
                 beforeEach {
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: 2)
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: MockDatabase.MAX_DATABASE_VERSION + 1)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: MockDatabase.MAX_DATABASE_VERSION + 1)
                 }
                 
                 it("onMigration이 호출되어야 함") {
@@ -83,7 +84,7 @@ class DatabaseSpec: QuickSpec {
             
             context("execute 메서드") {
                 it("잠금이 정상 작동해야 함") {
-                    mockDB = MockDatabase(label: testLabel, filename: "test.db", version: 2)
+                    mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
                     var result = 0
                     
                     

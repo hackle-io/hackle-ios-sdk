@@ -52,136 +52,116 @@ class NotificationHistoryEntity {
 
 extension NotificationHistoryEntity {
     static let TABLE_NAME = "notification_histories"
-
-    enum Column: String {
-        case historyId = "history_id"
-        case workspaceId = "workspace_id"
-        case environmentId = "environment_id"
-        case pushMessageId = "push_message_id"
-        case pushMessageKey = "push_message_key"
-        case pushMessageExecutionId = "push_message_execution_id"
-        case pushMessageDeliveryId = "push_message_delivery_id"
-        case timestamp = "timestamp"
-        case debug = "debug"
-        case journeyId = "journey_id"
-        case journeyKey = "journey_key"
-        case journeyNodeId = "journey_node_id"
-        case campaignType = "campaign_type"
-        
-        var index: Int32 {
-            switch self {
-            case .historyId: return 0
-            case .workspaceId: return 1
-            case .environmentId: return 2
-            case .pushMessageId: return 3
-            case .pushMessageKey: return 4
-            case .pushMessageExecutionId: return 5
-            case .pushMessageDeliveryId: return 6
-            case .timestamp: return 7
-            case .debug: return 8
-            case .journeyId: return 9
-            case .journeyKey: return 10
-            case .journeyNodeId: return 11
-            case .campaignType: return 12
-            }
-        }
-    }
+    
+    static let HISTORY_ID_COLUMN_NAME = "history_id"
+    static let WORKSPACE_ID_COLUMN_NAME = "workspace_id"
+    static let ENVIRONMENT_ID_COLUMN_NAME = "environment_id"
+    static let PUSH_MESSAGE_ID_COLUMN_NAME = "push_message_id"
+    static let PUSH_MESSAGE_KEY_COLUMN_NAME = "push_message_key"
+    static let PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME = "push_message_execution_id"
+    static let PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME = "push_message_delivery_id"
+    static let TIMESTAMP_COLUMN_NAME = "timestamp"
+    static let DEBUG_COLUMN_NAME = "debug"
+    static let JOURNEY_ID_COLUMN_NAME = "journey_id"
+    static let JOURNEY_KEY_COLUMN_NAME = "journey_key"
+    static let JOURNEY_NODE_ID_COLUMN_NAME = "journey_node_id"
+    static let CAMPAIGN_TYPE_COLUMN_NAME = "campaign_type"
     
     static let CREATE_TABLE_V1 =
         "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(Column.historyId.rawValue) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(Column.workspaceId.rawValue) INTEGER NOT NULL," +
-            "\(Column.environmentId.rawValue) INTEGER NOT NULL," +
-            "\(Column.pushMessageId.rawValue) INTEGER," +
-            "\(Column.pushMessageKey.rawValue) INTEGER," +
-            "\(Column.pushMessageExecutionId.rawValue) INTEGER," +
-            "\(Column.pushMessageDeliveryId.rawValue) INTEGER," +
-            "\(Column.timestamp.rawValue) string," +
-            "\(Column.debug.rawValue) INTEGER" +
+            "\(HISTORY_ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "\(WORKSPACE_ID_COLUMN_NAME) INTEGER NOT NULL," +
+            "\(ENVIRONMENT_ID_COLUMN_NAME) INTEGER NOT NULL," +
+            "\(PUSH_MESSAGE_ID_COLUMN_NAME) INTEGER," +
+            "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
+            "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
+            "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
+            "\(TIMESTAMP_COLUMN_NAME) string," +
+            "\(DEBUG_COLUMN_NAME) INTEGER" +
         ")"
     
     static let CREATE_LATEST_TABLE =
         "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(Column.historyId.rawValue) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(Column.workspaceId.rawValue) INTEGER NOT NULL," +
-            "\(Column.environmentId.rawValue) INTEGER NOT NULL," +
-            "\(Column.pushMessageId.rawValue) INTEGER," +
-            "\(Column.pushMessageKey.rawValue) INTEGER," +
-            "\(Column.pushMessageExecutionId.rawValue) INTEGER," +
-            "\(Column.pushMessageDeliveryId.rawValue) INTEGER," +
-            "\(Column.timestamp.rawValue) string," +
-            "\(Column.debug.rawValue) INTEGER," +
-            "\(Column.journeyId.rawValue) INTEGER," +
-            "\(Column.journeyKey.rawValue) INTEGER," +
-            "\(Column.journeyNodeId.rawValue) INTEGER," +
-            "\(Column.campaignType.rawValue) TEXT" +
+            "\(HISTORY_ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "\(WORKSPACE_ID_COLUMN_NAME) INTEGER NOT NULL," +
+            "\(ENVIRONMENT_ID_COLUMN_NAME) INTEGER NOT NULL," +
+            "\(PUSH_MESSAGE_ID_COLUMN_NAME) INTEGER," +
+            "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
+            "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
+            "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
+            "\(TIMESTAMP_COLUMN_NAME) string," +
+            "\(DEBUG_COLUMN_NAME) INTEGER," +
+            "\(JOURNEY_ID_COLUMN_NAME) INTEGER," +
+            "\(JOURNEY_KEY_COLUMN_NAME) INTEGER," +
+            "\(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER," +
+            "\(CAMPAIGN_TYPE_COLUMN_NAME) TEXT" +
         ")"
     
     static let DROP_TABLE =
         "DROP TABLE IF EXISTS \(TABLE_NAME)"
 
     static let ADD_JOURNEY_ID =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(Column.journeyId.rawValue) INTEGER"
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_ID_COLUMN_NAME) INTEGER"
 
     static let ADD_JOURNEY_KEY =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(Column.journeyKey.rawValue) INTEGER"
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_KEY_COLUMN_NAME) INTEGER"
 
     static let ADD_JOURNEY_NODE_ID =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(Column.journeyNodeId.rawValue) INTEGER"
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER"
 
     static let ADD_CAMPAIGN_TYPE =
-        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(Column.campaignType.rawValue) TEXT"
+        "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) TEXT"
     
     static let TABLE_EXISTS =
         "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='\(TABLE_NAME)')"
     
     static let INSERT_TABLE =
         "INSERT INTO \(NotificationHistoryEntity.TABLE_NAME) (" +
-            "\(NotificationHistoryEntity.Column.workspaceId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.environmentId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.pushMessageId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.pushMessageKey.rawValue)," +
-            "\(NotificationHistoryEntity.Column.pushMessageExecutionId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.pushMessageDeliveryId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.timestamp.rawValue)," +
-            "\(NotificationHistoryEntity.Column.debug.rawValue)," +
-            "\(NotificationHistoryEntity.Column.journeyId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.journeyKey.rawValue)," +
-            "\(NotificationHistoryEntity.Column.journeyNodeId.rawValue)," +
-            "\(NotificationHistoryEntity.Column.campaignType.rawValue)" +
+            "\(NotificationHistoryEntity.WORKSPACE_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.ENVIRONMENT_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.PUSH_MESSAGE_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.PUSH_MESSAGE_KEY_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.TIMESTAMP_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.DEBUG_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.JOURNEY_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.JOURNEY_KEY_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.JOURNEY_NODE_ID_COLUMN_NAME)," +
+            "\(NotificationHistoryEntity.CAMPAIGN_TYPE_COLUMN_NAME)" +
         ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     
     static func bind(statement: SQLiteStatement, data: NotificationData, timestamp: Date) throws {
-        try statement.bindInt(index: Column.workspaceId.index, value: data.workspaceId)
-        try statement.bindInt(index: Column.environmentId.index, value: data.environmentId)
-        try statement.bindInt(index: Column.pushMessageId.index, value: data.pushMessageId)
-        try statement.bindInt(index: Column.pushMessageKey.index, value: data.pushMessageKey)
-        try statement.bindInt(index: Column.pushMessageExecutionId.index, value: data.pushMessageExecutionId)
-        try statement.bindInt(index: Column.pushMessageDeliveryId.index, value: data.pushMessageDeliveryId)
-        try statement.bindDouble(index: Column.timestamp.index, value: timestamp.timeIntervalSince1970)
-        try statement.bindBool(index: Column.debug.index, value: data.debug)
-        try statement.bindInt(index: Column.journeyId.index, value: data.journeyId)
-        try statement.bindInt(index: Column.journeyKey.index, value: data.journeyKey)
-        try statement.bindInt(index: Column.journeyNodeId.index, value: data.journeyNodeId)
-        try statement.bindString(index: Column.campaignType.index, value: data.campaignType)
+        try statement.bindInt(index: 1, value: data.workspaceId)
+        try statement.bindInt(index: 2, value: data.environmentId)
+        try statement.bindInt(index: 3, value: data.pushMessageId)
+        try statement.bindInt(index: 4, value: data.pushMessageKey)
+        try statement.bindInt(index: 5, value: data.pushMessageExecutionId)
+        try statement.bindInt(index: 6, value: data.pushMessageDeliveryId)
+        try statement.bindDouble(index: 7, value: timestamp.timeIntervalSince1970)
+        try statement.bindBool(index: 8, value: data.debug)
+        try statement.bindInt(index: 9, value: data.journeyId)
+        try statement.bindInt(index: 10, value: data.journeyKey)
+        try statement.bindInt(index: 11, value: data.journeyNodeId)
+        try statement.bindString(index: 12, value: data.campaignType)
         try statement.execute()
     }
     
     static func from(cursor: SQLiteCursor) -> NotificationHistoryEntity {
         return NotificationHistoryEntity(
-            historyId: cursor.getInt64(Column.historyId.index),
-            workspaceId: cursor.getInt64(Column.workspaceId.index),
-            environmentId: cursor.getInt64(Column.environmentId.index),
-            pushMessageId: cursor.getInt64(Column.pushMessageId.index),
-            pushMessageKey: cursor.getInt64(Column.pushMessageKey.index),
-            pushMessageExecutionId: cursor.getInt64(Column.pushMessageExecutionId.index),
-            pushMessageDeliveryId: cursor.getInt64(Column.pushMessageDeliveryId.index),
-            timestamp: Date(timeIntervalSince1970: cursor.getDouble(Column.timestamp.index)),
-            debug: cursor.getBool(Column.debug.index),
-            journeyId: cursor.getInt64(Column.journeyId.index),
-            journeyKey: cursor.getInt64(Column.journeyKey.index),
-            journeyNodeId: cursor.getInt64(Column.journeyNodeId.index),
-            campaignType: cursor.getString(Column.campaignType.index)
+            historyId: cursor.getInt64(0),
+            workspaceId: cursor.getInt64(1),
+            environmentId: cursor.getInt64(2),
+            pushMessageId: cursor.getInt64(3),
+            pushMessageKey: cursor.getInt64(4),
+            pushMessageExecutionId: cursor.getInt64(5),
+            pushMessageDeliveryId: cursor.getInt64(6),
+            timestamp: Date(timeIntervalSince1970: cursor.getDouble(7)),
+            debug: cursor.getBool(8),
+            journeyId: cursor.getInt64(9),
+            journeyKey: cursor.getInt64(10),
+            journeyNodeId: cursor.getInt64(11),
+            campaignType: cursor.getString(12)
         )
     }
 }

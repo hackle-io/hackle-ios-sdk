@@ -47,7 +47,7 @@ class SQLiteEventRepository: EventRepository {
     }
 
     func countBy(status: EventEntityStatus) -> Int {
-        let sql = "SELECT COUNT(*) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.Column.status.rawValue) = \(status.rawValue)"
+        let sql = "SELECT COUNT(*) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.STATUS_COLUMN_NAME) = \(status.rawValue)"
         do {
             return try database.execute { database -> Int in
                 try database.queryForInt(sql: sql)
@@ -95,19 +95,19 @@ class SQLiteEventRepository: EventRepository {
     private func getEvents(database: SQLiteDatabase, status: EventEntityStatus, limit: Int? = nil) throws -> [EventEntity] {
         let sql: String
         if let limit = limit {
-            sql = "SELECT \(EventEntity.Column.id.rawValue), \(EventEntity.Column.type.rawValue), \(EventEntity.Column.status.rawValue), \(EventEntity.Column.body.rawValue) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.Column.status.rawValue) = \(status.rawValue) ORDER BY \(EventEntity.Column.id.rawValue) ASC LIMIT \(limit)"
+            sql = "SELECT \(EventEntity.ID_COLUMN_NAME), \(EventEntity.TYPE_COLUMN_NAME), \(EventEntity.STATUS_COLUMN_NAME), \(EventEntity.BODY_COLUMN_NAME) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.STATUS_COLUMN_NAME) = \(status.rawValue) ORDER BY \(EventEntity.ID_COLUMN_NAME) ASC LIMIT \(limit)"
         } else {
-            sql = "SELECT \(EventEntity.Column.id.rawValue), \(EventEntity.Column.type.rawValue), \(EventEntity.Column.status.rawValue), \(EventEntity.Column.body.rawValue) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.Column.status.rawValue) = \(status.rawValue)"
+            sql = "SELECT \(EventEntity.ID_COLUMN_NAME), \(EventEntity.TYPE_COLUMN_NAME), \(EventEntity.STATUS_COLUMN_NAME), \(EventEntity.BODY_COLUMN_NAME) FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.STATUS_COLUMN_NAME) = \(status.rawValue)"
         }
 
         return try database.query(sql: sql).use { cursor in
             var events = [EventEntity]()
             while cursor.moveToNext() {
                 let event = EventEntity(
-                    id: cursor.getInt64(EventEntity.Column.id.index),
-                    type: UserEventType(rawValue: cursor.getInt(EventEntity.Column.type.index))!,
-                    status: EventEntityStatus(rawValue: cursor.getInt(EventEntity.Column.status.index))!,
-                    body: cursor.getString(EventEntity.Column.body.index)
+                    id: cursor.getInt64(0),
+                    type: UserEventType(rawValue: cursor.getInt(1))!,
+                    status: EventEntityStatus(rawValue: cursor.getInt(2))!,
+                    body: cursor.getString(3)
                 )
                 events.append(event)
             }
@@ -120,7 +120,7 @@ class SQLiteEventRepository: EventRepository {
                 String(it.id)
             }
             .joined(separator: ",")
-        let sql = "UPDATE \(EventEntity.TABLE_NAME) SET \(EventEntity.Column.status.rawValue) = \(status.rawValue) WHERE \(EventEntity.Column.id.rawValue) IN (\(ids))"
+        let sql = "UPDATE \(EventEntity.TABLE_NAME) SET \(EventEntity.STATUS_COLUMN_NAME) = \(status.rawValue) WHERE \(EventEntity.ID_COLUMN_NAME) IN (\(ids))"
         try database.execute(sql: sql)
     }
 
@@ -151,7 +151,7 @@ class SQLiteEventRepository: EventRepository {
             }
             .joined(separator: ",")
 
-        let sql = "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.Column.id.rawValue) IN (\(ids))"
+        let sql = "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.ID_COLUMN_NAME) IN (\(ids))"
 
         do {
             try database.execute { database in
@@ -165,8 +165,8 @@ class SQLiteEventRepository: EventRepository {
     func deleteOldEvents(count: Int) {
         do {
             try database.execute { database in
-                let id = try database.queryForInt(sql: "SELECT \(EventEntity.Column.id.rawValue) FROM \(EventEntity.TABLE_NAME) LIMIT 1 OFFSET \(count - 1)")
-                try database.execute(sql: "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.Column.id.rawValue) <= \(id)")
+                let id = try database.queryForInt(sql: "SELECT \(EventEntity.ID_COLUMN_NAME) FROM \(EventEntity.TABLE_NAME) LIMIT 1 OFFSET \(count - 1)")
+                try database.execute(sql: "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.ID_COLUMN_NAME) <= \(id)")
             }
         } catch {
             Log.error("Failed to delete events: \(error)")

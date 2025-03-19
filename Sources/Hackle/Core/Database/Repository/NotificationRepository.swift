@@ -17,8 +17,8 @@ class DefaultNotificationRepository: NotificationRepository {
     func count(workspaceId: Int64, environmentId: Int64) -> Int {
         let query = 
             "SELECT COUNT(*) FROM \(NotificationHistoryEntity.TABLE_NAME) " +
-                "WHERE \(NotificationHistoryEntity.Column.workspaceId.rawValue) = \(workspaceId) AND " +
-                    "\(NotificationHistoryEntity.Column.environmentId.rawValue) = \(environmentId)"
+                "WHERE \(NotificationHistoryEntity.WORKSPACE_ID_COLUMN_NAME) = \(workspaceId) AND " +
+                    "\(NotificationHistoryEntity.ENVIRONMENT_ID_COLUMN_NAME) = \(environmentId)"
         do {
             return try sharedDatabase.execute { database -> Int in
                 try database.queryForInt(sql: query)
@@ -45,8 +45,8 @@ class DefaultNotificationRepository: NotificationRepository {
     func getEntities(workspaceId: Int64, environmentId: Int64, limit: Int? = nil) -> [NotificationHistoryEntity] {
         var query =
             "SELECT * FROM \(NotificationHistoryEntity.TABLE_NAME) " +
-                "WHERE \(NotificationHistoryEntity.Column.workspaceId.rawValue) = \(workspaceId) AND " +
-                    "\(NotificationHistoryEntity.Column.environmentId.rawValue) = \(environmentId)"
+                "WHERE \(NotificationHistoryEntity.WORKSPACE_ID_COLUMN_NAME) = \(workspaceId) AND " +
+                    "\(NotificationHistoryEntity.ENVIRONMENT_ID_COLUMN_NAME) = \(environmentId)"
         if let limit = limit {
             query.append(" LIMIT \(limit)")
         }
@@ -74,7 +74,7 @@ class DefaultNotificationRepository: NotificationRepository {
             .joined(separator: ",")
         let query = 
             "DELETE FROM \(NotificationHistoryEntity.TABLE_NAME) " +
-                "WHERE \(NotificationHistoryEntity.Column.historyId.rawValue) IN (\(ids))"
+                "WHERE \(NotificationHistoryEntity.HISTORY_ID_COLUMN_NAME) IN (\(ids))"
         
         do {
             try sharedDatabase.execute { database in

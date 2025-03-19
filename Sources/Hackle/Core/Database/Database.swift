@@ -4,7 +4,7 @@ class Database {
     private let lock: ReadWriteLock
     private let filepath: String?
     private(set) var version: Int
-    private let userDefaults = UserDefaults.standard
+    private let versionRepository = UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameVersion)
 
     init(label: String, filename: String, version: Int) {
         self.lock = ReadWriteLock(label: label)
@@ -18,7 +18,7 @@ class Database {
             // 단, create 할 때 if exist 필수
             try onCreate()
             
-            let currentVersion = getVersion(label: label)
+            let currentVersion = getVersion(key: filename)
             if currentVersion < version {
                 try onMigration(oldVersion: currentVersion, newVersion: version)
             }
@@ -28,7 +28,7 @@ class Database {
             onCreateLatest()
         }
 
-        setVersion(label: label)
+        setVersion(key: filename)
     }
     
     /// 쿼리를 실행합니다.
@@ -87,15 +87,15 @@ class Database {
     /// 현재 database의 version을 가져옵니다.
     ///
     /// - Returns: 현재 database의 version
-    func getVersion(label: String) -> Int {
-        return userDefaults.integer(forKey: label)
+    func getVersion(key: String) -> Int {
+        return versionRepository.getInteger(key: key)
     }
 
     /// database의 version을 변경합니다.
     ///
     /// 임의로 버전을 파라미터로 받지 않고, `version` 을 사용합니다.
-    private func setVersion(label: String) {
-        userDefaults.set(version, forKey: label)
+    private func setVersion(key: String) {
+        versionRepository.putInteger(key: key, value: version)
     }
 
     static let DEFAULT_VERSION = 0

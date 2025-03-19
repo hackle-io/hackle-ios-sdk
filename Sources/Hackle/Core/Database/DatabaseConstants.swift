@@ -15,4 +15,4 @@ let storageSuiteNameIAM: String = "Hackle_iam_%@"
 let storageSuiteNameIAMImpression: String = "Hackle_iam_impression_%@"
 let storageSuiteNameRemoteConfigEventDedup: String = "Hackle_remote_config_event_dedup_%@"
 let storageSuiteNameExposureEventDedup: String = "Hackle_exposure_event_dedup_%@"
-
+let storageSuiteNameVersion: String = "Hackle_database_version"
