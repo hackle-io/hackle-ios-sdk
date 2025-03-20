@@ -64,6 +64,7 @@ class Target {
             case gte = "GTE"
             case lt = "LT"
             case lte = "LTE"
+            case exists = "EXISTS"
         }
     }
 
