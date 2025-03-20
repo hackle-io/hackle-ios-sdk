@@ -110,8 +110,8 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         it("when login event occur 3 yesterday and match condition is login event in 1 day and target value is 3 at today 8:00, success") {
             self.clock.setKstTime(8)
             let targetEvents = [
-                TargetEvent(eventKey: "login", stats: self.makeSingleTargetEventStat(daysAgo: 1, count: 3), property: nil),
-                TargetEvent(eventKey: "prucase", stats: self.makeTargetEventStat(daysAgo: 1, count: 3), property: nil)
+                TargetEvent(eventKey: "login", stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 3), property: nil),
+                TargetEvent(eventKey: "prucase", stats: self.makeTargetEventStat(daysAgo: 0, count: 3), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
@@ -469,7 +469,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
     /// - daysAgo: target ago day
     /// - Returns: timestamp
     private func getTimeStamp(daysAgo: Int) -> Int64 {
-        let currentMills = SystemClock.shared.currentMillis()
+        let currentMills = self.clock.currentMillis()
         let daysAgoMillis = (try? daysAgo.getDaysToMilliseconds()) ?? 0
         let timeStamp = currentMills - (currentMills % (24 * 60 * 60 * 1000)) - daysAgoMillis
         return timeStamp
