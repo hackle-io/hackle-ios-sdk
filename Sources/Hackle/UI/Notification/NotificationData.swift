@@ -14,6 +14,12 @@ class NotificationData {
     let imageUrl: String?
     let clickAction: NotificationClickAction
     let link: String?
+    
+    let journeyId: Int64?
+    let journeyKey: Int64?
+    let journeyNodeId: Int64?
+    let campaignType: String?
+    
     let debug: Bool
     
     init(
@@ -27,6 +33,10 @@ class NotificationData {
         imageUrl: String?,
         clickAction: NotificationClickAction,
         link: String?,
+        journeyId: Int64?,
+        journeyKey: Int64?,
+        journeyNodeId: Int64?,
+        campaignType: String?,
         debug: Bool
     ) {
         self.workspaceId = workspaceId
@@ -39,6 +49,10 @@ class NotificationData {
         self.imageUrl = imageUrl
         self.clickAction = clickAction
         self.link = link
+        self.journeyId = journeyId
+        self.journeyKey = journeyKey
+        self.journeyNodeId = journeyNodeId
+        self.campaignType = campaignType
         self.debug = debug
     }
 }
@@ -55,6 +69,10 @@ extension NotificationData {
     static let KEY_IMAGE_URL = "imageUrl"
     static let KEY_CLICK_ACTION = "clickAction"
     static let KEY_LINK = "link"
+    static let KEY_JOURNEY_ID = "journeyId"
+    static let KEY_JOURNEY_KEY = "journeyKey"
+    static let KEY_JOURNEY_NODE_ID = "journeyNodeId"
+    static let KEY_CAMPAIGN_TYPE = "campaignType"
     static let KEY_DEBUG = "debug"
     
     static func from(data: [AnyHashable: Any]) -> NotificationData? {
@@ -76,6 +94,10 @@ extension NotificationData {
                     rawValue: hackle[KEY_CLICK_ACTION] as? String
                 ),
                 link: hackle[KEY_LINK] as? String,
+                journeyId: hackle[KEY_JOURNEY_ID].asIntOrNil(),
+                journeyKey: hackle[KEY_JOURNEY_KEY].asIntOrNil(),
+                journeyNodeId: hackle[KEY_JOURNEY_NODE_ID].asIntOrNil(),
+                campaignType: hackle[KEY_CAMPAIGN_TYPE] as? String,
                 debug: hackle[KEY_DEBUG] as? Bool ?? false
             )
         } catch {

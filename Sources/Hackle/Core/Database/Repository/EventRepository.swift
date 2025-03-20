@@ -62,13 +62,16 @@ class SQLiteEventRepository: EventRepository {
         guard let body = event.toBody() else {
             return
         }
-        let sql = String(
-            format: "INSERT INTO %@ (%@, %@, %@) VALUES (?, ?, ?)",
-            EventEntity.TABLE_NAME, EventEntity.TYPE_COLUMN_NAME, EventEntity.STATUS_COLUMN_NAME, EventEntity.BODY_COLUMN_NAME
-        )
         do {
+            let query =
+                "INSERT INTO \(EventEntity.TABLE_NAME) (" +
+                    "\(EventEntity.TYPE_COLUMN_NAME)," +
+                    "\(EventEntity.STATUS_COLUMN_NAME)," +
+                    "\(EventEntity.BODY_COLUMN_NAME)" +
+                ") VALUES (?, ?, ?)"
+            
             try database.execute { database in
-                try database.statement(sql: sql).use { statement in
+                try database.statement(sql: query).use { statement in
                     try statement.bindInt(index: 1, value: Int32(event.type.rawValue))
                     try statement.bindInt(index: 2, value: Int32(EventEntityStatus.pending.rawValue))
                     try statement.bindString(index: 3, value: body)
