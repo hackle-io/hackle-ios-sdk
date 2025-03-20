@@ -501,7 +501,7 @@ class NotificationManagerSpec: QuickSpec {
                 .build()
             every(userManager.toHackleUserMock).returns(hackleUser)
 
-            var timeStamp = Date()
+            let timeStamp = Date()
             manager.onNotificationDataReceived(
                 data: NotificationData(
                     workspaceId: 123,
@@ -562,7 +562,7 @@ class NotificationManagerSpec: QuickSpec {
                 expect(entity.debug) == true
                 expect(entity.workspaceId) == 123
                 expect(entity.environmentId) == 456
-                expect(entity.timestamp) == timeStamp
+                expect(entity.timestamp.timeIntervalSince1970) == timeStamp.timeIntervalSince1970
                 
                 let entity2 = entities[1]
                 expect(entity2.pushMessageId) == 2222
@@ -576,7 +576,7 @@ class NotificationManagerSpec: QuickSpec {
                 expect(entity2.debug) == false
                 expect(entity2.workspaceId) == 123
                 expect(entity2.environmentId) == 456
-                expect(entity2.timestamp) == timeStamp
+                expect(entity2.timestamp.timeIntervalSince1970) == timeStamp.timeIntervalSince1970
             }
         }
     }
