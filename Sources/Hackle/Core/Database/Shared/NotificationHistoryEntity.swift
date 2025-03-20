@@ -11,6 +11,11 @@ class NotificationHistoryEntity {
     let pushMessageExecutionId: Int64?
     let pushMessageDeliveryId: Int64?
     
+    let journeyId: Int64?
+    let journeyKey: Int64?
+    let journeyNodeId: Int64?
+    let campaignType: String?
+    
     let timestamp: Date
     let debug: Bool
     
@@ -23,7 +28,11 @@ class NotificationHistoryEntity {
         pushMessageExecutionId: Int64?,
         pushMessageDeliveryId: Int64?,
         timestamp: Date,
-        debug: Bool
+        debug: Bool,
+        journeyId: Int64?,
+        journeyKey: Int64?,
+        journeyNodeId: Int64?,
+        campaignType: String?
     ) {
         self.historyId = historyId
         self.workspaceId = workspaceId
@@ -34,46 +43,76 @@ class NotificationHistoryEntity {
         self.pushMessageDeliveryId = pushMessageDeliveryId
         self.timestamp = timestamp
         self.debug = debug
+        self.journeyId = journeyId
+        self.journeyKey = journeyKey
+        self.journeyNodeId = journeyNodeId
+        self.campaignType = campaignType
     }
 }
 
 extension NotificationHistoryEntity {
     static let TABLE_NAME = "notification_histories"
     
-    static let COLUMN_HISTORY_ID = "history_id"
-    static let COLUMN_WORKSPACE_ID = "workspace_id"
-    static let COLUMN_ENVIRONMENT_ID = "environment_id"
-    static let COLUMN_PUSH_MESSAGE_ID = "push_message_id"
-    static let COLUMN_PUSH_MESSAGE_KEY = "push_message_key"
-    static let COLUMN_PUSH_MESSAGE_EXECUTION_ID = "push_message_execution_id"
-    static let COLUMN_PUSH_MESSAGE_DELIVERY_ID = "push_message_delivery_id"
-    static let COLUMN_TIMESTAMP = "timestamp"
-    static let COLUMN_DEBUG = "debug"
+    static let HISTORY_ID_COLUMN_NAME = "history_id"
+    static let WORKSPACE_ID_COLUMN_NAME = "workspace_id"
+    static let ENVIRONMENT_ID_COLUMN_NAME = "environment_id"
+    static let PUSH_MESSAGE_ID_COLUMN_NAME = "push_message_id"
+    static let PUSH_MESSAGE_KEY_COLUMN_NAME = "push_message_key"
+    static let PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME = "push_message_execution_id"
+    static let PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME = "push_message_delivery_id"
+    static let TIMESTAMP_COLUMN_NAME = "timestamp"
+    static let DEBUG_COLUMN_NAME = "debug"
+    static let JOURNEY_ID_COLUMN_NAME = "journey_id"
+    static let JOURNEY_KEY_COLUMN_NAME = "journey_key"
+    static let JOURNEY_NODE_ID_COLUMN_NAME = "journey_node_id"
+    static let CAMPAIGN_TYPE_COLUMN_NAME = "campaign_type"
     
-    static let CREATE_TABLE =
-        "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
-            "\(COLUMN_HISTORY_ID) INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\(COLUMN_WORKSPACE_ID) INTEGER NOT NULL," +
-            "\(COLUMN_ENVIRONMENT_ID) INTEGER NOT NULL," +
-            "\(COLUMN_PUSH_MESSAGE_ID) INTEGER," +
-            "\(COLUMN_PUSH_MESSAGE_KEY) INTEGER," +
-            "\(COLUMN_PUSH_MESSAGE_EXECUTION_ID) INTEGER," +
-            "\(COLUMN_PUSH_MESSAGE_DELIVERY_ID) INTEGER," +
-            "\(COLUMN_TIMESTAMP) INTEGER," +
-            "\(COLUMN_DEBUG) INTEGER" +
-        ")"
+    static let DDL_LIST = [
+        DatabaseDDL(
+            version: 1,
+            statements: [
+                "CREATE TABLE IF NOT EXISTS \(TABLE_NAME) (" +
+                    "\(HISTORY_ID_COLUMN_NAME) INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "\(WORKSPACE_ID_COLUMN_NAME) INTEGER NOT NULL," +
+                    "\(ENVIRONMENT_ID_COLUMN_NAME) INTEGER NOT NULL," +
+                    "\(PUSH_MESSAGE_ID_COLUMN_NAME) INTEGER," +
+                    "\(PUSH_MESSAGE_KEY_COLUMN_NAME) INTEGER," +
+                    "\(PUSH_MESSAGE_EXECUTION_ID_COLUMN_NAME) INTEGER," +
+                    "\(PUSH_MESSAGE_DELIVERY_ID_COLUMN_NAME) INTEGER," +
+                    "\(TIMESTAMP_COLUMN_NAME) INTEGER," +
+                    "\(DEBUG_COLUMN_NAME) INTEGER" +
+                ")"
+            ]
+        ),
+        DatabaseDDL(
+            version: 2,
+            statements: [
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_ID_COLUMN_NAME) INTEGER",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_KEY_COLUMN_NAME) INTEGER",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) TEXT"
+            ]
+         )
+    ]
+
+    static let DROP_TABLE =
+        "DROP TABLE IF EXISTS \(TABLE_NAME)"
     
     static func from(cursor: SQLiteCursor) -> NotificationHistoryEntity {
         return NotificationHistoryEntity(
             historyId: cursor.getInt64(0),
             workspaceId: cursor.getInt64(1),
             environmentId: cursor.getInt64(2),
-            pushMessageId: cursor.getInt64(3),
-            pushMessageKey: cursor.getInt64(4),
-            pushMessageExecutionId: cursor.getInt64(5),
-            pushMessageDeliveryId: cursor.getInt64(6),
+            pushMessageId: cursor.getInt64OrNil(3),
+            pushMessageKey: cursor.getInt64OrNil(4),
+            pushMessageExecutionId: cursor.getInt64OrNil(5),
+            pushMessageDeliveryId: cursor.getInt64OrNil(6),
             timestamp: Date(timeIntervalSince1970: cursor.getDouble(7)),
-            debug: cursor.getBool(8)
+            debug: cursor.getBool(8),
+            journeyId: cursor.getInt64OrNil(9),
+            journeyKey: cursor.getInt64OrNil(10),
+            journeyNodeId: cursor.getInt64OrNil(11),
+            campaignType: cursor.getStringOrNil(12)
         )
     }
 }

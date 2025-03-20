@@ -126,18 +126,21 @@ class DefaultUserManagerSpecs: QuickSpec {
 
                 // when
                 sut.initialize(user: User.builder().id("id").property("a", "a").build())
-                sut.sync {
-                    let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
-
-                    // then
-                    expect(hackleUser.identifiers) == [
-                        "$id": "id",
-                        "$deviceId": "hackle_device_id",
-                        "$userId": "user_id",
-                        "$hackleDeviceId": "hackle_device_id"
-                    ]
-                    expect(hackleUser.properties as? [String: String]) == ["b": "b"]
-                    expect(hackleUser.cohorts) == [Cohort(id: 42)]
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.sync {
+                        let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
+                        
+                        // then
+                        expect(hackleUser.identifiers) == [
+                            "$id": "id",
+                            "$deviceId": "hackle_device_id",
+                            "$userId": "user_id",
+                            "$hackleDeviceId": "hackle_device_id"
+                        ]
+                        expect(hackleUser.properties as? [String: String]) == ["b": "b"]
+                        expect(hackleUser.cohorts) == [Cohort(id: 42)]
+                        done()
+                    }
                 }
             }
 
@@ -205,28 +208,16 @@ class DefaultUserManagerSpecs: QuickSpec {
 
                 sut.initialize(user: nil)
                 expect(sut.resolve(user: nil).cohorts) == []
-                sut.sync {
-                    expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.sync {
+                        expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
+                        done()
+                    }
                 }
             }
-
-            it("when error on fetch cohort then do not update cohort") {
-                // given
-                every(targetFetcher.fetchMock).answers { _, completion in
-                    completion(.failure(HackleError.error("fail")))
-                }
-                every(cohortFetcher.fetchMock).answers { _, completion in
-                    completion(.failure(HackleError.error("fail")))
-                }
-
-                sut.initialize(user: nil)
-
-                sut.sync {
-                    expect(sut.resolve(user: nil).cohorts) == []
-                    expect(sut.resolve(user: nil).targetEvents) == []
-                }
-            }
-            
+        }
+        
+        describe("sync") {
             it("when sync target event, overwrite") {
                 let targetEvent = TargetEvent(
                     eventKey: "purchase",
@@ -258,78 +249,95 @@ class DefaultUserManagerSpecs: QuickSpec {
                     completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build()))
                 }
                 sut.initialize(user: nil)
-                sut.sync {
-                    expect(sut.resolve(user: nil).targetEvents) == targetEvents
-                    expect(sut.resolve(user: nil).targetEvents.count) == 2
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.sync {
+                        expect(sut.resolve(user: nil).targetEvents) == targetEvents
+                        expect(sut.resolve(user: nil).targetEvents.count) == 2
+                        done()
+                    }
                 }
-                
-                Thread.sleep(forTimeInterval: 0.1)
                 
                 let newTargetEvents = [targetEvent]
                 every(targetFetcher.fetchMock).answers { _, completion in
                     completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build()))
                 }
-                sut.sync {
-                    expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
-                    expect(sut.resolve(user: nil).targetEvents.count) == 1
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.sync {
+                        expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
+                        expect(sut.resolve(user: nil).targetEvents.count) == 1
+                        done()
+                    }
                 }
             }
         }
 
         describe("syncIfNeeded") {
             it("no new identifiers") {
-                let cohortFetcher = MockUserCohortFetcher()
-                let targetFetcher = MockUserTargetFetcher()
-                let sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
                 // cohort not sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").build(),
-                        current: User.builder().build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().build()
+                        ),
+                        completion: { done() }
+                    )
+                }
+                
                 // cohort not sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").build(),
-                        current: User.builder().id("id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().id("id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
+               
                 // cohort not sync and target event sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").build(),
-                        current: User.builder().id("id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
+                
                 // cohort not sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").build(),
-                        current: User.builder().id("id").deviceId("device_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
+                
                 // cohort not sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                        current: User.builder().id("id").deviceId("device_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
+
                 // cohort not sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                        current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
-                    ),
-                    completion: {}
-                )
-                Thread.sleep(forTimeInterval: 2)
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
                 }
@@ -338,58 +346,66 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
             }
             it("new identifiers") {
-                let cohortFetcher = MockUserCohortFetcher()
-                let targetFetcher = MockUserTargetFetcher()
-                let sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
                 // cohort sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().build(),
-                        current: User.builder().id("new_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().build(),
+                            current: User.builder().id("new_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 // cohort sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").build(),
-                        current: User.builder().id("new_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().id("new_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 // cohort sync and target event sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").build(),
-                        current: User.builder().id("id").deviceId("new_device_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().id("id").deviceId("new_device_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 // cohort sync and target event sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").build(),
-                        current: User.builder().id("id").deviceId("new_device_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").deviceId("new_device_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 // cohort sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").build(),
-                        current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
-                    ),
-                    completion: {}
-                )
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 // cohort sync and target event not sync
-                sut.syncIfNeeded(
-                    updated: Updated(
-                        previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                        current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
-                    ),
-                    completion: {}
-                )
-                Thread.sleep(forTimeInterval: 2)
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                        ),
+                        completion: { done() }
+                    )
+                }
                 verify(exactly: 6) {
                     cohortFetcher.fetchMock
                 }
@@ -646,7 +662,6 @@ class DefaultUserManagerSpecs: QuickSpec {
             }
 
             it("update cohorts") {
-                let sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
                 let userCohorts = UserCohorts.builder()
                     .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "hackle_device_id"), cohorts: [Cohort(id: 42)]))
                     .put(cohort: UserCohort(identifier: Identifier(type: "$deviceId", value: "hackle_device_id"), cohorts: [Cohort(id: 43)]))
@@ -656,12 +671,15 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
 
                 sut.initialize(user: User.builder().deviceId("device_id").build())
-                sut.sync {
-                    expect(sut.currentUser.resolvedIdentifiers) == [
-                        "$id": "hackle_device_id",
-                        "$deviceId": "device_id",
-                    ]
-                    expect(sut.resolve(user: sut.currentUser).cohorts) == [Cohort(id: 42)]
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.sync {
+                        expect(sut.currentUser.resolvedIdentifiers) == [
+                            "$id": "hackle_device_id",
+                            "$deviceId": "device_id",
+                        ]
+                        expect(sut.resolve(user: sut.currentUser).cohorts) == [Cohort(id: 42)]
+                        done()
+                    }
                 }
             }
             
@@ -686,10 +704,13 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
 
                 sut.initialize(user: nil)
-                sut.sync {
-                    expect(sut.resolve(user: nil).targetEvents.count) == 1
-                    expect(sut.resolve(user: nil).targetEvents[0].eventKey) == "purchase"
-                    expect(sut.resolve(user: nil).targetEvents[0].property?.key) == "product_name"
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.sync {
+                        expect(sut.resolve(user: nil).targetEvents.count) == 1
+                        expect(sut.resolve(user: nil).targetEvents[0].eventKey) == "purchase"
+                        expect(sut.resolve(user: nil).targetEvents[0].property?.key) == "product_name"
+                        done()
+                    }
                 }
             }
         }

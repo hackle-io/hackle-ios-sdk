@@ -25,6 +25,10 @@ class NotificationEventSpecs: QuickSpec {
                 imageUrl: "foo://bar/image",
                 clickAction: NotificationClickAction.deepLink,
                 link: "foo://bar",
+                journeyId: 5,
+                journeyKey: 6,
+                journeyNodeId: 7,
+                campaignType: "JOURNEY",
                 debug: true
             )
             let event = data.toTrackEvent()
@@ -46,7 +50,11 @@ class NotificationEventSpecs: QuickSpec {
                 pushMessageExecutionId: 5,
                 pushMessageDeliveryId: 6,
                 timestamp: timestamp,
-                debug: true
+                debug: true,
+                journeyId: 7,
+                journeyKey: 8,
+                journeyNodeId: 9,
+                campaignType: "PUSH_MESSAGE"
             )
             let event = entity.toTrackEvent()
             expect(event.key) == "$push_click"

@@ -1,0 +1,55 @@
+name: Test
+
+on:
+  pull_request:
+  
+jobs:
+  ios-sdk-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Xcode Cache # 캐시 사용
+        if: ${{ !startsWith(github.event.pull_request.base.ref, 'release-') }} # release 브랜치는 캐시 사용하지 않음
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          
+      - name: Prebuild before test # 테스트 전에 빌드
+        run: |
+            xcodebuild build-for-testing \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                -quiet
+
+      - name: Test
+        run: |
+            xcodebuild test-without-building \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                -retry-tests-on-failure \
+                -test-iterations 3 \
+                -parallel-testing-enabled NO \
+                -resultBundlePath TestResults \
+                -quiet
+
+      - uses: kishikawakatsumi/xcresulttool@v1
+        name: Test Result
+        with:
+          path: TestResults.xcresult
+          show-passed-tests: false
+          show-code-coverage: false
+          upload-bundles: 'never'
+        if: success() || failure()
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Test Result
+            https://github.com/hackle-io/hackle-ios-sdk/actions/runs/${{ github.run_id }}
