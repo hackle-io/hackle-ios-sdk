@@ -189,9 +189,33 @@ class SQLiteCursor: SQLiteCloseable {
     func getString(_ columnIndex: Int32) -> String {
         String(cString: sqlite3_column_text(statement, columnIndex))
     }
+    
+    func getIntOrNil(_ columnIndex: Int32) -> Int? {
+        isNil(columnIndex) ? nil : getInt(columnIndex)
+    }
+    
+    func getInt64OrNil(_ columnIndex: Int32) -> Int64? {
+        isNil(columnIndex) ? nil : getInt64(columnIndex)
+    }
+    
+    func getDoubleOrNil(_ columnIndex: Int32) -> Double? {
+        isNil(columnIndex) ? nil : getDouble(columnIndex)
+    }
+    
+    func getBoolOrNil(_ columnIndex: Int32) -> Bool? {
+        isNil(columnIndex) ? nil : getBool(columnIndex)
+    }
+    
+    func getStringOrNil(_ columnIndex: Int32) -> String? {
+        isNil(columnIndex) ? nil : getString(columnIndex)
+    }
 
     func close() {
         sqlite3_finalize(statement)
+    }
+    
+    private func isNil(_ columnIndex: Int32) -> Bool {
+        sqlite3_column_type(statement, columnIndex) == SQLITE_NULL
     }
 }
 
