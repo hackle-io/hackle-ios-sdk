@@ -103,16 +103,16 @@ extension NotificationHistoryEntity {
             historyId: cursor.getInt64(0),
             workspaceId: cursor.getInt64(1),
             environmentId: cursor.getInt64(2),
-            pushMessageId: cursor.getInt64(3),
-            pushMessageKey: cursor.getInt64(4),
-            pushMessageExecutionId: cursor.getInt64(5),
-            pushMessageDeliveryId: cursor.getInt64(6),
+            pushMessageId: cursor.getInt64OrNil(3),
+            pushMessageKey: cursor.getInt64OrNil(4),
+            pushMessageExecutionId: cursor.getInt64OrNil(5),
+            pushMessageDeliveryId: cursor.getInt64OrNil(6),
             timestamp: Date(timeIntervalSince1970: cursor.getDouble(7)),
             debug: cursor.getBool(8),
-            journeyId: cursor.getInt64(9),
-            journeyKey: cursor.getInt64(10),
-            journeyNodeId: cursor.getInt64(11),
-            campaignType: cursor.getString(12)
+            journeyId: cursor.getInt64OrNil(9),
+            journeyKey: cursor.getInt64OrNil(10),
+            journeyNodeId: cursor.getInt64OrNil(11),
+            campaignType: cursor.getStringOrNil(12)
         )
     }
 }
