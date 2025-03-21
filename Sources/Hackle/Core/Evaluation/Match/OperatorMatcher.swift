@@ -6,7 +6,7 @@ protocol OperatorMatcher {
 
 class InMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -18,7 +18,7 @@ class InMatcher: OperatorMatcher {
 
 class ContainsMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -30,7 +30,7 @@ class ContainsMatcher: OperatorMatcher {
 
 class StartsWithMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -42,7 +42,7 @@ class StartsWithMatcher: OperatorMatcher {
 
 class EndsWithMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -54,7 +54,7 @@ class EndsWithMatcher: OperatorMatcher {
 
 class GreaterThanMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -66,7 +66,7 @@ class GreaterThanMatcher: OperatorMatcher {
 
 class GreaterThanOrEqualToMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -78,7 +78,7 @@ class GreaterThanOrEqualToMatcher: OperatorMatcher {
 
 class LessThanMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         
@@ -90,7 +90,7 @@ class LessThanMatcher: OperatorMatcher {
 
 class LessThanOrEqualToMatcher: OperatorMatcher {
     func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
-        guard let userValue = userValue as? String else {
+        guard let userValue = userValue else {
             return false
         }
         

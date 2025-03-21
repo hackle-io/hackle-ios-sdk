@@ -187,7 +187,7 @@ class BoolMatcher: ValueMatcher {
 
 class VersionMatcher: ValueMatcher {
     func inMatch(userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue = Version.tryParse(value: userValue),
+        guard let userValue = HackleValue(value: userValue).asVersion(),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false
         }
@@ -208,7 +208,7 @@ class VersionMatcher: ValueMatcher {
     }
     
     func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue = Version.tryParse(value: userValue),
+        guard let userValue = HackleValue(value: userValue).asVersion(),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false
         }
@@ -217,7 +217,7 @@ class VersionMatcher: ValueMatcher {
     }
     
     func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue = Version.tryParse(value: userValue),
+        guard let userValue = HackleValue(value: userValue).asVersion(),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false
         }
@@ -226,7 +226,7 @@ class VersionMatcher: ValueMatcher {
     }
     
     func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue = Version.tryParse(value: userValue),
+        guard let userValue = HackleValue(value: userValue).asVersion(),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false
         }
@@ -235,7 +235,7 @@ class VersionMatcher: ValueMatcher {
     }
     
     func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue = Version.tryParse(value: userValue),
+        guard let userValue = HackleValue(value: userValue).asVersion(),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false
         }
