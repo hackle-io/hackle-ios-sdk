@@ -335,10 +335,10 @@ class ValueMatcherSpecs: QuickSpec {
                 self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.0"), expected: true)
                 self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "2.0.0"), expected: false)
                 self.verifyGreaterThan(sut: sut, userValue: "1.0.1", matchValue: HackleValue(value: "1.0.0"), expected: true)
-                self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.0"), expected: false)
+                self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.0"), expected: true)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.1", matchValue: HackleValue(value: "1.0.0"), expected: true)
                 self.verifyLessThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.1"), expected: true)
-                self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.0"), expected: false)
+                self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.0"), expected: true)
                 self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.1"), expected: true)
             }
 
@@ -423,6 +423,10 @@ class ValueMatcherSpecs: QuickSpec {
     }
     
     private func v(_ value: Any) -> Any {
+        if value is tmp {
+            return value
+        }
+        
         let tmp = ["tmp": value]
         let data = Json.serialize(tmp)!
         let dict = try! JSONSerialization.jsonObject(with: data) as! [String: Any]
