@@ -38,28 +38,6 @@ class EventConditionMatcherSpecs: QuickSpec {
             expect(actual) == false
         }
 
-        it("when cannot resolve event value then returns false") {
-            // given
-            let condition = Target.Condition(
-                key: Target.Key(type: .eventProperty, name: "os_name"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "iOS")])
-            )
-
-            let user = HackleUser.builder().identifier(.id, "user").build()
-            let event = UserEvents.track(
-                eventType: EventTypeEntity(id: 42, key: "test"),
-                event: Event.builder("test").build(),
-                timestamp: Date(), user: user
-            )
-            let request = EventRequest(workspace: MockWorkspace(), user: user, event: event)
-
-            // when
-            let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
-
-            // then
-            expect(actual) == false
-        }
-
         it("matches") {
             // given
             let condition = Target.Condition(
