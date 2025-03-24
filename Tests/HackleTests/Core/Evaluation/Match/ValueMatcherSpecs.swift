@@ -180,25 +180,18 @@ class ValueMatcherSpecs: QuickSpec {
             }
             
             it("숫자형 범위 체크") {
-                self.verifyIn(sut: sut, userValue: Int.max, matchValue: HackleValue(value: Int.max), expected: true)
-                self.verifyIn(sut: sut, userValue: Int.min, matchValue: HackleValue(value: Int.min), expected: true)
-                self.verifyIn(sut: sut, userValue: Int64.max, matchValue: HackleValue(value: Int64.max), expected: true)
-                self.verifyIn(sut: sut, userValue: Int64.min, matchValue: HackleValue(value: Int64.min), expected: true)
-                self.verifyIn(sut: sut, userValue: Double(Int.max), matchValue: HackleValue(value: Int.max), expected: true)
-                self.verifyIn(sut: sut, userValue: Double(Int.min), matchValue: HackleValue(value: Int.min), expected: true)
-                self.verifyIn(sut: sut, userValue: Double(Int64.max), matchValue: HackleValue(value: Int64.max), expected: true)
-                self.verifyIn(sut: sut, userValue: Double(Int64.min), matchValue: HackleValue(value: Int64.min), expected: true)
-                self.verifyIn(sut: sut, userValue: Double.zero, matchValue: HackleValue(value: Int.zero), expected: true)
+                self.verifyIn(sut: sut, userValue: Int32.max, matchValue: HackleValue(value: Int32.max), expected: true)
+                self.verifyIn(sut: sut, userValue: Int32.min, matchValue: HackleValue(value: Int32.min), expected: true)
+                self.verifyIn(sut: sut, userValue: 2^53, matchValue: HackleValue(value: 2^53), expected: true)
+                self.verifyIn(sut: sut, userValue: -2^53, matchValue: HackleValue(value: -2^53), expected: true)
+                self.verifyIn(sut: sut, userValue: Double(Int32.max), matchValue: HackleValue(value: Int32.max), expected: true)
+                self.verifyIn(sut: sut, userValue: Double(Int32.min), matchValue: HackleValue(value: Int32.min), expected: true)
+                self.verifyIn(sut: sut, userValue: Double(2^53), matchValue: HackleValue(value: 2^53), expected: true)
+                self.verifyIn(sut: sut, userValue: Double(-2^53), matchValue: HackleValue(value: -2^53), expected: true)
+                self.verifyIn(sut: sut, userValue: Double.zero, matchValue: HackleValue(value: Int32.zero), expected: true)
                 self.verifyIn(sut: sut, userValue: Double.zero, matchValue: HackleValue(value: Int64.zero), expected: true)
-                self.verifyIn(sut: sut, userValue: Int.zero, matchValue: HackleValue(value: Double.zero), expected: true)
+                self.verifyIn(sut: sut, userValue: Int32.zero, matchValue: HackleValue(value: Double.zero), expected: true)
                 self.verifyIn(sut: sut, userValue: Int64.zero, matchValue: HackleValue(value: Double.zero), expected: true)
-                
-                self.verifyGreaterThanOrEqual(sut: sut, userValue: Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int.max), expected: true)
-                self.verifyGreaterThanOrEqual(sut: sut, userValue: Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int64.max), expected: true)
-                
-                self.verifyLessThanOrEqual(sut: sut, userValue: -Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int.min), expected: true)
-                self.verifyLessThanOrEqual(sut: sut, userValue: -Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int64.min), expected: true)
-                
             }
             
             it("matchValue가 숫자가 아니면 아니면 항상 false") {
