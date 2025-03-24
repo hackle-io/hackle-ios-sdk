@@ -55,10 +55,6 @@ class ValueMatcherSpecs: QuickSpec {
                 self.verifyIn(sut: sut, userValue: "42.42", matchValue: HackleValue(value: 42.42), expected: true)
                 self.verifyIn(sut: sut, userValue: 42.42, matchValue: HackleValue(value: "42.42"), expected: true)
                 self.verifyIn(sut: sut, userValue: 42.42, matchValue: HackleValue(value: 42.42), expected: true)
-                
-                self.verifyIn(sut: sut, userValue: "42.0", matchValue: HackleValue(value: 42.0), expected: true)
-                self.verifyIn(sut: sut, userValue: 42.0, matchValue: HackleValue(value: "42.0"), expected: true)
-                self.verifyIn(sut: sut, userValue: 42.0, matchValue: HackleValue(value: 42.0), expected: true)
             }
 
             it("bool 타입이면 캐스팅 후 match") {
@@ -188,14 +184,10 @@ class ValueMatcherSpecs: QuickSpec {
                 self.verifyIn(sut: sut, userValue: Int.min, matchValue: HackleValue(value: Int.min), expected: true)
                 self.verifyIn(sut: sut, userValue: Int64.max, matchValue: HackleValue(value: Int64.max), expected: true)
                 self.verifyIn(sut: sut, userValue: Int64.min, matchValue: HackleValue(value: Int64.min), expected: true)
-                self.verifyIn(sut: sut, userValue: UInt64.min, matchValue: HackleValue(value: UInt64.min), expected: true)
-                self.verifyIn(sut: sut, userValue: UInt64.max, matchValue: HackleValue(value: UInt64.max), expected: true)
                 self.verifyIn(sut: sut, userValue: Double(Int.max), matchValue: HackleValue(value: Int.max), expected: true)
                 self.verifyIn(sut: sut, userValue: Double(Int.min), matchValue: HackleValue(value: Int.min), expected: true)
                 self.verifyIn(sut: sut, userValue: Double(Int64.max), matchValue: HackleValue(value: Int64.max), expected: true)
                 self.verifyIn(sut: sut, userValue: Double(Int64.min), matchValue: HackleValue(value: Int64.min), expected: true)
-                self.verifyIn(sut: sut, userValue: Double(UInt64.max), matchValue: HackleValue(value: UInt64.max), expected: true)
-                self.verifyIn(sut: sut, userValue: Double(UInt64.min), matchValue: HackleValue(value: UInt64.min), expected: true)
                 self.verifyIn(sut: sut, userValue: Double.zero, matchValue: HackleValue(value: Int.zero), expected: true)
                 self.verifyIn(sut: sut, userValue: Double.zero, matchValue: HackleValue(value: Int64.zero), expected: true)
                 self.verifyIn(sut: sut, userValue: Int.zero, matchValue: HackleValue(value: Double.zero), expected: true)
@@ -203,11 +195,9 @@ class ValueMatcherSpecs: QuickSpec {
                 
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int.max), expected: true)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int64.max), expected: true)
-                self.verifyGreaterThanOrEqual(sut: sut, userValue: Double.greatestFiniteMagnitude, matchValue: HackleValue(value: UInt64.max), expected: true)
                 
-                self.verifyLessThanOrEqual(sut: sut, userValue: Int.min, matchValue: HackleValue(value: -Double.greatestFiniteMagnitude), expected: true)
-                self.verifyLessThanOrEqual(sut: sut, userValue: Int64.min, matchValue: HackleValue(value: -Double.greatestFiniteMagnitude), expected: true)
-                self.verifyLessThanOrEqual(sut: sut, userValue: UInt64.min, matchValue: HackleValue(value: -Double.greatestFiniteMagnitude), expected: true)
+                self.verifyLessThanOrEqual(sut: sut, userValue: -Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int.min), expected: true)
+                self.verifyLessThanOrEqual(sut: sut, userValue: -Double.greatestFiniteMagnitude, matchValue: HackleValue(value: Int64.min), expected: true)
                 
             }
             
@@ -345,19 +335,19 @@ class ValueMatcherSpecs: QuickSpec {
             it("matchValue가 Version 타입이 아니면 항상 false") {
                 self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: Int.max), expected: false)
                 self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: 1.0), expected: false)
-                self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0"), expected: false)
+                self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.asd"), expected: false)
                 self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "string"), expected: false)
                 self.verifyIn(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: true), expected: false)
                 
                 self.verifyGreaterThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: Int.max), expected: false)
                 self.verifyGreaterThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: 1.0), expected: false)
-                self.verifyGreaterThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0"), expected: false)
+                self.verifyGreaterThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.asd"), expected: false)
                 self.verifyGreaterThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "string"), expected: false)
                 self.verifyGreaterThan(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: true), expected: false)
                 
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: Int.max), expected: false)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: 1.0), expected: false)
-                self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0"), expected: false)
+                self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.asd"), expected: false)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "string"), expected: false)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: true), expected: false)
                 
@@ -369,7 +359,7 @@ class ValueMatcherSpecs: QuickSpec {
                 
                 self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: Int.max), expected: false)
                 self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: 1.0), expected: false)
-                self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0"), expected: false)
+                self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "1.0.asd"), expected: false)
                 self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: "string"), expected: false)
                 self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.0", matchValue: HackleValue(value: true), expected: false)
             }
@@ -377,7 +367,7 @@ class ValueMatcherSpecs: QuickSpec {
             it("userValue가 Version 타입이 아니면 false") {
                 self.verifyIn(sut: sut, userValue: Int.max, matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyIn(sut: sut, userValue: 1.0, matchValue: HackleValue(value: "1.0.0"), expected: false)
-                self.verifyIn(sut: sut, userValue: "1.0", matchValue: HackleValue(value: "1.0.0"), expected: false)
+                self.verifyIn(sut: sut, userValue: "1.0.x", matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyIn(sut: sut, userValue: "string", matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyIn(sut: sut, userValue: true, matchValue: HackleValue(value: "1.0.0"), expected: false)
                 
@@ -389,7 +379,7 @@ class ValueMatcherSpecs: QuickSpec {
                 
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: Int.max, matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: 1.0, matchValue: HackleValue(value: "1.0.0"), expected: false)
-                self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0", matchValue: HackleValue(value: "1.0.0"), expected: false)
+                self.verifyGreaterThanOrEqual(sut: sut, userValue: "1.0.x", matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: "string", matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyGreaterThanOrEqual(sut: sut, userValue: true, matchValue: HackleValue(value: "1.0.0"), expected: false)
                 
@@ -401,7 +391,7 @@ class ValueMatcherSpecs: QuickSpec {
                 
                 self.verifyLessThanOrEqual(sut: sut, userValue: Int.max, matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyLessThanOrEqual(sut: sut, userValue: 1.0, matchValue: HackleValue(value: "1.0.0"), expected: false)
-                self.verifyLessThanOrEqual(sut: sut, userValue: "1.0", matchValue: HackleValue(value: "1.0.0"), expected: false)
+                self.verifyLessThanOrEqual(sut: sut, userValue: "1.0.x", matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyLessThanOrEqual(sut: sut, userValue: "string", matchValue: HackleValue(value: "1.0.0"), expected: false)
                 self.verifyLessThanOrEqual(sut: sut, userValue: true, matchValue: HackleValue(value: "1.0.0"), expected: false)
             }

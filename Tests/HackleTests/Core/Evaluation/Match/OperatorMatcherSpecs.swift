@@ -34,10 +34,10 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0")), HackleValue(value: self.v("1.0.1"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.1"))]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0"), HackleValue(value: "1.0.1")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.1")]))
             }
         }
 
@@ -68,9 +68,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
 
@@ -101,9 +101,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
 
@@ -134,9 +134,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
 
@@ -177,9 +177,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
         
@@ -220,9 +220,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
 
@@ -263,9 +263,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
 
@@ -306,9 +306,9 @@ class OperatorMatcherSpecs: QuickSpec {
             }
 
             it("version") {
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: [HackleValue(value: self.v("2.0.0"))]))
-                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("2.0.0"), matchValue: [HackleValue(value: self.v("1.0.0"))]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "1.0.0")]))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: [HackleValue(value: "2.0.0")]))
+                self.assertFalse(sut.matches(valueMatcher: VersionMatcher(), userValue: "2.0.0", matchValue: [HackleValue(value: "1.0.0")]))
             }
         }
         
@@ -326,22 +326,22 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertTrue(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: StringMatcher(), userValue: 1, matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: StringMatcher(), userValue: true, matchValue: []))
-                self.assertTrue(sut.matches(valueMatcher: StringMatcher(), userValue: self.v("1.0.0"), matchValue: []))
+                self.assertTrue(sut.matches(valueMatcher: StringMatcher(), userValue: "1.0.0", matchValue: []))
                 
                 self.assertTrue(sut.matches(valueMatcher: NumberMatcher(), userValue: "abc", matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: NumberMatcher(), userValue: 1, matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: NumberMatcher(), userValue: true, matchValue: []))
-                self.assertTrue(sut.matches(valueMatcher: NumberMatcher(), userValue: self.v("1.0.0"), matchValue: []))
+                self.assertTrue(sut.matches(valueMatcher: NumberMatcher(), userValue: "1.0.0", matchValue: []))
                 
                 self.assertTrue(sut.matches(valueMatcher: BoolMatcher(), userValue: "abc", matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: BoolMatcher(), userValue: 1, matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: BoolMatcher(), userValue: true, matchValue: []))
-                self.assertTrue(sut.matches(valueMatcher: BoolMatcher(), userValue: self.v("1.0.0"), matchValue: []))
+                self.assertTrue(sut.matches(valueMatcher: BoolMatcher(), userValue: "1.0.0", matchValue: []))
                 
                 self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "abc", matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: 1, matchValue: []))
                 self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: true, matchValue: []))
-                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: self.v("1.0.0"), matchValue: []))
+                self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValue: []))
             }
             
             
