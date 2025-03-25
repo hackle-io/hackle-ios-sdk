@@ -1,107 +1,107 @@
 import Foundation
 
 protocol OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool
 }
 
 class InMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.inMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class ContainsMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.containsMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class StartsWithMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.startsWithMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class EndsWithMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.endsWithMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class GreaterThanMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.greaterThanMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class GreaterThanOrEqualToMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.greaterThanOrEqualMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class LessThanMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.lessThanMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class LessThanOrEqualToMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         guard let userValue = userValue else {
             return false
         }
         
-        return matchValue.contains { it in
+        return matchValues.contains { it in
             valueMatcher.lessThanOrEqualMatch(userValue: userValue, matchValue: it)
         }
     }
 }
 
 class ExistsMatcher: OperatorMatcher {
-    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValue: [HackleValue]) -> Bool {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
         userValue != nil
     }
 }

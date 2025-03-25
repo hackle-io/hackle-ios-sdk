@@ -39,7 +39,7 @@ class DefaultValueOperatorMatcher: ValueOperatorMatcher {
         valueMatcher: ValueMatcher,
         operatorMatcher: OperatorMatcher
     ) -> Bool {
-        return operatorMatcher.matches(valueMatcher: valueMatcher, userValue: userValue, matchValue: match.values)
+        return operatorMatcher.matches(valueMatcher: valueMatcher, userValue: userValue, matchValues: match.values)
     }
 
     private func arrayMatches(
