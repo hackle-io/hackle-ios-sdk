@@ -1,52 +1,282 @@
 import Foundation
 
 protocol ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool
+    func inMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func containsMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func startsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func endsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool
 }
 
 class StringMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
+    func inMatch(userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue: String = HackleValue(value: userValue).asString(),
               let matchValue: String = matchValue.asString() else {
             return false
         }
-        return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
+        
+        return userValue == matchValue
+    }
+    
+    func containsMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue.contains(matchValue)
+    }
+    
+    func startsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue.hasPrefix(matchValue)
+    }
+    
+    func endsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue.hasSuffix(matchValue)
+    }
+    
+    func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue > matchValue
+    }
+    
+    func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue >= matchValue
+    }
+    
+    func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue < matchValue
+    }
+    
+    func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString() else {
+            return false
+        }
+        
+        return userValue <= matchValue
     }
 }
 
 class NumberMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
+    func inMatch(userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue: Double = HackleValue(value: userValue).asDouble(),
               let matchValue: Double = matchValue.asDouble() else {
             return false
         }
-        return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
+        
+        return userValue == matchValue
+    }
+    
+    func containsMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func startsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func endsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: Double = HackleValue(value: userValue).asDouble(),
+              let matchValue: Double = matchValue.asDouble() else {
+            return false
+        }
+        
+        return userValue > matchValue
+    }
+    
+    func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: Double = HackleValue(value: userValue).asDouble(),
+              let matchValue: Double = matchValue.asDouble() else {
+            return false
+        }
+        
+        return userValue >= matchValue
+    }
+    
+    func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: Double = HackleValue(value: userValue).asDouble(),
+              let matchValue: Double = matchValue.asDouble() else {
+            return false
+        }
+        
+        return userValue < matchValue
+    }
+    
+    func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: Double = HackleValue(value: userValue).asDouble(),
+              let matchValue: Double = matchValue.asDouble() else {
+            return false
+        }
+        
+        return userValue <= matchValue
     }
 }
 
 class BoolMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
+    func inMatch(userValue: Any, matchValue: HackleValue) -> Bool {
         guard let userValue: Bool = HackleValue(value: userValue).asBool(),
               let matchValue: Bool = matchValue.asBool() else {
             return false
         }
-        return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
+        
+        return userValue == matchValue
     }
+    
+    func containsMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func startsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func endsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    
 }
 
 class VersionMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
-        guard let userValue = Version.tryParse(value: userValue),
+    func inMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue = HackleValue(value: userValue).asVersion(),
               let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
             return false
         }
-        return operatorMatcher.matches(userValue: userValue, matchValue: matchValue)
+        
+        return userValue == matchValue
     }
+    
+    func containsMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func startsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func endsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue = HackleValue(value: userValue).asVersion(),
+              let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
+            return false
+        }
+        
+        return userValue > matchValue
+    }
+    
+    func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue = HackleValue(value: userValue).asVersion(),
+              let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
+            return false
+        }
+        
+        return userValue >= matchValue
+    }
+    
+    func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue = HackleValue(value: userValue).asVersion(),
+              let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
+            return false
+        }
+        
+        return userValue < matchValue
+    }
+    
+    func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue = HackleValue(value: userValue).asVersion(),
+              let matchValue = Version.tryParse(value: matchValue.stringOrNil) else {
+            return false
+        }
+        
+        return userValue <= matchValue
+    }
+    
+    
 }
 
 class NoneMatcher: ValueMatcher {
-    func matches(operatorMatcher: OperatorMatcher, userValue: Any, matchValue: HackleValue) -> Bool {
-        false
+    func inMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func containsMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func startsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func endsWithMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func greaterThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
     }
 }
 

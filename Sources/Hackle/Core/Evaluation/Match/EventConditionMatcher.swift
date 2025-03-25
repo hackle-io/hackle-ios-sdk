@@ -22,9 +22,7 @@ class EventConditionMatcher: ConditionMatcher {
         guard let eventRequest = request as? EvaluatorEventRequest else {
             return false
         }
-        guard let eventValue = try eventValueResolver.resolveOrNil(event: eventRequest.event, key: condition.key) else {
-            return false
-        }
+        let eventValue = try eventValueResolver.resolveOrNil(event: eventRequest.event, key: condition.key)
         return valueOperatorMatcher.matches(userValue: eventValue, match: condition.match)
     }
 }
