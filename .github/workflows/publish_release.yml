@@ -1,0 +1,16 @@
+name: publish_release.yml
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+    inputs:
+      manual_ios_version:
+        description: 'iOS Version (Only for testing)'
+        required: false
+jobs:
+  publish_native_sdk_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set version
+        run: echo "hello world"
