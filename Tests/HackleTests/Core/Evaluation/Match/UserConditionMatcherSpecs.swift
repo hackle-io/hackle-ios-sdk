@@ -17,21 +17,6 @@ class UserConditionMatcherSpecs: QuickSpec {
             sut = UserConditionMatcher(userValueResolver: userValueResolver, valueOperatorMatcher: valueOperatorMatcher)
         }
 
-        it("key 에 해당하는 값이 없는 경우 match false") {
-            // given
-            every(userValueResolver.resolveOrNilMock).returns(nil)
-            let condition = Target.Condition(
-                key: Target.Key(type: .hackleProperty, name: "osName"),
-                match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "iOS")])
-            )
-
-            // when
-            let actual = try sut.matches(request: experimentRequest(), context: Evaluators.context(), condition: condition)
-
-            // then
-            expect(actual).to(beFalse())
-        }
-
         it("key 에 해당하는 UserValue 로 매칭한다") {
             // given
             let condition = Target.Condition(

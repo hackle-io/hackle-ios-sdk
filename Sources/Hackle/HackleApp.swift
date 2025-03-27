@@ -20,17 +20,17 @@ import WebKit
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
-    
+
     internal let userExplorer: HackleUserExplorer
     internal let sdk: Sdk
     internal let mode: HackleAppMode
-    
+
     @objc public var inAppMessageDelegate: HackleInAppMessageDelegate? {
         didSet {
             self.inAppMessageUI.delegate = inAppMessageDelegate
         }
     }
-    
+
     @objc public var deviceId: String {
         get {
             device.id
@@ -48,7 +48,7 @@ import WebKit
             userManager.currentUser
         }
     }
-    
+
     init(
         mode: HackleAppMode,
         sdk: Sdk,
@@ -138,7 +138,7 @@ import WebKit
             .build()
         updateUserProperties(operations: operations, completion: completion)
     }
-    
+
     @objc public func updateUserProperties(operations: PropertyOperations) {
         updateUserProperties(operations: operations, completion: {})
     }
@@ -252,7 +252,7 @@ import WebKit
     @objc public func setPushToken(_ deviceToken: Data) {
         pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
-    
+
     @objc public func fetch(_ completion: @escaping () -> ()) {
         fetchThrottler.execute(
             accept: {
@@ -264,7 +264,7 @@ import WebKit
             }
         )
     }
-    
+
     @objc(updatePushSubscriptionStatus:)
     public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         let operations = HacklePushSubscriptionOperations.builder()
@@ -456,7 +456,7 @@ extension HackleApp {
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
         let appStateManager = DefaultAppStateManager(queue: eventQueue)
-        
+
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,
             eventQueue: eventQueue,
@@ -467,22 +467,22 @@ extension HackleApp {
 
         let eventPublisher = DefaultUserEventPublisher()
         var eventFilters = [UserEventFilter]()
-        
+
         let rcEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameRemoteConfigEventDedup, sdkKey))
         let exposureEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameExposureEventDedup, sdkKey))
-        
-        
+
+
         let rcEventDedupDeterminer = RemoteConfigEventDedupDeterminer(
             repository: rcEventDedupRepository,
             dedupInterval: config.exposureEventDedupInterval)
-        
+
         let exposureEventDedupDeterminer = ExposureEventDedupDeterminer(
             repository: exposureEventDedupRepository,
             dedupInterval: config.exposureEventDedupInterval)
-        
+
         appStateManager.addListener(listener: rcEventDedupDeterminer)
         appStateManager.addListener(listener: exposureEventDedupDeterminer)
-        
+
         let dedupDeterminer = DelegatingUserEventDedupDeterminer(determiners: [
             rcEventDedupDeterminer,
             exposureEventDedupDeterminer
@@ -586,7 +586,7 @@ extension HackleApp {
             eventTracker: DefaultInAppMessageEventTracker(core: core),
             processorFactory: inAppMessageEventProcessorFactory
         )
-        
+
         let inAppMessageUI = HackleInAppMessageUI(
             eventHandler: inAppMessageEventHandler
         )
@@ -598,7 +598,7 @@ extension HackleApp {
         if !inAppMessageDisabled(config: config) {
             eventPublisher.addListener(listener: inAppMessageManager)
         }
-        
+
         // - Push
 
         let pushTokenRegistry = DefaultPushTokenRegistry.shared
@@ -683,13 +683,13 @@ extension HackleApp {
             userExplorer: userExplorer
         )
     }
-    
+
     private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
         if let disableInAppMessage = config.extra["$disable_inappmessage"],
             disableInAppMessage == "true" {
             return true
         }
-        
+
         return false
     }
 

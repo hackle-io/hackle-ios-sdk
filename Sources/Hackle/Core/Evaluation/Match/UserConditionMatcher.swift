@@ -18,9 +18,7 @@ class UserConditionMatcher: ConditionMatcher {
     }
 
     func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
-        guard let userValue = try userValueResolver.resolveOrNil(user: request.user, key: condition.key) else {
-            return false
-        }
+        let userValue = try userValueResolver.resolveOrNil(user: request.user, key: condition.key)
         return valueOperatorMatcher.matches(userValue: userValue, match: condition.match)
     }
 }

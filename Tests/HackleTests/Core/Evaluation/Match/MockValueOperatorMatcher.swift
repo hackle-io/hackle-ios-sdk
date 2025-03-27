@@ -7,7 +7,7 @@ import Mockery
 class MockValueOperatorMatcher: Mock, ValueOperatorMatcher {
     lazy var matchesMock = MockFunction(self, matches)
 
-    func matches(userValue: Any, match: Target.Match) -> Bool {
+    func matches(userValue: Any?, match: Target.Match) -> Bool {
         call(matchesMock, args: (userValue, match))
     }
 }
