@@ -1,0 +1,40 @@
+name: notify release
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+    inputs:
+      manual_ios_version:
+        description: 'iOS Version (Only for testing)'
+        required: false
+jobs:
+  notify_native_sdk_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "ios_version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "ios_version=${{ github.event.inputs.manual_ios_version }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger hackle-react-native-sdk workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update native sdk
+          repo: ${{ secrets.REACT_NATIVE_SDK_REPO }}
+          ref: master
+          token: ${{ secrets.PAT }}
+          inputs: '{ "ios_version": "${{ steps.version.outputs.ios_version }}" }'
+
+      - name: Trigger hackle-flutter-sdk workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update native sdk
+          repo: ${{ secrets.FLUTTER_SDK_REPO }}
+          ref: master
+          token: ${{ secrets.PAT }}
+          inputs: '{ "ios_version": "${{ steps.version.outputs.ios_version }}" }'

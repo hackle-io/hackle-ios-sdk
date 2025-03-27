@@ -9,3 +9,7 @@ xcuserdata
 .github/workflows/.idea
 Hackle.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 .index-build
+
+.qodo
+.cache
+.fleet
