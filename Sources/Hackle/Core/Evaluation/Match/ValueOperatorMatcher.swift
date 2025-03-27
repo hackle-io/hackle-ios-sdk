@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ValueOperatorMatcher {
-    func matches(userValue: Any, match: Target.Match) -> Bool
+    func matches(userValue: Any?, match: Target.Match) -> Bool
 }
 
 class DefaultValueOperatorMatcher: ValueOperatorMatcher {
@@ -14,7 +14,7 @@ class DefaultValueOperatorMatcher: ValueOperatorMatcher {
         self.operatorMatcherFactory = operatorMatcherFactory
     }
 
-    func matches(userValue: Any, match: Target.Match) -> Bool {
+    func matches(userValue: Any?, match: Target.Match) -> Bool {
         let valueMatcher = valueMatcherFactory.getMatcher(match.valueType)
         let operatorMatcher = operatorMatcherFactory.getMatcher(match.matchOperator)
         let isMatched = matches(userValue: userValue, match: match, valueMatcher: valueMatcher, operatorMatcher: operatorMatcher)
@@ -22,7 +22,7 @@ class DefaultValueOperatorMatcher: ValueOperatorMatcher {
     }
 
     private func matches(
-        userValue: Any,
+        userValue: Any?,
         match: Target.Match,
         valueMatcher: ValueMatcher,
         operatorMatcher: OperatorMatcher
@@ -34,14 +34,12 @@ class DefaultValueOperatorMatcher: ValueOperatorMatcher {
     }
 
     private func singleMatches(
-        userValue: Any,
+        userValue: Any?,
         match: Target.Match,
         valueMatcher: ValueMatcher,
         operatorMatcher: OperatorMatcher
     ) -> Bool {
-        match.values.contains { it in
-            valueMatcher.matches(operatorMatcher: operatorMatcher, userValue: userValue, matchValue: it)
-        }
+        return operatorMatcher.matches(valueMatcher: valueMatcher, userValue: userValue, matchValues: match.values)
     }
 
     private func arrayMatches(
