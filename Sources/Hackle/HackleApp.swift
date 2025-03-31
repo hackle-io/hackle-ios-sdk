@@ -165,13 +165,11 @@ import WebKit
     }
 
     @objc public func setPhoneNumber(phoneNumber: String) {
-        let hackleUser = userManager.resolve(user: user)
-        piiEventManager.setPhoneNumber(phoneNumber: phoneNumber, hackleUser: hackleUser, timestamp: Date())
+        piiEventManager.setPhoneNumber(phoneNumber: phoneNumber, user: user, timestamp: Date())
     }
     
     @objc public func unsetPhoneNumber() {
-        let hackleUser = userManager.resolve(user: user)
-        piiEventManager.unsetPhoneNumber(hackleUser: hackleUser, timestamp: Date())
+        piiEventManager.unsetPhoneNumber(user: user, timestamp: Date())
     }
     
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
@@ -643,6 +641,7 @@ extension HackleApp {
         // - PII
         
         let piiEventManager = DefaultPIIEventManager(
+            userManager: userManager,
             core: core
         )
             
