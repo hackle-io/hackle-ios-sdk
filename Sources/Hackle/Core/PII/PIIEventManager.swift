@@ -24,6 +24,7 @@ class DefaultPIIEventManager: PIIEventManager {
     
     func setPhoneNumber(phoneNumber: String, user: User, timestamp: Date) {
         guard let phoneNumber = PhoneNumber.tryParse(phoneNumber: phoneNumber) else {
+            Log.error("Invalid phone number: phoneNumber must e.164 format")
             return
         }
         

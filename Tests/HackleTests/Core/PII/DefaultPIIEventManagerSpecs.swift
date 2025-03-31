@@ -43,5 +43,34 @@ class DefaultPIIEventManagerSpecs: QuickSpec {
             expect(properties?.count).to(equal(1))
             expect(properties?["$phone_number"] as? String).to(equal(phoneNumber))
         }
+        
+        it("invalidate phone number") {
+            // given
+            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            let user = User.builder().deviceId("device_id").build()
+            let phoneNumber = "01012345678"
+            
+            // when
+            sut.setPhoneNumber(phoneNumber: phoneNumber, user: user, timestamp: Date(timeIntervalSince1970: 42))
+            
+            // then
+            verify(exactly: 0) {
+                core.trackMock
+            }
+        }
+        
+        it("unset phone number") {
+            // given
+            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            let user = User.builder().deviceId("device_id").build()
+            
+            // when
+            sut.unsetPhoneNumber(user: user, timestamp: Date(timeIntervalSince1970: 42))
+            
+            // then
+            verify(exactly: 1) {
+                core.trackMock
+            }
+        }
     }
 }
