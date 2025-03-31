@@ -12,6 +12,7 @@ class HackleAppSpecs: QuickSpec {
         var userManager: MockUserManager!
         var workspaceManager: WorkspaceManager!
         var notificationManager: MockNotificationManager!
+        var piiEventManager: MockPIIEventManager!
         var sessionManager: MockSessionManager!
         var eventProcessor: MockUserEventProcessor!
         var pushTokenRegistry = DefaultPushTokenRegistry()
@@ -32,6 +33,7 @@ class HackleAppSpecs: QuickSpec {
                 repository: MockWorkspaceConfigRepository()
             )
             notificationManager = MockNotificationManager()
+            piiEventManager = MockPIIEventManager()
             sessionManager = MockSessionManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
@@ -67,6 +69,7 @@ class HackleAppSpecs: QuickSpec {
                 lifecycleManager: LifecycleManager.shared,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
+                piiEventManager: piiEventManager,
                 fetchThrottler: throttler,
                 device: device,
                 inAppMessageUI: inAppMessageUI,
