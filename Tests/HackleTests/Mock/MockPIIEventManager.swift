@@ -9,11 +9,11 @@ import Foundation
 @testable import Hackle
 
 class MockPIIEventManager: PIIEventManager {
-    func setPhoneNumber(phoneNumber: String, hackleUser: HackleUser, timestamp: Date) {
+    func setPhoneNumber(phoneNumber: String, user: User, timestamp: Date) {
         
     }
     
-    func unsetPhoneNumber(hackleUser: HackleUser, timestamp: Date) {
+    func unsetPhoneNumber(user: User, timestamp: Date) {
         
     }
 }

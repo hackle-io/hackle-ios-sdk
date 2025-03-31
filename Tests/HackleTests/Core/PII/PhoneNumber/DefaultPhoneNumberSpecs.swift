@@ -1,0 +1,52 @@
+//
+//  DefaultPhoneNumberSpecs.swift
+//  Hackle
+//
+//  Created by sungwoo.yeo on 3/31/25.
+//
+
+import Quick
+import Nimble
+@testable import Hackle
+
+
+class DefaultPhoneNumberSpecs: QuickSpec {
+    override func spec() {
+        it("vaildate phone number") {
+            let phoneNumberCases = [
+                "+821012345678",
+                "+82-10-1234-5678",
+                "+82 10 1234 5678",
+                "+82 10 1234-5678",
+                "+82(10)12345678",
+                "+82(10)1234-5678",
+                "+82(10)1234 5678",
+            ]
+            let expectResult = "+821012345678"
+            
+            for phoneNumber in phoneNumberCases {
+                let result = PhoneNumber.tryParse(phoneNumber: phoneNumber)
+                expect(result) == expectResult
+            }
+        }
+        
+        it("invalid phone number") {
+            let phoneNumberCases = [
+                "821012345678",
+                "01012345678",
+                "010-1234-5678",
+                "010 1234 5678",
+                "010 1234-5678",
+                "010(1234)5678",
+                "010(1234)5678",
+                "010(1234) 5678",
+                "010(1234) 5678",
+            ]
+            
+            for phoneNumber in phoneNumberCases {
+                let result = PhoneNumber.tryParse(phoneNumber: phoneNumber)
+                expect(result).to(beNil())
+            }
+        }
+    }
+}

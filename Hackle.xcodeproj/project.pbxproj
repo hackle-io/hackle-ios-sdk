@@ -72,6 +72,8 @@
 		B24250262D9A2B7800CF27FC /* PIIEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250252D9A2B7800CF27FC /* PIIEventManager.swift */; };
 		B24250282D9A33A100CF27FC /* MockPIIEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250272D9A339700CF27FC /* MockPIIEventManager.swift */; };
 		B242502B2D9A34F500CF27FC /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = B242502A2D9A34F100CF27FC /* PhoneNumber.swift */; };
+		B24250312D9A59AE00CF27FC /* DefaultPIIEventManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */; };
+		B24250342D9A59CC00CF27FC /* DefaultPhoneNumberSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
@@ -614,6 +616,8 @@
 		B24250252D9A2B7800CF27FC /* PIIEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PIIEventManager.swift; sourceTree = "<group>"; };
 		B24250272D9A339700CF27FC /* MockPIIEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPIIEventManager.swift; sourceTree = "<group>"; };
 		B242502A2D9A34F100CF27FC /* PhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumber.swift; sourceTree = "<group>"; };
+		B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPIIEventManagerSpecs.swift; sourceTree = "<group>"; };
+		B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPhoneNumberSpecs.swift; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
@@ -1261,6 +1265,23 @@
 			path = PhoneNumber;
 			sourceTree = "<group>";
 		};
+		B242502F2D9A597B00CF27FC /* PII */ = {
+			isa = PBXGroup;
+			children = (
+				B24250322D9A59B600CF27FC /* PhoneNumber */,
+				B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */,
+			);
+			path = PII;
+			sourceTree = "<group>";
+		};
+		B24250322D9A59B600CF27FC /* PhoneNumber */ = {
+			isa = PBXGroup;
+			children = (
+				B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */,
+			);
+			path = PhoneNumber;
+			sourceTree = "<group>";
+		};
 		D160A65AC13330399B99C7E3 /* xcschemes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1870,6 +1891,7 @@
 				EE29D9F529CD82C100B1FEAA /* Model */,
 				EED6A1252A0E266500A8875D /* Property */,
 				EEAC3F3A2B9D6A7800DC498E /* Push */,
+				B242502F2D9A597B00CF27FC /* PII */,
 				EE543CBE2C08BEF500F64BFA /* Screen */,
 				EE29DA3229CD82C200B1FEAA /* Session */,
 				EEDC58742ACBD818001E73DB /* Sync */,
@@ -3131,6 +3153,7 @@
 				EE0F340E2A66B5AD009DE640 /* MockInAppMessageEventTracker.swift in Sources */,
 				EE29DA7F29CD82C200B1FEAA /* MockConditionMatcher.swift in Sources */,
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
+				B24250312D9A59AE00CF27FC /* DefaultPIIEventManagerSpecs.swift in Sources */,
 				EE0F34102A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift in Sources */,
 				EE789E2F29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift in Sources */,
 				EEF895A42A4A67CF00722CF6 /* InAppMessageRequestSpecs.swift in Sources */,
@@ -3156,6 +3179,7 @@
 				EE0F34122A66C3CF009DE640 /* MockInAppMessageActionHandler.swift in Sources */,
 				7E9065C32B5E902700FE6E52 /* MockHttpWorkspaceFetcher.swift in Sources */,
 				EE29DAA429CD82C200B1FEAA /* PropertiesBuilderSpecs.swift in Sources */,
+				B24250342D9A59CC00CF27FC /* DefaultPhoneNumberSpecs.swift in Sources */,
 				EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */,
 				EE29DA5329CD82C200B1FEAA /* FlushCounterSpecs.swift in Sources */,
 				EEDC58652ACB241D001E73DB /* HackleUserSpecs.swift in Sources */,
