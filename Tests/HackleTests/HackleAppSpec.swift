@@ -574,6 +574,20 @@ class HackleAppSpecs: QuickSpec {
                 sut.setPushToken(deviceToken)
                 expect(pushTokenRegistry.registeredToken()).notTo(beNil())
             }
+            
+            it("setPhoneNumber") {
+                sut.setPhoneNumber(phoneNumber: "+821012345678")
+                verify(exactly: 1) {
+                    piiEventManager.toSetPhoneNumberMock
+                }
+            }
+            
+            it("unsetPhoneNumber") {
+                sut.unsetPhoneNumber()
+                verify(exactly: 1) {
+                    piiEventManager.toUnsetPhoneNumberMock
+                }
+            }
         }
     }
 }
