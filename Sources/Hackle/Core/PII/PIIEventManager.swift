@@ -23,9 +23,9 @@ class DefaultPIIEventManager: PIIEventManager {
     }
     
     func setPhoneNumber(phoneNumber: String, user: User, timestamp: Date) {
-        let phoneNumber = PhoneNumber.filtered(phoneNumber: phoneNumber)
+        let filteredPhoneNumber = PhoneNumber.filtered(phoneNumber: phoneNumber)
         let properties = PropertyOperationsBuilder()
-            .set(PIIProperty.phoneNumber.rawValue, phoneNumber)
+            .set(PIIProperty.phoneNumber.rawValue, filteredPhoneNumber)
             .build()
         let event = properties.toSecuredEvent()
         track(event: event, user: user, timestamp: timestamp)
