@@ -12,7 +12,7 @@ import Nimble
 
 class DefaultPhoneNumberSpecs: QuickSpec {
     override func spec() {
-        it("vaildate phone number") {
+        it("filtered phone number with +") {
             let phoneNumberCases = [
                 "+821012345678",
                 "+82-10-1234-5678",
@@ -21,31 +21,34 @@ class DefaultPhoneNumberSpecs: QuickSpec {
                 "+82(10)12345678",
                 "+82(10)1234-5678",
                 "+82(10)1234 5678",
+                "+82-10-1234-5678aaa",
+                "aaa+82 10 1234 5678",
             ]
             let expectResult = "+821012345678"
             
             for phoneNumber in phoneNumberCases {
-                let result = PhoneNumber.tryParse(phoneNumber: phoneNumber)
+                let result = PhoneNumber.filtered(phoneNumber: phoneNumber)
                 expect(result) == expectResult
             }
         }
         
-        it("invalid phone number") {
+        it("filtered phone number") {
             let phoneNumberCases = [
-                "821012345678",
+                "01012345678",
                 "01012345678",
                 "010-1234-5678",
                 "010 1234 5678",
                 "010 1234-5678",
                 "010(1234)5678",
                 "010(1234)5678",
-                "010(1234) 5678",
-                "010(1234) 5678",
+                "010(1234)5678aaa",
+                "aaa010 1234 5678",
             ]
+            let expectResult = "01012345678"
             
             for phoneNumber in phoneNumberCases {
-                let result = PhoneNumber.tryParse(phoneNumber: phoneNumber)
-                expect(result).to(beNil())
+                let result = PhoneNumber.filtered(phoneNumber: phoneNumber)
+                expect(result) == expectResult
             }
         }
     }
