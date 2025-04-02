@@ -229,7 +229,7 @@ func compareValuesBy<T, C: Comparable>(_ a: T, _  b: T, _  selectors: (T) -> C..
 
 extension NSRegularExpression {
 
-    func match(_ string: String, options: NSRegularExpression.Options = []) -> [String?]? {
+    fileprivate func match(_ string: String, options: NSRegularExpression.Options = []) -> [String?]? {
         let range = NSRange(string.startIndex..., in: string)
         guard let match = firstMatch(in: string, options: [], range: range) else {
             return nil

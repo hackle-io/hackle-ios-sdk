@@ -58,6 +58,12 @@ extension HackleBridge {
         case .resetUser:
             app.resetUser()
             return .success()
+        case .setPhoneNumber:
+            try setPhoneNumber(parameters: parameters)
+            return .success()
+        case .unsetPhoneNumber:
+            app.unsetPhoneNumber()
+            return .success()
         case .variation:
             let data = try variation(parameters: parameters)
             return .success(data)
@@ -122,6 +128,13 @@ fileprivate extension HackleBridge {
         }
         let operations = PropertyOperations.from(dto: data)
         app.updateUserProperties(operations: operations)
+    }
+    
+    private func setPhoneNumber(parameters: [String: Any]) throws {
+        guard let phoneNumber = parameters["phoneNumber"] as? String else {
+            throw HackleError.error("Valid 'phoneNumber' parameter must be provided.")
+        }
+        app.setPhoneNumber(phoneNumber: phoneNumber)
     }
 
     private func variation(parameters: [String: Any]) throws -> String? {

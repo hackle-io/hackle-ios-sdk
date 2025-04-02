@@ -17,6 +17,8 @@ class BridgeInvocation {
         case setUserProperty = "setUserProperty"
         case updateUserProperties = "updateUserProperties"
         case resetUser = "resetUser"
+        case setPhoneNumber = "setPhoneNumber"
+        case unsetPhoneNumber = "unsetPhoneNumber"
         case variation = "variation"
         case variationDetail = "variationDetail"
         case isFeatureOn = "isFeatureOn"

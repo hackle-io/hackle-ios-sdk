@@ -95,7 +95,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
                 user: user
             )
 
-            expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "os_name")) as! String) == "iOS"
+            expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "os_name")) as? String) == "iOS"
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "app_version"))).to(beNil())
         };
 
@@ -103,7 +103,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
             let user = HackleUser.builder().identifier(.id, "user").build()
             let event = UserEvents.exposure(user: user, evaluation: experimentEvaluation(), properties: ["a": "b"], timestamp: Date())
 
-            expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "a")) as! String) == "b"
+            expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "a")) as? String) == "b"
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "b"))).to(beNil())
         }
 
@@ -121,7 +121,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
             )
             let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["a": "b"], timestamp: Date())
 
-            expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "a")) as! String) == "b"
+            expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "a")) as? String) == "b"
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "b"))).to(beNil())
         }
 

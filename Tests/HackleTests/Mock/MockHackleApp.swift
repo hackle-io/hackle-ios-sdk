@@ -63,6 +63,16 @@ class MockHackleApp : Mock, HackleAppProtocol {
     func resetUser() {
         call(resetUserRef, args: ())
     }
+    
+    lazy var setPhoneNumberRef = MockFunction(self, setPhoneNumber)
+    func setPhoneNumber(phoneNumber: String) {
+        call(setPhoneNumberRef, args: (phoneNumber))
+    }
+    
+    lazy var unsetPhoneNumberRef = MockFunction(self, unsetPhoneNumber)
+    func unsetPhoneNumber() {
+        call(unsetPhoneNumberRef, args: ())
+    }
 
     lazy var variationRef = MockFunction(self, variation as (Int, String) -> String)
     func variation(experimentKey: Int, defaultVariation: String) -> String {
