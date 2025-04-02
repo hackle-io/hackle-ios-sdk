@@ -42,7 +42,7 @@ jobs:
                 -resultBundlePath TestResults \
                 -quiet
 
-      - uses: kishikawakatsumi/xcresulttool@v1
+      - uses: slidoapp/xcresulttool@v3.1.0
         name: Test Result
         with:
           path: TestResults.xcresult
