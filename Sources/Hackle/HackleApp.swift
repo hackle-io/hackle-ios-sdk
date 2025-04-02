@@ -165,11 +165,23 @@ import WebKit
     }
 
     @objc public func setPhoneNumber(phoneNumber: String) {
+        setPhoneNumber(phoneNumber: phoneNumber, completion: {})
+    }
+
+    @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
         piiEventManager.setPhoneNumber(phoneNumber: phoneNumber, user: user, timestamp: Date())
+        eventProcessor.flush()
+        completion()
     }
     
     @objc public func unsetPhoneNumber() {
+        unsetPhoneNumber(completion: {})
+    }
+    
+    @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
         piiEventManager.unsetPhoneNumber(user: user, timestamp: Date())
+        eventProcessor.flush()
+        completion()
     }
     
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
