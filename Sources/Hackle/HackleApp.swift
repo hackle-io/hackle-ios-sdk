@@ -169,7 +169,7 @@ import WebKit
     }
 
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
-        piiEventManager.setPhoneNumber(phoneNumber: phoneNumber, user: user, timestamp: Date())
+        piiEventManager.setPhoneNumber(phoneNumber: PhoneNumber(value: phoneNumber), timestamp: Date())
         eventProcessor.flush()
         completion()
     }
@@ -179,7 +179,7 @@ import WebKit
     }
     
     @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
-        piiEventManager.unsetPhoneNumber(user: user, timestamp: Date())
+        piiEventManager.unsetPhoneNumber(timestamp: Date())
         eventProcessor.flush()
         completion()
     }

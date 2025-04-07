@@ -11,12 +11,12 @@ import Mockery
 
 class MockPIIEventManager: Mock, PIIEventManager {
     lazy var toSetPhoneNumberMock = MockFunction(self, setPhoneNumber)
-    func setPhoneNumber(phoneNumber: String, user: User, timestamp: Date) {
-        call(toSetPhoneNumberMock, args: (phoneNumber, user, timestamp))
+    func setPhoneNumber(phoneNumber: PhoneNumber, timestamp: Date) {
+        call(toSetPhoneNumberMock, args: (phoneNumber, timestamp))
     }
     
     lazy var toUnsetPhoneNumberMock = MockFunction(self, unsetPhoneNumber)
-    func unsetPhoneNumber(user: User, timestamp: Date) {
-        call(toUnsetPhoneNumberMock, args: (user, timestamp))
+    func unsetPhoneNumber(timestamp: Date) {
+        call(toUnsetPhoneNumberMock, args: (timestamp))
     }
 }

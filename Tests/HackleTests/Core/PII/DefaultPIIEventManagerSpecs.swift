@@ -29,7 +29,7 @@ class DefaultPIIEventManagerSpecs: QuickSpec {
             let phoneNumber = "+821012345678"
             
             // when
-            sut.setPhoneNumber(phoneNumber: phoneNumber, user: user, timestamp: Date(timeIntervalSince1970: 42))
+            sut.setPhoneNumber(phoneNumber: PhoneNumber(value: phoneNumber), timestamp: Date(timeIntervalSince1970: 42))
             
             // then
             verify(exactly: 1) {
@@ -50,7 +50,7 @@ class DefaultPIIEventManagerSpecs: QuickSpec {
             let user = User.builder().deviceId("device_id").build()
             
             // when
-            sut.unsetPhoneNumber(user: user, timestamp: Date(timeIntervalSince1970: 42))
+            sut.unsetPhoneNumber(timestamp: Date(timeIntervalSince1970: 42))
             
             // then
             verify(exactly: 1) {

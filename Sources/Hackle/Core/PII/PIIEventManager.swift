@@ -16,12 +16,12 @@ protocol PIIEventManager {
     ///   - phoneNumber: 전화번호
     ///   - user: 유저
     ///   - timestamp: 설정 시간
-    func setPhoneNumber(phoneNumber: String, user: User, timestamp: Date)
+    func setPhoneNumber(phoneNumber: PhoneNumber, timestamp: Date)
     /// 전화번호를 삭제
     /// - Parameters:
     ///   - user: 유저
     ///   - timestamp: 삭제 시간
-    func unsetPhoneNumber(user: User, timestamp: Date)
+    func unsetPhoneNumber(timestamp: Date)
 }
 
 class DefaultPIIEventManager: PIIEventManager {
@@ -34,21 +34,20 @@ class DefaultPIIEventManager: PIIEventManager {
         self.core = core
     }
     
-    func setPhoneNumber(phoneNumber: String, user: User, timestamp: Date) {
-        let filteredPhoneNumber = PhoneNumber.filtered(phoneNumber: phoneNumber)
+    func setPhoneNumber(phoneNumber: PhoneNumber, timestamp: Date) {
         let properties = PropertyOperationsBuilder()
-            .set(PIIProperty.phoneNumber.rawValue, filteredPhoneNumber)
+            .set(PIIProperty.phoneNumber.rawValue, phoneNumber.value)
             .build()
         let event = properties.toSecuredEvent()
-        track(event: event, user: user, timestamp: timestamp)
+        track(event: event, timestamp: timestamp)
     }
     
-    func unsetPhoneNumber(user: User, timestamp: Date) {
+    func unsetPhoneNumber(timestamp: Date) {
         let properties = PropertyOperationsBuilder()
             .unset(PIIProperty.phoneNumber.rawValue)
             .build()
         let event = properties.toSecuredEvent()
-        track(event: event, user: user, timestamp: timestamp)
+        track(event: event, timestamp: timestamp)
     }
     
     /// secured properties event를 추적
@@ -56,8 +55,8 @@ class DefaultPIIEventManager: PIIEventManager {
     ///   - event: 이벤트
     ///   - user: 유저
     ///   - timestamp: 이벤트 발생 시각
-    private func track(event: Event, user: User, timestamp: Date) {
-        let hackleUser = userManager.toHackleUser(user: user)
+    private func track(event: Event, timestamp: Date) {
+        let hackleUser = userManager.resolve(user: nil)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
     }
 
