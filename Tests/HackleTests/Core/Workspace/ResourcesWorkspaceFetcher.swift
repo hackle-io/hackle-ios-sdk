@@ -10,6 +10,7 @@ import Foundation
 
 
 class ResourcesWorkspaceFetcher: WorkspaceFetcher {
+    var lastModified: String? = nil
 
     private let workspace: Workspace
 
