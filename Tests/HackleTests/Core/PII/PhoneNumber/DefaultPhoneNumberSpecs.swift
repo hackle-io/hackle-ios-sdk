@@ -27,8 +27,8 @@ class DefaultPhoneNumberSpecs: QuickSpec {
             let expectResult = "+821012345678"
             
             for phoneNumber in phoneNumberCases {
-                let result = PhoneNumber.filtered(phoneNumber: phoneNumber)
-                expect(result) == expectResult
+                let result = PhoneNumber.create(phoneNumber: phoneNumber)
+                expect(result.value) == expectResult
             }
         }
         
@@ -47,8 +47,8 @@ class DefaultPhoneNumberSpecs: QuickSpec {
             let expectResult = "01012345678"
             
             for phoneNumber in phoneNumberCases {
-                let result = PhoneNumber.filtered(phoneNumber: phoneNumber)
-                expect(result) == expectResult
+                let result = PhoneNumber.create(phoneNumber: phoneNumber)
+                expect(result.value) == expectResult
             }
         }
     }
