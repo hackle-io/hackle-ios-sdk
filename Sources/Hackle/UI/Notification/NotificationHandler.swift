@@ -42,7 +42,7 @@ extension NotificationHandler {
                     Log.debug("Redirected to: \(link) [success=\(success)]")
                 }
             } else {
-                Log.debug("Landing url is empty.")
+                Log.error("Landing url is empty.")
             }
         }
     }

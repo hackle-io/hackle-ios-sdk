@@ -318,7 +318,7 @@ class DefaultUserManager: UserManager, AppStateListener {
             return nil
         }
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any?] else {
-            Log.debug("Failed to deserialize User")
+            Log.error("Failed to deserialize User")
             return nil
         }
 
@@ -329,7 +329,7 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     private func saveUser(user: User) {
         guard let data = user.toData() else {
-            Log.debug("Failed to serialize User.")
+            Log.error("Failed to serialize User.")
             return
         }
         repository.putData(key: DefaultUserManager.USER_KEY, value: data)

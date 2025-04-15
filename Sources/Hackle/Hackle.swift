@@ -102,7 +102,7 @@ extension Hackle {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) -> Bool {
         if let notificationData = NotificationData.from(data: notification.request.content.userInfo) {
-            Log.debug("Notification data received in foreground: \(notificationData.showForeground)")
+            Log.info("Notification data received in foreground: \(notificationData.showForeground)")
             if (notificationData.showForeground) {
                 if #available(iOS 14.0, *) {
                     completionHandler([.list, .banner])
@@ -122,7 +122,7 @@ extension Hackle {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) -> Bool {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
-            Log.debug("Notification data received from user action.")
+            Log.info("Notification data received from user action.")
             NotificationHandler.shared
                 .handleNotificationData(data: notificationData)
             completionHandler()
