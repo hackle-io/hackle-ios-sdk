@@ -966,7 +966,7 @@ extension ExperimentDto {
         case "STOPPED":
             return .completed
         default:
-            Log.error("Unsupported experiment status [\(executionStatus)]")
+            Log.debug("Unsupported experiment status [\(executionStatus)]")
             return nil
         }
     }

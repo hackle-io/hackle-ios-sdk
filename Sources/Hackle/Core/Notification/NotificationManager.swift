@@ -47,7 +47,7 @@ class DefaultNotificationManager: NotificationManager {
         }
 
         guard let workspace = workspaceFetcher.fetch() else {
-            Log.error("Workspace data is empty when notification data is flushing.")
+            Log.info("Workspace data is empty when notification data is flushing.")
             return
         }
 
@@ -102,7 +102,7 @@ class DefaultNotificationManager: NotificationManager {
             if workspace == nil {
                 Log.debug("Workspace data is empty.")
             } else {
-                Log.error(
+                Log.info(
                     "Current environment(\(String(describing: workspace?.id)):\(String(describing: workspace?.environmentId))) is not same as notification environment(\(data.workspaceId):\(data.environmentId))."
                 )
             }
