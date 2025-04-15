@@ -17,7 +17,7 @@ class Log {
     }
 
     static func info(_ msg: @autoclosure () -> String) {
-        os_log("%@", log: .hackle, type: .info, msg())
+        os_log("%@", log: .hackle, type: .default, msg())
         increment(.info)
     }
 
