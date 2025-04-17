@@ -17,6 +17,7 @@ import WebKit
     private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
+    private let piiEventManager: PIIEventManager
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
@@ -62,6 +63,7 @@ import WebKit
         lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
+        piiEventManager: PIIEventManager,
         fetchThrottler: Throttler,
         device: Device,
         inAppMessageUI: HackleInAppMessageUI,
@@ -79,6 +81,7 @@ import WebKit
         self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
+        self.piiEventManager = piiEventManager
         self.fetchThrottler = fetchThrottler
         self.device = device
         self.inAppMessageUI = inAppMessageUI
@@ -161,6 +164,26 @@ import WebKit
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
+    @objc public func setPhoneNumber(phoneNumber: String) {
+        setPhoneNumber(phoneNumber: phoneNumber, completion: {})
+    }
+
+    @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
+        piiEventManager.setPhoneNumber(phoneNumber: PhoneNumber.create(phoneNumber: phoneNumber), timestamp: Date())
+        eventProcessor.flush()
+        completion()
+    }
+    
+    @objc public func unsetPhoneNumber() {
+        unsetPhoneNumber(completion: {})
+    }
+    
+    @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
+        piiEventManager.unsetPhoneNumber(timestamp: Date())
+        eventProcessor.flush()
+        completion()
+    }
+    
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
         variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
     }
@@ -626,6 +649,14 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
+        
+        // - PII
+        
+        let piiEventManager = DefaultPIIEventManager(
+            userManager: userManager,
+            core: core
+        )
+            
 
         // - UserExplorer
 
@@ -677,6 +708,7 @@ extension HackleApp {
             lifecycleManager: lifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
+            piiEventManager: piiEventManager,
             fetchThrottler: throttler,
             device: device,
             inAppMessageUI: inAppMessageUI,
@@ -727,6 +759,9 @@ protocol HackleAppProtocol: AnyObject {
     func setUserProperty(key: String, value: Any?)
     func updateUserProperties(operations: PropertyOperations)
     func resetUser()
+    
+    func setPhoneNumber(phoneNumber: String)
+    func unsetPhoneNumber()
 
     func variation(experimentKey: Int, defaultVariation: String) -> String
     func variationDetail(experimentKey: Int, defaultVariation: String) -> Decision
