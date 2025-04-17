@@ -30,6 +30,7 @@ class DefaultPushTokenManager: PushTokenManager, PushTokenListener, SessionListe
         if token == currentToken() {
             return
         }
+        Log.info("Push token registered")
         repository.putString(key: DefaultPushTokenManager.PUSH_TOKEN_KEY, value: token.value)
 
         if sessionStarted {

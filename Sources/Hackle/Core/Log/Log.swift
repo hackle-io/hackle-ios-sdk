@@ -17,12 +17,12 @@ class Log {
     }
 
     static func info(_ msg: @autoclosure () -> String) {
-        os_log("%@", log: .hackle, type: .info, msg())
+        os_log("%{public}@", log: .hackle, type: .default, msg())
         increment(.info)
     }
 
     static func error(_ msg: @autoclosure () -> String) {
-        os_log("%@", log: .hackle, type: .error, msg())
+        os_log("%{public}@", log: .hackle, type: .error, msg())
         increment(.error)
     }
 
