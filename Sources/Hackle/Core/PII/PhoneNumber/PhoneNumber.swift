@@ -11,7 +11,6 @@ struct PhoneNumber {
     let value: String
     
     static func create(phoneNumber: String) -> PhoneNumber {
-        //let filterdValue = phoneNumber.filter { $0.isNumber || $0 == "+" }
         return PhoneNumber(value: phoneNumber)
     }
 }
