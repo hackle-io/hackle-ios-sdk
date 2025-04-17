@@ -23,10 +23,17 @@ class NotificationHandler {
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
     }
-
-    func handleNotificationData(data: NotificationData, timestamp: Date = Date()) {
+    
+    /// 핵클 푸시를 처리합니다.
+    /// - Parameters:
+    ///   - data: notification data
+    ///   - timestamp: push click timestamp
+    ///   - customAction: true이면 개발사에서 직접 알림 액션 처리하고 false이면 sdk default
+    func handleNotificationData(data: NotificationData, timestamp: Date = Date(), customAction: Bool = false) {
         receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
-        trampoline(data: data)
+        if !customAction {
+            trampoline(data: data)
+        }
     }
 }
 
