@@ -131,7 +131,7 @@ extension Hackle {
         }
     }
     
-    @objc static public func handleNotificationCenter(
+    @objc static public func parseNotificationData(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) -> HackleNotification? {
