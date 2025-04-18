@@ -9,6 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2'
+      
       - name: Xcode Cache # 캐시 사용
         if: ${{ !startsWith(github.event.pull_request.base.ref, 'release-') }} # release 브랜치는 캐시 사용하지 않음
         uses: actions/cache@v4
@@ -23,7 +27,7 @@ jobs:
             xcodebuild build-for-testing \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
                 -quiet
 
       - name: Test
@@ -31,14 +35,14 @@ jobs:
             xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
                 -retry-tests-on-failure \
                 -test-iterations 3 \
                 -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
                 -quiet
 
-      - uses: kishikawakatsumi/xcresulttool@v1
+      - uses: slidoapp/xcresulttool@v3.1.0
         name: Test Result
         with:
           path: TestResults.xcresult
