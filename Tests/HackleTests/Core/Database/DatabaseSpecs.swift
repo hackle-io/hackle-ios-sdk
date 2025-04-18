@@ -169,10 +169,12 @@ class DatabaseSpec: QuickSpec {
                 concurrentQueue.async {
                     mockDB.execute { _ in
                         executionLog.append(1)
-                        sleep(1)
+                        Thread.sleep(forTimeInterval: 0.1)
                         executionLog.append(2)
                     }
                 }
+                
+                Thread.sleep(forTimeInterval: 0.1)
                 
                 concurrentQueue.async {
                     mockDB.execute { _ in
@@ -180,10 +182,9 @@ class DatabaseSpec: QuickSpec {
                     }
                 }
                 
-
                 expect(executionLog).toEventually(
                     equal([1,2,3]),
-                    timeout: .seconds(2)
+                    timeout: .seconds(1)
                 )
             }
         }
