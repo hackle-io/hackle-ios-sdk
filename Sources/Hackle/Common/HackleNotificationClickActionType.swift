@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc public enum HackleNotificationClickAction: Int, RawRepresentable {
+@objc public enum HackleNotificationClickActionType: Int, RawRepresentable {
     case appOpen
     case deepLink
     

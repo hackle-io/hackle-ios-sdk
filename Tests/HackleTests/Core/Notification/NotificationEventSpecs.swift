@@ -37,6 +37,7 @@ class NotificationEventSpecs: QuickSpec {
             expect(event.properties?["push_message_key"].asIntOrNil()) == 2
             expect(event.properties?["push_message_execution_id"].asIntOrNil()) == 3
             expect(event.properties?["push_message_delivery_id"].asIntOrNil()) == 4
+            expect(event.properties?["campaign_type"] as? String) == "JOURNEY"
             expect(event.properties?["debug"] as? Bool) == true
         }
         it("notification history entity to event") {
@@ -62,6 +63,7 @@ class NotificationEventSpecs: QuickSpec {
             expect(event.properties?["push_message_key"].asIntOrNil()) == 4
             expect(event.properties?["push_message_execution_id"].asIntOrNil()) == 5
             expect(event.properties?["push_message_delivery_id"].asIntOrNil()) == 6
+            expect(event.properties?["campaign_type"] as? String) == "PUSH_MESSAGE"
             expect(event.properties?["debug"] as? Bool) == true
         }
     }

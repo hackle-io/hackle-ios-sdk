@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
 
-class NotificationData {
+class NotificationData: HackleNotification {
     let workspaceId: Int64
     let environmentId: Int64
     
@@ -21,6 +21,15 @@ class NotificationData {
     let campaignType: String?
     
     let debug: Bool
+    
+    var type: HackleNotificationClickActionType {
+        switch clickAction {
+        case .appOpen:
+            return .appOpen
+        case .deepLink:
+            return .deepLink
+        }
+    }
     
     init(
         workspaceId: Int64,

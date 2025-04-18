@@ -134,11 +134,11 @@ extension Hackle {
     @objc static public func handleNotificationCenter(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
-    ) -> HackleNotificationData? {
+    ) -> HackleNotification? {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
             Log.info("Notification data received from user action.")
-            NotificationHandler.shared.handleNotificationData(data: notificationData, customAction: true)
-            return HackleNotificationData.from(notificationData: notificationData)
+            NotificationHandler.shared.handleNotificationData(data: notificationData, useDefaultAction: false)
+            return notificationData
         } else {
             return nil
         }

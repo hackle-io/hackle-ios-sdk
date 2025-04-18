@@ -34,6 +34,7 @@ class NotificationDataSpecs: QuickSpec {
             expect(result?.imageUrl) == "https://foo.bar"
             expect(result?.clickAction) == NotificationClickAction.deepLink
             expect(result?.link) == "app://main"
+            expect(result?.type) == HackleNotificationClickActionType.deepLink
         }
         it("from dictionary with invalid hackle key value") {
             expect(NotificationData.from(data: [:])).to(beNil())
