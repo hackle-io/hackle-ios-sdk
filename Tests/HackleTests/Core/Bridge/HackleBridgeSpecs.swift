@@ -289,6 +289,32 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["message"] as? String) == "OK"
                 expect(dict["data"]).to(beNil())
             }
+            it("setPhoneNumber") {
+                let mock = MockHackleApp()
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "setPhoneNumber", parameters: ["phoneNumber": "+821012345678"])
+                let result = bridge.invoke(string: jsonString)
+                
+                expect(mock.setPhoneNumberRef.invokations().count) == 1
+                
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                expect(dict["data"]).to(beNil())
+            }
+            it("unsetPhoneNumber") {
+                let mock = MockHackleApp()
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "unsetPhoneNumber")
+                let result = bridge.invoke(string: jsonString)
+                
+                expect(mock.unsetPhoneNumberRef.invokations().count) == 1
+                
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                expect(dict["data"]).to(beNil())
+            }
             describe("variation") {
                 context("normal") {
                     it("happy case") {

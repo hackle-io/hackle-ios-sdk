@@ -47,7 +47,7 @@ class DefaultNotificationManager: NotificationManager {
         }
 
         guard let workspace = workspaceFetcher.fetch() else {
-            Log.debug("Workspace data is empty.")
+            Log.info("Workspace data is empty when notification data is flushing.")
             return
         }
 
@@ -57,12 +57,12 @@ class DefaultNotificationManager: NotificationManager {
             environmentId: workspace.environmentId
         )
         if (totalCount <= 0) {
-            Log.debug("Notification data is empty.")
+            Log.info("Notification data is empty.")
             return
         }
 
         let loop = Int(ceil(Double(totalCount) / Double(batchSize)))
-        Log.debug("Notification data: \(totalCount)")
+        Log.info("Notification data: \(totalCount)")
 
         for _ in 0...loop {
             let notifications = repository.getEntities(
@@ -72,6 +72,7 @@ class DefaultNotificationManager: NotificationManager {
             )
 
             if (notifications.isEmpty) {
+                Log.debug("Notification data is empty in loop.")
                 break
             }
 
@@ -85,10 +86,10 @@ class DefaultNotificationManager: NotificationManager {
             }
 
             repository.delete(entities: notifications)
-            Log.debug("Flushed notification data: \(notifications.count) items")
+            Log.info("Flushed notification data: \(notifications.count) items")
         }
 
-        Log.debug("Finished notification data flush task.")
+        Log.info("Finished notification data flush task.")
     }
 
     func onNotificationDataReceived(data: NotificationData, timestamp: Date) {
@@ -101,7 +102,7 @@ class DefaultNotificationManager: NotificationManager {
             if workspace == nil {
                 Log.debug("Workspace data is empty.")
             } else {
-                Log.debug(
+                Log.info(
                     "Current environment(\(String(describing: workspace?.id)):\(String(describing: workspace?.environmentId))) is not same as notification environment(\(data.workspaceId):\(data.environmentId))."
                 )
             }
@@ -113,13 +114,13 @@ class DefaultNotificationManager: NotificationManager {
     private func saveInLocal(data: NotificationData, timestamp: Date) {
         dispatchQueue.async {
             self.repository.save(data: data, timestamp: timestamp)
-            Log.debug("Saved notification data: \(String(describing: data.pushMessageId))[\(timestamp)]")
+            Log.info("Saved notification data: \(String(describing: data.pushMessageId))[\(timestamp)]")
         }
     }
 
     private func track(event: Event, user: User, timestamp: Date) {
         let hackleUser = userManager.toHackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
-        Log.debug("\(event.key) event queued.")
+        Log.info("Push click event queued.")
     }
 }
