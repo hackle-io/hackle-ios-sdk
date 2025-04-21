@@ -31,6 +31,15 @@ class NotificationData: HackleNotification {
         }
     }
     
+    var deepLink: String? {
+        switch clickAction {
+        case .appOpen:
+            return nil
+        case .deepLink:
+            return link
+        }
+    }
+    
     init(
         workspaceId: Int64,
         environmentId: Int64,
