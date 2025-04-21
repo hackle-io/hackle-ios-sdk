@@ -158,7 +158,10 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
             return
         }
-        let decoratedEvent = decorateSession(event: event)
+        let filteredEvent = eventFilters.reduce(event) { (userEvent, eventFilter) in
+            eventFilter.filter(event: userEvent)
+        }
+        let decoratedEvent = decorateSession(event: filteredEvent)
         saveEvent(event: decoratedEvent)
         eventPublisher.publish(event: decoratedEvent)
     }

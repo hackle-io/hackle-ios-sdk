@@ -13,4 +13,10 @@ class WebViewWrapperUserEventFilter: UserEventFilter {
         }
         return .pass
     }
+    
+    func filter(event: UserEvent) -> UserEvent {
+        return event.with(
+            user: event.user.toBuilder().clearProperties().build()
+        )
+    }
 }

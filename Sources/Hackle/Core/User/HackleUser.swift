@@ -123,6 +123,12 @@ class InternalHackleUserBuilder {
         self.properties.add(key, value)
         return self
     }
+    
+    @discardableResult
+    func clearProperties() -> InternalHackleUserBuilder {
+        self.properties.clear()
+        return self
+    }
 
     @discardableResult
     func hackleProperties(_ properties: [String: Any]) -> InternalHackleUserBuilder {

@@ -1,7 +1,6 @@
 import Foundation
 
 class DedupUserEventFilter: UserEventFilter {
-
     private let eventDedupDeterminer: UserEventDedupDeterminer
 
     init(eventDedupDeterminer: UserEventDedupDeterminer) {
@@ -15,5 +14,9 @@ class DedupUserEventFilter: UserEventFilter {
         } else {
             return .pass
         }
+    }
+    
+    func filter(event: UserEvent) -> UserEvent {
+        return event
     }
 }
