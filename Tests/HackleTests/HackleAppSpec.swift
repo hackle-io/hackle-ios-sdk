@@ -96,6 +96,10 @@ class HackleAppSpecs: QuickSpec {
             sut.showUserExplorer()
         }
 
+        it("hideUserExplorer") {
+            sut.hideUserExplorer()
+        }
+
         describe("setUser") {
             it("set and sync") {
                 let user = User.builder().id("42").build()

@@ -101,6 +101,13 @@ import WebKit
         Metrics.counter(name: "user.explorer.show").increment()
     }
 
+    @objc public func hideUserExplorer() {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            self.view?.detach()
+        }
+        Metrics.counter(name: "user.explorer.hide").increment()
+    }
+
     @objc public func setUser(user: User) {
         setUser(user: user, completion: {})
     }
@@ -753,6 +760,7 @@ protocol HackleAppProtocol: AnyObject {
     var user: User { get }
 
     func showUserExplorer()
+    func hideUserExplorer()
 
     func setUser(user: User)
     func setUserId(userId: String?)
