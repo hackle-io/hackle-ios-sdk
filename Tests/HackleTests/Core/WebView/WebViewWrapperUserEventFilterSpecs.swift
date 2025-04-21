@@ -42,7 +42,12 @@ class WebViewWrapperUserEventFilterSpecs: QuickSpec {
         it("webview wrapper filter return filtered event") {
             // given
             let sut = WebViewWrapperUserEventFilter()
-            let user = HackleUser.builder().identifier(.device, "device").identifier(.hackleDevice, "hackle_device").build()
+            let user = HackleUser
+                .builder()
+                .identifier(.device, "device")
+                .properties(["key": "value"])
+                .hackleProperties(["hackleKey": "hackleValue"])
+                .build()
             let event = UserEvents.track("$push_token", user: user)
             
             // when
@@ -50,6 +55,11 @@ class WebViewWrapperUserEventFilterSpecs: QuickSpec {
             // then
             expect(actual.user).toNot(beIdenticalTo(event.user))
             expect(actual.user.properties.count).to(equal(0))
+            expect(actual.user.hackleProperties.count).to(equal(1))
+            expect(actual.user.hackleProperties["hackleKey"].orNil).to(equal("hackleValue"))
+            expect(actual.user.identifiers).to(equal(user.identifiers))
+            expect(actual.user.cohorts).to(equal(user.cohorts))
+            expect(actual.user.targetEvents).to(equal(user.targetEvents))
             expect(actual.timestamp).to(equal(event.timestamp))
             expect(actual.type).to(equal(event.type))
             expect(actual.insertId).to(equal(event.insertId))
