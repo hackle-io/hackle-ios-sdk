@@ -28,7 +28,7 @@ class NotificationHandler {
     /// - Parameters:
     ///   - data: notification data
     ///   - timestamp: push click timestamp
-    ///   - customAction: true이면 개발사에서 직접 알림 액션 처리하고 false이면 sdk default
+    ///   - useDefaultAction: false 이면 trampoline을 실행하지 않습니다.
     func handleNotificationData(data: NotificationData, timestamp: Date = Date(), useDefaultAction: Bool = true) {
         receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
         if useDefaultAction {
