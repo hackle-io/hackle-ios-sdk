@@ -39,6 +39,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let userManager: UserManager
     private let appStateManager: AppStateManager
     private let screenManager: ScreenManager
+    private let screenUserEventDecorator: UserEventDecorator
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -74,14 +75,18 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         self.userManager = userManager
         self.appStateManager = appStateManager
         self.screenManager = screenManager
+        self.screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
     }
 
     func process(event: UserEvent) {
+        // MARK: screen decorator는 queue에 들어가기 전에 추가해야 한다.
+        // - 큐에 들어간 후 처리되기 전에 screen이 바뀔 수 있기 때문
+        let decoratedEvent = screenUserEventDecorator.decorate(event: event)
         eventQueue.async { [weak self] in
             guard let self = self else {
                 return
             }
-            self.addEventInternal(event: event)
+            self.addEventInternal(event: decoratedEvent)
         }
     }
 

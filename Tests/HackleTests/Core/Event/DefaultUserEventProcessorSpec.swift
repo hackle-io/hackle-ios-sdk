@@ -42,7 +42,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         func processor(
             eventFilters: [UserEventFilter] = [],
             eventDecorator: [UserEventDecorator] = [
-                ScreenUserEventDecorator(screenManager: screenManager),
                 SessionUserEventDecorator(sessionManager: sessionManager)
             ],
             eventQueue: DispatchQueue = eventQueue,

@@ -514,9 +514,7 @@ extension HackleApp {
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
         
-        let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
         let sessionUserEventDecorator = SessionUserEventDecorator(sessionManager: sessionManager)
-        eventDecorators.append(screenUserEventDecorator)
         eventDecorators.append(sessionUserEventDecorator)
 
         if config.mode == .web_view_wrapper {
