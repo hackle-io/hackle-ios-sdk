@@ -2,7 +2,6 @@ import Foundation
 
 protocol UserEventFilter {
     func check(event: UserEvent) -> UserEventFilterResult
-    func filter(event: UserEvent) -> UserEvent
 }
 
 extension UserEventFilter {

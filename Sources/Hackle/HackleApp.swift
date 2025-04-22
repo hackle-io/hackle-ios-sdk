@@ -490,6 +490,7 @@ extension HackleApp {
 
         let eventPublisher = DefaultUserEventPublisher()
         var eventFilters = [UserEventFilter]()
+        var eventDecorators = [UserEventDecorator]()
 
         let rcEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameRemoteConfigEventDedup, sdkKey))
         let exposureEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameExposureEventDedup, sdkKey))
@@ -512,13 +513,20 @@ extension HackleApp {
         ])
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
+        
+        let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
+        let sessionUserEventDecorator = SessionUserEventDecorator(sessionManager: sessionManager)
+        eventDecorators.append(screenUserEventDecorator)
+        eventDecorators.append(sessionUserEventDecorator)
 
         if config.mode == .web_view_wrapper {
             eventFilters.append(WebViewWrapperUserEventFilter())
+            eventDecorators.append(WebViewWrapperUserEventDecorator())
         }
 
         let eventProcessor = DefaultUserEventProcessor(
             eventFilters: eventFilters,
+            eventDecorator: eventDecorators,
             eventPublisher: eventPublisher,
             eventQueue: eventQueue,
             eventRepository: eventRepository,

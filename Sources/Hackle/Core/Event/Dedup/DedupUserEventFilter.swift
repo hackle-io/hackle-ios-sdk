@@ -15,8 +15,4 @@ class DedupUserEventFilter: UserEventFilter {
             return .pass
         }
     }
-    
-    func filter(event: UserEvent) -> UserEvent {
-        return event
-    }
 }

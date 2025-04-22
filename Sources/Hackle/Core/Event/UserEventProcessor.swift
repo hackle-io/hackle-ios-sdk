@@ -25,6 +25,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
     private let eventFilters: [UserEventFilter]
+    private let eventDecorator: [UserEventDecorator]
     private let eventPublisher: UserEventPublisher
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
@@ -43,6 +44,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
 
     init(
         eventFilters: [UserEventFilter],
+        eventDecorator: [UserEventDecorator],
         eventPublisher: UserEventPublisher,
         eventQueue: DispatchQueue,
         eventRepository: EventRepository,
@@ -58,6 +60,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         screenManager: ScreenManager
     ) {
         self.eventFilters = eventFilters
+        self.eventDecorator = eventDecorator
         self.eventPublisher = eventPublisher
         self.eventQueue = eventQueue
         self.eventRepository = eventRepository
@@ -74,24 +77,12 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     }
 
     func process(event: UserEvent) {
-        let newEvent = decorateScreenName(event: event)
         eventQueue.async { [weak self] in
             guard let self = self else {
                 return
             }
-            self.addEventInternal(event: newEvent)
+            self.addEventInternal(event: event)
         }
-    }
-
-    private func decorateScreenName(event: UserEvent) -> UserEvent {
-        guard let screen = screenManager.currentScreen else {
-            return event
-        }
-        let newUser = event.user.toBuilder()
-            .hackleProperty("screenName", screen.name)
-            .hackleProperty("screenClass", screen.className)
-            .build()
-        return event.with(user: newUser)
     }
 
     func flush() {
@@ -158,10 +149,11 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
             return
         }
-        let filteredEvent = eventFilters.reduce(event) { (userEvent, eventFilter) in
-            eventFilter.filter(event: userEvent)
+        
+        let decoratedEvent = eventDecorator.reduce(event) { (userEvent, eventDecorator) in
+            eventDecorator.decorate(event: userEvent)
         }
-        let decoratedEvent = decorateSession(event: filteredEvent)
+
         saveEvent(event: decoratedEvent)
         eventPublisher.publish(event: decoratedEvent)
     }
@@ -177,22 +169,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
             // Corner case when an event is processed between background and foreground
             sessionManager.startNewSessionIfNeeded(user: userManager.currentUser, timestamp: event.timestamp)
         }
-    }
-
-    private func decorateSession(event: UserEvent) -> UserEvent {
-
-        if event.user.sessionId != nil {
-            return event
-        }
-
-        guard let session = sessionManager.currentSession else {
-            return event
-        }
-
-        let decoratedUser = event.user.toBuilder()
-            .identifier(.session, session.id, overwrite: false)
-            .build()
-        return event.with(user: decoratedUser)
     }
 
     private func saveEvent(event: UserEvent) {

@@ -53,7 +53,7 @@ extension HackleUser {
     func toBuilder() -> InternalHackleUserBuilder {
         InternalHackleUserBuilder(user: self)
     }
-    
+
     var id: String? {
         identifiers[IdentifierType.id.rawValue]
     }
@@ -123,7 +123,7 @@ class InternalHackleUserBuilder {
         self.properties.add(key, value)
         return self
     }
-    
+
     @discardableResult
     func clearProperties() -> InternalHackleUserBuilder {
         self.properties.clear()
@@ -153,13 +153,13 @@ class InternalHackleUserBuilder {
         self.cohorts.append(contentsOf: cohorts)
         return self
     }
-    
+
     @discardableResult
     func targetEvent(_ targetEvent: TargetEvent) -> InternalHackleUserBuilder {
         self.targetEvents.append(targetEvent)
         return self
     }
-    
+
     @discardableResult
     func targetEvents(_ targetEvents: [TargetEvent]) -> InternalHackleUserBuilder {
         self.targetEvents.append(contentsOf: targetEvents)

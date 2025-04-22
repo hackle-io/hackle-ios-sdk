@@ -60,7 +60,7 @@ class PropertiesBuilder {
         }
         return self
     }
-    
+
     @discardableResult
     func clear() -> PropertiesBuilder {
         properties.removeAll()
