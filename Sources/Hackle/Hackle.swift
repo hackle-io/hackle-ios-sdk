@@ -115,7 +115,21 @@ extension Hackle {
             return false
         }
     }
+    
+    @objc static public func userNotificationCenter(
+        response: UNNotificationResponse,
+        handleType: HackleNotificationHandleType = .process
+    ) -> HackleNotification? {
+        if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
+            Log.info("Notification data received from user action.")
+            NotificationHandler.shared.handleNotificationData(data: notificationData, processHackleAction: handleType == .process)
+            return notificationData
+        } else {
+            return nil
+        }
+    }
 
+    @available(*, deprecated, message: "Use userNotificationCenter(UNNotificationResponse, HackleNotificationHandleType) instead.")
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -123,24 +137,11 @@ extension Hackle {
     ) -> Bool {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
             Log.info("Notification data received from user action.")
-            NotificationHandler.shared.handleNotificationData(data: notificationData)
+            NotificationHandler.shared.handleNotificationData(data: notificationData, processHackleAction: true)
             completionHandler()
             return true
         } else {
             return false
-        }
-    }
-    
-    @objc static public func parseNotificationData(
-        center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse
-    ) -> HackleNotification? {
-        if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
-            Log.info("Notification data received from user action.")
-            NotificationHandler.shared.handleNotificationData(data: notificationData, useDefaultAction: false)
-            return notificationData
-        } else {
-            return nil
         }
     }
 }

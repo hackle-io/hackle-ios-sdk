@@ -28,10 +28,10 @@ class NotificationHandler {
     /// - Parameters:
     ///   - data: notification data
     ///   - timestamp: push click timestamp
-    ///   - useDefaultAction: false 이면 trampoline을 실행하지 않습니다.
-    func handleNotificationData(data: NotificationData, timestamp: Date = Date(), useDefaultAction: Bool = true) {
+    ///   - processHackleAction: false 이면 trampoline을 실행하지 않습니다.
+    func handleNotificationData(data: NotificationData, timestamp: Date = Date(), processHackleAction: Bool) {
         receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
-        if useDefaultAction {
+        if processHackleAction {
             trampoline(data: data)
         }
     }
