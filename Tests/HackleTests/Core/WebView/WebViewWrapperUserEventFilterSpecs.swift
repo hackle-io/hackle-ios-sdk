@@ -32,7 +32,6 @@ class WebViewWrapperUserEventFilterSpecs: QuickSpec {
             expect(actual).to(equal(UserEventFilterResult.block))
         }
 
-
         it("pass") {
             let sut = WebViewWrapperUserEventFilter()
             let user = HackleUser.builder().identifier(.device, "device").identifier(.hackleDevice, "hackle_device").build()

@@ -62,6 +62,12 @@ class PropertiesBuilder {
     }
 
     @discardableResult
+    func clear() -> PropertiesBuilder {
+        properties.removeAll()
+        return self
+    }
+
+    @discardableResult
     func compute(_ key: String, _ remapping: (Any?) -> Any?) -> PropertiesBuilder {
         let oldValue = properties[key]
         let newValue = remapping(oldValue)
