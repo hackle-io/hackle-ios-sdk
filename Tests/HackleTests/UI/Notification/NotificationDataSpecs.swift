@@ -34,6 +34,8 @@ class NotificationDataSpecs: QuickSpec {
             expect(result?.imageUrl) == "https://foo.bar"
             expect(result?.clickAction) == NotificationClickAction.deepLink
             expect(result?.link) == "app://main"
+            expect(result?.actionType) == HackleNotificationClickActionType.link
+            expect(result?.link) == "app://main"
         }
         it("from dictionary with invalid hackle key value") {
             expect(NotificationData.from(data: [:])).to(beNil())
@@ -62,6 +64,8 @@ class NotificationDataSpecs: QuickSpec {
             expect(result?.debug) == false
             expect(result?.imageUrl).to(beNil())
             expect(result?.clickAction) == NotificationClickAction.appOpen
+            expect(result?.link).to(beNil())
+            expect(result?.actionType) == HackleNotificationClickActionType.appOpen
             expect(result?.link).to(beNil())
         }
         it("from dictionary without workspace id") {

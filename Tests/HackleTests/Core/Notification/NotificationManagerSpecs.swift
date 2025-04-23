@@ -537,7 +537,7 @@ class NotificationManagerSpec: QuickSpec {
                     journeyId: 6666,
                     journeyKey: 7777,
                     journeyNodeId: 8888,
-                    campaignType: "type",
+                    campaignType: "PUSH_MESSAGE",
                     debug: false
                 ),
                 timestamp: timeStamp
@@ -572,7 +572,7 @@ class NotificationManagerSpec: QuickSpec {
                 expect(entity2.journeyId) == 6666
                 expect(entity2.journeyKey) == 7777
                 expect(entity2.journeyNodeId) == 8888
-                expect(entity2.campaignType) == "type"
+                expect(entity2.campaignType) == "PUSH_MESSAGE"
                 expect(entity2.debug) == false
                 expect(entity2.workspaceId) == 123
                 expect(entity2.environmentId) == 456
