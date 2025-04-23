@@ -24,16 +24,14 @@ class NotificationHandler {
         self.receiver = receiver
     }
     
-    /// 핵클 푸시를 처리합니다.
-    /// - Parameters:
-    ///   - data: notification data
-    ///   - timestamp: push click timestamp
-    ///   - processTrampoline: trampoline 실행 유무
-    func handleNotificationData(data: NotificationData, timestamp: Date = Date(), processTrampoline: Bool = true) {
-        receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
-        if processTrampoline {
-            trampoline(data: data)
-        }
+    func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
+        Log.info("track push click event")
+        receiver.onNotificationDataReceived(data: notificationData, timestamp: timestamp)
+    }
+    
+    func handlePushClickAction(notificationData: NotificationData) {
+        Log.info("handle push click action: \(notificationData.actionType.rawValue)")
+        trampoline(data: notificationData)
     }
 }
 

@@ -10,5 +10,4 @@ import Foundation
 @objc public protocol HackleNotification {
     var actionType: HackleNotificationClickActionType { get }
     var link: String? { get }
-    var showForeground: Bool { get }
 }
