@@ -96,6 +96,29 @@ extension Hackle {
 }
 
 extension Hackle {
+    @objc static public func handleForegroundNotification(notification: UNNotification) -> HackleNotification? {
+        if let notificationData = NotificationData.from(data: notification.request.content.userInfo) {
+            Log.info("Notification data received in foreground.")
+            return notificationData
+        } else {
+            return nil
+        }
+    }
+    
+    @objc static public func handleClickNotification(
+        response: UNNotificationResponse,
+        handleDeepLink: Bool = true
+    ) -> HackleNotification? {
+        if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
+            Log.info("Notification data received from user action.")
+            NotificationHandler.shared.handleNotificationData(data: notificationData, processTrampoline: handleDeepLink)
+            return notificationData
+        } else {
+            return nil
+        }
+    }
+    
+    @available(*, deprecated, message: "Use handleForegroundNotification(UNNotification) instead.")
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
@@ -115,21 +138,8 @@ extension Hackle {
             return false
         }
     }
-    
-    @objc static public func handleNotification(
-        response: UNNotificationResponse,
-        handleType: HackleNotificationHandleType = .open
-    ) -> HackleNotification? {
-        if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
-            Log.info("Notification data received from user action.")
-            NotificationHandler.shared.handleNotificationData(data: notificationData, handleType: handleType)
-            return notificationData
-        } else {
-            return nil
-        }
-    }
 
-    @available(*, deprecated, message: "Use userNotificationCenter(UNNotificationResponse, HackleNotificationHandleType) instead.")
+    @available(*, deprecated, message: "Use handleClickNotification(UNNotificationResponse, Bool) instead.")
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,

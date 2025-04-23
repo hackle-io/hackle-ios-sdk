@@ -92,7 +92,6 @@
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
 		B2C276172C7EFF6000EEAA2A /* HackleInAppMessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276162C7EFF6000EEAA2A /* HackleInAppMessageAction.swift */; };
 		B2C276192C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */; };
-		B2DDF76C2DB79B4A006572E2 /* HackleNotificationHandleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2DDF76B2DB79B45006572E2 /* HackleNotificationHandleType.swift */; };
 		B2E7B4AF2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */; };
 		B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */; };
 		B2F9D5BF2D4C912700F0C0E0 /* TargetEventConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */; };
@@ -641,7 +640,6 @@
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
 		B2C276162C7EFF6000EEAA2A /* HackleInAppMessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageAction.swift; sourceTree = "<group>"; };
 		B2C276182C7EFFC000EEAA2A /* HackleInAppMessageActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageActionType.swift; sourceTree = "<group>"; };
-		B2DDF76B2DB79B45006572E2 /* HackleNotificationHandleType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleNotificationHandleType.swift; sourceTree = "<group>"; };
 		B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStatus.swift; sourceTree = "<group>"; };
 		B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionOperations.swift; sourceTree = "<group>"; };
 		B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatcher.swift; sourceTree = "<group>"; };
@@ -1815,7 +1813,6 @@
 				B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */,
 				B23A60F22DB0D4E6008D410A /* HackleNotification.swift */,
 				B23A60F42DB0E4D2008D410A /* HackleNotificationClickActionType.swift */,
-				B2DDF76B2DB79B45006572E2 /* HackleNotificationHandleType.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -3018,7 +3015,6 @@
 				EEB2E6302A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift in Sources */,
 				EE29D94E29CD825400B1FEAA /* DelegatingMetric.swift in Sources */,
 				EECDF3E32C11B271009B2F56 /* InAppMessageUIBannerImageView.swift in Sources */,
-				B2DDF76C2DB79B4A006572E2 /* HackleNotificationHandleType.swift in Sources */,
 				EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */,
 				EE29D97D29CD825400B1FEAA /* HttpResponse.swift in Sources */,
 				EE29D97A29CD825400B1FEAA /* Scheduler.swift in Sources */,
