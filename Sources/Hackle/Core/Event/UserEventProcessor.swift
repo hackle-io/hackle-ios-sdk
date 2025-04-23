@@ -25,6 +25,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
     private let eventFilters: [UserEventFilter]
+    private let eventDecorator: [UserEventDecorator]
     private let eventPublisher: UserEventPublisher
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
@@ -37,12 +38,13 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let sessionManager: SessionManager
     private let userManager: UserManager
     private let appStateManager: AppStateManager
-    private let screenManager: ScreenManager
+    private let screenUserEventDecorator: UserEventDecorator
 
     private var flushingJob: ScheduledJob? = nil
 
     init(
         eventFilters: [UserEventFilter],
+        eventDecorator: [UserEventDecorator],
         eventPublisher: UserEventPublisher,
         eventQueue: DispatchQueue,
         eventRepository: EventRepository,
@@ -55,9 +57,10 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         sessionManager: SessionManager,
         userManager: UserManager,
         appStateManager: AppStateManager,
-        screenManager: ScreenManager
+        screenUserEventDecorator: UserEventDecorator
     ) {
         self.eventFilters = eventFilters
+        self.eventDecorator = eventDecorator
         self.eventPublisher = eventPublisher
         self.eventQueue = eventQueue
         self.eventRepository = eventRepository
@@ -70,28 +73,19 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         self.sessionManager = sessionManager
         self.userManager = userManager
         self.appStateManager = appStateManager
-        self.screenManager = screenManager
+        self.screenUserEventDecorator = screenUserEventDecorator
     }
 
     func process(event: UserEvent) {
-        let newEvent = decorateScreenName(event: event)
+        // MARK: screen decorator는 queue에 들어가기 전에 추가해야 한다.
+        // - 큐에 들어간 후 처리되기 전에 screen이 바뀔 수 있기 때문
+        let decoratedEvent = screenUserEventDecorator.decorate(event: event)
         eventQueue.async { [weak self] in
             guard let self = self else {
                 return
             }
-            self.addEventInternal(event: newEvent)
+            self.addEventInternal(event: decoratedEvent)
         }
-    }
-
-    private func decorateScreenName(event: UserEvent) -> UserEvent {
-        guard let screen = screenManager.currentScreen else {
-            return event
-        }
-        let newUser = event.user.toBuilder()
-            .hackleProperty("screenName", screen.name)
-            .hackleProperty("screenClass", screen.className)
-            .build()
-        return event.with(user: newUser)
     }
 
     func flush() {
@@ -158,7 +152,11 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
             return
         }
-        let decoratedEvent = decorateSession(event: event)
+        
+        let decoratedEvent = eventDecorator.reduce(event) { (userEvent, eventDecorator) in
+            eventDecorator.decorate(event: userEvent)
+        }
+
         saveEvent(event: decoratedEvent)
         eventPublisher.publish(event: decoratedEvent)
     }
@@ -174,22 +172,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
             // Corner case when an event is processed between background and foreground
             sessionManager.startNewSessionIfNeeded(user: userManager.currentUser, timestamp: event.timestamp)
         }
-    }
-
-    private func decorateSession(event: UserEvent) -> UserEvent {
-
-        if event.user.sessionId != nil {
-            return event
-        }
-
-        guard let session = sessionManager.currentSession else {
-            return event
-        }
-
-        let decoratedUser = event.user.toBuilder()
-            .identifier(.session, session.id, overwrite: false)
-            .build()
-        return event.with(user: decoratedUser)
     }
 
     private func saveEvent(event: UserEvent) {

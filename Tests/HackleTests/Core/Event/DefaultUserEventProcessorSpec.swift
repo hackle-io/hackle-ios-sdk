@@ -41,6 +41,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
         func processor(
             eventFilters: [UserEventFilter] = [],
+            eventDecorator: [UserEventDecorator] = [
+                SessionUserEventDecorator(sessionManager: sessionManager)
+            ],
             eventQueue: DispatchQueue = eventQueue,
             eventRepository: EventRepository = eventRepository,
             eventRepositoryMaxSize: Int = 100,
@@ -53,8 +56,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             userManager: UserManager = userManager,
             appStateManager: AppStateManagerStub = appStateManager
         ) -> DefaultUserEventProcessor {
-            DefaultUserEventProcessor(
+            let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
+            
+            return DefaultUserEventProcessor(
                 eventFilters: eventFilters,
+                eventDecorator: eventDecorator,
                 eventPublisher: eventPublisher,
                 eventQueue: eventQueue,
                 eventRepository: eventRepository,
@@ -67,7 +73,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 sessionManager: sessionManager,
                 userManager: userManager,
                 appStateManager: appStateManager,
-                screenManager: screenManager
+                screenUserEventDecorator: screenUserEventDecorator
             )
         }
 
@@ -131,8 +137,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -150,8 +159,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 every(sessionManager.startNewSessionIfNeededMock).returns(Session(id: "session_id"))
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -170,8 +182,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -186,8 +201,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -199,14 +217,16 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             it("currentSession 의 sessionId 를 추가한다") {
                 // given
-                let sut = processor(
-                    sessionManager: MockSessionManager(currentSession: Session(id: "42.session"))
-                )
+                let sut = processor()
                 let event = MockUserEvent(user: user)
+                sessionManager.currentSession = Session(id: "42.session")
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -225,8 +245,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -246,8 +269,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -272,8 +298,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -298,8 +327,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -324,8 +356,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event = MockUserEvent(user: user)
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -340,8 +375,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let event: UserEvent = UserEvents.track("test")
 
                 // when
-                sut.process(event: event)
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -356,6 +394,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             beforeEach {
                 spy = OnNotifiedSpy(
                     eventFilters: [],
+                    eventDecorator: [],
                     eventPublisher: eventPublisher,
                     eventQueue: eventQueue,
                     eventRepository: eventRepository,
@@ -368,7 +407,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     sessionManager: sessionManager,
                     userManager: userManager,
                     appStateManager: appStateManager,
-                    screenManager: MockScreeManager()
+                    screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager())
                 )
             }
 
@@ -443,7 +482,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
                 let flushTask = eventFlushScheduler.schedulePeriodicallyMock.firstInvokation().arguments.2
                 flushTask()
-                eventQueue.sync {
+
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 verify(exactly: 1) {
@@ -502,7 +545,10 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             }
 
             sut.stop()
-            eventQueue.sync {
+            Nimble.waitUntil(timeout: .seconds(2)) { done in
+                eventQueue.sync {
+                    done()
+                }
             }
             verify(exactly: 1) {
                 eventRepository.getEventToFlushMock
@@ -524,8 +570,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 let sut = processor(eventFlushMaxBatchSize: 0)
 
                 // when
-                sut.flush()
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.flush()
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -544,8 +593,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 every(eventRepository.getEventToFlushMock).returns([])
 
                 // when
-                sut.flush()
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.flush()
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
@@ -562,8 +614,11 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 every(eventRepository.getEventToFlushMock).returns(events)
 
                 // when
-                sut.flush()
-                eventQueue.sync {
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.flush()
+                    eventQueue.sync {
+                        done()
+                    }
                 }
 
                 // then
