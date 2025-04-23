@@ -38,7 +38,6 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let sessionManager: SessionManager
     private let userManager: UserManager
     private let appStateManager: AppStateManager
-    private let screenManager: ScreenManager
     private let screenUserEventDecorator: UserEventDecorator
 
     private var flushingJob: ScheduledJob? = nil
@@ -58,7 +57,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         sessionManager: SessionManager,
         userManager: UserManager,
         appStateManager: AppStateManager,
-        screenManager: ScreenManager
+        screenUserEventDecorator: UserEventDecorator
     ) {
         self.eventFilters = eventFilters
         self.eventDecorator = eventDecorator
@@ -74,8 +73,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         self.sessionManager = sessionManager
         self.userManager = userManager
         self.appStateManager = appStateManager
-        self.screenManager = screenManager
-        self.screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
+        self.screenUserEventDecorator = screenUserEventDecorator
     }
 
     func process(event: UserEvent) {

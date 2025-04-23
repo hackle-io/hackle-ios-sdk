@@ -56,7 +56,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             userManager: UserManager = userManager,
             appStateManager: AppStateManagerStub = appStateManager
         ) -> DefaultUserEventProcessor {
-            DefaultUserEventProcessor(
+            let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
+            
+            return DefaultUserEventProcessor(
                 eventFilters: eventFilters,
                 eventDecorator: eventDecorator,
                 eventPublisher: eventPublisher,
@@ -71,7 +73,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 sessionManager: sessionManager,
                 userManager: userManager,
                 appStateManager: appStateManager,
-                screenManager: screenManager
+                screenUserEventDecorator: screenUserEventDecorator
             )
         }
 
@@ -405,7 +407,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     sessionManager: sessionManager,
                     userManager: userManager,
                     appStateManager: appStateManager,
-                    screenManager: MockScreeManager()
+                    screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager())
                 )
             }
 

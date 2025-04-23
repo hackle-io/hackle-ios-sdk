@@ -521,6 +521,8 @@ extension HackleApp {
             eventFilters.append(WebViewWrapperUserEventFilter())
             eventDecorators.append(WebViewWrapperUserEventDecorator())
         }
+        
+        let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
 
         let eventProcessor = DefaultUserEventProcessor(
             eventFilters: eventFilters,
@@ -537,7 +539,7 @@ extension HackleApp {
             sessionManager: sessionManager,
             userManager: userManager,
             appStateManager: appStateManager,
-            screenManager: screenManager
+            screenUserEventDecorator: screenUserEventDecorator
         )
 
         // - Core
