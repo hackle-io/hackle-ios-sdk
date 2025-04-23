@@ -116,20 +116,34 @@ extension Hackle {
         }
     }
 
+    @objc static public func handleNotification(
+        response: UNNotificationResponse,
+        handleAction: Bool = true
+    ) -> HackleNotification? {
+        guard let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) else {
+            return nil
+        }
+        
+        NotificationHandler.shared.trackPushClickEvent(notificationData: notificationData)
+
+        if handleAction {
+            NotificationHandler.shared.handlePushClickAction(notificationData: notificationData)
+        }
+        
+        return notificationData
+    }
+
+    @available(*, deprecated, message: "Use handleClickNotification(UNNotificationResponse, Bool) instead.")
     @objc static public func userNotificationCenter(
         center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) -> Bool {
-        if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
-            Log.info("Notification data received from user action.")
-            NotificationHandler.shared
-                .handleNotificationData(data: notificationData)
-            completionHandler()
-            return true
-        } else {
+        if handleNotification(response: response) == nil {
             return false
         }
+        completionHandler()
+        return true
     }
 }
 

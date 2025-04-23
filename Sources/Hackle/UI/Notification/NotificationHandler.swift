@@ -23,10 +23,15 @@ class NotificationHandler {
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
     }
-
-    func handleNotificationData(data: NotificationData, timestamp: Date = Date()) {
-        receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
-        trampoline(data: data)
+    
+    func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
+        Log.info("track push click event")
+        receiver.onNotificationDataReceived(data: notificationData, timestamp: timestamp)
+    }
+    
+    func handlePushClickAction(notificationData: NotificationData) {
+        Log.info("handle push click action: \(notificationData.actionType.rawValue)")
+        trampoline(data: notificationData)
     }
 }
 
