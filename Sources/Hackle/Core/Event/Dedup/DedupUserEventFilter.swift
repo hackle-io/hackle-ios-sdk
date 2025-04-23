@@ -1,7 +1,6 @@
 import Foundation
 
 class DedupUserEventFilter: UserEventFilter {
-
     private let eventDedupDeterminer: UserEventDedupDeterminer
 
     init(eventDedupDeterminer: UserEventDedupDeterminer) {
