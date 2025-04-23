@@ -116,13 +116,13 @@ extension Hackle {
         }
     }
     
-    @objc static public func userNotificationCenter(
+    @objc static public func handleNotification(
         response: UNNotificationResponse,
-        handleType: HackleNotificationHandleType = .process
+        handleType: HackleNotificationHandleType = .open
     ) -> HackleNotification? {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
             Log.info("Notification data received from user action.")
-            NotificationHandler.shared.handleNotificationData(data: notificationData, processHackleAction: handleType == .process)
+            NotificationHandler.shared.handleNotificationData(data: notificationData, handleType: handleType)
             return notificationData
         } else {
             return nil
@@ -137,7 +137,7 @@ extension Hackle {
     ) -> Bool {
         if let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) {
             Log.info("Notification data received from user action.")
-            NotificationHandler.shared.handleNotificationData(data: notificationData, processHackleAction: true)
+            NotificationHandler.shared.handleNotificationData(data: notificationData)
             completionHandler()
             return true
         } else {

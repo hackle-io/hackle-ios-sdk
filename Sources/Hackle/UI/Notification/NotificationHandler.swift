@@ -28,10 +28,10 @@ class NotificationHandler {
     /// - Parameters:
     ///   - data: notification data
     ///   - timestamp: push click timestamp
-    ///   - processHackleAction: false 이면 trampoline을 실행하지 않습니다.
-    func handleNotificationData(data: NotificationData, timestamp: Date = Date(), processHackleAction: Bool) {
+    ///   - handleType: ignoreOpenLink 이면 trampoline을 실행하지 않습니다.
+    func handleNotificationData(data: NotificationData, timestamp: Date = Date(), handleType: HackleNotificationHandleType = .open) {
         receiver.onNotificationDataReceived(data: data, timestamp: timestamp)
-        if processHackleAction {
+        if handleType == .open {
             trampoline(data: data)
         }
     }

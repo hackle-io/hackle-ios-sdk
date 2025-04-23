@@ -14,7 +14,7 @@ import Mockery
 class HackleNotificationClickActionTypeSpecs: QuickSpec {
     override func spec() {
         it("from valid string") {
-            expect(HackleNotificationClickActionType(rawValue: "DEEP_LINK")).to(equal(HackleNotificationClickActionType.deepLink))
+            expect(HackleNotificationClickActionType(rawValue: "LINK")).to(equal(HackleNotificationClickActionType.link))
             expect(HackleNotificationClickActionType(rawValue: "APP_OPEN")).to(equal(HackleNotificationClickActionType.appOpen))
         }
         

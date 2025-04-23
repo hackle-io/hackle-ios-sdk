@@ -9,7 +9,7 @@ import Foundation
 
 @objc public enum HackleNotificationClickActionType: Int, RawRepresentable {
     case appOpen
-    case deepLink
+    case link
     
     public typealias RawValue = String
     
@@ -17,8 +17,8 @@ import Foundation
         switch rawValue {
         case "APP_OPEN":
             self = .appOpen
-        case "DEEP_LINK":
-            self = .deepLink
+        case "LINK":
+            self = .link
         default:
             return nil
         }
@@ -28,8 +28,8 @@ import Foundation
         switch self {
         case .appOpen:
             return "APP_OPEN"
-        case .deepLink:
-            return "DEEP_LINK"
+        case .link:
+            return "LINK"
         }
     }
 }

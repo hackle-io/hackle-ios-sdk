@@ -8,6 +8,6 @@
 import Foundation
 
 @objc public protocol HackleNotification {
-    var type: HackleNotificationClickActionType { get }
-    var deepLink: String? { get }
+    var actionType: HackleNotificationClickActionType { get }
+    var link: String? { get }
 }

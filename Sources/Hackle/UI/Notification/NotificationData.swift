@@ -13,32 +13,35 @@ class NotificationData: HackleNotification {
     let showForeground: Bool
     let imageUrl: String?
     let clickAction: NotificationClickAction
-    let link: String?
-    
+
     let journeyId: Int64?
     let journeyKey: Int64?
     let journeyNodeId: Int64?
-    let campaignType: String?
     
+    let campaignType: String?
     let debug: Bool
     
-    var type: HackleNotificationClickActionType {
+    var actionType: HackleNotificationClickActionType {
         switch clickAction {
         case .appOpen:
             return .appOpen
         case .deepLink:
-            return .deepLink
+            return .link
+        }
+    }
+
+    var link: String? {
+        get {
+            switch clickAction {
+            case .appOpen:
+                return nil
+            case .deepLink:
+                return _link
+            }
         }
     }
     
-    var deepLink: String? {
-        switch clickAction {
-        case .appOpen:
-            return nil
-        case .deepLink:
-            return link
-        }
-    }
+    private var _link: String?
     
     init(
         workspaceId: Int64,
@@ -66,7 +69,7 @@ class NotificationData: HackleNotification {
         self.showForeground = showForeground
         self.imageUrl = imageUrl
         self.clickAction = clickAction
-        self.link = link
+        self._link = link
         self.journeyId = journeyId
         self.journeyKey = journeyKey
         self.journeyNodeId = journeyNodeId
