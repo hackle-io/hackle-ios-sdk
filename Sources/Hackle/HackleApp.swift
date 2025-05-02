@@ -549,6 +549,7 @@ extension HackleApp {
         let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
         let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
         EvaluationContext.shared.register(inAppMessageHiddenStorage)
+        EvaluationContext.shared.register(inAppMessageImpressionStorage)
 
         let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceManager,
@@ -592,8 +593,7 @@ extension HackleApp {
         // - InAppMessage
 
         let inAppMessageEventMatcher = DefaultInAppMessageEventMatcher(
-            ruleDeterminer: InAppMessageEventTriggerRuleDeterminer(targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!),
-            frequencyCapDeterminer: InAppMessageEventTriggerFrequencyCapDeterminer(storage: inAppMessageImpressionStorage)
+            ruleDeterminer: InAppMessageEventTriggerRuleDeterminer(targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!)
         )
         let inAppMessageDeterminer = DefaultInAppMessageDeterminer(
             workspaceFetcher: workspaceManager,

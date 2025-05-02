@@ -16,11 +16,15 @@ class DefaultInAppMessageResolverSpecs: QuickSpec {
 
     override func spec() {
         var evaluator: MockEvaluator!
+        var experimentEvaluator: InAppMessageExperimentEvaluator!
+        var messageSelector: InAppMessageSelector!
         var sut: DefaultInAppMessageResolver!
 
         beforeEach {
             evaluator = MockEvaluator()
-            sut = DefaultInAppMessageResolver(evaluator: evaluator)
+            experimentEvaluator = InAppMessageExperimentEvaluator(evaluator: evaluator)
+            messageSelector = InAppMessageSelector()
+            sut = DefaultInAppMessageResolver(experimentEvaluator: experimentEvaluator, messageSelector: messageSelector)
         }
 
         describe("experiment") {

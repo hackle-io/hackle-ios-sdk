@@ -43,6 +43,10 @@ class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
 
     func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
         do {
+            if(view.context.decisionReasion == DecisionReason.OVERRIDDEN) {
+                return
+            }
+            
             try saveImpression(inAppMessage: view.context.inAppMessage, user: view.context.user, timestamp: timestamp)
         } catch {
             Log.error("Failed to process InAppMessageImpressionEvent: \(error)")

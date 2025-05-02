@@ -15,14 +15,12 @@ class DefaultInAppMessageEventMatcherSpecs: QuickSpec {
     override func spec() {
 
         var ruleDeterminer: MockInAppMessageEventTriggerDeterminer!
-        var frequencyCapDeterminer: MockInAppMessageEventTriggerDeterminer!
         var sut: DefaultInAppMessageEventMatcher!
         var workspace: MockWorkspace!
 
         beforeEach {
             ruleDeterminer = MockInAppMessageEventTriggerDeterminer(isMatch: false)
-            frequencyCapDeterminer = MockInAppMessageEventTriggerDeterminer(isMatch: false)
-            sut = DefaultInAppMessageEventMatcher(ruleDeterminer: ruleDeterminer, frequencyCapDeterminer: frequencyCapDeterminer)
+            sut = DefaultInAppMessageEventMatcher(ruleDeterminer: ruleDeterminer)
             workspace = MockWorkspace()
         }
 
@@ -49,34 +47,6 @@ class DefaultInAppMessageEventMatcherSpecs: QuickSpec {
 
             // then
             expect(actual) == false
-        }
-
-        it("not trigger target - frequency cap") {
-            // given
-            let event = UserEvents.track("test")
-            let inAppMessage = InAppMessage.create()
-            ruleDeterminer.isMatch = true
-            frequencyCapDeterminer.isMatch = false
-
-            // when
-            let actual = try sut.matches(workspace: workspace, inAppMessage: inAppMessage, event: event)
-
-            // then
-            expect(actual) == false
-        }
-
-        it("trigger target") {
-            // given
-            let event = UserEvents.track("test")
-            let inAppMessage = InAppMessage.create()
-            ruleDeterminer.isMatch = true
-            frequencyCapDeterminer.isMatch = true
-
-            // when
-            let actual = try sut.matches(workspace: workspace, inAppMessage: inAppMessage, event: event)
-
-            // then
-            expect(actual) == true
         }
     }
 }
