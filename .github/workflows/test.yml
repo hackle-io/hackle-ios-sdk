@@ -42,13 +42,10 @@ jobs:
                 -resultBundlePath TestResults \
                 -quiet
 
-      - uses: slidoapp/xcresulttool@v3.1.0
+      - uses: yeosu0107/xcresulttool-test-results@v1.0.0
         name: Test Result
         with:
-          path: TestResults.xcresult
-          show-passed-tests: false
-          show-code-coverage: false
-          upload-bundles: 'never'
+          xcresult-path: TestResults.xcresult
         if: success() || failure()
 
       - name: Comment PR
