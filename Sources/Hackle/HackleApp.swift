@@ -105,7 +105,6 @@ import WebKit
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             self.view?.detach()
         }
-        Metrics.counter(name: "user.explorer.hide").increment()
     }
 
     @objc public func setUser(user: User) {
