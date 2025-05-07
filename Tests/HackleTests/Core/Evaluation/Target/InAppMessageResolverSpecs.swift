@@ -1,5 +1,5 @@
 //
-//  DefaultInAppMessageResolverSpecs.swift
+//  InAppMessageResolverSpecs.swift
 //  HackleTests
 //
 //  Created by yong on 2023/06/26.
@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 
-class DefaultInAppMessageResolverSpecs: QuickSpec {
+class InAppMessageResolverSpecs: QuickSpec {
 
 
     override func spec() {
