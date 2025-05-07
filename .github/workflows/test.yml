@@ -43,10 +43,11 @@ jobs:
                 -resultBundlePath TestResults \
                 -quiet
 
-      - uses: yeosu0107/xcresulttool-test-results@v1.0.0
+      - uses: yeosu0107/xcresulttool-test-results@v1.1.0
         name: Test Result
         with:
           xcresult-path: TestResults.xcresult
+          show-each-test-results: 'true'
         if: success() || failure()
 
       - name: Comment PR
