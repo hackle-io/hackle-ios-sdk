@@ -63,7 +63,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(rc.valueId) == 999
             expect(rc.decisionReason) == DecisionReason.TARGET_RULE_MATCH
             expect(rc.properties.count) == 1
-            expect(rc.properties["returnValue"] as! String) == "RC"
+            expect(rc.properties["returnValue"] as? String) == "RC"
 
             expect(events[1]).to(beAnInstanceOf(UserEvents.Exposure.self))
             let exposure1 = events[1] as! UserEvents.Exposure
@@ -74,11 +74,11 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(exposure1.properties.count) == 5
-            expect(exposure1.properties["$targetingRootType"] as! String) == "REMOTE_CONFIG"
-            expect(exposure1.properties["$targetingRootId"] as! Int64) == 1
-            expect(exposure1.properties["$parameterConfigurationId"] as! Int64) == 42
-            expect(exposure1.properties["$experiment_version"] as! Int) == 1
-            expect(exposure1.properties["$execution_version"] as! Int) == 1
+            expect(exposure1.properties["$targetingRootType"] as? String) == "REMOTE_CONFIG"
+            expect(exposure1.properties["$targetingRootId"] as? Int64) == 1
+            expect(exposure1.properties["$parameterConfigurationId"] as? Int64) == 42
+            expect(exposure1.properties["$experiment_version"] as? Int) == 1
+            expect(exposure1.properties["$execution_version"] as? Int) == 1
 
             expect(events[2]).to(beAnInstanceOf(UserEvents.Exposure.self))
             let exposure2 = events[2] as! UserEvents.Exposure
@@ -89,10 +89,10 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure2.variationKey) == "A"
             expect(exposure2.decisionReason) == DecisionReason.DEFAULT_RULE
             expect(exposure2.properties.count) == 4
-            expect(exposure2.properties["$targetingRootType"] as! String) == "REMOTE_CONFIG"
-            expect(exposure2.properties["$targetingRootId"] as! Int64) == 1
-            expect(exposure2.properties["$experiment_version"] as! Int) == 2
-            expect(exposure2.properties["$execution_version"] as! Int) == 3
+            expect(exposure2.properties["$targetingRootType"] as? String) == "REMOTE_CONFIG"
+            expect(exposure2.properties["$targetingRootId"] as? Int64) == 1
+            expect(exposure2.properties["$experiment_version"] as? Int) == 2
+            expect(exposure2.properties["$execution_version"] as? Int) == 3
         }
 
         it("create in-app message events") {
@@ -123,10 +123,10 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(exposure1.properties.count) == 4
-            expect(exposure1.properties["$targetingRootType"] as! String) == "IN_APP_MESSAGE"
-            expect(exposure1.properties["$targetingRootId"] as! Int64) == 1
-            expect(exposure1.properties["$experiment_version"] as! Int) == 1
-            expect(exposure1.properties["$execution_version"] as! Int) == 1
+            expect(exposure1.properties["$targetingRootType"] as? String) == "IN_APP_MESSAGE"
+            expect(exposure1.properties["$targetingRootId"] as? Int64) == 1
+            expect(exposure1.properties["$experiment_version"] as? Int) == 1
+            expect(exposure1.properties["$execution_version"] as? Int) == 1
         }
     }
 

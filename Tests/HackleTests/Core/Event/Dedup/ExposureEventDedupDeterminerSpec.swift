@@ -305,7 +305,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                         decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
                         properties: [:]
                     )
-                    let result = sut.isDedupTarget(event: event)
+                    _ = sut.isDedupTarget(event: event)
                 }
                 
                 sut.cache().saveToRepository()

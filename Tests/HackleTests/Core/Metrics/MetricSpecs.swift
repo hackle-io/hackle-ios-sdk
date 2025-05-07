@@ -32,7 +32,7 @@ class MetricSpecs: QuickSpec {
             expect(counter1.hashValue) == counter1.hashValue
             expect(counter1.hashValue) == counter1_.hashValue
             expect(counter1.hashValue) != counter1__.hashValue
-            expect(counter1.hashValue == timer.hashValue)
+            expect(counter1.hashValue == timer.hashValue).to(beTrue())
             expect(counter1.hashValue) != counter2.hashValue
         }
 

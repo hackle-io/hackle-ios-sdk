@@ -3,7 +3,6 @@ import Nimble
 import Quick
 @testable import Hackle
 
-
 class HackleAppSpecs: QuickSpec {
     override func spec() {
         var core: MockHackleCore!

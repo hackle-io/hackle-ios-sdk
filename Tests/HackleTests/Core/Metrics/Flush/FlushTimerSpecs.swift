@@ -75,7 +75,8 @@ class FlushTimerSpecs: QuickSpec {
             expect(measurements[2].value) == 42.0
             expect(measurements[3].value) == 42.0
 
-            timer.flush()
+            _ = timer.flush()
+            
             expect(measurements[0].value) == 0.0
             expect(measurements[1].value) == 0.0
             expect(measurements[2].value) == 0.0
