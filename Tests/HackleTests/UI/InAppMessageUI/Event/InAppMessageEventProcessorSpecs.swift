@@ -80,6 +80,22 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                     sut.process(view: view, event: .impression, timestamp: Date())
                     expect(try impressionStorage.get(inAppMessage: inAppMessage).count) == 100
                 }
+                
+            
+                it("when override, do not save impression") {
+                    let user = HackleUser.builder()
+                        .identifier("a", "1")
+                        .identifier("b", "2")
+                        .build()
+                    let inAppMessage = InAppMessage.create(id: 42)
+                    let context = InAppMessage.context(inAppMessage: inAppMessage, user: user, decisionReason: DecisionReason.OVERRIDDEN)
+                    let view = MockInAppMessageView(context: context, presented: true)
+                    let timestamp = Date(timeIntervalSince1970: 320)
+                    sut.process(view: view, event: .impression, timestamp: timestamp)
+
+                    let impressions = try impressionStorage.get(inAppMessage: inAppMessage)
+                    expect(impressions.count) == 0
+                }
             }
         }
 

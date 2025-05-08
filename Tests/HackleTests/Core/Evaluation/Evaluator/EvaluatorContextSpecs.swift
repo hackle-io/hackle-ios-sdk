@@ -67,7 +67,7 @@ class EvaluatorContextSpecs: QuickSpec {
             let p2 = context.properties
 
             expect(p1).to(be([:]))
-            expect(p2["a"] as! Int).to(equal(1))
+            expect(p2["a"] as? Int).to(equal(1))
         }
     }
 }

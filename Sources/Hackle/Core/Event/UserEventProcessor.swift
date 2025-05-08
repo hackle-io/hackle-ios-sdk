@@ -152,7 +152,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
             return
         }
-        
+
         let decoratedEvent = eventDecorator.reduce(event) { (userEvent, eventDecorator) in
             eventDecorator.decorate(event: userEvent)
         }

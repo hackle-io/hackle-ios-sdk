@@ -16,6 +16,7 @@ class HackleCoreSpecs: QuickSpec {
 
         beforeSuite {
             EvaluationContext.shared.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
+            EvaluationContext.shared.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
         }
 
         /*
@@ -44,17 +45,17 @@ class HackleCoreSpecs: QuickSpec {
 
             let rc = eventProcessor.processedEvents.first as! UserEvents.RemoteConfig
             expect(rc.properties.count) == 5
-            expect(rc.properties["requestValueType"] as! String) == "STRING"
-            expect(rc.properties["requestDefaultValue"] as! String) == "42"
-            expect(rc.properties["targetRuleKey"] as! String) == "rc_1_key"
-            expect(rc.properties["targetRuleName"] as! String) == "rc_1_name"
-            expect(rc.properties["returnValue"] as! String) == "Targeting!!"
+            expect(rc.properties["requestValueType"] as? String) == "STRING"
+            expect(rc.properties["requestDefaultValue"] as? String) == "42"
+            expect(rc.properties["targetRuleKey"] as? String) == "rc_1_key"
+            expect(rc.properties["targetRuleName"] as? String) == "rc_1_name"
+            expect(rc.properties["returnValue"] as? String) == "Targeting!!"
 
             for event in eventProcessor.processedEvents.dropFirst() {
                 expect(event).to(beAnInstanceOf(UserEvents.Exposure.self))
                 let event = event as! UserEvents.Exposure
-                expect(event.properties["$targetingRootType"] as! String) == "REMOTE_CONFIG"
-                expect(event.properties["$targetingRootId"] as! Int64) == 1
+                expect(event.properties["$targetingRootType"] as? String) == "REMOTE_CONFIG"
+                expect(event.properties["$targetingRootId"] as? Int64) == 1
             }
         }
 
