@@ -39,8 +39,6 @@ class CompositeSynchronizerSpecs: QuickSpec {
 
         it("async") {
             // given
-            let dispatchQueue = DispatchQueue(label: "test", attributes: .concurrent)
-            let sut = CompositeSynchronizer(dispatchQueue: dispatchQueue)
             every(workspaceSynchronizer.syncMock).answers { completion in
                 Thread.sleep(forTimeInterval: 0.1)
                 completion(.success(()))

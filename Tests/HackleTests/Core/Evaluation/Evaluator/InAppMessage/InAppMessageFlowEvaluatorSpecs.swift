@@ -260,16 +260,14 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
 
         describe("TargetInAppMessageFlowEvaluator") {
             var targetMatcher: InAppMessageMatcherStub!
-            var inAppMessageResolver: InAppMessageResolverStub!
             var sut: TargetInAppMessageFlowEvaluator!
 
             beforeEach {
                 targetMatcher = InAppMessageMatcherStub()
-                inAppMessageResolver = InAppMessageResolverStub()
-                sut = TargetInAppMessageFlowEvaluator(targetMatcher: targetMatcher, inAppMessageResolver: inAppMessageResolver)
+                sut = TargetInAppMessageFlowEvaluator(targetMatcher: targetMatcher)
             }
 
-            it("when user in inAppMessage target then evaluated to target message") {
+            it("when user in inAppMessage target then evaluate next flow") {
                 // given
                 targetMatcher.isMatched = true
                 let request = InAppMessage.request()
@@ -278,8 +276,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
-                expect(actual.message).toNot(beNil())
-                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
+                expect(actual).to(beIdenticalTo(evaluation))
             }
 
             it("when user not in inAppMessage target then evaluated as nil") {

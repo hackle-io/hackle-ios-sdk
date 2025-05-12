@@ -46,7 +46,7 @@ extension InAppMessageFlowEvaluator {
 }
 
 extension InAppMessageResolver {
-    func resolve(request: InAppMessageRequest, context: EvaluatorContext, reason: String) throws -> InAppMessageEvaluation {
+    fileprivate func resolve(request: InAppMessageRequest, context: EvaluatorContext, reason: String) throws -> InAppMessageEvaluation {
         let message = try resolve(request: request, context: context)
         return InAppMessageEvaluation.of(request: request, context: context, reason: reason, message: message)
     }
@@ -120,7 +120,6 @@ class PeriodInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: InAppMessageFlow
     ) throws -> InAppMessageEvaluation? {
-
         guard request.inAppMessage.period.within(date: request.timestamp) else {
             return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_PERIOD)
         }
@@ -148,13 +147,10 @@ class HiddenInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
 }
 
 class TargetInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
-
     private let targetMatcher: InAppMessageMatcher
-    private let inAppMessageResolver: InAppMessageResolver
 
-    init(targetMatcher: InAppMessageMatcher, inAppMessageResolver: InAppMessageResolver) {
+    init(targetMatcher: InAppMessageMatcher) {
         self.targetMatcher = targetMatcher
-        self.inAppMessageResolver = inAppMessageResolver
     }
 
     func evaluateInAppMessage(
@@ -162,11 +158,61 @@ class TargetInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: InAppMessageFlow
     ) throws -> InAppMessageEvaluation? {
-
-        if try targetMatcher.matches(request: request, context: context) {
-            return try inAppMessageResolver.resolve(request: request, context: context, reason: DecisionReason.IN_APP_MESSAGE_TARGET)
+        guard try targetMatcher.matches(request: request, context: context) else {
+            return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET)
         }
+        
+        return try nextFlow.evaluate(request: request, context: context)
+    }
+}
 
-        return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET)
+class FrequencyCapInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
+    private let frequencyCapMatcher: InAppMessageFrequencyCapMatcher
+    
+    init(frequencyCapMatcher: InAppMessageFrequencyCapMatcher) {
+        self.frequencyCapMatcher = frequencyCapMatcher
+    }
+    
+    func evaluateInAppMessage(
+        request: InAppMessageRequest,
+        context: EvaluatorContext,
+        nextFlow: InAppMessageFlow
+    ) throws -> InAppMessageEvaluation? {
+        if try frequencyCapMatcher.matches(request: request, context: context) {
+            return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED)
+        }
+        
+        return try nextFlow.evaluate(request: request, context: context)
+    }
+}
+
+class ExperimentInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
+    
+    let inAppMessageResolver: InAppMessageResolver
+    
+    init(inAppMessageResolver: InAppMessageResolver) {
+        self.inAppMessageResolver = inAppMessageResolver
+    }
+    
+    func evaluateInAppMessage(request: InAppMessageRequest, context: any EvaluatorContext, nextFlow: InAppMessageFlow) throws -> InAppMessageEvaluation? {
+        let message = try inAppMessageResolver.resolve(request: request, context: context)
+        if message.layout.displayType == .none {
+            return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.EXPERIMENT_CONTROL_GROUP)
+        }
+        
+        return try nextFlow.evaluate(request: request, context: context)
+    }
+}
+
+class MessageResolutionInAppMessageFlowEvaluator: InAppMessageFlowEvaluator {
+    
+    let inAppMessageResolver: InAppMessageResolver
+    
+    init(inAppMessageResolver: InAppMessageResolver) {
+        self.inAppMessageResolver = inAppMessageResolver
+    }
+    func evaluateInAppMessage(request: InAppMessageRequest, context: any EvaluatorContext, nextFlow: InAppMessageFlow) throws -> InAppMessageEvaluation? {
+        let message = try inAppMessageResolver.resolve(request: request, context: context)
+        return InAppMessageEvaluation.of(request: request, context: context, reason: DecisionReason.IN_APP_MESSAGE_TARGET, message: message)
     }
 }

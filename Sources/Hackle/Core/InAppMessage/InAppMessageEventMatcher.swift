@@ -15,11 +15,9 @@ protocol InAppMessageEventMatcher {
 class DefaultInAppMessageEventMatcher: InAppMessageEventMatcher {
 
     private let ruleDeterminer: InAppMessageEventTriggerDeterminer
-    private let frequencyCapDeterminer: InAppMessageEventTriggerDeterminer
 
-    init(ruleDeterminer: InAppMessageEventTriggerDeterminer, frequencyCapDeterminer: InAppMessageEventTriggerDeterminer) {
+    init(ruleDeterminer: InAppMessageEventTriggerDeterminer) {
         self.ruleDeterminer = ruleDeterminer
-        self.frequencyCapDeterminer = frequencyCapDeterminer
     }
 
     func matches(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvent) throws -> Bool {
@@ -27,10 +25,6 @@ class DefaultInAppMessageEventMatcher: InAppMessageEventMatcher {
             return false
         }
 
-        guard try ruleDeterminer.isTriggerTarget(workspace: workspace, inAppMessage: inAppMessage, event: trackEvent) else {
-            return false
-        }
-
-        return try frequencyCapDeterminer.isTriggerTarget(workspace: workspace, inAppMessage: inAppMessage, event: trackEvent)
+        return try ruleDeterminer.isTriggerTarget(workspace: workspace, inAppMessage: inAppMessage, event: trackEvent)
     }
 }

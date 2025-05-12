@@ -101,7 +101,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     eventFactory.events = [MockUserEvent()]
 
                     // when
-                    try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
+                    _ = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
 
                     // then
                     verify(exactly: 1) {
@@ -307,7 +307,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     eventFactory.events = [MockUserEvent()]
 
                     // when
-                    try sut.featureFlag(featureKey: 42, user: user)
+                    _ = try sut.featureFlag(featureKey: 42, user: user)
 
                     // then
                     verify(exactly: 1) {

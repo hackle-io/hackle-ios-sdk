@@ -31,8 +31,8 @@ class DefaultPushEventTrackerSpecs: QuickSpec {
             }
             let event = core.trackMock.firstInvokation().arguments.0
             expect(event.key).to(equal("$push_token"))
-            expect(event.properties?["provider_type"] as! String).to(equal("APN"))
-            expect(event.properties?["token"] as! String).to(equal("token_42"))
+            expect(event.properties?["provider_type"] as? String).to(equal("APN"))
+            expect(event.properties?["token"] as? String).to(equal("token_42"))
         }
 
         context("PushEventKey") {

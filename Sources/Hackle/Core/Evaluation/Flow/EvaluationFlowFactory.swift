@@ -43,8 +43,11 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
             DraftInAppMessageFlowEvaluator(),
             PausedInAppMessageFlowEvaluator(),
             PeriodInAppMessageFlowEvaluator(),
+            TargetInAppMessageFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!),
+            ExperimentInAppMessageFlowEvaluator(inAppMessageResolver: context.get(InAppMessageResolver.self)!),
+            FrequencyCapInAppMessageFlowEvaluator(frequencyCapMatcher: context.get(InAppMessageFrequencyCapMatcher.self)!),
             HiddenInAppMessageFlowEvaluator(hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!),
-            TargetInAppMessageFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!, inAppMessageResolver: inAppMessageResolver)
+            MessageResolutionInAppMessageFlowEvaluator(inAppMessageResolver: context.get(InAppMessageResolver.self)!)
         )
     }
 

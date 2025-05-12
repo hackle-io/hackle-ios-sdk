@@ -1,5 +1,5 @@
 //
-//  InAppMessageUserOverrideMatcherSpecs.swift
+//  InAppMessageMatcherSpecs.swift
 //  HackleTests
 //
 //  Created by yong on 2023/06/26.
@@ -168,6 +168,94 @@ class InAppMessageHiddenMatcherSpecs: QuickSpec {
 
             // then
             expect(actual) == false
+        }
+    }
+}
+
+
+class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
+    override func spec() {
+        var storage: InAppMessageImpressionStorage!
+        var sut: InAppMessageFrequencyCapMatcher!
+        var user: HackleUser!
+        var now: Date!
+
+        beforeEach {
+            storage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
+            sut = InAppMessageFrequencyCapMatcher(storage: storage)
+            user = HackleUser.builder().identifier(.id, "user1").build()
+            now = Date()
+        }
+
+        context("frequencyCap이 nil일 때") {
+            it("false를 반환한다") {
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: nil))
+                let request = InAppMessage.request(inAppMessage: inAppMessage)
+
+                let result = try? sut.matches(request: request, context: Evaluators.context())
+                expect(result) == false
+            }
+        }
+
+        context("frequencyCap이 설정된 경우") {
+            it("impression이 identifierCap 조건을 만족하면 true") {
+                let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 1)
+                let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+                
+
+                let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
+                try storage.set(inAppMessage: inAppMessage, impressions: [impression])
+                
+                let request = InAppMessage.request(user: user, inAppMessage: inAppMessage)
+
+                let result = try? sut.matches(request: request, context: Evaluators.context())
+                expect(result) == true
+            }
+
+            it("impression이 identifierCap 조건을 만족하지 않으면 false") {
+                let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 1)
+                let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+                user = HackleUser.builder().identifier(.id, "user1").build()
+                
+                let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
+                try storage.set(inAppMessage: inAppMessage, impressions: [impression])
+
+                user = HackleUser.builder().identifier(.id, "user2").build()
+                let request = InAppMessage.request(user: user, inAppMessage: inAppMessage)
+
+                let result = try? sut.matches(request: request, context: Evaluators.context())
+                expect(result) == false
+            }
+
+            it("durationCap이 만족하면 true") {
+                let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
+                let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+
+                let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 30)
+                try storage.set(inAppMessage: inAppMessage, impressions: [impression])
+
+                let request = InAppMessage.request(user: user, inAppMessage: inAppMessage)
+
+                let result = try? sut.matches(request: request, context: Evaluators.context())
+                expect(result) == true
+            }
+
+            it("durationCap이 만족하지 않으면 false") {
+                let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
+                let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+
+                let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 120)
+                try storage.set(inAppMessage: inAppMessage, impressions: [impression])
+
+                let request = InAppMessage.request(user: user, inAppMessage: inAppMessage)
+
+                let result = try? sut.matches(request: request, context: Evaluators.context())
+                expect(result) == false
+            }
         }
     }
 }

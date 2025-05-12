@@ -187,8 +187,9 @@ extension InAppMessage {
         inAppMessage: InAppMessage = .create(),
         message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        properties: [String: Any] = [:]
+        properties: [String: Any] = [:],
+        decisionReason: String = DecisionReason.DEFAULT_RULE
     ) -> InAppMessagePresentationContext {
-        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties)
+        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties, decisionReasion: decisionReason)
     }
 }

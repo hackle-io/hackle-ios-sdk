@@ -43,6 +43,8 @@ class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
 
     private func context(inAppMessage: InAppMessage, event: UserEvent) -> InAppMessagePresentationContext? {
         let decision = core.tryInAppMessage(inAppMessageKey: inAppMessage.key, user: event.user)
+        Log.debug("InAppMessage [\(inAppMessage.key)]: \(decision.reason)")
+        
         guard let inAppMessage = decision.inAppMessage, let message = decision.message else {
             return nil
         }
@@ -56,7 +58,8 @@ class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
             inAppMessage: inAppMessage,
             message: message,
             user: event.user,
-            properties: properties
+            properties: properties,
+            decisionReasion: decision.reason
         )
     }
 }
