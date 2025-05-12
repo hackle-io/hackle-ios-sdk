@@ -3,7 +3,6 @@ import Nimble
 import Quick
 @testable import Hackle
 
-
 class HackleAppSpecs: QuickSpec {
     override func spec() {
         var core: MockHackleCore!
@@ -94,6 +93,10 @@ class HackleAppSpecs: QuickSpec {
 
         it("showUserExplorer") {
             sut.showUserExplorer()
+        }
+
+        it("hideUserExplorer") {
+            sut.hideUserExplorer()
         }
 
         describe("setUser") {

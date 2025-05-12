@@ -7,9 +7,9 @@ import Mockery
 
 extension EvaluationFlow {
 
-    static func create<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+    static func create<R: EvaluatorRequest, E: EvaluatorEvaluation>(
         _ evaluation: Evaluation
-    ) -> EvaluationFlow<Request, Evaluation> {
+    ) -> EvaluationFlow<R, E> {
         of(FlowEvaluatorStub(evaluation: evaluation))
     }
 

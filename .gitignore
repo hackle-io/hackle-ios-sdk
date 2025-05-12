@@ -13,3 +13,4 @@ Hackle.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 .qodo
 .cache
 .fleet
+cmake-build-debug

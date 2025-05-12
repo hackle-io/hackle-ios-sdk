@@ -1,5 +1,5 @@
 //
-//  DefaultInAppMessageResolverSpecs.swift
+//  InAppMessageResolverSpecs.swift
 //  HackleTests
 //
 //  Created by yong on 2023/06/26.
@@ -11,16 +11,20 @@ import Nimble
 @testable import Hackle
 
 
-class DefaultInAppMessageResolverSpecs: QuickSpec {
+class InAppMessageResolverSpecs: QuickSpec {
 
 
     override func spec() {
         var evaluator: MockEvaluator!
+        var experimentEvaluator: InAppMessageExperimentEvaluator!
+        var messageSelector: InAppMessageSelector!
         var sut: DefaultInAppMessageResolver!
 
         beforeEach {
             evaluator = MockEvaluator()
-            sut = DefaultInAppMessageResolver(evaluator: evaluator)
+            experimentEvaluator = InAppMessageExperimentEvaluator(evaluator: evaluator)
+            messageSelector = InAppMessageSelector()
+            sut = DefaultInAppMessageResolver(experimentEvaluator: experimentEvaluator, messageSelector: messageSelector)
         }
 
         describe("experiment") {

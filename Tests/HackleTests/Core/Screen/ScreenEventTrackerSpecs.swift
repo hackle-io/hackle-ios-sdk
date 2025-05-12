@@ -35,8 +35,8 @@ class ScreenEventTrackerSpecs: QuickSpec {
                     core.trackMock
                 }
                 let event = core.trackMock.firstInvokation().arguments.0
-                expect(event.properties!["$page_name"] as! String).to(equal("name"))
-                expect(event.properties!["$page_class"] as! String).to(equal("class"))
+                expect(event.properties!["$page_name"] as? String).to(equal("name"))
+                expect(event.properties!["$page_class"] as? String).to(equal("class"))
                 expect(event.properties!["$previous_page_name"]).to(beNil())
                 expect(event.properties!["$previous_page_class"]).to(beNil())
             }
@@ -55,10 +55,10 @@ class ScreenEventTrackerSpecs: QuickSpec {
                     core.trackMock
                 }
                 let event = core.trackMock.firstInvokation().arguments.0
-                expect(event.properties!["$page_name"] as! String).to(equal("name"))
-                expect(event.properties!["$page_class"] as! String).to(equal("class"))
-                expect(event.properties!["$previous_page_name"] as! String).to(equal("prev_name"))
-                expect(event.properties!["$previous_page_class"] as! String).to(equal("prev_class"))
+                expect(event.properties!["$page_name"] as? String).to(equal("name"))
+                expect(event.properties!["$page_class"] as? String).to(equal("class"))
+                expect(event.properties!["$previous_page_name"] as? String).to(equal("prev_name"))
+                expect(event.properties!["$previous_page_class"] as? String).to(equal("prev_class"))
             }
         }
 

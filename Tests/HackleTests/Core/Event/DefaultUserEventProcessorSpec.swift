@@ -111,8 +111,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventRepository.saveMock
                 }
                 let savedEvent = eventRepository.saveMock.firstInvokation().arguments
-                expect(savedEvent.user.hackleProperties["screenName"] as! String).to(equal("name"))
-                expect(savedEvent.user.hackleProperties["screenClass"] as! String).to(equal("class"))
+                expect(savedEvent.user.hackleProperties["screenName"] as? String).to(equal("name"))
+                expect(savedEvent.user.hackleProperties["screenClass"] as? String).to(equal("class"))
             }
 
             it("SessionEvent 인 경우 lastEventTime 을 업데이트 하지 않는다") {

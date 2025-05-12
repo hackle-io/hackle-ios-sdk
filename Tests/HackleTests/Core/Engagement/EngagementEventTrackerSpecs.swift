@@ -28,11 +28,11 @@ class EngagementEventTrackerSpecs: QuickSpec {
             verify(exactly: 1) {
                 core.trackMock
             }
-            let (event, _, timestamp) = core.trackMock.firstInvokation().arguments
+            let (event, _, _) = core.trackMock.firstInvokation().arguments
             expect(event.key).to(equal("$engagement"))
-            expect(event.properties!["$engagement_time_ms"] as! Int64).to(equal(42000))
-            expect(event.properties!["$page_name"] as! String).to(equal("name"))
-            expect(event.properties!["$page_class"] as! String).to(equal("class"))
+            expect(event.properties!["$engagement_time_ms"] as? Int64).to(equal(42000))
+            expect(event.properties!["$page_name"] as? String).to(equal("name"))
+            expect(event.properties!["$page_class"] as? String).to(equal("class"))
         }
     }
 }

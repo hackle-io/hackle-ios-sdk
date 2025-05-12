@@ -85,6 +85,9 @@ extension HackleBridge {
         case .showUserExplorer:
             app.showUserExplorer()
             return .success()
+        case .hideUserExplorer:
+            app.hideUserExplorer()
+            return .success()
         }
     }
 }

@@ -19,7 +19,6 @@ class DefaultContainerResolverSpecs: QuickSpec {
         it("identifierType 에 해당하는 identifier 가 없는경우 false") {
             // given
             let container = MockContainer()
-            let bucket = MockBucket()
             let experiment = MockExperiment(identifierType: "custom_type")
 
             let request = experimentRequest(experiment: experiment)
