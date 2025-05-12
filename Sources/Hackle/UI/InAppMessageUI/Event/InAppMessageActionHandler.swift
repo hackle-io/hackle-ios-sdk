@@ -91,6 +91,11 @@ class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
+        if view.context.decisionReasion == DecisionReason.OVERRIDDEN {
+            view.dismiss()
+            return
+        }
+        
         let expireAt = clock.now() + action.DEFAULT_HIDDEN_TIME_INTERVAL
         storage.put(inAppMessage: view.context.inAppMessage, expireAt: expireAt)
         view.dismiss()

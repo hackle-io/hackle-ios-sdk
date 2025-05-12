@@ -6,9 +6,6 @@ import Mockery
 
 class DefaultTargetMatcherSpecs: QuickSpec {
     override func spec() {
-
-        let user = HackleUser.of(userId: "test")
-
         it("타겟의 모든 조건이 일치하면 true") {
             // given
             let target = Target(conditions: [

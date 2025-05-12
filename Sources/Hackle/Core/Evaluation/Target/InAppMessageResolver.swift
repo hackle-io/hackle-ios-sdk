@@ -7,123 +7,75 @@
 
 import Foundation
 
-
 protocol InAppMessageResolver {
     func resolve(request: InAppMessageRequest, context: EvaluatorContext) throws -> InAppMessage.Message
 }
 
 class DefaultInAppMessageResolver: InAppMessageResolver {
 
-    private let evaluator: Evaluator
+    private let experimentEvaluator: InAppMessageExperimentEvaluator
+    private let messageSelector: InAppMessageSelector
 
-    init(evaluator: Evaluator) {
-        self.evaluator = evaluator
+    init(experimentEvaluator: InAppMessageExperimentEvaluator, messageSelector: InAppMessageSelector) {
+        self.experimentEvaluator = experimentEvaluator
+        self.messageSelector = messageSelector
     }
 
     func resolve(request: InAppMessageRequest, context: EvaluatorContext) throws -> InAppMessage.Message {
-        if let message = try resolveExperiment(request: request, context: context) {
-            return message
-        } else {
-            return try resolveDefault(request: request, context: context)
+        guard let experiment = try experiment(request: request) else {
+            return try messageSelector.select(request: request) { message in
+                return message.lang == request.inAppMessage.messageContext.defaultLang
+            }
+        }
+        
+        let evaluation = try experimentEvaluator.evaluate(request: request, context: context, experiment: experiment)
+        return try messageSelector.select(request: request) { message in
+            return message.lang == request.inAppMessage.messageContext.defaultLang && evaluation.variationKey == message.variationKey
         }
     }
 
-    private func resolveExperiment(request: InAppMessageRequest, context: EvaluatorContext) throws -> InAppMessage.Message? {
+    private func experiment(request: InAppMessageRequest) throws -> Experiment? {
         guard let experimentContext = request.inAppMessage.messageContext.experimentContext else {
             return nil
         }
-
+        
         guard let experiment = request.workspace.getExperimentOrNil(experimentKey: experimentContext.key) else {
             throw HackleError.error("Experiment[\(experimentContext.key)]")
         }
+        
+        return experiment
+    }
+}
 
-        let experimentRequest = ExperimentRequest.of(requestedBy: request, experiment: experiment)
-        let experimentEvaluation: ExperimentEvaluation = try evaluator.evaluate(request: experimentRequest, context: context)
-        addExperimentContext(evaluation: experimentEvaluation, context: context)
+class InAppMessageExperimentEvaluator: ExperimentContextualEvaluator {
 
-        let lang = request.inAppMessage.messageContext.defaultLang
-        return try resolveMessage(request: request) { it in
-            it.lang == lang && experimentEvaluation.variationKey == it.variationKey
+    let evaluator: Evaluator
+    
+    init(evaluator: Evaluator) {
+        self.evaluator = evaluator
+    }
+    
+    func decorate(request: EvaluatorRequest, context: EvaluatorContext, evaluation: EvaluatorEvaluation) throws -> ExperimentEvaluation {
+        guard let experimentEvaluation = evaluation as? ExperimentEvaluation else {
+            throw HackleError.error("Unsupported evaluation: \(type(of: evaluation)) (expected: \(ExperimentEvaluation.self))")
         }
+        
+        context.setProperty("experiment_id", experimentEvaluation.experiment.id)
+        context.setProperty("experiment_key", experimentEvaluation.experiment.key)
+        context.setProperty("variation_id", experimentEvaluation.variationId)
+        context.setProperty("variation_key", experimentEvaluation.variationKey)
+        context.setProperty("experiment_decision_reason", experimentEvaluation.reason)
+        
+        return experimentEvaluation
     }
+}
 
-    private func addExperimentContext(evaluation: ExperimentEvaluation, context: EvaluatorContext) {
-        context.add(evaluation)
-        context.setProperty("experiment_id", evaluation.experiment.id)
-        context.setProperty("experiment_key", evaluation.experiment.key)
-        context.setProperty("variation_id", evaluation.variationId)
-        context.setProperty("variation_key", evaluation.variationKey)
-        context.setProperty("experiment_decision_reason", evaluation.reason)
-    }
-
-    private func resolveDefault(request: InAppMessageRequest, context: EvaluatorContext) throws -> InAppMessage.Message {
-        let lang = request.inAppMessage.messageContext.defaultLang
-        return try resolveMessage(request: request) { it in
-            it.lang == lang
-        }
-    }
-
-    private func resolveMessage(request: InAppMessageRequest, predicate: (InAppMessage.Message) -> Bool) throws -> InAppMessage.Message {
-        guard let message = request.inAppMessage.messageContext.messages.first(where: predicate) else {
+class InAppMessageSelector {
+    func select(request: InAppMessageRequest, condition: (InAppMessage.Message) -> Bool) throws -> InAppMessage.Message {
+        guard let message = request.inAppMessage.messageContext.messages.first(where: condition) else {
             throw HackleError.error("InAppMessage must be decided [\(request.inAppMessage.key)]")
         }
+        
         return message
-    }
-}
-
-protocol InAppMessageMatcher {
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool
-}
-
-class InAppMessageUserOverrideMatcher: InAppMessageMatcher {
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
-        let userOverrides = request.inAppMessage.targetContext.overrides
-        if userOverrides.isEmpty {
-            return false
-        }
-        return userOverrides.contains { it in
-            isUserOverridden(request: request, userOverride: it)
-        }
-    }
-
-    private func isUserOverridden(request: InAppMessageRequest, userOverride: InAppMessage.UserOverride) -> Bool {
-        guard let identifier = request.user.identifiers[userOverride.identifierType] else {
-            return false
-        }
-        return userOverride.identifiers.contains(identifier)
-    }
-}
-
-class InAppMessageTargetMatcher: InAppMessageMatcher {
-
-    private let targetMatcher: TargetMatcher
-
-    init(targetMatcher: TargetMatcher) {
-        self.targetMatcher = targetMatcher
-    }
-
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
-        let targets = request.inAppMessage.targetContext.targets
-        if targets.isEmpty {
-            return true
-        }
-
-        return try targets.contains { it in
-            try targetMatcher.matches(request: request, context: context, target: it)
-        }
-    }
-}
-
-
-class InAppMessageHiddenMatcher: InAppMessageMatcher {
-
-    private let storage: InAppMessageHiddenStorage
-
-    init(storage: InAppMessageHiddenStorage) {
-        self.storage = storage
-    }
-
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
-        storage.exist(inAppMessage: request.inAppMessage, now: request.timestamp)
     }
 }

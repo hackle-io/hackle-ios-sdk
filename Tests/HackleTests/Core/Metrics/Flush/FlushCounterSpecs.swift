@@ -65,7 +65,7 @@ class FlushCounterSpecs: QuickSpec {
             expect(measurements[0].field) == .count
             expect(measurements[0].value) == 42.0
 
-            counter.flush()
+            _ = counter.flush()
 
             expect(measurements[0].value) == 0.0
         }

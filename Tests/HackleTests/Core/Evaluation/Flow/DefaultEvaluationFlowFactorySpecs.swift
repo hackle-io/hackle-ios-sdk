@@ -6,14 +6,13 @@ import Nimble
 
 class DefaultEvaluationFlowFactorySpecs: QuickSpec {
     override func spec() {
-
-
         var evaluationContext: EvaluationContext!
         var sut: DefaultEvaluationFlowFactory!
 
         beforeEach {
             evaluationContext = EvaluationContext()
             evaluationContext.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
+            evaluationContext.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
             evaluationContext.initialize(
                 evaluator: MockEvaluator(),
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: []),
@@ -56,8 +55,11 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
                     .isDecisionWith(DraftInAppMessageFlowEvaluator.self)!
                     .isDecisionWith(PausedInAppMessageFlowEvaluator.self)!
                     .isDecisionWith(PeriodInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(HiddenInAppMessageFlowEvaluator.self)!
                     .isDecisionWith(TargetInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(ExperimentInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(FrequencyCapInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(HiddenInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(MessageResolutionInAppMessageFlowEvaluator.self)!
                     .isEnd()
             }
         }

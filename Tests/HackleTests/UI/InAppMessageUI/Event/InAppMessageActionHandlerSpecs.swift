@@ -176,6 +176,19 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // then
                 expect(repository.getDouble(key: "42")) == (60 * 60 * 24) + 42
             }
+            
+            it("when override, do not save hidden info") {
+                // given
+                let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42), decisionReason: DecisionReason.OVERRIDDEN)
+                let view = MockInAppMessageView(context: context, presented: true)
+                let action = InAppMessage.action(type: .hidden)
+
+                // when
+                sut.handle(view: view, action: action)
+
+                // then
+                expect(repository.getDouble(key: "42")) == 0.0 // not saved
+            }
         }
     }
 }

@@ -51,7 +51,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 verify(exactly: 1) {
                     listener.onScreenStartedMock
                 }
-                let (previousScreen, currentScreen, user, timestamp) = listener.onScreenStartedMock.firstInvokation().arguments
+                let (previousScreen, currentScreen, _, timestamp) = listener.onScreenStartedMock.firstInvokation().arguments
                 expect(previousScreen).to(beNil())
                 expect(currentScreen).to(equal(screen))
                 expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))

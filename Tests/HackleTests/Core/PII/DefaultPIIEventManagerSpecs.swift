@@ -25,7 +25,7 @@ class DefaultPIIEventManagerSpecs: QuickSpec {
         it("set phone number") {
             // given
             every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
-            let user = User.builder().deviceId("device_id").build()
+            _ = User.builder().deviceId("device_id").build()
             let phoneNumber = "+821012345678"
             
             // when
@@ -47,7 +47,7 @@ class DefaultPIIEventManagerSpecs: QuickSpec {
         it("unset phone number") {
             // given
             every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
-            let user = User.builder().deviceId("device_id").build()
+            _ = User.builder().deviceId("device_id").build()
             
             // when
             sut.unsetPhoneNumber(timestamp: Date(timeIntervalSince1970: 42))

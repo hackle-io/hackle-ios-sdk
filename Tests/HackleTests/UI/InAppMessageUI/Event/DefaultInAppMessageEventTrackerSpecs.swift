@@ -16,8 +16,6 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
         var core: HackleCoreStub!
         var sut: DefaultInAppMessageEventTracker!
 
-        let user = HackleUser.builder().identifier(IdentifierType.user.rawValue, "user").build()
-
         beforeEach {
             core = HackleCoreStub()
             sut = DefaultInAppMessageEventTracker(core: core)
@@ -52,13 +50,13 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
             let (event, _, _) = core.tracked[0]
             expect(event.key) == "$in_app_impression"
-            expect(event.properties!["in_app_message_id"] as! Int64) == 42
-            expect(event.properties!["in_app_message_key"] as! Int64) == 320
-            expect(event.properties!["title_text"] as! String) == "text_title"
-            expect(event.properties!["body_text"] as! String) == "text_body"
-            expect(event.properties!["image_url"] as! [String]) == ["image_path"]
-            expect(event.properties!["button_text"] as! [String]) == ["button_1", "button_2"]
-            expect(event.properties!["decision_reason"] as! String) == "IN_APP_MESSAGE_TARGET"
+            expect(event.properties!["in_app_message_id"] as? Int64) == 42
+            expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.properties!["title_text"] as? String) == "text_title"
+            expect(event.properties!["body_text"] as? String) == "text_body"
+            expect(event.properties!["image_url"] as? [String]) == ["image_path"]
+            expect(event.properties!["button_text"] as? [String]) == ["button_1", "button_2"]
+            expect(event.properties!["decision_reason"] as? String) == "IN_APP_MESSAGE_TARGET"
         }
 
         it("close") {
@@ -90,8 +88,8 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
             let (event, _, _) = core.tracked[0]
             expect(event.key) == "$in_app_close"
-            expect(event.properties!["in_app_message_id"] as! Int64) == 42
-            expect(event.properties!["in_app_message_key"] as! Int64) == 320
+            expect(event.properties!["in_app_message_id"] as? Int64) == 42
+            expect(event.properties!["in_app_message_key"] as? Int64) == 320
         }
 
         it("button action") {
@@ -124,12 +122,12 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
             let (event, _, _) = core.tracked[0]
             expect(event.key) == "$in_app_action"
-            expect(event.properties!["in_app_message_id"] as! Int64) == 42
-            expect(event.properties!["in_app_message_key"] as! Int64) == 320
-            expect(event.properties!["action_area"] as! String) == "BUTTON"
-            expect(event.properties!["action_type"] as! String) == "WEB_LINK"
-            expect(event.properties!["action_value"] as! String) == "button_link_click"
-            expect(event.properties!["button_text"] as! String) == "button_1"
+            expect(event.properties!["in_app_message_id"] as? Int64) == 42
+            expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.properties!["action_area"] as? String) == "BUTTON"
+            expect(event.properties!["action_type"] as? String) == "WEB_LINK"
+            expect(event.properties!["action_value"] as? String) == "button_link_click"
+            expect(event.properties!["button_text"] as? String) == "button_1"
             expect(event.properties!["image_url"]).to(beNil())
             expect(event.properties!["image_order"]).to(beNil())
         }
@@ -164,14 +162,14 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
             let (event, _, _) = core.tracked[0]
             expect(event.key) == "$in_app_action"
-            expect(event.properties!["in_app_message_id"] as! Int64) == 42
-            expect(event.properties!["in_app_message_key"] as! Int64) == 320
-            expect(event.properties!["action_area"] as! String) == "IMAGE"
-            expect(event.properties!["action_type"] as! String) == "WEB_LINK"
-            expect(event.properties!["action_value"] as! String) == "image_link_click"
+            expect(event.properties!["in_app_message_id"] as? Int64) == 42
+            expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.properties!["action_area"] as? String) == "IMAGE"
+            expect(event.properties!["action_type"] as? String) == "WEB_LINK"
+            expect(event.properties!["action_value"] as? String) == "image_link_click"
             expect(event.properties!["button_text"]).to(beNil())
-            expect(event.properties!["image_url"] as! String) == "image_path"
-            expect(event.properties!["image_order"] as! Int) == 42
+            expect(event.properties!["image_url"] as? String) == "image_path"
+            expect(event.properties!["image_order"] as? Int) == 42
         }
 
         it("image impression") {
@@ -204,10 +202,10 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
             let (event, _, _) = core.tracked[0]
             expect(event.key) == "$in_app_image_impression"
-            expect(event.properties!["in_app_message_id"] as! Int64) == 42
-            expect(event.properties!["in_app_message_key"] as! Int64) == 320
-            expect(event.properties!["image_url"] as! String) == "image_path"
-            expect(event.properties!["image_order"] as! Int) == 42
+            expect(event.properties!["in_app_message_id"] as? Int64) == 42
+            expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.properties!["image_url"] as? String) == "image_path"
+            expect(event.properties!["image_order"] as? Int) == 42
         }
     }
 }

@@ -34,10 +34,13 @@ class EvaluationContext {
         let experimentTargetDeterminer = DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)
         let experimentTargetRuleDeterminer = DefaultExperimentTargetRuleDeterminer(targetMatcher: targetMatcher)
         let remoteConfigTargetRuleDeterminer = DefaultRemoteConfigTargetRuleDeterminer(matcher: DefaultRemoteConfigTargetRuleMatcher(targetMatcher: targetMatcher, buckter: bucketer))
-        let inAppMessageResolver = DefaultInAppMessageResolver(evaluator: evaluator)
+        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(evaluator: evaluator)
+        let inAppMessageSelector = InAppMessageSelector()
+        let inAppMessageResolver = DefaultInAppMessageResolver(experimentEvaluator: inAppMessageExperimentEvaluator, messageSelector: inAppMessageSelector)
         let inAppMessageUserOverrideMatcher = InAppMessageUserOverrideMatcher()
         let inAppMessageDoNotOpenMatcher = InAppMessageHiddenMatcher(storage: get(InAppMessageHiddenStorage.self)!)
         let inAppMessageTargetMatcher = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
+        let inAppMessageFrequencyCapMatcher = InAppMessageFrequencyCapMatcher(storage: get(DefaultInAppMessageImpressionStorage.self)!)
 
         register(bucketer)
         register(targetMatcher)
@@ -47,9 +50,12 @@ class EvaluationContext {
         register(experimentTargetDeterminer)
         register(experimentTargetRuleDeterminer)
         register(remoteConfigTargetRuleDeterminer)
+        register(inAppMessageExperimentEvaluator)
+        register(inAppMessageSelector)
         register(inAppMessageResolver)
         register(inAppMessageUserOverrideMatcher)
         register(inAppMessageDoNotOpenMatcher)
         register(inAppMessageTargetMatcher)
+        register(inAppMessageFrequencyCapMatcher)
     }
 }

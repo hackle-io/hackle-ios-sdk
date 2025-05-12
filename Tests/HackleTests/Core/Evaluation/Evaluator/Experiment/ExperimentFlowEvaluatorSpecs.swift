@@ -91,7 +91,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("DRAFT상태가 아니면 다름 flow로 평가한다") {
                 // given
                 let experiment = experiment(type: .abTest, status: .running)
-                let variation = experiment.variations.first!
+                _ = experiment.variations.first!
 
                 let request = experimentRequest(experiment: experiment)
 
@@ -123,7 +123,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("기능 플래그가 PAUSED 상태면 기본그룹, FEATURE_FLAG_INACTIVE 로 평가한다") {
                 // given
                 let experiment = experiment(type: .featureFlag, status: .paused)
-                let variation = experiment.variations.first!
+                _ = experiment.variations.first!
 
                 let request = experimentRequest(experiment: experiment)
 
