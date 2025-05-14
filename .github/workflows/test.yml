@@ -1,4 +1,4 @@
-name: Test
+name: test
 
 on:
   pull_request:
@@ -43,7 +43,7 @@ jobs:
                 -resultBundlePath TestResults \
                 -quiet
 
-      - uses: yeosu0107/xcresulttool-test-results@v1.1.0
+      - uses: yeosu0107/xcresulttool-test-results@v1.2.0
         name: Test Result
         with:
           xcresult-path: TestResults.xcresult
