@@ -43,11 +43,33 @@ extension NotificationHandler {
         case .deepLink:
             if let link = data.link,
                let url = URL(string: link) {
-                UIUtils.application?.open(url, options: [:]) { success in
-                    Log.debug("Redirected to: \(link) [success=\(success)]")
-                }
+                url.open()
             } else {
                 Log.info("Landing url is empty.")
+            }
+        }
+    }
+}
+
+extension URL {
+    fileprivate func open() {
+        guard let scheme = self.scheme else {
+            return
+        }
+        
+        if scheme == "http" || scheme == "https" {
+            let userActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
+            userActivity.webpageURL = self
+            let success = UIUtils.application?.delegate?.application?(
+                UIUtils.application!,
+                continue: userActivity,
+                restorationHandler: { _ in }
+            )
+            Log.debug("Redirected to: \(self.absoluteString) [success=\(success ?? false)]")
+
+        } else {
+            UIUtils.application?.open(self, options: [:]) { success in
+                Log.debug("Redirected to: \(self.absoluteString) [success=\(success)]")
             }
         }
     }
