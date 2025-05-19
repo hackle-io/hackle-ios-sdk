@@ -42,11 +42,16 @@ extension NotificationHandler {
         case .appOpen:
             break;
         case .deepLink:
-            if let link = data.link,
-               let url = URL(string: link) {
+            guard let link = data.link,
+                  !link.isEmpty else {
+                Log.info("Landing url is empty.")
+                return
+            }
+            
+            if let url = URL(string: link) {
                 url.open()
             } else {
-                Log.info("Landing url is empty.")
+                Log.info("Landing url is not a valid URL: \(link)")
             }
         }
     }
