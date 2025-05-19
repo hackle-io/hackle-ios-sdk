@@ -52,6 +52,7 @@ class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
         let properties = PropertiesBuilder()
             .add(decision.properties)
             .add("decision_reason", decision.reason)
+            .add("trigger_event_insert_id", event.insertId)
             .build()
 
         return InAppMessagePresentationContext(
