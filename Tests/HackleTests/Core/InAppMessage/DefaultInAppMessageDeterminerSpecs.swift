@@ -91,6 +91,7 @@ class DefaultInAppMessageDeterminerSpecs: QuickSpec {
             expect(actual?.inAppMessage).to(beIdenticalTo(iam))
             expect(actual?.message).to(beIdenticalTo(message))
             expect(actual?.properties["decision_reason"] as? String) == DecisionReason.IN_APP_MESSAGE_TARGET
+            expect(actual?.properties["trigger_event_insert_id"] as? String) == event.insertId
             expect(actual?.properties["a"] as? Int) == 42
             expect(inAppMessageEventMatcher.callCount) == 4
             expect(core.inAppMessageCount) == 4
