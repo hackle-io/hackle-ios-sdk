@@ -34,8 +34,10 @@ class HackleBridge: NSObject {
 
 extension HackleBridge {
 
-    private func invoke(command: BridgeInvocation.Command, parameters: [String: Any]) throws -> BridgeResponse {
+    fileprivate func invoke(command: BridgeInvocation.Command, parameters: [String: Any]) throws -> BridgeResponse {
         switch command {
+        case .getDeviceId:
+            return .success(app.deviceId)
         case .getSessionId:
             return .success(app.sessionId)
         case .getUser:
@@ -146,21 +148,11 @@ fileprivate extension HackleBridge {
         }
         let defaultVariation = parameters["defaultVariation"] as? String ?? "A"
         if let userId = parameters["user"] as? String {
-            let result = app.variation(
-                experimentKey: experimentKey,
-                userId: userId,
-                defaultVariation: defaultVariation
-            )
-            return result
+            app.setUserId(userId: userId)
         }
         if let data = parameters["user"] as? [String: Any] {
             if let user = User.from(dto: data) {
-                let result = app.variation(
-                    experimentKey: experimentKey,
-                    user: user,
-                    defaultVariation: defaultVariation
-                )
-                return result
+                app.setUser(user: user)
             }
         }
         return app.variation(experimentKey: experimentKey, defaultVariation: defaultVariation)
@@ -172,21 +164,11 @@ fileprivate extension HackleBridge {
         }
         let defaultVariation = parameters["defaultVariation"] as? String ?? "A"
         if let userId = parameters["user"] as? String {
-            let decision = app.variationDetail(
-                experimentKey: experimentKey,
-                userId: userId,
-                defaultVariation: defaultVariation
-            )
-            return decision.toDto()
+            app.setUserId(userId: userId)
         }
         if let data = parameters["user"] as? [String: Any] {
             if let user = User.from(dto: data) {
-                let decision = app.variationDetail(
-                    experimentKey: experimentKey,
-                    user: user,
-                    defaultVariation: defaultVariation
-                )
-                return decision.toDto()
+                app.setUser(user: user)
             }
         }
         let decision = app.variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation)
@@ -198,13 +180,11 @@ fileprivate extension HackleBridge {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
         if let userId = parameters["user"] as? String {
-            let result = app.isFeatureOn(featureKey: featureKey, userId: userId)
-            return result
+            app.setUserId(userId: userId)
         }
         if let data = parameters["user"] as? [String: Any] {
             if let user = User.from(dto: data) {
-                let result = app.isFeatureOn(featureKey: featureKey, user: user)
-                return result
+                app.setUser(user: user)
             }
         }
         let result = app.isFeatureOn(featureKey: featureKey)
@@ -216,13 +196,11 @@ fileprivate extension HackleBridge {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
         if let userId = parameters["user"] as? String {
-            let decision = app.featureFlagDetail(featureKey: featureKey, userId: userId)
-            return decision.toDto()
+            app.setUserId(userId: userId)
         }
         if let data = parameters["user"] as? [String: Any] {
             if let user = User.from(dto: data) {
-                let decision = app.featureFlagDetail(featureKey: featureKey, user: user)
-                return decision.toDto()
+                app.setUser(user: user)
             }
         }
         let decision = app.featureFlagDetail(featureKey: featureKey)
@@ -244,13 +222,11 @@ fileprivate extension HackleBridge {
 
     private func track(eventKey: String, parameters: [String: Any]) {
         if let userId = parameters["user"] as? String {
-            app.track(eventKey: eventKey, userId: userId)
-            return
+            app.setUserId(userId: userId)
         }
         if let data = parameters["user"] as? [String: Any] {
             if let user = User.from(dto: data) {
-                app.track(eventKey: eventKey, user: user)
-                return
+                app.setUser(user: user)
             }
         }
         app.track(eventKey: eventKey)
@@ -258,13 +234,11 @@ fileprivate extension HackleBridge {
 
     private func track(event: Event, parameters: [String: Any]) {
         if let userId = parameters["user"] as? String {
-            app.track(event: event, userId: userId)
-            return
+            app.setUserId(userId: userId)
         }
         if let data = parameters["user"] as? [String: Any] {
             if let user = User.from(dto: data) {
-                app.track(event: event, user: user)
-                return
+                app.setUser(user: user)
             }
         }
         app.track(event: event)
@@ -279,13 +253,11 @@ fileprivate extension HackleBridge {
         } else if let data = parameters["user"] as? [String: Any] {
             user = User.from(dto: data)
         }
-
-        let config: HackleRemoteConfig
         if let user = user {
-            config = app.remoteConfig(user: user)
-        } else {
-            config = app.remoteConfig()
+            app.setUser(user: user)
         }
+        
+        let config = app.remoteConfig()
 
         guard let key = parameters["key"] as? String else {
             throw HackleError.error("Valid 'key' parameter must be provided.")

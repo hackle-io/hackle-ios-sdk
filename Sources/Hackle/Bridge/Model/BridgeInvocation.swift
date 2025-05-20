@@ -9,6 +9,7 @@ class BridgeInvocation {
     }
     
     enum Command: String {
+        case getDeviceId = "getDeviceId"
         case getSessionId = "getSessionId"
         case getUser = "getUser"
         case setUser = "setUser"
