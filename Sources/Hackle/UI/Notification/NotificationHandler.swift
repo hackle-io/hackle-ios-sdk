@@ -63,10 +63,10 @@ extension URL {
             return
         }
         
-        if (scheme == "http" || scheme == "https") && isContinueUserActivitySupported() {
+        if (isHttpScheme(scheme) && isContinueUserActivitySupported()) {
             let userActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
             userActivity.webpageURL = self
-
+            
             // NOTE: RN/Flutter에서 application State가 inactive일 때 userActivity를 처리하면 RN으로 링크가 전달되지 않음
             //  NotificationCenter에서 UIApplication.didBecomeActiveNotification을 구독하고 active 된 후에 처리
             switch UIUtils.application?.applicationState {
@@ -79,31 +79,27 @@ extension URL {
                     object: nil,
                     queue: .main
                 ) { [observer] _ in
-                    self.continueUserActivity(userActivity: userActivity)
+                    continueUserActivity(userActivity: userActivity)
                     if let obs = observer {
                         NotificationCenter.default.removeObserver(obs)
                     }
                 }
             }
         } else {
-            self.openUrl()
+            openUrl()
         }
+    }
+    
+    private func isHttpScheme(_ scheme: String) -> Bool {
+        return scheme == "http" || scheme == "https"
     }
     
     private func isContinueUserActivitySupported() -> Bool {
         guard let appDelegate = UIUtils.application?.delegate else {
             return false
         }
-        
-        if let respondToSelector = appDelegate.application?(
-            UIUtils.application!,
-            continue: NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb),
-            restorationHandler: { _ in }
-        ) {
-            return respondToSelector
-        }
-        
-        return false
+        let selector = #selector(UIApplicationDelegate.application(_:continue:restorationHandler:))
+        return appDelegate.responds(to: selector)
     }
     
     private func continueUserActivity(userActivity: NSUserActivity) {
@@ -116,7 +112,7 @@ extension URL {
         
         if success != true {
             Log.info("Attempt to open URL alternative")
-            self.openUrl()
+            openUrl()
         }
     }
     
