@@ -273,11 +273,7 @@ import WebKit
     @objc public func remoteConfig() -> HackleRemoteConfig {
         DefaultRemoteConfig(user: nil, app: core, userManager: userManager)
     }
-
-    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
-        webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
-    }
-
+  
     @objc public func setPushToken(_ deviceToken: Data) {
         pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
@@ -293,7 +289,15 @@ import WebKit
             }
         )
     }
-
+    
+    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
+        webView.prepareForHackleWebBridge(app: self, uiDelegate: uiDelegate)
+    }
+    
+    @objc public func getWrapperBridge() -> HackleWrapperBridge {
+        return WrapperBridge(app: self)
+    }
+    
     @objc(updatePushSubscriptionStatus:)
     public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         let operations = HacklePushSubscriptionOperations.builder()
