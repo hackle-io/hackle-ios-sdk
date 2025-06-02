@@ -105,11 +105,15 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
 
     func start() {
         lock.write { [weak self] in
-            if self?.flushingJob != nil {
+            guard let self = self else {
+                Log.error("UserEventProcessor is not allocated before starting.")
                 return
             }
-            self?.flushingJob = eventFlushScheduler.schedulePeriodically(delay: eventFlushInterval, period: eventFlushInterval) {
-                self?.flush()
+            if self.flushingJob != nil {
+                return
+            }
+            self.flushingJob = eventFlushScheduler.schedulePeriodically(delay: self.eventFlushInterval, period: self.eventFlushInterval) {
+                self.flush()
             }
             Log.info("UserEventProcessor started. Flush events every \(eventFlushInterval)s")
         }

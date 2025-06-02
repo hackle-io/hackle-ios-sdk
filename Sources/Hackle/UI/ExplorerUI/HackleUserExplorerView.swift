@@ -38,7 +38,7 @@ class HackleUserExplorerView {
 
     func detach() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self, let window = UIUtils.keyWindow else {
+            guard let self = self, let _ = UIUtils.keyWindow else {
                 return
             }
 
