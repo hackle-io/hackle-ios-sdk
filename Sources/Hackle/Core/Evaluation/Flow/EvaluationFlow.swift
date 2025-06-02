@@ -21,21 +21,21 @@ class EvaluationFlow<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>
 
 extension EvaluationFlow {
 
-    static func end<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>() -> EvaluationFlow<Request, Evaluation> {
-        EvaluationFlow<Request, Evaluation>(evaluator: nil, nextFlow: nil)
+    static func end<R: EvaluatorRequest, E: EvaluatorEvaluation>() -> EvaluationFlow<R, E> {
+        EvaluationFlow<R, E>(evaluator: nil, nextFlow: nil)
     }
 
-    static func decision<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+    static func decision<R: EvaluatorRequest, E: EvaluatorEvaluation>(
         evaluator: FlowEvaluator,
-        nextFlow: EvaluationFlow<Request, Evaluation>
-    ) -> EvaluationFlow<Request, Evaluation> {
-        EvaluationFlow<Request, Evaluation>(evaluator: evaluator, nextFlow: nextFlow)
+        nextFlow: EvaluationFlow<R, E>
+    ) -> EvaluationFlow<R, E> {
+        EvaluationFlow<R, E>(evaluator: evaluator, nextFlow: nextFlow)
     }
 
-    static func of<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+    static func of<R: EvaluatorRequest, E: EvaluatorEvaluation>(
         _ evaluators: FlowEvaluator...
-    ) -> EvaluationFlow<Request, Evaluation> {
-        var flow: EvaluationFlow<Request, Evaluation> = end()
+    ) -> EvaluationFlow<R, E> {
+        var flow: EvaluationFlow<R, E> = end()
         for evaluator in evaluators.reversed() {
             flow = decision(evaluator: evaluator, nextFlow: flow)
         }
