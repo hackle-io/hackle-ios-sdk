@@ -68,6 +68,11 @@ class HackleBridgeSpec : QuickSpec {
                 let properties = data["properties"] as! [String: Any]
                 expect(properties.count) == 1
                 expect(properties["bar"] as? String) == "foo"
+                expect(mock.user.id) == user.id
+                expect(mock.user.userId) == user.userId
+                expect(mock.user.deviceId) == user.deviceId
+                expect(mock.user.identifiers["foo"]) == "bar"
+                expect(mock.user.properties["bar"] as? String) == "foo"
             }
             context("set user") {
                 it("happy case") {
@@ -111,6 +116,15 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
+                    expect(mock.user.id) == "foo"
+                    expect(mock.user.userId) == "bar"
+                    expect(mock.user.identifiers["foobar"]) == "foofoo"
+                    expect(mock.user.identifiers["foobar2"]) == "barbar"
+                    expect(mock.user.properties["null"]).to(beNil())
+                    expect(mock.user.properties["number"] as? Double) == 123.0
+                    expect(mock.user.properties["string"] as? String) == "text"
+                    expect((mock.user.properties["array"] as? [Any?])?.count) == 2
+                    expect(mock.user.properties["map"] as? [String: String]).to(beNil())
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
@@ -141,6 +155,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
+                    expect(mock.user.userId) == "abcd1234"
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
@@ -171,6 +186,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
+                    expect(mock.user.deviceId) == "abcd1234"
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
@@ -205,6 +221,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
+                    expect(mock.user.properties["foo"] as? String) == "bar"
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
@@ -288,6 +305,11 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["success"] as? Bool) == true
                 expect(dict["message"] as? String) == "OK"
                 expect(dict["data"]).to(beNil())
+                expect(mock.user.id).to(beNil())
+                expect(mock.user.userId).to(beNil())
+                expect(mock.user.deviceId).to(beNil())
+                expect(mock.user.identifiers).to(beEmpty())
+                expect(mock.user.properties).to(beEmpty())
             }
             it("setPhoneNumber") {
                 let mock = MockHackleApp()
@@ -384,6 +406,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "C"
+                        expect(mock.user.userId) == "abcd1234"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -407,6 +430,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "A"
+                        expect(mock.user.userId) == "abcd1234"
                     }
                 }
                 context("with user object") {
@@ -433,6 +457,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "C"
+                        expect(mock.user.id) == "foo"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -456,6 +481,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "A"
+                        expect(mock.user.id) == "foo"
                     }
                 }
                 it("invalid parameters case") {
@@ -567,6 +593,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
+                        expect(mock.user.userId) == "abcd1234"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -598,6 +625,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
+                        expect(mock.user.userId) == "abcd1234"
                     }
                 }
                 context("with user object") {
@@ -632,6 +660,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
+                        expect(mock.user.id) == "foo"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -663,6 +692,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
+                        expect(mock.user.id) == "foo"
                     }
                 }
                 it("invalid parameters case") {
@@ -725,6 +755,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
+                    expect(mock.user.userId) == "abcd1234"
                 }
                 it("with user object case") {
                     let parameters = [
@@ -748,6 +779,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
+                    expect(mock.user.id) == "foo"
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
@@ -823,6 +855,7 @@ class HackleBridgeSpec : QuickSpec {
                     
                     let config = data["config"] as! [String: Any]
                     expect(config["parameters"]).toNot(beNil())
+                    expect(mock.user.userId) == "abcd1234"
                 }
                 it("with user case") {
                     let parameters = [
@@ -853,6 +886,7 @@ class HackleBridgeSpec : QuickSpec {
                     
                     let config = data["config"] as! [String: Any]
                     expect(config["parameters"]).toNot(beNil())
+                    expect(mock.user.id) == "foo"
                 }
                 it("invalid parameters case") {
                     let mock = MockHackleApp()
@@ -874,7 +908,7 @@ class HackleBridgeSpec : QuickSpec {
                 context("with event string") {
                     it("happy case") {
                         let parameters = [
-                            "event": "abcd1234"
+                            "event": "helloHackle"
                         ]
                         let mock = MockHackleApp()
                         let bridge = HackleBridge(app: mock)
@@ -884,7 +918,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(mock.trackWithEventKeyRef.invokations().count) == 1
                         
                         let arguments = mock.trackWithEventKeyRef.firstInvokation().arguments
-                        expect(arguments) == "abcd1234"
+                        expect(arguments) == "helloHackle"
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -893,7 +927,7 @@ class HackleBridgeSpec : QuickSpec {
                     }
                     it("with user string") {
                         let parameters = [
-                            "event": "abcd1234",
+                            "event": "helloHackle",
                             "user": "foo"
                         ]
                         let mock = MockHackleApp()
@@ -905,16 +939,17 @@ class HackleBridgeSpec : QuickSpec {
                         expect(mock.trackWithEventKeyRef.invokations().count) == 1
                         
                         let arguments = mock.trackWithEventKeyRef.firstInvokation().arguments
-                        expect(arguments) == "abcd1234"
+                        expect(arguments) == "helloHackle"
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
+                        expect(mock.user.userId) == "foo"
                     }
                     it("with user object") {
                         let parameters = [
-                            "event": "abcd1234",
+                            "event": "helloHackle",
                             "user": ["id": "foo"]
                         ] as [String : Any]
                         let mock = MockHackleApp()
@@ -926,19 +961,20 @@ class HackleBridgeSpec : QuickSpec {
                         expect(mock.trackWithEventKeyRef.invokations().count) == 1
                         
                         let arguments = mock.trackWithEventKeyRef.firstInvokation().arguments
-                        expect(arguments) == "abcd1234"
+                        expect(arguments) == "helloHackle"
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
+                        expect(mock.user.id) == "foo"
                     }
                 }
                 context("with event object") {
                     it("happy case") {
                         let parameters = [
                             "event": [
-                                "key": "foo",
+                                "key": "helloHackle",
                                 "value": 1234,
                                 "properties": [
                                     "null": nil,
@@ -957,7 +993,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(mock.trackWithEventRef.invokations().count) == 1
                         
                         let arguments = mock.trackWithEventRef.firstInvokation().arguments
-                        expect(arguments.key) == "foo"
+                        expect(arguments.key) == "helloHackle"
                         expect(arguments.value) == 1234
                         expect(arguments.properties!.count) == 3
                         expect(arguments.properties!["number"] as? Double) == 123.0
@@ -977,7 +1013,7 @@ class HackleBridgeSpec : QuickSpec {
                     it("with user string") {
                         let parameters = [
                             "event": [
-                                "key": "foo",
+                                "key": "helloHackle",
                                 "value": 1234,
                                 "properties": [
                                     "null": nil,
@@ -998,7 +1034,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(mock.trackWithEventRef.invokations().count) == 1
                         
                         let arguments = mock.trackWithEventRef.firstInvokation().arguments
-                        expect(arguments.key) == "foo"
+                        expect(arguments.key) == "helloHackle"
                         expect(arguments.value) == 1234
                         expect(arguments.properties!.count) == 3
                         expect(arguments.properties!["number"] as? Double) == 123.0
@@ -1014,11 +1050,12 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
+                        expect(mock.user.userId) == "abcd1234"
                     }
                     it("with user object") {
                         let parameters = [
                             "event": [
-                                "key": "foo",
+                                "key": "helloHackle",
                                 "value": 1234,
                                 "properties": [
                                     "null": nil,
@@ -1039,7 +1076,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(mock.trackWithEventRef.invokations().count) == 1
                         
                         let arguments = mock.trackWithEventRef.firstInvokation().arguments
-                        expect(arguments.key) == "foo"
+                        expect(arguments.key) == "helloHackle"
                         expect(arguments.value) == 1234
                         expect(arguments.properties!.count) == 3
                         expect(arguments.properties!["number"] as? Double) == 123.0
@@ -1055,6 +1092,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
+                        expect(mock.user.id) == "abcd1234"
                     }
                 }
                 it("invalid parameters case") {
@@ -1217,6 +1255,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "1234.5678"
+                            expect(mock.user.userId) == "abcd1234"
                         }
                         it("number default value return case") {
                             let parameters = [
@@ -1238,6 +1277,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "0.0"
+                            expect(mock.user.userId) == "abcd1234"
                         }
                         it("boolean case") {
                             let parameters = [
@@ -1260,6 +1300,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "true"
+                            expect(mock.user.userId) == "abcd1234"
                         }
                         it("boolean default value return case") {
                             let parameters = [
@@ -1281,6 +1322,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "true"
+                            expect(mock.user.userId) == "abcd1234"
                         }
                         it("string case") {
                             let parameters = [
@@ -1292,7 +1334,7 @@ class HackleBridgeSpec : QuickSpec {
                             let remoteConfig = MockRemoteConfig()
                             let mock = MockHackleApp(remoteConfig: remoteConfig)
                             let bridge = HackleBridge(app: mock)
-                            remoteConfig.config["string"] = "abcd1234"
+                            remoteConfig.config["string"] = "helloHackle"
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             
                             let result = bridge.invoke(string: jsonString)
@@ -1302,7 +1344,8 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "abcd1234"
+                            expect(dict["data"] as? String) == "helloHackle"
+                            expect(mock.user.userId) == "abcd1234"
                         }
                         it("string default value return case") {
                             let parameters = [
@@ -1324,6 +1367,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "default"
+                            expect(mock.user.userId) == "abcd1234"
                         }
                     }
                     context("with user object") {
@@ -1348,6 +1392,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "1234.5678"
+                            expect(mock.user.id) == "abcd1234"
                         }
                         it("number default value return case") {
                             let parameters = [
@@ -1369,6 +1414,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "0.0"
+                            expect(mock.user.id) == "abcd1234"
                         }
                         it("boolean case") {
                             let parameters = [
@@ -1391,6 +1437,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "true"
+                            expect(mock.user.id) == "abcd1234"
                         }
                         it("boolean default value return case") {
                             let parameters = [
@@ -1412,6 +1459,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "true"
+                            expect(mock.user.id) == "abcd1234"
                         }
                         it("string case") {
                             let parameters = [
@@ -1423,7 +1471,7 @@ class HackleBridgeSpec : QuickSpec {
                             let remoteConfig = MockRemoteConfig()
                             let mock = MockHackleApp(remoteConfig: remoteConfig)
                             let bridge = HackleBridge(app: mock)
-                            remoteConfig.config["string"] = "abcd1234"
+                            remoteConfig.config["string"] = "helloHackle"
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             
                             let result = bridge.invoke(string: jsonString)
@@ -1433,7 +1481,8 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "abcd1234"
+                            expect(dict["data"] as? String) == "helloHackle"
+                            expect(mock.user.id) == "abcd1234"
                         }
                         it("string default value return case") {
                             let parameters = [
@@ -1455,6 +1504,7 @@ class HackleBridgeSpec : QuickSpec {
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? String) == "default"
+                            expect(mock.user.id) == "abcd1234"
                         }
                     }
                 }
