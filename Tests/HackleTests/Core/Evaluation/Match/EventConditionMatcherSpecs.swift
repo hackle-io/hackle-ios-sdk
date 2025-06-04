@@ -101,7 +101,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
 
         it("EXPOSURE") {
             let user = HackleUser.builder().identifier(.id, "user").build()
-            let event = UserEvents.exposure(user: user, evaluation: experimentEvaluation(), properties: ["a": "b"], timestamp: Date())
+            let event = UserEvents.exposure(user: user, evaluation: experimentEvaluation(), properties: ["a": "b"], internalProperties: ["internal": "a"], timestamp: Date())
 
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "a")) as? String) == "b"
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "b"))).to(beNil())
@@ -119,7 +119,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
                 reason: DecisionReason.TARGET_RULE_MATCH,
                 properties: PropertiesBuilder()
             )
-            let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["a": "b"], timestamp: Date())
+            let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["a": "b"], internalProperties: ["internal": "a"], timestamp: Date())
 
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "a")) as? String) == "b"
             expect(try sut.resolveOrNil(event: event, key: Target.Key(type: .eventProperty, name: "b"))).to(beNil())
@@ -128,7 +128,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
         it("Unsupported type") {
 
             let user = HackleUser.builder().identifier(.id, "user").build()
-            let event = UserEvents.exposure(user: user, evaluation: experimentEvaluation(), properties: ["a": "b"], timestamp: Date())
+            let event = UserEvents.exposure(user: user, evaluation: experimentEvaluation(), properties: ["a": "b"], internalProperties: ["internal": "a"], timestamp: Date())
 
             func check(type: Target.KeyType) {
                 expect(try sut.resolveOrNil(event: event, key: Target.Key(type: type, name: "a")))

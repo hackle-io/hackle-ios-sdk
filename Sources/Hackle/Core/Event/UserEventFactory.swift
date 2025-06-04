@@ -15,9 +15,11 @@ protocol UserEventFactory {
 class DefaultUserEventFactory: UserEventFactory {
 
     private let clock: Clock
+    private let internalProperties: PropertiesBuilder
 
     init(clock: Clock) {
         self.clock = clock
+        self.internalProperties = PropertiesBuilder()
     }
 
     private static let CONFIG_ID_PROPERTY_KEY = "$parameterConfigurationId"
@@ -63,6 +65,7 @@ class DefaultUserEventFactory: UserEventFactory {
                 user: request.user,
                 evaluation: evaluation,
                 properties: properties.build(),
+                internalProperties: internalProperties.build(),
                 timestamp: timestamp
             )
         case let evaluation as RemoteConfigEvaluation:
@@ -71,6 +74,7 @@ class DefaultUserEventFactory: UserEventFactory {
                 user: request.user,
                 evaluation: evaluation,
                 properties: properties.build(),
+                internalProperties: internalProperties.build(),
                 timestamp: timestamp
             )
         case _ as InAppMessageEvaluation:

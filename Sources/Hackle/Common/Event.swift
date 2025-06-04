@@ -9,11 +9,13 @@ import Foundation
     let key: String
     let value: Double?
     let properties: [String: Any]?
+    var internalProperties: [String: Any]?
 
     init(key: String, value: Double? = nil, properties: [String: Any]? = nil) {
         self.key = key
         self.value = value
         self.properties = properties
+        self.internalProperties = nil
     }
 
     @objc public static func builder(_ key: String) -> HackleEventBuilder {
@@ -26,6 +28,7 @@ import Foundation
     private let key: String
     private var value: Double? = nil
     private var properties: PropertiesBuilder = PropertiesBuilder()
+    private var internalProperties: PropertiesBuilder? = nil
 
     init(key: String) {
         self.key = key
@@ -51,6 +54,25 @@ import Foundation
     }
 
     @objc public func build() -> Event {
-        Event(key: key, value: value, properties: properties.build())
+        let event = Event(key: key, value: value, properties: properties.build())
+        event.addInternalProperties(internalProperties?.build())
+        return event
+    }
+}
+
+extension Event {
+    fileprivate func addInternalProperties(_ internalProperties: [String: Any]?) {
+        self.internalProperties = internalProperties
+    }
+}
+
+extension HackleEventBuilder {
+    func internalProperty(_ key: String, _ value: Any?) -> HackleEventBuilder {
+        if internalProperties == nil {
+            internalProperties = PropertiesBuilder()
+        }
+        
+        internalProperties?.add(key, value)
+        return self
     }
 }
