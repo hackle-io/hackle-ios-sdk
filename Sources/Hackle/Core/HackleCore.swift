@@ -70,7 +70,7 @@ class DefaultHackleCore: HackleCore {
             remoteConfigEvaluator: remoteConfigEvaluator,
             inAppMessageEvaluator: inAppMessageEvaluator,
             workspaceFetcher: workspaceFetcher,
-            eventFactory: DefaultUserEventFactory(clock: SystemClock.shared),
+            eventFactory: DefaultUserEventFactory(workspaceFetcher: workspaceFetcher, clock: SystemClock.shared),
             eventProcessor: eventProcessor,
             clock: SystemClock.shared
         )
