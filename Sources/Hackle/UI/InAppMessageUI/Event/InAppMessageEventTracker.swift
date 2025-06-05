@@ -41,22 +41,16 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("image_url", context.message.images.map {
                     $0.imagePath
                 })
-                .internalProperty("trigger_event_insert_id", context.eventInsertId)
                 .build()
         case .imageImpression(let image, let order):
             return Event.builder(DefaultInAppMessageEventTracker.IMAGE_IMPRESSION_EVENT_KEY)
                 .properties(context: context)
                 .property("image_url", image.imagePath)
                 .property("image_order", order)
-                .internalProperty("trigger_event_insert_id", context.eventInsertId)
                 .build()
         case .close:
             return Event.builder(DefaultInAppMessageEventTracker.CLOSE_EVENT_KEY)
-                .properties(context.properties)
-                .property("in_app_message_id", context.inAppMessage.id)
-                .property("in_app_message_key", context.inAppMessage.key)
-                .property("in_app_message_display_type", context.message.layout.displayType.rawValue)
-                .internalProperty("trigger_event_insert_id", context.eventInsertId)
+                .properties(context: context)
                 .build()
         case .action(let action, let area, let button, let image, let imageOrder):
             return Event.builder(DefaultInAppMessageEventTracker.ACTION_EVENT_KEY)
@@ -67,7 +61,6 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .property("button_text", button?.text)
                 .property("image_url", image?.imagePath)
                 .property("image_order", imageOrder)
-                .internalProperty("trigger_event_insert_id", context.eventInsertId)
                 .build()
         }
     }
@@ -79,6 +72,7 @@ private extension HackleEventBuilder {
         property("in_app_message_id", context.inAppMessage.id)
         property("in_app_message_key", context.inAppMessage.key)
         property("in_app_message_display_type", context.message.layout.displayType.rawValue)
+        internalProperty("$trigger_event_insert_id", context.eventInsertId)
         return self
     }
 }

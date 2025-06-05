@@ -9,8 +9,9 @@ import Mockery
 @testable import Hackle
 
 class MockWorkspaceFetcher: Mock, WorkspaceFetcher {
-
+    var lastModified: String?
     lazy var fetchMock = MockFunction(self, fetch)
+    
 
     func fetch() -> Workspace? {
         call(fetchMock, args: ())

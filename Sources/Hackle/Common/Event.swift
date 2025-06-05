@@ -67,6 +67,7 @@ extension Event {
 }
 
 extension HackleEventBuilder {
+    @discardableResult
     func internalProperty(_ key: String, _ value: Any?) -> HackleEventBuilder {
         if internalProperties == nil {
             internalProperties = PropertiesBuilder()
