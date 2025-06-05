@@ -59,6 +59,7 @@ class DefaultInAppMessageDeterminer: InAppMessageDeterminer {
             message: message,
             user: event.user,
             properties: properties,
+            triggerEventId: event.insertId,
             decisionReasion: decision.reason
         )
     }

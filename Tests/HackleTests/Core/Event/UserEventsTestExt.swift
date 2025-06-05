@@ -29,6 +29,7 @@ extension UserEvents {
             user: HackleUser.builder().identifier(.id, "user").build(),
             evaluation: experimentEvaluation(),
             properties: [:],
+            internalProperties: [:],
             timestamp: Date()
         )
     }

@@ -27,7 +27,8 @@ class RemoteConfigEventDedupDeterminerSpecs: QuickSpec {
                 ),
                 valueId: 320,
                 decisionReason: DecisionReason.DEFAULT_RULE,
-                properties: [:]
+                properties: [:],
+                internalProperties: [:]
             )
 
             let key = sut.cacheKey(event: event)

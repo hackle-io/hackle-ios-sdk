@@ -14,13 +14,15 @@ class InAppMessagePresentationContext {
     let message: InAppMessage.Message
     let user: HackleUser
     let properties: [String: Any]
+    let triggerEventId: String
     let decisionReasion: String
 
-    init(inAppMessage: InAppMessage, message: InAppMessage.Message, user: HackleUser, properties: [String: Any], decisionReasion: String) {
+    init(inAppMessage: InAppMessage, message: InAppMessage.Message, user: HackleUser, properties: [String: Any], triggerEventId: String, decisionReasion: String) {
         self.inAppMessage = inAppMessage
         self.message = message
         self.user = user
         self.properties = properties
+        self.triggerEventId = triggerEventId
         self.decisionReasion = decisionReasion
     }
 }

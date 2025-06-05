@@ -14,10 +14,14 @@ protocol UserEventFactory {
 
 class DefaultUserEventFactory: UserEventFactory {
 
+    private let workspaceFetcher: WorkspaceFetcher
     private let clock: Clock
+    private let internalProperties: PropertiesBuilder
 
-    init(clock: Clock) {
+    init(workspaceFetcher: WorkspaceFetcher, clock: Clock) {
+        self.workspaceFetcher = workspaceFetcher
         self.clock = clock
+        self.internalProperties = PropertiesBuilder()
     }
 
     private static let CONFIG_ID_PROPERTY_KEY = "$parameterConfigurationId"
@@ -26,6 +30,7 @@ class DefaultUserEventFactory: UserEventFactory {
 
     private static let EXPERIMENT_VERSION_KEY = "$experiment_version"
     private static let EXECUTION_VERSION_KEY = "$execution_version"
+    private static let WORKSPACE_CONFIG_LAST_MODIFIED_AT_KEY = "$config_last_modified_at"
 
     func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) throws -> [UserEvent] {
 
@@ -53,6 +58,10 @@ class DefaultUserEventFactory: UserEventFactory {
         timestamp: Date,
         properties: PropertiesBuilder
     ) throws -> UserEvent? {
+        
+        if let lastModifiedAt = workspaceFetcher.lastModified {
+            internalProperties.add(DefaultUserEventFactory.WORKSPACE_CONFIG_LAST_MODIFIED_AT_KEY, lastModifiedAt)
+        }
 
         switch evaluation {
         case let evaluation as ExperimentEvaluation:
@@ -63,6 +72,7 @@ class DefaultUserEventFactory: UserEventFactory {
                 user: request.user,
                 evaluation: evaluation,
                 properties: properties.build(),
+                internalProperties: internalProperties.build(),
                 timestamp: timestamp
             )
         case let evaluation as RemoteConfigEvaluation:
@@ -71,6 +81,7 @@ class DefaultUserEventFactory: UserEventFactory {
                 user: request.user,
                 evaluation: evaluation,
                 properties: properties.build(),
+                internalProperties: internalProperties.build(),
                 timestamp: timestamp
             )
         case _ as InAppMessageEvaluation:

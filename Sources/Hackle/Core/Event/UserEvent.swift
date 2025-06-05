@@ -25,6 +25,7 @@ enum UserEvents {
         user: HackleUser,
         evaluation: ExperimentEvaluation,
         properties: [String: Any],
+        internalProperties: [String: Any],
         timestamp: Date
     ) -> UserEvents.Exposure {
         Exposure(
@@ -35,7 +36,8 @@ enum UserEvents {
             variationId: evaluation.variationId,
             variationKey: evaluation.variationKey,
             decisionReason: evaluation.reason,
-            properties: properties
+            properties: properties,
+            internalProperties: internalProperties
         )
     }
 
@@ -58,6 +60,7 @@ enum UserEvents {
         user: HackleUser,
         evaluation: RemoteConfigEvaluation,
         properties: [String: Any],
+        internalProperties: [String: Any],
         timestamp: Date
     ) -> UserEvents.RemoteConfig {
         RemoteConfig(
@@ -67,7 +70,8 @@ enum UserEvents {
             parameter: evaluation.parameter,
             valueId: evaluation.valueId,
             decisionReason: evaluation.reason,
-            properties: properties
+            properties: properties,
+            internalProperties: internalProperties
         )
     }
 
@@ -81,8 +85,9 @@ enum UserEvents {
         let variationKey: Variation.Key
         let decisionReason: String
         let properties: [String: Any]
+        let internalProperties: [String: Any]
 
-        init(insertId: String, timestamp: Date, user: HackleUser, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String, properties: [String: Any]) {
+        init(insertId: String, timestamp: Date, user: HackleUser, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String, properties: [String: Any], internalProperties: [String: Any]) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user
@@ -91,6 +96,7 @@ enum UserEvents {
             self.variationKey = variationKey
             self.decisionReason = decisionReason
             self.properties = properties
+            self.internalProperties = internalProperties
         }
 
         func with(user: HackleUser) -> UserEvent {
@@ -102,7 +108,8 @@ enum UserEvents {
                 variationId: variationId,
                 variationKey: variationKey,
                 decisionReason: decisionReason,
-                properties: properties
+                properties: properties,
+                internalProperties: internalProperties
             )
         }
     }
@@ -143,8 +150,9 @@ enum UserEvents {
         let valueId: Int64?
         let decisionReason: String
         let properties: [String: Any]
+        let internalProperties: [String: Any]
 
-        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any]) {
+        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any], internalProperties: [String: Any]) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user
@@ -152,6 +160,7 @@ enum UserEvents {
             self.valueId = valueId
             self.decisionReason = decisionReason
             self.properties = properties
+            self.internalProperties = internalProperties
         }
 
         func with(user: HackleUser) -> UserEvent {
@@ -162,7 +171,8 @@ enum UserEvents {
                 parameter: parameter,
                 valueId: valueId,
                 decisionReason: decisionReason,
-                properties: properties
+                properties: properties,
+                internalProperties: internalProperties
             )
         }
     }
