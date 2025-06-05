@@ -27,6 +27,7 @@ class MockHackleApp : Mock, HackleAppProtocol {
     lazy var setDeviceIdRef = MockFunction(self, setDeviceId)
     func setDeviceId(deviceId: String) {
         call(setDeviceIdRef, args: deviceId)
+        self.user = User.builder().deviceId(deviceId).build()
     }
 
     lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
@@ -42,26 +43,31 @@ class MockHackleApp : Mock, HackleAppProtocol {
     lazy var setUserRef = MockFunction(self, setUser)
     func setUser(user: User) {
         call(setUserRef, args: user)
+        self.user = user
     }
 
     lazy var setUserIdRef = MockFunction(self, setUserId)
     func setUserId(userId: String?) {
         call(setUserIdRef, args: userId)
+        self.user = User.builder().userId(userId).build()
     }
 
     lazy var setUserPropertyRef = MockFunction(self, setUserProperty)
     func setUserProperty(key: String, value: Any?) {
         call(setUserPropertyRef, args: (key, value))
+        self.user = User.builder().property(key, value).build()
     }
 
     lazy var updateUserPropertiesRef = MockFunction(self, updateUserProperties)
     func updateUserProperties(operations: PropertyOperations) {
         call(updateUserPropertiesRef, args: operations)
+        
     }
 
     lazy var resetUserRef = MockFunction(self, resetUser)
     func resetUser() {
         call(resetUserRef, args: ())
+        self.user = User.builder().build()
     }
     
     lazy var setPhoneNumberRef = MockFunction(self, setPhoneNumber)

@@ -38,17 +38,21 @@ class PushMetricRegistry: MetricRegistry, AppStateListener {
 
     final func start() {
         lock.write { [weak self] in
-
-            if self?.publishingJob != nil {
+            guard let self = self else {
+                Log.error("PushMetricRegistry is not allocated before starting.")
                 return
             }
 
-            let delay = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: pushInterval) + 0.001
-            self?.publishingJob = scheduler.schedulePeriodically(delay: delay, period: pushInterval) {
-                self?.publish()
+            if self.publishingJob != nil {
+                return
             }
 
-            Log.info("\(self?.name ?? "PushMetricRegistry") started. Publish metrics every \(pushInterval.format())")
+            let delay = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: self.pushInterval) + 0.001
+            self.publishingJob = scheduler.schedulePeriodically(delay: delay, period: self.pushInterval) {
+                self.publish()
+            }
+
+            Log.info("\(self.name) started. Publish metrics every \(self.pushInterval.format())")
         }
 
     }

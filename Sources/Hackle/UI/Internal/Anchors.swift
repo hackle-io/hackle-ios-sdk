@@ -272,24 +272,24 @@ struct Anchor<Item: LayoutItem, Delegate> {
 extension Anchor {
 
     @discardableResult
-    func equal<Item: LayoutItem, Delegate>(
-        _ other: Anchor<Item, Delegate>,
+    func equal<T: LayoutItem, D>(
+        _ other: Anchor<T, D>,
         constant: CGFloat = 0
     ) -> NSLayoutConstraint {
         Constraints.activate(self, other, constant: constant, relation: .equal)
     }
 
     @discardableResult
-    func greaterThanOrEqual<Item: LayoutItem, Delegate>(
-        _ other: Anchor<Item, Delegate>,
+    func greaterThanOrEqual<T: LayoutItem, D>(
+        _ other: Anchor<T, D>,
         constant: CGFloat = 0
     ) -> NSLayoutConstraint {
         Constraints.activate(self, other, constant: constant, relation: .greaterThanOrEqual)
     }
 
     @discardableResult
-    func lessThanOrEqual<Item: LayoutItem, Delegate>(
-        _ other: Anchor<Item, Delegate>,
+    func lessThanOrEqual<T: LayoutItem, D>(
+        _ other: Anchor<T, D>,
         constant: CGFloat = 0
     ) -> NSLayoutConstraint {
         Constraints.activate(self, other, constant: constant, relation: .lessThanOrEqual)
