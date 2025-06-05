@@ -187,10 +187,10 @@ extension InAppMessage {
         inAppMessage: InAppMessage = .create(),
         message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        eventInsertId: String = UUID().uuidString.lowercased(),
+        triggerEventId: String = UUID().uuidString.lowercased(),
         properties: [String: Any] = [:],
         decisionReason: String = DecisionReason.DEFAULT_RULE
     ) -> InAppMessagePresentationContext {
-        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties, eventInsertId: eventInsertId, decisionReasion: decisionReason)
+        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties, triggerEventId: triggerEventId, decisionReasion: decisionReason)
     }
 }
