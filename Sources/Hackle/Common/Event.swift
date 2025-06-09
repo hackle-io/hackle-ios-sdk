@@ -4,7 +4,8 @@
 
 import Foundation
 
-@objc public class Event: NSObject {
+@objc(HackleEvent)
+public class Event: NSObject {
 
     let key: String
     let value: Double?
