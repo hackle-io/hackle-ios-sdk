@@ -4,7 +4,8 @@
 
 import Foundation
 
-@objc public class User: NSObject {
+@objc(HackleUser)
+public class User: NSObject {
 
     @objc public let id: String?
     @objc public let userId: String?
@@ -37,7 +38,8 @@ extension User {
     typealias Id = String
 }
 
-@objc public class HackleUserBuilder: NSObject {
+@objc
+public class HackleUserBuilder: NSObject {
 
     private var id: String? = nil
     private var userId: String? = nil
