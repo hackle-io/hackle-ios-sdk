@@ -22,7 +22,8 @@ enum PropertyOperation: String {
 }
 
 
-@objc public class PropertyOperations: NSObject {
+@objc(HacklePropertyOperations)
+public class PropertyOperations: NSObject {
 
     private let operations: [PropertyOperation: [String: Any]]
 
