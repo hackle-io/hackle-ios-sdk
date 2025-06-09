@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc
+@objc(HackleParameterConfig)
 public protocol ParameterConfig: Config {
     var parameters: [String: Any] { get }
     func getString(forKey: String, defaultValue: String) -> String
