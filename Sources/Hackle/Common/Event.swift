@@ -5,7 +5,8 @@
 import Foundation
 
 
-@objc public class Event: NSObject, HackleCommonEvent {
+@objc(HackleEvent)
+public class Event: NSObject, HackleCommonEvent {
 
     public private(set) var key: String
     public private(set) var value: NSNumber?
