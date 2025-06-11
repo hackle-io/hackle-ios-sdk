@@ -4,7 +4,6 @@
 
 import Foundation
 
-
 @objc(HackleEvent)
 public class Event: NSObject, HackleCommonEvent {
 
@@ -15,7 +14,11 @@ public class Event: NSObject, HackleCommonEvent {
 
     init(key: String, value: Double? = nil, properties: [String: Any]? = nil) {
         self.key = key
-        self.value = value as NSNumber?
+        if let value = value {
+            self.value = NSNumber(value: value)
+        } else {
+            self.value = nil
+        }
         self.properties = properties
         self.internalProperties = nil
     }
