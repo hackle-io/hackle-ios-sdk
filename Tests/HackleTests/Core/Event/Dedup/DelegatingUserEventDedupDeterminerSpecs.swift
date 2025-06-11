@@ -21,7 +21,8 @@ class DelegatingUserEventDedupDeterminerSpecs: QuickSpec {
                 variationId: 14,
                 variationKey: "A",
                 decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
-                properties: [:]
+                properties: [:],
+                internalProperties: [:]
             )
 
 
@@ -44,7 +45,8 @@ class DelegatingUserEventDedupDeterminerSpecs: QuickSpec {
                 variationId: 14,
                 variationKey: "A",
                 decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
-                properties: [:]
+                properties: [:],
+                internalProperties: [:]
             )
 
 
@@ -70,7 +72,8 @@ class DelegatingUserEventDedupDeterminerSpecs: QuickSpec {
                 variationId: 14,
                 variationKey: "A",
                 decisionReason: DecisionReason.TRAFFIC_ALLOCATED,
-                properties: [:]
+                properties: [:],
+                internalProperties: [:]
             )
 
 

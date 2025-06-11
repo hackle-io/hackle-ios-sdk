@@ -10,7 +10,7 @@ import Foundation
 
 
 class ResourcesWorkspaceFetcher: WorkspaceFetcher {
-
+    var lastModified: String?
     private let workspace: Workspace
 
     init(fileName: String) {

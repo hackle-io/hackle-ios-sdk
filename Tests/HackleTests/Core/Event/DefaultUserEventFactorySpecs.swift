@@ -15,7 +15,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
     override func spec() {
 
         it("create") {
-            let sut = DefaultUserEventFactory(clock: ClockStub())
+            let sut = DefaultUserEventFactory(workspaceFetcher: WorkspaceFetcherStub(), clock: ClockStub())
 
             let context = Evaluators.context()
 
@@ -79,6 +79,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.properties["$parameterConfigurationId"] as? Int64) == 42
             expect(exposure1.properties["$experiment_version"] as? Int) == 1
             expect(exposure1.properties["$execution_version"] as? Int) == 1
+            expect(exposure1.internalProperties["$config_last_modified_at"] as? String) == "Tue, 01 Jan 2000 00:00:00 GMT"
 
             expect(events[2]).to(beAnInstanceOf(UserEvents.Exposure.self))
             let exposure2 = events[2] as! UserEvents.Exposure
@@ -93,10 +94,11 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure2.properties["$targetingRootId"] as? Int64) == 1
             expect(exposure2.properties["$experiment_version"] as? Int) == 2
             expect(exposure2.properties["$execution_version"] as? Int) == 3
+            expect(exposure1.internalProperties["$config_last_modified_at"] as? String) == "Tue, 01 Jan 2000 00:00:00 GMT"
         }
 
         it("create in-app message events") {
-            let sut = DefaultUserEventFactory(clock: ClockStub())
+            let sut = DefaultUserEventFactory(workspaceFetcher: WorkspaceFetcherStub(), clock: ClockStub())
 
             let context = Evaluators.context()
             let evaluation1 = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, experiment: experiment(id: 1), variationId: 42, variationKey: "B")
@@ -127,6 +129,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.properties["$targetingRootId"] as? Int64) == 1
             expect(exposure1.properties["$experiment_version"] as? Int) == 1
             expect(exposure1.properties["$execution_version"] as? Int) == 1
+            expect(exposure1.internalProperties["$config_last_modified_at"] as? String) == "Tue, 01 Jan 2000 00:00:00 GMT"
         }
     }
 
@@ -141,6 +144,14 @@ class DefaultUserEventFactorySpecs: QuickSpec {
 
         func tick() -> UInt64 {
             42
+        }
+    }
+    
+    class WorkspaceFetcherStub: WorkspaceFetcher {
+        var lastModified: String? = "Tue, 01 Jan 2000 00:00:00 GMT"
+        
+        func fetch() -> Workspace? {
+            MockWorkspace()
         }
     }
 }

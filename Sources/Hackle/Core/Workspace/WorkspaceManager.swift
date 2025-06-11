@@ -12,7 +12,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
     private let repository: WorkspaceConfigRepository
 
-    private var lastModified: String? = nil
+    private(set) var lastModified: String? = nil
     private var workspace: Workspace? = nil
 
     init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {

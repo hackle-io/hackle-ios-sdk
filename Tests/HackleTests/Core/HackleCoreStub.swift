@@ -11,7 +11,7 @@ import Mockery
 
 class HackleCoreStub: HackleCore {
 
-    var tracked = [(Event, HackleUser, Date)]()
+    var tracked = [(HackleCommonEvent, HackleUser, Date)]()
 
     func initialize(completion: @escaping () -> ()) {
 
@@ -33,11 +33,11 @@ class HackleCoreStub: HackleCore {
         fatalError("featureFlags(user:) has not been implemented")
     }
 
-    func track(event: Event, user: HackleUser) {
+    func track(event: HackleCommonEvent, user: HackleUser) {
         tracked.append((event, user, Date()))
     }
 
-    func track(event: Event, user: HackleUser, timestamp: Date) {
+    func track(event: HackleCommonEvent, user: HackleUser, timestamp: Date) {
         tracked.append((event, user, timestamp))
     }
 
