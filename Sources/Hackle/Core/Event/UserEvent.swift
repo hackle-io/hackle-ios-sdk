@@ -43,7 +43,7 @@ enum UserEvents {
 
     static func track(
         eventType: EventType,
-        event: Event,
+        event: HackleCommonEvent,
         timestamp: Date,
         user: HackleUser
     ) -> UserEvents.Track {
@@ -120,9 +120,9 @@ enum UserEvents {
         let timestamp: Date
         let user: HackleUser
         let eventType: EventType
-        let event: Event
+        let event: HackleCommonEvent
 
-        init(insertId: String, timestamp: Date, user: HackleUser, eventType: EventType, event: Event) {
+        init(insertId: String, timestamp: Date, user: HackleUser, eventType: EventType, event: HackleCommonEvent) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user

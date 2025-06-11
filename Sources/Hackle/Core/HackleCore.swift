@@ -10,9 +10,9 @@ protocol HackleCore {
 
     func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)]
 
-    func track(event: Event, user: HackleUser)
+    func track(event: HackleCommonEvent, user: HackleUser)
 
-    func track(event: Event, user: HackleUser, timestamp: Date)
+    func track(event: HackleCommonEvent, user: HackleUser, timestamp: Date)
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
@@ -157,11 +157,11 @@ class DefaultHackleCore: HackleCore {
         return (evaluation, decision)
     }
 
-    func track(event: Event, user: HackleUser) {
+    func track(event: HackleCommonEvent, user: HackleUser) {
         self.track(event: event, user: user, timestamp: clock.now())
     }
 
-    func track(event: Event, user: HackleUser, timestamp: Date) {
+    func track(event: HackleCommonEvent, user: HackleUser, timestamp: Date) {
         let eventType = workspaceFetcher.fetch()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
         let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
         eventProcessor.process(event: userEvent)

@@ -28,10 +28,10 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
     private static let CLOSE_EVENT_KEY = "$in_app_close"
     private static let ACTION_EVENT_KEY = "$in_app_action"
 
-    private func createEvent(context: InAppMessagePresentationContext, event: InAppMessage.Event) -> Event {
+    private func createEvent(context: InAppMessagePresentationContext, event: InAppMessage.Event) -> InternalEvent {
         switch event {
         case .impression:
-            return Event.builder(DefaultInAppMessageEventTracker.IMPRESSION_EVENT_KEY)
+            return InternalEvent.builder(DefaultInAppMessageEventTracker.IMPRESSION_EVENT_KEY)
                 .properties(context: context)
                 .property("title_text", context.message.text?.title.text)
                 .property("body_text", context.message.text?.body.text)
@@ -43,17 +43,17 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 })
                 .build()
         case .imageImpression(let image, let order):
-            return Event.builder(DefaultInAppMessageEventTracker.IMAGE_IMPRESSION_EVENT_KEY)
+            return InternalEvent.builder(DefaultInAppMessageEventTracker.IMAGE_IMPRESSION_EVENT_KEY)
                 .properties(context: context)
                 .property("image_url", image.imagePath)
                 .property("image_order", order)
                 .build()
         case .close:
-            return Event.builder(DefaultInAppMessageEventTracker.CLOSE_EVENT_KEY)
+            return InternalEvent.builder(DefaultInAppMessageEventTracker.CLOSE_EVENT_KEY)
                 .properties(context: context)
                 .build()
         case .action(let action, let area, let button, let image, let imageOrder):
-            return Event.builder(DefaultInAppMessageEventTracker.ACTION_EVENT_KEY)
+            return InternalEvent.builder(DefaultInAppMessageEventTracker.ACTION_EVENT_KEY)
                 .properties(context: context)
                 .property("action_area", area.rawValue)
                 .property("action_type", action.actionType.rawValue)
@@ -66,8 +66,8 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
     }
 }
 
-private extension HackleEventBuilder {
-    func properties(context: InAppMessagePresentationContext) -> HackleEventBuilder {
+private extension HackleInternalEventBuilder {
+    func properties(context: InAppMessagePresentationContext) -> HackleInternalEventBuilder {
         properties(context.properties)
         property("in_app_message_id", context.inAppMessage.id)
         property("in_app_message_key", context.inAppMessage.key)

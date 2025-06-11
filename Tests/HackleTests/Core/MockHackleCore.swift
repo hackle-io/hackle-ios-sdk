@@ -28,13 +28,13 @@ class MockHackleCore: Mock, HackleCore {
         try call(featureFlagsMock, args: user)
     }
 
-    func track(event: Event, user: HackleUser) {
+    func track(event: HackleCommonEvent, user: HackleUser) {
         track(event: event, user: user, timestamp: Date())
     }
 
-    lazy var trackMock = MockFunction(self, track as (Event, HackleUser, Date) -> ())
+    lazy var trackMock = MockFunction(self, track as (HackleCommonEvent, HackleUser, Date) -> ())
 
-    func track(event: Event, user: HackleUser, timestamp: Date) {
+    func track(event: HackleCommonEvent, user: HackleUser, timestamp: Date) {
         call(trackMock, args: (event, user, timestamp))
     }
 
