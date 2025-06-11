@@ -57,6 +57,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.properties!["image_url"] as? [String]) == ["image_path"]
             expect(event.properties!["button_text"] as? [String]) == ["button_1", "button_2"]
             expect(event.properties!["decision_reason"] as? String) == "IN_APP_MESSAGE_TARGET"
+            expect(event.internalProperties?["$trigger_event_insert_id"] as? String) == context.triggerEventId
         }
 
         it("close") {
@@ -90,6 +91,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.key) == "$in_app_close"
             expect(event.properties!["in_app_message_id"] as? Int64) == 42
             expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.internalProperties?["$trigger_event_insert_id"] as? String) == context.triggerEventId
         }
 
         it("button action") {
@@ -130,6 +132,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.properties!["button_text"] as? String) == "button_1"
             expect(event.properties!["image_url"]).to(beNil())
             expect(event.properties!["image_order"]).to(beNil())
+            expect(event.internalProperties?["$trigger_event_insert_id"] as? String) == context.triggerEventId
         }
 
         it("image action") {
@@ -170,6 +173,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.properties!["button_text"]).to(beNil())
             expect(event.properties!["image_url"] as? String) == "image_path"
             expect(event.properties!["image_order"] as? Int) == 42
+            expect(event.internalProperties?["$trigger_event_insert_id"] as? String) == context.triggerEventId
         }
 
         it("image impression") {
@@ -206,6 +210,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.properties!["in_app_message_key"] as? Int64) == 320
             expect(event.properties!["image_url"] as? String) == "image_path"
             expect(event.properties!["image_order"] as? Int) == 42
+            expect(event.internalProperties?["$trigger_event_insert_id"] as? String) == context.triggerEventId
         }
     }
 }
