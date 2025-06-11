@@ -7,10 +7,10 @@ import Foundation
 @objc(HackleEvent)
 public class Event: NSObject, HackleCommonEvent {
 
-    public private(set) var key: String
-    public private(set) var value: NSNumber?
-    public private(set) var properties: [String: Any]?
-    public private(set) var internalProperties: [String: Any]?
+    public let key: String
+    public let value: NSNumber?
+    public let properties: [String: Any]?
+    public let internalProperties: [String: Any]?
 
     init(key: String, value: Double? = nil, properties: [String: Any]? = nil) {
         self.key = key

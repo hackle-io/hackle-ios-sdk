@@ -8,10 +8,10 @@
 import Foundation
 
 class InternalEvent: HackleCommonEvent {
-    var key: String
-    var value: NSNumber?
-    var properties: [String : Any]?
-    var internalProperties: [String: Any]?
+    let key: String
+    let value: NSNumber?
+    let properties: [String : Any]?
+    let internalProperties: [String: Any]?
 
     init(key: String, value: Double? = nil, properties: [String: Any]? = nil, internalProperties: [String: Any]? = nil) {
         self.key = key
