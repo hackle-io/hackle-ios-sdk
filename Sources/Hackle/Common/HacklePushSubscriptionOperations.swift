@@ -7,10 +7,12 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use HackleMarketingSubscriptionType instead.")
 enum HacklePushSubscriptionType: String {
     case global = "$global"
 }
 
+@available(*, deprecated, message: "Use HackleMarketingSubscriptionOperations instead.")
 @objc public class HacklePushSubscriptionOperations: NSObject {
     private let operations: [String: HacklePushSubscriptionStatus]
     
@@ -35,6 +37,7 @@ enum HacklePushSubscriptionType: String {
     }
 }
 
+@available(*, deprecated, message: "Use HackleMarketingSubscriptionOperationsBuilder instead.")
 @objc public class HacklePushSubscriptionOperationsBuilder: NSObject {
     private var operations = [String: HacklePushSubscriptionStatus]()
     
