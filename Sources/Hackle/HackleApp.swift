@@ -294,26 +294,41 @@ import WebKit
         )
     }
 
-    @objc public func updatePushSubscriptionStatus(_ subscriptionStatus: HackleMarketingSubscriptionStatus) {
-        let operations = HackleMarketingSubscriptionOperations.builder()
-            .global(subscriptionStatus)
-            .build()
+    @objc public func updatePushSubscription(globalStatus: HackleMarketingSubscriptionStatus) {
+        updatePushSubscriptions(
+            operations: HackleMarketingSubscriptionOperations.builder()
+                .global(globalStatus)
+                .build()
+        )
+    }
+    
+    @objc public func updatePushSubscriptions(operations: HackleMarketingSubscriptionOperations) {
         track(event: operations.toPushSubscriptionEvent())
         eventProcessor.flush()
     }
     
-    @objc public func updateSmsSubscriptionStatus(_ subscriptionStatus: HackleMarketingSubscriptionStatus) {
-        let operations = HackleMarketingSubscriptionOperations.builder()
-            .global(subscriptionStatus)
-            .build()
+    @objc public func updateSmsSubscription(globalStatus: HackleMarketingSubscriptionStatus) {
+        updateSmsSubscriptions(
+            operations: HackleMarketingSubscriptionOperations.builder()
+                .global(globalStatus)
+                .build()
+        )
+    }
+    
+    @objc public func updateSmsSubscriptions(operations: HackleMarketingSubscriptionOperations) {
         track(event: operations.toSmsSubscriptionEvent())
         eventProcessor.flush()
     }
     
-    @objc public func updateKakaoSubscriptionStatus(_ subscriptionStatus: HackleMarketingSubscriptionStatus) {
-        let operations = HackleMarketingSubscriptionOperations.builder()
-            .global(subscriptionStatus)
-            .build()
+    @objc public func updateKakaoSubscription(globalStatus: HackleMarketingSubscriptionStatus) {
+        updateKakaoSubscriptions(
+            operations: HackleMarketingSubscriptionOperations.builder()
+                .global(globalStatus)
+                .build()
+        )
+    }
+    
+    @objc public func updateKakaoSubscriptions(operations: HackleMarketingSubscriptionOperations) {
         track(event: operations.toKakaoSubscriptionEvent())
         eventProcessor.flush()
     }
@@ -388,8 +403,8 @@ import WebKit
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
     }
     
-    @available(*, deprecated, message: "Use updatePushSubscriptionStatus(subscriptionStatus) instead.")
-    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
+    @available(*, deprecated, message: "Use updatePushSubscription(globalStatus) instead.")
+    @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         let operations = HacklePushSubscriptionOperations.builder()
             .global(status)
             .build()

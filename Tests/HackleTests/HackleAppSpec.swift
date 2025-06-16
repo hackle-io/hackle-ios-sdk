@@ -488,7 +488,7 @@ class HackleAppSpecs: QuickSpec {
         
         describe("updateMarketingSubscriptionStatus") {
             it("set push subscribed") {
-                sut.updatePushSubscriptionStatus(.subscribed)
+                sut.updatePushSubscription(globalStatus: .subscribed)
                 verify(exactly: 1) {
                     core.trackMock
                 }
@@ -500,17 +500,19 @@ class HackleAppSpecs: QuickSpec {
             }
             
             it("set push unsubscribed") {
-                sut.updatePushSubscriptionStatus(.unsubscribed)
+                sut.updatePushSubscription(globalStatus: .unsubscribed)
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
             }
             
             it("set push unknown") {
-                sut.updatePushSubscriptionStatus(.unknown)
+                sut.updatePushSubscriptions(operations: HackleMarketingSubscriptionOperations.builder().global(.unknown).build())
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
             }
             
             it("set sms subscribed") {
-                sut.updateSmsSubscriptionStatus(.subscribed)
+                sut.updateSmsSubscription(globalStatus: .subscribed)
                 verify(exactly: 1) {
                     core.trackMock
                 }
@@ -522,17 +524,19 @@ class HackleAppSpecs: QuickSpec {
             }
             
             it("set sms unsubscribed") {
-                sut.updateSmsSubscriptionStatus(.unsubscribed)
+                sut.updateSmsSubscription(globalStatus: .unsubscribed)
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
             }
             
             it("set sms unknown") {
-                sut.updateSmsSubscriptionStatus(.unknown)
+                sut.updateSmsSubscriptions(operations: HackleMarketingSubscriptionOperations.builder().global(.unknown).build())
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
             }
             
             it("set kakaotalck subscribed") {
-                sut.updateKakaoSubscriptionStatus(.subscribed)
+                sut.updateKakaoSubscription(globalStatus: .subscribed)
                 verify(exactly: 1) {
                     core.trackMock
                 }
@@ -544,12 +548,14 @@ class HackleAppSpecs: QuickSpec {
             }
             
             it("set kakaotalck unsubscribed") {
-                sut.updateKakaoSubscriptionStatus(.unsubscribed)
+                sut.updateKakaoSubscription(globalStatus: .unsubscribed)
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
             }
             
             it("set kakaotalck unknown") {
-                sut.updateKakaoSubscriptionStatus(.unknown)
+                sut.updateKakaoSubscriptions(operations: HackleMarketingSubscriptionOperations.builder().global(.unknown).build())
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
             }
         }
