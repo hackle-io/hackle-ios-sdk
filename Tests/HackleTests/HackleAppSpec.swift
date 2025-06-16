@@ -243,6 +243,28 @@ class HackleAppSpecs: QuickSpec {
                 expect(count) == 1
             }
         }
+        
+        describe("marketing property") {
+            it("setPushToken") {
+                let deviceToken = "token".data(using: .utf8)!
+                sut.setPushToken(deviceToken)
+                expect(pushTokenRegistry.registeredToken()).notTo(beNil())
+            }
+            
+            it("setPhoneNumber") {
+                sut.setPhoneNumber(phoneNumber: "+821012345678")
+                verify(exactly: 1) {
+                    piiEventManager.toSetPhoneNumberMock
+                }
+            }
+            
+            it("unsetPhoneNumber") {
+                sut.unsetPhoneNumber()
+                verify(exactly: 1) {
+                    piiEventManager.toUnsetPhoneNumberMock
+                }
+            }
+        }
 
         describe("experiment") {
 
@@ -464,9 +486,9 @@ class HackleAppSpecs: QuickSpec {
             expect(app.deviceId) == UserDefaults.standard.string(forKey: "hackle_device_id")
         }
         
-        describe("updatePushSubscriptionStatus") {
-            it("set subscribed") {
-                sut.updatePushSubscriptionStatus(status: .subscribed)
+        describe("updateMarketingSubscriptionStatus") {
+            it("set push subscribed") {
+                sut.updatePushSubscriptionStatus(.subscribed)
                 verify(exactly: 1) {
                     core.trackMock
                 }
@@ -476,16 +498,62 @@ class HackleAppSpecs: QuickSpec {
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
             }
-            it("set unsubscribed") {
-                sut.updatePushSubscriptionStatus(status: .unsubscribed)
+            
+            it("set push unsubscribed") {
+                sut.updatePushSubscriptionStatus(.unsubscribed)
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
             }
-            it("set unknown") {
-                sut.updatePushSubscriptionStatus(status: .unknown)
+            
+            it("set push unknown") {
+                sut.updatePushSubscriptionStatus(.unknown)
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+            }
+            
+            it("set sms subscribed") {
+                sut.updateSmsSubscriptionStatus(.subscribed)
+                verify(exactly: 1) {
+                    core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+            }
+            
+            it("set sms unsubscribed") {
+                sut.updateSmsSubscriptionStatus(.unsubscribed)
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
+            }
+            
+            it("set sms unknown") {
+                sut.updateSmsSubscriptionStatus(.unknown)
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+            }
+            
+            it("set kakaotalck subscribed") {
+                sut.updateKakaoSubscriptionStatus(.subscribed)
+                verify(exactly: 1) {
+                    core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+            }
+            
+            it("set kakaotalck unsubscribed") {
+                sut.updateKakaoSubscriptionStatus(.unsubscribed)
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
+            }
+            
+            it("set kakaotalck unknown") {
+                sut.updateKakaoSubscriptionStatus(.unknown)
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
             }
         }
-
+        
         describe("DEPRECATED") {
 
             describe("experiment") {
@@ -571,24 +639,25 @@ class HackleAppSpecs: QuickSpec {
                 expect(actual).to(beAnInstanceOf(DefaultRemoteConfig.self))
             }
 
-
-            it("setPushToken") {
-                let deviceToken = "token".data(using: .utf8)!
-                sut.setPushToken(deviceToken)
-                expect(pushTokenRegistry.registeredToken()).notTo(beNil())
-            }
-            
-            it("setPhoneNumber") {
-                sut.setPhoneNumber(phoneNumber: "+821012345678")
-                verify(exactly: 1) {
-                    piiEventManager.toSetPhoneNumberMock
+            describe("updatePushSubscriptionStatus") {
+                it("set subscribed") {
+                    sut.updatePushSubscriptionStatus(status: .subscribed)
+                    verify(exactly: 1) {
+                        core.trackMock
+                    }
+                    verify(exactly: 1) {
+                        eventProcessor.flushMock
+                    }
+                    expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
+                    expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
                 }
-            }
-            
-            it("unsetPhoneNumber") {
-                sut.unsetPhoneNumber()
-                verify(exactly: 1) {
-                    piiEventManager.toUnsetPhoneNumberMock
+                it("set unsubscribed") {
+                    sut.updatePushSubscriptionStatus(status: .unsubscribed)
+                    expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
+                }
+                it("set unknown") {
+                    sut.updatePushSubscriptionStatus(status: .unknown)
+                    expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
                 }
             }
         }

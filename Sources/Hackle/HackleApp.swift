@@ -294,12 +294,27 @@ import WebKit
         )
     }
 
-    @objc(updatePushSubscriptionStatus:)
-    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
-        let operations = HacklePushSubscriptionOperations.builder()
-            .global(status)
+    @objc public func updatePushSubscriptionStatus(_ subscriptionStatus: HackleMarketingSubscriptionStatus) {
+        let operations = HackleMarketingSubscriptionOperations.builder()
+            .global(subscriptionStatus)
             .build()
-        track(event: operations.toEvent())
+        track(event: operations.toPushSubscriptionEvent())
+        eventProcessor.flush()
+    }
+    
+    @objc public func updateSmsSubscriptionStatus(_ subscriptionStatus: HackleMarketingSubscriptionStatus) {
+        let operations = HackleMarketingSubscriptionOperations.builder()
+            .global(subscriptionStatus)
+            .build()
+        track(event: operations.toSmsSubscriptionEvent())
+        eventProcessor.flush()
+    }
+    
+    @objc public func updateKakaoSubscriptionStatus(_ subscriptionStatus: HackleMarketingSubscriptionStatus) {
+        let operations = HackleMarketingSubscriptionOperations.builder()
+            .global(subscriptionStatus)
+            .build()
+        track(event: operations.toKakaoSubscriptionEvent())
         eventProcessor.flush()
     }
 
@@ -371,6 +386,15 @@ import WebKit
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
+    }
+    
+    @available(*, deprecated, message: "Use updatePushSubscriptionStatus(subscriptionStatus) instead.")
+    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
+        let operations = HacklePushSubscriptionOperations.builder()
+            .global(status)
+            .build()
+        track(event: operations.toEvent())
+        eventProcessor.flush()
     }
 }
 
