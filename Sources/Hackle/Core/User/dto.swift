@@ -79,7 +79,7 @@ struct TargetKeyTypeDto {
     
     static func from(rawValue: String) -> TargetKeyTypeDto? {
         guard let targetKeyType = Target.KeyType(rawValue: rawValue) else {
-            Log.info("Unsupported type[\(rawValue)]. Please use the latest version of sdk.")
+            Log.info("Unsupported type [\(rawValue)]. Please use the latest version of sdk.")
             return nil
         }
         
