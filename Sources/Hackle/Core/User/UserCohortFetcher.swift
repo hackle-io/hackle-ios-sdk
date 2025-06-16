@@ -81,17 +81,3 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
         return UserCohorts.from(dto: dto)
     }
 }
-
-class IdentifierDto: Codable {
-    var type: String
-    var value: String
-}
-
-class UserCohortDto: Codable {
-    var identifier: IdentifierDto
-    var cohorts: [Int64]
-}
-
-class UserCohortsResponseDto: Codable {
-    var cohorts: [UserCohortDto]
-}
