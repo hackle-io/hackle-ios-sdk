@@ -91,6 +91,7 @@
 		B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */; };
 		B290E6622D55DF9700F68D35 /* workspace_target.json in Resources */ = {isa = PBXBuildFile; fileRef = B290E6612D55DF9700F68D35 /* workspace_target.json */; };
 		B2931DE82DFFB45300E5931E /* dto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2931DE72DFFB45200E5931E /* dto.swift */; };
+		B2931DEA2DFFBEA500E5931E /* DefaultUserDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2931DE92DFFBE9A00E5931E /* DefaultUserDtoSpecs.swift */; };
 		B29C53562DCB1FA9001724B2 /* ConcurrentArraySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */; };
 		B29C53582DCB23C8001724B2 /* NotificationDataReceiverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53572DCB23BB001724B2 /* NotificationDataReceiverSpecs.swift */; };
 		B29C535A2DCB2621001724B2 /* NotificationHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53592DCB2613001724B2 /* NotificationHandlerSpecs.swift */; };
@@ -655,6 +656,7 @@
 		B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserTargetFetcherSpecs.swift; sourceTree = "<group>"; };
 		B290E6612D55DF9700F68D35 /* workspace_target.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = workspace_target.json; sourceTree = "<group>"; };
 		B2931DE72DFFB45200E5931E /* dto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dto.swift; sourceTree = "<group>"; };
+		B2931DE92DFFBE9A00E5931E /* DefaultUserDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserDtoSpecs.swift; sourceTree = "<group>"; };
 		B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentArraySpecs.swift; sourceTree = "<group>"; };
 		B29C53572DCB23BB001724B2 /* NotificationDataReceiverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiverSpecs.swift; sourceTree = "<group>"; };
 		B29C53592DCB2613001724B2 /* NotificationHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandlerSpecs.swift; sourceTree = "<group>"; };
@@ -2072,6 +2074,7 @@
 				EEDC58642ACB241D001E73DB /* HackleUserSpecs.swift */,
 				EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */,
 				EE5A78E22ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift */,
+				B2931DE92DFFBE9A00E5931E /* DefaultUserDtoSpecs.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -3323,6 +3326,7 @@
 				7E9F7E872B6CA7C300A6B0B8 /* DefaultFileStorageSpecs.swift in Sources */,
 				7E64779B2AD4F19D00971F20 /* HackleBridgeSpecs.swift in Sources */,
 				EED6A1272A0E267D00A8875D /* PropertyOperatorSpecs.swift in Sources */,
+				B2931DEA2DFFBEA500E5931E /* DefaultUserDtoSpecs.swift in Sources */,
 				EE5A78FE2ADCF1B5005A0F9E /* MockUserListener.swift in Sources */,
 				EE29DA9129CD82C200B1FEAA /* MockBucketer.swift in Sources */,
 				7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */,
