@@ -293,44 +293,26 @@ import WebKit
             }
         )
     }
+    
+    @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
+        subscribe(event: operations.toEvent(key: "$push_subscriptions"))
+        eventProcessor.flush()
+    }
+    
+    @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
+        subscribe(event: operations.toEvent(key: "$sms_subscriptions"))
+        eventProcessor.flush()
+    }
 
-    @objc public func updatePushSubscription(globalStatus: HackleMarketingSubscriptionStatus) {
-        updatePushSubscriptions(
-            operations: HackleMarketingSubscriptionOperations.builder()
-                .global(globalStatus)
-                .build()
-        )
-    }
     
-    @objc public func updatePushSubscriptions(operations: HackleMarketingSubscriptionOperations) {
-        track(event: operations.toPushSubscriptionEvent())
+    @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
+        subscribe(event: operations.toEvent(key: "$kakao_subscriptions"))
         eventProcessor.flush()
     }
     
-    @objc public func updateSmsSubscription(globalStatus: HackleMarketingSubscriptionStatus) {
-        updateSmsSubscriptions(
-            operations: HackleMarketingSubscriptionOperations.builder()
-                .global(globalStatus)
-                .build()
-        )
-    }
-    
-    @objc public func updateSmsSubscriptions(operations: HackleMarketingSubscriptionOperations) {
-        track(event: operations.toSmsSubscriptionEvent())
-        eventProcessor.flush()
-    }
-    
-    @objc public func updateKakaoSubscription(globalStatus: HackleMarketingSubscriptionStatus) {
-        updateKakaoSubscriptions(
-            operations: HackleMarketingSubscriptionOperations.builder()
-                .global(globalStatus)
-                .build()
-        )
-    }
-    
-    @objc public func updateKakaoSubscriptions(operations: HackleMarketingSubscriptionOperations) {
-        track(event: operations.toKakaoSubscriptionEvent())
-        eventProcessor.flush()
+    private func subscribe(event: Event) {
+        let hackleUser = userManager.resolve(user: user)
+        core.subscribe(event: event, user: hackleUser)
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")

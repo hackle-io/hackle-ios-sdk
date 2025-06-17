@@ -13,6 +13,10 @@ protocol HackleCore {
     func track(event: Event, user: HackleUser)
 
     func track(event: Event, user: HackleUser, timestamp: Date)
+    
+    func subscribe(event: Event, user: HackleUser)
+    
+    func subscribe(event: Event, user: HackleUser, timestamp: Date)
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
@@ -162,6 +166,16 @@ class DefaultHackleCore: HackleCore {
     }
 
     func track(event: Event, user: HackleUser, timestamp: Date) {
+        let eventType = workspaceFetcher.fetch()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
+        let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
+        eventProcessor.process(event: userEvent)
+    }
+    
+    func subscribe(event: Event, user: HackleUser) {
+        self.subscribe(event: event, user: user, timestamp: clock.now())
+    }
+    
+    func subscribe(event: Event, user: HackleUser, timestamp: Date) {
         let eventType = workspaceFetcher.fetch()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
         let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
         eventProcessor.process(event: userEvent)

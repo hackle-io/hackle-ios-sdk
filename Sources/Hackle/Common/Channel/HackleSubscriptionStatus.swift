@@ -5,7 +5,7 @@
 //  Created by sungwoo.yeo on 6/16/25.
 //
 
-@objc public enum HackleMarketingSubscriptionStatus: Int, RawRepresentable {
+@objc public enum HackleSubscriptionStatus: Int, RawRepresentable {
     case subscribed
     case unsubscribed
     case unknown
