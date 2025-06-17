@@ -26,8 +26,10 @@ extension UserTargetEvents {
 
     static func from(dto: UserTargetResponseDto) -> UserTargetEvents {
         dto.events.reduce(builder()) { builder, targetEvent in
-            let property = targetEvent.property.map { property in
-                TargetEvent.Property(key: property.key, type: property.type, value: property.value)
+            let property = targetEvent.property.flatMap { property in
+                Enums.parseOrNil(rawValue: property.type).map { propertyType in
+                    TargetEvent.Property(key: property.key, type: propertyType, value: property.value)
+                }
             }
             
             return builder.put(targetEvent: TargetEvent(
