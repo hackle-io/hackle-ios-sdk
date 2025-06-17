@@ -295,24 +295,19 @@ import WebKit
     }
     
     @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
-        subscribe(event: operations.toEvent(key: "$push_subscriptions"))
+        trackInternal(event: operations.toEvent(key: "$push_subscriptions"), user: nil)
         eventProcessor.flush()
     }
     
     @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
-        subscribe(event: operations.toEvent(key: "$sms_subscriptions"))
+        trackInternal(event: operations.toEvent(key: "$sms_subscriptions"), user: nil)
         eventProcessor.flush()
     }
 
     
     @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
-        subscribe(event: operations.toEvent(key: "$kakao_subscriptions"))
+        trackInternal(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil)
         eventProcessor.flush()
-    }
-    
-    private func subscribe(event: Event) {
-        let hackleUser = userManager.resolve(user: user)
-        core.subscribe(event: event, user: hackleUser)
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -387,11 +382,20 @@ import WebKit
     
     @available(*, deprecated, message: "Use updatePushSubscription(globalStatus) instead.")
     @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
-        let operations = HacklePushSubscriptionOperations.builder()
-            .global(status)
-            .build()
-        track(event: operations.toEvent())
-        eventProcessor.flush()
+        let subscriptionStatus = if status == .subscribed {
+            HackleSubscriptionStatus.subscribed
+        } else if status == .unsubscribed {
+            HackleSubscriptionStatus.unsubscribed
+        } else {
+            HackleSubscriptionStatus.unknown
+        }
+        
+        updatePushSubscriptions(
+            operations: HackleSubscriptionOperations
+                .builder()
+                .global(subscriptionStatus)
+                .build()
+        )
     }
 }
 
@@ -809,6 +813,10 @@ protocol HackleAppProtocol: AnyObject {
 
     func track(eventKey: String)
     func track(event: Event)
+    
+    func updatePushSubscriptions(operations: HackleSubscriptionOperations)
+    func updateSmsSubscriptions(operations: HackleSubscriptionOperations)
+    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations)
 
     func remoteConfig() -> HackleRemoteConfig
 

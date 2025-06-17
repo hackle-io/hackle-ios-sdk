@@ -40,14 +40,6 @@ class HackleCoreStub: HackleCore {
     func track(event: Event, user: HackleUser, timestamp: Date) {
         tracked.append((event, user, timestamp))
     }
-    
-    func subscribe(event: Event, user: HackleUser) {
-    
-    }
-    
-    func subscribe(event: Event, user: HackleUser, timestamp: Date) {
-        
-    }
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision {
         fatalError("remoteConfig(parameterKey:user:defaultValue:) has not been implemented")

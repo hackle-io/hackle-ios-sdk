@@ -37,17 +37,6 @@ class MockHackleCore: Mock, HackleCore {
     func track(event: Event, user: HackleUser, timestamp: Date) {
         call(trackMock, args: (event, user, timestamp))
     }
-    
-    func subscribe(event: Event, user: HackleUser) {
-        subscribe(event: event, user: user, timestamp: Date())
-    }
-    
-    lazy var subscribeMock = MockFunction(self, track as (Event, HackleUser, Date) -> ())
-    
-    func subscribe(event: Event, user: HackleUser, timestamp: Date) {
-        call(subscribeMock, args: (event, user, timestamp))
-    }
-    
 
     lazy var remoteConfigMock = MockFunction(self, remoteConfig)
 

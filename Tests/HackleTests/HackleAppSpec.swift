@@ -496,16 +496,17 @@ class HackleAppSpecs: QuickSpec {
                         .information(.unknown)
                         .build()
                 )
+                
                 verify(exactly: 1) {
-                    core.subscribeMock
+                    core.trackMock
                 }
                 verify(exactly: 1) {
                     eventProcessor.flushMock
                 }
-                expect(core.subscribeMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
             }
             
             it("set sms subscribed") {
@@ -518,15 +519,15 @@ class HackleAppSpecs: QuickSpec {
                         .build()
                 )
                 verify(exactly: 1) {
-                    core.subscribeMock
+                    core.trackMock
                 }
                 verify(exactly: 1) {
                     eventProcessor.flushMock
                 }
-                expect(core.subscribeMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
             }
             
             it("set kakaotalk subscribed") {
@@ -539,15 +540,15 @@ class HackleAppSpecs: QuickSpec {
                         .build()
                 )
                 verify(exactly: 1) {
-                    core.subscribeMock
+                    core.trackMock
                 }
                 verify(exactly: 1) {
                     eventProcessor.flushMock
                 }
-                expect(core.subscribeMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
-                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
             }
         }
         
