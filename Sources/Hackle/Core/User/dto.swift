@@ -51,38 +51,7 @@ class PropertyDto: Codable {
     /// 타입
     ///
     /// 현재는 EVENT_PROPERTY만 지원
-    let type: Target.KeyType
+    let type: String
     /// 값
     let value: HackleValue
-    
-    required init(from decoder: Decoder) throws {
-        guard let container = try? decoder.container(keyedBy: CodingKeys.self),
-              let key = try? container.decode(String.self, forKey: .key),
-              let value = try? container.decode(HackleValue.self, forKey: .value),
-              let typeString = try? container.decode(String.self, forKey: .type),
-              let targetKeyType = TargetKeyTypeDto.from(rawValue: typeString)?.type else {
-            throw HackleError.error("")
-        }
-
-        self.key = key
-        self.value = value
-        self.type = targetKeyType
-    }
-}
-
-struct TargetKeyTypeDto {
-    let type: Target.KeyType
-    
-    private init(type: Target.KeyType) {
-        self.type = type
-    }
-    
-    static func from(rawValue: String) -> TargetKeyTypeDto? {
-        guard let targetKeyType = Target.KeyType(rawValue: rawValue) else {
-            Log.info("Unsupported type [\(rawValue)]. Please use the latest version of sdk.")
-            return nil
-        }
-        
-        return TargetKeyTypeDto(type: targetKeyType)
-    }
 }

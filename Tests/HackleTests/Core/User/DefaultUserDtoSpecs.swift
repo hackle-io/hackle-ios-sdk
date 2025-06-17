@@ -100,7 +100,7 @@ class DefaultUserDtoSpecs: QuickSpec {
 
                     expect(event?.property).toNot(beNil())
                     expect(event?.property?.key).to(equal("amount"))
-                    expect(event?.property?.type).to(equal(.eventProperty))
+                    expect(event?.property?.type).to(equal("EVENT_PROPERTY"))
                     expect(event?.property?.value).to(equal(HackleValue.double(100.5)))
                 }
             }
@@ -164,42 +164,9 @@ class DefaultUserDtoSpecs: QuickSpec {
 
                     let event = response?.events[0]
                     expect(event?.eventKey).to(equal("logout"))
-                    expect(event?.property).to(beNil())
-                }
-            }
-        }
-        
-        describe("PropertyDto") {
-            context("when decoding with an unsupported type") {
-                it("should throw a HackleError") {
-                    // given
-                    let json = """
-                    {
-                        "key": "some_key",
-                        "type": "UNSUPPORTED_TYPE",
-                        "value": "some_value"
-                    }
-                    """
-                    let data = json.data(using: .utf8)!
-
-                    // when & then
-                    expect { try decoder.decode(PropertyDto.self, from: data) }.to(throwError(HackleError.error("")))
-                }
-            }
-
-            context("when a required field is missing") {
-                it("should throw a HackleError") {
-                    // given
-                    let json = """
-                    {
-                        "type": "EVENT_PROPERTY",
-                        "value": "some_value"
-                    }
-                    """
-                    let data = json.data(using: .utf8)!
-
-                    // when & then
-                    expect { try decoder.decode(PropertyDto.self, from: data) }.to(throwError(HackleError.error("")))
+                    expect(event?.property?.key).to(equal("duration"))
+                    expect(event?.property?.type).to(equal("UNSUPPORTED_TYPE"))
+                    expect(event?.property?.value).to(equal(HackleValue(value: 30)))
                 }
             }
         }

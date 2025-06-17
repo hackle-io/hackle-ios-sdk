@@ -2063,17 +2063,17 @@
 		EE29D9EA29CD82C100B1FEAA /* User */ = {
 			isa = PBXGroup;
 			children = (
-				B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */,
-				B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */,
 				B290E65B2D55D5CE00F68D35 /* MockUserTargetFetcher.swift */,
 				EE29D9EB29CD82C100B1FEAA /* MockUserManager.swift */,
 				EE5A78FD2ADCF1B5005A0F9E /* MockUserListener.swift */,
-				EE93FF8D2C37F1C1008A317D /* IdentifierSpecs.swift */,
 				EE5A78FF2ADCF248005A0F9E /* MockUserCohortFetcher.swift */,
-				EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */,
 				EEDC58642ACB241D001E73DB /* HackleUserSpecs.swift */,
+				EE93FF8D2C37F1C1008A317D /* IdentifierSpecs.swift */,
 				EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */,
+				B290E65D2D55DA2400F68D35 /* UserTargetEventsSpecs.swift */,
+				EE29D9ED29CD82C100B1FEAA /* DefaultUserManagerSpecs.swift */,
 				EE5A78E22ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift */,
+				B290E65F2D55DE2200F68D35 /* DefaultUserTargetFetcherSpecs.swift */,
 				B2931DE92DFFBE9A00E5931E /* DefaultUserDtoSpecs.swift */,
 			);
 			path = User;
