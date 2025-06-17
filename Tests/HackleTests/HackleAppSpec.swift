@@ -488,75 +488,66 @@ class HackleAppSpecs: QuickSpec {
         
         describe("updateMarketingSubscriptionStatus") {
             it("set push subscribed") {
-                sut.updatePushSubscription(globalStatus: .subscribed)
+                sut.updatePushSubscriptions(
+                    operations: HackleSubscriptionOperations
+                        .builder()
+                        .global(.subscribed)
+                        .marketing(.unsubscribed)
+                        .information(.unknown)
+                        .build()
+                )
                 verify(exactly: 1) {
-                    core.trackMock
+                    core.subscribeMock
                 }
                 verify(exactly: 1) {
                     eventProcessor.flushMock
                 }
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
-            }
-            
-            it("set push unsubscribed") {
-                sut.updatePushSubscription(globalStatus: .unsubscribed)
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
-            }
-            
-            it("set push unknown") {
-                sut.updatePushSubscriptions(operations: HackleMarketingSubscriptionOperations.builder().global(.unknown).build())
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+                expect(core.subscribeMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
             }
             
             it("set sms subscribed") {
-                sut.updateSmsSubscription(globalStatus: .subscribed)
+                sut.updateSmsSubscriptions(
+                    operations: HackleSubscriptionOperations
+                        .builder()
+                        .global(.subscribed)
+                        .marketing(.unsubscribed)
+                        .information(.unknown)
+                        .build()
+                )
                 verify(exactly: 1) {
-                    core.trackMock
+                    core.subscribeMock
                 }
                 verify(exactly: 1) {
                     eventProcessor.flushMock
                 }
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
             }
             
-            it("set sms unsubscribed") {
-                sut.updateSmsSubscription(globalStatus: .unsubscribed)
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
-            }
-            
-            it("set sms unknown") {
-                sut.updateSmsSubscriptions(operations: HackleMarketingSubscriptionOperations.builder().global(.unknown).build())
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
-            }
-            
-            it("set kakaotalck subscribed") {
-                sut.updateKakaoSubscription(globalStatus: .subscribed)
+            it("set kakaotalk subscribed") {
+                sut.updateKakaoSubscriptions(
+                    operations: HackleSubscriptionOperations
+                        .builder()
+                        .global(.subscribed)
+                        .marketing(.unsubscribed)
+                        .information(.unknown)
+                        .build()
+                )
                 verify(exactly: 1) {
-                    core.trackMock
+                    core.subscribeMock
                 }
                 verify(exactly: 1) {
                     eventProcessor.flushMock
                 }
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
-            }
-            
-            it("set kakaotalck unsubscribed") {
-                sut.updateKakaoSubscription(globalStatus: .unsubscribed)
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
-            }
-            
-            it("set kakaotalck unknown") {
-                sut.updateKakaoSubscriptions(operations: HackleMarketingSubscriptionOperations.builder().global(.unknown).build())
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+                expect(core.subscribeMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.subscribeMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
             }
         }
         
