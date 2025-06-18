@@ -636,28 +636,6 @@ class HackleAppSpecs: QuickSpec {
                 let actual = sut.remoteConfig(user: user)
                 expect(actual).to(beAnInstanceOf(DefaultRemoteConfig.self))
             }
-
-            describe("updatePushSubscriptionStatus") {
-                it("set subscribed") {
-                    sut.updatePushSubscriptionStatus(status: .subscribed)
-                    verify(exactly: 1) {
-                        core.trackMock
-                    }
-                    verify(exactly: 1) {
-                        eventProcessor.flushMock
-                    }
-                    expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                    expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
-                }
-                it("set unsubscribed") {
-                    sut.updatePushSubscriptionStatus(status: .unsubscribed)
-                    expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
-                }
-                it("set unknown") {
-                    sut.updatePushSubscriptionStatus(status: .unknown)
-                    expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
-                }
-            }
         }
     }
 }

@@ -380,22 +380,9 @@ import WebKit
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
     }
     
-    @available(*, deprecated, message: "Use updatePushSubscription(globalStatus) instead.")
+    @available(*, deprecated, message: "Use updatePushSubscription(operations) instead.")
     @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
-        let subscriptionStatus = if status == .subscribed {
-            HackleSubscriptionStatus.subscribed
-        } else if status == .unsubscribed {
-            HackleSubscriptionStatus.unsubscribed
-        } else {
-            HackleSubscriptionStatus.unknown
-        }
-        
-        updatePushSubscriptions(
-            operations: HackleSubscriptionOperations
-                .builder()
-                .global(subscriptionStatus)
-                .build()
-        )
+        Log.error("updatePushSubscriptionStatus is deprecated and not supported anymore. Use updatePushSubscriptions(operations) instead.")
     }
 }
 
