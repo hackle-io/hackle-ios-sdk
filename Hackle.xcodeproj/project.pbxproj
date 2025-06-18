@@ -1329,13 +1329,13 @@
 			path = PhoneNumber;
 			sourceTree = "<group>";
 		};
-		B2931DFA2E0159E600E5931E /* Channel */ = {
+		B2931DFA2E0159E600E5931E /* Subscription */ = {
 			isa = PBXGroup;
 			children = (
 				B2931DEB2DFFF14200E5931E /* HackleSubscriptionStatus.swift */,
 				B25603102E015B04004794B9 /* HackleSubscriptionOperations.swift */,
 			);
-			path = Channel;
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		B29C535D2DCB2F09001724B2 /* RemoteConfig */ = {
@@ -1856,7 +1856,7 @@
 		EE29D93829CD825300B1FEAA /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				B2931DFA2E0159E600E5931E /* Channel */,
+				B2931DFA2E0159E600E5931E /* Subscription */,
 				EE29D93929CD825300B1FEAA /* Event.swift */,
 				EE29D93A29CD825300B1FEAA /* HackleRemoteConfig.swift */,
 				EE29D93B29CD825300B1FEAA /* Decision.swift */,
