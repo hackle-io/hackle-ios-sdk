@@ -82,6 +82,7 @@
 		B24250312D9A59AE00CF27FC /* DefaultPIIEventManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */; };
 		B24250342D9A59CC00CF27FC /* DefaultPhoneNumberSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */; };
 		B25603112E015B04004794B9 /* HackleSubscriptionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25603102E015B04004794B9 /* HackleSubscriptionOperations.swift */; };
+		B256031A2E029668004794B9 /* HackleSubscriptionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
@@ -647,6 +648,7 @@
 		B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPIIEventManagerSpecs.swift; sourceTree = "<group>"; };
 		B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPhoneNumberSpecs.swift; sourceTree = "<group>"; };
 		B25603102E015B04004794B9 /* HackleSubscriptionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSubscriptionOperations.swift; sourceTree = "<group>"; };
+		B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSubscriptionSpecs.swift; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
@@ -2269,6 +2271,7 @@
 		EE29DA3629CD82C200B1FEAA /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */,
 				B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */,
 				B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */,
 				B23A60FE2DB23E51008D410A /* HackleNotificationClickActionTypeSpecs.swift */,
@@ -3252,6 +3255,7 @@
 				EE0F34052A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift in Sources */,
 				EE29DA9A29CD82C200B1FEAA /* EvaluationFlowTestExt.swift in Sources */,
 				EEF629BA2B9DE0A1002718B7 /* MockPushTokenListener.swift in Sources */,
+				B256031A2E029668004794B9 /* HackleSubscriptionSpecs.swift in Sources */,
 				EE29DA7E29CD82C200B1FEAA /* VersionSpecs.swift in Sources */,
 				EEB2E6322A698610001FBFFF /* MockInAppMessageEventTriggerDeterminer.swift in Sources */,
 				EEF895992A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift in Sources */,
