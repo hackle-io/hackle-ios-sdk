@@ -18,7 +18,7 @@ import Foundation
     }
     
     func toEvent(key: String) -> Event {
-        var eventBuilder = HackleEventBuilder(key: key)
+        let eventBuilder = HackleEventBuilder(key: key)
         for (operationKey, status) in operations {
             eventBuilder.property(operationKey, status.rawValue)
         }
@@ -34,29 +34,31 @@ import Foundation
     private var operations = [String: HackleSubscriptionStatus]()
     
     @discardableResult
-    @objc public func global(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        self.operations["$global"] = status
-        return self
-    }
-    
-    @discardableResult
-    @objc public func information(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        self.operations["$information"] = status
-        return self
-    }
-    
-    @discardableResult
-    @objc public func marketing(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        self.operations["$marketing"] = status
-        return self
-    }
-    
-    @discardableResult
-    @objc public func custom(_ key: String, status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
+    func set(_ key: String, status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
         self.operations[key] = status
         return self
     }
     
+    @discardableResult
+    @objc public func global(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
+        return self.set("$global", status: status)
+    }
+    
+    @discardableResult
+    @objc public func information(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
+        return self.set("$information", status: status)
+    }
+    
+    @discardableResult
+    @objc public func marketing(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
+        return self.set("$marketing", status: status)
+    }
+    
+    @discardableResult
+    @objc public func custom(_ key: String, status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
+        return self.set(key, status: status)
+    }
+
     @objc public func build() -> HackleSubscriptionOperations {
         return HackleSubscriptionOperations(operations: self.operations)
     }
