@@ -34,29 +34,21 @@ import Foundation
     private var operations = [String: HackleSubscriptionStatus]()
     
     @discardableResult
-    func set(_ key: String, status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        self.operations[key] = status
+    @objc public func information(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
+        self.operations["$information"] = status
         return self
     }
     
     @discardableResult
-    @objc public func global(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        return self.set("$global", status: status)
-    }
-    
-    @discardableResult
-    @objc public func information(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        return self.set("$information", status: status)
-    }
-    
-    @discardableResult
     @objc public func marketing(_ status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        return self.set("$marketing", status: status)
+        self.operations["$marketing"] = status
+        return self
     }
     
     @discardableResult
     @objc public func custom(_ key: String, status: HackleSubscriptionStatus) -> HackleSubscriptionOperationsBuilder {
-        return self.set(key, status: status)
+        self.operations[key] = status
+        return self
     }
 
     @objc public func build() -> HackleSubscriptionOperations {

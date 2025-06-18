@@ -502,7 +502,7 @@ extension HackleSubscriptionOperations {
             guard let status = HackleSubscriptionStatus(rawValue: value) else {
                 continue
             }
-            builder.set(key, status: status)
+            builder.custom(key, status: status)
         }
         return builder.build()
     }

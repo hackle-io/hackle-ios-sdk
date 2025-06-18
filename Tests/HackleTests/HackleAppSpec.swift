@@ -491,9 +491,9 @@ class HackleAppSpecs: QuickSpec {
                 sut.updatePushSubscriptions(
                     operations: HackleSubscriptionOperations
                         .builder()
-                        .global(.subscribed)
                         .marketing(.unsubscribed)
-                        .information(.unknown)
+                        .information(.subscribed)
+                        .custom("chat", status: .unknown)
                         .build()
                 )
                 
@@ -504,18 +504,18 @@ class HackleAppSpecs: QuickSpec {
                     eventProcessor.flushMock
                 }
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
             
             it("set sms subscribed") {
                 sut.updateSmsSubscriptions(
                     operations: HackleSubscriptionOperations
                         .builder()
-                        .global(.subscribed)
                         .marketing(.unsubscribed)
-                        .information(.unknown)
+                        .information(.subscribed)
+                        .custom("chat", status: .unknown)
                         .build()
                 )
                 verify(exactly: 1) {
@@ -525,18 +525,18 @@ class HackleAppSpecs: QuickSpec {
                     eventProcessor.flushMock
                 }
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
             
             it("set kakaotalk subscribed") {
                 sut.updateKakaoSubscriptions(
                     operations: HackleSubscriptionOperations
                         .builder()
-                        .global(.subscribed)
                         .marketing(.unsubscribed)
-                        .information(.unknown)
+                        .information(.subscribed)
+                        .custom("chat", status: .unknown)
                         .build()
                 )
                 verify(exactly: 1) {
@@ -546,9 +546,9 @@ class HackleAppSpecs: QuickSpec {
                     eventProcessor.flushMock
                 }
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "UNKNOWN"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
         }
         

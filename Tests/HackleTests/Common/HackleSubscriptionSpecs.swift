@@ -30,16 +30,14 @@ class HackleSubscriptionSpecs: QuickSpec {
             it("should build subscription operations with correct values") {
                 let builder = HackleSubscriptionOperationsBuilder()
                 let operations = builder
-                    .global(.subscribed)
                     .marketing(.unsubscribed)
                     .information(.unknown)
                     .custom("chat", status: .subscribed)
                     .build()
                 
-                expect(operations.count) == 4
+                expect(operations.count) == 3
                 let mockEvent = operations.toEvent(key: "mockEvent")
                 expect(mockEvent.key) == "mockEvent"
-                expect(mockEvent.properties?["$global"] as? String).to(equal("SUBSCRIBED"))
                 expect(mockEvent.properties?["$marketing"] as? String).to(equal("UNSUBSCRIBED"))
                 expect(mockEvent.properties?["$information"] as? String).to(equal("UNKNOWN"))
                 expect(mockEvent.properties?["chat"] as? String).to(equal("SUBSCRIBED"))
