@@ -159,6 +159,22 @@ import WebKit
         userManager.updateProperties(operations: operations)
         completion()
     }
+    
+    @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$push_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
+    
+    @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$sms_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
+
+    
+    @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
 
     @objc public func resetUser() {
         resetUser(completion: {})
@@ -292,22 +308,6 @@ import WebKit
                 completion()
             }
         )
-    }
-    
-    @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
-        trackInternal(event: operations.toEvent(key: "$push_subscriptions"), user: nil)
-        eventProcessor.flush()
-    }
-    
-    @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
-        trackInternal(event: operations.toEvent(key: "$sms_subscriptions"), user: nil)
-        eventProcessor.flush()
-    }
-
-    
-    @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
-        trackInternal(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil)
-        eventProcessor.flush()
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
