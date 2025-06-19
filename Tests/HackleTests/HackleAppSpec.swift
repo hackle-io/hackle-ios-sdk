@@ -243,6 +243,28 @@ class HackleAppSpecs: QuickSpec {
                 expect(count) == 1
             }
         }
+        
+        describe("marketing property") {
+            it("setPushToken") {
+                let deviceToken = "token".data(using: .utf8)!
+                sut.setPushToken(deviceToken)
+                expect(pushTokenRegistry.registeredToken()).notTo(beNil())
+            }
+            
+            it("setPhoneNumber") {
+                sut.setPhoneNumber(phoneNumber: "+821012345678")
+                verify(exactly: 1) {
+                    piiEventManager.toSetPhoneNumberMock
+                }
+            }
+            
+            it("unsetPhoneNumber") {
+                sut.unsetPhoneNumber()
+                verify(exactly: 1) {
+                    piiEventManager.toUnsetPhoneNumberMock
+                }
+            }
+        }
 
         describe("experiment") {
 
@@ -464,9 +486,17 @@ class HackleAppSpecs: QuickSpec {
             expect(app.deviceId) == UserDefaults.standard.string(forKey: "hackle_device_id")
         }
         
-        describe("updatePushSubscriptionStatus") {
-            it("set subscribed") {
-                sut.updatePushSubscriptionStatus(status: .subscribed)
+        describe("updateMarketingSubscriptionStatus") {
+            it("set push subscribed") {
+                sut.updatePushSubscriptions(
+                    operations: HackleSubscriptionOperations
+                        .builder()
+                        .marketing(.unsubscribed)
+                        .information(.subscribed)
+                        .custom("chat", status: .unknown)
+                        .build()
+                )
+                
                 verify(exactly: 1) {
                     core.trackMock
                 }
@@ -474,18 +504,54 @@ class HackleAppSpecs: QuickSpec {
                     eventProcessor.flushMock
                 }
                 expect(core.trackMock.firstInvokation().arguments.0.key) == "$push_subscriptions"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
-            it("set unsubscribed") {
-                sut.updatePushSubscriptionStatus(status: .unsubscribed)
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNSUBSCRIBED"
+            
+            it("set sms subscribed") {
+                sut.updateSmsSubscriptions(
+                    operations: HackleSubscriptionOperations
+                        .builder()
+                        .marketing(.unsubscribed)
+                        .information(.subscribed)
+                        .custom("chat", status: .unknown)
+                        .build()
+                )
+                verify(exactly: 1) {
+                    core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$sms_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
-            it("set unknown") {
-                sut.updatePushSubscriptionStatus(status: .unknown)
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+            
+            it("set kakaotalk subscribed") {
+                sut.updateKakaoSubscriptions(
+                    operations: HackleSubscriptionOperations
+                        .builder()
+                        .marketing(.unsubscribed)
+                        .information(.subscribed)
+                        .custom("chat", status: .unknown)
+                        .build()
+                )
+                verify(exactly: 1) {
+                    core.trackMock
+                }
+                verify(exactly: 1) {
+                    eventProcessor.flushMock
+                }
+                expect(core.trackMock.firstInvokation().arguments.0.key) == "$kakao_subscriptions"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$marketing"] as? String) == "UNSUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
+                expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
         }
-
+        
         describe("DEPRECATED") {
 
             describe("experiment") {
@@ -569,27 +635,6 @@ class HackleAppSpecs: QuickSpec {
                 let user = User.builder().id("user_id").build()
                 let actual = sut.remoteConfig(user: user)
                 expect(actual).to(beAnInstanceOf(DefaultRemoteConfig.self))
-            }
-
-
-            it("setPushToken") {
-                let deviceToken = "token".data(using: .utf8)!
-                sut.setPushToken(deviceToken)
-                expect(pushTokenRegistry.registeredToken()).notTo(beNil())
-            }
-            
-            it("setPhoneNumber") {
-                sut.setPhoneNumber(phoneNumber: "+821012345678")
-                verify(exactly: 1) {
-                    piiEventManager.toSetPhoneNumberMock
-                }
-            }
-            
-            it("unsetPhoneNumber") {
-                sut.unsetPhoneNumber()
-                verify(exactly: 1) {
-                    piiEventManager.toUnsetPhoneNumberMock
-                }
             }
         }
     }

@@ -1,14 +1,11 @@
 //
-//  HacklePushSubscriptionStatus.swift
+//  HackleMarketingSubscriptionStatus.swift
 //  Hackle
 //
-//  Created by hackle on 9/19/24.
+//  Created by sungwoo.yeo on 6/16/25.
 //
 
-import Foundation
-
-@available(*, deprecated, message: "Use HackleMarketingSubscriptionStatus instead.")
-@objc public enum HacklePushSubscriptionStatus: Int, RawRepresentable {
+@objc public enum HackleSubscriptionStatus: Int, RawRepresentable {
     case subscribed
     case unsubscribed
     case unknown
