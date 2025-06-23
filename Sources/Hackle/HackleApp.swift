@@ -293,6 +293,10 @@ import WebKit
             }
         )
     }
+    
+    @objc public func getPushToken() -> String? {
+        pushTokenRegistry.registeredToken()?.value
+    }
 
     @objc(updatePushSubscriptionStatus:)
     public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
