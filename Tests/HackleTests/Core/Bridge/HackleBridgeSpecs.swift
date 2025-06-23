@@ -1511,6 +1511,19 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["message"] as? String) == "OK"
                 expect(dict["data"]).to(beNil())
             }
+            describe("push token") {
+                let mock = MockHackleApp()
+                let bridge = HackleBridge(app: mock)
+                let jsonString = self.createJsonString(command: "getPushToken", parameters: [:])
+                let result = bridge.invoke(string: jsonString)
+                
+                expect(mock.hideUserExplorerRef.invokations().count) == 1
+
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == true
+                expect(dict["message"] as? String) == "OK"
+                expect(dict["data"]).to(beNil())
+            }
         }
     }
 }

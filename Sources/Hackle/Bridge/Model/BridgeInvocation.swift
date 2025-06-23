@@ -27,6 +27,7 @@ class BridgeInvocation {
         case remoteConfig = "remoteConfig"
         case showUserExplorer = "showUserExplorer"
         case hideUserExplorer = "hideUserExplorer"
+        case getPushToken = "getPushToken"
     }
     
     let command: Command

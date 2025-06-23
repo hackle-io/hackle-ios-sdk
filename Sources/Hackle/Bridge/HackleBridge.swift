@@ -88,6 +88,9 @@ extension HackleBridge {
         case .hideUserExplorer:
             app.hideUserExplorer()
             return .success()
+        case .getPushToken:
+            let data = app.getPushToken()
+            return .success(data)
         }
     }
 }

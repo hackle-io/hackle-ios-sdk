@@ -176,6 +176,11 @@ class MockHackleApp : Mock, HackleAppProtocol {
         return call(remoteConfigWithUserRef, args: (user))
     }
     
+    lazy var getPushTokenRef = MockFunction(self, getPushToken as () -> String?)
+    func getPushToken() -> String? {
+        call(getPushTokenRef, args: ())
+    }
+    
     func allVariationDetails() -> [Int : Decision] {
         fatalError("NOT IMPLEMENTED")
     }

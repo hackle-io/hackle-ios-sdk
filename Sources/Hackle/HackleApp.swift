@@ -794,6 +794,8 @@ protocol HackleAppProtocol: AnyObject {
     func track(event: Event)
 
     func remoteConfig() -> HackleRemoteConfig
+    
+    func getPushToken() -> String?
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String
