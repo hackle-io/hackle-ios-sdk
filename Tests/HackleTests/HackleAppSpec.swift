@@ -13,6 +13,7 @@ class HackleAppSpecs: QuickSpec {
         var notificationManager: MockNotificationManager!
         var piiEventManager: MockPIIEventManager!
         var sessionManager: MockSessionManager!
+        var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
         var pushTokenRegistry = DefaultPushTokenRegistry()
         var device: Device!
@@ -34,6 +35,7 @@ class HackleAppSpecs: QuickSpec {
             notificationManager = MockNotificationManager()
             piiEventManager = MockPIIEventManager()
             sessionManager = MockSessionManager()
+            screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
             device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
@@ -64,6 +66,7 @@ class HackleAppSpecs: QuickSpec {
                 userManager: userManager,
                 workspaceManager: workspaceManager,
                 sessionManager: sessionManager,
+                screenManager: screenManager,
                 eventProcessor: eventProcessor,
                 lifecycleManager: LifecycleManager.shared,
                 pushTokenRegistry: pushTokenRegistry,
@@ -483,6 +486,16 @@ class HackleAppSpecs: QuickSpec {
             it("set unknown") {
                 sut.updatePushSubscriptionStatus(status: .unknown)
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$global"] as? String) == "UNKNOWN"
+            }
+        }
+        
+        describe("setCurrentScreen") {
+            it("set") {
+                sut.setCurrentScreen(screenName: "currentScreen", className: "currentClass")
+                verify(exactly: 1) {
+                    screenManager.setCurrentScreenMock
+                }
+                expect(screenManager.currentScreen) == Screen(name: "currentScreen", className: "currentClass")
             }
         }
 

@@ -176,6 +176,11 @@ class MockHackleApp : Mock, HackleAppProtocol {
         return call(remoteConfigWithUserRef, args: (user))
     }
     
+    lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (String, String) -> Void)
+    func setCurrentScreen(screenName: String, className: String) {
+        call(setCurrentScreenRef, args: (screenName, className))
+    }
+    
     func allVariationDetails() -> [Int : Decision] {
         fatalError("NOT IMPLEMENTED")
     }

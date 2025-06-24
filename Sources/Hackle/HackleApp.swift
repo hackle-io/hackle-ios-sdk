@@ -13,6 +13,7 @@ import WebKit
     private let userManager: UserManager
     private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
+    private let screenManager: ScreenManager
     private let eventProcessor: UserEventProcessor
     private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
@@ -59,6 +60,7 @@ import WebKit
         userManager: UserManager,
         workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
+        screenManager: ScreenManager,
         eventProcessor: UserEventProcessor,
         lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
@@ -77,6 +79,7 @@ import WebKit
         self.userManager = userManager
         self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
+        self.screenManager = screenManager
         self.eventProcessor = eventProcessor
         self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
@@ -301,6 +304,10 @@ import WebKit
             .build()
         track(event: operations.toEvent())
         eventProcessor.flush()
+    }
+    
+    @objc public func setCurrentScreen(screenName: String, className: String) {
+        screenManager.setCurrentScreen(screen: Screen(name: screenName, className: className), timestamp: SystemClock.shared.now())
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -718,6 +725,7 @@ extension HackleApp {
             userManager: userManager,
             workspaceManager: workspaceManager,
             sessionManager: sessionManager,
+            screenManager: screenManager,
             eventProcessor: eventProcessor,
             lifecycleManager: lifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
@@ -790,6 +798,8 @@ protocol HackleAppProtocol: AnyObject {
     func track(event: Event)
 
     func remoteConfig() -> HackleRemoteConfig
+    
+    func setCurrentScreen(screenName: String, className: String)
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String
