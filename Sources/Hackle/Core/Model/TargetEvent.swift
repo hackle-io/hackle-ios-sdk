@@ -40,9 +40,38 @@ struct TargetEvent {
     }
 }
 
+extension TargetEvent {
+    static func from(dto: TargetEventDto) -> TargetEvent? {
+        var property: Property? = nil
+        if let propertyDto = dto.property {
+            guard let parsedProperty = Property.from(dto: propertyDto) else {
+                return nil
+            }
+            property = parsedProperty
+        }
+        
+        return TargetEvent(
+            eventKey: dto.eventKey,
+            stats: dto.stats.map { stat in
+                TargetEvent.Stat(date: stat.date, count: stat.count)
+            },
+            property: property,
+        )
+    }
+}
+
 extension TargetEvent: Equatable {
     static func == (lhs: TargetEvent, rhs: TargetEvent) -> Bool {
         lhs.eventKey == rhs.eventKey && lhs.property == rhs.property
+    }
+}
+
+extension TargetEvent.Property {
+    static func from(dto: PropertyDto) -> TargetEvent.Property? {
+        guard let propertyType: Target.KeyType = Enums.parseOrNil(rawValue: dto.type) else {
+            return nil
+        }
+        return TargetEvent.Property(key: dto.key, type: propertyType, value: dto.value)
     }
 }
 

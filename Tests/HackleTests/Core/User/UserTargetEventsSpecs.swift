@@ -180,11 +180,7 @@ class UserTargetEventsSpecs: QuickSpec {
                 let data = json.data(using: .utf8)!
                 let response = try! decoder.decode(UserTargetResponseDto.self, from: data)
                 let userTargetEvents = UserTargetEvents.from(dto: response)
-                expect(userTargetEvents.count) == 1
-                expect(userTargetEvents[0].eventKey) == "purchase"
-                expect(userTargetEvents[0].stats[0].date) == 1737361789000
-                expect(userTargetEvents[0].stats[0].count) == 10
-                expect(userTargetEvents[0].property).to(beNil())
+                expect(userTargetEvents.count) == 0
             }
         }
     }

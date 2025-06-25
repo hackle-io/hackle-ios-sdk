@@ -30,14 +30,6 @@ class TargetEventDto: Codable {
     let stats: [StatDto]
     /// 타겟팅에 추가로 이용 할 이벤트 프로퍼티
     let property: PropertyDto?
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        self.eventKey = try container.decode(String.self, forKey: .eventKey)
-        self.stats = try container.decode([StatDto].self, forKey: .stats)
-        self.property = try? container.decode(PropertyDto.self, forKey: .property)
-    }
 }
 
 class StatDto: Codable {
