@@ -81,6 +81,7 @@
 		B242502B2D9A34F500CF27FC /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = B242502A2D9A34F100CF27FC /* PhoneNumber.swift */; };
 		B24250312D9A59AE00CF27FC /* DefaultPIIEventManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */; };
 		B24250342D9A59CC00CF27FC /* DefaultPhoneNumberSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */; };
+		B256031C2E0B9336004794B9 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B256031B2E0B9334004794B9 /* Screen.swift */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
@@ -469,7 +470,6 @@
 		EEA01CCB2A37138300E0C021 /* UIKitExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CCA2A37138300E0C021 /* UIKitExt.swift */; };
 		EEA3BF5929D3F7B4008664BA /* OnOverrideSetListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */; };
 		EEA3BF5B29D3F7D4008664BA /* OnOverrideResetListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */; };
-		EEA7FCAB2C04AB290004F858 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCAA2C04AB290004F858 /* Screen.swift */; };
 		EEA7FCAD2C04AB330004F858 /* ScreenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCAC2C04AB330004F858 /* ScreenManager.swift */; };
 		EEA7FCAF2C04AB380004F858 /* ScreenListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCAE2C04AB380004F858 /* ScreenListener.swift */; };
 		EEA7FCB12C04AB3F0004F858 /* ScreenEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCB02C04AB3F0004F858 /* ScreenEventTracker.swift */; };
@@ -644,6 +644,7 @@
 		B242502A2D9A34F100CF27FC /* PhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumber.swift; sourceTree = "<group>"; };
 		B24250302D9A59A500CF27FC /* DefaultPIIEventManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPIIEventManagerSpecs.swift; sourceTree = "<group>"; };
 		B24250332D9A59C400CF27FC /* DefaultPhoneNumberSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPhoneNumberSpecs.swift; sourceTree = "<group>"; };
+		B256031B2E0B9334004794B9 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
@@ -1032,7 +1033,6 @@
 		EEA01CCA2A37138300E0C021 /* UIKitExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExt.swift; sourceTree = "<group>"; };
 		EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideSetListener.swift; sourceTree = "<group>"; };
 		EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideResetListener.swift; sourceTree = "<group>"; };
-		EEA7FCAA2C04AB290004F858 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		EEA7FCAC2C04AB330004F858 /* ScreenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenManager.swift; sourceTree = "<group>"; };
 		EEA7FCAE2C04AB380004F858 /* ScreenListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenListener.swift; sourceTree = "<group>"; };
 		EEA7FCB02C04AB3F0004F858 /* ScreenEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenEventTracker.swift; sourceTree = "<group>"; };
@@ -1841,6 +1841,7 @@
 		EE29D93829CD825300B1FEAA /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B256031B2E0B9334004794B9 /* Screen.swift */,
 				EE29D93929CD825300B1FEAA /* Event.swift */,
 				EE29D93A29CD825300B1FEAA /* HackleRemoteConfig.swift */,
 				EE29D93B29CD825300B1FEAA /* Decision.swift */,
@@ -2576,7 +2577,6 @@
 		EEA7FCA92C04AAED0004F858 /* Screen */ = {
 			isa = PBXGroup;
 			children = (
-				EEA7FCAA2C04AB290004F858 /* Screen.swift */,
 				EEA7FCB02C04AB3F0004F858 /* ScreenEventTracker.swift */,
 				EEA7FCAE2C04AB380004F858 /* ScreenListener.swift */,
 				EEA7FCAC2C04AB330004F858 /* ScreenManager.swift */,
@@ -2938,6 +2938,7 @@
 				EEA7FCBD2C04AB710004F858 /* Lifecycle.swift in Sources */,
 				EEDC58802ACC0789001E73DB /* UserCohortFetcher.swift in Sources */,
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
+				B256031C2E0B9336004794B9 /* Screen.swift in Sources */,
 				7E9065BA2B5E41FC00FE6E52 /* WorkspaceConfigRepository.swift in Sources */,
 				7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */,
 				7E65EB7E2ACE503E00900097 /* HackleBridge.swift in Sources */,
@@ -3207,7 +3208,6 @@
 				EE29D94429CD825400B1FEAA /* NoopTimer.swift in Sources */,
 				7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */,
 				EE29D98D29CD825400B1FEAA /* TargetRule.swift in Sources */,
-				EEA7FCAB2C04AB290004F858 /* Screen.swift in Sources */,
 				EE29D97029CD825400B1FEAA /* Collections.swift in Sources */,
 				EE929D8B2BFFAC70003B7596 /* UserEventFilter.swift in Sources */,
 				EE29D9AB29CD825500B1FEAA /* SessionListener.swift in Sources */,

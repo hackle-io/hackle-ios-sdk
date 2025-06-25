@@ -306,8 +306,8 @@ import WebKit
         eventProcessor.flush()
     }
     
-    @objc public func setCurrentScreen(screenName: String, className: String) {
-        screenManager.setCurrentScreen(screen: Screen(name: screenName, className: className), timestamp: SystemClock.shared.now())
+    @objc public func setCurrentScreen(screen: Screen) {
+        screenManager.setCurrentScreen(screen: screen, timestamp: SystemClock.shared.now())
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -799,7 +799,7 @@ protocol HackleAppProtocol: AnyObject {
 
     func remoteConfig() -> HackleRemoteConfig
     
-    func setCurrentScreen(screenName: String, className: String)
+    func setCurrentScreen(screen: Screen)
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String

@@ -491,11 +491,12 @@ class HackleAppSpecs: QuickSpec {
         
         describe("setCurrentScreen") {
             it("set") {
-                sut.setCurrentScreen(screenName: "currentScreen", className: "currentClass")
+                let screen = Screen(name: "currentScreen", className: "currentClass")
+                sut.setCurrentScreen(screen: screen)
                 verify(exactly: 1) {
                     screenManager.setCurrentScreenMock
                 }
-                expect(screenManager.currentScreen) == Screen(name: "currentScreen", className: "currentClass")
+                expect(screenManager.currentScreen) == screen
             }
         }
 
