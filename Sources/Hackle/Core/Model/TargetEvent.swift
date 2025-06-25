@@ -55,7 +55,7 @@ extension TargetEvent {
             stats: dto.stats.map { stat in
                 TargetEvent.Stat(date: stat.date, count: stat.count)
             },
-            property: property,
+            property: property
         )
     }
 }
