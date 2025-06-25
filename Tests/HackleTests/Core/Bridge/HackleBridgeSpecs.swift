@@ -1485,6 +1485,22 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
             }
+            describe("set current screen") {
+                let mock = MockHackleApp()
+                let bridge = HackleBridge(app: mock)
+                let parameters: [String: Any] = [
+                    "screenName": "main",
+                    "className": "UIViewController"
+                ]
+                let jsonString = self.createJsonString(command: "setCurrentScreen", parameters: parameters)
+                let result = bridge.invoke(string: jsonString)
+                
+                expect(mock.setCurrentScreenRef.invokations().count) == 1
+                
+                let dict = result.jsonObject()!
+                expect(dict["success"] as? Bool) == false
+                expect(dict["message"]).toNot(beNil())
+            }
             describe("show user explorer") {
                 let mock = MockHackleApp()
                 let bridge = HackleBridge(app: mock)
