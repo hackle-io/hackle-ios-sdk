@@ -7,7 +7,7 @@
 
 import Foundation
 
-@available(*, deprecated, message: "Use HackleSubscriptionStatus instead.")
+@available(*, deprecated, message: "This is no longer used and will be removed in a future version.")
 enum HacklePushSubscriptionType: String {
     case global = "$global"
 }
