@@ -380,7 +380,7 @@ import WebKit
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
     }
     
-    @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscription(operations)` instead.")
+    @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
     @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
     }
