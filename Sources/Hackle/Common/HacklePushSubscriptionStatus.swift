@@ -7,7 +7,7 @@
 
 import Foundation
 
-@available(*, deprecated, message: "Use HackleMarketingSubscriptionStatus instead.")
+@available(*, deprecated, message: "Use HackleSubscriptionStatus instead.")
 @objc public enum HacklePushSubscriptionStatus: Int, RawRepresentable {
     case subscribed
     case unsubscribed

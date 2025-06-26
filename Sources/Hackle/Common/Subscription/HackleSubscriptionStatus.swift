@@ -1,5 +1,5 @@
 //
-//  HackleMarketingSubscriptionStatus.swift
+//  HackleSubscriptionStatus.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 6/16/25.
