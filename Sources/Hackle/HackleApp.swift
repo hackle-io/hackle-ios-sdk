@@ -162,6 +162,22 @@ import WebKit
         userManager.updateProperties(operations: operations)
         completion()
     }
+    
+    @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$push_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
+    
+    @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$sms_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
+
+    
+    @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
 
     @objc public func resetUser() {
         resetUser(completion: {})
@@ -297,15 +313,6 @@ import WebKit
         )
     }
 
-    @objc(updatePushSubscriptionStatus:)
-    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
-        let operations = HacklePushSubscriptionOperations.builder()
-            .global(status)
-            .build()
-        track(event: operations.toEvent())
-        eventProcessor.flush()
-    }
-    
     @objc public func setCurrentScreen(screen: Screen) {
         screenManager.setCurrentScreen(screen: screen, timestamp: SystemClock.shared.now())
     }
@@ -378,6 +385,11 @@ import WebKit
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
+    }
+    
+    @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
+    @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
+        Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
     }
 }
 
@@ -796,6 +808,10 @@ protocol HackleAppProtocol: AnyObject {
 
     func track(eventKey: String)
     func track(event: Event)
+    
+    func updatePushSubscriptions(operations: HackleSubscriptionOperations)
+    func updateSmsSubscriptions(operations: HackleSubscriptionOperations)
+    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations)
 
     func remoteConfig() -> HackleRemoteConfig
     

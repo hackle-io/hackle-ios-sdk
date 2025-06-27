@@ -3,7 +3,6 @@ import Mockery
 @testable import Hackle
 
 class MockHackleApp : Mock, HackleAppProtocol {
-    
     var sdk: Sdk
     var sessionId: String
     var deviceId: String
@@ -176,6 +175,22 @@ class MockHackleApp : Mock, HackleAppProtocol {
         return call(remoteConfigWithUserRef, args: (user))
     }
     
+    lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations) -> Void)
+    func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
+        call(updatePushSubscriptionsRef, args: (operations))
+    }
+    
+    lazy var updateSmsSubscriptionsRef = MockFunction(self, updateSmsSubscriptions as (HackleSubscriptionOperations) -> Void)
+    func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
+        call(updateSmsSubscriptionsRef, args: (operations))
+    }
+    
+    lazy var updateKakaoSubscriptionsRef = MockFunction(self, updateKakaoSubscriptions as (HackleSubscriptionOperations) -> Void)
+    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
+        call(updateKakaoSubscriptionsRef, args: (operations))
+    }
+    
+
     lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen) -> Void)
     func setCurrentScreen(screen: Screen) {
         call(setCurrentScreenRef, args: (screen))

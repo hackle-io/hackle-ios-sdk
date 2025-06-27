@@ -276,6 +276,89 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
             }
+            context("update subscriptions") {
+                let parameters = [
+                    "operations": [
+                        "$global": "SUBSCRIBED",
+                        "$information": "UNSUBSCRIBED",
+                        "$marketing": "UNKNOWN",
+                        "chat": "SUBSCRIBED"
+                    ]
+                ]
+                
+                it("push") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "updatePushSubscriptions", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.updatePushSubscriptionsRef.invokations().count) == 1
+                    
+                    let arguments = mock.updatePushSubscriptionsRef.firstInvokation().arguments
+                    expect(arguments.count) == 4
+                    
+                    let mockEvent = arguments.toEvent(key: "mock")
+                    expect(mockEvent.key) == "mock"
+                    expect(mockEvent.properties?["$global"] as? String) == "SUBSCRIBED"
+                    expect(mockEvent.properties?["$information"] as? String) == "UNSUBSCRIBED"
+                    expect(mockEvent.properties?["$marketing"] as? String) == "UNKNOWN"
+                    expect(mockEvent.properties?["chat"] as? String) == "SUBSCRIBED"
+
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+                
+                it("sms") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "updateSmsSubscriptions", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.updateSmsSubscriptionsRef.invokations().count) == 1
+                    
+                    let arguments = mock.updateSmsSubscriptionsRef.firstInvokation().arguments
+                    expect(arguments.count) == 4
+                    
+                    let mockEvent = arguments.toEvent(key: "mock")
+                    expect(mockEvent.key) == "mock"
+                    expect(mockEvent.properties?["$global"] as? String) == "SUBSCRIBED"
+                    expect(mockEvent.properties?["$information"] as? String) == "UNSUBSCRIBED"
+                    expect(mockEvent.properties?["$marketing"] as? String) == "UNKNOWN"
+                    expect(mockEvent.properties?["chat"] as? String) == "SUBSCRIBED"
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+                
+                it("kakao") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "updateKakaoSubscriptions", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.updateKakaoSubscriptionsRef.invokations().count) == 1
+                    
+                    let arguments = mock.updateKakaoSubscriptionsRef.firstInvokation().arguments
+                    expect(arguments.count) == 4
+                    
+                    let mockEvent = arguments.toEvent(key: "mock")
+                    expect(mockEvent.key) == "mock"
+                    expect(mockEvent.properties?["$global"] as? String) == "SUBSCRIBED"
+                    expect(mockEvent.properties?["$information"] as? String) == "UNSUBSCRIBED"
+                    expect(mockEvent.properties?["$marketing"] as? String) == "UNKNOWN"
+                    expect(mockEvent.properties?["chat"] as? String) == "SUBSCRIBED"
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+            }
             it("reset user") {
                 let mock = MockHackleApp()
                 let bridge = HackleBridge(app: mock)
@@ -1485,7 +1568,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
             }
-            describe("set current screen") {
+			describe("set current screen") {
                 let mock = MockHackleApp()
                 let bridge = HackleBridge(app: mock)
                 let parameters: [String: Any] = [
@@ -1501,31 +1584,34 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["success"] as? Bool) == false
                 expect(dict["message"]).toNot(beNil())
             }
-            describe("show user explorer") {
-                let mock = MockHackleApp()
-                let bridge = HackleBridge(app: mock)
-                let jsonString = self.createJsonString(command: "showUserExplorer", parameters: [:])
-                let result = bridge.invoke(string: jsonString)
+            describe("user explorer") {
+                it("show") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "showUserExplorer", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.showUserExplorerRef.invokations().count) == 1
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
                 
-                expect(mock.showUserExplorerRef.invokations().count) == 1
-                
-                let dict = result.jsonObject()!
-                expect(dict["success"] as? Bool) == true
-                expect(dict["message"] as? String) == "OK"
-                expect(dict["data"]).to(beNil())
-            }
-            describe("hide user explorer") {
-                let mock = MockHackleApp()
-                let bridge = HackleBridge(app: mock)
-                let jsonString = self.createJsonString(command: "hideUserExplorer", parameters: [:])
-                let result = bridge.invoke(string: jsonString)
+                it("hide") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "hideUserExplorer", parameters: [:])
+                    let result = bridge.invoke(string: jsonString)
 
-                expect(mock.hideUserExplorerRef.invokations().count) == 1
+                    expect(mock.hideUserExplorerRef.invokations().count) == 1
 
-                let dict = result.jsonObject()!
-                expect(dict["success"] as? Bool) == true
-                expect(dict["message"] as? String) == "OK"
-                expect(dict["data"]).to(beNil())
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
             }
         }
     }
