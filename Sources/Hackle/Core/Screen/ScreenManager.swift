@@ -3,6 +3,8 @@ import UIKit
 
 protocol ScreenManager {
     var currentScreen: Screen? { get }
+    
+    func setCurrentScreen(screen: Screen, timestamp: Date)
 }
 
 class DefaultScreenManager: ScreenManager, LifecycleListener {
@@ -21,6 +23,10 @@ class DefaultScreenManager: ScreenManager, LifecycleListener {
 
     func addListener(listener: ScreenListener) {
         listeners.append(listener)
+    }
+    
+    func setCurrentScreen(screen: Screen, timestamp: Date) {
+        updateScreen(screen: screen, timestamp: timestamp)
     }
 
     func updateScreen(screen: Screen, timestamp: Date) {
