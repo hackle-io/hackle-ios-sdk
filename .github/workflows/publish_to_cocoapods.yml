@@ -1,14 +1,40 @@
 name: publish to cocoapods
 
 on:
-  workflow_dispatch:
+  release:
+    types:
+      - prereleased
 
 jobs:
   publish:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - uses: actions/checkout@v4
+        
+      - name: Verify Versions
+        run: |
+          RELEASE_NAME="${{ github.event.release.name }}"
+          
+          # podspec 버전 추출
+          POD_VERSION=$(grep -E 'spec\.version\s*=' Hackle.podspec | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+          
+          # SdkVersion.swift 버전 추출
+          PACKAGE_VERSION=$(grep -E 'static let CURRENT = ' Sources/Hackle/Core/Utilities/SdkVersion.swift | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+          
+          echo "Release name: $RELEASE_NAME"
+          echo "Pod version: $POD_VERSION"
+          echo "Package version: $PACKAGE_VERSION"
+          
+          # 버전 비교
+          if [ "$RELEASE_NAME" = "$POD_VERSION" ] && [ "$RELEASE_NAME" = "$PACKAGE_VERSION" ]; then
+            echo "sdk_version matches release.name"
+            exit 0
+          else
+            echo "Error: sdk_version ($POD_VERSION) or package_version ($PACKAGE_VERSION) does not match release.name ($RELEASE_NAME)"
+            echo "Ensure that the release name in GitHub matches the sdk_version in podspec and SdkVersion.swift"
+            exit 1
+          fi
+    
       - name: Install cocoapods
         run: gem install cocoapods
       
