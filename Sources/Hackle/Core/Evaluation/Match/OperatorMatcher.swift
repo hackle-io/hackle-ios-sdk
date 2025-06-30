@@ -106,6 +106,18 @@ class ExistsMatcher: OperatorMatcher {
     }
 }
 
+class RegexMathcer: OperatorMatcher {
+    func matches(valueMatcher: ValueMatcher, userValue: Any?, matchValues: [HackleValue]) -> Bool {
+        guard let userValue = userValue as? String else {
+            return false
+        }
+        
+        return matchValues.contains { it in
+            valueMatcher.regexMatch(userValue: userValue, matchValue: it)
+        }
+    }
+}
+
 class OperatorMatcherFactory {
 
     private let inMatcher = InMatcher()
@@ -117,6 +129,7 @@ class OperatorMatcherFactory {
     private let lessThanMatcher = LessThanMatcher()
     private let lessThanOrEqualToMatcher = LessThanOrEqualToMatcher()
     private let existsMatcher = ExistsMatcher()
+    private let regexMatcher = RegexMathcer()
 
     func getMatcher(_ matchOperator: Target.Match.Operator) -> OperatorMatcher {
         switch matchOperator {
@@ -129,6 +142,7 @@ class OperatorMatcherFactory {
         case .lt: return lessThanMatcher
         case .lte: return lessThanOrEqualToMatcher
         case .exists: return existsMatcher
+        case .regex: return regexMatcher
         }
     }
 }

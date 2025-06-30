@@ -343,8 +343,136 @@ class OperatorMatcherSpecs: QuickSpec {
                 self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: true, matchValues: []))
                 self.assertTrue(sut.matches(valueMatcher: VersionMatcher(), userValue: "1.0.0", matchValues: []))
             }
+        }
+        
+        describe("RegexMatcher") {
+            let sut: RegexMathcer = RegexMathcer()
+
+            context("when using anchors and basic patterns") {
+                it("matches the beginning of the string with ^ (Caret)") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "cab", matchValues: [HackleValue(value: "^ab")])).to(beFalse())
+                }
+                
+                it("matches the end of the string with $ (Dollar)") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "a a bc", matchValues: [HackleValue(value: "bc$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "bca", matchValues: [HackleValue(value: "bc$")])).to(beFalse())
+                }
+            }
             
-            
+            context("when using quantifiers for full matching (using ^ and $)") {
+                it("handles * (Asterisk) for 0 or more repetitions") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ac", matchValues: [HackleValue(value: "^ab*c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab*c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbbc", matchValues: [HackleValue(value: "^ab*c$")])).to(beTrue())
+                }
+                
+                it("handles + (Plus) for 1 or more repetitions") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ac", matchValues: [HackleValue(value: "^ab+c$")])).to(beFalse())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab+c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbbc", matchValues: [HackleValue(value: "^ab+c$")])).to(beTrue())
+                }
+
+                it("handles ? (Question Mark) for 0 or 1 repetition") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ac", matchValues: [HackleValue(value: "^ab?c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab?c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbc", matchValues: [HackleValue(value: "^ab?c$")])).to(beFalse())
+                }
+
+                it("handles {n} for exactly n repetitions") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbc", matchValues: [HackleValue(value: "^ab{2}c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab{2}c$")])).to(beFalse())
+                }
+
+                it("handles {n,} for at least n repetitions") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbc", matchValues: [HackleValue(value: "^ab{2,}c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbbbc", matchValues: [HackleValue(value: "^ab{2,}c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab{2,}c$")])).to(beFalse())
+                }
+
+                it("handles {n,m} for n to m repetitions") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbc", matchValues: [HackleValue(value: "^ab{2,4}c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbbbc", matchValues: [HackleValue(value: "^ab{2,4}c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abc", matchValues: [HackleValue(value: "^ab{2,4}c$")])).to(beFalse())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "abbbbbc", matchValues: [HackleValue(value: "^ab{2,4}c$")])).to(beFalse())
+                }
+            }
+
+            context("when using meta characters and grouping for full matching") {
+                it("handles . (Dot) for any character except newline") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "a-c", matchValues: [HackleValue(value: "^a.c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "a_c", matchValues: [HackleValue(value: "^a.c$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ac", matchValues: [HackleValue(value: "^a.c$")])).to(beFalse())
+                }
+
+                it("handles | (Pipe) as an OR condition") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "cat", matchValues: [HackleValue(value: "^(cat|dog)$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "dog", matchValues: [HackleValue(value: "^(cat|dog)$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "bird", matchValues: [HackleValue(value: "^(cat|dog)$")])).to(beFalse())
+                }
+
+                it("handles () (Parentheses) for grouping") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "I love cats", matchValues: [HackleValue(value: "^I love (cats|dogs)$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "I love dogs", matchValues: [HackleValue(value: "^I love (cats|dogs)$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "I love birds", matchValues: [HackleValue(value: "^I love (cats|dogs)$")])).to(beFalse())
+                }
+
+                it("handles character sets") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "gray", matchValues: [HackleValue(value: "^gr[ae]y$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "grey", matchValues: [HackleValue(value: "^gr[ae]y$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "groy", matchValues: [HackleValue(value: "^gr[ae]y$")])).to(beFalse())
+                }
+                
+                it("handles negated character sets") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "groy", matchValues: [HackleValue(value: "^gr[^ae]y$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "gray", matchValues: [HackleValue(value: "^gr[^ae]y$")])).to(beFalse())
+                }
+            }
+
+            context("when using character classes") {
+                it("handles \\d for digits") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "file-123", matchValues: [HackleValue(value: "^file-\\d+$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "file-abc", matchValues: [HackleValue(value: "^file-\\d+$")])).to(beFalse())
+                }
+                
+                it("handles \\w for word characters") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "id_abc123", matchValues: [HackleValue(value: "^\\w+$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "id-!@#", matchValues: [HackleValue(value: "^\\w+$")])).to(beFalse())
+                }
+                
+                it("handles \\s for whitespace characters") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "hello world", matchValues: [HackleValue(value: "^hello\\sworld$")])).to(beTrue())
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "helloworld", matchValues: [HackleValue(value: "^hello\\sworld$")])).to(beFalse())
+                }
+            }
+
+            context("with a complex regex pattern") {
+                let complexPattern = "^(ID|USER)-(\\d{3,5})\\s(test|prod|dev)-[a-zA-Z_]+-v\\w*!$"
+                
+                it("matches a perfectly valid string") {
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ID-12345 prod-user_name-v1a!", matchValues: [HackleValue(value: complexPattern)])).to(beTrue())
+                }
+                
+                it("does not match with incorrect parts") {
+                    // 시작 패턴 불일치
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "WRONG-12345 prod-user_name-v1a!", matchValues: [HackleValue(value: complexPattern)])).to(beFalse())
+                    // 숫자 개수 불일치
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ID-12 prod-user_name-v1a!", matchValues: [HackleValue(value: complexPattern)])).to(beFalse())
+                    // 중간 그룹 패턴 불일치
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ID-12345 qa-user_name-v1a!", matchValues: [HackleValue(value: complexPattern)])).to(beFalse())
+                    // 끝 패턴 불일치
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ID-12345 prod-user-name-v1a", matchValues: [HackleValue(value: complexPattern)])).to(beFalse())
+                    // 문자열 끝($) 불일치
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "ID-12345 prod-user_name-v1a! extra", matchValues: [HackleValue(value: complexPattern)])).to(beFalse())
+                }
+            }
+
+            context("when handling edge cases") {
+                it("returns false for an invalid regex pattern") {
+                    // '['는 닫는 ']'가 없어 잘못된 패턴임
+                    expect(sut.matches(valueMatcher: StringMatcher(), userValue: "any string", matchValues: [HackleValue(value: "[")])).to(beFalse())
+                }
+            }
         }
     }
 

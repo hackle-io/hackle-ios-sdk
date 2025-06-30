@@ -65,6 +65,7 @@ class Target {
             case lt = "LT"
             case lte = "LTE"
             case exists = "EXISTS"
+            case regex = "REGEX"
         }
     }
 

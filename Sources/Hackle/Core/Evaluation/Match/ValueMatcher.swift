@@ -9,6 +9,7 @@ protocol ValueMatcher {
     func greaterThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool
     func lessThanMatch(userValue: Any, matchValue: HackleValue) -> Bool
     func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool
+    func regexMatch(userValue: Any, matchValue: HackleValue) -> Bool
 }
 
 class StringMatcher: ValueMatcher {
@@ -83,6 +84,17 @@ class StringMatcher: ValueMatcher {
         
         return userValue <= matchValue
     }
+    
+    func regexMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        guard let userValue: String = HackleValue(value: userValue).asString(),
+              let matchValue: String = matchValue.asString(),
+              let regex = try? NSRegularExpression(pattern: matchValue) else {
+            return false
+        }
+        let range = NSRange(location: 0, length: userValue.utf16.count)
+        
+        return regex.firstMatch(in: userValue, range: range) != nil
+    }
 }
 
 class NumberMatcher: ValueMatcher {
@@ -142,6 +154,10 @@ class NumberMatcher: ValueMatcher {
         
         return userValue <= matchValue
     }
+    
+    func regexMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
 }
 
 class BoolMatcher: ValueMatcher {
@@ -182,7 +198,9 @@ class BoolMatcher: ValueMatcher {
         return false
     }
     
-    
+    func regexMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
 }
 
 class VersionMatcher: ValueMatcher {
@@ -243,7 +261,9 @@ class VersionMatcher: ValueMatcher {
         return userValue <= matchValue
     }
     
-    
+    func regexMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
 }
 
 class NoneMatcher: ValueMatcher {
@@ -276,6 +296,10 @@ class NoneMatcher: ValueMatcher {
     }
     
     func lessThanOrEqualMatch(userValue: Any, matchValue: HackleValue) -> Bool {
+        return false
+    }
+    
+    func regexMatch(userValue: Any, matchValue: HackleValue) -> Bool {
         return false
     }
 }
