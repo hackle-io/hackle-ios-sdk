@@ -55,6 +55,15 @@ extension HackleBridge {
         case .updateUserProperties:
             try updateUserProperties(parameters: parameters)
             return .success()
+        case .updatePushSubscriptions:
+            try updatePushSubscriptions(parameters: parameters)
+            return .success()
+        case .updateSmsSubscriptions:
+            try updateSmsSubscriptions(parameters: parameters)
+            return .success()
+        case .updateKakaoSubscriptions:
+            try updateKakaoSubscriptions(parameters: parameters)
+            return .success()
         case .resetUser:
             app.resetUser()
             return .success()
@@ -82,6 +91,9 @@ extension HackleBridge {
         case .remoteConfig:
             let data = try remoteConfig(parameters: parameters)
             return .success(data)
+        case .setCurrentScreen:
+            try setCurrentScreen(parameters: parameters)
+            return .success()
         case .showUserExplorer:
             app.showUserExplorer()
             return .success()
@@ -131,6 +143,30 @@ fileprivate extension HackleBridge {
         }
         let operations = PropertyOperations.from(dto: data)
         app.updateUserProperties(operations: operations)
+    }
+    
+    private func updatePushSubscriptions(parameters: [String: Any]) throws {
+        guard let data = parameters["operations"] as? [String: String] else {
+            throw HackleError.error("Valid 'subscriptions' parameter must be provided.")
+        }
+        let operations = HackleSubscriptionOperations.from(dto: data)
+        app.updatePushSubscriptions(operations: operations)
+    }
+    
+    private func updateSmsSubscriptions(parameters: [String: Any]) throws {
+        guard let data = parameters["operations"] as? [String: String] else {
+            throw HackleError.error("Valid 'subscriptions' parameter must be provided.")
+        }
+        let operations = HackleSubscriptionOperations.from(dto: data)
+        app.updateSmsSubscriptions(operations: operations)
+    }
+    
+    private func updateKakaoSubscriptions(parameters: [String: Any]) throws {
+        guard let data = parameters["operations"] as? [String: String] else {
+            throw HackleError.error("Valid 'subscriptions' parameter must be provided.")
+        }
+        let operations = HackleSubscriptionOperations.from(dto: data)
+        app.updateKakaoSubscriptions(operations: operations)
     }
     
     private func setPhoneNumber(parameters: [String: Any]) throws {
@@ -316,6 +352,17 @@ fileprivate extension HackleBridge {
             throw HackleError.error("Unsupport 'valueType' value provided.")
         }
     }
+    
+    private func setCurrentScreen(parameters: [String: Any]) throws {
+        guard let screenName = parameters["screenName"] as? String else {
+            throw HackleError.error("Valid 'screenName' parameter must be provided.")
+        }
+        guard let className = parameters["className"] as? String else {
+            throw HackleError.error("Valid 'className' parameter must be provided.")
+        }
+        
+        app.setCurrentScreen(screen: Screen(name: screenName, className: className))
+    }
 }
 
 typealias UserDto = [String: Any]
@@ -323,6 +370,7 @@ typealias EventDto = [String: Any]
 typealias DecisionDto = [String: Any]
 typealias FeatureFlagDecisionDto = [String: Any]
 typealias PropertyOperationsDto = [String: [String: Any]]
+typealias HackleSubscriptionOperationsDto = [String: String]
 
 extension User {
 
@@ -455,6 +503,20 @@ extension PropertyOperations {
                     builder.clearAll()
                 }
             }
+        }
+        return builder.build()
+    }
+}
+
+extension HackleSubscriptionOperations {
+    
+    static func from(dto: HackleSubscriptionOperationsDto) -> HackleSubscriptionOperations {
+        let builder = HackleSubscriptionOperations.builder()
+        for (key, value) in dto {
+            guard let status = HackleSubscriptionStatus(rawValue: value) else {
+                continue
+            }
+            builder.custom(key, status: status)
         }
         return builder.build()
     }
