@@ -9,6 +9,7 @@ import Quick
 import Nimble
 @testable import Hackle
 
+@available(*, deprecated, message: "")
 class HacklePushSubscriptionStatusSpecs: QuickSpec {
     override func spec() {
         describe("HacklePushSubscriptionStatus") {

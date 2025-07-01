@@ -16,6 +16,21 @@ class DefaultScreenManagerSpecs: QuickSpec {
             sut = DefaultScreenManager(userManager: userManager)
             sut.addListener(listener: listener)
         }
+        
+        describe("setCurrentScreen") {
+            it("when call setCurrentScreen, updateScreen is call") {
+                let screen = Screen(name: "name", className: "class")
+                sut.setCurrentScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
+                
+                expect(sut.currentScreen).to(equal(screen))
+                verify(exactly: 0) {
+                    listener.onScreenEndedMock
+                }
+                verify(exactly: 1) {
+                    listener.onScreenStartedMock
+                }
+            }
+        }
 
         describe("updateScreen") {
             it("when first screen then start screen") {

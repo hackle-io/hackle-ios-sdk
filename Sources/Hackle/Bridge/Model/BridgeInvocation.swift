@@ -16,6 +16,9 @@ class BridgeInvocation {
         case setDeviceId = "setDeviceId"
         case setUserProperty = "setUserProperty"
         case updateUserProperties = "updateUserProperties"
+        case updatePushSubscriptions = "updatePushSubscriptions"
+        case updateSmsSubscriptions = "updateSmsSubscriptions"
+        case updateKakaoSubscriptions = "updateKakaoSubscriptions"
         case resetUser = "resetUser"
         case setPhoneNumber = "setPhoneNumber"
         case unsetPhoneNumber = "unsetPhoneNumber"
@@ -25,6 +28,7 @@ class BridgeInvocation {
         case featureFlagDetail = "featureFlagDetail"
         case track = "track"
         case remoteConfig = "remoteConfig"
+        case setCurrentScreen = "setCurrentScreen"
         case showUserExplorer = "showUserExplorer"
         case hideUserExplorer = "hideUserExplorer"
     }
