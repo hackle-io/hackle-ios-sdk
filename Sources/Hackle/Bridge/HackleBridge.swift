@@ -91,6 +91,9 @@ extension HackleBridge {
         case .remoteConfig:
             let data = try remoteConfig(parameters: parameters)
             return .success(data)
+        case .setCurrentScreen:
+            try setCurrentScreen(parameters: parameters)
+            return .success()
         case .showUserExplorer:
             app.showUserExplorer()
             return .success()
@@ -348,6 +351,17 @@ fileprivate extension HackleBridge {
         default:
             throw HackleError.error("Unsupport 'valueType' value provided.")
         }
+    }
+    
+    private func setCurrentScreen(parameters: [String: Any]) throws {
+        guard let screenName = parameters["screenName"] as? String else {
+            throw HackleError.error("Valid 'screenName' parameter must be provided.")
+        }
+        guard let className = parameters["className"] as? String else {
+            throw HackleError.error("Valid 'className' parameter must be provided.")
+        }
+        
+        app.setCurrentScreen(screen: Screen(name: screenName, className: className))
     }
 }
 
