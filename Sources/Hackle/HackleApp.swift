@@ -13,6 +13,7 @@ import WebKit
     private let userManager: UserManager
     private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
+    private let screenManager: ScreenManager
     private let eventProcessor: UserEventProcessor
     private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
@@ -59,6 +60,7 @@ import WebKit
         userManager: UserManager,
         workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
+        screenManager: ScreenManager,
         eventProcessor: UserEventProcessor,
         lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
@@ -77,6 +79,7 @@ import WebKit
         self.userManager = userManager
         self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
+        self.screenManager = screenManager
         self.eventProcessor = eventProcessor
         self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
@@ -158,6 +161,22 @@ import WebKit
         eventProcessor.flush()
         userManager.updateProperties(operations: operations)
         completion()
+    }
+    
+    @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$push_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
+    
+    @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$sms_subscriptions"), user: nil)
+        eventProcessor.flush()
+    }
+
+    
+    @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
+        trackInternal(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil)
+        eventProcessor.flush()
     }
 
     @objc public func resetUser() {
@@ -294,13 +313,8 @@ import WebKit
         )
     }
 
-    @objc(updatePushSubscriptionStatus:)
-    public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
-        let operations = HacklePushSubscriptionOperations.builder()
-            .global(status)
-            .build()
-        track(event: operations.toEvent())
-        eventProcessor.flush()
+    @objc public func setCurrentScreen(screen: Screen) {
+        screenManager.setCurrentScreen(screen: screen, timestamp: SystemClock.shared.now())
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
@@ -371,6 +385,11 @@ import WebKit
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
+    }
+    
+    @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
+    @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
+        Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
     }
 }
 
@@ -718,6 +737,7 @@ extension HackleApp {
             userManager: userManager,
             workspaceManager: workspaceManager,
             sessionManager: sessionManager,
+            screenManager: screenManager,
             eventProcessor: eventProcessor,
             lifecycleManager: lifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
@@ -788,8 +808,14 @@ protocol HackleAppProtocol: AnyObject {
 
     func track(eventKey: String)
     func track(event: Event)
+    
+    func updatePushSubscriptions(operations: HackleSubscriptionOperations)
+    func updateSmsSubscriptions(operations: HackleSubscriptionOperations)
+    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations)
 
     func remoteConfig() -> HackleRemoteConfig
+    
+    func setCurrentScreen(screen: Screen)
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     func variation(experimentKey: Int, userId: String, defaultVariation: String) -> String
