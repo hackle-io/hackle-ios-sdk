@@ -184,7 +184,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
 
         let pendingCount = eventRepository.countBy(status: .pending)
         if pendingCount >= eventFlushThreshold && pendingCount % eventFlushThreshold == 0 {
-            dispatch(limit: eventFlushMaxBatchSize)
+            flush()
         }
     }
 
