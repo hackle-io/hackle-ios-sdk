@@ -24,6 +24,8 @@ protocol EventRepository {
     func delete(events: [EventEntity])
 
     func deleteOldEvents(count: Int)
+    
+    func deleteExpiredEvents()
 }
 
 class SQLiteEventRepository: EventRepository {
@@ -67,14 +69,16 @@ class SQLiteEventRepository: EventRepository {
                 "INSERT INTO \(EventEntity.TABLE_NAME) (" +
                     "\(EventEntity.TYPE_COLUMN_NAME)," +
                     "\(EventEntity.STATUS_COLUMN_NAME)," +
-                    "\(EventEntity.BODY_COLUMN_NAME)" +
-                ") VALUES (?, ?, ?)"
+                    "\(EventEntity.BODY_COLUMN_NAME)," +
+                    "\(EventEntity.TIMESTAMP_COLUMN_NAME)" +
+                ") VALUES (?, ?, ?, ?)"
             
             try database.execute { database in
                 try database.statement(sql: query).use { statement in
                     try statement.bindInt(index: 1, value: Int32(event.type.rawValue))
                     try statement.bindInt(index: 2, value: Int32(EventEntityStatus.pending.rawValue))
                     try statement.bindString(index: 3, value: body)
+                    try statement.bindInt(index: 4, value: event.timestamp.epochMillis)
                     try statement.execute()
                 }
             }
@@ -180,6 +184,17 @@ class SQLiteEventRepository: EventRepository {
             }
         } catch {
             Log.error("Failed to delete events: \(error)")
+        }
+    }
+    
+    func deleteExpiredEvents() {
+        let sql = "DELETE FROM \(EventEntity.TABLE_NAME) WHERE \(EventEntity.TIMESTAMP_COLUMN_NAME) < strftime('%s', 'now', '-7 days') * 1000"
+        do {
+            try database.execute { database in
+                try database.execute(sql: sql)
+            }
+        } catch {
+            Log.error("Failed to delete expired events: \(error)")
         }
     }
 }
