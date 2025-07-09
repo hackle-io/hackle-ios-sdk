@@ -304,6 +304,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                         done()
                     }
                 }
+                
+                eventQueue.sync {}
 
                 // then
                 verify(exactly: 1) {
@@ -333,6 +335,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                         done()
                     }
                 }
+                eventQueue.sync {}
 
                 // then
                 verify(exactly: 1) {
