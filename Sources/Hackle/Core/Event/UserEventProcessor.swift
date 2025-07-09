@@ -189,6 +189,14 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     }
 
     private func flushInternal() {
+        if let nextFlushAllowDate = eventDispatcher.nextFlushAllowDate {
+            let now = Date().timeIntervalSince1970
+            if nextFlushAllowDate > now {
+                Log.debug("Skipping flush. Next flush date: \(nextFlushAllowDate), current time: \(now)")
+                return
+            }
+        }
+        
         dispatch(limit: eventFlushMaxBatchSize)
     }
 }

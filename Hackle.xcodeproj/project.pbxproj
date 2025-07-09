@@ -115,6 +115,7 @@
 		B2E38EA52DC495980024AA64 /* InAppMessageMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E38EA42DC4958D0024AA64 /* InAppMessageMatcher.swift */; };
 		B2E7B4AF2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */; };
 		B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */; };
+		B2F175A72E1E0708003F2BF4 /* UserEventConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F175A62E1E0700003F2BF4 /* UserEventConstants.swift */; };
 		B2F9D5BF2D4C912700F0C0E0 /* TargetEventConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
@@ -683,6 +684,7 @@
 		B2E38EA42DC4958D0024AA64 /* InAppMessageMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageMatcher.swift; sourceTree = "<group>"; };
 		B2E7B4AE2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStatus.swift; sourceTree = "<group>"; };
 		B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionOperations.swift; sourceTree = "<group>"; };
+		B2F175A62E1E0700003F2BF4 /* UserEventConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventConstants.swift; sourceTree = "<group>"; };
 		B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatcher.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
@@ -1842,6 +1844,7 @@
 				EE929D8A2BFFAC70003B7596 /* UserEventFilter.swift */,
 				EE80E00F2A2D9F5C00FB12CC /* UserEventPublisher.swift */,
 				EE80E00D2A2D9CC500FB12CC /* UserEventListener.swift */,
+				B2F175A62E1E0700003F2BF4 /* UserEventConstants.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -3232,6 +3235,7 @@
 				EE29D94429CD825400B1FEAA /* NoopTimer.swift in Sources */,
 				7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */,
 				EE29D98D29CD825400B1FEAA /* TargetRule.swift in Sources */,
+				B2F175A72E1E0708003F2BF4 /* UserEventConstants.swift in Sources */,
 				EE29D97029CD825400B1FEAA /* Collections.swift in Sources */,
 				EE929D8B2BFFAC70003B7596 /* UserEventFilter.swift in Sources */,
 				B25603112E015B04004794B9 /* HackleSubscriptionOperations.swift in Sources */,
