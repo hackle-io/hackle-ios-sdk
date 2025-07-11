@@ -179,8 +179,6 @@ enum ApiCallMetrics {
             return noneTag
         }
         
-        let errorType = String(describing: type(of: error))
-        let errorCase = String(describing: error)
-        return "\(errorType).\(errorCase)"
+        return String(describing: type(of: error))
     }
 }
