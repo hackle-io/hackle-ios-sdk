@@ -10,7 +10,7 @@ import Foundation
 
 class FixedClock: Clock {
 
-    private let date: Date
+    private(set) var date: Date
 
     init(date: Date) {
         self.date = date
@@ -26,5 +26,9 @@ class FixedClock: Clock {
 
     func tick() -> UInt64 {
         UInt64(date.timeIntervalSince1970 * 1000 * 1000 * 1000)
+    }
+    
+    func fastForward(_ interval: TimeInterval) {
+        date.addTimeInterval(interval)
     }
 }

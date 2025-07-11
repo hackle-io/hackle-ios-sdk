@@ -20,6 +20,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var userManager: MockUserManager!
         var appStateManager: AppStateManagerStub!
         var screenManager: MockScreeManager!
+        var eventBackoffControllrer: MockUserEventBackoffController!
 
         beforeEach {
             eventDedupDeterminer = MockUserEventDedupDeterminer()
@@ -32,11 +33,15 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             userManager = MockUserManager()
             appStateManager = AppStateManagerStub(currentState: .foreground)
             screenManager = MockScreeManager()
+            eventBackoffControllrer = MockUserEventBackoffController()
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             every(eventRepository.countMock).returns(0)
             every(eventRepository.countByMock).returns(0)
             every(eventRepository.getEventToFlushMock).returns([])
+            every(eventRepository.deleteExpiredEventsMock).returns(())
+            every(eventBackoffControllrer.checkResponseMock).returns(())
+            every(eventBackoffControllrer.isAllowNextFlushMock).returns(true)
         }
 
         func processor(
@@ -73,7 +78,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 sessionManager: sessionManager,
                 userManager: userManager,
                 appStateManager: appStateManager,
-                screenUserEventDecorator: screenUserEventDecorator
+                screenUserEventDecorator: screenUserEventDecorator,
+                eventBackoffController: eventBackoffControllrer
             )
         }
 
@@ -304,6 +310,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                         done()
                     }
                 }
+                
+                eventQueue.sync {}
 
                 // then
                 verify(exactly: 1) {
@@ -333,6 +341,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                         done()
                     }
                 }
+                eventQueue.sync {}
 
                 // then
                 verify(exactly: 1) {
@@ -407,7 +416,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     sessionManager: sessionManager,
                     userManager: userManager,
                     appStateManager: appStateManager,
-                    screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager())
+                    screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager()),
+                    eventBackoffController: eventBackoffControllrer
                 )
             }
 
@@ -441,6 +451,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 // then
                 expect(eventRepository.updateMock.invokations()[0].arguments.0).to(beIdenticalTo(events))
                 expect(eventRepository.updateMock.invokations()[0].arguments.1) == EventEntityStatus.pending
+                verify(exactly: 1) {
+                    eventRepository.deleteExpiredEventsMock
+                }
             }
 
             it("Flushing 상태의 이벤트가 없으면 별도 처리 하지 않는다") {
@@ -623,6 +636,25 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
                 // then
                 verify(exactly: 1) {
+                    eventDispatcher.dispatchMock
+                }
+            }
+            
+            it("backoff에 걸리면 dispatch를 호출하지 않는다") {
+                let sut = processor(eventFlushMaxBatchSize: 1)
+
+                every(eventBackoffControllrer.isAllowNextFlushMock).returns(false)
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+                
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.flush()
+                    eventQueue.sync {
+                        done()
+                    }
+                }
+                
+                verify(exactly: 0) {
                     eventDispatcher.dispatchMock
                 }
             }
