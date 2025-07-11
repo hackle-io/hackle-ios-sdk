@@ -20,6 +20,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var userManager: MockUserManager!
         var appStateManager: AppStateManagerStub!
         var screenManager: MockScreeManager!
+        var eventBackoffControllrer: MockUserEventBackoffController!
 
         beforeEach {
             eventDedupDeterminer = MockUserEventDedupDeterminer()
@@ -32,11 +33,14 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             userManager = MockUserManager()
             appStateManager = AppStateManagerStub(currentState: .foreground)
             screenManager = MockScreeManager()
+            eventBackoffControllrer = MockUserEventBackoffController()
 
             every(eventDedupDeterminer.isDedupTargetMock).returns(false)
             every(eventRepository.countMock).returns(0)
             every(eventRepository.countByMock).returns(0)
             every(eventRepository.getEventToFlushMock).returns([])
+            every(eventBackoffControllrer.checkResponseMock).returns(())
+            every(eventBackoffControllrer.isAllowNextFlushMock).returns(true)
         }
 
         func processor(
@@ -73,7 +77,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 sessionManager: sessionManager,
                 userManager: userManager,
                 appStateManager: appStateManager,
-                screenUserEventDecorator: screenUserEventDecorator
+                screenUserEventDecorator: screenUserEventDecorator,
+                eventBackoffController: eventBackoffControllrer
             )
         }
 
@@ -410,7 +415,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     sessionManager: sessionManager,
                     userManager: userManager,
                     appStateManager: appStateManager,
-                    screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager())
+                    screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager()),
+                    eventBackoffController: eventBackoffControllrer
                 )
             }
 

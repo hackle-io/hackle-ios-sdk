@@ -104,6 +104,9 @@
 		B29C53672DCB3675001724B2 /* InAppMessageExtSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */; };
 		B29C53692DCB3785001724B2 /* HackleInAppMessageActionTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */; };
 		B29C536B2DCB3820001724B2 /* HacklePushSubscriptionStatusSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */; };
+		B2A88D882E209F3D00475B73 /* UserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */; };
+		B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */; };
+		B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
 		B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */; };
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
@@ -673,6 +676,9 @@
 		B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageExtSpecs.swift; sourceTree = "<group>"; };
 		B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageActionTypeSpecs.swift; sourceTree = "<group>"; };
 		B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStatusSpecs.swift; sourceTree = "<group>"; };
+		B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventBackoffController.swift; sourceTree = "<group>"; };
+		B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserEventBackoffControllerSpec.swift; sourceTree = "<group>"; };
+		B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
 		B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageView.swift; sourceTree = "<group>"; };
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
@@ -1845,6 +1851,7 @@
 				EE80E00F2A2D9F5C00FB12CC /* UserEventPublisher.swift */,
 				EE80E00D2A2D9CC500FB12CC /* UserEventListener.swift */,
 				B2F175A62E1E0700003F2BF4 /* UserEventConstants.swift */,
+				B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -2259,11 +2266,13 @@
 				EE29DA2F29CD82C200B1FEAA /* DefaultUserEventDispatcherSepc.swift */,
 				EE29DA3029CD82C200B1FEAA /* DefaultUserEventProcessorSpec.swift */,
 				EE789E4329F102510088D8A6 /* DefaultUserEventFactorySpecs.swift */,
+				B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */,
 				EE789E3029F01DF60088D8A6 /* InMemoryUserEventProcessor.swift */,
-				EE789E2A29F008F30088D8A6 /* MockUserEventFactory.swift */,
 				EE29DA3129CD82C200B1FEAA /* UserEventSpecs.swift */,
 				EEF895A12A49BD3500722CF6 /* UserEventsTestExt.swift */,
 				EEF895B62A4ADD3000722CF6 /* UserEventPublisherStub.swift */,
+				EE789E2A29F008F30088D8A6 /* MockUserEventFactory.swift */,
+				B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -3242,6 +3251,7 @@
 				B2931DEC2DFFF15200E5931E /* HackleSubscriptionStatus.swift in Sources */,
 				EE29D9AB29CD825500B1FEAA /* SessionListener.swift in Sources */,
 				7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */,
+				B2A88D882E209F3D00475B73 /* UserEventBackoffController.swift in Sources */,
 				EEAC3F332B9D54ED00DC498E /* PushTokenListener.swift in Sources */,
 				EE29D97C29CD825400B1FEAA /* HttpRequest.swift in Sources */,
 			);
@@ -3450,6 +3460,7 @@
 				B24234AF2D89122E00878096 /* DatabaseSpecs.swift in Sources */,
 				EEF8959E2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift in Sources */,
 				EEF895B22A4A9C0000722CF6 /* MockInAppMessagePresenter.swift in Sources */,
+				B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */,
 				EE789E2829EFE91C0088D8A6 /* ExperimentEvaluationSpecs.swift in Sources */,
 				EE29DA9829CD82C200B1FEAA /* EvaluationFlowSpecs.swift in Sources */,
 				EE29DA7829CD82C200B1FEAA /* MockConditionMatcherFactory.swift in Sources */,
@@ -3460,6 +3471,7 @@
 				EEF895AC2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift in Sources */,
 				EE29DA8B29CD82C200B1FEAA /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift in Sources */,
 				EE29DA8C29CD82C200B1FEAA /* DefaultContainerResolverSpecs.swift in Sources */,
+				B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */,
 				EE29DA6F29CD82C200B1FEAA /* MockEvaluator.swift in Sources */,
 				EE29DA7229CD82C200B1FEAA /* DefaultUserValueResolverSpecs.swift in Sources */,
 				EE29DA7D29CD82C200B1FEAA /* UserConditionMatcherSpecs.swift in Sources */,

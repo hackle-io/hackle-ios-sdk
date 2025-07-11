@@ -504,13 +504,15 @@ extension HackleApp {
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
         let appStateManager = DefaultAppStateManager(queue: eventQueue)
+        let eventBackoffController = DefaultUserEventBackoffController(clock: SystemClock.shared)
 
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             httpQueue: httpQueue,
-            httpClient: httpClient
+            httpClient: httpClient,
+            eventBackoffController: eventBackoffController
         )
 
         let eventPublisher = DefaultUserEventPublisher()
@@ -564,7 +566,8 @@ extension HackleApp {
             sessionManager: sessionManager,
             userManager: userManager,
             appStateManager: appStateManager,
-            screenUserEventDecorator: screenUserEventDecorator
+            screenUserEventDecorator: screenUserEventDecorator,
+            eventBackoffController: eventBackoffController
         )
 
         // - Core

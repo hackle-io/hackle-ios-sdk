@@ -39,6 +39,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let userManager: UserManager
     private let appStateManager: AppStateManager
     private let screenUserEventDecorator: UserEventDecorator
+    private let eventBackoffController: UserEventBackoffController
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -57,7 +58,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         sessionManager: SessionManager,
         userManager: UserManager,
         appStateManager: AppStateManager,
-        screenUserEventDecorator: UserEventDecorator
+        screenUserEventDecorator: UserEventDecorator,
+        eventBackoffController: UserEventBackoffController
     ) {
         self.eventFilters = eventFilters
         self.eventDecorator = eventDecorator
@@ -74,6 +76,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         self.userManager = userManager
         self.appStateManager = appStateManager
         self.screenUserEventDecorator = screenUserEventDecorator
+        self.eventBackoffController = eventBackoffController
     }
 
     func process(event: UserEvent) {
@@ -189,12 +192,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     }
 
     private func flushInternal() {
-        if let nextFlushAllowDate = eventDispatcher.nextFlushAllowDate {
-            let now = Date().timeIntervalSince1970
-            if nextFlushAllowDate > now {
-                Log.debug("Skipping flush. Next flush date: \(nextFlushAllowDate), current time: \(now)")
-                return
-            }
+        if !eventBackoffController.isAllowNextFlush() {
+            return
         }
         
         dispatch(limit: eventFlushMaxBatchSize)

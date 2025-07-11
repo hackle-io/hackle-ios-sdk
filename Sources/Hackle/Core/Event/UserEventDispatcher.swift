@@ -5,26 +5,24 @@
 import Foundation
 
 protocol UserEventDispatcher {
-    var nextFlushAllowDate: TimeInterval? { get }
     func dispatch(events: [EventEntity])
 }
 
 class DefaultUserEventDispatcher: UserEventDispatcher {
-    private(set) var nextFlushAllowDate: TimeInterval? = nil
-
     private let endpoint: URL
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
     private let httpQueue: DispatchQueue
     private let httpClient: HttpClient
-    private var failureCount = 0
+    private let eventBackoffController: UserEventBackoffController
 
-    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient) {
+    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient, eventBackoffController: UserEventBackoffController) {
         self.endpoint = eventBaseUrl.appendingPathComponent("/api/v2/events")
         self.eventQueue = eventQueue
         self.eventRepository = eventRepository
         self.httpQueue = httpQueue
         self.httpClient = httpClient
+        self.eventBackoffController = eventBackoffController
     }
 
     func dispatch(events: [EventEntity]) {
@@ -62,11 +60,7 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
     }
 
     private func handleResponse(events: [EventEntity], response: HttpResponse) {
-        if response.isSuccessful {
-            hadnleSuccessResponse()
-        } else {
-            handleFailureResponse()
-        }
+        eventBackoffController.checkResponse(response.isSuccessful)
         
         if let error = response.error {
             Log.error("Failed to dispatch events: \(error.localizedDescription)")
@@ -91,16 +85,6 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
         }
 
         updateEventStatusToPending(events: events)
-    }
-    
-    private func hadnleSuccessResponse() {
-        failureCount = 0
-        calculateNextFlushDate()
-    }
-    
-    private func handleFailureResponse() {
-        failureCount += 1
-        calculateNextFlushDate()
     }
 
     private func deleteEventInternal(events: [EventEntity]) {
@@ -132,15 +116,6 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
 
         let body = "{\"exposureEvents\":[\(exposurePayload)],\"trackEvents\":[\(trackPayload)],\"remoteConfigEvents\":[\(remoteConfigPayload)]}"
         return body.data(using: .utf8)
-    }
-    
-    private func calculateNextFlushDate() {
-        if failureCount == 0 {
-            nextFlushAllowDate = nil
-        } else {
-            let interval: TimeInterval = min(pow(2.0, Double(failureCount) - 1) * 60, userEventMaxInterval)
-            nextFlushAllowDate = Date(timeIntervalSinceNow: interval).timeIntervalSince1970
-        }
     }
 }
 
