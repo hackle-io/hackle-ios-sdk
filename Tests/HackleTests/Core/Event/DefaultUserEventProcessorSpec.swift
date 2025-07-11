@@ -635,6 +635,25 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher.dispatchMock
                 }
             }
+            
+            it("backoff에 걸리면 dispatch를 호출하지 않는다") {
+                let sut = processor(eventFlushMaxBatchSize: 1)
+
+                every(eventBackoffControllrer.isAllowNextFlushMock).returns(false)
+                let events = [EventEntity(id: 320, type: .exposure, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+                
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.flush()
+                    eventQueue.sync {
+                        done()
+                    }
+                }
+                
+                verify(exactly: 0) {
+                    eventDispatcher.dispatchMock
+                }
+            }
         }
     }
 }
