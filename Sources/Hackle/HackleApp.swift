@@ -504,7 +504,6 @@ extension HackleApp {
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
         let appStateManager = DefaultAppStateManager(queue: eventQueue)
-        eventRepository.deleteExpiredEvents()
 
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,

@@ -51,31 +51,6 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 urlResponse: HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil, headerFields: nil),
                 error: error)
         }
-        
-        describe("delete") {
-            beforeEach {
-                let calendar = Calendar.current
-                let now = Date()
-                
-                for i in 0..<10 {
-                    guard let dateDaysAgo = calendar.date(byAdding: .day, value: -(i), to: now) else { continue }
-                    let timestamp = dateDaysAgo.timeIntervalSince1970 + 10000 // add 10 sec
-                    let event = UserEvents.track("test\(i)", properties: [:], user: HackleUser(identifiers: [:], properties: [:], hackleProperties: [:]), timestamp: timestamp)
-                    eventRepository.save(event: event)
-                }
-                eventEntities = eventRepository.findAllBy(status: .flushing)
-                eventRepository.update(events: eventEntities, status: .pending)
-            }
-            
-            it("7일이 지난 이벤트는 모두 삭제한다") {
-                let beforeEvents = eventRepository.getEventToFlush(limit: 20)
-                expect(beforeEvents.count) == 11
-                eventRepository.update(events: beforeEvents, status: .pending)
-                eventRepository.deleteExpiredEvents()
-                let events = eventRepository.getEventToFlush(limit: 20)
-                expect(events.count) == 8
-            }
-        }
 
         describe("dispatch") {
 

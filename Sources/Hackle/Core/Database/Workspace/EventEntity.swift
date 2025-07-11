@@ -48,7 +48,6 @@ extension EventEntity {
     static let TYPE_COLUMN_NAME = "type"
     static let STATUS_COLUMN_NAME = "status"
     static let BODY_COLUMN_NAME = "body"
-    static let TIMESTAMP_COLUMN_NAME = "timestamp"
     
     static let DDL_LIST = [
         DatabaseDDL(
@@ -60,14 +59,6 @@ extension EventEntity {
                     "\(TYPE_COLUMN_NAME) INTEGER," +
                     "\(BODY_COLUMN_NAME) TEXT" +
                 ")"
-            ]
-        ),
-        DatabaseDDL(
-            version: 2,
-            statements: [
-                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(TIMESTAMP_COLUMN_NAME) INTEGER",
-                "UPDATE \(TABLE_NAME) SET \(TIMESTAMP_COLUMN_NAME) = CAST(json_extract(\(BODY_COLUMN_NAME), '$.timestamp') AS NUMERIC) " +
-                    "WHERE \(TIMESTAMP_COLUMN_NAME) IS NULL"
             ]
         )
     ]
