@@ -451,6 +451,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 // then
                 expect(eventRepository.updateMock.invokations()[0].arguments.0).to(beIdenticalTo(events))
                 expect(eventRepository.updateMock.invokations()[0].arguments.1) == EventEntityStatus.pending
+                verify(exactly: 1) {
+                    eventRepository.deleteExpiredEventsMock
+                }
             }
 
             it("Flushing 상태의 이벤트가 없으면 별도 처리 하지 않는다") {
