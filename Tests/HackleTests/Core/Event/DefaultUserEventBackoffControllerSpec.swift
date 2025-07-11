@@ -92,7 +92,7 @@ class DefaultUserEventBackoffControllerSpec: QuickSpec {
                     }
 
                     // when: 최대 간격이 지나기 전
-                    clock.fastForward(userEventMaxInterval - 5)
+                    clock.fastForward(Double(userEventRetryMaxInterval / 1000 - 5))
                     // then: flush는 허용되지 않음
                     expect(sut.isAllowNextFlush()).to(beFalse())
 

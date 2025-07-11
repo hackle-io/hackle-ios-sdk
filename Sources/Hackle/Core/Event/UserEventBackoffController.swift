@@ -44,8 +44,12 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
         if failureCount == 0 {
             nextFlushAllowDate = nil
         } else {
-            let interval: TimeInterval = min(pow(2.0, Double(failureCount) - 1) * 60, userEventMaxInterval)
-            nextFlushAllowDate = clock.now().addingTimeInterval(interval).epochMillis
+            guard let interval = pow(2.0, Double(failureCount) - 1).toInt64OrNil() else {
+                nextFlushAllowDate = nil
+                return
+            }
+            let intervalMilis = min(interval * userEventRetryInterval, userEventRetryMaxInterval)
+            nextFlushAllowDate = clock.currentMillis() + intervalMilis
         }
     }
 }

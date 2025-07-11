@@ -39,6 +39,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             every(eventRepository.countMock).returns(0)
             every(eventRepository.countByMock).returns(0)
             every(eventRepository.getEventToFlushMock).returns([])
+            every(eventRepository.deleteExpiredEventsMock).returns(())
             every(eventBackoffControllrer.checkResponseMock).returns(())
             every(eventBackoffControllrer.isAllowNextFlushMock).returns(true)
         }

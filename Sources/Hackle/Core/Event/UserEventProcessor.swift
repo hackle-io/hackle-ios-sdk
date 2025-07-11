@@ -103,6 +103,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         if !events.isEmpty {
             eventRepository.update(events: events, status: .pending)
         }
+        eventRepository.deleteExpiredEvents(currentMillis: SystemClock.shared.currentMillis())
         Log.debug("DefaultUserEventProcessor initialized.")
     }
 
