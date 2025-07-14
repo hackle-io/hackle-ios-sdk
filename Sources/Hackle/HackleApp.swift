@@ -504,7 +504,7 @@ extension HackleApp {
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
         let appStateManager = DefaultAppStateManager(queue: eventQueue)
-        let eventBackoffController = DefaultUserEventBackoffController(clock: SystemClock.shared)
+        let eventBackoffController = DefaultUserEventBackoffController(userEventRetryInterval: config.eventFlushInterval, clock: SystemClock.shared)
 
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,

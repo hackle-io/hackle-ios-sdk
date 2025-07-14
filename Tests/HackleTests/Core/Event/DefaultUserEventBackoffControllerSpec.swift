@@ -13,11 +13,13 @@ import Foundation
 class DefaultUserEventBackoffControllerSpec: QuickSpec {
     override func spec() {
         var sut: DefaultUserEventBackoffController!
+        var userEventRetryInterval: TimeInterval!
         var clock: FixedClock!
 
         beforeEach {
             clock = FixedClock(date: Date())
-            sut = DefaultUserEventBackoffController(clock: clock)
+            userEventRetryInterval = 10
+            sut = DefaultUserEventBackoffController(userEventRetryInterval: userEventRetryInterval, clock: clock)
         }
 
         describe("DefaultUserEventBackoffController") {
@@ -39,32 +41,32 @@ class DefaultUserEventBackoffControllerSpec: QuickSpec {
             }
 
             context("checkResponse에 실패(false)를 전달했을 때") {
-                it("첫 실패 후에는 60초 동안 flush가 허용되지 않아야 한다") {
+                it("첫 실패 후에는 userEventRetryInterval 초 동안 flush가 허용되지 않아야 한다") {
                     // given: 첫 실패
-                    sut.checkResponse(false) // failureCount = 1 -> delay = 2^(1-1) * 60 = 60초
+                    sut.checkResponse(false) // failureCount = 1 -> delay = 2^(1-1) * userEventRetryInterval
 
-                    // when: 60초가 지나기 전
-                    clock.fastForward(58)
+                    // when: userEventRetryInterval 초가 지나기 전
+                    clock.fastForward(userEventRetryInterval - 2)
                     // then: flush는 허용되지 않음
                     expect(sut.isAllowNextFlush()).to(beFalse())
 
-                    // when: 60초가 지났을 때
+                    // when: userEventRetryInterval 초가 지났을 때
                     clock.fastForward(3)
                     // then: flush가 허용됨
                     expect(sut.isAllowNextFlush()).to(beTrue())
                 }
 
-                it("연속 두 번 실패 후에는 120초 동안 flush가 허용되지 않아야 한다") {
+                it("연속 두 번 실패 후에는 userEventRetryInterval * 2 초 동안 flush가 허용되지 않아야 한다") {
                     // given: 연속 두 번 실패
-                    sut.checkResponse(false) // 60초 delay 설정됨
-                    sut.checkResponse(false) // failureCount = 2 -> delay = 2^(2-1) * 60 = 120초
+                    sut.checkResponse(false) // userEventRetryInterval 초 delay 설정됨
+                    sut.checkResponse(false) // failureCount = 2 -> delay = 2^(2-1) * userEventRetryInterval
 
-                    // when: 120초가 지나기 전
-                    clock.fastForward(118)
+                    // when: (userEventRetryInterval * 2) 초가 지나기 전
+                    clock.fastForward(userEventRetryInterval * 2 - 2)
                     // then: flush는 허용되지 않음
                     expect(sut.isAllowNextFlush()).to(beFalse())
 
-                    // when: 120초가 지났을 때
+                    // when: (userEventRetryInterval * 2) 초가 지났을 때
                     clock.fastForward(3)
                     // then: flush가 허용됨
                     expect(sut.isAllowNextFlush()).to(beTrue())
@@ -87,12 +89,13 @@ class DefaultUserEventBackoffControllerSpec: QuickSpec {
             
             context("실패가 계속되어 최대 간격(maxInterval)에 도달했을 때") {
                 it("지연 시간이 userEventMaxInterval을 초과하지 않아야 한다") {
+                    // 10, 20, 40, 80, 160, 320, 640, 1280, 2560, 3600(5120)
                     for _ in 0..<10 {
                         sut.checkResponse(false)
                     }
 
                     // when: 최대 간격이 지나기 전
-                    clock.fastForward(Double(userEventRetryMaxInterval / 1000 - 5))
+                    clock.fastForward(Double(userEventRetryMaxInterval - 5))
                     // then: flush는 허용되지 않음
                     expect(sut.isAllowNextFlush()).to(beFalse())
 

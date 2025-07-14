@@ -13,17 +13,19 @@ protocol UserEventBackoffController {
 }
 
 class DefaultUserEventBackoffController: UserEventBackoffController {
+    private let userEventRetryInterval: TimeInterval
     private let clock: Clock
-    private var nextFlushAllowDate: Int64? = nil
-    private var failureCount: UInt = 0
+    private var nextFlushAllowDate: TimeInterval? = nil
+    private var failureCount: AtomicUInt64 = AtomicUInt64(value: 0)
     
-    init(clock: Clock) {
+    init(userEventRetryInterval: TimeInterval, clock: Clock) {
+        self.userEventRetryInterval = userEventRetryInterval
         self.clock = clock
     }
     
     func checkResponse(_ isSuccess: Bool) {
-        failureCount = isSuccess ? 0 : failureCount + 1
-        calculateNextFlushDate()
+        let count = isSuccess ? failureCount.setAndGet(0) : failureCount.addAndGet(1)
+        calculateNextFlushDate(failureCount: count)
     }
     
     func isAllowNextFlush() -> Bool {
@@ -31,7 +33,7 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
             return true
         }
         
-        let now = clock.currentMillis()
+        let now = clock.now().timeIntervalSince1970
         if now < nextFlushAllowDate {
             Log.debug("Skipping flush. Next flush date: \(nextFlushAllowDate), current time: \(now)")
             return false
@@ -40,16 +42,13 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
         return true
     }
     
-    private func calculateNextFlushDate() {
+    private func calculateNextFlushDate(failureCount: UInt64) {
         if failureCount == 0 {
             nextFlushAllowDate = nil
         } else {
-            guard let interval = pow(2.0, Double(failureCount) - 1).toInt64OrNil() else {
-                nextFlushAllowDate = nil
-                return
-            }
-            let intervalMilis = min(interval * userEventRetryInterval, userEventRetryMaxInterval)
-            nextFlushAllowDate = clock.currentMillis() + intervalMilis
+            let exponential = pow(2.0, Double(failureCount) - 1)
+            let intervalSeconds = min(exponential * userEventRetryInterval, userEventRetryMaxInterval)
+            nextFlushAllowDate = clock.now().timeIntervalSince1970 + intervalSeconds
         }
     }
 }

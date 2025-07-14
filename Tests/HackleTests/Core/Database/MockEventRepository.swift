@@ -56,7 +56,7 @@ class MockEventRepository: Mock, EventRepository {
     
     lazy var deleteExpiredEventsMock = MockFunction(self, deleteExpiredEvents)
     
-    func deleteExpiredEvents(currentMillis: Int64) {
-        call(deleteExpiredEventsMock, args: currentMillis)
+    func deleteExpiredEvents(expirationThresholdMillis: Int64) {
+        call(deleteExpiredEventsMock, args: expirationThresholdMillis)
     }
 }

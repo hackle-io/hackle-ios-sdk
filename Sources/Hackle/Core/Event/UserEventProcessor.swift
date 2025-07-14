@@ -103,7 +103,10 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         if !events.isEmpty {
             eventRepository.update(events: events, status: .pending)
         }
-        eventRepository.deleteExpiredEvents(currentMillis: SystemClock.shared.currentMillis())
+        
+        // MARK: userEventExpiredIntervalMillis 지난 이벤트는 삭제한다.
+        let expirationThresholdMillis = SystemClock.shared.currentMillis() - userEventExpiredIntervalMillis
+        eventRepository.deleteExpiredEvents(expirationThresholdMillis: expirationThresholdMillis)
         Log.debug("DefaultUserEventProcessor initialized.")
     }
 
@@ -188,7 +191,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
 
         let pendingCount = eventRepository.countBy(status: .pending)
         if pendingCount >= eventFlushThreshold && pendingCount % eventFlushThreshold == 0 {
-            flush()
+            flushInternal()
         }
     }
 
