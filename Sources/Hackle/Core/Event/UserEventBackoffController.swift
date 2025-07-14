@@ -15,7 +15,7 @@ protocol UserEventBackoffController {
 class DefaultUserEventBackoffController: UserEventBackoffController {
     private let userEventRetryInterval: TimeInterval
     private let clock: Clock
-    private var nextFlushAllowDate: TimeInterval? = nil
+    private var nextFlushAllowDate: Date? = nil
     private var failureCount: AtomicUInt64 = AtomicUInt64(value: 0)
     
     init(userEventRetryInterval: TimeInterval, clock: Clock) {
@@ -33,7 +33,7 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
             return true
         }
         
-        let now = clock.now().timeIntervalSince1970
+        let now = clock.now()
         if now < nextFlushAllowDate {
             Log.debug("Skipping flush. Next flush date: \(nextFlushAllowDate), current time: \(now)")
             return false
@@ -48,7 +48,7 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
         } else {
             let exponential = pow(2.0, Double(failureCount) - 1)
             let intervalSeconds = min(exponential * userEventRetryInterval, userEventRetryMaxInterval)
-            nextFlushAllowDate = clock.now().timeIntervalSince1970 + intervalSeconds
+            nextFlushAllowDate = clock.now().addingTimeInterval(intervalSeconds)
         }
     }
 }
