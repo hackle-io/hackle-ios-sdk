@@ -32,6 +32,11 @@ class HackleUserExplorerView {
             
             if let buttonWindow = self.buttonWindow {
                 buttonWindow.isHidden = true
+                
+                if #available(iOS 13.0, *) {
+                    self.buttonWindow?.windowScene = nil
+                }
+                
                 self.buttonWindow = nil
             }
         }
