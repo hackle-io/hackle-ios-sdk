@@ -82,7 +82,12 @@ class HackleUserExplorerView {
     }
 
     private func createButton() -> HackleUserExplorerButton {
-        let rect = UIScreen.main.bounds
+        let rect = if #available(iOS 14.0, *), ProcessInfo.processInfo.isiOSAppOnMac {
+            UIUtils.keyWindow?.bounds ?? UIScreen.main.bounds
+        } else {
+            UIScreen.main.bounds
+        }
+
         let width = rect.size.width
         let height = rect.size.height
         let offset = HackleUserExplorerButton.offset()
