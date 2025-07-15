@@ -80,42 +80,25 @@ class HackleUserExplorerView {
             self.button = nil
         }
     }
-    
 
     private func createButton() -> HackleUserExplorerButton {
         let rect = UIScreen.main.bounds
         let width = rect.size.width
         let height = rect.size.height
-        let offset = offset()
+        let offset = HackleUserExplorerButton.offset()
+        
         let button = HackleUserExplorerButton(frame: CGRect(
             x: width - 50,
             y: height - 50 - offset,
             width: 35,
             height: 35
         ))
-        button.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClick)))
-        button.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onTouch)))
+        
+        button.tapDelegate = { [weak self] in
+            self?.onClick()
+        }
+
         return button
-    }
-
-    @objc func onTouch(sender: UIPanGestureRecognizer) {
-        let translation = sender.translation(in: button)
-
-        let barHeight = barHeight()
-        let bottomOffset = offset()
-
-        let rect = UIScreen.main.bounds
-        let width = rect.size.width
-        let height = rect.size.height
-
-        var newY = min(button!.center.y + translation.y, height - bottomOffset)
-        newY = max(barHeight + (button!.bounds.height / 2), newY)
-
-        var newX = min(button!.center.x + translation.x, width)
-        newX = max(button!.bounds.width / 2, newX)
-
-        button!.center = CGPoint(x: newX, y: newY)
-        sender.setTranslation(CGPoint(x: 0, y: 0), in: button)
     }
 
     @objc func onClick() {
@@ -126,28 +109,10 @@ class HackleUserExplorerView {
             else {
                 return
             }
+            
             let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
             hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
             topViewController.present(hackleUserExplorerViewController, animated: true)
         }
-    }
-
-    private func barHeight() -> CGFloat {
-        if #available(iOS 13.0, *) {
-            guard let size = UIUtils.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.size else {
-                return 0.0
-            }
-            return min(size.width, size.height)
-        } else {
-            guard let application = UIUtils.application else {
-                return 0.0
-            }
-            let size = application.statusBarFrame.size
-            return min(size.width, size.height)
-        }
-    }
-
-    private func offset() -> CGFloat {
-        barHeight() > 24.0 ? 30.0 : 0.0
     }
 }
