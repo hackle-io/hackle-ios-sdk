@@ -66,8 +66,7 @@
 		7E9F7E892B6CCC3700A6B0B8 /* MockFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */; };
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
-		B22300DF2E25EB7C00A5687D /* PassthroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22300DE2E25EB7300A5687D /* PassthroughWindow.swift */; };
-		B22300E12E25ECEE00A5687D /* UIWindowExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22300E02E25ECEA00A5687D /* UIWindowExt.swift */; };
+		B22300EA2E26281300A5687D /* HackleUserExplorerViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22300E92E26280A00A5687D /* HackleUserExplorerViewExt.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -636,8 +635,7 @@
 		7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileStorage.swift; sourceTree = "<group>"; };
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
-		B22300DE2E25EB7300A5687D /* PassthroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughWindow.swift; sourceTree = "<group>"; };
-		B22300E02E25ECEA00A5687D /* UIWindowExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIWindowExt.swift; sourceTree = "<group>"; };
+		B22300E92E26280A00A5687D /* HackleUserExplorerViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerViewExt.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -2297,8 +2295,9 @@
 			isa = PBXGroup;
 			children = (
 				EE0E925729D2A18F009C7F31 /* Experiment */,
-				EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */,
 				EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */,
+				B22300E92E26280A00A5687D /* HackleUserExplorerViewExt.swift */,
+				EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */,
 				EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */,
 				EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */,
 				EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */,
@@ -2560,14 +2559,12 @@
 		EEA01CBD2A36B9A100E0C021 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				B22300DE2E25EB7300A5687D /* PassthroughWindow.swift */,
 				EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */,
 				EECDF42D2C145E0E009B2F56 /* Shadow.swift */,
 				EE0F34022A6690D2009DE640 /* UrlHandler.swift */,
 				EE543CC92C09745200F64BFA /* ViewManager.swift */,
 				EEF895B82A4B37C800722CF6 /* ImageCacheManager.swift */,
 				EEA01CCA2A37138300E0C021 /* UIKitExt.swift */,
-				B22300E02E25ECEA00A5687D /* UIWindowExt.swift */,
 				EEA01CBE2A36B9B100E0C021 /* HackleUIUtils.swift */,
 			);
 			path = Internal;
@@ -2997,6 +2994,7 @@
 				EE29D9AA29CD825500B1FEAA /* SessionEventTracker.swift in Sources */,
 				EE0B71E52A3BF237009D7AF4 /* InAppMessageExt.swift in Sources */,
 				EE29D99329CD825400B1FEAA /* TargetMatcher.swift in Sources */,
+				B22300EA2E26281300A5687D /* HackleUserExplorerViewExt.swift in Sources */,
 				EEF8958B2A493AA500722CF6 /* InAppMessageFlowEvaluator.swift in Sources */,
 				EE29D94729CD825400B1FEAA /* FlushTimer.swift in Sources */,
 				EE3C166029D43253008177F6 /* HackleFeatureFlagItem.swift in Sources */,
@@ -3108,7 +3106,6 @@
 				EEAC3F2D2B9D54DB00DC498E /* PushPlatformType.swift in Sources */,
 				EE29DAC829CD91A400B1FEAA /* ManualOverrideStorage.swift in Sources */,
 				EEA01CBF2A36B9B100E0C021 /* HackleUIUtils.swift in Sources */,
-				B22300DF2E25EB7C00A5687D /* PassthroughWindow.swift in Sources */,
 				B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */,
 				7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */,
 				EE29D99729CD825500B1FEAA /* OverrideResolver.swift in Sources */,
@@ -3217,7 +3214,6 @@
 				7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */,
 				EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */,
 				EE29D98129CD825400B1FEAA /* ParameterConfiguration.swift in Sources */,
-				B22300E12E25ECEE00A5687D /* UIWindowExt.swift in Sources */,
 				EE29D96329CD825400B1FEAA /* Workspace.swift in Sources */,
 				EE29D9AC29CD825500B1FEAA /* SessionManager.swift in Sources */,
 				EE29D95529CD825400B1FEAA /* CumulativeCounter.swift in Sources */,
