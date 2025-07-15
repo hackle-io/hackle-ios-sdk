@@ -10,46 +10,77 @@ import UIKit
 
 
 class HackleUserExplorerView {
-
     private var button: HackleUserExplorerButton? = nil
-
+    private var buttonWindow: UIWindow? = nil
+    
     func attach() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self, let window = UIUtils.keyWindow else {
+            guard let self = self else {
                 return
             }
-
-            if window.subviews.contains(where: { view in
-                view is HackleUserExplorerButton
-            }) {
-                return
-            }
-
-            if self.button == nil {
-                self.button = self.createButton()
-            }
-            let button = self.button!
-
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                window.addSubview(button)
+            if #available(iOS 13.0, *) {
+                self.createButtonWindow()
+            } else {
+                self.addButtonToCurrentView()
             }
         }
     }
 
     func detach() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self, let window = UIUtils.keyWindow else {
+            guard let self = self else {
                 return
             }
-
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                if self.button != nil {
-                    self.button?.removeFromSuperview()
-                    self.button = nil
-                }
+            if #available(iOS 13.0, *) {
+                self.removeButtonWindow()
+            } else {
+                self.removeButtonFromCurrentView()
             }
         }
     }
+    
+    @available(iOS 13.0, *)
+    private func createButtonWindow() {
+        self.button = self.createButton()
+        buttonWindow = UIWindow.show(floatingView: self.button!)
+    }
+    
+    private func addButtonToCurrentView() {
+        guard let window = UIUtils.keyWindow else {
+            return
+        }
+
+        if window.subviews.contains(where: { view in
+            view is HackleUserExplorerButton
+        }) {
+            return
+        }
+
+        if self.button == nil {
+            self.button = self.createButton()
+        }
+        let button = self.button!
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            window.addSubview(button)
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    private func removeButtonWindow() {
+        if let buttonWindow = self.buttonWindow {
+            buttonWindow.isHidden = true
+            self.buttonWindow = nil
+        }
+    }
+    
+    private func removeButtonFromCurrentView() {
+        if self.button != nil {
+            self.button?.removeFromSuperview()
+            self.button = nil
+        }
+    }
+    
 
     private func createButton() -> HackleUserExplorerButton {
         let rect = UIScreen.main.bounds
