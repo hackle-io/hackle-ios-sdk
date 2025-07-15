@@ -8,4 +8,4 @@
 import Foundation
 
 let userEventRetryMaxInterval: TimeInterval = 60 * 60 // 1 hour in seconds
-let userEventExpiredIntervalMillis: Int64 = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+let userEventExpiredInterval: TimeInterval = 7 * 24 * 60 * 60 // 7 days in seconds

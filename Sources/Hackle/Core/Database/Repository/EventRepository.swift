@@ -25,7 +25,7 @@ protocol EventRepository {
 
     func deleteOldEvents(count: Int)
     
-    func deleteExpiredEvents(expirationThresholdMillis: Int64)
+    func deleteExpiredEvents(expirationThresholdDate: Date)
 }
 
 class SQLiteEventRepository: EventRepository {
@@ -185,14 +185,14 @@ class SQLiteEventRepository: EventRepository {
         }
     }
     
-    func deleteExpiredEvents(expirationThresholdMillis: Int64) {
+    func deleteExpiredEvents(expirationThresholdDate: Date) {
         let expiredEvents = findAllBy(status: .pending).filter { event in
             guard let userEvent = event.body.jsonObject(),
                   let timestamp = userEvent["timestamp"] as? Int else {
                 return false
             }
-
-            return timestamp < expirationThresholdMillis
+            let date = Date(timeIntervalSince1970: TimeInterval(timestamp) * 0.001)
+            return date < expirationThresholdDate
         }
         
         if !expiredEvents.isEmpty {

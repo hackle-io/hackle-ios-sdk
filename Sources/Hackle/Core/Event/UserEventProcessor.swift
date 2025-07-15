@@ -105,8 +105,8 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         }
         
         // MARK: userEventExpiredIntervalMillis 지난 이벤트는 삭제한다.
-        let expirationThresholdMillis = SystemClock.shared.currentMillis() - userEventExpiredIntervalMillis
-        eventRepository.deleteExpiredEvents(expirationThresholdMillis: expirationThresholdMillis)
+        let expirationThresholdDate = SystemClock.shared.now().addingTimeInterval(-userEventExpiredInterval)
+        eventRepository.deleteExpiredEvents(expirationThresholdDate: expirationThresholdDate)
         Log.debug("DefaultUserEventProcessor initialized.")
     }
 

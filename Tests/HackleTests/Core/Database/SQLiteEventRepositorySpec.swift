@@ -164,7 +164,7 @@ class SQLiteEventRepositorySpec: QuickSpec {
             beforeEach {
                 // 만료된 이벤트 1000개 저장
                 for _ in 1...1000 {
-                    sut.save(event: UserEvents.track(UUID().uuidString, timestamp: (now.timeIntervalSince1970 - Double(userEventExpiredIntervalMillis) * 0.001) - 1000.0))
+                    sut.save(event: UserEvents.track(UUID().uuidString, timestamp: (now.timeIntervalSince1970 - userEventExpiredInterval) - 1))
                 }
             }
             it("만료된 pending 상태의 이벤트만 삭제해야 한다") {
@@ -175,7 +175,7 @@ class SQLiteEventRepositorySpec: QuickSpec {
                 expect(events.count).to(equal(1001)) // 만료된 이벤트 1000개 + 만료되지 않은 이벤트 1개
 
                 // When
-                sut.deleteExpiredEvents(expirationThresholdMillis: now.epochMillis - userEventExpiredIntervalMillis)
+                sut.deleteExpiredEvents(expirationThresholdDate: now.addingTimeInterval(-userEventExpiredInterval))
 
                 // Then
                 expect(sut.count()).to(equal(1))

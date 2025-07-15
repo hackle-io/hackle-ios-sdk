@@ -15,7 +15,7 @@ protocol UserEventBackoffController {
 class DefaultUserEventBackoffController: UserEventBackoffController {
     private let userEventRetryInterval: TimeInterval
     private let clock: Clock
-    private var nextFlushAllowDate: Date? = nil
+    private var nextFlushAllowDate: AtomicReference<Date?> = AtomicReference(value: nil)
     private var failureCount: AtomicUInt64 = AtomicUInt64(value: 0)
     
     init(userEventRetryInterval: TimeInterval, clock: Clock) {
@@ -29,7 +29,7 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
     }
     
     func isAllowNextFlush() -> Bool {
-        guard let nextFlushAllowDate = nextFlushAllowDate else {
+        guard let nextFlushAllowDate = nextFlushAllowDate.get() else {
             return true
         }
         
@@ -44,11 +44,11 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
     
     private func calculateNextFlushDate(failureCount: UInt64) {
         if failureCount == 0 {
-            nextFlushAllowDate = nil
+            nextFlushAllowDate.set(newValue: nil)
         } else {
             let exponential = pow(2.0, Double(failureCount) - 1)
             let intervalSeconds = min(exponential * userEventRetryInterval, userEventRetryMaxInterval)
-            nextFlushAllowDate = clock.now().addingTimeInterval(intervalSeconds)
+            nextFlushAllowDate.set(newValue: clock.now().addingTimeInterval(intervalSeconds))
         }
     }
 }
