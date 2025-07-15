@@ -27,7 +27,7 @@ extension UIWindow {
         window.rootViewController = viewController
         
         window.windowLevel = level
-        window.makeKeyAndVisible()
+        window.isHidden = false
         
         return window
     }

@@ -74,4 +74,8 @@ class UIUtils {
         }
         return top
     }
+    
+    static var bounds: CGRect {
+        return UIUtils.keyWindow?.bounds ?? UIScreen.main.bounds
+    }
 }
