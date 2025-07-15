@@ -48,23 +48,27 @@ class HackleUserExplorerButton: UIView {
     }
     
     @objc private func onTouch(sender: UIPanGestureRecognizer) {
-        let translation = sender.translation(in: self)
+        guard let superview = self.superview else { return }
+        let translation = sender.translation(in: superview)
+        let halfWidth = self.bounds.width / 2
+        let halfHeight = self.bounds.height / 2
+        let topPadding = HackleUserExplorerButton.barHeight()
+        let offset = HackleUserExplorerButton.offset()
 
-        let barHeight = HackleUserExplorerButton.barHeight()
-        let bottomOffset = HackleUserExplorerButton.offset()
+        let minX = offset + halfWidth
+        let maxX = superview.bounds.width - offset - halfWidth
+        let minY = topPadding + halfHeight
+        let maxY = superview.bounds.height - offset - halfHeight
 
-        let rect = UIScreen.main.bounds
-        let width = rect.size.width
-        let height = rect.size.height
+        var newCenter = self.center
+        newCenter.x += translation.x
+        newCenter.y += translation.y
 
-        var newY = min(self.center.y + translation.y, height - bottomOffset)
-        newY = max(barHeight + (self.bounds.height / 2), newY)
+        newCenter.x = max(minX, min(newCenter.x, maxX))
+        newCenter.y = max(minY, min(newCenter.y, maxY))
 
-        var newX = min(self.center.x + translation.x, width)
-        newX = max(self.bounds.width / 2, newX)
-
-        self.center = CGPoint(x: newX, y: newY)
-        sender.setTranslation(CGPoint(x: 0, y: 0), in: self)
+        self.center = newCenter
+        sender.setTranslation(.zero, in: superview)
     }
 }
 
