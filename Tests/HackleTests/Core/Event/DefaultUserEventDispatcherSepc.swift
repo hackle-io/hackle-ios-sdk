@@ -16,12 +16,14 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
         var httpClient: MockHttpClient!
         var sut: DefaultUserEventDispatcher!
         var eventEntities: [EventEntity]!
+        var eventBackoffController: MockUserEventBackoffController!
 
         beforeEach {
             eventQueue = DispatchQueue(label: "test.EventQueue")
             eventRepository = MockSQLiteEventRepository()
             httpQueue = DispatchQueue(label: "test.HttpQueue")
             httpClient = MockHttpClient()
+            eventBackoffController = MockUserEventBackoffController()
             
             eventRepository.deleteAll()
 
@@ -31,7 +33,8 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 eventQueue: eventQueue,
                 eventRepository: eventRepository,
                 httpQueue: httpQueue,
-                httpClient: httpClient
+                httpClient: httpClient,
+                eventBackoffController: eventBackoffController
             )
             
             let event = UserEvents.track("test", properties: [:], user: HackleUser(identifiers: [:], properties: [:], hackleProperties: [:]), timestamp: 0)
@@ -40,6 +43,8 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             eventEntities = eventRepository.findAllBy(status: .pending)
             eventRepository.update(events: eventEntities, status: .flushing)
             
+            every(eventBackoffController.checkResponseMock).returns(())
+            every(eventBackoffController.isAllowNextFlushMock).returns(true)
         }
 
         func mockResponse(statusCode: Int, error: Error? = nil) -> HttpResponse {
