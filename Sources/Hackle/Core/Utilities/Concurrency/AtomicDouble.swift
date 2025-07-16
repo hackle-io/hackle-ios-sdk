@@ -7,8 +7,10 @@
 
 import Foundation
 
-class AtomicDouble: AtomicNumber {
+class AtomicDouble {
+
     private let lock = ReadWriteLock(label: "io.hackle.AtomicDouble.Lock")
+
     private var value: Double
 
     init(value: Double) {
@@ -20,17 +22,6 @@ class AtomicDouble: AtomicNumber {
             value
         }
     }
-    
-    func set(_ newValue: Double) {
-        lock.write {
-            value = newValue
-        }
-    }
-    
-    func setAndGet(_ value: Double) -> Double {
-        set(value)
-        return value
-    }
 
     func addAndGet(_ delta: Double) -> Double {
         var newValue: Double!
@@ -40,10 +31,6 @@ class AtomicDouble: AtomicNumber {
             value = newValue
         }
         return newValue
-    }
-    
-    func incrementAndGet() -> Double {
-        addAndGet(1)
     }
 
     func accumulateAndGet(_ n: Double, _ accumulator: (Double, Double) -> Double) -> Double {

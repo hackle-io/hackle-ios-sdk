@@ -66,8 +66,6 @@
 		7E9F7E892B6CCC3700A6B0B8 /* MockFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */; };
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
-		B22300DB2E24BCB500A5687D /* AtomicUInt64.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22300DA2E24BCB000A5687D /* AtomicUInt64.swift */; };
-		B22300DD2E24BDD800A5687D /* AtomicNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22300DC2E24BDD300A5687D /* AtomicNumber.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -641,8 +639,6 @@
 		7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileStorage.swift; sourceTree = "<group>"; };
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
-		B22300DA2E24BCB000A5687D /* AtomicUInt64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicUInt64.swift; sourceTree = "<group>"; };
-		B22300DC2E24BDD300A5687D /* AtomicNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicNumber.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -1689,11 +1685,9 @@
 		EE29D8F029CD825300B1FEAA /* Concurrency */ = {
 			isa = PBXGroup;
 			children = (
-				EE29D8F229CD825300B1FEAA /* ReadWriteLock.swift */,
-				B22300DC2E24BDD300A5687D /* AtomicNumber.swift */,
-				EE29D8F329CD825300B1FEAA /* AtomicInt64.swift */,
-				B22300DA2E24BCB000A5687D /* AtomicUInt64.swift */,
 				EE29D8F129CD825300B1FEAA /* AtomicDouble.swift */,
+				EE29D8F229CD825300B1FEAA /* ReadWriteLock.swift */,
+				EE29D8F329CD825300B1FEAA /* AtomicInt64.swift */,
 				EE29D8F429CD825300B1FEAA /* AtomicReference.swift */,
 				EE42A53A2BBC42B30008B003 /* ThrottleLimiter.swift */,
 				7E9065B12B58E3AD00FE6E52 /* Throttler.swift */,
@@ -3092,7 +3086,6 @@
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
-				B22300DD2E24BDD800A5687D /* AtomicNumber.swift in Sources */,
 				EE86377729ED312F000268DC /* ExperimentConditionMatcher.swift in Sources */,
 				B24250262D9A2B7800CF27FC /* PIIEventManager.swift in Sources */,
 				EEB7CBEE2A0BB6AA000F4B4D /* AppStateManager.swift in Sources */,
@@ -3110,7 +3103,6 @@
 				EE80DF8E2A28341C00FB12CC /* InAppMessageResolver.swift in Sources */,
 				EE29D98B29CD825400B1FEAA /* Device.swift in Sources */,
 				EE29D99529CD825400B1FEAA /* ConditionMatcher.swift in Sources */,
-				B22300DB2E24BCB500A5687D /* AtomicUInt64.swift in Sources */,
 				B2E7B4AF2C9C025E005FB7A9 /* HacklePushSubscriptionStatus.swift in Sources */,
 				EEDC58732ACBD80B001E73DB /* CompositeSynchronizer.swift in Sources */,
 				EE29D96F29CD825400B1FEAA /* Enums.swift in Sources */,

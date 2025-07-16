@@ -7,10 +7,10 @@
 
 import Foundation
 
-class AtomicInt64: AtomicNumber {
-    typealias T = Int64
+class AtomicInt64 {
 
     private let lock = ReadWriteLock(label: "io.hackle.AtomicInt64.Lock")
+
     private var value: Int64
 
     init(value: Int64) {
@@ -27,11 +27,6 @@ class AtomicInt64: AtomicNumber {
         lock.write {
             self.value = value
         }
-    }
-    
-    func setAndGet(_ value: Int64) -> Int64 {
-        set(value)
-        return value
     }
 
     @discardableResult
