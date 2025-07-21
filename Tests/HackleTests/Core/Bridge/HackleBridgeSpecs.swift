@@ -6,7 +6,7 @@ import Mockery
 
 class HackleBridgeSpec : QuickSpec {
     
-    func createJsonString(command: String, parameters: [String: Any]? = nil) -> String {
+    func createJsonString(command: String, parameters: [String: Any?]? = nil) -> String {
         return [
             "_hackle": [
                 "command": command,
@@ -155,6 +155,19 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["message"]).toNot(beNil())
                     expect(dict["data"]).to(beNil())
                 }
+                it("nil case") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserId", parameters: ["userId":nil])
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.setUserIdRef.invokations().count) == 1
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
+                }
             }
             context("set device id") {
                 it("happy case") {
@@ -217,6 +230,25 @@ class HackleBridgeSpec : QuickSpec {
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == false
                     expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
+                }
+                it("parameter value is nil") {
+                    let parameters = [
+                        "key": "foo",
+                        "value": nil,
+                    ]
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserProperty", parameters: parameters)
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.setUserPropertyRef.invokations().count) == 1
+                    expect(mock.setUserPropertyRef.firstInvokation().arguments.0) == "foo"
+                    expect(mock.setUserPropertyRef.firstInvokation().arguments.1 as? String).to(beNil())
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
                 }
             }
