@@ -26,7 +26,12 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
     
     func checkResponse(_ isSuccess: Bool) {
         lock.write {
-            failureCount = isSuccess ? 0 : failureCount + 1
+            if isSuccess {
+                failureCount = 0
+            } else {
+                failureCount += 1
+                Metrics.counter(name: "user.event.backoff", tags: ["count": "\(failureCount)"]).increment()
+            }
             calculateNextFlushDate()
         }
     }
