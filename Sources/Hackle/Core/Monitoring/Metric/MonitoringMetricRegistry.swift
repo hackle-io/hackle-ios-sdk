@@ -149,10 +149,14 @@ enum DecisionMetrics {
 }
 
 enum ApiCallMetrics {
+    private static let noneTag = "NONE"
+    
     static func record(operation: String, sample: TimerSample, response: HttpResponse) {
         let tags = [
             "operation": operation,
-            "success": success(response: response)
+            "success": success(response: response),
+            "status": status(response: response),
+            "exception": exception(error: response.error)
         ]
         let timer = Metrics.timer(name: "api.call", tags: tags)
         sample.stop(timer: timer)
@@ -161,5 +165,20 @@ enum ApiCallMetrics {
     private static func success(response: HttpResponse) -> String {
         let success = response.isSuccessful || response.isNotModified
         return success ? "true" : "false"
+    }
+    
+    private static func status(response: HttpResponse) -> String {
+        if let statusCode = response.statusCode {
+            return String(statusCode)
+        }
+        return noneTag
+    }
+    
+    private static func exception(error: Error?) -> String {
+        guard let error = error else {
+            return noneTag
+        }
+        
+        return String(describing: type(of: error))
     }
 }
