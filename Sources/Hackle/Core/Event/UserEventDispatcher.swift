@@ -9,20 +9,20 @@ protocol UserEventDispatcher {
 }
 
 class DefaultUserEventDispatcher: UserEventDispatcher {
-
     private let endpoint: URL
-
     private let eventQueue: DispatchQueue
     private let eventRepository: EventRepository
     private let httpQueue: DispatchQueue
     private let httpClient: HttpClient
+    private let eventBackoffController: UserEventBackoffController
 
-    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient) {
+    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient, eventBackoffController: UserEventBackoffController) {
         self.endpoint = eventBaseUrl.appendingPathComponent("/api/v2/events")
         self.eventQueue = eventQueue
         self.eventRepository = eventRepository
         self.httpQueue = httpQueue
         self.httpClient = httpClient
+        self.eventBackoffController = eventBackoffController
     }
 
     func dispatch(events: [EventEntity]) {
@@ -60,7 +60,8 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
     }
 
     private func handleResponse(events: [EventEntity], response: HttpResponse) {
-
+        eventBackoffController.checkResponse(response.isSuccessful)
+        
         if let error = response.error {
             Log.error("Failed to dispatch events: \(error.localizedDescription)")
             updateEventStatusToPending(events: events)

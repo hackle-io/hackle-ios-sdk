@@ -7,7 +7,8 @@ import Mockery
 @testable import Hackle
 
 class MockUserEventDispatcher: Mock, UserEventDispatcher {
-
+    var nextFlushAllowDate: TimeInterval? = nil
+    
     lazy var dispatchMock = MockFunction(self, dispatch)
 
     func dispatch(events: [EventEntity]) {
