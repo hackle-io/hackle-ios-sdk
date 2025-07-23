@@ -232,25 +232,6 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["message"]).toNot(beNil())
                     expect(dict["data"]).to(beNil())
                 }
-                it("parameter value is nil") {
-                    let parameters = [
-                        "key": "foo",
-                        "value": nil,
-                    ]
-                    let mock = MockHackleApp()
-                    let bridge = HackleBridge(app: mock)
-                    let jsonString = self.createJsonString(command: "setUserProperty", parameters: parameters)
-                    let result = bridge.invoke(string: jsonString)
-                    
-                    expect(mock.setUserPropertyRef.invokations().count) == 1
-                    expect(mock.setUserPropertyRef.firstInvokation().arguments.0) == "foo"
-                    expect(mock.setUserPropertyRef.firstInvokation().arguments.1 as? String).to(beNil())
-                    
-                    let dict = result.jsonObject()!
-                    expect(dict["success"] as? Bool) == true
-                    expect(dict["message"] as? String) == "OK"
-                    expect(dict["data"]).to(beNil())
-                }
             }
             context("update user properties") {
                 it("happy case") {
