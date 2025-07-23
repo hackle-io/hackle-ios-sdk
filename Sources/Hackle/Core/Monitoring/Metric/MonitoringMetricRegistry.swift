@@ -149,10 +149,14 @@ enum DecisionMetrics {
 }
 
 enum ApiCallMetrics {
+    private static let noneTag = "NONE"
+    
     static func record(operation: String, sample: TimerSample, response: HttpResponse) {
         let tags = [
             "operation": operation,
-            "success": success(response: response)
+            "success": success(response: response),
+            "status": status(response: response),
+            "exception": exception(error: response.error)
         ]
         let timer = Metrics.timer(name: "api.call", tags: tags)
         sample.stop(timer: timer)
@@ -161,5 +165,120 @@ enum ApiCallMetrics {
     private static func success(response: HttpResponse) -> String {
         let success = response.isSuccessful || response.isNotModified
         return success ? "true" : "false"
+    }
+    
+    private static func status(response: HttpResponse) -> String {
+        if let statusCode = response.statusCode {
+            return String(statusCode)
+        }
+        return noneTag
+    }
+    
+    private static func exception(error: Error?) -> String {
+        guard let error = error else {
+            return noneTag
+        }
+        if let urlError = error as? URLError {
+            return urlError.code.toString()
+        }
+
+        return String(describing: type(of: error))
+    }
+}
+
+extension URLError.Code {
+    fileprivate func toString() -> String {
+        switch self {
+        case .unknown:
+            return "Unknown"
+        case .cancelled:
+            return "Cancelled"
+        case .badURL:
+            return "BadURL"
+        case .timedOut:
+            return "TimedOut"
+        case .unsupportedURL:
+            return "UnsupportedURL"
+        case .cannotFindHost:
+            return "CannotFindHost"
+        case .cannotConnectToHost:
+            return "CannotConnectToHost"
+        case .networkConnectionLost:
+            return "NetworkConnectionLost"
+        case .dnsLookupFailed:
+            return "DNSLookupFailed"
+        case .httpTooManyRedirects:
+            return "HTTPTooManyRedirects"
+        case .resourceUnavailable:
+            return "ResourceUnavailable"
+        case .notConnectedToInternet:
+            return "NotConnectedToInternet"
+        case .redirectToNonExistentLocation:
+            return "RedirectToNonExistentLocation"
+        case .badServerResponse:
+            return "BadServerResponse"
+        case .userCancelledAuthentication:
+            return "UserCancelledAuthentication"
+        case .userAuthenticationRequired:
+            return "UserAuthenticationRequired"
+        case .zeroByteResource:
+            return "ZeroByteResource"
+        case .cannotDecodeRawData:
+            return "CannotDecodeRawData"
+        case .cannotDecodeContentData:
+            return "CannotDecodeContentData"
+        case .cannotParseResponse:
+            return "CannotParseResponse"
+        case .appTransportSecurityRequiresSecureConnection:
+            return "AppTransportSecurityRequiresSecureConnection"
+        case .fileDoesNotExist:
+            return "FileDoesNotExist"
+        case .fileIsDirectory:
+            return "FileIsDirectory"
+        case .noPermissionsToReadFile:
+            return "NoPermissionsToReadFile"
+        case .dataLengthExceedsMaximum:
+            return "DataLengthExceedsMaximum"
+
+        // SSL/TLS error
+        case .secureConnectionFailed:
+            return "SecureConnectionFailed"
+        case .serverCertificateHasBadDate:
+            return "ServerCertificateHasBadDate"
+        case .serverCertificateUntrusted:
+            return "ServerCertificateUntrusted"
+        case .serverCertificateHasUnknownRoot:
+            return "ServerCertificateHasUnknownRoot"
+        case .serverCertificateNotYetValid:
+            return "ServerCertificateNotYetValid"
+        case .clientCertificateRequired:
+            return "ClientCertificateRequired"
+        case .clientCertificateRejected:
+            return "ClientCertificateRejected"
+        
+        // background session error
+        case .backgroundSessionRequiresSharedContainer:
+            return "BackgroundSessionRequiresSharedContainer"
+        case .backgroundSessionInUseByAnotherProcess:
+            return "BackgroundSessionInUseByAnotherProcess"
+        case .backgroundSessionWasDisconnected:
+            return "BackgroundSessionWasDisconnected"
+            
+        // other error
+        case .internationalRoamingOff:
+            return "InternationalRoamingOff"
+        case .callIsActive:
+            return "CallIsActive"
+        case .dataNotAllowed:
+            return "DataNotAllowed"
+        case .requestBodyStreamExhausted:
+            return "RequestBodyStreamExhausted"
+        case .downloadDecodingFailedMidStream:
+            return "DownloadDecodingFailedMidStream"
+        case .downloadDecodingFailedToComplete:
+            return "DownloadDecodingFailedToComplete"
+        default:
+            return "NSURLError"
+        }
     }
 }
