@@ -34,7 +34,7 @@ class BridgeInvocation {
     }
     
     let command: Command
-    let parameters: [String: Any]
+    let parameters: HackleBridgeParameters
     
     init(string: String) throws {
         guard let data = string.jsonObject() else {
@@ -51,7 +51,7 @@ class BridgeInvocation {
         }
         
         self.command = command
-        self.parameters = invocation[ReservedKey.parameters.rawValue] as? [String: Any] ?? [:]
+        self.parameters = invocation[ReservedKey.parameters.rawValue] as? HackleBridgeParameters ?? [:]
     }
     
     static func isInvocableString(string: String) -> Bool {
