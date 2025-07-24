@@ -6,7 +6,7 @@ import Mockery
 
 class HackleBridgeSpec : QuickSpec {
     
-    func createJsonString(command: String, parameters: [String: Any]? = nil) -> String {
+    func createJsonString(command: String, parameters: [String: Any?]? = nil) -> String {
         return [
             "_hackle": [
                 "command": command,
@@ -152,6 +152,19 @@ class HackleBridgeSpec : QuickSpec {
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == false
+                    expect(dict["message"]).toNot(beNil())
+                    expect(dict["data"]).to(beNil())
+                }
+                it("nil case") {
+                    let mock = MockHackleApp()
+                    let bridge = HackleBridge(app: mock)
+                    let jsonString = self.createJsonString(command: "setUserId", parameters: ["userId":nil])
+                    let result = bridge.invoke(string: jsonString)
+                    
+                    expect(mock.setUserIdRef.invokations().count) == 1
+                    
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
                     expect(dict["message"]).toNot(beNil())
                     expect(dict["data"]).to(beNil())
                 }
