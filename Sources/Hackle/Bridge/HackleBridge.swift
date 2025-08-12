@@ -1,6 +1,6 @@
 import Foundation
 
-class HackleBridge: NSObject {
+class HackleBridge: NSObject, HackleAppBridge {
 
     private let hackleAppCore: HackleAppCoreProtocol
 

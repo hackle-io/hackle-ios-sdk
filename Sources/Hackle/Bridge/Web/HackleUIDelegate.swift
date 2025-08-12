@@ -3,7 +3,7 @@ import WebKit
 
 class HackleUIDelegate: NSObject, WKUIDelegate {
 
-    private let bridge: HackleBridge
+    private let bridge: HackleAppBridge
     private let uiDelegate: WKUIDelegate?
 
     init(hackleAppCore: HackleAppCoreProtocol, uiDelegate: WKUIDelegate? = nil) {
