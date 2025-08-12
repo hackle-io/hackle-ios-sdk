@@ -58,24 +58,26 @@ class HackleAppSpecs: QuickSpec {
             
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             sut = HackleApp(
+                hackleAppCore: HackleAppCore(
+                    core: core,
+                    eventQueue: eventQueue,
+                    synchronizer: synchronizer,
+                    userManager: userManager,
+                    workspaceManager: workspaceManager,
+                    sessionManager: sessionManager,
+                    screenManager: screenManager,
+                    eventProcessor: eventProcessor,
+                    lifecycleManager: LifecycleManager.shared,
+                    pushTokenRegistry: pushTokenRegistry,
+                    notificationManager: notificationManager,
+                    piiEventManager: piiEventManager,
+                    fetchThrottler: throttler,
+                    device: device,
+                    inAppMessageUI: inAppMessageUI,
+                    userExplorer: userExplorer
+                ),
                 mode: .native,
-                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
-                core: core,
-                eventQueue: eventQueue,
-                synchronizer: synchronizer,
-                userManager: userManager,
-                workspaceManager: workspaceManager,
-                sessionManager: sessionManager,
-                screenManager: screenManager,
-                eventProcessor: eventProcessor,
-                lifecycleManager: LifecycleManager.shared,
-                pushTokenRegistry: pushTokenRegistry,
-                notificationManager: notificationManager,
-                piiEventManager: piiEventManager,
-                fetchThrottler: throttler,
-                device: device,
-                inAppMessageUI: inAppMessageUI,
-                userExplorer: userExplorer
+                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT)
             )
         }
 
@@ -255,16 +257,18 @@ class HackleAppSpecs: QuickSpec {
             }
             
             it("setPhoneNumber") {
+                every(piiEventManager.setPhoneNumberRef).returns(HackleEventBuilder(key: "mock").build())
                 sut.setPhoneNumber(phoneNumber: "+821012345678")
                 verify(exactly: 1) {
-                    piiEventManager.toSetPhoneNumberMock
+                    piiEventManager.setPhoneNumberRef
                 }
             }
             
             it("unsetPhoneNumber") {
+                every(piiEventManager.unsetPhoneNumberRef).returns(HackleEventBuilder(key: "mock").build())
                 sut.unsetPhoneNumber()
                 verify(exactly: 1) {
-                    piiEventManager.toUnsetPhoneNumberMock
+                    piiEventManager.unsetPhoneNumberRef
                 }
             }
         }

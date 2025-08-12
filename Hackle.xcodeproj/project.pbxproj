@@ -85,6 +85,9 @@
 		B256031A2E029668004794B9 /* HackleSubscriptionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */; };
 		B256031C2E0B9336004794B9 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B256031B2E0B9334004794B9 /* Screen.swift */; };
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
+		B26AC23C2E4B1CD600AAE56F /* HackleAppCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23B2E4B1CD200AAE56F /* HackleAppCore.swift */; };
+		B26AC23E2E4B2E7900AAE56F /* HackleBridgeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23D2E4B2E7000AAE56F /* HackleBridgeParameters.swift */; };
+		B26AC2402E4B305200AAE56F /* BirdgeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23F2E4B305100AAE56F /* BirdgeDto.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
 		B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */; };
@@ -658,6 +661,9 @@
 		B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSubscriptionSpecs.swift; sourceTree = "<group>"; };
 		B256031B2E0B9334004794B9 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
+		B26AC23B2E4B1CD200AAE56F /* HackleAppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppCore.swift; sourceTree = "<group>"; };
+		B26AC23D2E4B2E7000AAE56F /* HackleBridgeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleBridgeParameters.swift; sourceTree = "<group>"; };
+		B26AC23F2E4B305100AAE56F /* BirdgeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdgeDto.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
 		B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEvent.swift; sourceTree = "<group>"; };
@@ -1201,6 +1207,7 @@
 			children = (
 				7E0E2D912AE75FCD00578C74 /* BridgeInvocation.swift */,
 				7E0E2D932AE7A81B00578C74 /* BridgeResponse.swift */,
+				B26AC23F2E4B305100AAE56F /* BirdgeDto.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1271,6 +1278,7 @@
 				7E0E2D902AE75F1C00578C74 /* Model */,
 				7E0E2D7E2AD8D8D100578C74 /* Web */,
 				7E65EB7D2ACE503E00900097 /* HackleBridge.swift */,
+				B26AC23D2E4B2E7000AAE56F /* HackleBridgeParameters.swift */,
 			);
 			path = Bridge;
 			sourceTree = "<group>";
@@ -1519,6 +1527,7 @@
 				EE29D8D829CD825300B1FEAA /* Workspace */,
 				EE29D8AF29CD825300B1FEAA /* HackleError.swift */,
 				EE29D8D729CD825300B1FEAA /* HackleCore.swift */,
+				B26AC23B2E4B1CD200AAE56F /* HackleAppCore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -3067,6 +3076,7 @@
 				B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */,
 				EE29D98329CD825400B1FEAA /* RemoteConfigParameter.swift in Sources */,
 				EE29D9A229CD825500B1FEAA /* EvaluationFlowFactory.swift in Sources */,
+				B26AC23E2E4B2E7900AAE56F /* HackleBridgeParameters.swift in Sources */,
 				EE29D9A329CD825500B1FEAA /* Log.swift in Sources */,
 				EEA7FCBB2C04AB6B0004F858 /* LifecycleManager.swift in Sources */,
 				EE29D99D29CD825500B1FEAA /* Hasher.swift in Sources */,
@@ -3127,6 +3137,7 @@
 				EECDF3DD2C0D611A009B2F56 /* LifecycleObserver.swift in Sources */,
 				EE29D99B29CD825500B1FEAA /* ActionResolver.swift in Sources */,
 				EE29D94B29CD825400B1FEAA /* Measurement.swift in Sources */,
+				B26AC23C2E4B1CD600AAE56F /* HackleAppCore.swift in Sources */,
 				EEC184D52C6B3CBA00872A9A /* DevToolsAPI.swift in Sources */,
 				7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */,
 				EE86377329ED0085000268DC /* RemoteConfigEvaluation.swift in Sources */,
@@ -3190,6 +3201,7 @@
 				B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */,
 				EE29D96D29CD825400B1FEAA /* Objects.swift in Sources */,
 				EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */,
+				B26AC2402E4B305200AAE56F /* BirdgeDto.swift in Sources */,
 				EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */,
 				EEA01CBC2A32A8C600E0C021 /* EventConditionMatcher.swift in Sources */,
 				7E5206002B2BE5B40095DCD9 /* WorkspaceDatabase.swift in Sources */,

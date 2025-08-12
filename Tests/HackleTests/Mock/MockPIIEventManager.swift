@@ -10,13 +10,13 @@ import Mockery
 @testable import Hackle
 
 class MockPIIEventManager: Mock, PIIEventManager {
-    lazy var toSetPhoneNumberMock = MockFunction(self, setPhoneNumber)
-    func setPhoneNumber(phoneNumber: PhoneNumber, timestamp: Date) {
-        call(toSetPhoneNumberMock, args: (phoneNumber, timestamp))
+    lazy var setPhoneNumberRef = MockFunction(self, setPhoneNumber)
+    func setPhoneNumber(phoneNumber: PhoneNumber) -> Event {
+        call(setPhoneNumberRef, args: (phoneNumber))
     }
     
-    lazy var toUnsetPhoneNumberMock = MockFunction(self, unsetPhoneNumber)
-    func unsetPhoneNumber(timestamp: Date) {
-        call(toUnsetPhoneNumberMock, args: (timestamp))
+    lazy var unsetPhoneNumberRef = MockFunction(self, unsetPhoneNumber)
+    func unsetPhoneNumber() -> Event {
+        call(unsetPhoneNumberRef, args: ())
     }
 }
