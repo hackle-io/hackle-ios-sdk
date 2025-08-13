@@ -8,7 +8,7 @@
 import Foundation
 
 @objc public protocol HackleAppBridge {
-    func isInvocableString(string: String) -> Bool
-    func invoke(string: String) -> String
-    func invoke(string: String, completionHandler: (String?) -> Void)
+    @objc func isInvocableString(string: String) -> Bool
+    @objc func invoke(string: String) -> String
+    @objc func invoke(string: String, completionHandler: (String?) -> Void)
 }

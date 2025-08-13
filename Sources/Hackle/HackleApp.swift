@@ -8,8 +8,8 @@ import WebKit
 /// Entry point of Hackle Sdk.
 @objc public final class HackleApp: NSObject {
     private let hackleAppCore: HackleAppCore
-    internal let sdk: Sdk
-    internal let mode: HackleAppMode
+    private let sdk: Sdk
+    private let mode: HackleAppMode
     
     private var view: HackleUserExplorerView? = nil
     
@@ -178,7 +178,11 @@ import WebKit
     }
 
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
-        webView.prepareForHackleWebBridge(hackleAppCore: self.hackleAppCore, uiDelegate: uiDelegate)
+        webView.prepareForHackleWebBridge(hackleAppCore: self.hackleAppCore, sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
+    }
+    
+    @objc public func hackleAppBridge() -> HackleAppBridge {
+        HackleBridge(hackleAppCore: hackleAppCore)
     }
 
     @objc public func setPushToken(_ deviceToken: Data) {
