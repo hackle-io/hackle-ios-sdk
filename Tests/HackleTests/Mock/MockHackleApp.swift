@@ -9,6 +9,7 @@ class MockHackleAppCore : Mock, HackleAppCore {
     var deviceId: String
     var user: User
     var _remoteConfig: HackleRemoteConfig
+    var hackleAppContext: HackleAppContext?
 
     init(
         sdkKey: String = "",
@@ -36,77 +37,92 @@ class MockHackleAppCore : Mock, HackleAppCore {
     
     lazy var setDeviceIdRef = MockFunction(self, setDeviceId)
     func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(setDeviceIdRef, args: (deviceId, hackleAppContext, completion))
     }
     
     lazy var setUserRef = MockFunction(self, setUser)
     func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(setUserRef, args: (user, hackleAppContext, completion))
     }
     
     lazy var setUserIdRef = MockFunction(self, setUserId)
     func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(setUserIdRef, args: (userId, hackleAppContext, completion))
     }
     
     lazy var updateUserPropertiesRef = MockFunction(self, updateUserProperties)
     func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(updateUserPropertiesRef, args: (operations, hackleAppContext, completion))
     }
     
     lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> Void)
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
+        self.hackleAppContext = hackleAppContext
         call(updatePushSubscriptionsRef, args: (operations, hackleAppContext))
     }
     
     lazy var updateSmsSubscriptionsRef = MockFunction(self, updateSmsSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> Void)
     func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
+        self.hackleAppContext = hackleAppContext
         call(updateSmsSubscriptionsRef, args: (operations, hackleAppContext))
     }
     
     lazy var updateKakaoSubscriptionsRef = MockFunction(self, updateKakaoSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> Void)
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
+        self.hackleAppContext = hackleAppContext
         call(updateKakaoSubscriptionsRef, args: (operations, hackleAppContext))
     }
     
     lazy var resetUserRef = MockFunction(self, resetUser)
     func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(resetUserRef, args: (hackleAppContext, completion))
     }
     
     lazy var setPhoneNumberRef = MockFunction(self, setPhoneNumber)
     func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(setPhoneNumberRef, args: (phoneNumber, hackleAppContext, completion))
     }
     
     lazy var unsetPhoneNumberRef = MockFunction(self, unsetPhoneNumber)
     func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        self.hackleAppContext = hackleAppContext
         call(unsetPhoneNumberRef, args: (hackleAppContext, completion))
     }
     
     lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, User?, String, HackleAppContext) -> Decision)
     func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
-        call(variationDetailRef, args: (experimentKey, user, defaultVariation, hackleAppContext))
+        self.hackleAppContext = hackleAppContext
+        return call(variationDetailRef, args: (experimentKey, user, defaultVariation, hackleAppContext))
     }
     
     lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int, User?, HackleAppContext) -> FeatureFlagDecision)
     func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
-        call(featureFlagDetailRef, args: (featureKey, user, hackleAppContext))
+        self.hackleAppContext = hackleAppContext
+        return call(featureFlagDetailRef, args: (featureKey, user, hackleAppContext))
     }
     
     lazy var trackRef = MockFunction(self, track as (Event, User?, HackleAppContext) -> Void)
     func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
+        self.hackleAppContext = hackleAppContext
         call(trackRef, args: (event, user, hackleAppContext))
     }
     
     lazy var remoteConfigRef = MockFunction(self, remoteConfig as (User?, HackleAppContext) -> HackleRemoteConfig)
     func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> any HackleRemoteConfig {
+        self.hackleAppContext = hackleAppContext
         every(remoteConfigRef).returns(self._remoteConfig)
         return call(remoteConfigRef, args: (user, hackleAppContext))
     }
     
     lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen, HackleAppContext) -> Void)
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {
+        self.hackleAppContext = hackleAppContext
         call(setCurrentScreenRef, args: (screen, hackleAppContext))
     }
     

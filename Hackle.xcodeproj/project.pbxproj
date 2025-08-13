@@ -90,6 +90,7 @@
 		B26AC2402E4B305200AAE56F /* BirdgeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23F2E4B305100AAE56F /* BirdgeDto.swift */; };
 		B26AC2442E4B670A00AAE56F /* HackleAppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2432E4B670600AAE56F /* HackleAppContext.swift */; };
 		B26AC2462E4B679D00AAE56F /* HackleAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2452E4B679900AAE56F /* HackleAppBridge.swift */; };
+		B26AC2922E4C5AA900AAE56F /* BridgeDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2912E4C5AA300AAE56F /* BridgeDtoSpecs.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
 		B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */; };
@@ -668,6 +669,7 @@
 		B26AC23F2E4B305100AAE56F /* BirdgeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdgeDto.swift; sourceTree = "<group>"; };
 		B26AC2432E4B670600AAE56F /* HackleAppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppContext.swift; sourceTree = "<group>"; };
 		B26AC2452E4B679900AAE56F /* HackleAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppBridge.swift; sourceTree = "<group>"; };
+		B26AC2912E4C5AA300AAE56F /* BridgeDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeDtoSpecs.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
 		B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEvent.swift; sourceTree = "<group>"; };
@@ -1201,6 +1203,7 @@
 		7E0E2D8B2ADE532B00578C74 /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
+				B26AC2912E4C5AA300AAE56F /* BridgeDtoSpecs.swift */,
 				7E64779A2AD4F19D00971F20 /* HackleBridgeSpecs.swift */,
 			);
 			path = Bridge;
@@ -3463,6 +3466,7 @@
 				EE29DA6D29CD82C200B1FEAA /* HackleValueSpecs.swift in Sources */,
 				B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */,
 				EE29DAA129CD82C200B1FEAA /* DefaultSessionManagerSpecs.swift in Sources */,
+				B26AC2922E4C5AA900AAE56F /* BridgeDtoSpecs.swift in Sources */,
 				EE29DA5E29CD82C200B1FEAA /* CumulativeMetricRegistrySpecs.swift in Sources */,
 				EE29DA8829CD82C200B1FEAA /* MockExperimentTargetRuleDeterminer.swift in Sources */,
 				EE29DA9329CD82C200B1FEAA /* Murmur3HasherSpec.swift in Sources */,

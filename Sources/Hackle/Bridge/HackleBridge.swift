@@ -36,7 +36,7 @@ class HackleBridge: NSObject, HackleAppBridge {
 extension HackleBridge {
 
     private func invoke(command: BridgeInvocation.Command, parameters: HackleBridgeParameters, browserProperties: HackleBrowserProperties) throws -> BridgeResponse {
-        let hackleAppContext = HackleAppContext(browserProperties: browserProperties)
+        let hackleAppContext = HackleAppContext.create(browserProperties: browserProperties)
         switch command {
         case .getSessionId:
             return .success(hackleAppCore.sessionId)
