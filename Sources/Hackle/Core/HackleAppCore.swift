@@ -237,7 +237,7 @@ class DefaultHackleAppCore: HackleAppCore {
         let sample = TimerSample.start()
         let decision: Decision
         do {
-            let hackleUser = userManager.resolve(user: user)
+            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
             decision = try core.experiment(
                 experimentKey: Int64(experimentKey),
                 user: hackleUser,
@@ -253,7 +253,7 @@ class DefaultHackleAppCore: HackleAppCore {
 
     func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
         do {
-            let hackleUser = userManager.resolve(user: user)
+            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
             return try core.experiments(user: hackleUser).associate { experiment, decision in
                 (Int(experiment.key), decision)
             }
@@ -267,7 +267,7 @@ class DefaultHackleAppCore: HackleAppCore {
         let sample = TimerSample.start()
         let decision: FeatureFlagDecision
         do {
-            let hackleUser = userManager.resolve(user: user)
+            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
             decision = try core.featureFlag(
                 featureKey: Int64(featureKey),
                 user: hackleUser
@@ -281,12 +281,12 @@ class DefaultHackleAppCore: HackleAppCore {
     }
 
     func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
-        let hackleUser = userManager.resolve(user: user)
+        let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
         core.track(event: event, user: hackleUser)
     }
 
     func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig {
-        DefaultRemoteConfig(user: user, app: core, userManager: userManager)
+        DefaultRemoteConfig(user: user, app: core, userManager: userManager, hackleAppContext: hackleAppContext)
     }
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {

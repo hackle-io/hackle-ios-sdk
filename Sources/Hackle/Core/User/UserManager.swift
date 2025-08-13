@@ -7,7 +7,7 @@ protocol UserManager: Synchronizer {
 
     func initialize(user: User?)
 
-    func resolve(user: User?) -> HackleUser
+    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser
 
     func toHackleUser(user: User) -> HackleUser
 
@@ -84,23 +84,23 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     // HackleUser resolve
 
-    func resolve(user: User?) -> HackleUser {
+    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser {
         guard let user else {
-            return toHackleUser(context: currentContext)
+            return toHackleUser(context: currentContext, hackleAppContext: hackleAppContext)
         }
 
         let context = lock.write {
             updateUser(user: user)
         }
-        return toHackleUser(context: context.current)
+        return toHackleUser(context: context.current, hackleAppContext: hackleAppContext)
     }
 
     func toHackleUser(user: User) -> HackleUser {
         let context = context.with(user: user)
-        return toHackleUser(context: context)
+        return toHackleUser(context: context, hackleAppContext: .default)
     }
 
-    private func toHackleUser(context: UserContext) -> HackleUser {
+    private func toHackleUser(context: UserContext, hackleAppContext: HackleAppContext) -> HackleUser {
         HackleUser.builder()
             .identifiers(context.user.identifiers)
             .identifier(.id, context.user.id)
@@ -110,6 +110,7 @@ class DefaultUserManager: UserManager, AppStateListener {
             .identifier(.device, device.id, overwrite: false)
             .identifier(.hackleDevice, device.id)
             .properties(context.user.properties)
+            .hackleProperties(hackleAppContext.browserProperties ?? [:])
             .hackleProperties(device.properties)
             .cohorts(context.cohorts.rawCohorts)
             .targetEvents(context.targetEvents)
