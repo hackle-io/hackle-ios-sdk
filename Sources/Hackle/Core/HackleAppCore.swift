@@ -7,7 +7,58 @@
 
 import Foundation
 
-class HackleAppCore: HackleAppCoreProtocol {
+protocol HackleAppCore: AnyObject {
+    var deviceId: String { get }
+    var sessionId: String { get }
+    var user: User { get }
+
+    func initialize(user: User?, completion: @escaping () -> ())
+
+    func showUserExplorer()
+    
+    func hideUserExplorer()
+    
+    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    
+    func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
+    
+    func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
+    
+    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
+
+    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+
+    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
+
+    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision]
+
+    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision
+
+    func track(event: Event, user: User?, hackleAppContext: HackleAppContext)
+
+    func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig
+    
+    func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
+
+    func fetch(completion: @escaping () -> ())
+    
+    func setPushToken(deviceToken: Data)
+    
+    func setInAppMessageDelegate(_ delegate: HackleInAppMessageDelegate?)
+}
+
+
+class DefaultHackleAppCore: HackleAppCore {
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
@@ -23,8 +74,8 @@ class HackleAppCore: HackleAppCoreProtocol {
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
+    internal let userExplorer: HackleUserExplorer
     
-    let userExplorer: HackleUserExplorer
     private var userExplorerView: HackleUserExplorerView? = nil
     
     var deviceId: String {
@@ -111,7 +162,7 @@ class HackleAppCore: HackleAppCoreProtocol {
     func showUserExplorer() {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
             if self.userExplorerView == nil {
-                self.userExplorerView = HackleUserExplorerView()
+                self.userExplorerView = HackleUserExplorerView(hackleUserExplorer: self.userExplorer)
             }
             self.userExplorerView?.attach()
         }
@@ -124,65 +175,65 @@ class HackleAppCore: HackleAppCoreProtocol {
         }
     }
 
-    func setUser(user: User, completion: @escaping () -> ()) {
+    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let updated = userManager.setUser(user: user)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
-    func setUserId(userId: String?, completion: @escaping () -> ()) {
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let updated = userManager.setUserId(userId: userId)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
-    func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let updated = userManager.setDeviceId(deviceId: deviceId)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
-    func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
-        track(event: operations.toEvent(), user: nil)
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+        track(event: operations.toEvent(), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
         userManager.updateProperties(operations: operations)
         completion()
     }
     
-    func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
-        track(event: operations.toEvent(key: "$push_subscriptions"), user: nil)
+    func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
+        track(event: operations.toEvent(key: "$push_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
     
-    func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
-        track(event: operations.toEvent(key: "$sms_subscriptions"), user: nil)
+    func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
+        track(event: operations.toEvent(key: "$sms_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
     
-    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
-        track(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil)
+    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
+        track(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
-    func resetUser(completion: @escaping () -> ()) {
+    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let updated = userManager.resetUser()
-        track(event: PropertyOperations.clearAll().toEvent(), user: nil)
+        track(event: PropertyOperations.clearAll().toEvent(), user: nil, hackleAppContext: hackleAppContext)
         userManager.syncIfNeeded(updated: updated, completion: completion)
     }
 
-    func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let event = piiEventManager.setPhoneNumber(phoneNumber: PhoneNumber.create(phoneNumber: phoneNumber))
-        track(event: event, user: nil)
+        track(event: event, user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
         completion()
     }
     
-    func unsetPhoneNumber(completion: @escaping () -> ()) {
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let event = piiEventManager.unsetPhoneNumber()
-        track(event: event, user: nil)
+        track(event: event, user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
         completion()
     }
 
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String) -> Decision {
+    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
         let sample = TimerSample.start()
         let decision: Decision
         do {
@@ -200,7 +251,7 @@ class HackleAppCore: HackleAppCoreProtocol {
         return decision
     }
 
-    func allVariationDetails(user: User?) -> [Int: Decision] {
+    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
         do {
             let hackleUser = userManager.resolve(user: user)
             return try core.experiments(user: hackleUser).associate { experiment, decision in
@@ -212,7 +263,7 @@ class HackleAppCore: HackleAppCoreProtocol {
         }
     }
 
-    func featureFlagDetail(featureKey: Int, user: User?) -> FeatureFlagDecision {
+    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
         let sample = TimerSample.start()
         let decision: FeatureFlagDecision
         do {
@@ -229,25 +280,17 @@ class HackleAppCore: HackleAppCoreProtocol {
         return decision
     }
 
-    func track(event: Event, user: User?) {
+    func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
         let hackleUser = userManager.resolve(user: user)
         core.track(event: event, user: hackleUser)
     }
 
-    func remoteConfig(user: User?) -> HackleRemoteConfig {
+    func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig {
         DefaultRemoteConfig(user: user, app: core, userManager: userManager)
     }
     
-    func setCurrentScreen(screen: Screen) {
+    func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {
         screenManager.setCurrentScreen(screen: screen, timestamp: SystemClock.shared.now())
-    }
-
-    func setPushToken(deviceToken: Data) {
-        pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
-    }
-    
-    func setInAppMessageDelegate(_ delegate: HackleInAppMessageDelegate?) {
-        inAppMessageUI.delegate = delegate
     }
 
     func fetch(completion: @escaping () -> ()) {
@@ -261,50 +304,13 @@ class HackleAppCore: HackleAppCoreProtocol {
             }
         )
     }
+    
+    func setPushToken(deviceToken: Data) {
+        pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
+    }
+    
+    func setInAppMessageDelegate(_ delegate: HackleInAppMessageDelegate?) {
+        inAppMessageUI.delegate = delegate
+    }
 }
 
-protocol HackleAppCoreProtocol: AnyObject {
-    var deviceId: String { get }
-    var sessionId: String { get }
-    var user: User { get }
-
-    func initialize(user: User?, completion: @escaping () -> ())
-
-    func showUserExplorer()
-    
-    func hideUserExplorer()
-    
-    func setUser(user: User, completion: @escaping () -> ())
-
-    func setUserId(userId: String?, completion: @escaping () -> ())
-
-    func setDeviceId(deviceId: String, completion: @escaping () -> ())
-
-    func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ())
-    
-    func updatePushSubscriptions(operations: HackleSubscriptionOperations)
-    
-    func updateSmsSubscriptions(operations: HackleSubscriptionOperations)
-    
-    func updateKakaoSubscriptions(operations: HackleSubscriptionOperations)
-
-    func resetUser(completion: @escaping () -> ())
-
-    func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ())
-    
-    func unsetPhoneNumber(completion: @escaping () -> ())
-
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String) -> Decision
-
-    func allVariationDetails(user: User?) -> [Int: Decision]
-
-    func featureFlagDetail(featureKey: Int, user: User?) -> FeatureFlagDecision
-
-    func track(event: Event, user: User?)
-
-    func remoteConfig(user: User?) -> HackleRemoteConfig
-    
-    func setCurrentScreen(screen: Screen)
-
-    func fetch(completion: @escaping () -> ())
-}

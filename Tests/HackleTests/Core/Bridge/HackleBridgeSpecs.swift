@@ -292,9 +292,9 @@ class HackleBridgeSpec : QuickSpec {
                     expect(mock.updatePushSubscriptionsRef.invokations().count) == 1
                     
                     let arguments = mock.updatePushSubscriptionsRef.firstInvokation().arguments
-                    expect(arguments.count) == 4
+                    expect(arguments.0.count) == 4
                     
-                    let mockEvent = arguments.toEvent(key: "mock")
+                    let mockEvent = arguments.0.toEvent(key: "mock")
                     expect(mockEvent.key) == "mock"
                     expect(mockEvent.properties?["$global"] as? String) == "SUBSCRIBED"
                     expect(mockEvent.properties?["$information"] as? String) == "UNSUBSCRIBED"
@@ -315,9 +315,9 @@ class HackleBridgeSpec : QuickSpec {
                     expect(mock.updateSmsSubscriptionsRef.invokations().count) == 1
                     
                     let arguments = mock.updateSmsSubscriptionsRef.firstInvokation().arguments
-                    expect(arguments.count) == 4
+                    expect(arguments.0.count) == 4
                     
-                    let mockEvent = arguments.toEvent(key: "mock")
+                    let mockEvent = arguments.0.toEvent(key: "mock")
                     expect(mockEvent.key) == "mock"
                     expect(mockEvent.properties?["$global"] as? String) == "SUBSCRIBED"
                     expect(mockEvent.properties?["$information"] as? String) == "UNSUBSCRIBED"
@@ -337,9 +337,9 @@ class HackleBridgeSpec : QuickSpec {
                     expect(mock.updateKakaoSubscriptionsRef.invokations().count) == 1
                     
                     let arguments = mock.updateKakaoSubscriptionsRef.firstInvokation().arguments
-                    expect(arguments.count) == 4
+                    expect(arguments.0.count) == 4
                     
-                    let mockEvent = arguments.toEvent(key: "mock")
+                    let mockEvent = arguments.0.toEvent(key: "mock")
                     expect(mockEvent.key) == "mock"
                     expect(mockEvent.properties?["$global"] as? String) == "SUBSCRIBED"
                     expect(mockEvent.properties?["$information"] as? String) == "UNSUBSCRIBED"
@@ -1220,7 +1220,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.userId) == "abcd1234"
+                            expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1242,7 +1242,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.userId) == "abcd1234"
+                            expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1265,7 +1265,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.userId) == "abcd1234"
+                            expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1287,7 +1287,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.userId) == "abcd1234"
+                            expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1310,7 +1310,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.userId) == "abcd1234"
+                            expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1332,7 +1332,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.userId) == "abcd1234"
+                            expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1357,7 +1357,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.id) == "abcd1234"
+                            expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1379,7 +1379,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.id) == "abcd1234"
+                            expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1402,7 +1402,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.id) == "abcd1234"
+                            expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1424,7 +1424,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.id) == "abcd1234"
+                            expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1447,7 +1447,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.id) == "abcd1234"
+                            expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1469,7 +1469,7 @@ class HackleBridgeSpec : QuickSpec {
                             
                             expect(mock.remoteConfigRef.invokations().count) == 1
                             let arguments = mock.remoteConfigRef.firstInvokation().arguments
-                            expect(arguments?.id) == "abcd1234"
+                            expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true

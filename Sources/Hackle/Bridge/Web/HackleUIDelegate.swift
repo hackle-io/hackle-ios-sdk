@@ -6,7 +6,7 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
     private let bridge: HackleAppBridge
     private let uiDelegate: WKUIDelegate?
 
-    init(hackleAppCore: HackleAppCoreProtocol, uiDelegate: WKUIDelegate? = nil) {
+    init(hackleAppCore: HackleAppCore, uiDelegate: WKUIDelegate? = nil) {
         self.bridge = HackleBridge(hackleAppCore: hackleAppCore)
         self.uiDelegate = uiDelegate
     }

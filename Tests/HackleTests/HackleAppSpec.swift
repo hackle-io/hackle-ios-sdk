@@ -58,7 +58,7 @@ class HackleAppSpecs: QuickSpec {
             
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             sut = HackleApp(
-                hackleAppCore: HackleAppCore(
+                hackleAppCore: DefaultHackleAppCore(
                     core: core,
                     eventQueue: eventQueue,
                     synchronizer: synchronizer,

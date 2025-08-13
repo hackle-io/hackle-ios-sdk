@@ -54,7 +54,7 @@ extension WKWebView {
         )
     }
 
-    func prepareForHackleWebBridge(hackleAppCore: HackleAppCoreProtocol, sdkKey: String, mode: HackleAppMode, uiDelegate: WKUIDelegate? = nil) {
+    func prepareForHackleWebBridge(hackleAppCore: HackleAppCore, sdkKey: String, mode: HackleAppMode, uiDelegate: WKUIDelegate? = nil) {
         let userContentController = configuration.userContentController
         let userScripts = userContentController.userScripts.filter {
             !$0.source.hasPrefix(identifier)
