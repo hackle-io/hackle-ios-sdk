@@ -74,7 +74,7 @@ class DefaultHackleAppCore: HackleAppCore {
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
-    internal let userExplorer: HackleUserExplorer
+    private let userExplorer: HackleUserExplorer
     
     private var userExplorerView: HackleUserExplorerView? = nil
     

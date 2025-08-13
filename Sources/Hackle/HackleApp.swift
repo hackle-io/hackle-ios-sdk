@@ -11,14 +11,6 @@ import WebKit
     private let sdk: Sdk
     private let mode: HackleAppMode
     
-    private var view: HackleUserExplorerView? = nil
-    
-    internal var userExplorer: HackleUserExplorer? {
-        get {
-            hackleAppCore.userExplorer
-        }
-    }
-
     init(
         hackleAppCore: HackleAppCore,
         mode: HackleAppMode,
