@@ -1133,7 +1133,7 @@ class HackleBridgeSpec : QuickSpec {
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "1234.5678"
+                        expect(dict["data"] as? Double) == 1234.5678
                         expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
                     }
                     it("number default value return case") {
@@ -1153,7 +1153,7 @@ class HackleBridgeSpec : QuickSpec {
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "0.0"
+                        expect(dict["data"] as? Double) == 0.0
                     }
                     it("boolean case") {
                         let parameters = [
@@ -1173,7 +1173,7 @@ class HackleBridgeSpec : QuickSpec {
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "true"
+                        expect(dict["data"] as? Bool) == true
                     }
                     it("boolean default value return case") {
                         let parameters = [
@@ -1192,7 +1192,7 @@ class HackleBridgeSpec : QuickSpec {
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "true"
+                        expect(dict["data"] as? Bool) == true
                     }
                     it("string case") {
                         let parameters = [
@@ -1255,7 +1255,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "1234.5678"
+                            expect(dict["data"] as? Double) == 1234.5678
                         }
                         it("number default value return case") {
                             let parameters = [
@@ -1277,7 +1277,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "0.0"
+                            expect(dict["data"] as? Double) == 0.0
                         }
                         it("boolean case") {
                             let parameters = [
@@ -1300,7 +1300,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "true"
+                            expect(dict["data"] as? Bool) == true
                         }
                         it("boolean default value return case") {
                             let parameters = [
@@ -1322,7 +1322,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "true"
+                            expect(dict["data"] as? Bool) == true
                         }
                         it("string case") {
                             let parameters = [
@@ -1392,7 +1392,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "1234.5678"
+                            expect(dict["data"] as? Double) == 1234.5678
                             expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
                         }
                         it("number default value return case") {
@@ -1415,7 +1415,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "0.0"
+                            expect(dict["data"] as? Double) == 0.0
                         }
                         it("boolean case") {
                             let parameters = [
@@ -1438,7 +1438,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "true"
+                            expect(dict["data"] as? Bool) == true
                         }
                         it("boolean default value return case") {
                             let parameters = [
@@ -1460,7 +1460,7 @@ class HackleBridgeSpec : QuickSpec {
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "true"
+                            expect(dict["data"] as? Bool) == true
                         }
                         it("string case") {
                             let parameters = [

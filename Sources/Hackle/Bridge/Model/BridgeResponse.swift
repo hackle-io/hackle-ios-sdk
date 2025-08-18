@@ -33,40 +33,7 @@ extension BridgeResponse {
         return BridgeResponse(success: true, message: "OK")
     }
     
-    static func success(_ data: Double? = nil) -> BridgeResponse {
-        guard let data = data else {
-            return BridgeResponse(success: true, message: "OK")
-        }
-        return BridgeResponse(
-            success: true,
-            message: "OK",
-            data: data
-        )
-    }
-    
-    static func success(_ data: Bool? = nil) -> BridgeResponse {
-        guard let data = data else {
-            return BridgeResponse(success: true, message: "OK")
-        }
-        return BridgeResponse(
-            success: true,
-            message: "OK",
-            data: data
-        )
-    }
-    
-    static func success(_ data: String? = nil) -> BridgeResponse {
-        guard let data = data else {
-            return BridgeResponse(success: true, message: "OK")
-        }
-        return BridgeResponse(
-            success: true,
-            message: "OK",
-            data: data
-        )
-    }
-    
-    static func success(_ data: [String: Any]? = nil) -> BridgeResponse {
+    static func success(_ data: Any?) -> BridgeResponse {
         return BridgeResponse(
             success: true,
             message: "OK",

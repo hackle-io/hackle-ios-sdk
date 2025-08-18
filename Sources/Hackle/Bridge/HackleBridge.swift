@@ -232,7 +232,7 @@ fileprivate extension HackleBridge {
         hackleAppCore.track(event: event, user: parameters.user(), hackleAppContext: hackleAppContext)
     }
 
-    private func remoteConfig(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> String? {
+    private func remoteConfig(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> Any {
         guard let key = parameters.key() else {
             throw HackleError.error("Valid 'key' parameter must be provided.")
         }
@@ -254,13 +254,13 @@ fileprivate extension HackleBridge {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
             let value = config.getDouble(forKey: key, defaultValue: defaultValue)
-            return value.description
+            return value
         case "boolean":
             guard let defaultValue = parameters.defaultBoolValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
             let value = config.getBool(forKey: key, defaultValue: defaultValue)
-            return value.description
+            return value
         default:
             throw HackleError.error("Unsupport 'valueType' value provided.")
         }

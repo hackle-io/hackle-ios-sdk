@@ -93,7 +93,6 @@ extension HackleBridgeParameters {
     }
 
     /// A/B 테스트의 기본 그룹(variation) 키를 반환합니다.
-    /// 파라미터가 없는 경우 기본값으로 빈 문자열("")을 반환합니다.
     /// - Returns: 기본 그룹 키. `nil`이 아님.
     func defaultVariation() -> String {
         (self["defaultVariation"] as? String) ?? "A"
