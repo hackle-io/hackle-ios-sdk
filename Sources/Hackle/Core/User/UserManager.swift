@@ -97,7 +97,7 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     func toHackleUser(user: User) -> HackleUser {
         let context = context.with(user: user)
-        return toHackleUser(context: context, hackleAppContext: .default)
+        return toHackleUser(context: context, hackleAppContext: .DEFAULT)
     }
 
     private func toHackleUser(context: UserContext, hackleAppContext: HackleAppContext) -> HackleUser {
@@ -110,12 +110,19 @@ class DefaultUserManager: UserManager, AppStateListener {
             .identifier(.device, device.id, overwrite: false)
             .identifier(.hackleDevice, device.id)
             .properties(context.user.properties)
-            .hackleProperties(hackleAppContext.browserProperties ?? [:])
-            .hackleProperties(device.properties)
+            .hackleProperties(hackleProperties(hackleAppContext: hackleAppContext, device: device))
             .cohorts(context.cohorts.rawCohorts)
             .targetEvents(context.targetEvents)
             .build()
     }
+    
+    private func hackleProperties(hackleAppContext: HackleAppContext, device: Device) -> [String: Any] {
+        let hackleProperties = hackleAppContext.browserProperties.merging(device.properties) {
+            (_, new) in new
+        } // 만약 겹치는 값 있으면 device로 교체
+        return hackleProperties
+    }
+        
 
     // Sync
 

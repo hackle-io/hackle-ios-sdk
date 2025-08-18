@@ -46,6 +46,8 @@ protocol HackleAppCore: AnyObject {
 
     func track(event: Event, user: User?, hackleAppContext: HackleAppContext)
 
+    func remoteConfig(user: User?) -> HackleRemoteConfig
+    
     func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
@@ -70,7 +72,6 @@ class DefaultHackleAppCore: HackleAppCore {
     private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
-    private let piiEventManager: PIIEventManager
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
@@ -108,7 +109,6 @@ class DefaultHackleAppCore: HackleAppCore {
         lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
-        piiEventManager: PIIEventManager,
         fetchThrottler: Throttler,
         device: Device,
         inAppMessageUI: HackleInAppMessageUI,
@@ -125,7 +125,6 @@ class DefaultHackleAppCore: HackleAppCore {
         self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
-        self.piiEventManager = piiEventManager
         self.fetchThrottler = fetchThrottler
         self.device = device
         self.inAppMessageUI = inAppMessageUI
@@ -220,14 +219,20 @@ class DefaultHackleAppCore: HackleAppCore {
     }
 
     func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        let event = piiEventManager.setPhoneNumber(phoneNumber: PhoneNumber.create(phoneNumber: phoneNumber))
+        let event = PropertyOperationsBuilder()
+            .set(PIIProperty.phoneNumber.rawValue, phoneNumber)
+            .build()
+            .toSecuredEvent()
         track(event: event, user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
         completion()
     }
     
     func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        let event = piiEventManager.unsetPhoneNumber()
+        let event = PropertyOperationsBuilder()
+            .unset(PIIProperty.phoneNumber.rawValue)
+            .build()
+            .toSecuredEvent()
         track(event: event, user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
         completion()
@@ -285,8 +290,12 @@ class DefaultHackleAppCore: HackleAppCore {
         core.track(event: event, user: hackleUser)
     }
 
+    func remoteConfig(user: User?) -> HackleRemoteConfig {
+        DefaultRemoteConfig(user: user, app: core, userManager: userManager)
+    }
+    
     func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig {
-        DefaultRemoteConfig(user: user, app: core, userManager: userManager, hackleAppContext: hackleAppContext)
+        BridgeRemoteConfig(user: user, app: core, userManager: userManager, hackleAppContext: hackleAppContext)
     }
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {

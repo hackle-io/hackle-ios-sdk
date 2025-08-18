@@ -20,7 +20,7 @@ class DefaultRemoteConfigSpecs: QuickSpec {
             user = User.builder().id("user").build()
             app = MockHackleCore()
             userManager = MockUserManager()
-            config = DefaultRemoteConfig(user: user, app: app, userManager: userManager, hackleAppContext: .default)
+            config = DefaultRemoteConfig(user: user, app: app, userManager: userManager)
         }
 
         it("getString이 remoteConfig 값을 반환한다") {

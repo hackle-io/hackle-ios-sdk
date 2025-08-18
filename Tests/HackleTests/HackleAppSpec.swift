@@ -11,7 +11,6 @@ class HackleAppSpecs: QuickSpec {
         var userManager: MockUserManager!
         var workspaceManager: WorkspaceManager!
         var notificationManager: MockNotificationManager!
-        var piiEventManager: MockPIIEventManager!
         var sessionManager: MockSessionManager!
         var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
@@ -33,7 +32,6 @@ class HackleAppSpecs: QuickSpec {
                 repository: MockWorkspaceConfigRepository()
             )
             notificationManager = MockNotificationManager()
-            piiEventManager = MockPIIEventManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
@@ -70,7 +68,6 @@ class HackleAppSpecs: QuickSpec {
                     lifecycleManager: LifecycleManager.shared,
                     pushTokenRegistry: pushTokenRegistry,
                     notificationManager: notificationManager,
-                    piiEventManager: piiEventManager,
                     fetchThrottler: throttler,
                     device: device,
                     inAppMessageUI: inAppMessageUI,
@@ -257,19 +254,19 @@ class HackleAppSpecs: QuickSpec {
             }
             
             it("setPhoneNumber") {
-                every(piiEventManager.setPhoneNumberRef).returns(HackleEventBuilder(key: "mock").build())
-                sut.setPhoneNumber(phoneNumber: "+821012345678")
-                verify(exactly: 1) {
-                    piiEventManager.setPhoneNumberRef
+                var count = 0
+                sut.setPhoneNumber(phoneNumber: "+821012345678") {
+                    count += 1
                 }
+                expect(count) == 1
             }
             
             it("unsetPhoneNumber") {
-                every(piiEventManager.unsetPhoneNumberRef).returns(HackleEventBuilder(key: "mock").build())
-                sut.unsetPhoneNumber()
-                verify(exactly: 1) {
-                    piiEventManager.unsetPhoneNumberRef
+                var count = 0
+                sut.unsetPhoneNumber() {
+                    count += 1
                 }
+                expect(count) == 1
             }
         }
 

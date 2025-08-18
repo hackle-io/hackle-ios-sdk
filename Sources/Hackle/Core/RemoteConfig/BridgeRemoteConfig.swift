@@ -1,16 +1,18 @@
 //
-//  DefaultRemoteConfig.swift
+//  BridgeRemoteConfig.swift
 //  Hackle
 //
-//  Created by yong on 2022/11/24.
+//  Created by sungwoo.yeo on 8/18/25.
 //
 
 import Foundation
 
 
-class DefaultRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
+class BridgeRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
+    let hackleAppContext: HackleAppContext
 
-    override init(user: User?, app: HackleCore, userManager: UserManager) {
+    init(user: User?, app: HackleCore, userManager: UserManager, hackleAppContext: HackleAppContext) {
+        self.hackleAppContext = hackleAppContext
         super.init(user: user, app: app, userManager: userManager)
     }
 
@@ -31,6 +33,6 @@ class DefaultRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
     }
 
     private func get(key: String, defaultValue: HackleValue) -> RemoteConfigDecision {
-        get(key: key, defaultValue: defaultValue, hackleAppContext: .DEFAULT)
+        get(key: key, defaultValue: defaultValue, hackleAppContext: self.hackleAppContext)
     }
 }

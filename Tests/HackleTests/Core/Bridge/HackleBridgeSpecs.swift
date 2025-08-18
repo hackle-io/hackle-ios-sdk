@@ -213,7 +213,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
                     let jsonString = self.createJsonString(command: "setUserProperty", parameters: [:])
@@ -266,7 +266,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
                     let jsonString = self.createJsonString(command: "updateUserProperties", parameters: [:])
@@ -311,7 +311,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 
                 it("sms") {
@@ -334,7 +334,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 
                 it("kakao") {
@@ -357,7 +357,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
             }
             it("reset user") {
@@ -370,7 +370,7 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["success"] as? Bool) == true
                 expect(dict["message"] as? String) == "OK"
                 expect(dict["data"]).to(beNil())
-                expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
             }
             it("setPhoneNumber") {
                 let jsonString = self.createJsonString(command: "setPhoneNumber", parameters: ["phoneNumber": "+821012345678"])
@@ -382,7 +382,7 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["success"] as? Bool) == true
                 expect(dict["message"] as? String) == "OK"
                 expect(dict["data"]).to(beNil())
-                expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
             }
             it("unsetPhoneNumber") {
                 let jsonString = self.createJsonString(command: "unsetPhoneNumber")
@@ -394,7 +394,7 @@ class HackleBridgeSpec : QuickSpec {
                 expect(dict["success"] as? Bool) == true
                 expect(dict["message"] as? String) == "OK"
                 expect(dict["data"]).to(beNil())
-                expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
             }
             describe("variation") {
                 context("normal") {
@@ -419,7 +419,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "C"
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = ["experimentKey": 123] as [String : Any]
@@ -464,7 +464,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "C"
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -512,7 +512,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "C"
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -578,7 +578,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -639,7 +639,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -701,7 +701,7 @@ class HackleBridgeSpec : QuickSpec {
                         
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = [
@@ -764,7 +764,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("with user string case") {
                     let parameters = [
@@ -786,7 +786,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("with user object case") {
                     let parameters = [
@@ -808,7 +808,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"] as? Bool) == true
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
                     let jsonString = self.createJsonString(command: "isFeatureOn", parameters: [:])
@@ -848,7 +848,7 @@ class HackleBridgeSpec : QuickSpec {
                     
                     let config = data["config"] as! [String: Any]
                     expect(config["parameters"]).toNot(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("with user string case") {
                     let parameters = [
@@ -877,7 +877,7 @@ class HackleBridgeSpec : QuickSpec {
                     
                     let config = data["config"] as! [String: Any]
                     expect(config["parameters"]).toNot(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("with user case") {
                     let parameters = [
@@ -906,7 +906,7 @@ class HackleBridgeSpec : QuickSpec {
                     
                     let config = data["config"] as! [String: Any]
                     expect(config["parameters"]).toNot(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
                     let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: [:])
@@ -938,7 +938,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("with user string") {
                         let parameters = [
@@ -958,7 +958,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("with user object") {
                         let parameters = [
@@ -978,7 +978,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                 }
                 context("with event object") {
@@ -1018,7 +1018,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("with user string") {
                         let parameters = [
@@ -1058,7 +1058,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("with user object") {
                         let parameters = [
@@ -1098,7 +1098,7 @@ class HackleBridgeSpec : QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"]).to(beNil())
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                 }
                 it("invalid parameters case") {
@@ -1128,13 +1128,13 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? Double) == 1234.5678
-                        expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                        expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
                     it("number default value return case") {
                         let parameters = [
@@ -1148,7 +1148,7 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1168,7 +1168,7 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1187,7 +1187,7 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1207,7 +1207,7 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1226,7 +1226,7 @@ class HackleBridgeSpec : QuickSpec {
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = bridge.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigRef.invokations().count) == 1
+                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1248,8 +1248,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1270,8 +1270,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1293,8 +1293,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1315,8 +1315,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1338,8 +1338,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1360,8 +1360,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.userId) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1385,15 +1385,15 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
                             expect(dict["data"] as? Double) == 1234.5678
-                            expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                            expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                         }
                         it("number default value return case") {
                             let parameters = [
@@ -1408,8 +1408,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1431,8 +1431,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1453,8 +1453,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1476,8 +1476,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1498,8 +1498,8 @@ class HackleBridgeSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = bridge.invoke(string: jsonString)
                             
-                            expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
                             expect(arguments.0?.id) == "abcd1234"
                             
                             let dict = result.jsonObject()!
@@ -1516,7 +1516,7 @@ class HackleBridgeSpec : QuickSpec {
                     let jsonString = self.createJsonString(command: "remoteConfig", parameters: [:])
                     let result = bridge.invoke(string: jsonString)
                     
-                    expect(mock.remoteConfigRef.invokations().count) == 0
+                    expect(mock.remoteConfigWithContextRef.invokations().count) == 0
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == false
@@ -1539,7 +1539,7 @@ class HackleBridgeSpec : QuickSpec {
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
                     expect(dict["data"]).to(beNil())
-                    expect(mock.hackleAppContext?.browserProperties?["mock"] as? String) == "mocks"
+                    expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
             }
             describe("user explorer") {

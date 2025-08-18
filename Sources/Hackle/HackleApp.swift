@@ -59,7 +59,7 @@ import WebKit
     }
 
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
-        hackleAppCore.setUser(user: user, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setUser(user: user, hackleAppContext: .DEFAULT, completion: completion)
     }
 
     @objc public func setUserId(userId: String?) {
@@ -67,7 +67,7 @@ import WebKit
     }
 
     @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
-        hackleAppCore.setUserId(userId: userId, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setUserId(userId: userId, hackleAppContext: .DEFAULT, completion: completion)
     }
 
     @objc public func setDeviceId(deviceId: String) {
@@ -75,7 +75,7 @@ import WebKit
     }
 
     @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
-        hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .DEFAULT, completion: completion)
     }
 
     @objc public func setUserProperty(key: String, value: Any?) {
@@ -97,20 +97,20 @@ import WebKit
     }
 
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
-        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default, completion: completion)
+        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .DEFAULT, completion: completion)
     }
     
     @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
-        hackleAppCore.updatePushSubscriptions(operations: operations, hackleAppContext: .default)
+        hackleAppCore.updatePushSubscriptions(operations: operations, hackleAppContext: .DEFAULT)
     }
     
     @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
-        hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: .default)
+        hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: .DEFAULT)
     }
 
     
     @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
-        hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .default)
+        hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .DEFAULT)
     }
 
     @objc public func resetUser() {
@@ -118,7 +118,7 @@ import WebKit
     }
 
     @objc public func resetUser(completion: @escaping () -> ()) {
-        hackleAppCore.resetUser(hackleAppContext: .default, completion: completion)
+        hackleAppCore.resetUser(hackleAppContext: .DEFAULT, completion: completion)
     }
 
     @objc public func setPhoneNumber(phoneNumber: String) {
@@ -126,7 +126,7 @@ import WebKit
     }
 
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
-        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .DEFAULT, completion: completion)
     }
     
     @objc public func unsetPhoneNumber() {
@@ -134,7 +134,7 @@ import WebKit
     }
     
     @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
-        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default, completion: completion)
+        hackleAppCore.unsetPhoneNumber(hackleAppContext: .DEFAULT, completion: completion)
     }
     
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
@@ -142,11 +142,11 @@ import WebKit
     }
 
     @objc public func variationDetail(experimentKey: Int, defaultVariation: String = "A") -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: nil, defaultVariation: defaultVariation, hackleAppContext: .default)
+        hackleAppCore.variationDetail(experimentKey: experimentKey, user: nil, defaultVariation: defaultVariation, hackleAppContext: .DEFAULT)
     }
 
     @objc public func allVariationDetails() -> [Int: Decision] {
-        hackleAppCore.allVariationDetails(user: nil, hackleAppContext: .default)
+        hackleAppCore.allVariationDetails(user: nil, hackleAppContext: .DEFAULT)
     }
 
     @objc public func isFeatureOn(featureKey: Int) -> Bool {
@@ -154,7 +154,7 @@ import WebKit
     }
 
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .default)
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .DEFAULT)
     }
     
     @objc public func track(eventKey: String) {
@@ -162,11 +162,11 @@ import WebKit
     }
 
     @objc public func track(event: Event) {
-        hackleAppCore.track(event: event, user: nil, hackleAppContext: .default)
+        hackleAppCore.track(event: event, user: nil, hackleAppContext: .DEFAULT)
     }
 
     @objc public func remoteConfig() -> HackleRemoteConfig {
-        hackleAppCore.remoteConfig(user: nil, hackleAppContext: .default)
+        hackleAppCore.remoteConfig(user: nil)
     }
 
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
@@ -186,77 +186,77 @@ import WebKit
     }
 
     @objc public func setCurrentScreen(screen: Screen) {
-        hackleAppCore.setCurrentScreen(screen: screen, hackleAppContext: .default)
+        hackleAppCore.setCurrentScreen(screen: screen, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation, hackleAppContext: .default).variation
+        hackleAppCore.variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation, hackleAppContext: .DEFAULT).variation
     }
 
     @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
     @objc public func variation(experimentKey: Int, user: User, defaultVariation: String = "A") -> String {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation, hackleAppContext: .default).variation
+        hackleAppCore.variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation, hackleAppContext: .DEFAULT).variation
     }
 
     @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
     @objc public func variationDetail(experimentKey: Int, userId: String, defaultVariation: String = "A") -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation, hackleAppContext: .default)
+        hackleAppCore.variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
     @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation, hackleAppContext: .default)
+        hackleAppCore.variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use allVariationDetails() with setUser(user) instead.")
     @objc public func allVariationDetails(user: User) -> [Int: Decision] {
-        hackleAppCore.allVariationDetails(user: user, hackleAppContext: .default)
+        hackleAppCore.allVariationDetails(user: user, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
     @objc public func isFeatureOn(featureKey: Int, userId: String) -> Bool {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId), hackleAppContext: .default).isOn
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId), hackleAppContext: .DEFAULT).isOn
     }
 
     @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
     @objc public func isFeatureOn(featureKey: Int, user: User) -> Bool {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: .default).isOn
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: .DEFAULT).isOn
     }
 
     @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
     @objc public func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId), hackleAppContext: .default)
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId), hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
     @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: .default)
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
     @objc public func track(eventKey: String, userId: String) {
-        hackleAppCore.track(event: Hackle.event(key: eventKey), user: Hackle.user(id: userId), hackleAppContext: .default)
+        hackleAppCore.track(event: Hackle.event(key: eventKey), user: Hackle.user(id: userId), hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
     @objc public func track(eventKey: String, user: User) {
-        hackleAppCore.track(event: Hackle.event(key: eventKey), user: user, hackleAppContext: .default)
+        hackleAppCore.track(event: Hackle.event(key: eventKey), user: user, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
     @objc public func track(event: Event, userId: String) {
-        hackleAppCore.track(event: event, user: Hackle.user(id: userId), hackleAppContext: .default)
+        hackleAppCore.track(event: event, user: Hackle.user(id: userId), hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
     @objc public func track(event: Event, user: User) {
-        hackleAppCore.track(event: event, user: user, hackleAppContext: .default)
+        hackleAppCore.track(event: event, user: user, hackleAppContext: .DEFAULT)
     }
 
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
-        hackleAppCore.remoteConfig(user: user, hackleAppContext: .default)
+        hackleAppCore.remoteConfig(user: user)
     }
     
     @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
@@ -532,11 +532,6 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        
-        // - PII
-        
-        let piiEventManager = DefaultPIIEventManager()
-            
 
         // - UserExplorer
 
@@ -588,7 +583,6 @@ extension HackleApp {
                 lifecycleManager: lifecycleManager,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
-                piiEventManager: piiEventManager,
                 fetchThrottler: throttler,
                 device: device,
                 inAppMessageUI: inAppMessageUI,
