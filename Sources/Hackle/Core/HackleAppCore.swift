@@ -295,7 +295,7 @@ class DefaultHackleAppCore: HackleAppCore {
     }
     
     func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig {
-        BridgeRemoteConfig(user: user, app: core, userManager: userManager, hackleAppContext: hackleAppContext)
+        ContextRemoteConfig(user: user, app: core, userManager: userManager, hackleAppContext: hackleAppContext)
     }
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {

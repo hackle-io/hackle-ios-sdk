@@ -1,5 +1,5 @@
 //
-//  BridgeRemoteConfigSpecs.swift
+//  ContextRemoteConfigSpecs.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 8/18/25.
@@ -9,12 +9,12 @@ import Quick
 import Nimble
 @testable import Hackle
 
-class BridgeRemoteConfigSpecs: QuickSpec {
+class ContextRemoteConfigSpecs: QuickSpec {
     override func spec() {
         var user: User?
         var app: MockHackleCore!
         var userManager: MockUserManager!
-        var config: BridgeRemoteConfig!
+        var config: ContextRemoteConfig!
         let hackleAppContext = HackleAppContext.create(browserProperties: [
             "browser": "safari",
             "path": "/",
@@ -25,7 +25,7 @@ class BridgeRemoteConfigSpecs: QuickSpec {
             user = User.builder().id("user").build()
             app = MockHackleCore()
             userManager = MockUserManager()
-            config = BridgeRemoteConfig(user: user, app: app, userManager: userManager, hackleAppContext: hackleAppContext)
+            config = ContextRemoteConfig(user: user, app: app, userManager: userManager, hackleAppContext: hackleAppContext)
         }
 
         it("getString이 remoteConfig 값을 반환한다") {

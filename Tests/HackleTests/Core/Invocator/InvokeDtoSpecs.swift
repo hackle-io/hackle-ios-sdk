@@ -1,5 +1,5 @@
 //
-//  BridgeDtoSpecs.swift
+//  InvokeDtoSpecs.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 8/13/25.
@@ -12,7 +12,7 @@ import Foundation
 
 // MARK: - Test Spec
 
-class BridgeDtoSpec: QuickSpec {
+class InvokeDtoSpecs: QuickSpec {
     override func spec() {
 
         // MARK: - User

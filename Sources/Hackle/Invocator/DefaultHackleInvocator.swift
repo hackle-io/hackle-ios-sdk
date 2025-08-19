@@ -1,6 +1,6 @@
 import Foundation
 
-class HackleBridge: NSObject, HackleAppBridge {
+class DefaultHackleInvocator: NSObject, HackleInvocator {
 
     private let hackleAppCore: HackleAppCore
 
@@ -9,7 +9,7 @@ class HackleBridge: NSObject, HackleAppBridge {
     }
 
     func isInvocableString(string: String) -> Bool {
-        return BridgeInvocation.isInvocableString(string: string)
+        return Invocation.isInvocableString(string: string)
     }
 
     func invoke(string: String, completionHandler: (String?) -> Void) {
@@ -18,9 +18,9 @@ class HackleBridge: NSObject, HackleAppBridge {
     }
 
     func invoke(string: String) -> String {
-        let response: BridgeResponse
+        let response: InvokeResponse
         do {
-            let invocation = try BridgeInvocation(string: string)
+            let invocation = try Invocation(string: string)
             response = try invoke(
                 command: invocation.command,
                 parameters: invocation.parameters,
@@ -33,9 +33,9 @@ class HackleBridge: NSObject, HackleAppBridge {
     }
 }
 
-extension HackleBridge {
+extension DefaultHackleInvocator {
 
-    private func invoke(command: BridgeInvocation.Command, parameters: HackleBridgeParameters, browserProperties: HackleBrowserProperties) throws -> BridgeResponse {
+    private func invoke(command: Invocation.Command, parameters: HackleInvokeParameters, browserProperties: HackleBrowserProperties) throws -> InvokeResponse {
         let hackleAppContext = HackleAppContext.create(browserProperties: browserProperties)
         switch command {
         case .getSessionId:
@@ -106,9 +106,9 @@ extension HackleBridge {
     }
 }
 
-fileprivate extension HackleBridge {
+fileprivate extension DefaultHackleInvocator {
 
-    private func setUser(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func setUser(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let data = parameters.userAsDictionary() else {
             throw HackleError.error("Valid 'user' parameter must be provided.")
         }
@@ -117,21 +117,21 @@ fileprivate extension HackleBridge {
         }
     }
 
-    private func setUserId(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func setUserId(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let userId = parameters.userId() else {
             throw HackleError.error("Valid 'userId' parameter must be provided.")
         }
         hackleAppCore.setUserId(userId: userId, hackleAppContext: hackleAppContext, completion: {})
     }
 
-    private func setDeviceId(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func setDeviceId(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let deviceId = parameters.deviceId() else {
             throw HackleError.error("Valid 'deviceId' parameter must be provided.")
         }
         hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: hackleAppContext, completion: {})
     }
 
-    private func setUserProperty(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func setUserProperty(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let key = parameters.key(),
               let value = parameters.value() else {
             throw HackleError.error("Valid 'key' & 'value' parameter must be provided.")
@@ -141,7 +141,7 @@ fileprivate extension HackleBridge {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: hackleAppContext, completion: {})
     }
 
-    private func updateUserProperties(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func updateUserProperties(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let dto = parameters.propertyOperationDto() else {
             throw HackleError.error("Valid 'operations' parameter must be provided.")
         }
@@ -149,7 +149,7 @@ fileprivate extension HackleBridge {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: hackleAppContext, completion: {})
     }
     
-    private func updatePushSubscriptions(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func updatePushSubscriptions(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let dto = parameters.subscriptionOperationDto() else {
             throw HackleError.error("Valid 'subscriptions' parameter must be provided.")
         }
@@ -157,7 +157,7 @@ fileprivate extension HackleBridge {
         hackleAppCore.updatePushSubscriptions(operations: operations, hackleAppContext: hackleAppContext)
     }
     
-    private func updateSmsSubscriptions(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func updateSmsSubscriptions(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let dto = parameters.subscriptionOperationDto() else {
             throw HackleError.error("Valid 'subscriptions' parameter must be provided.")
         }
@@ -165,7 +165,7 @@ fileprivate extension HackleBridge {
         hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: hackleAppContext)
     }
     
-    private func updateKakaoSubscriptions(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func updateKakaoSubscriptions(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let dto = parameters.subscriptionOperationDto() else {
             throw HackleError.error("Valid 'subscriptions' parameter must be provided.")
         }
@@ -173,14 +173,14 @@ fileprivate extension HackleBridge {
         hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: hackleAppContext)
     }
     
-    private func setPhoneNumber(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func setPhoneNumber(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let phoneNumber = parameters.phoneNumber() else {
             throw HackleError.error("Valid 'phoneNumber' parameter must be provided.")
         }
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: hackleAppContext, completion: {})
     }
 
-    private func variation(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> String? {
+    private func variation(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws -> String? {
         guard let experimentKey = parameters.experimentKey() else {
             throw HackleError.error("Valid 'experimentKey' parameter must be provided.")
         }
@@ -194,7 +194,7 @@ fileprivate extension HackleBridge {
         return result.variation
     }
 
-    private func variationDetail(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> DecisionDto {
+    private func variationDetail(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws -> DecisionDto {
         guard let experimentKey = parameters.experimentKey() else {
             throw HackleError.error("Valid 'experimentKey' parameter must be provided.")
         }
@@ -208,7 +208,7 @@ fileprivate extension HackleBridge {
         return result.toDto()
     }
 
-    private func isFeatureOn(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> Bool {
+    private func isFeatureOn(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws -> Bool {
         guard let featureKey = parameters.featureKey() else {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
@@ -216,7 +216,7 @@ fileprivate extension HackleBridge {
         return result.isOn
     }
 
-    private func featureFlagDetail(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> FeatureFlagDecisionDto {
+    private func featureFlagDetail(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws -> FeatureFlagDecisionDto {
         guard let featureKey = parameters.featureKey() else {
             throw HackleError.error("Valid 'featureKey' parameter must be provided.")
         }
@@ -224,7 +224,7 @@ fileprivate extension HackleBridge {
         return result.toDto()
     }
 
-    private func track(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func track(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let event = parameters.event() else {
             throw HackleError.error("Valid 'event' parameter must be provided.")
         }
@@ -232,7 +232,7 @@ fileprivate extension HackleBridge {
         hackleAppCore.track(event: event, user: parameters.user(), hackleAppContext: hackleAppContext)
     }
 
-    private func remoteConfig(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws -> Any {
+    private func remoteConfig(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws -> Any {
         guard let key = parameters.key() else {
             throw HackleError.error("Valid 'key' parameter must be provided.")
         }
@@ -241,32 +241,32 @@ fileprivate extension HackleBridge {
         }
         
         let user: User? = parameters.userWithUserId()
-        let config = hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
 
         switch valueType {
         case "string":
             guard let defaultValue = parameters.defaultStringValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
-            return config.getString(forKey: key, defaultValue: defaultValue)
+            return hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
+                .getString(forKey: key, defaultValue: defaultValue)
         case "number":
             guard let defaultValue = parameters.defaultDoubleValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
-            let value = config.getDouble(forKey: key, defaultValue: defaultValue)
-            return value
+            return hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
+                .getDouble(forKey: key, defaultValue: defaultValue)
         case "boolean":
             guard let defaultValue = parameters.defaultBoolValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
-            let value = config.getBool(forKey: key, defaultValue: defaultValue)
-            return value
+            return hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
+                .getBool(forKey: key, defaultValue: defaultValue)
         default:
             throw HackleError.error("Unsupport 'valueType' value provided.")
         }
     }
     
-    private func setCurrentScreen(parameters: HackleBridgeParameters, hackleAppContext: HackleAppContext) throws {
+    private func setCurrentScreen(parameters: HackleInvokeParameters, hackleAppContext: HackleAppContext) throws {
         guard let screenName = parameters.screenName() else {
             throw HackleError.error("Valid 'screenName' parameter must be provided.")
         }

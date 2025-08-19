@@ -1,5 +1,5 @@
 //
-//  BirdgeDto.swift
+//  InvokeDto.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 8/12/25.

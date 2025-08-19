@@ -3,18 +3,18 @@ import WebKit
 
 class HackleUIDelegate: NSObject, WKUIDelegate {
 
-    private let bridge: HackleAppBridge
+    private let invocator: HackleInvocator
     private let uiDelegate: WKUIDelegate?
 
-    init(hackleAppCore: HackleAppCore, uiDelegate: WKUIDelegate? = nil) {
-        self.bridge = HackleBridge(hackleAppCore: hackleAppCore)
+    init(invocator: HackleInvocator, uiDelegate: WKUIDelegate? = nil) {
+        self.invocator = invocator
         self.uiDelegate = uiDelegate
     }
 
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
-        let processable = bridge.isInvocableString(string: prompt)
+        let processable = invocator.isInvocableString(string: prompt)
         if (processable) {
-            bridge.invoke(string: prompt, completionHandler: completionHandler)
+            invocator.invoke(string: prompt, completionHandler: completionHandler)
         } else {
             guard let uiDelegate = uiDelegate,
                   let delegatePrompt = uiDelegate.webView(_:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:)

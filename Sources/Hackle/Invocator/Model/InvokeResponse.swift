@@ -1,6 +1,6 @@
 import Foundation
 
-class BridgeResponse {
+class InvokeResponse {
     
     let success: Bool
     let message: String
@@ -19,7 +19,7 @@ class BridgeResponse {
             "data": data
         ]
         let sanitized = dict.compactMapValues { $0 }
-        return sanitized.toJson() ?? defaultJsonString(message: "Error occours while parsing bridge response.")
+        return sanitized.toJson() ?? defaultJsonString(message: "Error occours while parsing response.")
     }
     
     func defaultJsonString(message: String) -> String {
@@ -27,25 +27,25 @@ class BridgeResponse {
     }
 }
 
-extension BridgeResponse {
+extension InvokeResponse {
     
-    static func success() -> BridgeResponse {
-        return BridgeResponse(success: true, message: "OK")
+    static func success() -> InvokeResponse {
+        return InvokeResponse(success: true, message: "OK")
     }
     
-    static func success(_ data: Any?) -> BridgeResponse {
-        return BridgeResponse(
+    static func success(_ data: Any?) -> InvokeResponse {
+        return InvokeResponse(
             success: true,
             message: "OK",
             data: data
         )
     }
     
-    static func error(_ message: String) -> BridgeResponse {
-        return BridgeResponse(success: false, message: message)
+    static func error(_ message: String) -> InvokeResponse {
+        return InvokeResponse(success: false, message: message)
     }
     
-    static func error(_ error: Error) -> BridgeResponse {
-        return BridgeResponse(success: false, message: error.localizedDescription)
+    static func error(_ error: Error) -> InvokeResponse {
+        return InvokeResponse(success: false, message: error.localizedDescription)
     }
 }

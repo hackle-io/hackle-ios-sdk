@@ -170,11 +170,7 @@ import WebKit
     }
 
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
-        webView.prepareForHackleWebBridge(hackleAppCore: self.hackleAppCore, sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
-    }
-    
-    @objc public func hackleAppBridge() -> HackleAppBridge {
-        HackleBridge(hackleAppCore: hackleAppCore)
+        webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
     }
 
     @objc public func setPushToken(_ deviceToken: Data) {
@@ -268,6 +264,10 @@ import WebKit
 extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
+    }
+    
+    func invocator() -> HackleInvocator {
+        DefaultHackleInvocator(hackleAppCore: hackleAppCore)
     }
     
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {

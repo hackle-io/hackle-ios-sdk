@@ -1,13 +1,13 @@
 //
-//  HackleBridgeParameters.swift
+//  HackleInvokeParameters.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 8/12/25.
 //
 
-typealias HackleBridgeParameters = [String: Any?]
+typealias HackleInvokeParameters = [String: Any?]
 
-extension HackleBridgeParameters {
+extension HackleInvokeParameters {
     /// 사용자 정보를 [String: Any] 형태로 반환합니다.
     /// - Returns: 사용자 정보 딕셔너리 또는 `nil`
     func userAsDictionary() -> [String: Any]? {

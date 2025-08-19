@@ -1,5 +1,5 @@
 //
-//  BridgeRemoteConfig.swift
+//  ContextRemoteConfig.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 8/18/25.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-class BridgeRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
+class ContextRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
     let hackleAppContext: HackleAppContext
 
     init(user: User?, app: HackleCore, userManager: UserManager, hackleAppContext: HackleAppContext) {
