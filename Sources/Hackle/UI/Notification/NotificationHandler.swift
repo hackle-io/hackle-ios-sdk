@@ -125,7 +125,7 @@ extension URL {
     fileprivate func downloadImage(completion: @escaping (URL?) -> Void) {
         URLSession.shared.downloadTask(with: self) { (location, response, error) in
             if let error = error {
-                Log.info("Image download error")
+                Log.info("Image download error: \(error)")
                 completion(nil)
                 return
             }
