@@ -10,6 +10,7 @@ import WebKit
     private let hackleAppCore: HackleAppCore
     private let sdk: Sdk
     private let mode: HackleAppMode
+    private var hackleInvocator: HackleInvocator? = nil
     
     init(
         hackleAppCore: HackleAppCore,
@@ -267,7 +268,13 @@ extension HackleApp {
     }
     
     func invocator() -> HackleInvocator {
-        DefaultHackleInvocator(hackleAppCore: hackleAppCore)
+        guard let hackleInvocator = hackleInvocator else {
+            let invocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
+            hackleInvocator = invocator
+            return invocator
+        }
+
+        return hackleInvocator
     }
     
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
