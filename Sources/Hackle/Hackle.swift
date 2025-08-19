@@ -116,7 +116,7 @@ extension Hackle {
         }
     }
     
-    @objc static public func didReceive(
+    @objc static public func handleImageNotification(
         request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ) -> Bool {

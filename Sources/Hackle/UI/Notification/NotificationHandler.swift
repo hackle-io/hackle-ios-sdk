@@ -36,15 +36,20 @@ class NotificationHandler {
     }
     
     func handlePushImage(notificationData: NotificationData, completion: @escaping (UNNotificationAttachment?) -> Void) {
-        guard let imageUrl = notificationData.imageUrl,
-              !imageUrl.isEmpty,
-              let url = URL(string: imageUrl) else {
-            Log.info("Image URL is not a valid")
-            completion(nil)
-            return
+        Log.info("handle push image action")
+        downloadImage(data: notificationData) { imageLocalPath in
+            guard let url = imageLocalPath else {
+                completion(nil)
+                return
+            }
+            do {
+                let attachment = try UNNotificationAttachment(identifier: "image", url: url, options: nil)
+                completion(attachment)
+            } catch {
+                Log.info("Failed to create notification attachment: \(error)")
+                completion(nil)
+            }
         }
-        
-        url.download(completion: completion)
     }
 }
 
@@ -65,6 +70,21 @@ extension NotificationHandler {
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")
             }
+        }
+    }
+    
+    private func downloadImage(data: NotificationData, completion: @escaping (URL?) -> Void) {
+        guard let imageUrl = data.imageUrl,
+              !imageUrl.isEmpty else {
+            Log.info("Image URL is empty")
+            completion(nil)
+            return
+        }
+        
+        if let url = URL(string: imageUrl) {
+            url.downloadImage(completion: completion)
+        } else {
+            Log.info("Image URL is not a valid URL: \(imageUrl)")
         }
     }
 }
@@ -102,10 +122,10 @@ extension URL {
         }
     }
     
-    fileprivate func download(completion: @escaping (UNNotificationAttachment?) -> Void) {
+    fileprivate func downloadImage(completion: @escaping (URL?) -> Void) {
         let task = URLSession.shared.downloadTask(with: self) { (location, response, error) in
             if let error = error {
-                Log.info("Image download error: \(error.localizedDescription)")
+                Log.info("Image download error")
                 completion(nil)
                 return
             }
@@ -121,13 +141,10 @@ extension URL {
                 let fileExtension = self.pathExtension
                 let destinationURL = cachesDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension(fileExtension)
                 
-                try fileManager.moveItem(at: location, to: destinationURL)
-                
-                let attachment = try UNNotificationAttachment(identifier: "image", url: destinationURL, options: nil)
-                completion(attachment)
-                
+                try fileManager.moveItem(at: location, to: destinationURL) // move image to caches directory
+                completion(destinationURL)
             } catch {
-                Log.info("Attachment creation error: \(error.localizedDescription)")
+                Log.info("Image caching error")
                 completion(nil)
             }
         }
