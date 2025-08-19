@@ -115,6 +115,23 @@ extension Hackle {
             return false
         }
     }
+
+    @objc static public func handleNotification(
+        response: UNNotificationResponse,
+        handleAction: Bool = true
+    ) -> HackleNotification? {
+        guard let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) else {
+            return nil
+        }
+        
+        NotificationHandler.shared.trackPushClickEvent(notificationData: notificationData)
+
+        if handleAction {
+            NotificationHandler.shared.handlePushClickAction(notificationData: notificationData)
+        }
+        
+        return notificationData
+    }
     
     @objc static public func handleImageNotification(
         request: UNNotificationRequest,
@@ -135,23 +152,6 @@ extension Hackle {
         }
         
         return true
-    }
-
-    @objc static public func handleNotification(
-        response: UNNotificationResponse,
-        handleAction: Bool = true
-    ) -> HackleNotification? {
-        guard let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) else {
-            return nil
-        }
-        
-        NotificationHandler.shared.trackPushClickEvent(notificationData: notificationData)
-
-        if handleAction {
-            NotificationHandler.shared.handlePushClickAction(notificationData: notificationData)
-        }
-        
-        return notificationData
     }
 
     @available(*, deprecated, message: "Use handleClickNotification(UNNotificationResponse, Bool) instead.")

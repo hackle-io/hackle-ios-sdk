@@ -123,7 +123,7 @@ extension URL {
     }
     
     fileprivate func downloadImage(completion: @escaping (URL?) -> Void) {
-        let task = URLSession.shared.downloadTask(with: self) { (location, response, error) in
+        URLSession.shared.downloadTask(with: self) { (location, response, error) in
             if let error = error {
                 Log.info("Image download error")
                 completion(nil)
@@ -131,25 +131,21 @@ extension URL {
             }
             
             guard let location = location else {
+                Log.info("Image location empty")
                 completion(nil)
                 return
             }
             
             do {
-                let fileManager = FileManager.default
-                let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
                 let fileExtension = self.pathExtension
-                let destinationURL = cachesDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension(fileExtension)
-                
-                try fileManager.moveItem(at: location, to: destinationURL) // move image to caches directory
+                let destinationURL = location.appendingPathExtension(fileExtension)
+                try FileManager.default.moveItem(at: location, to: destinationURL) // rename the temp file with a proper extension
                 completion(destinationURL)
             } catch {
-                Log.info("Image caching error")
+                Log.info("Image rename error")
                 completion(nil)
             }
-        }
-        
-        task.resume()
+        }.resume()
     }
     
     private func isHttpScheme(_ scheme: String) -> Bool {
