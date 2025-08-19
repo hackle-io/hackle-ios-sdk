@@ -34,6 +34,18 @@ class NotificationHandler {
         Log.info("handle push click action: \(notificationData.actionType.rawValue)")
         trampoline(data: notificationData)
     }
+    
+    func handlePushImage(notificationData: NotificationData, completion: @escaping (UNNotificationAttachment?) -> Void) {
+        guard let imageUrl = notificationData.imageUrl,
+              !imageUrl.isEmpty,
+              let url = URL(string: imageUrl) else {
+            Log.info("Image URL is not a valid")
+            completion(nil)
+            return
+        }
+        
+        url.download(completion: completion)
+    }
 }
 
 extension NotificationHandler {
@@ -88,6 +100,39 @@ extension URL {
         } else {
             openUrl()
         }
+    }
+    
+    fileprivate func download(completion: @escaping (UNNotificationAttachment?) -> Void) {
+        let task = URLSession.shared.downloadTask(with: self) { (location, response, error) in
+            if let error = error {
+                Log.info("Image download error: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let location = location else {
+                completion(nil)
+                return
+            }
+            
+            do {
+                let fileManager = FileManager.default
+                let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+                let fileExtension = self.pathExtension
+                let destinationURL = cachesDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension(fileExtension)
+                
+                try fileManager.moveItem(at: location, to: destinationURL)
+                
+                let attachment = try UNNotificationAttachment(identifier: "image", url: destinationURL, options: nil)
+                completion(attachment)
+                
+            } catch {
+                Log.info("Attachment creation error: \(error.localizedDescription)")
+                completion(nil)
+            }
+        }
+        
+        task.resume()
     }
     
     private func isHttpScheme(_ scheme: String) -> Bool {

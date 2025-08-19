@@ -115,6 +115,27 @@ extension Hackle {
             return false
         }
     }
+    
+    @objc static public func didReceive(
+        request: UNNotificationRequest,
+        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+    ) -> Bool {
+        guard let notificationData = NotificationData.from(data: request.content.userInfo) else {
+            return false
+        }
+        
+        NotificationHandler.shared.handlePushImage(notificationData: notificationData) { attachment in
+            if let baseAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent,
+               let attachment = attachment {
+                baseAttemptContent.attachments = [attachment]
+                contentHandler(baseAttemptContent)
+            } else {
+                contentHandler(request.content)
+            }
+        }
+        
+        return true
+    }
 
     @objc static public func handleNotification(
         response: UNNotificationResponse,
