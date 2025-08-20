@@ -7,30 +7,36 @@
 
 import Foundation
 
+class DefaultRemoteConfig: HackleRemoteConfig {
+    private let remoteConfigProcessor: RemoteConfigProcessor
+    private let user: User?
 
-class DefaultRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
-
-    override init(user: User?, app: HackleCore, userManager: UserManager) {
-        super.init(user: user, app: app, userManager: userManager)
+    init(remoteConfigProcessor: RemoteConfigProcessor, user: User?) {
+        self.remoteConfigProcessor = remoteConfigProcessor
+        self.user = user
     }
 
     func getString(forKey: String, defaultValue: String) -> String {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.stringOrNil ?? defaultValue
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: .DEFAULT)
+            .value.stringOrNil ?? defaultValue
     }
 
     func getInt(forKey: String, defaultValue: Int) -> Int {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.doubleOrNil?.toIntOrNil() ?? defaultValue
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: .DEFAULT)
+            .value.doubleOrNil?.toIntOrNil() ?? defaultValue
     }
 
     func getDouble(forKey: String, defaultValue: Double) -> Double {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.doubleOrNil ?? defaultValue
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: .DEFAULT)
+            .value.doubleOrNil ?? defaultValue
     }
 
     func getBool(forKey: String, defaultValue: Bool) -> Bool {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.boolOrNil ?? defaultValue
-    }
-
-    private func get(key: String, defaultValue: HackleValue) -> RemoteConfigDecision {
-        get(key: key, defaultValue: defaultValue, hackleAppContext: .DEFAULT)
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: .DEFAULT)
+            .value.boolOrNil ?? defaultValue
     }
 }

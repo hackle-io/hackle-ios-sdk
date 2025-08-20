@@ -110,7 +110,7 @@
 		B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */; };
 		B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */; };
 		B2A88D8E2E20DC4D00475B73 /* SQLiteEventRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */; };
-		B2C052502E5304CA00D30787 /* RemoteConfigeCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0524F2E5304C500D30787 /* RemoteConfigeCore.swift */; };
+		B2C052502E5304CA00D30787 /* RemoteConfigProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0524F2E5304C500D30787 /* RemoteConfigProcessor.swift */; };
 		B2C052522E53054900D30787 /* ContextRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052512E53054400D30787 /* ContextRemoteConfig.swift */; };
 		B2C052542E53108100D30787 /* ContextRemoteConfigSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
@@ -688,7 +688,7 @@
 		B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserEventBackoffControllerSpec.swift; sourceTree = "<group>"; };
 		B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteEventRepositorySpec.swift; sourceTree = "<group>"; };
-		B2C0524F2E5304C500D30787 /* RemoteConfigeCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigeCore.swift; sourceTree = "<group>"; };
+		B2C0524F2E5304C500D30787 /* RemoteConfigProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigProcessor.swift; sourceTree = "<group>"; };
 		B2C052512E53054400D30787 /* ContextRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRemoteConfig.swift; sourceTree = "<group>"; };
 		B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRemoteConfigSpecs.swift; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
@@ -1628,7 +1628,7 @@
 		EE29D8DB29CD825300B1FEAA /* RemoteConfig */ = {
 			isa = PBXGroup;
 			children = (
-				B2C0524F2E5304C500D30787 /* RemoteConfigeCore.swift */,
+				B2C0524F2E5304C500D30787 /* RemoteConfigProcessor.swift */,
 				EE29D8DC29CD825300B1FEAA /* DefaultRemoteConfig.swift */,
 				B2C052512E53054400D30787 /* ContextRemoteConfig.swift */,
 			);
@@ -3079,7 +3079,7 @@
 				EE60C0A32C37B13300830F0A /* Updated.swift in Sources */,
 				EE29D99A29CD825500B1FEAA /* ContainerResolver.swift in Sources */,
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
-				B2C052502E5304CA00D30787 /* RemoteConfigeCore.swift in Sources */,
+				B2C052502E5304CA00D30787 /* RemoteConfigProcessor.swift in Sources */,
 				EE29D94629CD825400B1FEAA /* FlushMetric.swift in Sources */,
 				EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */,
 				EE80DF8C2A2831EC00FB12CC /* InAppMessageEvaluation.swift in Sources */,

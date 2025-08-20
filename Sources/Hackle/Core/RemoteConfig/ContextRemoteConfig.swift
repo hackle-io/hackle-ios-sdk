@@ -8,31 +8,38 @@
 import Foundation
 
 
-class ContextRemoteConfig: RemoteConfigeCore, HackleRemoteConfig {
-    let hackleAppContext: HackleAppContext
+class ContextRemoteConfig: HackleRemoteConfig {
+    private let remoteConfigProcessor: RemoteConfigProcessor
+    private let user: User?
+    private let hackleAppContext: HackleAppContext
 
-    init(user: User?, app: HackleCore, userManager: UserManager, hackleAppContext: HackleAppContext) {
+    init(remoteConfigProcessor: RemoteConfigProcessor, user: User?, hackleAppContext: HackleAppContext) {
+        self.remoteConfigProcessor = remoteConfigProcessor
+        self.user = user
         self.hackleAppContext = hackleAppContext
-        super.init(user: user, app: app, userManager: userManager)
     }
 
     func getString(forKey: String, defaultValue: String) -> String {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.stringOrNil ?? defaultValue
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: hackleAppContext)
+            .value.stringOrNil ?? defaultValue
     }
 
     func getInt(forKey: String, defaultValue: Int) -> Int {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.doubleOrNil?.toIntOrNil() ?? defaultValue
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: hackleAppContext)
+            .value.doubleOrNil?.toIntOrNil() ?? defaultValue
     }
 
     func getDouble(forKey: String, defaultValue: Double) -> Double {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.doubleOrNil ?? defaultValue
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: hackleAppContext)
+            .value.doubleOrNil ?? defaultValue
     }
 
     func getBool(forKey: String, defaultValue: Bool) -> Bool {
-        get(key: forKey, defaultValue: HackleValue(value: defaultValue)).value.boolOrNil ?? defaultValue
-    }
-
-    private func get(key: String, defaultValue: HackleValue) -> RemoteConfigDecision {
-        get(key: key, defaultValue: defaultValue, hackleAppContext: self.hackleAppContext)
+        remoteConfigProcessor
+            .get(key: forKey, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: hackleAppContext)
+            .value.boolOrNil ?? defaultValue
     }
 }

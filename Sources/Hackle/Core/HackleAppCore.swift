@@ -72,6 +72,7 @@ class DefaultHackleAppCore: HackleAppCore {
     private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
+    private let remoteConfigProcessor: RemoteConfigProcessor
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
@@ -109,6 +110,7 @@ class DefaultHackleAppCore: HackleAppCore {
         lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
+        remoteConfigProcessor: RemoteConfigProcessor,
         fetchThrottler: Throttler,
         device: Device,
         inAppMessageUI: HackleInAppMessageUI,
@@ -125,6 +127,7 @@ class DefaultHackleAppCore: HackleAppCore {
         self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
+        self.remoteConfigProcessor = remoteConfigProcessor
         self.fetchThrottler = fetchThrottler
         self.device = device
         self.inAppMessageUI = inAppMessageUI
@@ -291,11 +294,11 @@ class DefaultHackleAppCore: HackleAppCore {
     }
 
     func remoteConfig(user: User?) -> HackleRemoteConfig {
-        DefaultRemoteConfig(user: user, app: core, userManager: userManager)
+        DefaultRemoteConfig(remoteConfigProcessor: remoteConfigProcessor, user: user)
     }
     
     func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig {
-        ContextRemoteConfig(user: user, app: core, userManager: userManager, hackleAppContext: hackleAppContext)
+        ContextRemoteConfig(remoteConfigProcessor: remoteConfigProcessor, user: user, hackleAppContext: hackleAppContext)
     }
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {

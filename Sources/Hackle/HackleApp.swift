@@ -535,6 +535,11 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
+        
+        let remoteConfigProcessor = RemoteConfigProcessor(
+            core: core,
+            userManager: userManager
+        )
 
         // - UserExplorer
 
@@ -585,6 +590,7 @@ extension HackleApp {
             lifecycleManager: lifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
+            remoteConfigProcessor: remoteConfigProcessor,
             fetchThrottler: throttler,
             device: device,
             inAppMessageUI: inAppMessageUI,

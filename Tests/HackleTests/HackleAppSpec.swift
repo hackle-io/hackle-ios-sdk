@@ -15,6 +15,7 @@ class HackleAppSpecs: QuickSpec {
         var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
         var pushTokenRegistry = DefaultPushTokenRegistry()
+        var remoteConfigProcessor: RemoteConfigProcessor!
         var device: Device!
         var userExplorer: HackleUserExplorer!
         var inAppMessageUI: HackleInAppMessageUI!
@@ -35,6 +36,7 @@ class HackleAppSpecs: QuickSpec {
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
+            remoteConfigProcessor = RemoteConfigProcessor(core: core, userManager: userManager)
             pushTokenRegistry = DefaultPushTokenRegistry()
             device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
             userExplorer = DefaultHackleUserExplorer(
@@ -68,6 +70,7 @@ class HackleAppSpecs: QuickSpec {
                 lifecycleManager: LifecycleManager.shared,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
+                remoteConfigProcessor: remoteConfigProcessor,
                 fetchThrottler: throttler,
                 device: device,
                 inAppMessageUI: inAppMessageUI,
