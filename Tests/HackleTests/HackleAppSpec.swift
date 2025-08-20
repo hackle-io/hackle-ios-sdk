@@ -55,26 +55,29 @@ class HackleAppSpecs: QuickSpec {
             inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
             
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
+            
+            let hackleAppCore = DefaultHackleAppCore(
+                core: core,
+                eventQueue: eventQueue,
+                synchronizer: synchronizer,
+                userManager: userManager,
+                workspaceManager: workspaceManager,
+                sessionManager: sessionManager,
+                screenManager: screenManager,
+                eventProcessor: eventProcessor,
+                lifecycleManager: LifecycleManager.shared,
+                pushTokenRegistry: pushTokenRegistry,
+                notificationManager: notificationManager,
+                fetchThrottler: throttler,
+                device: device,
+                inAppMessageUI: inAppMessageUI,
+                userExplorer: userExplorer
+            )
             sut = HackleApp(
-                hackleAppCore: DefaultHackleAppCore(
-                    core: core,
-                    eventQueue: eventQueue,
-                    synchronizer: synchronizer,
-                    userManager: userManager,
-                    workspaceManager: workspaceManager,
-                    sessionManager: sessionManager,
-                    screenManager: screenManager,
-                    eventProcessor: eventProcessor,
-                    lifecycleManager: LifecycleManager.shared,
-                    pushTokenRegistry: pushTokenRegistry,
-                    notificationManager: notificationManager,
-                    fetchThrottler: throttler,
-                    device: device,
-                    inAppMessageUI: inAppMessageUI,
-                    userExplorer: userExplorer
-                ),
+                hackleAppCore: hackleAppCore,
                 mode: .native,
-                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT)
+                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
+                hackleInvocator: DefaultHackleInvocator(hackleAppCore: hackleAppCore)
             )
         }
 

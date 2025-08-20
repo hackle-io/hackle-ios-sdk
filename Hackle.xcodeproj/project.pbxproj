@@ -113,7 +113,6 @@
 		B2C052502E5304CA00D30787 /* RemoteConfigeCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0524F2E5304C500D30787 /* RemoteConfigeCore.swift */; };
 		B2C052522E53054900D30787 /* ContextRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052512E53054400D30787 /* ContextRemoteConfig.swift */; };
 		B2C052542E53108100D30787 /* ContextRemoteConfigSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */; };
-		B2C0525A2E541CB300D30787 /* HackleAppInvocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052592E541CAE00D30787 /* HackleAppInvocator.swift */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
 		B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */; };
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
@@ -692,7 +691,6 @@
 		B2C0524F2E5304C500D30787 /* RemoteConfigeCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigeCore.swift; sourceTree = "<group>"; };
 		B2C052512E53054400D30787 /* ContextRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRemoteConfig.swift; sourceTree = "<group>"; };
 		B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRemoteConfigSpecs.swift; sourceTree = "<group>"; };
-		B2C052592E541CAE00D30787 /* HackleAppInvocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppInvocator.swift; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
 		B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageView.swift; sourceTree = "<group>"; };
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
@@ -1477,7 +1475,6 @@
 				EE29DAAA29CD83C900B1FEAA /* Resources */,
 				EE29D8AC29CD825300B1FEAA /* Hackle.swift */,
 				EE29D8AD29CD825300B1FEAA /* HackleApp.swift */,
-				B2C052592E541CAE00D30787 /* HackleAppInvocator.swift */,
 				EE29D8AB29CD825300B1FEAA /* HackleConfig.swift */,
 				EEF629E12B9EA42E002718B7 /* Hackle.h */,
 				EEF629E22B9EA437002718B7 /* HackleNotification.h */,
@@ -3035,7 +3032,6 @@
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
 				EE86376129ECD0B5000268DC /* DelegatingEvaluator.swift in Sources */,
 				EE29D98C29CD825400B1FEAA /* HackleValue.swift in Sources */,
-				B2C0525A2E541CB300D30787 /* HackleAppInvocator.swift in Sources */,
 				EE543CCA2C09745200F64BFA /* ViewManager.swift in Sources */,
 				EE80378829D3DB04000DC77E /* HackleAbTestItem.swift in Sources */,
 				EE29D9A029CD825500B1FEAA /* ExperimentFlowEvaluator.swift in Sources */,

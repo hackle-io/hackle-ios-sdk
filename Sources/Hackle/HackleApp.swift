@@ -10,16 +10,18 @@ import WebKit
     private let hackleAppCore: HackleAppCore
     private let sdk: Sdk
     private let mode: HackleAppMode
-    private var hackleInvocator: HackleInvocator? = nil
+    private let hackleInvocator: HackleInvocator
     
     init(
         hackleAppCore: HackleAppCore,
         mode: HackleAppMode,
-        sdk: Sdk
+        sdk: Sdk,
+        hackleInvocator: HackleInvocator
     ) {
         self.hackleAppCore = hackleAppCore
         self.mode = mode
         self.sdk = sdk
+        self.hackleInvocator = hackleInvocator
         super.init()
     }
 
@@ -173,6 +175,10 @@ import WebKit
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
     }
+    
+    @objc public func invocator() -> HackleInvocator {
+        return hackleInvocator
+    }
 
     @objc public func setPushToken(_ deviceToken: Data) {
         hackleAppCore.setPushToken(deviceToken: deviceToken)
@@ -266,17 +272,7 @@ extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
     }
-    
-    func invocator() -> HackleInvocator {
-        guard let hackleInvocator = hackleInvocator else {
-            let invocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
-            hackleInvocator = invocator
-            return invocator
-        }
 
-        return hackleInvocator
-    }
-    
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
@@ -576,27 +572,31 @@ extension HackleApp {
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
-
+            
+        let hackleAppCore = DefaultHackleAppCore(
+            core: core,
+            eventQueue: eventQueue,
+            synchronizer: pollingSynchronizer,
+            userManager: userManager,
+            workspaceManager: workspaceManager,
+            sessionManager: sessionManager,
+            screenManager: screenManager,
+            eventProcessor: eventProcessor,
+            lifecycleManager: lifecycleManager,
+            pushTokenRegistry: pushTokenRegistry,
+            notificationManager: notificationManager,
+            fetchThrottler: throttler,
+            device: device,
+            inAppMessageUI: inAppMessageUI,
+            userExplorer: userExplorer
+        )
+        let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
+        
         return HackleApp(
-            hackleAppCore: DefaultHackleAppCore(
-                core: core,
-                eventQueue: eventQueue,
-                synchronizer: pollingSynchronizer,
-                userManager: userManager,
-                workspaceManager: workspaceManager,
-                sessionManager: sessionManager,
-                screenManager: screenManager,
-                eventProcessor: eventProcessor,
-                lifecycleManager: lifecycleManager,
-                pushTokenRegistry: pushTokenRegistry,
-                notificationManager: notificationManager,
-                fetchThrottler: throttler,
-                device: device,
-                inAppMessageUI: inAppMessageUI,
-                userExplorer: userExplorer
-            ),
+            hackleAppCore: hackleAppCore,
             mode: config.mode,
-            sdk: sdk
+            sdk: sdk,
+            hackleInvocator: hackleInvocator
         )
     }
 
@@ -627,4 +627,3 @@ extension HackleApp {
         Metrics.addRegistry(registry: monitoringMetricRegistry)
     }
 }
-
