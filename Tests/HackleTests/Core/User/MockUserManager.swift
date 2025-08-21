@@ -45,8 +45,11 @@ class MockUserManager: Mock, UserManager {
             return Updated(previous: previous, current: user)
         }
 
-        every(resolveMock).answers { user in
+        every(resolveMock).answers { user, hackleAppContext in
             HackleUser.of(user: user ?? self.currentUser, hackleProperties: [:])
+                .toBuilder()
+                .hackleProperties(hackleAppContext.browserProperties)
+                .build()
         }
 
         every(syncIfNeededMock).answers { updated, completion in
@@ -61,9 +64,11 @@ class MockUserManager: Mock, UserManager {
     }
 
     lazy var resolveMock = MockFunction(self, resolve)
+    var lastHackleAppContext: HackleAppContext?
 
-    func resolve(user: User?) -> HackleUser {
-        call(resolveMock, args: user)
+    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser {
+        lastHackleAppContext = hackleAppContext
+        return call(resolveMock, args: (user, hackleAppContext))
     }
 
     lazy var toHackleUserMock = MockFunction(self, toHackleUser)

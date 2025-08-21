@@ -33,14 +33,14 @@ extension WKWebView {
         }
     }
 
-    private func bridgeScript() -> WKUserScript {
+    private func bridgeScript(sdkKey: String, mode: HackleAppMode) -> WKUserScript {
         let source = """
                      window.\(name) = {
                          \(ReservedKey.getAppSdkKey): function() {
-                             return '\(Hackle.app()?.sdk.key ?? "")'
+                             return '\(sdkKey)'
                          },
                          \(ReservedKey.getAppMode): function() {
-                             return '\(Hackle.app()?.mode.description ?? "")'
+                             return '\(mode.description)'
                          },
                          \(ReservedKey.getInvocationType): function() {
                              return 'prompt'
@@ -54,19 +54,19 @@ extension WKWebView {
         )
     }
 
-    func prepareForHackleWebBridge(app: HackleApp, uiDelegate: WKUIDelegate? = nil) {
+    func prepareForHackleWebBridge(invocator: HackleInvocator, sdkKey: String, mode: HackleAppMode, uiDelegate: WKUIDelegate? = nil) {
         let userContentController = configuration.userContentController
         let userScripts = userContentController.userScripts.filter {
             !$0.source.hasPrefix(identifier)
         }
         userContentController.removeAllUserScripts()
-        userContentController.addUserScript(bridgeScript())
+        userContentController.addUserScript(bridgeScript(sdkKey: sdkKey, mode: mode))
         userScripts.forEach {
             userContentController.addUserScript($0)
         }
 
         let uiDelegate = uiDelegate ?? self.uiDelegate
-        _uiDelegate = HackleUIDelegate(app: app, uiDelegate: uiDelegate)
+        _uiDelegate = HackleUIDelegate(invocator: invocator, uiDelegate: uiDelegate)
         self.uiDelegate = _uiDelegate
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 
-class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener {
+class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener, HackleUserExplorerContainer {
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -17,7 +17,6 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        explorer = Hackle.app()?.userExplorer
         setUpTableView()
         fetchAndUpdate()
     }
@@ -68,5 +67,10 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
     func onOverrideReset(experiment: Experiment, variation: Variation) {
         explorer.resetFeatureFlagOverride(experiment: experiment, variation: variation)
         fetchAndUpdate()
+    }
+    
+    
+    func setHackleUserExplorer(_ hackleUserExplorer: any HackleUserExplorer) {
+        self.explorer = hackleUserExplorer
     }
 }
