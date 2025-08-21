@@ -135,20 +135,14 @@ extension Hackle {
     
     @objc static public func handleImageNotification(
         request: UNNotificationRequest,
-        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+        completion: @escaping (UNNotificationAttachment?) -> Void
     ) -> Bool {
         guard let notificationData = NotificationData.from(data: request.content.userInfo) else {
             return false
         }
         
         NotificationHandler.shared.handlePushImage(notificationData: notificationData) { attachment in
-            if let baseAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent,
-               let attachment = attachment {
-                baseAttemptContent.attachments = [attachment]
-                contentHandler(baseAttemptContent)
-            } else {
-                contentHandler(request.content)
-            }
+            completion(attachment)
         }
         
         return true
