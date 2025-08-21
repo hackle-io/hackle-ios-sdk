@@ -8,7 +8,6 @@ class MockHackleAppCore : Mock, HackleAppCore {
     var sessionId: String
     var deviceId: String
     var user: User
-    var _remoteConfig: HackleRemoteConfig
     var hackleAppContext: HackleAppContext?
 
     init(
@@ -16,13 +15,11 @@ class MockHackleAppCore : Mock, HackleAppCore {
         sessonId: String = "",
         deviceId: String = "",
         user: User = HackleUserBuilder().build(),
-        remoteConfig: HackleRemoteConfig = MockRemoteConfig()
     ) {
         self.sdk = Sdk.of(sdkKey: sdkKey, config: HackleConfig.DEFAULT)
         self.sessionId = sessonId
         self.deviceId = deviceId
         self.user = user
-        self._remoteConfig = remoteConfig
     }
     
     lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
@@ -113,17 +110,10 @@ class MockHackleAppCore : Mock, HackleAppCore {
         call(trackRef, args: (event, user, hackleAppContext))
     }
     
-    lazy var remoteConfigRef = MockFunction(self, remoteConfig as (User?) -> HackleRemoteConfig)
-    func remoteConfig(user: User?) -> any HackleRemoteConfig {
-        every(remoteConfigRef).returns(self._remoteConfig)
-        return call(remoteConfigRef, args: user)
-    }
-    
-    lazy var remoteConfigWithContextRef = MockFunction(self, remoteConfig as (User?, HackleAppContext) -> HackleRemoteConfig)
-    func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> any HackleRemoteConfig {
+    lazy var remoteConfigRef = MockFunction(self, remoteConfig as (String, HackleValue, User?, HackleAppContext) -> RemoteConfigDecision)
+    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
         self.hackleAppContext = hackleAppContext
-        every(remoteConfigWithContextRef).returns(self._remoteConfig)
-        return call(remoteConfigWithContextRef, args: (user, hackleAppContext))
+        return call(remoteConfigRef, args: (key, defaultValue, user, hackleAppContext))
     }
     
     lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen, HackleAppContext) -> Void)

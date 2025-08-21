@@ -247,20 +247,23 @@ fileprivate extension DefaultHackleInvocator {
             guard let defaultValue = parameters.defaultStringValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
-            return hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
-                .getString(forKey: key, defaultValue: defaultValue)
+            return hackleAppCore
+                .remoteConfig(key: key, defaultValue: HackleValue(value: defaultValue),user: user, hackleAppContext: hackleAppContext)
+                .value.stringOrNil ?? defaultValue
         case "number":
             guard let defaultValue = parameters.defaultDoubleValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
-            return hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
-                .getDouble(forKey: key, defaultValue: defaultValue)
+            return hackleAppCore
+                .remoteConfig(key: key, defaultValue: HackleValue(value: defaultValue),user: user, hackleAppContext: hackleAppContext)
+                .value.doubleOrNil ?? defaultValue
         case "boolean":
             guard let defaultValue = parameters.defaultBoolValue() else {
                 throw HackleError.error("Valid 'defaultValue' parameter must be provided.")
             }
-            return hackleAppCore.remoteConfig(user: user, hackleAppContext: hackleAppContext)
-                .getBool(forKey: key, defaultValue: defaultValue)
+            return hackleAppCore
+                .remoteConfig(key: key, defaultValue: HackleValue(value: defaultValue),user: user, hackleAppContext: hackleAppContext)
+                .value.boolOrNil ?? defaultValue
         default:
             throw HackleError.error("Unsupport 'valueType' value provided.")
         }

@@ -46,9 +46,7 @@ protocol HackleAppCore: AnyObject {
 
     func track(event: Event, user: User?, hackleAppContext: HackleAppContext)
 
-    func remoteConfig(user: User?) -> HackleRemoteConfig
-    
-    func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig
+    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
 
@@ -72,7 +70,6 @@ class DefaultHackleAppCore: HackleAppCore {
     private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
-    private let remoteConfigProcessor: RemoteConfigProcessor
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
@@ -110,7 +107,6 @@ class DefaultHackleAppCore: HackleAppCore {
         lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
-        remoteConfigProcessor: RemoteConfigProcessor,
         fetchThrottler: Throttler,
         device: Device,
         inAppMessageUI: HackleInAppMessageUI,
@@ -127,7 +123,6 @@ class DefaultHackleAppCore: HackleAppCore {
         self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
-        self.remoteConfigProcessor = remoteConfigProcessor
         self.fetchThrottler = fetchThrottler
         self.device = device
         self.inAppMessageUI = inAppMessageUI
@@ -292,13 +287,19 @@ class DefaultHackleAppCore: HackleAppCore {
         let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
         core.track(event: event, user: hackleUser)
     }
-
-    func remoteConfig(user: User?) -> HackleRemoteConfig {
-        DefaultRemoteConfig(remoteConfigProcessor: remoteConfigProcessor, user: user)
-    }
     
-    func remoteConfig(user: User?, hackleAppContext: HackleAppContext) -> HackleRemoteConfig {
-        ContextRemoteConfig(remoteConfigProcessor: remoteConfigProcessor, user: user, hackleAppContext: hackleAppContext)
+    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
+        let sample = TimerSample.start()
+        let decision: RemoteConfigDecision
+        do {
+            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            decision = try core.remoteConfig(parameterKey: key, user: hackleUser, defaultValue: defaultValue)
+        } catch let error {
+            Log.error("Unexpected exception while deciding remote config parameter[\(key)]. Returning default value: \(String(describing: error))")
+            decision = RemoteConfigDecision(value: defaultValue, reason: DecisionReason.EXCEPTION)
+        }
+        DecisionMetrics.remoteConfig(sample: sample, key: key, decision: decision)
+        return decision
     }
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {

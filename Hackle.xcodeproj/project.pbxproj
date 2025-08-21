@@ -110,9 +110,6 @@
 		B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */; };
 		B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */; };
 		B2A88D8E2E20DC4D00475B73 /* SQLiteEventRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */; };
-		B2C052502E5304CA00D30787 /* RemoteConfigProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0524F2E5304C500D30787 /* RemoteConfigProcessor.swift */; };
-		B2C052522E53054900D30787 /* ContextRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052512E53054400D30787 /* ContextRemoteConfig.swift */; };
-		B2C052542E53108100D30787 /* ContextRemoteConfigSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */; };
 		B2C0527D2E55919800D30787 /* UserDefaultKeyValueRepositorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0527C2E55918E00D30787 /* UserDefaultKeyValueRepositorySpecs.swift */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
 		B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */; };
@@ -689,9 +686,6 @@
 		B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserEventBackoffControllerSpec.swift; sourceTree = "<group>"; };
 		B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteEventRepositorySpec.swift; sourceTree = "<group>"; };
-		B2C0524F2E5304C500D30787 /* RemoteConfigProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigProcessor.swift; sourceTree = "<group>"; };
-		B2C052512E53054400D30787 /* ContextRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRemoteConfig.swift; sourceTree = "<group>"; };
-		B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextRemoteConfigSpecs.swift; sourceTree = "<group>"; };
 		B2C0527C2E55918E00D30787 /* UserDefaultKeyValueRepositorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeyValueRepositorySpecs.swift; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
 		B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageView.swift; sourceTree = "<group>"; };
@@ -1353,7 +1347,6 @@
 			isa = PBXGroup;
 			children = (
 				B29C535E2DCB2F13001724B2 /* DefaultRemoteConfigSpecs.swift */,
-				B2C052532E53107B00D30787 /* ContextRemoteConfigSpecs.swift */,
 			);
 			path = RemoteConfig;
 			sourceTree = "<group>";
@@ -1630,9 +1623,7 @@
 		EE29D8DB29CD825300B1FEAA /* RemoteConfig */ = {
 			isa = PBXGroup;
 			children = (
-				B2C0524F2E5304C500D30787 /* RemoteConfigProcessor.swift */,
 				EE29D8DC29CD825300B1FEAA /* DefaultRemoteConfig.swift */,
-				B2C052512E53054400D30787 /* ContextRemoteConfig.swift */,
 			);
 			path = RemoteConfig;
 			sourceTree = "<group>";
@@ -3067,7 +3058,6 @@
 				B2DDF7672DB76603006572E2 /* ScreenUserEventDecorator.swift in Sources */,
 				EEFA31E42BC18A6D00E133F8 /* DelegatingUserEventDedupDeterminer.swift in Sources */,
 				B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */,
-				B2C052522E53054900D30787 /* ContextRemoteConfig.swift in Sources */,
 				EE29D98329CD825400B1FEAA /* RemoteConfigParameter.swift in Sources */,
 				EE29D9A229CD825500B1FEAA /* EvaluationFlowFactory.swift in Sources */,
 				B26AC23E2E4B2E7900AAE56F /* HackleInvokeParameters.swift in Sources */,
@@ -3082,7 +3072,6 @@
 				EE60C0A32C37B13300830F0A /* Updated.swift in Sources */,
 				EE29D99A29CD825500B1FEAA /* ContainerResolver.swift in Sources */,
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
-				B2C052502E5304CA00D30787 /* RemoteConfigProcessor.swift in Sources */,
 				EE29D94629CD825400B1FEAA /* FlushMetric.swift in Sources */,
 				EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */,
 				EE80DF8C2A2831EC00FB12CC /* InAppMessageEvaluation.swift in Sources */,
@@ -3494,7 +3483,6 @@
 				EEF895AA2A4A8AD200722CF6 /* DefaultInAppMessageEventTrackerSpecs.swift in Sources */,
 				EEFA31DC2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift in Sources */,
 				EE789E3B29F0F8980088D8A6 /* MockEvaluationFlowFactory.swift in Sources */,
-				B2C052542E53108100D30787 /* ContextRemoteConfigSpecs.swift in Sources */,
 				EE543CD92C099D9D00F64BFA /* DefaultAppStateManagerSpecs.swift in Sources */,
 				7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */,
 				EE29DA6129CD82C200B1FEAA /* MetricSpecs.swift in Sources */,

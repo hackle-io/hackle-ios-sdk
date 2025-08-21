@@ -169,7 +169,7 @@ import WebKit
     }
 
     @objc public func remoteConfig() -> HackleRemoteConfig {
-        hackleAppCore.remoteConfig(user: nil)
+        DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: nil)
     }
 
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
@@ -259,7 +259,7 @@ import WebKit
 
     @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
-        hackleAppCore.remoteConfig(user: user)
+        DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: user)
     }
     
     @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
@@ -535,11 +535,6 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        
-        let remoteConfigProcessor = RemoteConfigProcessor(
-            core: core,
-            userManager: userManager
-        )
 
         // - UserExplorer
 
@@ -590,7 +585,6 @@ extension HackleApp {
             lifecycleManager: lifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
-            remoteConfigProcessor: remoteConfigProcessor,
             fetchThrottler: throttler,
             device: device,
             inAppMessageUI: inAppMessageUI,

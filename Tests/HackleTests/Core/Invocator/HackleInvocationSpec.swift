@@ -1121,14 +1121,13 @@ class HackleInvocationSpec : QuickSpec {
                             "valueType": "number",
                             "defaultValue": 0
                         ] as [String : Any]
-                        let remoteConfig = MockRemoteConfig()
-                        mock._remoteConfig = remoteConfig
                         
-                        remoteConfig.config["number"] = 1234.5678
+                        every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
+                        
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = invocation.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                        expect(mock.remoteConfigRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1142,13 +1141,12 @@ class HackleInvocationSpec : QuickSpec {
                             "valueType": "number",
                             "defaultValue": 0
                         ] as [String : Any]
-                        let remoteConfig = MockRemoteConfig()
-                        mock._remoteConfig = remoteConfig
+                        every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "notnumber"), reason: ""))
                         
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = invocation.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                        expect(mock.remoteConfigRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1161,14 +1159,12 @@ class HackleInvocationSpec : QuickSpec {
                             "valueType": "boolean",
                             "defaultValue": false
                         ] as [String : Any]
-                        let remoteConfig = MockRemoteConfig()
-                        mock._remoteConfig = remoteConfig
+                        every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                         
-                        remoteConfig.config["bool"] = true
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = invocation.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                        expect(mock.remoteConfigRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1181,13 +1177,12 @@ class HackleInvocationSpec : QuickSpec {
                             "valueType": "boolean",
                             "defaultValue": true
                         ] as [String : Any]
-                        let remoteConfig = MockRemoteConfig()
-                        mock._remoteConfig = remoteConfig
+                        every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                         
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = invocation.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                        expect(mock.remoteConfigRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1200,14 +1195,12 @@ class HackleInvocationSpec : QuickSpec {
                             "valueType": "string",
                             "defaultValue": "default"
                         ] as [String : Any]
-                        let remoteConfig = MockRemoteConfig()
-                        mock._remoteConfig = remoteConfig
+                        every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
                         
-                        remoteConfig.config["string"] = "abcd1234"
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = invocation.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                        expect(mock.remoteConfigRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1220,13 +1213,12 @@ class HackleInvocationSpec : QuickSpec {
                             "valueType": "string",
                             "defaultValue": "default"
                         ] as [String : Any]
-                        let remoteConfig = MockRemoteConfig()
-                        mock._remoteConfig = remoteConfig
+                        every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234), reason: ""))
                         
                         let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = invocation.invoke(string: jsonString)
                         
-                        expect(mock.remoteConfigWithContextRef.invokations().count) == 1
+                        expect(mock.remoteConfigRef.invokations().count) == 1
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1241,17 +1233,12 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": 0,
                                 "user": "abcd1234"
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
-                            remoteConfig.config["number"] = 1234.5678
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.userId) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.userId) == "abcd1234"
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1264,16 +1251,12 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": 0,
                                 "user": "abcd1234"
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "notnumber"), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.userId) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.userId) == "abcd1234"
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1286,17 +1269,12 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": false,
                                 "user": "abcd1234"
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
-                            remoteConfig.config["bool"] = true
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.userId) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.userId) == "abcd1234"
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1309,16 +1287,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": true,
                                 "user": "abcd1234"
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.userId) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.userId) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1331,17 +1306,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": "default",
                                 "user": "abcd1234"
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
-                            remoteConfig.config["string"] = "abcd1234"
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.userId) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.userId) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1354,16 +1325,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": "default",
                                 "user": "abcd1234"
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.userId) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.userId) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1378,17 +1346,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": 0,
                                 "user": ["id": "abcd1234"]
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
-                            remoteConfig.config["number"] = 1234.5678
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.id) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.id) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1402,16 +1366,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": 0,
                                 "user": ["id": "abcd1234"]
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.id) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.id) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1424,17 +1385,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": false,
                                 "user": ["id": "abcd1234"]
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
-                            remoteConfig.config["bool"] = true
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.id) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.id) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1447,16 +1404,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": true,
                                 "user": ["id": "abcd1234"]
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.id) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.id) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1469,17 +1423,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": "default",
                                 "user": ["id": "abcd1234"]
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
-                            remoteConfig.config["string"] = "abcd1234"
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.id) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.id) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1492,16 +1442,13 @@ class HackleInvocationSpec : QuickSpec {
                                 "defaultValue": "default",
                                 "user": ["id": "abcd1234"]
                             ] as [String : Any]
-                            let remoteConfig = MockRemoteConfig()
-                            mock._remoteConfig = remoteConfig
-                            
+                            every(mock.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234), reason: ""))
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
-                            
-                            expect(mock.remoteConfigWithContextRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigWithContextRef.firstInvokation().arguments
-                            expect(arguments.0?.id) == "abcd1234"
-                            
+                            expect(mock.remoteConfigRef.invokations().count) == 1
+                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            expect(arguments.2?.id) == "abcd1234"
+
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
                             expect(dict["message"] as? String) == "OK"
@@ -1510,13 +1457,10 @@ class HackleInvocationSpec : QuickSpec {
                     }
                 }
                 it("invalid parameters case") {
-                    let remoteConfig = MockRemoteConfig()
-                    mock._remoteConfig = remoteConfig
-                    
                     let jsonString = self.createJsonString(command: "remoteConfig", parameters: [:])
                     let result = invocation.invoke(string: jsonString)
                     
-                    expect(mock.remoteConfigWithContextRef.invokations().count) == 0
+                    expect(mock.remoteConfigRef.invokations().count) == 0
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == false
