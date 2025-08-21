@@ -57,7 +57,6 @@
 		7E9065C12B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065C02B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift */; };
 		7E9065C32B5E902700FE6E52 /* MockHttpWorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9065C22B5E902700FE6E52 /* MockHttpWorkspaceFetcher.swift */; };
 		7E9DDDB82B30355C006ACFDA /* NotificationDataSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */; };
-		7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */; };
 		7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */; };
 		7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */; };
 		7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */; };
@@ -630,7 +629,6 @@
 		7E9065C02B5E666300FE6E52 /* DefaultWorkspaceConfigRepositorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultWorkspaceConfigRepositorySpecs.swift; sourceTree = "<group>"; };
 		7E9065C22B5E902700FE6E52 /* MockHttpWorkspaceFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHttpWorkspaceFetcher.swift; sourceTree = "<group>"; };
 		7E9DDDB72B30355C006ACFDA /* NotificationDataSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataSpecs.swift; sourceTree = "<group>"; };
-		7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFactory.swift; sourceTree = "<group>"; };
 		7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiver.swift; sourceTree = "<group>"; };
 		7E9DDDFF2B319EFB006ACFDA /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		7E9DDE012B31A049006ACFDA /* NotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationEvent.swift; sourceTree = "<group>"; };
@@ -1211,7 +1209,6 @@
 				7E46662F2B30133400B3CDCF /* NotificationHandler.swift */,
 				7E4666312B30165100B3CDCF /* NotificationData.swift */,
 				7E4666332B3021E400B3CDCF /* NotificationClickAction.swift */,
-				7E9DDDC92B3130B0006ACFDA /* NotificationFactory.swift */,
 				7E9DDDFC2B31865A006ACFDA /* NotificationDataReceiver.swift */,
 			);
 			path = Notification;
@@ -3118,7 +3115,6 @@
 				EE29DAC829CD91A400B1FEAA /* ManualOverrideStorage.swift in Sources */,
 				EEA01CBF2A36B9B100E0C021 /* HackleUIUtils.swift in Sources */,
 				B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */,
-				7E9DDDCA2B3130B0006ACFDA /* NotificationFactory.swift in Sources */,
 				EE29D99729CD825500B1FEAA /* OverrideResolver.swift in Sources */,
 				EE29D96429CD825400B1FEAA /* DefaultRemoteConfig.swift in Sources */,
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,

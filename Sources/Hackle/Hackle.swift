@@ -167,19 +167,3 @@ extension Hackle {
         return true
     }
 }
-
-extension Hackle {
-    @objc static public func populateNotificationContent(
-        request: UNNotificationRequest,
-        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
-    ) -> Bool {
-        if let bestAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent,
-           let attachment = request.attachment {
-            bestAttemptContent.attachments = [attachment]
-            contentHandler(bestAttemptContent)
-            return true
-        } else {
-            return false
-        }
-    }
-}
