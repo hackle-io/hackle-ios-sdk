@@ -124,22 +124,25 @@ extension URL {
     
     fileprivate func downloadImage(completion: @escaping (URL?) -> Void) {
         URLSession.shared.downloadTask(with: self) { (location, response, error) in
-            if let error = error {
-                Log.info("Image download error: \(error)")
+            guard let response = response,
+                  let location = location,
+                  error == nil else {
+                Log.info("Image download error: \(error?.localizedDescription ?? "")")
                 completion(nil)
                 return
             }
             
-            guard let location = location else {
-                Log.info("Image location empty")
+            guard let mimeType = response.mimeType,
+                  let fileExtension = mimeType.fileExtension()
+            else {
+                Log.info("not supported mimeType: \(response.mimeType ?? "")")
                 completion(nil)
                 return
             }
-            
+
             do {
-                let fileExtension = self.pathExtension
                 let destinationURL = location.appendingPathExtension(fileExtension)
-                try FileManager.default.moveItem(at: location, to: destinationURL) // rename the temp file with a proper extension
+                try FileManager.default.moveItem(at: location, to: destinationURL)
                 completion(destinationURL)
             } catch {
                 Log.info("Image rename error")
@@ -177,6 +180,21 @@ extension URL {
     private func openUrl() {
         UIUtils.application?.open(self, options: [:]) { success in
             Log.debug("Redirected to: \(self.absoluteString) [success=\(success)]")
+        }
+    }
+}
+
+extension String {
+    fileprivate func fileExtension() -> String? {
+        switch self {
+        case "image/png":
+            return "png"
+        case "image/jpeg":
+            return "jpeg"
+        case "image/gif":
+            return "gif"
+        default:
+            return nil
         }
     }
 }
