@@ -97,7 +97,7 @@ class DefaultUserManager: UserManager, AppStateListener {
 
     func toHackleUser(user: User) -> HackleUser {
         let context = context.with(user: user)
-        return toHackleUser(context: context, hackleAppContext: .DEFAULT)
+        return toHackleUser(context: context, hackleAppContext: .default)
     }
 
     private func toHackleUser(context: UserContext, hackleAppContext: HackleAppContext) -> HackleUser {

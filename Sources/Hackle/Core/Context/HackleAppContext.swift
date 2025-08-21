@@ -10,7 +10,7 @@ struct HackleAppContext {
 }
 
 extension HackleAppContext {
-    static let `DEFAULT` = HackleAppContext(browserProperties: [:])
+    static let `default` = HackleAppContext(browserProperties: [:])
     
     static func create(browserProperties: [String: Any]) -> HackleAppContext {
         HackleAppContext(browserProperties: browserProperties)
