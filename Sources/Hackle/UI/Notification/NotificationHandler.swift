@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import UserNotifications
 
-
 class NotificationHandler {
     static let shared = NotificationHandler(
         dispatchQueue: DispatchQueue(
