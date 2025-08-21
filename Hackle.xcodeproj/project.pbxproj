@@ -66,6 +66,7 @@
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
 		B20B23142E56F0100019EAA7 /* MimeTypeResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeTypeResolver.swift */; };
+		B20B234E2E56FB980019EAA7 /* MimeTypeResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeResolverSpecs.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -639,6 +640,7 @@
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
 		B20B23132E56F0040019EAA7 /* MimeTypeResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeResolver.swift; sourceTree = "<group>"; };
+		B20B234D2E56FB910019EAA7 /* MimeTypeResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeResolverSpecs.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -2136,6 +2138,7 @@
 				7E9065B52B59466C00FE6E52 /* DefaultThrottlerSpecs.swift */,
 				EE29D9F429CD82C100B1FEAA /* DispatchQueueExtensions.swift */,
 				EEFA31DB2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift */,
+				B20B234D2E56FB910019EAA7 /* MimeTypeResolverSpecs.swift */,
 			);
 			path = Concurrency;
 			sourceTree = "<group>";
@@ -3384,6 +3387,7 @@
 				EE29DA7729CD82C200B1FEAA /* MockTargetMatcher.swift in Sources */,
 				B23A60FF2DB23E5B008D410A /* HackleNotificationClickActionTypeSpecs.swift in Sources */,
 				EE789E4A29F1097E0088D8A6 /* AbTestConditionMatcherSpecs.swift in Sources */,
+				B20B234E2E56FB980019EAA7 /* MimeTypeResolverSpecs.swift in Sources */,
 				EE789E4029F0FD300088D8A6 /* RemoteConfigEvaluatorSpecs.swift in Sources */,
 				EE29DA8529CD82C200B1FEAA /* DefaultOverrideResolverSpecs.swift in Sources */,
 				EE543CC22C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift in Sources */,

@@ -45,7 +45,7 @@ class NotificationHandlerSpecs: QuickSpec {
             }
             
             it("should return a attachment on download success") {
-                let imageUrl = "https://github.com/hackle-io/hackle-ios-sdk/blob/master/Sources/Hackle/Resources/Images/hackle_banner.png"
+                let imageUrl = "https://raw.githubusercontent.com/hackle-io/hackle-ios-sdk/refs/heads/master/Sources/Hackle/Resources/Images/hackle_banner.png"
                 let notificationData = mockNotificationData(imageUrl: imageUrl)
                 var resultAttachment: UNNotificationAttachment?
                 
