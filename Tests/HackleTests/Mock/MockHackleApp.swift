@@ -14,7 +14,7 @@ class MockHackleAppCore : Mock, HackleAppCore {
         sdkKey: String = "",
         sessonId: String = "",
         deviceId: String = "",
-        user: User = HackleUserBuilder().build(),
+        user: User = HackleUserBuilder().build()
     ) {
         self.sdk = Sdk.of(sdkKey: sdkKey, config: HackleConfig.DEFAULT)
         self.sessionId = sessonId
