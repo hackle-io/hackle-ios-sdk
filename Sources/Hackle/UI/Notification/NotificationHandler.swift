@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import UserNotifications
 
+
 class NotificationHandler {
     static let shared = NotificationHandler(
         dispatchQueue: DispatchQueue(
@@ -127,15 +128,16 @@ extension URL {
             guard let response = response,
                   let location = location,
                   error == nil else {
-                Log.info("Image download error: \(error?.localizedDescription ?? "")")
+                Log.info("Push Image download error: \(error?.localizedDescription ?? "")")
                 completion(nil)
                 return
             }
             
             guard let mimeType = response.mimeType,
-                  let fileExtension = mimeType.fileExtension()
+                  MimeTypeResolver.isSupportedPushNotificationImage(mimeType: mimeType),
+                  let fileExtension = MimeTypeResolver.preferredFileExtension(mimeType: mimeType)
             else {
-                Log.info("not supported mimeType: \(response.mimeType ?? "")")
+                Log.info("Image type check error: \(response.mimeType ?? "")")
                 completion(nil)
                 return
             }
@@ -143,6 +145,7 @@ extension URL {
             do {
                 let destinationURL = location.appendingPathExtension(fileExtension)
                 try FileManager.default.moveItem(at: location, to: destinationURL)
+                // NOTE: 이미지 저장 된 url을 리턴
                 completion(destinationURL)
             } catch {
                 Log.info("Image rename error")
@@ -180,21 +183,6 @@ extension URL {
     private func openUrl() {
         UIUtils.application?.open(self, options: [:]) { success in
             Log.debug("Redirected to: \(self.absoluteString) [success=\(success)]")
-        }
-    }
-}
-
-extension String {
-    fileprivate func fileExtension() -> String? {
-        switch self {
-        case "image/png":
-            return "png"
-        case "image/jpeg":
-            return "jpeg"
-        case "image/gif":
-            return "gif"
-        default:
-            return nil
         }
     }
 }
