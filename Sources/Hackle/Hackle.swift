@@ -133,16 +133,22 @@ extension Hackle {
         return notificationData
     }
     
-    @objc static public func handleImageNotification(
+    @objc static public func handleRichNotification(
         request: UNNotificationRequest,
-        completion: @escaping (UNNotificationAttachment?) -> Void
+        completion: @escaping (UNMutableNotificationContent) -> Void
     ) -> Bool {
-        guard let notificationData = NotificationData.from(data: request.content.userInfo) else {
+        guard let bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent),
+              let notificationData = NotificationData.from(data: request.content.userInfo) else {
             return false
         }
         
+        // NOTE: use dispatch group when add another attachment, and etc...
         NotificationHandler.shared.handlePushImage(notificationData: notificationData) { attachment in
-            completion(attachment)
+            if let attachment = attachment {
+                bestAttemptContent.attachments = [attachment]
+            }
+            
+            completion(bestAttemptContent)
         }
         
         return true
