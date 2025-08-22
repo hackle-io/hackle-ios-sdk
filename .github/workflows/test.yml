@@ -28,7 +28,7 @@ jobs:
             xcodebuild build-for-testing \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
+                -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' \
                 -quiet
 
       - name: Test
@@ -36,7 +36,7 @@ jobs:
             xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2' \
+                -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' \
                 -retry-tests-on-failure \
                 -test-iterations 3 \
                 -parallel-testing-enabled NO \
