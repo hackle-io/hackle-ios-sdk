@@ -85,6 +85,7 @@ extension NotificationHandler {
             url.downloadImage(completion: completion)
         } else {
             Log.info("Image URL is not a valid URL: \(imageUrl)")
+            completion(nil)
         }
     }
 }
@@ -133,8 +134,8 @@ extension URL {
             }
             
             guard let mimeType = response.mimeType,
-                  MimeTypeResolver.isSupportedPushNotificationImage(mimeType: mimeType),
-                  let fileExtension = MimeTypeResolver.preferredFileExtension(mimeType: mimeType)
+                  MimeType.isSupportedPushNotificationImage(mimeType: mimeType),
+                  let fileExtension = MimeType.preferredFileExtension(mimeType: mimeType)
             else {
                 Log.info("Image type check error: \(response.mimeType ?? "")")
                 completion(nil)

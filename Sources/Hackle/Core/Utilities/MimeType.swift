@@ -1,5 +1,5 @@
 //
-//  MimeTypeResolver.swift
+//  MimeType.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 8/21/25.
@@ -9,7 +9,7 @@ import Foundation
 import UniformTypeIdentifiers
 import MobileCoreServices
 
-enum MimeTypeResolver {
+enum MimeType {
     /// MimeType의 파일 확장자를 리턴합니다.
     /// - Parameter mimeType: mimeType
     /// - Returns: 확장자
@@ -20,7 +20,6 @@ enum MimeTypeResolver {
             }
             return type.preferredFilenameExtension
         } else {
-            // NOTE: deprecated on iOS 15
             let cfMimeType = mimeType as CFString
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, cfMimeType, nil)?.takeRetainedValue() else {
                 return nil
