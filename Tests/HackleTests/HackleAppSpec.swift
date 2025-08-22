@@ -11,7 +11,6 @@ class HackleAppSpecs: QuickSpec {
         var userManager: MockUserManager!
         var workspaceManager: WorkspaceManager!
         var notificationManager: MockNotificationManager!
-        var piiEventManager: MockPIIEventManager!
         var sessionManager: MockSessionManager!
         var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
@@ -33,7 +32,6 @@ class HackleAppSpecs: QuickSpec {
                 repository: MockWorkspaceConfigRepository()
             )
             notificationManager = MockNotificationManager()
-            piiEventManager = MockPIIEventManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
@@ -57,9 +55,8 @@ class HackleAppSpecs: QuickSpec {
             inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
             
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
-            sut = HackleApp(
-                mode: .native,
-                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
+            
+            let hackleAppCore = DefaultHackleAppCore(
                 core: core,
                 eventQueue: eventQueue,
                 synchronizer: synchronizer,
@@ -71,11 +68,16 @@ class HackleAppSpecs: QuickSpec {
                 lifecycleManager: LifecycleManager.shared,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
-                piiEventManager: piiEventManager,
                 fetchThrottler: throttler,
                 device: device,
                 inAppMessageUI: inAppMessageUI,
                 userExplorer: userExplorer
+            )
+            sut = HackleApp(
+                hackleAppCore: hackleAppCore,
+                mode: .native,
+                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
+                hackleInvocator: DefaultHackleInvocator(hackleAppCore: hackleAppCore)
             )
         }
 
@@ -255,17 +257,19 @@ class HackleAppSpecs: QuickSpec {
             }
             
             it("setPhoneNumber") {
-                sut.setPhoneNumber(phoneNumber: "+821012345678")
-                verify(exactly: 1) {
-                    piiEventManager.toSetPhoneNumberMock
+                var count = 0
+                sut.setPhoneNumber(phoneNumber: "+821012345678") {
+                    count += 1
                 }
+                expect(count) == 1
             }
             
             it("unsetPhoneNumber") {
-                sut.unsetPhoneNumber()
-                verify(exactly: 1) {
-                    piiEventManager.toUnsetPhoneNumberMock
+                var count = 0
+                sut.unsetPhoneNumber() {
+                    count += 1
                 }
+                expect(count) == 1
             }
         }
 
@@ -284,7 +288,7 @@ class HackleAppSpecs: QuickSpec {
 
                 // then
                 expect(actual) == "B"
-                expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
             }
 
             describe("variationDetail") {
@@ -301,7 +305,7 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual).to(beIdenticalTo(decision))
-                    expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
 
                 it("error") {
@@ -317,7 +321,7 @@ class HackleAppSpecs: QuickSpec {
                     // then
                     expect(actual.variation) == "A"
                     expect(actual.reason) == DecisionReason.EXCEPTION
-                    expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
             }
 
@@ -337,7 +341,7 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual[42]).to(beIdenticalTo(decision))
-                    expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
 
                 it("error") {
@@ -352,7 +356,7 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual.count) == 0
-                    expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
             }
         }
@@ -372,7 +376,7 @@ class HackleAppSpecs: QuickSpec {
 
                 // then
                 expect(actual) == true
-                expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
             }
 
             describe("featureFlagDetail") {
@@ -389,7 +393,7 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual).to(beIdenticalTo(decision))
-                    expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
 
                 it("error") {
@@ -405,7 +409,7 @@ class HackleAppSpecs: QuickSpec {
                     // then
                     expect(actual.isOn) == false
                     expect(actual.reason) == DecisionReason.EXCEPTION
-                    expect(userManager.resolveMock.firstInvokation().arguments).to(beNil())
+                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
             }
 
@@ -576,30 +580,30 @@ class HackleAppSpecs: QuickSpec {
 
                 it("variation - userId") {
                     expect(sut.variation(experimentKey: 42, userId: "user_id")) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("variation - user") {
                     let user = User.builder().id("user_id").build()
                     expect(sut.variation(experimentKey: 42, user: user)) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("variationDetail - userId") {
                     expect(sut.variationDetail(experimentKey: 42, userId: "user_id").variation) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("variationDetail - user") {
                     let user = User.builder().id("user_id").build()
                     expect(sut.variationDetail(experimentKey: 42, user: user).variation) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("allVariationDetails") {
                     let user = User.builder().id("user_id").build()
                     expect(sut.allVariationDetails(user: user).count) == 0
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
             }
             describe("feature flag") {
@@ -609,24 +613,24 @@ class HackleAppSpecs: QuickSpec {
 
                 it("isFeatureOn - userId") {
                     expect(sut.isFeatureOn(featureKey: 42, userId: "user_id")) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("isFeatureOn - user") {
                     let user = User.builder().id("user_id").build()
                     expect(sut.isFeatureOn(featureKey: 42, user: user)) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("featureFlagDetail - userId") {
                     expect(sut.featureFlagDetail(featureKey: 42, userId: "user_id").isOn) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
 
                 it("featureFlagDetail - user") {
                     let user = User.builder().id("user_id").build()
                     expect(sut.featureFlagDetail(featureKey: 42, user: user).isOn) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments?.id) == "user_id"
+                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
                 }
             }
 
@@ -641,7 +645,7 @@ class HackleAppSpecs: QuickSpec {
                 }
 
                 for invokation in userManager.resolveMock.invokations() {
-                    expect(invokation.arguments?.id) == "user_id"
+                    expect(invokation.arguments.0?.id) == "user_id"
                 }
             }
 

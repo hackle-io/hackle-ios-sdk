@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum PropertyOperation: String {
     case set = "$set"
     case setOnce = "$setOnce"
