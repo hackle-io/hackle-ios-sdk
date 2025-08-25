@@ -63,8 +63,8 @@ public class HackleConfig: NSObject {
 
 public class HackleConfigBuilder: NSObject {
 
-    var sdkUrl: URL = URL(string: "https://client-sdk.hackle.io")!
-    var eventUrl: URL = URL(string: "https://event.hackle.io")!
+    var sdkUrl: URL = URL(string: "https://sdk-api.hackle.io")!
+    var eventUrl: URL = URL(string: "https://event-api.hackle.io")!
     var apiUrl: URL = URL(string: "https://api.hackle.io")!
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
 
