@@ -390,6 +390,10 @@
 		EE4B81102C007DFE00719C41 /* DedupUserEventFilterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B810F2C007DFE00719C41 /* DedupUserEventFilterSpecs.swift */; };
 		EE4B81122C007F8900719C41 /* DefaultPushEventTrackerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B81112C007F8900719C41 /* DefaultPushEventTrackerSpecs.swift */; };
 		EE4B81152C00829C00719C41 /* WebViewWrapperUserEventFilterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B81142C00829C00719C41 /* WebViewWrapperUserEventFilterSpecs.swift */; };
+		EE4D037C2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D037B2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift */; };
+		EE4D037E2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D037D2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift */; };
+		EE4D03802E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D037F2E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift */; };
+		EE4D03822E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D03812E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift */; };
 		EE543CC02C08BF1300F64BFA /* ScreenSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */; };
 		EE543CC22C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */; };
 		EE543CC42C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */; };
@@ -441,9 +445,6 @@
 		EE789E4C29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E4B29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift */; };
 		EE80378829D3DB04000DC77E /* HackleAbTestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */; };
 		EE80DF852A27836600FB12CC /* InAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF842A27836600FB12CC /* InAppMessage.swift */; };
-		EE80DF882A2831E300FB12CC /* InAppMessageEligibilityEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF872A2831E300FB12CC /* InAppMessageEligibilityEvaluator.swift */; };
-		EE80DF8A2A2831E700FB12CC /* InAppMessageEligibilityRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF892A2831E700FB12CC /* InAppMessageEligibilityRequest.swift */; };
-		EE80DF8C2A2831EC00FB12CC /* InAppMessageEligibilityEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF8B2A2831EC00FB12CC /* InAppMessageEligibilityEvaluation.swift */; };
 		EE80DF902A285B2600FB12CC /* EvaluationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF8F2A285B2600FB12CC /* EvaluationContext.swift */; };
 		EE80E00E2A2D9CC500FB12CC /* UserEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80E00D2A2D9CC500FB12CC /* UserEventListener.swift */; };
 		EE80E0102A2D9F5C00FB12CC /* UserEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80E00F2A2D9F5C00FB12CC /* UserEventPublisher.swift */; };
@@ -544,7 +545,6 @@
 		EEF629BA2B9DE0A1002718B7 /* MockPushTokenListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF629B92B9DE0A1002718B7 /* MockPushTokenListener.swift */; };
 		EEF895872A48586500722CF6 /* InAppMessageEligibilityEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895862A48586500722CF6 /* InAppMessageEligibilityEvaluatorSpecs.swift */; };
 		EEF895892A485AA400722CF6 /* InAppMessageTestExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895882A485AA400722CF6 /* InAppMessageTestExt.swift */; };
-		EEF8958B2A493AA500722CF6 /* InAppMessageEligibilityFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8958A2A493AA500722CF6 /* InAppMessageEligibilityFlowEvaluator.swift */; };
 		EEF8958D2A496A7100722CF6 /* FlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8958C2A496A7100722CF6 /* FlowEvaluator.swift */; };
 		EEF8958F2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8958E2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift */; };
 		EEF895912A4971DE00722CF6 /* InAppMessageMatcherStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895902A4971DE00722CF6 /* InAppMessageMatcherStub.swift */; };
@@ -960,6 +960,10 @@
 		EE4B810F2C007DFE00719C41 /* DedupUserEventFilterSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DedupUserEventFilterSpecs.swift; sourceTree = "<group>"; };
 		EE4B81112C007F8900719C41 /* DefaultPushEventTrackerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPushEventTrackerSpecs.swift; sourceTree = "<group>"; };
 		EE4B81142C00829C00719C41 /* WebViewWrapperUserEventFilterSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventFilterSpecs.swift; sourceTree = "<group>"; };
+		EE4D037B2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityRequest.swift; sourceTree = "<group>"; };
+		EE4D037D2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluator.swift; sourceTree = "<group>"; };
+		EE4D037F2E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityFlowEvaluator.swift; sourceTree = "<group>"; };
+		EE4D03812E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluation.swift; sourceTree = "<group>"; };
 		EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSpecs.swift; sourceTree = "<group>"; };
 		EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenEventTrackerSpecs.swift; sourceTree = "<group>"; };
 		EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreenManagerSpecs.swift; sourceTree = "<group>"; };
@@ -1011,9 +1015,6 @@
 		EE789E4B29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagConditionMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestItem.swift; sourceTree = "<group>"; };
 		EE80DF842A27836600FB12CC /* InAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessage.swift; sourceTree = "<group>"; };
-		EE80DF872A2831E300FB12CC /* InAppMessageEligibilityEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluator.swift; sourceTree = "<group>"; };
-		EE80DF892A2831E700FB12CC /* InAppMessageEligibilityRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityRequest.swift; sourceTree = "<group>"; };
-		EE80DF8B2A2831EC00FB12CC /* InAppMessageEligibilityEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluation.swift; sourceTree = "<group>"; };
 		EE80DF8F2A285B2600FB12CC /* EvaluationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationContext.swift; sourceTree = "<group>"; };
 		EE80E00D2A2D9CC500FB12CC /* UserEventListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventListener.swift; sourceTree = "<group>"; };
 		EE80E00F2A2D9F5C00FB12CC /* UserEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventPublisher.swift; sourceTree = "<group>"; };
@@ -1114,7 +1115,6 @@
 		EEF629E32B9EA443002718B7 /* HackleNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HackleNotification.m; sourceTree = "<group>"; };
 		EEF895862A48586500722CF6 /* InAppMessageEligibilityEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EEF895882A485AA400722CF6 /* InAppMessageTestExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageTestExt.swift; sourceTree = "<group>"; };
-		EEF8958A2A493AA500722CF6 /* InAppMessageEligibilityFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityFlowEvaluator.swift; sourceTree = "<group>"; };
 		EEF8958C2A496A7100722CF6 /* FlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowEvaluator.swift; sourceTree = "<group>"; };
 		EEF8958E2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityFlowEvaluatorSpecs.swift; sourceTree = "<group>"; };
 		EEF895902A4971DE00722CF6 /* InAppMessageMatcherStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageMatcherStub.swift; sourceTree = "<group>"; };
@@ -2365,6 +2365,27 @@
 			path = WebView;
 			sourceTree = "<group>";
 		};
+		EE4D037A2E5C3556007BE61A /* Eligibility */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D037B2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift */,
+				EE4D037D2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift */,
+				EE4D037F2E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift */,
+				EE4D03812E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift */,
+			);
+			path = Eligibility;
+			sourceTree = "<group>";
+		};
+		EE4D03832E5C5C47007BE61A /* Eligibility */ = {
+			isa = PBXGroup;
+			children = (
+				EEF895862A48586500722CF6 /* InAppMessageEligibilityEvaluatorSpecs.swift */,
+				EEF8958E2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift */,
+				EEF895A32A4A67CF00722CF6 /* InAppMessageEligibilityRequestSpecs.swift */,
+			);
+			path = Eligibility;
+			sourceTree = "<group>";
+		};
 		EE543CBE2C08BEF500F64BFA /* Screen */ = {
 			isa = PBXGroup;
 			children = (
@@ -2458,10 +2479,7 @@
 		EE80DF862A2831D100FB12CC /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
-				EE80DF872A2831E300FB12CC /* InAppMessageEligibilityEvaluator.swift */,
-				EE80DF892A2831E700FB12CC /* InAppMessageEligibilityRequest.swift */,
-				EEF8958A2A493AA500722CF6 /* InAppMessageEligibilityFlowEvaluator.swift */,
-				EE80DF8B2A2831EC00FB12CC /* InAppMessageEligibilityEvaluation.swift */,
+				EE4D037A2E5C3556007BE61A /* Eligibility */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -2721,9 +2739,7 @@
 		EEF895832A48582000722CF6 /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
-				EEF895862A48586500722CF6 /* InAppMessageEligibilityEvaluatorSpecs.swift */,
-				EEF8958E2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift */,
-				EEF895A32A4A67CF00722CF6 /* InAppMessageEligibilityRequestSpecs.swift */,
+				EE4D03832E5C5C47007BE61A /* Eligibility */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -2985,7 +3001,6 @@
 				7E5205FE2B2B02970095DCD9 /* NotificationHistoryEntity.swift in Sources */,
 				EEA7FCB52C04AB490004F858 /* EngagementListener.swift in Sources */,
 				EE29D96529CD825400B1FEAA /* UserManager.swift in Sources */,
-				EE80DF882A2831E300FB12CC /* InAppMessageEligibilityEvaluator.swift in Sources */,
 				EEA01CC32A36E56600E0C021 /* InAppMessageUIButtonView.swift in Sources */,
 				EEDC58712ACBD807001E73DB /* PollingSynchronizer.swift in Sources */,
 				EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */,
@@ -2997,7 +3012,6 @@
 				EE29D9AA29CD825500B1FEAA /* SessionEventTracker.swift in Sources */,
 				EE0B71E52A3BF237009D7AF4 /* InAppMessageExt.swift in Sources */,
 				EE29D99329CD825400B1FEAA /* TargetMatcher.swift in Sources */,
-				EEF8958B2A493AA500722CF6 /* InAppMessageEligibilityFlowEvaluator.swift in Sources */,
 				EE29D94729CD825400B1FEAA /* FlushTimer.swift in Sources */,
 				EE3C166029D43253008177F6 /* HackleFeatureFlagItem.swift in Sources */,
 				EE4B810C2C00765200719C41 /* PushEventTracker.swift in Sources */,
@@ -3024,12 +3038,14 @@
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
 				EE86376129ECD0B5000268DC /* DelegatingEvaluator.swift in Sources */,
 				EE29D98C29CD825400B1FEAA /* HackleValue.swift in Sources */,
+				EE4D03822E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift in Sources */,
 				EE543CCA2C09745200F64BFA /* ViewManager.swift in Sources */,
 				EE80378829D3DB04000DC77E /* HackleAbTestItem.swift in Sources */,
 				EE29D9A029CD825500B1FEAA /* ExperimentFlowEvaluator.swift in Sources */,
 				EE80E01C2A2DC79600FB12CC /* InAppMessageView.swift in Sources */,
 				EE29D97829CD825400B1FEAA /* AtomicReference.swift in Sources */,
 				B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */,
+				EE4D03802E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift in Sources */,
 				EE29D9B029CD825500B1FEAA /* Config.swift in Sources */,
 				EE29D94529CD825400B1FEAA /* NoopCounter.swift in Sources */,
 				EE29D94829CD825400B1FEAA /* FlushCounter.swift in Sources */,
@@ -3071,7 +3087,6 @@
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
 				EE29D94629CD825400B1FEAA /* FlushMetric.swift in Sources */,
 				EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */,
-				EE80DF8C2A2831EC00FB12CC /* InAppMessageEligibilityEvaluation.swift in Sources */,
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
@@ -3104,6 +3119,7 @@
 				EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */,
 				EE29D97D29CD825400B1FEAA /* HttpResponse.swift in Sources */,
 				EE29D97A29CD825400B1FEAA /* Scheduler.swift in Sources */,
+				EE4D037E2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift in Sources */,
 				EEAC3F2D2B9D54DB00DC498E /* PushPlatformType.swift in Sources */,
 				EE29DAC829CD91A400B1FEAA /* ManualOverrideStorage.swift in Sources */,
 				EEA01CBF2A36B9B100E0C021 /* HackleUIUtils.swift in Sources */,
@@ -3114,6 +3130,7 @@
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,
 				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
+				EE4D037C2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift in Sources */,
 				EECDF3DD2C0D611A009B2F56 /* LifecycleObserver.swift in Sources */,
 				EE29D99B29CD825500B1FEAA /* ActionResolver.swift in Sources */,
 				EE29D94B29CD825400B1FEAA /* Measurement.swift in Sources */,
@@ -3186,7 +3203,6 @@
 				EE29D97429CD825400B1FEAA /* TimeUnit.swift in Sources */,
 				EE29D96E29CD825400B1FEAA /* Sdk.swift in Sources */,
 				7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */,
-				EE80DF8A2A2831E700FB12CC /* InAppMessageEligibilityRequest.swift in Sources */,
 				EE29D94029CD825400B1FEAA /* Hackle.swift in Sources */,
 				B242502B2D9A34F500CF27FC /* PhoneNumber.swift in Sources */,
 				EEFA31E02BC18A5900E133F8 /* UserEventDedupDeterminer.swift in Sources */,
