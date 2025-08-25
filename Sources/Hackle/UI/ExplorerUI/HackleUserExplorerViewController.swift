@@ -8,7 +8,7 @@
 import UIKit
 
 
-class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, HackleUserExplorerContainer {
 
     @IBOutlet weak var dismissButton: UIImageView!
 
@@ -31,11 +31,10 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     private var abTestViewController: HackleAbTestViewController!
     private var featureFlagViewController: HackleFeatureFlagViewController!
 
-    private var explorer: HackleUserExplorer!
+    internal var explorer: HackleUserExplorer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        explorer = Hackle.app()!.userExplorer
         initDismissButton()
         initUser()
         initPageView()
@@ -122,11 +121,17 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         select(experimentType: .abTest)
     }
 
-    private func createController<T: UIViewController>() -> T {
+    private func createController<T: UIViewController & HackleUserExplorerContainer>() -> T {
         let controller = T.init(nibName: String(describing: T.self), bundle: HackleInternalResources.bundle)
+        controller.setHackleUserExplorer(explorer)
         addChild(controller)
         controller.view.frame = experimentPageView.bounds
         return controller
+    }
+    
+    private func addChildController(_ child: UIViewController) {
+        addChild(child)
+        child.view.frame = experimentPageView.bounds
     }
 
     @IBAction func abTestButtonTapped(_ sender: UIButton) {
@@ -197,5 +202,9 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
                 select(experimentType: .featureFlag)
             }
         }
+    }
+    
+    func setHackleUserExplorer(_ hackleUserExplorer: any HackleUserExplorer) {
+        explorer = hackleUserExplorer
     }
 }
