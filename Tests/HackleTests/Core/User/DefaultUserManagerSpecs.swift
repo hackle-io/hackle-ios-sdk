@@ -76,7 +76,7 @@ class DefaultUserManagerSpecs: QuickSpec {
         describe("resolve") {
             it("currentUser") {
                 sut.initialize(user: User.builder().id("init_id").deviceId("init_device_id").userId("init_user_id").build())
-                let actual = sut.resolve(user: nil)
+                let actual = sut.resolve(user: nil, hackleAppContext: .default)
                 expect(actual.identifiers) == [
                     "$id": "init_id",
                     "$deviceId": "init_device_id",
@@ -87,7 +87,7 @@ class DefaultUserManagerSpecs: QuickSpec {
 
             it("inputUser") {
                 sut.initialize(user: nil)
-                let actual = sut.resolve(user: User.builder().id("input_id").build())
+                let actual = sut.resolve(user: User.builder().id("input_id").build(), hackleAppContext: .default)
                 expect(actual.identifiers) == [
                     "$id": "input_id",
                     "$deviceId": "hackle_device_id",
@@ -207,10 +207,10 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
 
                 sut.initialize(user: nil)
-                expect(sut.resolve(user: nil).cohorts) == []
+                expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == []
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
                     sut.sync {
-                        expect(sut.resolve(user: nil).cohorts) == [Cohort(id: 42)]
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
                         done()
                     }
                 }
@@ -251,8 +251,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                 sut.initialize(user: nil)
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
                     sut.sync {
-                        expect(sut.resolve(user: nil).targetEvents) == targetEvents
-                        expect(sut.resolve(user: nil).targetEvents.count) == 2
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == targetEvents
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 2
                         done()
                     }
                 }
@@ -263,8 +263,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
                     sut.sync {
-                        expect(sut.resolve(user: nil).targetEvents) == newTargetEvents
-                        expect(sut.resolve(user: nil).targetEvents.count) == 1
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == newTargetEvents
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
                         done()
                     }
                 }
@@ -677,7 +677,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                             "$id": "hackle_device_id",
                             "$deviceId": "device_id",
                         ]
-                        expect(sut.resolve(user: sut.currentUser).cohorts) == [Cohort(id: 42)]
+                        expect(sut.resolve(user: sut.currentUser, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
                         done()
                     }
                 }
@@ -706,9 +706,9 @@ class DefaultUserManagerSpecs: QuickSpec {
                 sut.initialize(user: nil)
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
                     sut.sync {
-                        expect(sut.resolve(user: nil).targetEvents.count) == 1
-                        expect(sut.resolve(user: nil).targetEvents[0].eventKey) == "purchase"
-                        expect(sut.resolve(user: nil).targetEvents[0].property?.key) == "product_name"
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].eventKey) == "purchase"
+                        expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].property?.key) == "product_name"
                         done()
                     }
                 }

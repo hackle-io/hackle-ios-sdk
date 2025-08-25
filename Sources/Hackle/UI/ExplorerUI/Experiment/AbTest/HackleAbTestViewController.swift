@@ -8,7 +8,7 @@
 import UIKit
 
 
-class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener {
+class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener, HackleUserExplorerContainer {
 
     @IBOutlet weak var abTestTableView: UITableView!
 
@@ -17,7 +17,6 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        explorer = Hackle.app()?.userExplorer
         setUpTableView()
         fetchAndUpdate()
     }
@@ -68,6 +67,10 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
     func onOverrideReset(experiment: Experiment, variation: Variation) {
         explorer.resetAbTestOverride(experiment: experiment, variation: variation)
         fetchAndUpdate()
+    }
+    
+    func setHackleUserExplorer(_ hackleUserExplorer: any HackleUserExplorer) {
+        self.explorer = hackleUserExplorer
     }
 }
 
