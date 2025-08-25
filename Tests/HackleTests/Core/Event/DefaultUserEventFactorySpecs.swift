@@ -51,7 +51,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
                 properties: PropertiesBuilder()
             )
 
-            let events = try sut.create(request: request, evaluation: evaluation)
+            let events = sut.create(request: request, evaluation: evaluation)
 
             expect(events.count) == 3
 
@@ -110,7 +110,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
                 isEligible: true
             )
 
-            let events = try sut.create(request: request, evaluation: evaluation)
+            let events = sut.create(request: request, evaluation: evaluation)
 
             expect(events.count).to(equal(1))
 

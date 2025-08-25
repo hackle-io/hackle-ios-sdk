@@ -49,4 +49,14 @@ class MockHackleCore: Mock, HackleCore {
     func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision {
         call(inAppMessageMock, args: (inAppMessageKey, user))
     }
+
+    lazy var evaluateMock: MockFunction<(any EvaluatorRequest, EvaluatorContext, any ContextualEvaluator), any EvaluatorEvaluation> = MockFunction(self, _evaluateAny)
+
+    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation {
+        return _evaluateAny(request: request, context: context, evaluator: evaluator) as! Evaluator.Evaluation
+    }
+
+    private func _evaluateAny(request: any EvaluatorRequest, context: EvaluatorContext, evaluator: any ContextualEvaluator) -> any EvaluatorEvaluation {
+        return call(evaluateMock, args: (request, context, evaluator))
+    }
 }

@@ -34,7 +34,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
 
             context("flow") {
                 it("evaluation") {
-                    let evaluation = InAppMessage.evaluation()
+                    let evaluation = InAppMessage.eligibilityEvaluation()
 
                     let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
                     evaluationFlowFactory.inAppMessageFlow = flow

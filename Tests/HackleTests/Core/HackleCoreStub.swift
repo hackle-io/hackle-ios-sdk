@@ -57,4 +57,17 @@ class HackleCoreStub: HackleCore {
         inAppMessageCount += 1
         return decision
     }
+
+    var evaluations: [EvaluatorEvaluation] = [] {
+        didSet {
+            evaluationCount = 0
+        }
+    }
+    var evaluationCount = 0
+
+    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation {
+        let evaluation = evaluations[evaluationCount]
+        evaluationCount += 1
+        return evaluation as! Evaluator.Evaluation
+    }
 }

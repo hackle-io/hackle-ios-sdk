@@ -13,7 +13,7 @@ class MockUserEventFactory: UserEventFactory {
 
     var events: [UserEvent] = []
 
-    func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) throws -> [UserEvent] {
+    func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) -> [UserEvent] {
         events
     }
 }

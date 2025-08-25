@@ -15,6 +15,8 @@ protocol HackleCore {
     func track(event: Event, user: HackleUser, timestamp: Date)
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
+
+    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation
 }
 
 class DefaultHackleCore: HackleCore {
@@ -87,7 +89,7 @@ class DefaultHackleCore: HackleCore {
         let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: experiment, defaultVariationKey: defaultVariationKey)
         let (evaluation, decision) = try experimentInternal(request: request)
 
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
 
         return decision
@@ -125,7 +127,7 @@ class DefaultHackleCore: HackleCore {
         let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: featureFlag, defaultVariationKey: "A")
         let (evaluation, decision) = try featureFlagInternal(request: request)
 
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
 
         return decision
@@ -176,9 +178,16 @@ class DefaultHackleCore: HackleCore {
         let request = RemoteConfigRequest.of(workspace: workspace, user: user, parameter: parameter, defaultValue: defaultValue)
         let evaluation: RemoteConfigEvaluation = try remoteConfigEvaluator.evaluate(request: request, context: Evaluators.context())
 
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
 
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
+    }
+
+    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation {
+        let evaluation: Evaluator.Evaluation = try evaluator.evaluate(request: request, context: context)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
+        eventProcessor.process(events: events)
+        return evaluation
     }
 }

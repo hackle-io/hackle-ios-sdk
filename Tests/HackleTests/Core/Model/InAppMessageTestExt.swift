@@ -228,7 +228,7 @@ extension InAppMessage {
         )
     }
 
-    static func evaluation(
+    static func eligibilityEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),

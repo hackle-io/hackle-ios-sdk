@@ -11,14 +11,14 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
         var context: EvaluatorContext!
 
         beforeEach {
-            evaluation = InAppMessage.evaluation()
+            evaluation = InAppMessage.eligibilityEvaluation()
             nextFlow = InAppMessageEligibilityFlow.create(evaluation)
             context = Evaluators.context()
         }
 
         describe("InAppMessageEligibilityFlowEvaluator") {
 
-            let evaluation = InAppMessage.evaluation()
+            let evaluation = InAppMessage.eligibilityEvaluation()
 
             class Sut: InAppMessageEligibilityFlowEvaluator {
                 private let evaluation: InAppMessageEligibilityEvaluation?
