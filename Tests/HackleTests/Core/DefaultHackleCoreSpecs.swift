@@ -10,7 +10,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
 
         var experimentEvaluator: MockEvaluator!
         var remoteConfigEvaluator: MockEvaluator!
-        var inAppMessageEvaluator: MockEvaluator!
         var workspaceFetcher: MockWorkspaceFetcher!
         var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!
@@ -19,14 +18,12 @@ class DefaultHackleCoreSpecs: QuickSpec {
         beforeEach {
             experimentEvaluator = MockEvaluator()
             remoteConfigEvaluator = MockEvaluator()
-            inAppMessageEvaluator = MockEvaluator()
             workspaceFetcher = MockWorkspaceFetcher()
             eventFactory = MockUserEventFactory()
             eventProcessor = MockUserEventProcessor()
             sut = DefaultHackleCore(
                 experimentEvaluator: experimentEvaluator,
                 remoteConfigEvaluator: remoteConfigEvaluator,
-                inAppMessageEvaluator: inAppMessageEvaluator,
                 workspaceFetcher: workspaceFetcher,
                 eventFactory: eventFactory,
                 eventProcessor: eventProcessor,
@@ -142,7 +139,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 let sut = DefaultHackleCore(
                     experimentEvaluator: evaluator,
                     remoteConfigEvaluator: remoteConfigEvaluator,
-                    inAppMessageEvaluator: inAppMessageEvaluator,
                     workspaceFetcher: workspaceFetcher,
                     eventFactory: eventFactory,
                     eventProcessor: eventProcessor,
@@ -346,7 +342,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 let sut = DefaultHackleCore(
                     experimentEvaluator: evaluator,
                     remoteConfigEvaluator: remoteConfigEvaluator,
-                    inAppMessageEvaluator: inAppMessageEvaluator,
                     workspaceFetcher: workspaceFetcher,
                     eventFactory: eventFactory,
                     eventProcessor: eventProcessor,
@@ -398,7 +393,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 eventFactory.events = events
 
                 // when
-                let actual = try sut.evaluate(request: request, context: context, evaluator: evaluator)
+                let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context, evaluator: evaluator)
 
                 // then
                 expect(actual).to(beIdenticalTo(evaluation))

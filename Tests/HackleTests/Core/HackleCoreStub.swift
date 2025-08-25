@@ -65,9 +65,9 @@ class HackleCoreStub: HackleCore {
     }
     var evaluationCount = 0
 
-    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation {
+    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
         let evaluation = evaluations[evaluationCount]
         evaluationCount += 1
-        return evaluation as! Evaluator.Evaluation
+        return evaluation as! Evaluation
     }
 }

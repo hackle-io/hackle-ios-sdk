@@ -16,14 +16,13 @@ protocol HackleCore {
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
-    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation
+    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluation where Evaluation: EvaluatorEvaluation
 }
 
 class DefaultHackleCore: HackleCore {
 
     private let experimentEvaluator: Evaluator
     private let remoteConfigEvaluator: Evaluator
-    private let inAppMessageEvaluator: Evaluator
     private let workspaceFetcher: WorkspaceFetcher
     private let eventFactory: UserEventFactory
     private let eventProcessor: UserEventProcessor
@@ -32,7 +31,6 @@ class DefaultHackleCore: HackleCore {
     init(
         experimentEvaluator: Evaluator,
         remoteConfigEvaluator: Evaluator,
-        inAppMessageEvaluator: Evaluator,
         workspaceFetcher: WorkspaceFetcher,
         eventFactory: UserEventFactory,
         eventProcessor: UserEventProcessor,
@@ -40,7 +38,6 @@ class DefaultHackleCore: HackleCore {
     ) {
         self.experimentEvaluator = experimentEvaluator
         self.remoteConfigEvaluator = remoteConfigEvaluator
-        self.inAppMessageEvaluator = inAppMessageEvaluator
         self.workspaceFetcher = workspaceFetcher
         self.eventFactory = eventFactory
         self.eventProcessor = eventProcessor
@@ -60,7 +57,6 @@ class DefaultHackleCore: HackleCore {
 
         let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
         let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)
-        let inAppMessageEvaluator = InAppMessageEligibilityEvaluator(evaluationFlowFactory: flowFactory)
 
         delegatingEvaluator.add(experimentEvaluator)
         delegatingEvaluator.add(remoteConfigEvaluator)
@@ -68,7 +64,6 @@ class DefaultHackleCore: HackleCore {
         return DefaultHackleCore(
             experimentEvaluator: experimentEvaluator,
             remoteConfigEvaluator: remoteConfigEvaluator,
-            inAppMessageEvaluator: inAppMessageEvaluator,
             workspaceFetcher: workspaceFetcher,
             eventFactory: DefaultUserEventFactory(clock: SystemClock.shared),
             eventProcessor: eventProcessor,
@@ -184,8 +179,8 @@ class DefaultHackleCore: HackleCore {
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
     }
 
-    func evaluate<Evaluator: ContextualEvaluator>(request: Evaluator.Request, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluator.Evaluation {
-        let evaluation: Evaluator.Evaluation = try evaluator.evaluate(request: request, context: context)
+    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
+        let evaluation: Evaluation = try evaluator.evaluate(request: request, context: context)
         let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
         return evaluation

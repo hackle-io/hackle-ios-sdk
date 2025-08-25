@@ -561,7 +561,6 @@
 		EEF895912A4971DE00722CF6 /* InAppMessageMatcherStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895902A4971DE00722CF6 /* InAppMessageMatcherStub.swift */; };
 		EEF895952A497F3E00722CF6 /* EventConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895942A497F3E00722CF6 /* EventConditionMatcherSpecs.swift */; };
 		EEF895992A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895982A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift */; };
-		EEF8959C2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8959B2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift */; };
 		EEF8959E2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8959D2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift */; };
 		EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF8959F2A49BCAF00722CF6 /* HackleCoreStub.swift */; };
 		EEF895A22A49BD3500722CF6 /* UserEventsTestExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF895A12A49BD3500722CF6 /* UserEventsTestExt.swift */; };
@@ -1142,7 +1141,6 @@
 		EEF895902A4971DE00722CF6 /* InAppMessageMatcherStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageMatcherStub.swift; sourceTree = "<group>"; };
 		EEF895942A497F3E00722CF6 /* EventConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventConditionMatcherSpecs.swift; sourceTree = "<group>"; };
 		EEF895982A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageMatcherSpecs.swift; sourceTree = "<group>"; };
-		EEF8959B2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EEF8959D2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventMatcherStub.swift; sourceTree = "<group>"; };
 		EEF8959F2A49BCAF00722CF6 /* HackleCoreStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleCoreStub.swift; sourceTree = "<group>"; };
 		EEF895A12A49BD3500722CF6 /* UserEventsTestExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventsTestExt.swift; sourceTree = "<group>"; };
@@ -2780,7 +2778,6 @@
 		EEF8959A2A49B81100722CF6 /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
-				EEF8959B2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift */,
 				EEF895A52A4A6BA800722CF6 /* DefaultInAppMessageEventMatcherSpecs.swift */,
 				EEF895AB2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift */,
 				EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */,
@@ -3460,7 +3457,6 @@
 				EE29DA5729CD82C200B1FEAA /* HackleTimer.swift in Sources */,
 				EEAC3F3D2B9D6A8800DC498E /* MockPushTokenManager.swift in Sources */,
 				EE93FF8E2C37F1C1008A317D /* IdentifierSpecs.swift in Sources */,
-				EEF8959C2A49B87B00722CF6 /* DefaultInAppMessageDeterminerSpecs.swift in Sources */,
 				EEF895B52A4AD96D00722CF6 /* AppStateManagerStub.swift in Sources */,
 				EE750E2D2ADE704400DCE34F /* MockHackleCore.swift in Sources */,
 				EEF895B02A4A9BAA00722CF6 /* MockInAppMessageDeterminer.swift in Sources */,
