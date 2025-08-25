@@ -398,6 +398,13 @@
 		EE4D037E2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D037D2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift */; };
 		EE4D03802E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D037F2E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift */; };
 		EE4D03822E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D03812E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift */; };
+		EE4D03882E5C628A007BE61A /* InAppMessageLayoutEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D03872E5C628A007BE61A /* InAppMessageLayoutEvaluator.swift */; };
+		EE4D038A2E5C628F007BE61A /* InAppMessageLayoutRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D03892E5C628F007BE61A /* InAppMessageLayoutRequest.swift */; };
+		EE4D038C2E5C6292007BE61A /* InAppMessageLayoutEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D038B2E5C6292007BE61A /* InAppMessageLayoutEvaluation.swift */; };
+		EE4D038E2E5C6299007BE61A /* InAppMessageLayoutSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D038D2E5C6299007BE61A /* InAppMessageLayoutSelector.swift */; };
+		EE4D03902E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D038F2E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift */; };
+		EE4D03932E5C68A4007BE61A /* InAppMessageLayoutEvaluatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D03922E5C68A4007BE61A /* InAppMessageLayoutEvaluatorSpecs.swift */; };
+		EE4D03952E5C8956007BE61A /* InAppMessageLayoutRequestSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D03942E5C8956007BE61A /* InAppMessageLayoutRequestSpecs.swift */; };
 		EE543CC02C08BF1300F64BFA /* ScreenSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */; };
 		EE543CC22C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */; };
 		EE543CC42C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */; };
@@ -972,6 +979,13 @@
 		EE4D037D2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluator.swift; sourceTree = "<group>"; };
 		EE4D037F2E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityFlowEvaluator.swift; sourceTree = "<group>"; };
 		EE4D03812E5C35A9007BE61A /* InAppMessageEligibilityEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEligibilityEvaluation.swift; sourceTree = "<group>"; };
+		EE4D03872E5C628A007BE61A /* InAppMessageLayoutEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLayoutEvaluator.swift; sourceTree = "<group>"; };
+		EE4D03892E5C628F007BE61A /* InAppMessageLayoutRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLayoutRequest.swift; sourceTree = "<group>"; };
+		EE4D038B2E5C6292007BE61A /* InAppMessageLayoutEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLayoutEvaluation.swift; sourceTree = "<group>"; };
+		EE4D038D2E5C6299007BE61A /* InAppMessageLayoutSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLayoutSelector.swift; sourceTree = "<group>"; };
+		EE4D038F2E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageExperimentEvaluator.swift; sourceTree = "<group>"; };
+		EE4D03922E5C68A4007BE61A /* InAppMessageLayoutEvaluatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLayoutEvaluatorSpecs.swift; sourceTree = "<group>"; };
+		EE4D03942E5C8956007BE61A /* InAppMessageLayoutRequestSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageLayoutRequestSpecs.swift; sourceTree = "<group>"; };
 		EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSpecs.swift; sourceTree = "<group>"; };
 		EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenEventTrackerSpecs.swift; sourceTree = "<group>"; };
 		EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreenManagerSpecs.swift; sourceTree = "<group>"; };
@@ -2382,6 +2396,27 @@
 			path = Eligibility;
 			sourceTree = "<group>";
 		};
+		EE4D03862E5C626B007BE61A /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D03872E5C628A007BE61A /* InAppMessageLayoutEvaluator.swift */,
+				EE4D03892E5C628F007BE61A /* InAppMessageLayoutRequest.swift */,
+				EE4D038B2E5C6292007BE61A /* InAppMessageLayoutEvaluation.swift */,
+				EE4D038D2E5C6299007BE61A /* InAppMessageLayoutSelector.swift */,
+				EE4D038F2E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		EE4D03912E5C6899007BE61A /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D03922E5C68A4007BE61A /* InAppMessageLayoutEvaluatorSpecs.swift */,
+				EE4D03942E5C8956007BE61A /* InAppMessageLayoutRequestSpecs.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
 		EE543CBE2C08BEF500F64BFA /* Screen */ = {
 			isa = PBXGroup;
 			children = (
@@ -2476,6 +2511,7 @@
 			isa = PBXGroup;
 			children = (
 				EE4D037A2E5C3556007BE61A /* Eligibility */,
+				EE4D03862E5C626B007BE61A /* Layout */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -2736,6 +2772,7 @@
 			isa = PBXGroup;
 			children = (
 				EE4D03832E5C5C47007BE61A /* Eligibility */,
+				EE4D03912E5C6899007BE61A /* Layout */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -3058,6 +3095,7 @@
 				7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */,
 				EE29D97529CD825400B1FEAA /* AtomicDouble.swift in Sources */,
 				EE29D9A729CD825500B1FEAA /* UserEvent.swift in Sources */,
+				EE4D038C2E5C6292007BE61A /* InAppMessageLayoutEvaluation.swift in Sources */,
 				EE29D96829CD825400B1FEAA /* PropertiesBuilder.swift in Sources */,
 				EE29D9A529CD825500B1FEAA /* UserEventDispatcher.swift in Sources */,
 				EEA7FCAD2C04AB330004F858 /* ScreenManager.swift in Sources */,
@@ -3084,6 +3122,7 @@
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
 				EE29D94629CD825400B1FEAA /* FlushMetric.swift in Sources */,
 				EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */,
+				EE4D03902E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift in Sources */,
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
@@ -3204,6 +3243,7 @@
 				EE29D96E29CD825400B1FEAA /* Sdk.swift in Sources */,
 				7E9DDE002B319EFB006ACFDA /* NotificationManager.swift in Sources */,
 				EE29D94029CD825400B1FEAA /* Hackle.swift in Sources */,
+				EE4D038A2E5C628F007BE61A /* InAppMessageLayoutRequest.swift in Sources */,
 				EEFA31E02BC18A5900E133F8 /* UserEventDedupDeterminer.swift in Sources */,
 				B2F9D5BF2D4C912700F0C0E0 /* TargetEventConditionMatcher.swift in Sources */,
 				EE29D9A429CD825500B1FEAA /* MonitoringMetricRegistry.swift in Sources */,
@@ -3219,6 +3259,7 @@
 				EEFA31E62BC18A7B00E133F8 /* RemoteConfigEventDedupDeterminer.swift in Sources */,
 				EEDC587C2ACBDA78001E73DB /* WorkspaceManager.swift in Sources */,
 				7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */,
+				EE4D038E2E5C6299007BE61A /* InAppMessageLayoutSelector.swift in Sources */,
 				EED6A1222A0DFC7700A8875D /* PropertyOperator.swift in Sources */,
 				EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */,
 				EE29D94F29CD825400B1FEAA /* DelegatingCounter.swift in Sources */,
@@ -3242,6 +3283,7 @@
 				EEAC3F2F2B9D54E000DC498E /* PushProviderType.swift in Sources */,
 				EE29D99129CD825400B1FEAA /* ValueMatcher.swift in Sources */,
 				EE29D96129CD825400B1FEAA /* HackleCore.swift in Sources */,
+				EE4D03882E5C628A007BE61A /* InAppMessageLayoutEvaluator.swift in Sources */,
 				B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */,
 				EEA7FCB12C04AB3F0004F858 /* ScreenEventTracker.swift in Sources */,
 				EE80DF902A285B2600FB12CC /* EvaluationContext.swift in Sources */,
@@ -3381,6 +3423,7 @@
 				EEF8958F2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift in Sources */,
 				EE29DA6629CD82C200B1FEAA /* MockUserManager.swift in Sources */,
 				EEB2E62C2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift in Sources */,
+				EE4D03952E5C8956007BE61A /* InAppMessageLayoutRequestSpecs.swift in Sources */,
 				EEAC3F432B9D6D6800DC498E /* DefaultPushTokenManagerSpecs.swift in Sources */,
 				EE29DA7729CD82C200B1FEAA /* MockTargetMatcher.swift in Sources */,
 				B23A60FF2DB23E5B008D410A /* HackleNotificationClickActionTypeSpecs.swift in Sources */,
@@ -3459,6 +3502,7 @@
 				EE29DA7529CD82C200B1FEAA /* OperatorMatcherSpecs.swift in Sources */,
 				EE4B81102C007DFE00719C41 /* DedupUserEventFilterSpecs.swift in Sources */,
 				EE29DA6229CD82C200B1FEAA /* MemoryKeyValueRepository.swift in Sources */,
+				EE4D03932E5C68A4007BE61A /* InAppMessageLayoutEvaluatorSpecs.swift in Sources */,
 				EE29DA6A29CD82C200B1FEAA /* TimeUnitSpecs.swift in Sources */,
 				EE29DA6029CD82C200B1FEAA /* CumulativeTimerSpecs.swift in Sources */,
 				EE29DA3F29CD82C200B1FEAA /* MockModels.swift in Sources */,

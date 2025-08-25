@@ -102,7 +102,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let evaluation1 = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, experiment: experiment(id: 1), variationId: 42, variationKey: "B")
             context.add(evaluation1)
 
-            let request = InAppMessage.request()
+            let request = InAppMessage.eligibilityRequest()
             let evaluation = InAppMessageEligibilityEvaluation.of(
                 request: request,
                 context: context,

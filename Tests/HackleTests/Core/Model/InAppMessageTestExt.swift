@@ -202,7 +202,7 @@ extension InAppMessage {
         )
     }
 
-    static func request(
+    static func eligibilityRequest(
         workspace: Workspace = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessage = create(),
@@ -213,6 +213,18 @@ extension InAppMessage {
             user: user,
             inAppMessage: inAppMessage,
             timestamp: timestamp
+        )
+    }
+
+    static func layoutRequest(
+        workspace: Workspace = MockWorkspace(),
+        user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
+        inAppMessage: InAppMessage = create()
+    ) -> InAppMessageLayoutRequest {
+        return InAppMessageLayoutRequest(
+            workspace: workspace,
+            user: user,
+            inAppMessage: inAppMessage
         )
     }
 

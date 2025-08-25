@@ -17,12 +17,12 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
         it("supports") {
             expect(sut.support(request: experimentRequest())) == false
             expect(sut.support(request: remoteConfigRequest())) == false
-            expect(sut.support(request: InAppMessage.request())) == true
+            expect(sut.support(request: InAppMessage.eligibilityRequest())) == true
         }
 
         describe("evaluate") {
             it("circular") {
-                let request = InAppMessage.request()
+                let request = InAppMessage.eligibilityRequest()
                 let context = Evaluators.context()
                 context.add(request)
 
@@ -39,7 +39,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                     let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
                     evaluationFlowFactory.inAppMessageFlow = flow
 
-                    let request = InAppMessage.request()
+                    let request = InAppMessage.eligibilityRequest()
                     let context = Evaluators.context()
 
                     let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
@@ -48,7 +48,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 }
 
                 it("default") {
-                    let request = InAppMessage.request()
+                    let request = InAppMessage.eligibilityRequest()
                     let context = Evaluators.context()
 
                     let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
