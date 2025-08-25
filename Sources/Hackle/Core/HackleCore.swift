@@ -15,8 +15,6 @@ protocol HackleCore {
     func track(event: Event, user: HackleUser, timestamp: Date)
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
-
-    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision
 }
 
 class DefaultHackleCore: HackleCore {
@@ -60,7 +58,7 @@ class DefaultHackleCore: HackleCore {
 
         let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
         let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)
-        let inAppMessageEvaluator = InAppMessageEvaluator(evaluationFlowFactory: flowFactory)
+        let inAppMessageEvaluator = InAppMessageEligibilityEvaluator(evaluationFlowFactory: flowFactory)
 
         delegatingEvaluator.add(experimentEvaluator)
         delegatingEvaluator.add(remoteConfigEvaluator)
@@ -182,46 +180,5 @@ class DefaultHackleCore: HackleCore {
         eventProcessor.process(events: events)
 
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
-    }
-
-    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision {
-        guard let workspace = workspaceFetcher.fetch() else {
-            return InAppMessageDecision.of(reason: DecisionReason.SDK_NOT_READY)
-        }
-
-        guard let inAppMessage = workspace.getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) else {
-            return InAppMessageDecision.of(reason: DecisionReason.IN_APP_MESSAGE_NOT_FOUND)
-        }
-
-        let request = InAppMessageRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: clock.now())
-        let evaluation: InAppMessageEvaluation = try inAppMessageEvaluator.evaluate(request: request, context: Evaluators.context())
-
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
-        eventProcessor.process(events: events)
-
-        return InAppMessageDecision.of(
-            inAppMessage: evaluation.inAppMessage,
-            message: evaluation.message,
-            reason: evaluation.reason,
-            properties: evaluation.properties
-        )
-    }
-}
-
-extension HackleCore {
-
-    /// Used for event triggered in app message
-    func tryInAppMessage(inAppMessageKey: Int64, user: HackleUser) -> InAppMessageDecision {
-        let sample = TimerSample.start()
-        let decision: InAppMessageDecision
-
-        do {
-            decision = try inAppMessage(inAppMessageKey: inAppMessageKey, user: user)
-        } catch let error {
-            Log.error("Unexpected error while deciding in app message [\(inAppMessageKey)]: \(String(describing: error))")
-            decision = InAppMessageDecision.of(reason: DecisionReason.EXCEPTION)
-        }
-        DecisionMetrics.inAppMessage(sample: sample, key: inAppMessageKey, decision: decision)
-        return decision
     }
 }

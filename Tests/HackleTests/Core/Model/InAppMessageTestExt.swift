@@ -207,8 +207,8 @@ extension InAppMessage {
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessage = create(),
         timestamp: Date = Date()
-    ) -> InAppMessageRequest {
-        InAppMessageRequest(
+    ) -> InAppMessageEligibilityRequest {
+        InAppMessageEligibilityRequest(
             workspace: workspace,
             user: user,
             inAppMessage: inAppMessage,
@@ -220,15 +220,13 @@ extension InAppMessage {
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        message: InAppMessage.Message? = nil,
-        properties: [String: Any] = [:]
-    ) -> InAppMessageEvaluation {
-        InAppMessageEvaluation(
+        isEligible: Bool = true
+    ) -> InAppMessageEligibilityEvaluation {
+        InAppMessageEligibilityEvaluation(
             reason: reason,
             targetEvaluations: targetEvaluations,
             inAppMessage: inAppMessage,
-            message: message,
-            properties: properties
+            isEligible: isEligible
         )
     }
 

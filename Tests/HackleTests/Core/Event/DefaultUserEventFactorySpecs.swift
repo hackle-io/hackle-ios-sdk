@@ -103,11 +103,11 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             context.add(evaluation1)
 
             let request = InAppMessage.request()
-            let evaluation = InAppMessageEvaluation.of(
+            let evaluation = InAppMessageEligibilityEvaluation.of(
                 request: request,
                 context: context,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET,
-                message: request.inAppMessage.messageContext.messages[0]
+                isEligible: true
             )
 
             let events = try sut.create(request: request, evaluation: evaluation)

@@ -11,11 +11,11 @@ import Foundation
 class MockEvaluationFlowFactory: EvaluationFlowFactory {
 
     var experimentFlow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation>
-    var inAppMessageFlow: EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation>
+    var inAppMessageFlow: EvaluationFlow<InAppMessageEligibilityRequest, InAppMessageEligibilityEvaluation>
 
     init(
         experimentFlow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.end(),
-        inAppMessageFlow: EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation> = EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation>.end()
+        inAppMessageFlow: EvaluationFlow<InAppMessageEligibilityRequest, InAppMessageEligibilityEvaluation> = EvaluationFlow<InAppMessageEligibilityRequest, InAppMessageEligibilityEvaluation>.end()
     ) {
         self.experimentFlow = experimentFlow
         self.inAppMessageFlow = inAppMessageFlow
@@ -25,7 +25,7 @@ class MockEvaluationFlowFactory: EvaluationFlowFactory {
         experimentFlow
     }
 
-    func getInAppMessageFlow() -> EvaluationFlow<InAppMessageRequest, InAppMessageEvaluation> {
+    func getInAppMessageFlow() -> EvaluationFlow<InAppMessageEligibilityRequest, InAppMessageEligibilityEvaluation> {
         inAppMessageFlow
     }
 }

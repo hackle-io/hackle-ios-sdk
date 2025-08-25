@@ -1,14 +1,6 @@
-//
-//  InAppMessageRequest.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/01.
-//
-
 import Foundation
 
-
-class InAppMessageRequest: EvaluatorRequest, Equatable, CustomStringConvertible {
+class InAppMessageEligibilityRequest: EvaluatorRequest, Equatable, CustomStringConvertible {
     let key: EvaluatorKey
     let workspace: Workspace
     let user: HackleUser
@@ -23,11 +15,11 @@ class InAppMessageRequest: EvaluatorRequest, Equatable, CustomStringConvertible 
         self.timestamp = timestamp
     }
 
-    static func ==(lhs: InAppMessageRequest, rhs: InAppMessageRequest) -> Bool {
+    static func ==(lhs: InAppMessageEligibilityRequest, rhs: InAppMessageEligibilityRequest) -> Bool {
         lhs.key == rhs.key
     }
 
     var description: String {
-        "EvaluatorRequest(type=IN_APP_MESSAGE, key=\(inAppMessage.key))"
+        "InAppMessageEligibilityRequest(type=IN_APP_MESSAGE, key=\(inAppMessage.key))"
     }
 }

@@ -1,40 +1,33 @@
-//
-//  InAppMessageFlowEvaluatorSpecs.swift
-//  HackleTests
-//
-//  Created by yong on 2023/06/26.
-//
-
 import Foundation
 import Quick
 import Nimble
 @testable import Hackle
 
-class InAppMessageFlowEvaluatorSpecs: QuickSpec {
+class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
     override func spec() {
 
-        var nextFlow: InAppMessageFlow!
-        var evaluation: InAppMessageEvaluation!
+        var nextFlow: InAppMessageEligibilityFlow!
+        var evaluation: InAppMessageEligibilityEvaluation!
         var context: EvaluatorContext!
 
         beforeEach {
             evaluation = InAppMessage.evaluation()
-            nextFlow = InAppMessageFlow.create(evaluation)
+            nextFlow = InAppMessageEligibilityFlow.create(evaluation)
             context = Evaluators.context()
         }
 
-        describe("InAppMessageFlowEvaluator") {
+        describe("InAppMessageEligibilityFlowEvaluator") {
 
             let evaluation = InAppMessage.evaluation()
 
-            class Sut: InAppMessageFlowEvaluator {
-                private let evaluation: InAppMessageEvaluation?
+            class Sut: InAppMessageEligibilityFlowEvaluator {
+                private let evaluation: InAppMessageEligibilityEvaluation?
 
-                init(evaluation: InAppMessageEvaluation?) {
+                init(evaluation: InAppMessageEligibilityEvaluation?) {
                     self.evaluation = evaluation
                 }
 
-                func evaluateInAppMessage(request: InAppMessageRequest, context: EvaluatorContext, nextFlow: InAppMessageFlow) throws -> InAppMessageEvaluation? {
+                func evaluateInAppMessage(request: InAppMessageEligibilityRequest, context: EvaluatorContext, nextFlow: InAppMessageEligibilityFlow) throws -> InAppMessageEligibilityEvaluation? {
                     evaluation
                 }
             }
@@ -50,7 +43,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
 
             it("must be InAppMessageFlow") {
                 expect {
-                    let _: ExperimentEvaluation? = try sut.evaluate(request: InAppMessage.request(), context: Evaluators.context(), nextFlow: EvaluationFlow<InAppMessageRequest, ExperimentEvaluation>.end())
+                    let _: ExperimentEvaluation? = try sut.evaluate(request: InAppMessage.request(), context: Evaluators.context(), nextFlow: EvaluationFlow<InAppMessageEligibilityRequest, ExperimentEvaluation>.end())
                 }
                     .to(throwError())
             }
@@ -64,17 +57,18 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("PlatformInAppMessageFlowEvaluator") {
+        describe("PlatformInAppMessageEligibilityFlowEvaluator") {
 
-            let sut: PlatformInAppMessageFlowEvaluator = PlatformInAppMessageFlowEvaluator()
+            let sut: PlatformInAppMessageEligibilityFlowEvaluator = PlatformInAppMessageEligibilityFlowEvaluator()
 
-            it("when inAppMessage does not support ios then evaluated as nil") {
+            it("when inAppMessage does not support ios then ineligible") {
                 let inAppMessage = InAppMessage.create(messageContext: InAppMessage.messageContext(platformTypes: []))
                 let request = InAppMessage.request(inAppMessage: inAppMessage)
 
-                let evaluation = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
-                expect(evaluation.reason) == DecisionReason.UNSUPPORTED_PLATFORM
+                expect(actual.isEligible) == false
+                expect(actual.reason) == DecisionReason.UNSUPPORTED_PLATFORM
             }
 
             it("when iam supports ios then evaluate next flow") {
@@ -86,16 +80,14 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("OverrideInAppMessageFlowEvaluator") {
+        describe("OverrideInAppMessageEligibilityFlowEvaluator") {
 
             var userOverrideMatcher: InAppMessageMatcherStub!
-            var inAppMessageResolver: InAppMessageResolverStub!
-            var sut: OverrideInAppMessageFlowEvaluator!
+            var sut: OverrideInAppMessageEligibilityFlowEvaluator!
 
             beforeEach {
                 userOverrideMatcher = InAppMessageMatcherStub()
-                inAppMessageResolver = InAppMessageResolverStub()
-                sut = OverrideInAppMessageFlowEvaluator(userOverrideMatcher: userOverrideMatcher, inAppMessageResolver: inAppMessageResolver)
+                sut = OverrideInAppMessageEligibilityFlowEvaluator(userOverrideMatcher: userOverrideMatcher)
             }
 
             it("when user is overridden then evaluated as OVERRIDDEN") {
@@ -108,6 +100,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
+                expect(actual.isEligible) == true
                 expect(actual.reason) == DecisionReason.OVERRIDDEN
             }
 
@@ -123,11 +116,11 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("DraftInAppMessageFlowEvaluator") {
+        describe("DraftInAppMessageEligibilityFlowEvaluator") {
 
-            let sut = DraftInAppMessageFlowEvaluator()
+            let sut = DraftInAppMessageEligibilityFlowEvaluator()
 
-            it("when inAppMessage is draft then evaluated as nil") {
+            it("when inAppMessage is draft then ineligible") {
                 // given
                 let inAppMessage = InAppMessage.create(status: .draft)
                 let request = InAppMessage.request(inAppMessage: inAppMessage)
@@ -136,7 +129,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
-                expect(actual.message).to(beNil())
+                expect(actual.isEligible) == false
                 expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_DRAFT
             }
 
@@ -153,11 +146,11 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("pause") {
+        describe("PausedInAppMessageEligibilityFlowEvaluator") {
 
-            let sut = PausedInAppMessageFlowEvaluator()
+            let sut = PausedInAppMessageEligibilityFlowEvaluator()
 
-            it("when inAppMessage is pause then evaluated as nil") {
+            it("when inAppMessage is pause then ineligible") {
                 // given
                 let inAppMessage = InAppMessage.create(status: .pause)
                 let request = InAppMessage.request(inAppMessage: inAppMessage)
@@ -166,7 +159,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
-                expect(actual.message).to(beNil())
+                expect(actual.isEligible) == false
                 expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_PAUSED
             }
 
@@ -183,11 +176,11 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("PeriodInAppMessageFlowEvaluator") {
+        describe("PeriodInAppMessageEligibilityFlowEvaluator") {
 
-            let sut = PeriodInAppMessageFlowEvaluator()
+            let sut = PeriodInAppMessageEligibilityFlowEvaluator()
 
-            it("when timestamp is not in inAppMessage period then evaluated as nil") {
+            it("when timestamp is not in inAppMessage period then ineligible") {
                 // given
                 let inAppMessage = InAppMessage.create(
                     period: .range(
@@ -201,7 +194,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
-                expect(actual.message).to(beNil())
+                expect(actual.isEligible) == false
                 expect(actual.reason) == DecisionReason.NOT_IN_IN_APP_MESSAGE_PERIOD
             }
 
@@ -223,16 +216,87 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("HiddenInAppMessageFlowEvaluator") {
+        describe("TargetInAppMessageEligibilityFlowEvaluator") {
+            var targetMatcher: InAppMessageMatcherStub!
+            var sut: TargetInAppMessageEligibilityFlowEvaluator!
+
+            beforeEach {
+                targetMatcher = InAppMessageMatcherStub()
+                sut = TargetInAppMessageEligibilityFlowEvaluator(targetMatcher: targetMatcher)
+            }
+
+            it("when user not in inAppMessage target then evaluated as nil") {
+                // given
+                targetMatcher.isMatched = false
+                let request = InAppMessage.request()
+
+                // when
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
+
+                // then
+                expect(actual.isEligible) == false
+                expect(actual.reason) == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
+            }
+
+            it("when user in inAppMessage target then evaluate next flow") {
+                // given
+                targetMatcher.isMatched = true
+                let request = InAppMessage.request()
+
+                // when
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
+
+                // then
+                expect(actual).to(beIdenticalTo(evaluation))
+            }
+        }
+
+        describe("FrequencyCapInAppMessageEligibilityFlowEvaluator") {
+
+            var frequencyCapMatcher: InAppMessageMatcherStub!
+            var sut: FrequencyCapInAppMessageEligibilityFlowEvaluator!
+
+            beforeEach {
+                frequencyCapMatcher = InAppMessageMatcherStub()
+                sut = FrequencyCapInAppMessageEligibilityFlowEvaluator(frequencyCapMatcher: frequencyCapMatcher)
+            }
+
+            it("when frequency capped then ineligible") {
+                // given
+                frequencyCapMatcher.isMatched = true
+                let request = InAppMessage.request()
+
+                // when
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
+
+                // then
+                expect(actual.isEligible) == false
+                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED
+            }
+
+            it("when not frequency capped then evaluate next flow") {
+                // given
+                frequencyCapMatcher.isMatched = false
+                let request = InAppMessage.request()
+
+                // when
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
+
+                // then
+                expect(actual).to(beIdenticalTo(evaluation))
+            }
+        }
+
+        describe("HiddenInAppMessageEligibilityFlowEvaluator") {
             var hiddenMatcher: InAppMessageMatcherStub!
-            var sut: HiddenInAppMessageFlowEvaluator!
+            var sut: HiddenInAppMessageEligibilityFlowEvaluator!
 
             beforeEach {
                 hiddenMatcher = InAppMessageMatcherStub()
-                sut = HiddenInAppMessageFlowEvaluator(hiddenMatcher: hiddenMatcher)
+                sut = HiddenInAppMessageEligibilityFlowEvaluator(hiddenMatcher: hiddenMatcher)
             }
 
-            it("when user is hidden then evaluated as nil") {
+            it("when user is hidden then eligible") {
                 // given
                 hiddenMatcher.isMatched = true
                 let request = InAppMessage.request()
@@ -241,7 +305,7 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
-                expect(actual.message).to(beNil())
+                expect(actual.isEligible) == false
                 expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_HIDDEN
             }
 
@@ -258,38 +322,24 @@ class InAppMessageFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("TargetInAppMessageFlowEvaluator") {
-            var targetMatcher: InAppMessageMatcherStub!
-            var sut: TargetInAppMessageFlowEvaluator!
+
+        describe("EligibleInAppMessageEligibilityFlowEvaluator") {
+            var sut: EligibleInAppMessageEligibilityFlowEvaluator!
 
             beforeEach {
-                targetMatcher = InAppMessageMatcherStub()
-                sut = TargetInAppMessageFlowEvaluator(targetMatcher: targetMatcher)
+                sut = EligibleInAppMessageEligibilityFlowEvaluator()
             }
 
-            it("when user in inAppMessage target then evaluate next flow") {
+            it("evalaute as eligible") {
                 // given
-                targetMatcher.isMatched = true
                 let request = InAppMessage.request()
 
                 // when
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
 
                 // then
-                expect(actual).to(beIdenticalTo(evaluation))
-            }
-
-            it("when user not in inAppMessage target then evaluated as nil") {
-                // given
-                targetMatcher.isMatched = false
-                let request = InAppMessage.request()
-
-                // when
-                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
-
-                // then
-                expect(actual.message).to(beNil())
-                expect(actual.reason) == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
+                expect(actual.isEligible) == true
+                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
             }
         }
     }

@@ -50,16 +50,15 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
 
             it("IN_APP_MESSAGE") {
                 sut.getInAppMessageFlow()
-                    .isDecisionWith(PlatformInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(OverrideInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(DraftInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(PausedInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(PeriodInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(TargetInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(ExperimentInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(FrequencyCapInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(HiddenInAppMessageFlowEvaluator.self)!
-                    .isDecisionWith(MessageResolutionInAppMessageFlowEvaluator.self)!
+                    .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(OverrideInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(DraftInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(PausedInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(TargetInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
+                    .isDecisionWith(EligibleInAppMessageEligibilityFlowEvaluator.self)!
                     .isEnd()
             }
         }

@@ -73,7 +73,7 @@ class DefaultUserEventFactory: UserEventFactory {
                 properties: properties.build(),
                 timestamp: timestamp
             )
-        case _ as InAppMessageEvaluation:
+        case _ as InAppMessageEligibilityEvaluation:
             return nil
         default:
             throw HackleError.error("Unsupported Evaluation [\(evaluation)]")

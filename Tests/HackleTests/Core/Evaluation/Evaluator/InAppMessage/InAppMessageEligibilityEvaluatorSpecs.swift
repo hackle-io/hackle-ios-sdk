@@ -1,24 +1,17 @@
-//
-//  InAppMessageEvaluatorSpecs.swift
-//  HackleTests
-//
-//  Created by yong on 2023/06/25.
-//
-
 import Foundation
 import Quick
 import Nimble
 @testable import Hackle
 
-class InAppMessageEvaluatorSpecs: QuickSpec {
+class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
     override func spec() {
 
         var evaluationFlowFactory: MockEvaluationFlowFactory!
-        var sut: InAppMessageEvaluator!
+        var sut: InAppMessageEligibilityEvaluator!
 
         beforeEach {
             evaluationFlowFactory = MockEvaluationFlowFactory()
-            sut = InAppMessageEvaluator(evaluationFlowFactory: evaluationFlowFactory)
+            sut = InAppMessageEligibilityEvaluator(evaluationFlowFactory: evaluationFlowFactory)
         }
 
         it("supports") {
@@ -34,7 +27,7 @@ class InAppMessageEvaluatorSpecs: QuickSpec {
                 context.add(request)
 
                 expect {
-                    let _: InAppMessageEvaluation = try sut.evaluate(request: request, context: context)
+                    let _: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
                 }
                     .to(throwError())
             }
@@ -43,13 +36,13 @@ class InAppMessageEvaluatorSpecs: QuickSpec {
                 it("evaluation") {
                     let evaluation = InAppMessage.evaluation()
 
-                    let flow: InAppMessageFlow = InAppMessageFlow.create(evaluation)
+                    let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
                     evaluationFlowFactory.inAppMessageFlow = flow
 
                     let request = InAppMessage.request()
                     let context = Evaluators.context()
 
-                    let actual: InAppMessageEvaluation = try sut.evaluate(request: request, context: context)
+                    let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
 
                     expect(actual).to(beIdenticalTo(evaluation))
                 }
@@ -58,7 +51,7 @@ class InAppMessageEvaluatorSpecs: QuickSpec {
                     let request = InAppMessage.request()
                     let context = Evaluators.context()
 
-                    let actual: InAppMessageEvaluation = try sut.evaluate(request: request, context: context)
+                    let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
 
                     expect(actual.reason) == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
                 }

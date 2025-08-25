@@ -2,14 +2,14 @@ import Foundation
 
 protocol EvaluationFlowFactory {
     func getExperimentFlow(experimentType: ExperimentType) -> ExperimentFlow
-    func getInAppMessageFlow() -> InAppMessageFlow
+    func getInAppMessageFlow() -> InAppMessageEligibilityFlow
 }
 
 class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
 
     private let abTestFlow: ExperimentFlow
     private let featureFlagFlow: ExperimentFlow
-    private let inAppMessageFlow: InAppMessageFlow
+    private let inAppMessageFlow: InAppMessageEligibilityFlow
 
     init(context: EvaluationContext) {
         let experimentActionResolver = context.get(ActionResolver.self)!
@@ -35,19 +35,16 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
             DefaultRuleEvaluator(actionResolver: context.get(ActionResolver.self)!)
         )
 
-        let inAppMessageResolver = context.get(InAppMessageResolver.self)!
-
-        inAppMessageFlow = InAppMessageFlow.of(
-            PlatformInAppMessageFlowEvaluator(),
-            OverrideInAppMessageFlowEvaluator(userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!, inAppMessageResolver: inAppMessageResolver),
-            DraftInAppMessageFlowEvaluator(),
-            PausedInAppMessageFlowEvaluator(),
-            PeriodInAppMessageFlowEvaluator(),
-            TargetInAppMessageFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!),
-            ExperimentInAppMessageFlowEvaluator(inAppMessageResolver: context.get(InAppMessageResolver.self)!),
-            FrequencyCapInAppMessageFlowEvaluator(frequencyCapMatcher: context.get(InAppMessageFrequencyCapMatcher.self)!),
-            HiddenInAppMessageFlowEvaluator(hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!),
-            MessageResolutionInAppMessageFlowEvaluator(inAppMessageResolver: context.get(InAppMessageResolver.self)!)
+        inAppMessageFlow = InAppMessageEligibilityFlow.of(
+            PlatformInAppMessageEligibilityFlowEvaluator(),
+            OverrideInAppMessageEligibilityFlowEvaluator(userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!),
+            DraftInAppMessageEligibilityFlowEvaluator(),
+            PausedInAppMessageEligibilityFlowEvaluator(),
+            PeriodInAppMessageEligibilityFlowEvaluator(),
+            TargetInAppMessageEligibilityFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!),
+            FrequencyCapInAppMessageEligibilityFlowEvaluator(frequencyCapMatcher: context.get(InAppMessageFrequencyCapMatcher.self)!),
+            HiddenInAppMessageEligibilityFlowEvaluator(hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!),
+            EligibleInAppMessageEligibilityFlowEvaluator()
         )
     }
 
@@ -58,7 +55,7 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
         }
     }
 
-    func getInAppMessageFlow() -> InAppMessageFlow {
+    func getInAppMessageFlow() -> InAppMessageEligibilityFlow {
         inAppMessageFlow
     }
 }
