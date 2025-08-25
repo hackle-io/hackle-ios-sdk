@@ -307,14 +307,14 @@ class TargetDto: Codable {
             values = try container.decode([HackleValue].self, forKey: .values)
         }
     }
-    
+
     class NumberOfEventsInDaysDto: Codable {
         /// 이벤트 키
         var eventKey: String
         /// 기간
         var days: Int
     }
-    
+
     class NumberOfEventsWithPropertyInDaysDto: Codable {
         /// 이벤트 키
         var eventKey: String
@@ -401,6 +401,8 @@ class InAppMessageDto: Codable {
     var status: String
     var eventTriggerRules: [EventTriggerRuleDto]
     var eventFrequencyCap: EventFrequencyCapDto?
+    var eventTriggerDelay: EventTriggerDelayDto?
+    var evaluateContext: EvaluateContextDto?
     var targetContext: TargetContextDto
     var messageContext: MessageContextDto
 
@@ -422,6 +424,19 @@ class InAppMessageDto: Codable {
     class DurationCapDto: Codable {
         var durationUnit: DurationDto
         var countPerDuration: Int64
+    }
+
+    class EventTriggerDelayDto: Codable {
+        var type: String
+        var afterCondition: AfterConditionDto?
+
+        class AfterConditionDto: Codable {
+            var duration: DurationDto
+        }
+    }
+
+    class EvaluateContextDto: Codable {
+        var atDeliverTime: Bool
     }
 
     class TargetContextDto: Codable {
@@ -571,6 +586,7 @@ extension InAppMessageDto {
 
         let eventTriggerRules = eventTriggerRules.map({ $0.toTriggerRule() })
         let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
+        let eventTriggerDelay = eventTriggerDelay?.toDelayOrNil() ?? InAppMessage.EventTrigger.Delay.default
 
         return InAppMessage(
             id: id,
@@ -579,8 +595,10 @@ extension InAppMessageDto {
             period: period,
             eventTrigger: InAppMessage.EventTrigger(
                 rules: eventTriggerRules,
-                frequencyCap: eventFrequencyCap
+                frequencyCap: eventFrequencyCap,
+                delay: eventTriggerDelay
             ),
+            evaluateContext: evaluateContext?.toEvaluateContext() ?? InAppMessage.EvaluateContext.default,
             targetContext: targetContext.toTargetContext(),
             messageContext: messageContext
         )
@@ -632,6 +650,46 @@ extension InAppMessageDto.TargetContextDto {
             targets: targets.compactMap {
                 $0.toTargetOrNil(.property)
             }
+        )
+    }
+}
+
+extension InAppMessageDto.EventTriggerDelayDto {
+    func toDelayOrNil() -> InAppMessage.EventTrigger.Delay? {
+        guard let type: InAppMessage.DelayType = Enums.parseOrNil(rawValue: type) else {
+            return nil
+        }
+        let condition: InAppMessage.EventTrigger.Delay.AfterCondition?
+        if afterCondition != nil {
+            guard let model = afterCondition?.toAfterConditionOrNil() else {
+                return nil
+            }
+            condition = model
+        } else {
+            condition = nil
+        }
+        return InAppMessage.EventTrigger.Delay(
+            type: type,
+            afterCondition: condition
+        )
+    }
+}
+
+extension InAppMessageDto.EventTriggerDelayDto.AfterConditionDto {
+    func toAfterConditionOrNil() -> InAppMessage.EventTrigger.Delay.AfterCondition? {
+        guard let timeUnit: TimeUnit = Enums.parseOrNil(rawValue: duration.timeUnit) else {
+            return nil
+        }
+        return InAppMessage.EventTrigger.Delay.AfterCondition(
+            duration: timeUnit.convert(Double(duration.amount), to: .seconds)
+        )
+    }
+}
+
+extension InAppMessageDto.EvaluateContextDto {
+    func toEvaluateContext() -> InAppMessage.EvaluateContext {
+        return InAppMessage.EvaluateContext(
+            atDeliverTime: atDeliverTime
         )
     }
 }

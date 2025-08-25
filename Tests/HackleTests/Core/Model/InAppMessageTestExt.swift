@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 @testable import Hackle
 
 extension InAppMessage {
@@ -16,6 +17,7 @@ extension InAppMessage {
         status: Status = .active,
         period: Period = .always,
         eventTrigger: EventTrigger = eventTrigger(),
+        evaluateContext: EvaluateContext = evaluateContext(),
         targetContext: TargetContext = targetContext(),
         messageContext: MessageContext = messageContext()
     ) -> InAppMessage {
@@ -25,30 +27,54 @@ extension InAppMessage {
             status: status,
             period: period,
             eventTrigger: eventTrigger,
+            evaluateContext: evaluateContext,
             targetContext: targetContext,
             messageContext: messageContext
         )
     }
 
     static func eventTrigger(
-        rules: [InAppMessage.EventTrigger.Rule] = [InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])],
-        frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil
+        rules: [InAppMessage.EventTrigger.Rule] = [
+            InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])
+        ],
+        frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil,
+        delay: InAppMessage.EventTrigger.Delay = delay()
     ) -> InAppMessage.EventTrigger {
-        InAppMessage.EventTrigger(rules: rules, frequencyCap: frequencyCap)
+        InAppMessage.EventTrigger(
+            rules: rules,
+            frequencyCap: frequencyCap,
+            delay: delay
+        )
     }
 
     static func frequencyCap(
         identifierCaps: [InAppMessage.EventTrigger.IdentifierCap] = [],
         durationCap: InAppMessage.EventTrigger.DurationCap? = nil
     ) -> InAppMessage.EventTrigger.FrequencyCap {
-        InAppMessage.EventTrigger.FrequencyCap(identifierCaps: identifierCaps, durationCap: durationCap)
+        InAppMessage.EventTrigger.FrequencyCap(
+            identifierCaps: identifierCaps,
+            durationCap: durationCap
+        )
+    }
+
+    static func delay(
+        type: InAppMessage.DelayType = .immediate,
+        afterCondition: InAppMessage.EventTrigger.Delay.AfterCondition? = nil
+    ) -> InAppMessage.EventTrigger.Delay {
+        return InAppMessage.EventTrigger.Delay(
+            type: type,
+            afterCondition: afterCondition
+        )
     }
 
     static func identifierCap(
         identifierType: String = "$id",
         count: Int64 = 1
     ) -> InAppMessage.EventTrigger.IdentifierCap {
-        InAppMessage.EventTrigger.IdentifierCap(identifierType: identifierType, count: count)
+        InAppMessage.EventTrigger.IdentifierCap(
+            identifierType: identifierType,
+            count: count
+        )
     }
 
     static func durationCap(
@@ -56,6 +82,12 @@ extension InAppMessage {
         count: Int64 = 1
     ) -> InAppMessage.EventTrigger.DurationCap {
         InAppMessage.EventTrigger.DurationCap(duration: duration, count: count)
+    }
+
+    static func evaluateContext(
+        atDeliverTime: Bool = false
+    ) -> InAppMessage.EvaluateContext {
+        return EvaluateContext(atDeliverTime: atDeliverTime)
     }
 
     static func targetContext(
@@ -159,8 +191,14 @@ extension InAppMessage {
         bodyColor: String = "#FFFFFF"
     ) -> Message.Text {
         Message.Text(
-            title: Message.Text.Attribute(text: title, style: Message.Text.Style(textColor: titleColor)),
-            body: Message.Text.Attribute(text: body, style: Message.Text.Style(textColor: bodyColor))
+            title: Message.Text.Attribute(
+                text: title,
+                style: Message.Text.Style(textColor: titleColor)
+            ),
+            body: Message.Text.Attribute(
+                text: body,
+                style: Message.Text.Style(textColor: bodyColor)
+            )
         )
     }
 
@@ -170,7 +208,12 @@ extension InAppMessage {
         inAppMessage: InAppMessage = create(),
         timestamp: Date = Date()
     ) -> InAppMessageRequest {
-        InAppMessageRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: timestamp)
+        InAppMessageRequest(
+            workspace: workspace,
+            user: user,
+            inAppMessage: inAppMessage,
+            timestamp: timestamp
+        )
     }
 
     static func evaluation(
@@ -180,7 +223,13 @@ extension InAppMessage {
         message: InAppMessage.Message? = nil,
         properties: [String: Any] = [:]
     ) -> InAppMessageEvaluation {
-        InAppMessageEvaluation(reason: reason, targetEvaluations: targetEvaluations, inAppMessage: inAppMessage, message: message, properties: properties)
+        InAppMessageEvaluation(
+            reason: reason,
+            targetEvaluations: targetEvaluations,
+            inAppMessage: inAppMessage,
+            message: message,
+            properties: properties
+        )
     }
 
     static func context(
@@ -190,6 +239,12 @@ extension InAppMessage {
         properties: [String: Any] = [:],
         decisionReason: String = DecisionReason.DEFAULT_RULE
     ) -> InAppMessagePresentationContext {
-        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties, decisionReasion: decisionReason)
+        InAppMessagePresentationContext(
+            inAppMessage: inAppMessage,
+            message: message,
+            user: user,
+            properties: properties,
+            decisionReasion: decisionReason
+        )
     }
 }

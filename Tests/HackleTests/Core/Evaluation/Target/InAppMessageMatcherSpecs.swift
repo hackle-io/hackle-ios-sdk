@@ -189,7 +189,7 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
 
         context("frequencyCap이 nil일 때") {
             it("false를 반환한다") {
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: nil))
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger())
                 let request = InAppMessage.request(inAppMessage: inAppMessage)
 
                 let result = try? sut.matches(request: request, context: Evaluators.context())
@@ -201,7 +201,7 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("impression이 identifierCap 조건을 만족하면 true") {
                 let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
                 
 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
@@ -216,7 +216,7 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("impression이 identifierCap 조건을 만족하지 않으면 false") {
                 let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
                 user = HackleUser.builder().identifier(.id, "user1").build()
                 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
@@ -232,7 +232,7 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("durationCap이 만족하면 true") {
                 let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 30)
                 try storage.set(inAppMessage: inAppMessage, impressions: [impression])
@@ -246,7 +246,7 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("durationCap이 만족하지 않으면 false") {
                 let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.EventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 120)
                 try storage.set(inAppMessage: inAppMessage, impressions: [impression])
