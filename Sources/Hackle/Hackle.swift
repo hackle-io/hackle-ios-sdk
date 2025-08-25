@@ -134,6 +134,30 @@ extension Hackle {
     }
     
     @objc static public func handleRichNotification(
+        request: UNNotificationRequest,
+        contentHandler: @escaping (UNNotificationContent) -> Void
+    ) -> Bool {
+        guard let baseNotificationContent: UNMutableNotificationContent = (request.content as? UNMutableNotificationContent) else {
+            return false
+        }
+        
+        return handleRichNotification(notificationContent: baseNotificationContent, contentHandler: contentHandler)
+    }
+    
+    @objc static public func handleRichNotification(
+        notificationContent: UNMutableNotificationContent,
+        contentHandler: @escaping (UNNotificationContent) -> Void
+    ) -> Bool {
+        guard let notificationData = NotificationData.from(data: notificationContent.userInfo) else {
+            return false
+        }
+        
+        return resolveRichNotificationContent(notificationContent: notificationContent, completion: {
+            contentHandler($0)
+        })
+    }
+    
+    @objc static public func resolveRichNotificationContent(
         notificationContent: UNMutableNotificationContent,
         completion: @escaping (UNMutableNotificationContent) -> Void
     ) -> Bool {
