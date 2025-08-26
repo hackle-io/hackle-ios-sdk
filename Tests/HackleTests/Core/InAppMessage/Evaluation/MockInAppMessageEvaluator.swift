@@ -9,3 +9,24 @@ class MockInAppMessageEvaluator: Mock, InAppMessageEvaluator {
         return try call(evaluateMock, args: (workspace, inAppMessage, user, timestamp))
     }
 }
+
+class InAppMessageEvaluatorStub: InAppMessageEvaluator {
+
+    var evaluations: [InAppMessageEvaluation] {
+        didSet {
+            count = 0
+        }
+    }
+
+    var count = 0
+
+    init(evaluations: [InAppMessageEvaluation] = []) {
+        self.evaluations = evaluations
+    }
+
+    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser, timestamp: Date) throws -> InAppMessageEvaluation {
+        let evaluation = evaluations[count]
+        count += 1
+        return evaluation
+    }
+}

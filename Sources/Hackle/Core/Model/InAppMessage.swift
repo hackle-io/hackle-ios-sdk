@@ -127,6 +127,15 @@ extension InAppMessage {
                 self.afterCondition = afterCondition
             }
 
+            func deliverAt(startedAt: Date) -> Date {
+                switch type {
+                case .immediate:
+                    return startedAt
+                case .after:
+                    return startedAt.addingTimeInterval(afterCondition!.duration)
+                }
+            }
+
             class AfterCondition {
                 let duration: TimeInterval
 
