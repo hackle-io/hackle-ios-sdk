@@ -473,6 +473,9 @@
 		EE4D04722E5DCB8F007BE61A /* DefaultInAppMessageTriggerHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04712E5DCB8F007BE61A /* DefaultInAppMessageTriggerHandlerSpecs.swift */; };
 		EE4D04742E5DCB96007BE61A /* MockInAppMessageTriggerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04732E5DCB96007BE61A /* MockInAppMessageTriggerProcessor.swift */; };
 		EE4D04762E5DCB9B007BE61A /* DefaultInAppMessageTriggerProcessorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04752E5DCB9B007BE61A /* DefaultInAppMessageTriggerProcessorSpecs.swift */; };
+		EE4D04792E5DD356007BE61A /* InAppMessageResetProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04782E5DD356007BE61A /* InAppMessageResetProcessor.swift */; };
+		EE4D047C2E5DD402007BE61A /* MockInAppMessageResetProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D047B2E5DD402007BE61A /* MockInAppMessageResetProcessor.swift */; };
+		EE4D047E2E5DD408007BE61A /* DefaultInAppMessageResetProcessorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D047D2E5DD408007BE61A /* DefaultInAppMessageResetProcessorSpecs.swift */; };
 		EE543CC02C08BF1300F64BFA /* ScreenSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */; };
 		EE543CC22C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */; };
 		EE543CC42C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */; };
@@ -1121,6 +1124,9 @@
 		EE4D04712E5DCB8F007BE61A /* DefaultInAppMessageTriggerHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageTriggerHandlerSpecs.swift; sourceTree = "<group>"; };
 		EE4D04732E5DCB96007BE61A /* MockInAppMessageTriggerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageTriggerProcessor.swift; sourceTree = "<group>"; };
 		EE4D04752E5DCB9B007BE61A /* DefaultInAppMessageTriggerProcessorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageTriggerProcessorSpecs.swift; sourceTree = "<group>"; };
+		EE4D04782E5DD356007BE61A /* InAppMessageResetProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageResetProcessor.swift; sourceTree = "<group>"; };
+		EE4D047B2E5DD402007BE61A /* MockInAppMessageResetProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageResetProcessor.swift; sourceTree = "<group>"; };
+		EE4D047D2E5DD408007BE61A /* DefaultInAppMessageResetProcessorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageResetProcessorSpecs.swift; sourceTree = "<group>"; };
 		EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSpecs.swift; sourceTree = "<group>"; };
 		EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenEventTrackerSpecs.swift; sourceTree = "<group>"; };
 		EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreenManagerSpecs.swift; sourceTree = "<group>"; };
@@ -2770,6 +2776,23 @@
 			path = Trigger;
 			sourceTree = "<group>";
 		};
+		EE4D04772E5DD33D007BE61A /* Reset */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D04782E5DD356007BE61A /* InAppMessageResetProcessor.swift */,
+			);
+			path = Reset;
+			sourceTree = "<group>";
+		};
+		EE4D047A2E5DD3F2007BE61A /* Reset */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D047B2E5DD402007BE61A /* MockInAppMessageResetProcessor.swift */,
+				EE4D047D2E5DD408007BE61A /* DefaultInAppMessageResetProcessorSpecs.swift */,
+			);
+			path = Reset;
+			sourceTree = "<group>";
+		};
 		EE543CBE2C08BEF500F64BFA /* Screen */ = {
 			isa = PBXGroup;
 			children = (
@@ -2878,6 +2901,7 @@
 				EE4D03C62E5D58DE007BE61A /* Deliver */,
 				EE4D03962E5C92FE007BE61A /* Present */,
 				EE4D045B2E5DC368007BE61A /* Trigger */,
+				EE4D04772E5DD33D007BE61A /* Reset */,
 				EEA01CB52A3069C400E0C021 /* InAppMessageDeterminer.swift */,
 				EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */,
 				EE80E0122A2DA0CC00FB12CC /* InAppMessageManager.swift */,
@@ -3143,6 +3167,7 @@
 				EE4D03C52E5D58C3007BE61A /* Deliver */,
 				EE4D03AD2E5D414D007BE61A /* Present */,
 				EE4D04662E5DCB61007BE61A /* Trigger */,
+				EE4D047A2E5DD3F2007BE61A /* Reset */,
 				EEF895A52A4A6BA800722CF6 /* DefaultInAppMessageEventMatcherSpecs.swift */,
 				EEF895AB2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift */,
 				EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */,
@@ -3614,6 +3639,7 @@
 				EEA01CC12A36E1DF00E0C021 /* InAppMessageUIStackView.swift in Sources */,
 				B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */,
 				EE29D96D29CD825400B1FEAA /* Objects.swift in Sources */,
+				EE4D04792E5DD356007BE61A /* InAppMessageResetProcessor.swift in Sources */,
 				EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */,
 				B26AC2402E4B305200AAE56F /* InvokeDto.swift in Sources */,
 				EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */,
@@ -3853,6 +3879,7 @@
 				EE4D03C42E5D57FD007BE61A /* DefaultInAppMessageIdentifierCheckerSpecs.swift in Sources */,
 				EE29DAA229CD82C200B1FEAA /* SessionEventTrackerSpecs.swift in Sources */,
 				EE789E2D29F01C3A0088D8A6 /* HackleCoreSpecs.swift in Sources */,
+				EE4D047C2E5DD402007BE61A /* MockInAppMessageResetProcessor.swift in Sources */,
 				EED6A1292A0E2CD500A8875D /* PropertyOperationSpecs.swift in Sources */,
 				EE29DA7929CD82C200B1FEAA /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
 				7E81DA462B452625003258DA /* MockNotificationManager.swift in Sources */,
@@ -3932,6 +3959,7 @@
 				EE29DA6A29CD82C200B1FEAA /* TimeUnitSpecs.swift in Sources */,
 				EE29DA6029CD82C200B1FEAA /* CumulativeTimerSpecs.swift in Sources */,
 				EE29DA3F29CD82C200B1FEAA /* MockModels.swift in Sources */,
+				EE4D047E2E5DD408007BE61A /* DefaultInAppMessageResetProcessorSpecs.swift in Sources */,
 				EE29DA8E29CD82C200B1FEAA /* DefaultActionResolverSpecs.swift in Sources */,
 				7E81DA4B2B455E16003258DA /* NotificationEventSpecs.swift in Sources */,
 				B24234AF2D89122E00878096 /* DatabaseSpecs.swift in Sources */,
