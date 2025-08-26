@@ -53,7 +53,9 @@ class DefaultHackleCore: HackleCore {
         let delegatingEvaluator = DelegatingEvaluator()
         let context = EvaluationContext.shared
         context.initialize(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage, clock: SystemClock.shared)
+
         let flowFactory = DefaultEvaluationFlowFactory(context: context)
+        context.register(flowFactory)
 
         let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
         let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)

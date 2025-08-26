@@ -471,12 +471,7 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let inAppMessageEventMatcher = DefaultInAppMessageEventMatcher(
-            ruleDeterminer: InAppMessageEventTriggerRuleDeterminer(targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!)
-        )
-        let inAppMessageDeterminer = DefaultInAppMessageDeterminer(
-            workspaceFetcher: workspaceManager,
-            eventMatcher: inAppMessageEventMatcher,
+        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
             core: core
         )
         let urlHandler = ApplicationUrlHandler()
@@ -493,20 +488,99 @@ extension HackleApp {
         ])
         let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
             clock: SystemClock.shared,
-            eventTracker: DefaultInAppMessageEventTracker(core: core),
+            eventTracker: inAppMessageEventTracker,
             processorFactory: inAppMessageEventProcessorFactory
         )
-
         let inAppMessageUI = HackleInAppMessageUI(
             eventHandler: inAppMessageEventHandler
         )
+        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
+            evaluator: EvaluationContext.shared.get(Evaluator.self)!
+        )
+        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
+            experimentEvaluator: inAppMessageExperimentEvaluator,
+            selector: InAppMessageLayoutSelector()
+        )
+        let inAppMessagePresentationContextResolver = DefaultInAppMessagePresentationContextResolver(
+            core: core,
+            layoutEvaluator: inAppMessageLayoutEvaluator
+        )
+        let inAppMessageRecorder = DefaultInAppMessageRecorder(
+            storage: inAppMessageImpressionStorage
+        )
+        let inAppMessagePresentProcessor = DefaultInAppMessagePresentProcessor(
+            contextResolver: inAppMessagePresentationContextResolver,
+            presenter: inAppMessageUI,
+            recorder: inAppMessageRecorder
+        )
+
+
+        let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
+        let inAppMessageEligibilityEvaluator = InAppMessageEligibilityEvaluator(
+            evaluationFlowFactory: EvaluationContext.shared.get(EvaluationFlowFactory.self)!
+        )
+        let inAppMessageEvaluator = DefaultInAppMessageEvaluator(
+            core: core,
+            eligibilityEvaluator: inAppMessageEligibilityEvaluator
+        )
+
+        let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
+            clock: SystemClock.shared,
+            scheduler: Schedulers.dispatch()
+        )
+        let inAppMessageDelayManager = DefaultInAppMessageDelayManager(
+            scheduler: inAppMessageDelayScheduler
+        )
+
+        let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
+            workspaceFetcher: workspaceManager,
+            userManager: userManager,
+            identifierChecker: inAppMessageIdentifierChecker,
+            evaluator: inAppMessageEvaluator,
+            presentProcessor: inAppMessagePresentProcessor
+        )
+
+        let inAppMessageSchedulerFactory = DefaultInAppMessageSchedulerFactory(schedulers: [
+            TriggeredInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
+            DelayedInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
+        ])
+
+        let inAppMessageScheduleProcessor = DefaultInAppMessageScheduleProcessor(
+            actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
+            schedulerFactory: inAppMessageSchedulerFactory
+        )
+        inAppMessageDelayScheduler.setListener(listsner: inAppMessageScheduleProcessor)
+
+        let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
+            targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!
+        )
+
+        let inAppMessageTriggerDeterminer = DefaultInAppMessageTriggerDeterminer(
+            workspaceFetcher: workspaceManager,
+            eventMatcher: inAppMessageTriggerEventMatcher,
+            evaluator: inAppMessageEvaluator
+        )
+        let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(
+            scheduleProcessor: inAppMessageScheduleProcessor
+        )
+        let inAppMessageTriggerProcessor = DefaultInAppMessageTriggerProcessor(
+            determiner: inAppMessageTriggerDeterminer,
+            handler: inAppMessageTriggerHandler
+        )
+
+        let inAppMessageResetProcessor = DefaultInAppMessageResetProcessor(
+            identifierChecker: inAppMessageIdentifierChecker,
+            delayManager: inAppMessageDelayManager
+        )
+
         let inAppMessageManager = InAppMessageManager(
-            determiner: inAppMessageDeterminer,
-            presenter: inAppMessageUI
+            triggerProcessor: inAppMessageTriggerProcessor,
+            resetProcessor: inAppMessageResetProcessor
         )
 
         if !inAppMessageDisabled(config: config) {
             eventPublisher.addListener(listener: inAppMessageManager)
+            userManager.addListener(listener: inAppMessageManager)
         }
 
         // - Push

@@ -39,6 +39,7 @@ class EvaluationContext {
         let inAppMessageTargetMatcher = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
         let inAppMessageFrequencyCapMatcher = InAppMessageFrequencyCapMatcher(storage: get(DefaultInAppMessageImpressionStorage.self)!)
 
+        register(evaluator)
         register(bucketer)
         register(targetMatcher)
         register(actionResolver)
