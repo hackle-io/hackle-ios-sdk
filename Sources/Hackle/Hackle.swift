@@ -137,7 +137,7 @@ extension Hackle {
         request: UNNotificationRequest,
         contentHandler: @escaping (UNNotificationContent) -> Void
     ) -> Bool {
-        guard let baseNotificationContent: UNMutableNotificationContent = (request.content as? UNMutableNotificationContent) else {
+        guard let baseNotificationContent: UNMutableNotificationContent = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
             return false
         }
         
@@ -161,7 +161,7 @@ extension Hackle {
         request: UNNotificationRequest,
         completion: @escaping (UNMutableNotificationContent) -> Void
     ) -> Bool {
-        guard let baseNotificationContent: UNMutableNotificationContent = (request.content as? UNMutableNotificationContent) else {
+        guard let baseNotificationContent: UNMutableNotificationContent = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
             return false
         }
         
