@@ -437,6 +437,16 @@
 		EE4D041B2E5D7C1B007BE61A /* DefaultInAppMessageScheduleActionDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D041A2E5D7C1B007BE61A /* DefaultInAppMessageScheduleActionDeterminerSpecs.swift */; };
 		EE4D04212E5D817B007BE61A /* InAppMessageScheduleSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04202E5D817B007BE61A /* InAppMessageScheduleSpecs.swift */; };
 		EE4D04232E5D8185007BE61A /* InAppMessageScheduleRequestSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04222E5D8185007BE61A /* InAppMessageScheduleRequestSpecs.swift */; };
+		EE4D04292E5D8A17007BE61A /* InAppMessageDelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04282E5D8A17007BE61A /* InAppMessageDelay.swift */; };
+		EE4D042B2E5D8A1F007BE61A /* InAppMessageDelayTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D042A2E5D8A1F007BE61A /* InAppMessageDelayTask.swift */; };
+		EE4D042D2E5D8A26007BE61A /* InAppMessageDelayScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D042C2E5D8A26007BE61A /* InAppMessageDelayScheduler.swift */; };
+		EE4D042F2E5D8A2A007BE61A /* InAppMessageDelayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D042E2E5D8A2A007BE61A /* InAppMessageDelayManager.swift */; };
+		EE4D04312E5D8B0B007BE61A /* InAppMessageScheduleListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04302E5D8B0B007BE61A /* InAppMessageScheduleListener.swift */; };
+		EE4D04332E5D8C63007BE61A /* MockInAppMessageScheduleListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04322E5D8C63007BE61A /* MockInAppMessageScheduleListener.swift */; };
+		EE4D04362E5D8CB9007BE61A /* MockInAppMessageDelayScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04352E5D8CB9007BE61A /* MockInAppMessageDelayScheduler.swift */; };
+		EE4D04382E5D8CBF007BE61A /* DefaultInAppMessageDelaySchedulerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04372E5D8CBF007BE61A /* DefaultInAppMessageDelaySchedulerSpecs.swift */; };
+		EE4D043A2E5D9A64007BE61A /* MockInAppMessageDelayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D04392E5D9A64007BE61A /* MockInAppMessageDelayManager.swift */; };
+		EE4D043C2E5D9A7C007BE61A /* DefaultInAppMessageDelayManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D043B2E5D9A7C007BE61A /* DefaultInAppMessageDelayManagerSpecs.swift */; };
 		EE543CC02C08BF1300F64BFA /* ScreenSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */; };
 		EE543CC22C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */; };
 		EE543CC42C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */; };
@@ -1049,6 +1059,16 @@
 		EE4D041A2E5D7C1B007BE61A /* DefaultInAppMessageScheduleActionDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageScheduleActionDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EE4D04202E5D817B007BE61A /* InAppMessageScheduleSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageScheduleSpecs.swift; sourceTree = "<group>"; };
 		EE4D04222E5D8185007BE61A /* InAppMessageScheduleRequestSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageScheduleRequestSpecs.swift; sourceTree = "<group>"; };
+		EE4D04282E5D8A17007BE61A /* InAppMessageDelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageDelay.swift; sourceTree = "<group>"; };
+		EE4D042A2E5D8A1F007BE61A /* InAppMessageDelayTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageDelayTask.swift; sourceTree = "<group>"; };
+		EE4D042C2E5D8A26007BE61A /* InAppMessageDelayScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageDelayScheduler.swift; sourceTree = "<group>"; };
+		EE4D042E2E5D8A2A007BE61A /* InAppMessageDelayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageDelayManager.swift; sourceTree = "<group>"; };
+		EE4D04302E5D8B0B007BE61A /* InAppMessageScheduleListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageScheduleListener.swift; sourceTree = "<group>"; };
+		EE4D04322E5D8C63007BE61A /* MockInAppMessageScheduleListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageScheduleListener.swift; sourceTree = "<group>"; };
+		EE4D04352E5D8CB9007BE61A /* MockInAppMessageDelayScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageDelayScheduler.swift; sourceTree = "<group>"; };
+		EE4D04372E5D8CBF007BE61A /* DefaultInAppMessageDelaySchedulerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageDelaySchedulerSpecs.swift; sourceTree = "<group>"; };
+		EE4D04392E5D9A64007BE61A /* MockInAppMessageDelayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageDelayManager.swift; sourceTree = "<group>"; };
+		EE4D043B2E5D9A7C007BE61A /* DefaultInAppMessageDelayManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageDelayManagerSpecs.swift; sourceTree = "<group>"; };
 		EE543CBF2C08BF1300F64BFA /* ScreenSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSpecs.swift; sourceTree = "<group>"; };
 		EE543CC12C08BF2400F64BFA /* ScreenEventTrackerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenEventTrackerSpecs.swift; sourceTree = "<group>"; };
 		EE543CC32C08BF3000F64BFA /* DefaultScreenManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreenManagerSpecs.swift; sourceTree = "<group>"; };
@@ -2586,6 +2606,7 @@
 				EE4D03F92E5D7650007BE61A /* InAppMessageSchedule.swift */,
 				EE4D03FB2E5D7658007BE61A /* InAppMessageScheduleType.swift */,
 				EE4D03FF2E5D7661007BE61A /* InAppMessageScheduleRequest.swift */,
+				EE4D04302E5D8B0B007BE61A /* InAppMessageScheduleListener.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -2605,6 +2626,7 @@
 				EE4D04172E5D7C08007BE61A /* Action */,
 				EE4D04202E5D817B007BE61A /* InAppMessageScheduleSpecs.swift */,
 				EE4D04222E5D8185007BE61A /* InAppMessageScheduleRequestSpecs.swift */,
+				EE4D04322E5D8C63007BE61A /* MockInAppMessageScheduleListener.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -2616,6 +2638,28 @@
 				EE4D041A2E5D7C1B007BE61A /* DefaultInAppMessageScheduleActionDeterminerSpecs.swift */,
 			);
 			path = Action;
+			sourceTree = "<group>";
+		};
+		EE4D04272E5D8A0B007BE61A /* Delay */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D04282E5D8A17007BE61A /* InAppMessageDelay.swift */,
+				EE4D042A2E5D8A1F007BE61A /* InAppMessageDelayTask.swift */,
+				EE4D042C2E5D8A26007BE61A /* InAppMessageDelayScheduler.swift */,
+				EE4D042E2E5D8A2A007BE61A /* InAppMessageDelayManager.swift */,
+			);
+			path = Delay;
+			sourceTree = "<group>";
+		};
+		EE4D04342E5D8C68007BE61A /* Delay */ = {
+			isa = PBXGroup;
+			children = (
+				EE4D04352E5D8CB9007BE61A /* MockInAppMessageDelayScheduler.swift */,
+				EE4D04372E5D8CBF007BE61A /* DefaultInAppMessageDelaySchedulerSpecs.swift */,
+				EE4D04392E5D9A64007BE61A /* MockInAppMessageDelayManager.swift */,
+				EE4D043B2E5D9A7C007BE61A /* DefaultInAppMessageDelayManagerSpecs.swift */,
+			);
+			path = Delay;
 			sourceTree = "<group>";
 		};
 		EE543CBE2C08BEF500F64BFA /* Screen */ = {
@@ -2721,6 +2765,7 @@
 			isa = PBXGroup;
 			children = (
 				EE4D03A02E5C942A007BE61A /* Evaluation */,
+				EE4D04272E5D8A0B007BE61A /* Delay */,
 				EE4D03F82E5D7648007BE61A /* Schedule */,
 				EE4D03C62E5D58DE007BE61A /* Deliver */,
 				EE4D03962E5C92FE007BE61A /* Present */,
@@ -2984,6 +3029,7 @@
 			isa = PBXGroup;
 			children = (
 				EE4D03A82E5C9E86007BE61A /* Evaluation */,
+				EE4D04342E5D8C68007BE61A /* Delay */,
 				EE4D04162E5D7BFE007BE61A /* Schedule */,
 				EE4D03C52E5D58C3007BE61A /* Deliver */,
 				EE4D03AD2E5D414D007BE61A /* Present */,
@@ -3330,6 +3376,7 @@
 				EE929D8D2BFFACD7003B7596 /* DedupUserEventFilter.swift in Sources */,
 				EE29D99429CD825400B1FEAA /* OperatorMatcher.swift in Sources */,
 				EE60C0A32C37B13300830F0A /* Updated.swift in Sources */,
+				EE4D042D2E5D8A26007BE61A /* InAppMessageDelayScheduler.swift in Sources */,
 				EE29D99A29CD825500B1FEAA /* ContainerResolver.swift in Sources */,
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
 				EE29D94629CD825400B1FEAA /* FlushMetric.swift in Sources */,
@@ -3405,6 +3452,7 @@
 				7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */,
 				EEA7FCAF2C04AB380004F858 /* ScreenListener.swift in Sources */,
 				EE29D95C29CD825400B1FEAA /* KeyValueRepository.swift in Sources */,
+				EE4D042F2E5D8A2A007BE61A /* InAppMessageDelayManager.swift in Sources */,
 				EE29D98929CD825400B1FEAA /* Experiment.swift in Sources */,
 				EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */,
 				EE6728202C50BE7000167355 /* InAppMessageUIBottomSheetView.swift in Sources */,
@@ -3421,6 +3469,7 @@
 				EE29D97E29CD825400B1FEAA /* HttpClient.swift in Sources */,
 				7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */,
 				B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */,
+				EE4D04292E5D8A17007BE61A /* InAppMessageDelay.swift in Sources */,
 				EE29D96B29CD825400B1FEAA /* UserListener.swift in Sources */,
 				EE3C165B29D43234008177F6 /* HackleFeatureFlagTableViewCell.swift in Sources */,
 				EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */,
@@ -3487,6 +3536,7 @@
 				EEA7FCB72C04AB510004F858 /* EngagementManager.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
 				7E9DDE022B31A049006ACFDA /* NotificationEvent.swift in Sources */,
+				EE4D04312E5D8B0B007BE61A /* InAppMessageScheduleListener.swift in Sources */,
 				7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */,
 				EE4D039F2E5C93F2007BE61A /* InAppMessagePresentProcessor.swift in Sources */,
 				EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */,
@@ -3524,6 +3574,7 @@
 				7E9DDDFD2B31865A006ACFDA /* NotificationDataReceiver.swift in Sources */,
 				B2A88D882E209F3D00475B73 /* UserEventBackoffController.swift in Sources */,
 				EE4D03FA2E5D7650007BE61A /* InAppMessageSchedule.swift in Sources */,
+				EE4D042B2E5D8A1F007BE61A /* InAppMessageDelayTask.swift in Sources */,
 				EEAC3F332B9D54ED00DC498E /* PushTokenListener.swift in Sources */,
 				EE29D97C29CD825400B1FEAA /* HttpRequest.swift in Sources */,
 			);
@@ -3581,6 +3632,7 @@
 				EEDC58762ACBD82E001E73DB /* PollingSynchronizerSpecs.swift in Sources */,
 				EE29DA8629CD82C200B1FEAA /* MockExperimentTargetDeterminer.swift in Sources */,
 				EE543CC02C08BF1300F64BFA /* ScreenSpecs.swift in Sources */,
+				EE4D04362E5D8CB9007BE61A /* MockInAppMessageDelayScheduler.swift in Sources */,
 				EE29DA4029CD82C200B1FEAA /* MockUserEvent.swift in Sources */,
 				EE29DA5429CD82C200B1FEAA /* FlushTimerSpecs.swift in Sources */,
 				EE29DA9C29CD82C200B1FEAA /* ExposureEventDedupDeterminerSpec.swift in Sources */,
@@ -3622,6 +3674,8 @@
 				EE29DA6429CD82C200B1FEAA /* WorkspaceSpecs.swift in Sources */,
 				B2A88D8E2E20DC4D00475B73 /* SQLiteEventRepositorySpec.swift in Sources */,
 				EE29DA5829CD82C200B1FEAA /* DelegatingMetricRegistrySpecs.swift in Sources */,
+				EE4D043C2E5D9A7C007BE61A /* DefaultInAppMessageDelayManagerSpecs.swift in Sources */,
+				EE4D04332E5D8C63007BE61A /* MockInAppMessageScheduleListener.swift in Sources */,
 				EE29DA9929CD82C200B1FEAA /* DefaultEvaluationFlowFactorySpecs.swift in Sources */,
 				EE29DA7129CD82C200B1FEAA /* MockValueOperatorMatcher.swift in Sources */,
 				EE789E4429F102510088D8A6 /* DefaultUserEventFactorySpecs.swift in Sources */,
@@ -3674,6 +3728,7 @@
 				EE29DA7929CD82C200B1FEAA /* DefaultValueOperatorMatcherSpecs.swift in Sources */,
 				7E81DA462B452625003258DA /* MockNotificationManager.swift in Sources */,
 				EE4D03B62E5D423A007BE61A /* DefaultInAppMessagePresentationContextResolverSpecs.swift in Sources */,
+				EE4D04382E5D8CBF007BE61A /* DefaultInAppMessageDelaySchedulerSpecs.swift in Sources */,
 				EE789E4829F107710088D8A6 /* MockExperimentMatcher.swift in Sources */,
 				EE4D03CE2E5D6C3F007BE61A /* MockInAppMessageDeliverProcessor.swift in Sources */,
 				EE29DA6C29CD82C200B1FEAA /* DispatchQueueExtensions.swift in Sources */,
@@ -3684,6 +3739,7 @@
 				EE5A78E32ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift in Sources */,
 				B29C535A2DCB2621001724B2 /* NotificationHandlerSpecs.swift in Sources */,
 				EE29DA6929CD82C200B1FEAA /* DefaultHackleCoreSpecs.swift in Sources */,
+				EE4D043A2E5D9A64007BE61A /* MockInAppMessageDelayManager.swift in Sources */,
 				EE4D03B42E5D4234007BE61A /* MockInAppMessagePresentationContextResolver.swift in Sources */,
 				B290E65C2D55D5D600F68D35 /* MockUserTargetFetcher.swift in Sources */,
 				EEDC587A2ACBD90E001E73DB /* MockSynchronizer.swift in Sources */,
