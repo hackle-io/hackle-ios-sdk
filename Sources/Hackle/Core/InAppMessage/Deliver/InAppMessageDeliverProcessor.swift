@@ -1,7 +1,7 @@
 import Foundation
 
 protocol InAppMessageDeliverProcessor {
-    func process(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse
+    func process(request: InAppMessageDeliverRequest) -> InAppMessageDeliverResponse
 }
 
 class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
@@ -26,7 +26,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         self.presentProcessor = presentProcessor
     }
 
-    func process(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse {
+    func process(request: InAppMessageDeliverRequest) -> InAppMessageDeliverResponse {
         Log.debug("InAppMessage Deliver Request: \(request)")
 
         do {

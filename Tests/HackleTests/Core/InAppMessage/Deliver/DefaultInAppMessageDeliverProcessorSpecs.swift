@@ -35,7 +35,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(workspaceFetcher.fetchMock).returns(nil)
 
             // when
-            let actual = try sut.process(request: request)
+            let actual = sut.process(request: request)
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
@@ -48,7 +48,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(workspaceFetcher.fetchMock).returns(workspace)
 
             // when
-            let actual = try sut.process(request: request)
+            let actual = sut.process(request: request)
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.inAppMessageNotFound
@@ -63,7 +63,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(identifierChecker.isIdentifierChangedMock).returns(true)
 
             // when
-            let actual = try sut.process(request: request)
+            let actual = sut.process(request: request)
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.identifierChanged
@@ -83,7 +83,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(evaluator.evaluateMock).returns(InAppMessageEvaluation(isEligible: false, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET))
 
             // when
-            let actual = try sut.process(request: request)
+            let actual = sut.process(request: request)
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
@@ -108,7 +108,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(presentProcessor.processMock).returns(presentResponse)
 
             // when
-            let actual = try sut.process(request: request)
+            let actual = sut.process(request: request)
 
             // then
             expect(actual.dispatchId) == "111"
@@ -137,7 +137,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             }
 
             // when
-            let actual = try sut.process(request: request)
+            let actual = sut.process(request: request)
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.exception
