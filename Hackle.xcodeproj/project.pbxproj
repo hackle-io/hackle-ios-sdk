@@ -2793,6 +2793,24 @@
 			path = Reset;
 			sourceTree = "<group>";
 		};
+		EE4D047F2E5DD5D7007BE61A /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */,
+				EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		EE4D04802E5DD62C007BE61A /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				EEF895AB2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift */,
+				EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		EE543CBE2C08BEF500F64BFA /* Screen */ = {
 			isa = PBXGroup;
 			children = (
@@ -2895,6 +2913,7 @@
 		EE80E0112A2DA0A700FB12CC /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
+				EE4D047F2E5DD5D7007BE61A /* Storage */,
 				EE4D03A02E5C942A007BE61A /* Evaluation */,
 				EE4D04272E5D8A0B007BE61A /* Delay */,
 				EE4D03F82E5D7648007BE61A /* Schedule */,
@@ -2903,9 +2922,7 @@
 				EE4D045B2E5DC368007BE61A /* Trigger */,
 				EE4D04772E5DD33D007BE61A /* Reset */,
 				EEA01CB52A3069C400E0C021 /* InAppMessageDeterminer.swift */,
-				EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */,
 				EE80E0122A2DA0CC00FB12CC /* InAppMessageManager.swift */,
-				EE0F34152A6795E9009DE640 /* InAppMessageImpression.swift */,
 				EE0F34172A681207009DE640 /* InAppMessageEventMatcher.swift */,
 				EEB2E62F2A698515001FBFFF /* InAppMessageEventTriggerDeterminer.swift */,
 			);
@@ -3161,6 +3178,7 @@
 		EEF8959A2A49B81100722CF6 /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
+				EE4D04802E5DD62C007BE61A /* Storage */,
 				EE4D03A82E5C9E86007BE61A /* Evaluation */,
 				EE4D04342E5D8C68007BE61A /* Delay */,
 				EE4D04162E5D7BFE007BE61A /* Schedule */,
@@ -3169,8 +3187,6 @@
 				EE4D04662E5DCB61007BE61A /* Trigger */,
 				EE4D047A2E5DD3F2007BE61A /* Reset */,
 				EEF895A52A4A6BA800722CF6 /* DefaultInAppMessageEventMatcherSpecs.swift */,
-				EEF895AB2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift */,
-				EEB2E62D2A696549001FBFFF /* DefaultInAppMessageImpressionStorageSpecs.swift */,
 				EEF8959D2A49BB9A00722CF6 /* InAppMessageEventMatcherStub.swift */,
 				EEB2E62B2A6932BE001FBFFF /* InAppMessageEventTriggerDeterminerSpecs.swift */,
 				EEF895AD2A4A9B6600722CF6 /* InAppMessageManagerSpecs.swift */,
