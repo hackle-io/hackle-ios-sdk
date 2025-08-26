@@ -292,4 +292,27 @@ extension InAppMessage {
             context: context
         )
     }
+
+    static func deliverRequest(
+        dispatchId: String = UUID().uuidString,
+        inAppMessageKey: InAppMessage.Key = 1,
+        identifiers: Identifiers = [
+            IdentifierType.device.rawValue: "device_id"
+        ],
+        requestedAt: Date = Date(),
+        evaluation: InAppMessageEvaluation = InAppMessageEvaluation(
+            isEligible: true,
+            reason: DecisionReason.IN_APP_MESSAGE_TARGET
+        ),
+        properties: [String: Any] = [:]
+    ) -> InAppMessageDeliverRequest {
+        return InAppMessageDeliverRequest(
+            dispatchId: dispatchId,
+            inAppMessageKey: inAppMessageKey,
+            identifiers: identifiers,
+            requestedAt: requestedAt,
+            evaluation: evaluation,
+            properties: properties
+        )
+    }
 }

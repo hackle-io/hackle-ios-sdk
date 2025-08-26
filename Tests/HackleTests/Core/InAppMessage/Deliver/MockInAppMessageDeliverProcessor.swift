@@ -2,11 +2,10 @@ import Foundation
 import Mockery
 @testable import Hackle
 
-class MockInAppMessagePresentProcessor: Mock, InAppMessagePresentProcessor {
-
+class MockInAppMessageDeliverProcessor: Mock, InAppMessageDeliverProcessor {
     lazy var processMock = MockFunction.throwable(self, process)
 
-    func process(request: InAppMessagePresentRequest) throws -> InAppMessagePresentResponse {
+    func process(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse {
         return try call(processMock, args: request)
     }
 }

@@ -3,9 +3,9 @@ import Mockery
 @testable import Hackle
 
 class MockInAppMessageEvaluator: Mock, InAppMessageEvaluator {
-    lazy var evaluateMock = MockFunction(self, evaluate)
+    lazy var evaluateMock = MockFunction.throwable(self, evaluate)
 
     func evaluate(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser, timestamp: Date) throws -> InAppMessageEvaluation {
-        return call(evaluateMock, args: (workspace, inAppMessage, user, timestamp))
+        return try call(evaluateMock, args: (workspace, inAppMessage, user, timestamp))
     }
 }
