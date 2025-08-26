@@ -37,7 +37,7 @@ class DefaultInAppMessagePresentationContextResolverSpecs: QuickSpec {
             every(core.evaluateMock).returns(evaluation)
 
             // when
-            let actual = try sut.resolve(requset: request)
+            let actual = try sut.resolve(request: request)
 
             // then
             expect(actual.dispatchId) == "111"

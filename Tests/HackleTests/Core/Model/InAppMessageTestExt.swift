@@ -357,4 +357,18 @@ extension InAppMessage {
             requestedAt: requetedAt
         )
     }
+
+    static func deliverResponse(
+        dispatchId: String = UUID().uuidString,
+        inAppMessageKey: InAppMessage.Key = 1,
+        code: InAppMessageDeliverResponse.Code = .present,
+        presentResponse: InAppMessagePresentResponse? = nil
+    ) -> InAppMessageDeliverResponse {
+        return InAppMessageDeliverResponse(
+            dispatchId: dispatchId,
+            inAppMessageKey: inAppMessageKey,
+            code: code,
+            presentResponse: presentResponse
+        )
+    }
 }

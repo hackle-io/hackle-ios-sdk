@@ -70,7 +70,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
             return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
         }
 
-        let presentRequest = InAppMessagePresentRequest.of(requset: request, workspace: workspace, inAppMessage: inAppMessage, user: user, evaluation: evaluation)
+        let presentRequest = InAppMessagePresentRequest.of(request: request, workspace: workspace, inAppMessage: inAppMessage, user: user, evaluation: evaluation)
         let presentResponse = try presentProcessor.process(request: presentRequest)
 
         return InAppMessageDeliverResponse.of(request: request, code: .present, presentResponse: presentResponse)

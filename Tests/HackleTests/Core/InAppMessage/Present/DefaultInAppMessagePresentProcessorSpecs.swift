@@ -24,14 +24,14 @@ class DefaultInAppMessagePresentProcessorSpecs: QuickSpec {
 
         it("process") {
             // given
-            let requset = InAppMessage.presentRequest(
+            let request = InAppMessage.presentRequest(
                 dispatchId: "111"
             )
             let context = InAppMessage.context()
             every(contextResolver.resolveMock).returns(context)
 
             // when
-            let actual = try sut.process(request: requset)
+            let actual = try sut.process(request: request)
 
             // then
             expect(actual.dispatchId) == "111"

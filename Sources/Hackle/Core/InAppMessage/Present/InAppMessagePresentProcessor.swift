@@ -19,16 +19,16 @@ class DefaultInAppMessagePresentProcessor: InAppMessagePresentProcessor {
     func process(request: InAppMessagePresentRequest) throws -> InAppMessagePresentResponse {
         Log.debug("InAppMessage Present Request: \(request)")
 
-        let response = try present(requset: request)
+        let response = try present(request: request)
         recorder.record(request: request, response: response)
 
         Log.debug("InAppMessage Present Response: \(response)")
         return response
     }
 
-    private func present(requset: InAppMessagePresentRequest) throws -> InAppMessagePresentResponse {
-        let context = try contextResolver.resolve(requset: requset)
+    private func present(request: InAppMessagePresentRequest) throws -> InAppMessagePresentResponse {
+        let context = try contextResolver.resolve(request: request)
         presenter.present(context: context)
-        return InAppMessagePresentResponse.of(request: requset, context: context)
+        return InAppMessagePresentResponse.of(request: request, context: context)
     }
 }

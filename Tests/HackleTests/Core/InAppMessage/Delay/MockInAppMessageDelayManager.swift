@@ -16,7 +16,7 @@ class MockInAppMessageDelayManager: Mock, InAppMessageDelayManager {
         return try call(delayMock, args: request)
     }
 
-    lazy var deleteMock = MockFunction(self, delay)
+    lazy var deleteMock = MockFunction(self, delete)
 
     func delete(request: InAppMessageScheduleRequest) -> InAppMessageDelay? {
         return call(deleteMock, args: request)
