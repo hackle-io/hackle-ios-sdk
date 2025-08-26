@@ -36,7 +36,7 @@ class DefaultInAppMessageDelayManager: InAppMessageDelayManager {
             tasks[delay.schedule.dispatchId] = task
         }
 
-        Log.debug("InAppMessage Delay started. dispatchId: \(request.schedule.dispatchId)")
+        Log.debug("InAppMessage Delay started. dispatchId: \(request.schedule.dispatchId), delay: \(delay.delay) s")
         return delay
     }
 

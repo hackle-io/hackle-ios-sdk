@@ -14,6 +14,6 @@ class InAppMessageTrigger {
 
 extension InAppMessageTrigger: CustomStringConvertible {
     var description: String {
-        "InAppMessageTrigger(inAppMessage: \(inAppMessage), evaluation: \(evaluation), insertId: \(event.insertId), timestamp: \(event.timestamp), user: \(event.user.identifiers), event=\(event.event.key)"
+        "InAppMessageTrigger(inAppMessage: \(inAppMessage), evaluation: \(evaluation), insertId: \(event.insertId), timestamp: \(event.timestamp), user: \(event.user.identifiers), event=\(event.event.key))"
     }
 }
