@@ -11,7 +11,7 @@ import WebKit
     private let sdk: Sdk
     private let mode: HackleAppMode
     private let hackleInvocator: HackleInvocator
-    
+
     init(
         hackleAppCore: HackleAppCore,
         mode: HackleAppMode,
@@ -103,16 +103,16 @@ import WebKit
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default, completion: completion)
     }
-    
+
     @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updatePushSubscriptions(operations: operations, hackleAppContext: .default)
     }
-    
+
     @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
-    
+
     @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .default)
     }
@@ -132,15 +132,15 @@ import WebKit
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default, completion: completion)
     }
-    
+
     @objc public func unsetPhoneNumber() {
         unsetPhoneNumber(completion: {})
     }
-    
+
     @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
         hackleAppCore.unsetPhoneNumber(hackleAppContext: .default, completion: completion)
     }
-    
+
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
         variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
     }
@@ -160,7 +160,7 @@ import WebKit
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
         hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .default)
     }
-    
+
     @objc public func track(eventKey: String) {
         track(event: Hackle.event(key: eventKey))
     }
@@ -176,7 +176,7 @@ import WebKit
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
     }
-    
+
     @objc public func invocator() -> HackleInvocator {
         return hackleInvocator
     }
@@ -262,7 +262,7 @@ import WebKit
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: user)
     }
-    
+
     @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
     @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
@@ -391,7 +391,7 @@ extension HackleApp {
         ])
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
-        
+
         let sessionUserEventDecorator = SessionUserEventDecorator(sessionManager: sessionManager)
         eventDecorators.append(sessionUserEventDecorator)
 
@@ -399,7 +399,7 @@ extension HackleApp {
             eventFilters.append(WebViewWrapperUserEventFilter())
             eventDecorators.append(WebViewWrapperUserEventDecorator())
         }
-        
+
         let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
 
         let eventProcessor = DefaultUserEventProcessor(
@@ -487,7 +487,7 @@ extension HackleApp {
             InAppMessageHiddenActionHandler(clock: SystemClock.shared, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
-            InAppMessageImpressionEventProcessor(impressionStorage: inAppMessageImpressionStorage),
+            InAppMessageImpressionEventProcessor(),
             InAppMessageActionEventProcessor(actionHandlerFactory: inAppMessageActionHandlerFactory),
             InAppMessageCloseEventProcessor()
         ])
@@ -573,7 +573,7 @@ extension HackleApp {
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
-            
+
         let hackleAppCore = DefaultHackleAppCore(
             core: core,
             eventQueue: eventQueue,
@@ -592,7 +592,7 @@ extension HackleApp {
             userExplorer: userExplorer
         )
         let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
-        
+
         return HackleApp(
             hackleAppCore: hackleAppCore,
             mode: config.mode,
@@ -603,7 +603,7 @@ extension HackleApp {
 
     private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
         if let disableInAppMessage = config.extra["$disable_inappmessage"],
-            disableInAppMessage == "true" {
+           disableInAppMessage == "true" {
             return true
         }
 

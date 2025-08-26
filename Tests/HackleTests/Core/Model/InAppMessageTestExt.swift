@@ -243,18 +243,53 @@ extension InAppMessage {
     }
 
     static func context(
+        dispatchId: String = UUID().uuidString,
         inAppMessage: InAppMessage = .create(),
         message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        properties: [String: Any] = [:],
-        decisionReason: String = DecisionReason.DEFAULT_RULE
+        decisionReason: String = DecisionReason.DEFAULT_RULE,
+        properties: [String: Any] = [:]
     ) -> InAppMessagePresentationContext {
-        InAppMessagePresentationContext(
+        return InAppMessagePresentationContext(
+            dispatchId: dispatchId,
             inAppMessage: inAppMessage,
             message: message,
             user: user,
-            properties: properties,
-            decisionReasion: decisionReason
+            decisionReasion: decisionReason,
+            properties: properties
+        )
+    }
+
+    static func presentRequest(
+        dispatchId: String = UUID().uuidString,
+        workspace: Workspace = WorkspaceEntity.create(),
+        inAppMessage: InAppMessage = InAppMessage.create(),
+        user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
+        requestedAt: Date = Date(),
+        evaluation: InAppMessageEvaluation = InAppMessageEvaluation(
+            isEligible: true,
+            reason: DecisionReason.IN_APP_MESSAGE_TARGET
+        ),
+        properties: [String: Any] = [:]
+    ) -> InAppMessagePresentRequest {
+        return InAppMessagePresentRequest(
+            dispatchId: dispatchId,
+            workspace: workspace,
+            inAppMessage: inAppMessage,
+            user: user,
+            requestedAt: requestedAt,
+            evaluation: evaluation,
+            properties: properties
+        )
+    }
+
+    static func presentResponse(
+        dispatchId: String = UUID().uuidString,
+        context: InAppMessagePresentationContext = InAppMessage.context()
+    ) -> InAppMessagePresentResponse {
+        return InAppMessagePresentResponse(
+            dispatchId: dispatchId,
+            context: context
         )
     }
 }

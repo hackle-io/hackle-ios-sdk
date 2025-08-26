@@ -21,7 +21,9 @@ class InAppMessageLayoutEvaluation: EvaluatorEvaluation {
         self.message = message
         self.properties = properties
     }
+}
 
+extension InAppMessageLayoutEvaluation {
     static func of(
         request: InAppMessageLayoutRequest,
         context: EvaluatorContext,

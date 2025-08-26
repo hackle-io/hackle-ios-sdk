@@ -478,7 +478,12 @@ extension InAppMessage {
     }
 }
 
-extension InAppMessage {
+extension InAppMessage: CustomStringConvertible {
+
+    var description: String {
+        return "InAppMessage(id: \(id), key: \(key), status: \(status))"
+    }
+
     func supports(platform: PlatformType) -> Bool {
         messageContext.platformTypes.contains(platform)
     }
