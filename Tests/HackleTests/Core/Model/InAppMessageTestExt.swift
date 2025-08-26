@@ -315,4 +315,46 @@ extension InAppMessage {
             properties: properties
         )
     }
+
+    static func schedule(
+        dispatchId: String = UUID().uuidString,
+        inAppMessageKey: InAppMessage.Key = 1,
+        identifiers: Identifiers = [
+            IdentifierType.device.rawValue: "device_id"
+        ],
+        time: InAppMessageSchedule.Time = InAppMessageSchedule.Time(
+            startedAt: Date(),
+            deliverAt: Date()
+        ),
+        evaluation: InAppMessageEvaluation = InAppMessageEvaluation(
+            isEligible: true,
+            reason: DecisionReason.IN_APP_MESSAGE_TARGET
+        ),
+        eventBasedContext: InAppMessageSchedule.EventBasedContext =
+            InAppMessageSchedule.EventBasedContext(
+                insertId: UUID().uuidString,
+                event: HackleEventBuilder(key: "test").build()
+            )
+    ) -> InAppMessageSchedule {
+        return InAppMessageSchedule(
+            dispatchId: dispatchId,
+            inAppMessageKey: inAppMessageKey,
+            identifiers: identifiers,
+            time: time,
+            evaluation: evaluation,
+            eventBasedContext: eventBasedContext
+        )
+    }
+
+    static func scheduleRequest(
+        schedule: InAppMessageSchedule = schedule(),
+        scheduleType: InAppMessageScheduleType = .triggered,
+        requetedAt: Date = Date()
+    ) -> InAppMessageScheduleRequest {
+        return InAppMessageScheduleRequest(
+            schedule: schedule,
+            scheduleType: scheduleType,
+            requestedAt: requetedAt
+        )
+    }
 }
