@@ -132,6 +132,61 @@ extension Hackle {
         
         return notificationData
     }
+    
+    @objc static public func handleRichNotification(
+        request: UNNotificationRequest,
+        contentHandler: @escaping (UNNotificationContent) -> Void
+    ) -> Bool {
+        guard let baseNotificationContent: UNMutableNotificationContent = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
+            return false
+        }
+        
+        return handleRichNotification(notificationContent: baseNotificationContent, contentHandler: contentHandler)
+    }
+    
+    @objc static public func handleRichNotification(
+        notificationContent: UNMutableNotificationContent,
+        contentHandler: @escaping (UNNotificationContent) -> Void
+    ) -> Bool {
+        guard let notificationData = NotificationData.from(data: notificationContent.userInfo) else {
+            return false
+        }
+        
+        return resolveRichNotificationContent(notificationContent: notificationContent, completion: { hackleNotificationContent in
+            contentHandler(hackleNotificationContent)
+        })
+    }
+    
+    @objc static public func resolveRichNotificationContent(
+        request: UNNotificationRequest,
+        completion: @escaping (UNMutableNotificationContent) -> Void
+    ) -> Bool {
+        guard let baseNotificationContent: UNMutableNotificationContent = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
+            return false
+        }
+        
+        return resolveRichNotificationContent(notificationContent: baseNotificationContent, completion: completion)
+    }
+    
+    @objc static public func resolveRichNotificationContent(
+        notificationContent: UNMutableNotificationContent,
+        completion: @escaping (UNMutableNotificationContent) -> Void
+    ) -> Bool {
+        guard let notificationData = NotificationData.from(data: notificationContent.userInfo) else {
+            return false
+        }
+        
+        // NOTE: use dispatch group when add another attachment, and etc...
+        NotificationHandler.shared.handlePushImage(notificationData: notificationData) { attachment in
+            if let attachment = attachment {
+                notificationContent.attachments = [attachment]
+            }
+            
+            completion(notificationContent)
+        }
+        
+        return true
+    }
 
     @available(*, deprecated, message: "Use handleClickNotification(UNNotificationResponse, Bool) instead.")
     @objc static public func userNotificationCenter(
@@ -144,21 +199,5 @@ extension Hackle {
         }
         completionHandler()
         return true
-    }
-}
-
-extension Hackle {
-    @objc static public func populateNotificationContent(
-        request: UNNotificationRequest,
-        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
-    ) -> Bool {
-        if let bestAttemptContent = request.content.mutableCopy() as? UNMutableNotificationContent,
-           let attachment = request.attachment {
-            bestAttemptContent.attachments = [attachment]
-            contentHandler(bestAttemptContent)
-            return true
-        } else {
-            return false
-        }
     }
 }
