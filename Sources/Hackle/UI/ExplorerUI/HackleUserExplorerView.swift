@@ -10,8 +10,12 @@ import UIKit
 
 
 class HackleUserExplorerView {
-
+    private let hackleUserExplorer: HackleUserExplorer
     private var button: HackleUserExplorerButton? = nil
+    
+    init(hackleUserExplorer: HackleUserExplorer) {
+        self.hackleUserExplorer = hackleUserExplorer
+    }
 
     func attach() {
         DispatchQueue.main.async { [weak self] in
@@ -38,7 +42,7 @@ class HackleUserExplorerView {
 
     func detach() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self, let window = UIUtils.keyWindow else {
+            guard let self = self, let _ = UIUtils.keyWindow else {
                 return
             }
 
@@ -96,6 +100,7 @@ class HackleUserExplorerView {
                 return
             }
             let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
+            hackleUserExplorerViewController.setHackleUserExplorer(hackleUserExplorer)
             hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
             topViewController.present(hackleUserExplorerViewController, animated: true)
         }
@@ -119,4 +124,8 @@ class HackleUserExplorerView {
     private func offset() -> CGFloat {
         barHeight() > 24.0 ? 30.0 : 0.0
     }
+}
+
+protocol HackleUserExplorerContainer {
+    func setHackleUserExplorer(_ hackleUserExplorer: HackleUserExplorer)
 }

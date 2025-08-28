@@ -1,11 +1,12 @@
 import Foundation
 
-class BridgeInvocation {
+class Invocation {
     
     private enum ReservedKey: String {
         case hackle = "_hackle"
         case command = "command"
         case parameters = "parameters"
+        case browserProperties = "browserProperties"
     }
     
     enum Command: String {
@@ -34,7 +35,8 @@ class BridgeInvocation {
     }
     
     let command: Command
-    let parameters: HackleBridgeParameters
+    let parameters: HackleInvokeParameters
+    let browserProperties: HackleBrowserProperties
     
     init(string: String) throws {
         guard let data = string.jsonObject() else {
@@ -51,7 +53,8 @@ class BridgeInvocation {
         }
         
         self.command = command
-        self.parameters = invocation[ReservedKey.parameters.rawValue] as? HackleBridgeParameters ?? [:]
+        self.parameters = invocation[ReservedKey.parameters.rawValue] as? HackleInvokeParameters ?? [:]
+        self.browserProperties = invocation[ReservedKey.browserProperties.rawValue] as? HackleBrowserProperties ?? [:]
     }
     
     static func isInvocableString(string: String) -> Bool {
@@ -65,3 +68,5 @@ class BridgeInvocation {
         return command != nil && command?.isEmpty == false
     }
 }
+
+typealias HackleBrowserProperties = [String: Any]
