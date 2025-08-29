@@ -1,21 +1,24 @@
 import Foundation
 
-class InAppMessageEligibilityEvaluation: EvaluatorEvaluation {
+class InAppMessageEligibilityEvaluation: InAppMessageEvaluatorEvaluation {
     let reason: String
     let targetEvaluations: [EvaluatorEvaluation]
     let inAppMessage: InAppMessage
     let isEligible: Bool
+    let layoutEvaluation: InAppMessageLayoutEvaluation?
 
     init(
         reason: String,
         targetEvaluations: [EvaluatorEvaluation],
         inAppMessage: InAppMessage,
-        isEligible: Bool
+        isEligible: Bool,
+        layoutEvaluation: InAppMessageLayoutEvaluation?
     ) {
         self.reason = reason
         self.targetEvaluations = targetEvaluations
         self.inAppMessage = inAppMessage
         self.isEligible = isEligible
+        self.layoutEvaluation = layoutEvaluation
     }
 
     static func of(
@@ -28,7 +31,8 @@ class InAppMessageEligibilityEvaluation: EvaluatorEvaluation {
             reason: reason,
             targetEvaluations: context.targetEvaluations,
             inAppMessage: request.inAppMessage,
-            isEligible: isEligible
+            isEligible: isEligible,
+            layoutEvaluation: context.get(InAppMessageLayoutEvaluation.self)
         )
     }
 

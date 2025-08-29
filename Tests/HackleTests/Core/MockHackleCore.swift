@@ -44,19 +44,13 @@ class MockHackleCore: Mock, HackleCore {
         call(remoteConfigMock, args: (parameterKey, user, defaultValue))
     }
 
-    lazy var inAppMessageMock = MockFunction(self, inAppMessage)
+    lazy var inAppMessageMock = MockFunction.throwable(self, _inAppMessage)
 
-    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision {
-        call(inAppMessageMock, args: (inAppMessageKey, user))
+    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation {
+        return try _inAppMessage(request: request, context: context, evaluator: evaluator) as! Evaluation
     }
 
-    lazy var evaluateMock: MockFunction<(EvaluatorRequest, EvaluatorContext, Evaluator), EvaluatorEvaluation> = MockFunction(self, _evaluateAny)
-
-    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
-        return _evaluateAny(request: request, context: context, evaluator: evaluator) as! Evaluation
-    }
-
-    private func _evaluateAny(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) -> EvaluatorEvaluation {
-        return call(evaluateMock, args: (request, context, evaluator))
+    private func _inAppMessage(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> EvaluatorEvaluation {
+        return try call(inAppMessageMock, args: (request, context, evaluator))
     }
 }

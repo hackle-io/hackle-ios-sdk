@@ -6,7 +6,7 @@ class InAppMessageSchedule {
     let inAppMessageKey: InAppMessage.Key
     let identifiers: Identifiers
     let time: Time
-    let evaluation: InAppMessageEvaluation
+    let reason: String
     let eventBasedContext: EventBasedContext
 
     init(
@@ -14,14 +14,14 @@ class InAppMessageSchedule {
         inAppMessageKey: InAppMessage.Key,
         identifiers: Identifiers,
         time: Time,
-        evaluation: InAppMessageEvaluation,
+        reason: String,
         eventBasedContext: EventBasedContext
     ) {
         self.dispatchId = dispatchId
         self.inAppMessageKey = inAppMessageKey
         self.identifiers = identifiers
         self.time = time
-        self.evaluation = evaluation
+        self.reason = reason
         self.eventBasedContext = eventBasedContext
     }
 
@@ -52,7 +52,7 @@ class InAppMessageSchedule {
 
 extension InAppMessageSchedule: CustomStringConvertible {
     var description: String {
-        "InAppMessageSchedule(dispatchId: \(dispatchId), inAppMessageKey: \(inAppMessageKey), identifiers: \(identifiers), time: \(time), evaluation: \(evaluation), eventBasedContext: \(eventBasedContext))"
+        "InAppMessageSchedule(dispatchId: \(dispatchId), inAppMessageKey: \(inAppMessageKey), identifiers: \(identifiers), time: \(time), reason: \(reason), eventBasedContext: \(eventBasedContext))"
     }
 
     func toRequest(type: InAppMessageScheduleType, requestedAt: Date) -> InAppMessageScheduleRequest {
@@ -68,7 +68,7 @@ extension InAppMessageSchedule: CustomStringConvertible {
                 inAppMessage: trigger.inAppMessage,
                 startedAt: trigger.event.timestamp
             ),
-            evaluation: trigger.evaluation,
+            reason: trigger.reason,
             eventBasedContext: EventBasedContext(
                 insertId: trigger.event.insertId,
                 event: trigger.event.event

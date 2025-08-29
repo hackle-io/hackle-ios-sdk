@@ -7,17 +7,20 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
     override func spec() {
 
         var evaluator: MockEvaluator!
+        var eventRecorder: MockEvaluationEventRecorder!
         var sut: InAppMessageLayoutEvaluator!
 
         beforeEach {
             evaluator = MockEvaluator()
+            eventRecorder = MockEvaluationEventRecorder()
             let experimentEvaluator = InAppMessageExperimentEvaluator(
                 evaluator: evaluator
             )
             let selector = InAppMessageLayoutSelector()
             sut = InAppMessageLayoutEvaluator(
                 experimentEvaluator: experimentEvaluator,
-                selector: selector
+                selector: selector,
+                eventRecorder: eventRecorder
             )
         }
 
@@ -139,6 +142,20 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                     let _: InAppMessageLayoutEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
                 }
                     .to(throwError())
+            }
+        }
+
+        it("record") {
+            // given
+            let request = InAppMessage.layoutRequest()
+            let evaluation = InAppMessage.layoutEvaluation()
+
+            // when
+            sut.record(request: request, evaluation: evaluation)
+
+            // then
+            verify(exactly: 1) {
+                eventRecorder.recordMock
             }
         }
     }

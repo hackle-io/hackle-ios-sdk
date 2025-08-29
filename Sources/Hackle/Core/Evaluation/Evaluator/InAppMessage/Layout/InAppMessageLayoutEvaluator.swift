@@ -1,15 +1,17 @@
 import Foundation
 
-class InAppMessageLayoutEvaluator: ContextualEvaluator {
+class InAppMessageLayoutEvaluator: InAppMessageEvaluator {
     typealias Request = InAppMessageLayoutRequest
     typealias Evaluation = InAppMessageLayoutEvaluation
 
     private let experimentEvaluator: InAppMessageExperimentEvaluator
     private let selector: InAppMessageLayoutSelector
+    private let eventRecorder: EvaluationEventRecorder
 
-    init(experimentEvaluator: InAppMessageExperimentEvaluator, selector: InAppMessageLayoutSelector) {
+    init(experimentEvaluator: InAppMessageExperimentEvaluator, selector: InAppMessageLayoutSelector, eventRecorder: EvaluationEventRecorder) {
         self.experimentEvaluator = experimentEvaluator
         self.selector = selector
+        self.eventRecorder = eventRecorder
     }
 
     func evaluateInternal(request: Request, context: EvaluatorContext) throws -> Evaluation {
@@ -42,6 +44,10 @@ class InAppMessageLayoutEvaluator: ContextualEvaluator {
         return try selector.select(inAppMessage: request.inAppMessage) { message in
             langCondition(message) && experimentCondition(message)
         }
+    }
+
+    func recordInternal(request: Request, evaluation: Evaluation) {
+        eventRecorder.record(request: request, evaluation: evaluation)
     }
 }
 

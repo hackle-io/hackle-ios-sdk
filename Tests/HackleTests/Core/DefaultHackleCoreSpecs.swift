@@ -379,26 +379,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 }
             }
         }
-
-        describe("evaluate") {
-
-            it("evaluate") {
-                // given
-                let request = InAppMessage.eligibilityRequest()
-                let context = Evaluators.context()
-                let evaluation = InAppMessage.eligibilityEvaluation()
-                let evaluator = ContextualEvaluatorStub(evaluation: evaluation)
-
-                let events = [UserEvents.track("test"), UserEvents.track("test2")]
-                eventFactory.events = events
-
-                // when
-                let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context, evaluator: evaluator)
-
-                // then
-                expect(actual).to(beIdenticalTo(evaluation))
-            }
-        }
     }
 
     private class ContextualEvaluatorStub: ContextualEvaluator {

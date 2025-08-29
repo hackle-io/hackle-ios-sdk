@@ -84,7 +84,6 @@ class DraftInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEval
         return try nextFlow.evaluate(request: request, context: context)
     }
 }
-
 class PausedInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
     func evaluateInAppMessage(
         request: InAppMessageEligibilityRequest,
@@ -126,6 +125,26 @@ class TargetInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEva
         guard try targetMatcher.matches(request: request, context: context) else {
             return InAppMessageEligibilityEvaluation.ineligible(request: request, context: context, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET)
         }
+
+        return try nextFlow.evaluate(request: request, context: context)
+    }
+}
+
+class LayoutResolveInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
+    private let layoutEvaluator: Evaluator
+
+    init(layoutEvaluator: Evaluator) {
+        self.layoutEvaluator = layoutEvaluator
+    }
+
+    func evaluateInAppMessage(
+        request: InAppMessageEligibilityRequest,
+        context: EvaluatorContext,
+        nextFlow: InAppMessageEligibilityFlow
+    ) throws -> InAppMessageEligibilityEvaluation? {
+        let layoutRequest = InAppMessageLayoutRequest.of(request: request)
+        let layoutEvaluation: InAppMessageLayoutEvaluation = try layoutEvaluator.evaluate(request: layoutRequest, context: Evaluators.context())
+        context.set(layoutEvaluation)
 
         return try nextFlow.evaluate(request: request, context: context)
     }

@@ -275,6 +275,7 @@ extension HackleApp {
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
+        let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
         let scheduler = Schedulers.dispatch()
@@ -320,7 +321,7 @@ extension HackleApp {
             repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             targetFetcher: targetFetcher,
-            clock: SystemClock.shared
+            clock: clock
         )
         compositeSynchronizer.add(synchronizer: userManager)
 
@@ -421,6 +422,17 @@ extension HackleApp {
             eventBackoffController: eventBackoffController
         )
 
+        // - Evaluation Event
+
+        let eventFactory = DefaultUserEventFactory(
+            clock: clock
+        )
+
+        let evaluationEventRecorder = DefaultEvaluationEventRecorder(
+            eventFactory: eventFactory,
+            eventProcessor: eventProcessor
+        )
+
         // - Core
 
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
@@ -432,6 +444,7 @@ extension HackleApp {
 
         let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceManager,
+            eventFactory: eventFactory,
             eventProcessor: eventProcessor,
             manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
         )
@@ -479,7 +492,7 @@ extension HackleApp {
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
             InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
-            InAppMessageHiddenActionHandler(clock: SystemClock.shared, storage: inAppMessageHiddenStorage)
+            InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
             InAppMessageImpressionEventProcessor(),
@@ -487,64 +500,68 @@ extension HackleApp {
             InAppMessageCloseEventProcessor()
         ])
         let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-            clock: SystemClock.shared,
+            clock: clock,
             eventTracker: inAppMessageEventTracker,
             processorFactory: inAppMessageEventProcessorFactory
         )
         let inAppMessageUI = HackleInAppMessageUI(
             eventHandler: inAppMessageEventHandler
         )
-        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
-            evaluator: EvaluationContext.shared.get(Evaluator.self)!
-        )
-        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
-            experimentEvaluator: inAppMessageExperimentEvaluator,
-            selector: InAppMessageLayoutSelector()
-        )
-        let inAppMessagePresentationContextResolver = DefaultInAppMessagePresentationContextResolver(
-            core: core,
-            layoutEvaluator: inAppMessageLayoutEvaluator
-        )
+
         let inAppMessageRecorder = DefaultInAppMessageRecorder(
             storage: inAppMessageImpressionStorage
         )
         let inAppMessagePresentProcessor = DefaultInAppMessagePresentProcessor(
-            contextResolver: inAppMessagePresentationContextResolver,
             presenter: inAppMessageUI,
             recorder: inAppMessageRecorder
         )
 
 
-        let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
-        let inAppMessageEligibilityEvaluator = InAppMessageEligibilityEvaluator(
-            evaluationFlowFactory: EvaluationContext.shared.get(EvaluationFlowFactory.self)!
+        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
+            evaluator: EvaluationContext.shared.get(Evaluator.self)!
         )
-        let inAppMessageEvaluator = DefaultInAppMessageEvaluator(
-            core: core,
-            eligibilityEvaluator: inAppMessageEligibilityEvaluator
+        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
+            experimentEvaluator: inAppMessageExperimentEvaluator,
+            selector: InAppMessageLayoutSelector(),
+            eventRecorder: evaluationEventRecorder
+        )
+        let inAppMessageEligibilityFlowFactory = DefaultInAppMessageEligibilityFlowFactory(
+            context: EvaluationContext.shared,
+            layoutEvaluator: inAppMessageLayoutEvaluator
         )
 
-        let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
-            clock: SystemClock.shared,
-            scheduler: Schedulers.dispatch()
+        let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
+            core: core,
+            flowFactory: inAppMessageEligibilityFlowFactory,
+            eventRecorder: evaluationEventRecorder
         )
-        let inAppMessageDelayManager = DefaultInAppMessageDelayManager(
-            scheduler: inAppMessageDelayScheduler
+        let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
+        let inAppMessageLayoutResolver = DefaultInAppMessageLayoutResolver(
+            core: core,
+            layoutEvaluator: inAppMessageLayoutEvaluator
         )
 
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
             workspaceFetcher: workspaceManager,
             userManager: userManager,
             identifierChecker: inAppMessageIdentifierChecker,
-            evaluator: inAppMessageEvaluator,
+            layoutResolver: inAppMessageLayoutResolver,
+            evaluateProcessor: inAppMessageEvaluateProcessor,
             presentProcessor: inAppMessagePresentProcessor
+        )
+
+        let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
+            clock: clock,
+            scheduler: Schedulers.dispatch()
+        )
+        let inAppMessageDelayManager = DefaultInAppMessageDelayManager(
+            scheduler: inAppMessageDelayScheduler
         )
 
         let inAppMessageSchedulerFactory = DefaultInAppMessageSchedulerFactory(schedulers: [
             TriggeredInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
             DelayedInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
         ])
-
         let inAppMessageScheduleProcessor = DefaultInAppMessageScheduleProcessor(
             actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
             schedulerFactory: inAppMessageSchedulerFactory
@@ -554,11 +571,10 @@ extension HackleApp {
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
             targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!
         )
-
         let inAppMessageTriggerDeterminer = DefaultInAppMessageTriggerDeterminer(
             workspaceFetcher: workspaceManager,
             eventMatcher: inAppMessageTriggerEventMatcher,
-            evaluator: inAppMessageEvaluator
+            evaluateProcessor: inAppMessageEvaluateProcessor
         )
         let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(
             scheduleProcessor: inAppMessageScheduleProcessor

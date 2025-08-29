@@ -228,17 +228,35 @@ extension InAppMessage {
         )
     }
 
+    static func layoutEvaluation(
+        request: InAppMessageLayoutRequest = layoutRequest(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        targetEvaluations: [EvaluatorEvaluation] = [],
+        message: InAppMessage.Message = message(),
+        properties: [String: Any] = [:]
+    ) -> InAppMessageLayoutEvaluation {
+        return InAppMessageLayoutEvaluation(
+            request: request,
+            reason: reason,
+            targetEvaluations: targetEvaluations,
+            message: message,
+            properties: properties
+        )
+    }
+
     static func eligibilityEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        isEligible: Bool = true
+        isEligible: Bool = true,
+        layoutEvaluation: InAppMessageLayoutEvaluation? = nil
     ) -> InAppMessageEligibilityEvaluation {
         InAppMessageEligibilityEvaluation(
             reason: reason,
             targetEvaluations: targetEvaluations,
             inAppMessage: inAppMessage,
-            isEligible: isEligible
+            isEligible: isEligible,
+            layoutEvaluation: layoutEvaluation
         )
     }
 
@@ -262,23 +280,20 @@ extension InAppMessage {
 
     static func presentRequest(
         dispatchId: String = UUID().uuidString,
-        workspace: Workspace = WorkspaceEntity.create(),
         inAppMessage: InAppMessage = InAppMessage.create(),
+        message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         requestedAt: Date = Date(),
-        evaluation: InAppMessageEvaluation = InAppMessageEvaluation(
-            isEligible: true,
-            reason: DecisionReason.IN_APP_MESSAGE_TARGET
-        ),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         properties: [String: Any] = [:]
     ) -> InAppMessagePresentRequest {
         return InAppMessagePresentRequest(
             dispatchId: dispatchId,
-            workspace: workspace,
             inAppMessage: inAppMessage,
+            message: message,
             user: user,
             requestedAt: requestedAt,
-            evaluation: evaluation,
+            reason: reason,
             properties: properties
         )
     }
@@ -300,10 +315,7 @@ extension InAppMessage {
             IdentifierType.device.rawValue: "device_id"
         ],
         requestedAt: Date = Date(),
-        evaluation: InAppMessageEvaluation = InAppMessageEvaluation(
-            isEligible: true,
-            reason: DecisionReason.IN_APP_MESSAGE_TARGET
-        ),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         properties: [String: Any] = [:]
     ) -> InAppMessageDeliverRequest {
         return InAppMessageDeliverRequest(
@@ -311,7 +323,7 @@ extension InAppMessage {
             inAppMessageKey: inAppMessageKey,
             identifiers: identifiers,
             requestedAt: requestedAt,
-            evaluation: evaluation,
+            reason: reason,
             properties: properties
         )
     }
@@ -326,22 +338,19 @@ extension InAppMessage {
             startedAt: Date(),
             deliverAt: Date()
         ),
-        evaluation: InAppMessageEvaluation = InAppMessageEvaluation(
-            isEligible: true,
-            reason: DecisionReason.IN_APP_MESSAGE_TARGET
-        ),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         eventBasedContext: InAppMessageSchedule.EventBasedContext =
-            InAppMessageSchedule.EventBasedContext(
-                insertId: UUID().uuidString,
-                event: HackleEventBuilder(key: "test").build()
-            )
+        InAppMessageSchedule.EventBasedContext(
+            insertId: UUID().uuidString,
+            event: HackleEventBuilder(key: "test").build()
+        )
     ) -> InAppMessageSchedule {
         return InAppMessageSchedule(
             dispatchId: dispatchId,
             inAppMessageKey: inAppMessageKey,
             identifiers: identifiers,
             time: time,
-            evaluation: evaluation,
+            reason: reason,
             eventBasedContext: eventBasedContext
         )
     }

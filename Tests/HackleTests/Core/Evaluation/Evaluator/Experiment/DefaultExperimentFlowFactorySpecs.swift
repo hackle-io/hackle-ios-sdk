@@ -3,11 +3,10 @@ import Quick
 import Nimble
 @testable import Hackle
 
-
-class DefaultEvaluationFlowFactorySpecs: QuickSpec {
+class DefaultExperimentFlowFactorySpecs: QuickSpec {
     override func spec() {
         var evaluationContext: EvaluationContext!
-        var sut: DefaultEvaluationFlowFactory!
+        var sut: DefaultExperimentFlowFactory!
 
         beforeEach {
             evaluationContext = EvaluationContext()
@@ -18,13 +17,13 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: []),
                 clock: SystemClock.shared
             )
-            sut = DefaultEvaluationFlowFactory(context: evaluationContext)
+            sut = DefaultExperimentFlowFactory(context: evaluationContext)
         }
 
         describe("flow") {
 
             it("AB_TEST") {
-                sut.getExperimentFlow(experimentType: .abTest)
+                sut.get(experimentType: .abTest)
                     .isDecisionWith(OverrideEvaluator.self)!
                     .isDecisionWith(IdentifierEvaluator.self)!
                     .isDecisionWith(ContainerEvaluator.self)!
@@ -37,7 +36,7 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
             }
 
             it("FEATURE_FLAG") {
-                sut.getExperimentFlow(experimentType: .featureFlag)
+                sut.get(experimentType: .featureFlag)
                     .isDecisionWith(DraftExperimentEvaluator.self)!
                     .isDecisionWith(PausedExperimentEvaluator.self)!
                     .isDecisionWith(CompletedExperimentEvaluator.self)!
@@ -45,20 +44,6 @@ class DefaultEvaluationFlowFactorySpecs: QuickSpec {
                     .isDecisionWith(IdentifierEvaluator.self)!
                     .isDecisionWith(TargetRuleEvaluator.self)!
                     .isDecisionWith(DefaultRuleEvaluator.self)!
-                    .isEnd()
-            }
-
-            it("IN_APP_MESSAGE") {
-                sut.getInAppMessageFlow()
-                    .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(OverrideInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(DraftInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(PausedInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(TargetInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
-                    .isDecisionWith(EligibleInAppMessageEligibilityFlowEvaluator.self)!
                     .isEnd()
             }
         }

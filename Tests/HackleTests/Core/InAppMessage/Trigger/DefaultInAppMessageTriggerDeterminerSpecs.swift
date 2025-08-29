@@ -9,17 +9,17 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
 
         var workspaceFetcher: MockWorkspaceFetcher!
         var eventMatcher: InAppMessageTriggerEventMatcherStub!
-        var evaluator: InAppMessageEvaluatorStub!
+        var evaluateProcessor: InAppMessageEvaluateProcessorStub!
         var sut: DefaultInAppMessageTriggerDeterminer!
 
         beforeEach {
             workspaceFetcher = MockWorkspaceFetcher()
             eventMatcher = InAppMessageTriggerEventMatcherStub()
-            evaluator = InAppMessageEvaluatorStub()
+            evaluateProcessor = InAppMessageEvaluateProcessorStub()
             sut = DefaultInAppMessageTriggerDeterminer(
                 workspaceFetcher: workspaceFetcher,
                 eventMatcher: eventMatcher,
-                evaluator: evaluator
+                evaluateProcessor: evaluateProcessor
             )
         }
 
@@ -93,15 +93,14 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
             let actual = try sut.determine(event: event)
 
             // then
-            expect(actual?.evaluation.isEligible) == true
-            expect(actual?.evaluation.reason) == "IN_APP_MESSAGE_TARGET"
+            expect(actual?.reason) == "IN_APP_MESSAGE_TARGET"
         }
 
         func determine(_ decisions: Decision...) {
             eventMatcher.matches = decisions.map {
                 $0.isEventMacthed
             }
-            evaluator.evaluations = decisions.filter {
+            evaluateProcessor.evaluations = decisions.filter {
                     $0.isEventMacthed
                 }
                 .map {
@@ -118,18 +117,19 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
         }
 
         func decision(isEventMatched: Bool, isEligible: Bool, reason: String) -> Decision {
+
             return Decision(
                 isEventMacthed: isEventMatched,
-                evaluation: InAppMessageEvaluation(
+                evaluation: InAppMessage.eligibilityEvaluation(
+                    reason: reason,
                     isEligible: isEligible,
-                    reason: reason
                 )
             )
         }
 
         struct Decision {
             var isEventMacthed: Bool
-            var evaluation: InAppMessageEvaluation
+            var evaluation: InAppMessageEligibilityEvaluation
         }
     }
 }

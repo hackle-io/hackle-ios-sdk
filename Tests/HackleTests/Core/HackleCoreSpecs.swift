@@ -33,8 +33,14 @@ class HackleCoreSpecs: QuickSpec {
          */
         it("target_experiment") {
             let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "target_experiment")
+            let eventFactory = DefaultUserEventFactory(clock: SystemClock.shared)
             let eventProcessor = InMemoryUserEventProcessor()
-            let core = DefaultHackleCore.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor, manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
+            let core = DefaultHackleCore.create(
+                workspaceFetcher: workspaceFetcher,
+                eventFactory: eventFactory,
+                eventProcessor: eventProcessor,
+                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+            )
 
             let user = HackleUser.builder().identifier(.id, "user").build()
             let decision = try core.remoteConfig(parameterKey: "rc", user: user, defaultValue: .string("42"))
@@ -71,8 +77,14 @@ class HackleCoreSpecs: QuickSpec {
          */
         it("target_experiment_circular") {
             let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "target_experiment_circular")
+            let eventFactory = DefaultUserEventFactory(clock: SystemClock.shared)
             let eventProcessor = InMemoryUserEventProcessor()
-            let core = DefaultHackleCore.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor, manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
+            let core = DefaultHackleCore.create(
+                workspaceFetcher: workspaceFetcher,
+                eventFactory: eventFactory,
+                eventProcessor: eventProcessor,
+                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+            )
 
             let user = HackleUser.builder().identifier(.id, "user").build()
             expect(try core.remoteConfig(parameterKey: "rc", user: user, defaultValue: .string("42")))
@@ -90,8 +102,14 @@ class HackleCoreSpecs: QuickSpec {
          */
         it("container") {
             let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "container")
+            let eventFactory = DefaultUserEventFactory(clock: SystemClock.shared)
             let eventProcessor = InMemoryUserEventProcessor()
-            let core = DefaultHackleCore.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor, manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
+            let core = DefaultHackleCore.create(
+                workspaceFetcher: workspaceFetcher,
+                eventFactory: eventFactory,
+                eventProcessor: eventProcessor,
+                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+            )
 
             var decisions: [Decision] = []
             for i in (0..<10000) {
@@ -107,8 +125,14 @@ class HackleCoreSpecs: QuickSpec {
 
         it("segment_match") {
             let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "segment_match")
+            let eventFactory = DefaultUserEventFactory(clock: SystemClock.shared)
             let eventProcessor = InMemoryUserEventProcessor()
-            let core = DefaultHackleCore.create(workspaceFetcher: workspaceFetcher, eventProcessor: eventProcessor, manualOverrideStorage: DelegatingManualOverrideStorage(storages: []))
+            let core = DefaultHackleCore.create(
+                workspaceFetcher: workspaceFetcher,
+                eventFactory: eventFactory,
+                eventProcessor: eventProcessor,
+                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+            )
 
             let user1 = HackleUser.builder().identifier(.id, "matched_id").build()
             let decision1 = try core.experiment(experimentKey: 1, user: user1, defaultVariationKey: "A")

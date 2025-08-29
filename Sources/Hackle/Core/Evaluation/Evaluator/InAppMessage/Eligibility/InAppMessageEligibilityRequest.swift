@@ -1,14 +1,12 @@
 import Foundation
 
-class InAppMessageEligibilityRequest: EvaluatorRequest, Equatable, CustomStringConvertible {
-    let key: EvaluatorKey
+class InAppMessageEligibilityRequest: InAppMessageEvaluatorRequest, Equatable, CustomStringConvertible {
     let workspace: Workspace
     let user: HackleUser
     let inAppMessage: InAppMessage
     let timestamp: Date
 
     init(workspace: Workspace, user: HackleUser, inAppMessage: InAppMessage, timestamp: Date) {
-        self.key = EvaluatorKey(type: .inAppMessage, id: inAppMessage.id)
         self.workspace = workspace
         self.user = user
         self.inAppMessage = inAppMessage

@@ -16,7 +16,7 @@ protocol HackleCore {
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
-    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluation where Evaluation: EvaluatorEvaluation
+    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation
 }
 
 class DefaultHackleCore: HackleCore {
@@ -46,6 +46,7 @@ class DefaultHackleCore: HackleCore {
 
     static func create(
         workspaceFetcher: WorkspaceFetcher,
+        eventFactory: UserEventFactory,
         eventProcessor: UserEventProcessor,
         manualOverrideStorage: ManualOverrideStorage
     ) -> DefaultHackleCore {
@@ -54,10 +55,7 @@ class DefaultHackleCore: HackleCore {
         let context = EvaluationContext.shared
         context.initialize(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage, clock: SystemClock.shared)
 
-        let flowFactory = DefaultEvaluationFlowFactory(context: context)
-        context.register(flowFactory)
-
-        let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
+        let experimentEvaluator = ExperimentEvaluator(flowFactory: DefaultExperimentFlowFactory(context: context))
         let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)
 
         delegatingEvaluator.add(experimentEvaluator)
@@ -67,7 +65,7 @@ class DefaultHackleCore: HackleCore {
             experimentEvaluator: experimentEvaluator,
             remoteConfigEvaluator: remoteConfigEvaluator,
             workspaceFetcher: workspaceFetcher,
-            eventFactory: DefaultUserEventFactory(clock: SystemClock.shared),
+            eventFactory: eventFactory,
             eventProcessor: eventProcessor,
             clock: SystemClock.shared
         )
@@ -181,10 +179,13 @@ class DefaultHackleCore: HackleCore {
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
     }
 
-    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext, evaluator: Evaluator) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
+    func inAppMessage<Evaluation>(
+        request: InAppMessageEvaluatorRequest,
+        context: EvaluatorContext,
+        evaluator: any InAppMessageEvaluator
+    ) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation {
         let evaluation: Evaluation = try evaluator.evaluate(request: request, context: context)
-        let events = eventFactory.create(request: request, evaluation: evaluation)
-        eventProcessor.process(events: events)
+        evaluator.record(request: request, evaluation: evaluation)
         return evaluation
     }
 }

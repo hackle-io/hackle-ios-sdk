@@ -10,7 +10,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
         var workspaceFetcher: MockWorkspaceFetcher!
         var userManager: MockUserManager!
         var identifierChecker: MockInAppMessageIdentifierChecker!
-        var evaluator: MockInAppMessageEvaluator!
+        var layoutResolver: MockInAppMessageLayoutResolver!
+        var evaluateProcessor: MockInAppMessageEvaluateProcessor!
         var presentProcessor: MockInAppMessagePresentProcessor!
         var sut: DefaultInAppMessageDeliverProcessor!
 
@@ -18,13 +19,15 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             workspaceFetcher = MockWorkspaceFetcher()
             userManager = MockUserManager()
             identifierChecker = MockInAppMessageIdentifierChecker()
-            evaluator = MockInAppMessageEvaluator()
+            layoutResolver = MockInAppMessageLayoutResolver()
+            evaluateProcessor = MockInAppMessageEvaluateProcessor()
             presentProcessor = MockInAppMessagePresentProcessor()
             sut = DefaultInAppMessageDeliverProcessor(
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
                 identifierChecker: identifierChecker,
-                evaluator: evaluator,
+                layoutResolver: layoutResolver,
+                evaluateProcessor: evaluateProcessor,
                 presentProcessor: presentProcessor
             )
         }
@@ -75,12 +78,17 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
                 evaluateContext: InAppMessage.evaluateContext(atDeliverTime: true)
             )
             let request = InAppMessage.deliverRequest(
-                evaluation: InAppMessageEvaluation(isEligible: true, reason: DecisionReason.IN_APP_MESSAGE_TARGET)
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
             let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-            every(evaluator.evaluateMock).returns(InAppMessageEvaluation(isEligible: false, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET))
+
+            let layoutEvaluation = InAppMessage.layoutEvaluation()
+            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+
+            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: false)
+            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
 
             // when
             let actual = sut.process(request: request)
@@ -98,11 +106,17 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             let request = InAppMessage.deliverRequest(
                 dispatchId: "111",
                 inAppMessageKey: 42,
-                evaluation: InAppMessageEvaluation(isEligible: true, reason: DecisionReason.IN_APP_MESSAGE_TARGET)
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
             let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
+
+            let layoutEvaluation = InAppMessage.layoutEvaluation()
+            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+
+            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
+            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
 
             let presentResponse = InAppMessage.presentResponse()
             every(presentProcessor.processMock).returns(presentResponse)
@@ -126,11 +140,17 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             let request = InAppMessage.deliverRequest(
                 dispatchId: "111",
                 inAppMessageKey: 42,
-                evaluation: InAppMessageEvaluation(isEligible: true, reason: DecisionReason.IN_APP_MESSAGE_TARGET)
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
             let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
+
+            let layoutEvaluation = InAppMessage.layoutEvaluation()
+            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+
+            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
+            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
 
             every(presentProcessor.processMock).answers { _ in
                 throw HackleError.error("fail")

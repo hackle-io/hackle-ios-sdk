@@ -33,9 +33,8 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
         it("when trigger determined then handle trigger") {
             // given
             let inAppMessage = InAppMessage.create()
-            let evaluation = InAppMessageEvaluation(isEligible: true, reason: DecisionReason.IN_APP_MESSAGE_TARGET)
             let event = UserEvents.track("test", timestamp: 42)
-            let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, evaluation: evaluation, event: event)
+            let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: event)
             every(determiner.determineMock).returns(trigger)
 
             // when
@@ -50,9 +49,8 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
         it("when error occurs during handle trigger then ignore") {
             // given
             let inAppMessage = InAppMessage.create()
-            let evaluation = InAppMessageEvaluation(isEligible: true, reason: DecisionReason.IN_APP_MESSAGE_TARGET)
             let event = UserEvents.track("test", timestamp: 42)
-            let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, evaluation: evaluation, event: event)
+            let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: event)
             every(determiner.determineMock).returns(trigger)
 
             every(handler.handleMock).answers { _ in

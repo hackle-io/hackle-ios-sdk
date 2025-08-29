@@ -251,6 +251,31 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
+        describe("LayoutResolveInAppMessageEligibilityFlowEvaluator") {
+            var layoutEvaluator: MockEvaluator!
+            var sut: LayoutResolveInAppMessageEligibilityFlowEvaluator!
+
+            beforeEach {
+                layoutEvaluator = MockEvaluator()
+                sut = LayoutResolveInAppMessageEligibilityFlowEvaluator(layoutEvaluator: layoutEvaluator)
+            }
+
+            it("resolve layout") {
+                // given
+                let layoutEvaluation = InAppMessage.layoutEvaluation()
+                layoutEvaluator.returns = layoutEvaluation
+
+                let request = InAppMessage.eligibilityRequest()
+
+                // when
+                let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
+
+                // then
+                expect(actual).to(beIdenticalTo(evaluation))
+                expect(context.get(InAppMessageLayoutEvaluation.self)).to(beIdenticalTo(layoutEvaluation))
+            }
+        }
+
         describe("FrequencyCapInAppMessageEligibilityFlowEvaluator") {
 
             var frequencyCapMatcher: InAppMessageMatcherStub!

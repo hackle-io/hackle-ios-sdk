@@ -2,18 +2,18 @@ import Foundation
 
 class InAppMessageTrigger {
     let inAppMessage: InAppMessage
-    let evaluation: InAppMessageEvaluation
+    let reason: String
     let event: UserEvents.Track
 
-    init(inAppMessage: InAppMessage, evaluation: InAppMessageEvaluation, event: UserEvents.Track) {
+    init(inAppMessage: InAppMessage, reason: String, event: UserEvents.Track) {
         self.inAppMessage = inAppMessage
-        self.evaluation = evaluation
+        self.reason = reason
         self.event = event
     }
 }
 
 extension InAppMessageTrigger: CustomStringConvertible {
     var description: String {
-        "InAppMessageTrigger(inAppMessage: \(inAppMessage), evaluation: \(evaluation), insertId: \(event.insertId), timestamp: \(event.timestamp), user: \(event.user.identifiers), event=\(event.event.key))"
+        "InAppMessageTrigger(inAppMessage: \(inAppMessage), reason: \(reason), insertId: \(event.insertId), timestamp: \(event.timestamp), user: \(event.user.identifiers), event=\(event.event.key))"
     }
 }

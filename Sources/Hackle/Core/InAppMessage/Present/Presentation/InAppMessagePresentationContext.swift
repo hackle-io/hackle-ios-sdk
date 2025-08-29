@@ -32,17 +32,14 @@ extension InAppMessagePresentationContext: CustomStringConvertible {
         "InAppMessagePresentationContext(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), layout: \(message.layout.displayType))"
     }
 
-    static func of(
-        request: InAppMessagePresentRequest,
-        evaluation: InAppMessageLayoutEvaluation
-    ) -> InAppMessagePresentationContext {
+    static func of(request: InAppMessagePresentRequest) -> InAppMessagePresentationContext {
         return InAppMessagePresentationContext(
             dispatchId: request.dispatchId,
-            inAppMessage: evaluation.inAppMessage,
-            message: evaluation.message,
+            inAppMessage: request.inAppMessage,
+            message: request.message,
             user: request.user,
-            decisionReasion: request.evaluation.reason,
-            properties: PropertiesBuilder().add(request.properties).add(evaluation.properties).build()
+            decisionReasion: request.reason,
+            properties: request.properties
         )
     }
 }

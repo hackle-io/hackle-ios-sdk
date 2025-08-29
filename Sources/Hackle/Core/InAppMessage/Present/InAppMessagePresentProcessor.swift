@@ -6,12 +6,10 @@ protocol InAppMessagePresentProcessor {
 
 class DefaultInAppMessagePresentProcessor: InAppMessagePresentProcessor {
 
-    private let contextResolver: InAppMessagePresentationContextResolver
     private let presenter: InAppMessagePresenter
     private let recorder: InAppMessageRecorder
 
-    init(contextResolver: InAppMessagePresentationContextResolver, presenter: InAppMessagePresenter, recorder: InAppMessageRecorder) {
-        self.contextResolver = contextResolver
+    init(presenter: InAppMessagePresenter, recorder: InAppMessageRecorder) {
         self.presenter = presenter
         self.recorder = recorder
     }
@@ -27,7 +25,7 @@ class DefaultInAppMessagePresentProcessor: InAppMessagePresentProcessor {
     }
 
     private func present(request: InAppMessagePresentRequest) throws -> InAppMessagePresentResponse {
-        let context = try contextResolver.resolve(request: request)
+        let context = InAppMessagePresentationContext.of(request: request)
         presenter.present(context: context)
         return InAppMessagePresentResponse.of(request: request, context: context)
     }

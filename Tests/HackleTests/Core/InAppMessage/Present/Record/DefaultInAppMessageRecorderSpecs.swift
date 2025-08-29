@@ -19,7 +19,7 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
             let inAppMessage = InAppMessage.create()
             let request = InAppMessage.presentRequest(
                 inAppMessage: inAppMessage,
-                evaluation: InAppMessageEvaluation(isEligible: true, reason: DecisionReason.OVERRIDDEN)
+                reason: DecisionReason.OVERRIDDEN
             )
             let response = InAppMessage.presentResponse()
 
@@ -48,8 +48,8 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
                 inAppMessage: inAppMessage,
                 user: user,
                 requestedAt: Date(timeIntervalSince1970: 320),
-                evaluation: InAppMessageEvaluation(isEligible: true, reason: DecisionReason.IN_APP_MESSAGE_TARGET),
-                )
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
+            )
             let response = InAppMessage.presentResponse(
                 context: presentationContext
             )

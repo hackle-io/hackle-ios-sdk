@@ -9,20 +9,23 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
     private let workspaceFetcher: WorkspaceFetcher
     private let userManager: UserManager
     private let identifierChecker: InAppMessageIdentifierChecker
-    private let evaluator: InAppMessageEvaluator
+    private let layoutResolver: InAppMessageLayoutResolver
+    private let evaluateProcessor: InAppMessageEvaluateProcessor
     private let presentProcessor: InAppMessagePresentProcessor
 
     init(
         workspaceFetcher: WorkspaceFetcher,
         userManager: UserManager,
         identifierChecker: InAppMessageIdentifierChecker,
-        evaluator: InAppMessageEvaluator,
+        layoutResolver: InAppMessageLayoutResolver,
+        evaluateProcessor: InAppMessageEvaluateProcessor,
         presentProcessor: InAppMessagePresentProcessor
     ) {
         self.workspaceFetcher = workspaceFetcher
         self.userManager = userManager
         self.identifierChecker = identifierChecker
-        self.evaluator = evaluator
+        self.layoutResolver = layoutResolver
+        self.evaluateProcessor = evaluateProcessor
         self.presentProcessor = presentProcessor
     }
 
@@ -58,19 +61,18 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
             return InAppMessageDeliverResponse.of(request: request, code: .identifierChanged)
         }
 
-        // check Evaluation
-        let evaluation: InAppMessageEvaluation
-        if inAppMessage.evaluateContext.atDeliverTime {
-            evaluation = try evaluator.evaluate(workspace: workspace, inAppMessage: inAppMessage, user: user, timestamp: request.requestedAt)
-            Log.debug("InAppMessage Re-evaluated: evaluation: \(evaluation), request: \(request)")
-        } else {
-            evaluation = request.evaluation
-        }
-        if !evaluation.isEligible {
+        // resolve layout
+        let layoutEvaluation = try layoutResolver.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
+
+        // check Evaluation (re-evaluate + dedup)
+        let eligibilityRequest = InAppMessageEligibilityRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: request.requestedAt)
+        let eligibilityEvaluation = try evaluateProcessor.process(type: .deliver, request: eligibilityRequest)
+        if !eligibilityEvaluation.isEligible {
             return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
         }
 
-        let presentRequest = InAppMessagePresentRequest.of(request: request, workspace: workspace, inAppMessage: inAppMessage, user: user, evaluation: evaluation)
+        // present
+        let presentRequest = InAppMessagePresentRequest.of(request: request, inAppMessage: inAppMessage, user: user, eligibilityEvaluation: eligibilityEvaluation, layoutEvaluation: layoutEvaluation)
         let presentResponse = try presentProcessor.process(request: presentRequest)
 
         return InAppMessageDeliverResponse.of(request: request, code: .present, presentResponse: presentResponse)

@@ -1,15 +1,13 @@
 import Foundation
 
-protocol EvaluationFlowFactory {
-    func getExperimentFlow(experimentType: ExperimentType) -> ExperimentFlow
-    func getInAppMessageFlow() -> InAppMessageEligibilityFlow
+protocol ExperimentFlowFactory {
+    func get(experimentType: ExperimentType) -> ExperimentFlow
 }
 
-class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
+class DefaultExperimentFlowFactory: ExperimentFlowFactory {
 
     private let abTestFlow: ExperimentFlow
     private let featureFlagFlow: ExperimentFlow
-    private let inAppMessageFlow: InAppMessageEligibilityFlow
 
     init(context: EvaluationContext) {
         let experimentActionResolver = context.get(ActionResolver.self)!
@@ -34,28 +32,12 @@ class DefaultEvaluationFlowFactory: EvaluationFlowFactory {
             TargetRuleEvaluator(targetRuleDeterminer: context.get(ExperimentTargetRuleDeterminer.self)!, actionResolver: experimentActionResolver),
             DefaultRuleEvaluator(actionResolver: context.get(ActionResolver.self)!)
         )
-
-        inAppMessageFlow = InAppMessageEligibilityFlow.of(
-            PlatformInAppMessageEligibilityFlowEvaluator(),
-            OverrideInAppMessageEligibilityFlowEvaluator(userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!),
-            DraftInAppMessageEligibilityFlowEvaluator(),
-            PausedInAppMessageEligibilityFlowEvaluator(),
-            PeriodInAppMessageEligibilityFlowEvaluator(),
-            TargetInAppMessageEligibilityFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!),
-            FrequencyCapInAppMessageEligibilityFlowEvaluator(frequencyCapMatcher: context.get(InAppMessageFrequencyCapMatcher.self)!),
-            HiddenInAppMessageEligibilityFlowEvaluator(hiddenMatcher: context.get(InAppMessageHiddenMatcher.self)!),
-            EligibleInAppMessageEligibilityFlowEvaluator()
-        )
     }
 
-    func getExperimentFlow(experimentType: ExperimentType) -> ExperimentFlow {
+    func get(experimentType: ExperimentType) -> ExperimentFlow {
         switch experimentType {
         case .abTest: return abTestFlow
         case .featureFlag: return featureFlagFlow
         }
-    }
-
-    func getInAppMessageFlow() -> InAppMessageEligibilityFlow {
-        inAppMessageFlow
     }
 }
