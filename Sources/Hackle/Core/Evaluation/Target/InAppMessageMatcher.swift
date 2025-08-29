@@ -8,11 +8,11 @@
 import Foundation
 
 protocol InAppMessageMatcher {
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool
+    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool
 }
 
 class InAppMessageUserOverrideMatcher: InAppMessageMatcher {
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
         let userOverrides = request.inAppMessage.targetContext.overrides
         if userOverrides.isEmpty {
             return false
@@ -22,7 +22,7 @@ class InAppMessageUserOverrideMatcher: InAppMessageMatcher {
         }
     }
 
-    private func isUserOverridden(request: InAppMessageRequest, userOverride: InAppMessage.UserOverride) -> Bool {
+    private func isUserOverridden(request: InAppMessageEligibilityRequest, userOverride: InAppMessage.UserOverride) -> Bool {
         guard let identifier = request.user.identifiers[userOverride.identifierType] else {
             return false
         }
@@ -38,7 +38,7 @@ class InAppMessageTargetMatcher: InAppMessageMatcher {
         self.targetMatcher = targetMatcher
     }
 
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
         let targets = request.inAppMessage.targetContext.targets
         if targets.isEmpty {
             return true
@@ -59,28 +59,28 @@ class InAppMessageHiddenMatcher: InAppMessageMatcher {
         self.storage = storage
     }
 
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
         storage.exist(inAppMessage: request.inAppMessage, now: request.timestamp)
     }
 }
 
 class InAppMessageFrequencyCapMatcher: InAppMessageMatcher {
-    
+
     private let storage: InAppMessageImpressionStorage
-    
+
     init(storage: InAppMessageImpressionStorage) {
         self.storage = storage
     }
-    
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
+
+    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
         return try isFrequencyCapped(inAppMessage: request.inAppMessage, user: request.user, timestamp: request.timestamp)
     }
-    
+
     private func isFrequencyCapped(inAppMessage: InAppMessage, user: HackleUser, timestamp: Date) throws -> Bool {
         guard let frequencyCap = inAppMessage.eventTrigger.frequencyCap else {
             return false
         }
-        
+
         let contexts = createMatchContexts(frequencyCap: frequencyCap)
         if contexts.count == 0 {
             return false
@@ -94,10 +94,10 @@ class InAppMessageFrequencyCapMatcher: InAppMessageMatcher {
                 }
             }
         }
-        
+
         return false
     }
-    
+
     private func createMatchContexts(frequencyCap: InAppMessage.EventTrigger.FrequencyCap) -> [MatchContext] {
         var contexts = [MatchContext]()
 
@@ -114,14 +114,14 @@ class InAppMessageFrequencyCapMatcher: InAppMessageMatcher {
 
 extension InAppMessageFrequencyCapMatcher {
     fileprivate class MatchContext {
-        
+
         private let predicate: FrequencyCapPredicate
         private var matchCount: Int = 0
-        
+
         init(predicate: FrequencyCapPredicate) {
             self.predicate = predicate
         }
-        
+
         func match(user: HackleUser, timestamp: Date, impression: InAppMessageImpression) -> Bool {
             if predicate.matches(user: user, timestamp: timestamp, impression: impression) {
                 matchCount += 1
@@ -137,8 +137,6 @@ extension InAppMessageFrequencyCapMatcher {
     }
 }
 
-
-
 extension InAppMessage.EventTrigger.IdentifierCap: InAppMessageFrequencyCapMatcher.FrequencyCapPredicate {
     var thresholdCount: Int64 {
         count
@@ -146,7 +144,8 @@ extension InAppMessage.EventTrigger.IdentifierCap: InAppMessageFrequencyCapMatch
 
     func matches(user: HackleUser, timestamp: Date, impression: InAppMessageImpression) -> Bool {
         guard let userIdentifier = user.identifiers[identifierType],
-              let impressionIdentifier = impression.identifiers[identifierType] else {
+              let impressionIdentifier = impression.identifiers[identifierType]
+        else {
             return false
         }
 

@@ -27,12 +27,6 @@ class InAppMessageEventProcessorFactory {
 }
 
 class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
-    private static let IMPRESSION_MAX_SIZE = 100
-    private let impressionStorage: InAppMessageImpressionStorage
-
-    init(impressionStorage: InAppMessageImpressionStorage) {
-        self.impressionStorage = impressionStorage
-    }
 
     func supports(event: InAppMessage.Event) -> Bool {
         guard case .impression = event else {
@@ -42,27 +36,7 @@ class InAppMessageImpressionEventProcessor: InAppMessageEventProcessor {
     }
 
     func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date) {
-        do {
-            if(view.context.decisionReasion == DecisionReason.OVERRIDDEN) {
-                return
-            }
-            
-            try saveImpression(inAppMessage: view.context.inAppMessage, user: view.context.user, timestamp: timestamp)
-        } catch {
-            Log.error("Failed to process InAppMessageImpressionEvent: \(error)")
-        }
-    }
-
-    private func saveImpression(inAppMessage: InAppMessage, user: HackleUser, timestamp: Date) throws {
-        var impressions = try impressionStorage.get(inAppMessage: inAppMessage)
-        let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: timestamp.timeIntervalSince1970)
-        impressions.append(impression)
-
-        if impressions.count > InAppMessageImpressionEventProcessor.IMPRESSION_MAX_SIZE {
-            impressions.removeFirst(impressions.count - InAppMessageImpressionEventProcessor.IMPRESSION_MAX_SIZE)
-        }
-
-        try impressionStorage.set(inAppMessage: inAppMessage, impressions: impressions)
+        // Do nothing.
     }
 }
 

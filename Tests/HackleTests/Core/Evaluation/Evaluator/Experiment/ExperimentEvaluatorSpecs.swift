@@ -15,12 +15,12 @@ class ExperimentEvaluatorSpecs: QuickSpec {
 
     override func spec() {
 
-        var evaluationFlowFactory: MockEvaluationFlowFactory!
+        var flowFactory: MockExperimentFlowFactory!
         var sut: ExperimentEvaluator!
 
         beforeEach {
-            evaluationFlowFactory = MockEvaluationFlowFactory()
-            sut = ExperimentEvaluator(evaluationFlowFactory: evaluationFlowFactory)
+            flowFactory = MockExperimentFlowFactory()
+            sut = ExperimentEvaluator(flowFactory: flowFactory)
         }
 
         it("supports") {
@@ -44,7 +44,7 @@ class ExperimentEvaluatorSpecs: QuickSpec {
                 it("evaluation") {
                     let evaluation = experimentEvaluation()
                     let flow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.create(evaluation)
-                    evaluationFlowFactory.experimentFlow = flow
+                    every(flowFactory.getMock).returns(flow)
 
                     let request = experimentRequest()
                     let context = Evaluators.context()
@@ -55,6 +55,9 @@ class ExperimentEvaluatorSpecs: QuickSpec {
                 }
 
                 it("default") {
+                    let flow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.end()
+                    every(flowFactory.getMock).returns(flow)
+                    
                     let request = experimentRequest()
                     let context = Evaluators.context()
 

@@ -16,14 +16,13 @@ protocol HackleCore {
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
-    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision
+    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation
 }
 
 class DefaultHackleCore: HackleCore {
 
     private let experimentEvaluator: Evaluator
     private let remoteConfigEvaluator: Evaluator
-    private let inAppMessageEvaluator: Evaluator
     private let workspaceFetcher: WorkspaceFetcher
     private let eventFactory: UserEventFactory
     private let eventProcessor: UserEventProcessor
@@ -32,7 +31,6 @@ class DefaultHackleCore: HackleCore {
     init(
         experimentEvaluator: Evaluator,
         remoteConfigEvaluator: Evaluator,
-        inAppMessageEvaluator: Evaluator,
         workspaceFetcher: WorkspaceFetcher,
         eventFactory: UserEventFactory,
         eventProcessor: UserEventProcessor,
@@ -40,7 +38,6 @@ class DefaultHackleCore: HackleCore {
     ) {
         self.experimentEvaluator = experimentEvaluator
         self.remoteConfigEvaluator = remoteConfigEvaluator
-        self.inAppMessageEvaluator = inAppMessageEvaluator
         self.workspaceFetcher = workspaceFetcher
         self.eventFactory = eventFactory
         self.eventProcessor = eventProcessor
@@ -49,6 +46,7 @@ class DefaultHackleCore: HackleCore {
 
     static func create(
         workspaceFetcher: WorkspaceFetcher,
+        eventFactory: UserEventFactory,
         eventProcessor: UserEventProcessor,
         manualOverrideStorage: ManualOverrideStorage
     ) -> DefaultHackleCore {
@@ -56,11 +54,9 @@ class DefaultHackleCore: HackleCore {
         let delegatingEvaluator = DelegatingEvaluator()
         let context = EvaluationContext.shared
         context.initialize(evaluator: delegatingEvaluator, manualOverrideStorage: manualOverrideStorage, clock: SystemClock.shared)
-        let flowFactory = DefaultEvaluationFlowFactory(context: context)
 
-        let experimentEvaluator = ExperimentEvaluator(evaluationFlowFactory: flowFactory)
+        let experimentEvaluator = ExperimentEvaluator(flowFactory: DefaultExperimentFlowFactory(context: context))
         let remoteConfigEvaluator = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: context.get(RemoteConfigTargetRuleDeterminer.self)!)
-        let inAppMessageEvaluator = InAppMessageEvaluator(evaluationFlowFactory: flowFactory)
 
         delegatingEvaluator.add(experimentEvaluator)
         delegatingEvaluator.add(remoteConfigEvaluator)
@@ -68,9 +64,8 @@ class DefaultHackleCore: HackleCore {
         return DefaultHackleCore(
             experimentEvaluator: experimentEvaluator,
             remoteConfigEvaluator: remoteConfigEvaluator,
-            inAppMessageEvaluator: inAppMessageEvaluator,
             workspaceFetcher: workspaceFetcher,
-            eventFactory: DefaultUserEventFactory(clock: SystemClock.shared),
+            eventFactory: eventFactory,
             eventProcessor: eventProcessor,
             clock: SystemClock.shared
         )
@@ -89,7 +84,7 @@ class DefaultHackleCore: HackleCore {
         let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: experiment, defaultVariationKey: defaultVariationKey)
         let (evaluation, decision) = try experimentInternal(request: request)
 
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
 
         return decision
@@ -127,7 +122,7 @@ class DefaultHackleCore: HackleCore {
         let request = ExperimentRequest.of(workspace: workspace, user: user, experiment: featureFlag, defaultVariationKey: "A")
         let (evaluation, decision) = try featureFlagInternal(request: request)
 
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
 
         return decision
@@ -178,50 +173,19 @@ class DefaultHackleCore: HackleCore {
         let request = RemoteConfigRequest.of(workspace: workspace, user: user, parameter: parameter, defaultValue: defaultValue)
         let evaluation: RemoteConfigEvaluation = try remoteConfigEvaluator.evaluate(request: request, context: Evaluators.context())
 
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
+        let events = eventFactory.create(request: request, evaluation: evaluation)
         eventProcessor.process(events: events)
 
         return RemoteConfigDecision(value: evaluation.value, reason: evaluation.reason)
     }
 
-    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision {
-        guard let workspace = workspaceFetcher.fetch() else {
-            return InAppMessageDecision.of(reason: DecisionReason.SDK_NOT_READY)
-        }
-
-        guard let inAppMessage = workspace.getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) else {
-            return InAppMessageDecision.of(reason: DecisionReason.IN_APP_MESSAGE_NOT_FOUND)
-        }
-
-        let request = InAppMessageRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: clock.now())
-        let evaluation: InAppMessageEvaluation = try inAppMessageEvaluator.evaluate(request: request, context: Evaluators.context())
-
-        let events = try eventFactory.create(request: request, evaluation: evaluation)
-        eventProcessor.process(events: events)
-
-        return InAppMessageDecision.of(
-            inAppMessage: evaluation.inAppMessage,
-            message: evaluation.message,
-            reason: evaluation.reason,
-            properties: evaluation.properties
-        )
-    }
-}
-
-extension HackleCore {
-
-    /// Used for event triggered in app message
-    func tryInAppMessage(inAppMessageKey: Int64, user: HackleUser) -> InAppMessageDecision {
-        let sample = TimerSample.start()
-        let decision: InAppMessageDecision
-
-        do {
-            decision = try inAppMessage(inAppMessageKey: inAppMessageKey, user: user)
-        } catch let error {
-            Log.error("Unexpected error while deciding in app message [\(inAppMessageKey)]: \(String(describing: error))")
-            decision = InAppMessageDecision.of(reason: DecisionReason.EXCEPTION)
-        }
-        DecisionMetrics.inAppMessage(sample: sample, key: inAppMessageKey, decision: decision)
-        return decision
+    func inAppMessage<Evaluation>(
+        request: InAppMessageEvaluatorRequest,
+        context: EvaluatorContext,
+        evaluator: any InAppMessageEvaluator
+    ) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation {
+        let evaluation: Evaluation = try evaluator.evaluate(request: request, context: context)
+        evaluator.record(request: request, evaluation: evaluation)
+        return evaluation
     }
 }

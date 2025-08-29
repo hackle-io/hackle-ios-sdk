@@ -1,36 +1,20 @@
-//
-//  InAppMessageManager.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/05.
-//
-
 import Foundation
 
-class InAppMessageManager: UserEventListener {
+class InAppMessageManager: UserEventListener, UserListener {
 
-    private let determiner: InAppMessageDeterminer
-    private let presenter: InAppMessagePresenter
+    private let triggerProcessor: InAppMessageTriggerProcessor
+    private let resetProcessor: InAppMessageResetProcessor
 
-    init(determiner: InAppMessageDeterminer, presenter: InAppMessagePresenter) {
-        self.determiner = determiner
-        self.presenter = presenter
+    init(triggerProcessor: InAppMessageTriggerProcessor, resetProcessor: InAppMessageResetProcessor) {
+        self.triggerProcessor = triggerProcessor
+        self.resetProcessor = resetProcessor
     }
 
     func onEvent(event: UserEvent) {
-        guard let context = determine(event: event) else {
-            return
-        }
-
-        presenter.present(context: context)
+        triggerProcessor.process(event: event)
     }
 
-    private func determine(event: UserEvent) -> InAppMessagePresentationContext? {
-        do {
-            return try determiner.determineOrNull(event: event)
-        } catch {
-            Log.error("Failed to determine InAppMessage: \(error)")
-            return nil
-        }
+    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+        resetProcessor.process(oldUser: oldUser, newUser: newUser)
     }
 }

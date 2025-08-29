@@ -17,6 +17,13 @@ class EvaluationFlow<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>
         }
         return try evaluator.evaluate(request: request, context: context, nextFlow: nextFlow)
     }
+
+    static func +(lhs: EvaluationFlow<Request, Evaluation>, rhs: EvaluationFlow<Request, Evaluation>) -> EvaluationFlow<Request, Evaluation> {
+        guard let evaluator = lhs.evaluator, let nextFlow = lhs.nextFlow else {
+            return rhs
+        }
+        return decision(evaluator: evaluator, nextFlow: nextFlow + rhs)
+    }
 }
 
 extension EvaluationFlow {

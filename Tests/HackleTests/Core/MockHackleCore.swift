@@ -44,9 +44,13 @@ class MockHackleCore: Mock, HackleCore {
         call(remoteConfigMock, args: (parameterKey, user, defaultValue))
     }
 
-    lazy var inAppMessageMock = MockFunction(self, inAppMessage)
+    lazy var inAppMessageMock = MockFunction.throwable(self, _inAppMessage)
 
-    func inAppMessage(inAppMessageKey: Int64, user: HackleUser) throws -> InAppMessageDecision {
-        call(inAppMessageMock, args: (inAppMessageKey, user))
+    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation {
+        return try _inAppMessage(request: request, context: context, evaluator: evaluator) as! Evaluation
+    }
+
+    private func _inAppMessage(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> EvaluatorEvaluation {
+        return try call(inAppMessageMock, args: (request, context, evaluator))
     }
 }

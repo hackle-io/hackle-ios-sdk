@@ -37,12 +37,10 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
 
         describe("InAppMessageImpressionEventProcessor") {
 
-            var impressionStorage: InAppMessageImpressionStorage!
             var sut: InAppMessageImpressionEventProcessor!
 
             beforeEach {
-                impressionStorage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
-                sut = InAppMessageImpressionEventProcessor(impressionStorage: impressionStorage)
+                sut = InAppMessageImpressionEventProcessor()
             }
             it("supports") {
                 expect(sut.supports(event: .impression)) == true
@@ -50,51 +48,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
             }
 
             describe("process") {
-                it("save impression") {
-                    let user = HackleUser.builder()
-                        .identifier("a", "1")
-                        .identifier("b", "2")
-                        .build()
-                    let inAppMessage = InAppMessage.create(id: 42)
-                    let context = InAppMessage.context(inAppMessage: inAppMessage, user: user)
-                    let view = MockInAppMessageView(context: context, presented: true)
-                    let timestamp = Date(timeIntervalSince1970: 320)
-                    sut.process(view: view, event: .impression, timestamp: timestamp)
-
-                    let impressions = try impressionStorage.get(inAppMessage: inAppMessage)
-                    expect(impressions.count) == 1
-                    expect(impressions[0].identifiers) == ["a": "1", "b": "2"]
-                    expect(impressions[0].timestamp) == 320
-                }
-
-                it("when exceed impression limit then remove first") {
-                    let inAppMessage = InAppMessage.create(id: 42)
-                    let context = InAppMessage.context(inAppMessage: inAppMessage)
-                    let view = MockInAppMessageView(context: context, presented: true)
-
-                    for _ in 0..<100 {
-                        sut.process(view: view, event: .impression, timestamp: Date())
-                    }
-                    expect(try impressionStorage.get(inAppMessage: inAppMessage).count) == 100
-
+                it("do nothing") {
+                    let view = MockInAppMessageView(presented: true)
                     sut.process(view: view, event: .impression, timestamp: Date())
-                    expect(try impressionStorage.get(inAppMessage: inAppMessage).count) == 100
-                }
-                
-            
-                it("when override, do not save impression") {
-                    let user = HackleUser.builder()
-                        .identifier("a", "1")
-                        .identifier("b", "2")
-                        .build()
-                    let inAppMessage = InAppMessage.create(id: 42)
-                    let context = InAppMessage.context(inAppMessage: inAppMessage, user: user, decisionReason: DecisionReason.OVERRIDDEN)
-                    let view = MockInAppMessageView(context: context, presented: true)
-                    let timestamp = Date(timeIntervalSince1970: 320)
-                    sut.process(view: view, event: .impression, timestamp: timestamp)
-
-                    let impressions = try impressionStorage.get(inAppMessage: inAppMessage)
-                    expect(impressions.count) == 0
                 }
             }
         }

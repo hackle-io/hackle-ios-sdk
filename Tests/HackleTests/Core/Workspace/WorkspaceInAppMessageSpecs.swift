@@ -38,6 +38,11 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.eventTrigger.rules[0].targets.count) == 1
             expect(iam.eventTrigger.rules[0].targets[0].conditions.count) == 1
 
+            expect(iam.eventTrigger.delay.type) == InAppMessage.DelayType.after
+            expect(iam.eventTrigger.delay.afterCondition!.duration) == 42.0
+
+            expect(iam.evaluateContext.atDeliverTime) == true
+
             expect(iam.targetContext.targets.count) == 1
             expect(iam.targetContext.overrides.count) == 1
             expect(iam.targetContext.overrides[0].identifierType) == "$id"

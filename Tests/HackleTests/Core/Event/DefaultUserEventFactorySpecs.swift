@@ -51,7 +51,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
                 properties: PropertiesBuilder()
             )
 
-            let events = try sut.create(request: request, evaluation: evaluation)
+            let events = sut.create(request: request, evaluation: evaluation)
 
             expect(events.count) == 3
 
@@ -102,15 +102,15 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let evaluation1 = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, experiment: experiment(id: 1), variationId: 42, variationKey: "B")
             context.add(evaluation1)
 
-            let request = InAppMessage.request()
-            let evaluation = InAppMessageEvaluation.of(
+            let request = InAppMessage.eligibilityRequest()
+            let evaluation = InAppMessageEligibilityEvaluation.of(
                 request: request,
                 context: context,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET,
-                message: request.inAppMessage.messageContext.messages[0]
+                isEligible: true
             )
 
-            let events = try sut.create(request: request, evaluation: evaluation)
+            let events = sut.create(request: request, evaluation: evaluation)
 
             expect(events.count).to(equal(1))
 

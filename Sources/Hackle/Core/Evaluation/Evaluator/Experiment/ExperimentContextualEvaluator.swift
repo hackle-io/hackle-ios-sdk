@@ -7,8 +7,8 @@
 
 protocol ExperimentContextualEvaluator {
     var evaluator: Evaluator { get }
-    
-    func decorate(request: EvaluatorRequest, context: EvaluatorContext, evaluation: EvaluatorEvaluation) throws -> ExperimentEvaluation
+
+    func resolve(request: EvaluatorRequest, context: EvaluatorContext, evaluation: ExperimentEvaluation) throws -> ExperimentEvaluation
 }
 
 extension ExperimentContextualEvaluator {
@@ -22,13 +22,12 @@ extension ExperimentContextualEvaluator {
         }
         return experimentEvaluation
     }
-    
+
     fileprivate func evaluateInternal(request: EvaluatorRequest, context: EvaluatorContext, experiment: Experiment) throws -> ExperimentEvaluation {
         let experimentRequest = ExperimentRequest.of(requestedBy: request, experiment: experiment)
         let evaluation: ExperimentEvaluation = try evaluator.evaluate(request: experimentRequest, context: context)
-        let decoratedEvaluation = try decorate(request: request, context: context, evaluation: evaluation)
-        
-        context.add(decoratedEvaluation)
-        return decoratedEvaluation
+        let resolvedEvaluation = try resolve(request: request, context: context, evaluation: evaluation)
+        context.add(resolvedEvaluation)
+        return resolvedEvaluation
     }
 }

@@ -47,6 +47,9 @@ protocol EvaluatorContext {
     func add(_ evaluation: EvaluatorEvaluation)
 
     func setProperty(_ key: String, _ value: Any?)
+
+    func get<T>(_ type: T.Type) -> T?
+    func set(_ value: Any)
 }
 
 class Evaluators {
@@ -59,11 +62,13 @@ class Evaluators {
         private var _stack: [EvaluatorRequest]
         private var _targetEvaluations: [EvaluatorEvaluation]
         private var _properties: PropertiesBuilder
+        private var _values: [Any]
 
         init() {
             _stack = []
             _targetEvaluations = []
             _properties = PropertiesBuilder()
+            _values = []
         }
 
         var stack: [EvaluatorRequest] {
@@ -115,6 +120,16 @@ class Evaluators {
 
         func setProperty(_ key: String, _ value: Any?) {
             _properties.add(key, value)
+        }
+
+        func get<T>(_ type: T.Type) -> T? {
+            return _values.first { value in
+                value is T
+            } as? T
+        }
+
+        func set(_ value: Any) {
+            _values.append(value)
         }
     }
 }

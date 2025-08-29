@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UserEventFactory {
-    func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) throws -> [UserEvent]
+    func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) -> [UserEvent]
 }
 
 
@@ -27,12 +27,12 @@ class DefaultUserEventFactory: UserEventFactory {
     private static let EXPERIMENT_VERSION_KEY = "$experiment_version"
     private static let EXECUTION_VERSION_KEY = "$execution_version"
 
-    func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) throws -> [UserEvent] {
+    func create(request: EvaluatorRequest, evaluation: EvaluatorEvaluation) -> [UserEvent] {
 
         let timestamp = clock.now()
         var events: [UserEvent] = []
 
-        if let rootEvent = try create(request: request, evaluation: evaluation, timestamp: timestamp, properties: PropertiesBuilder()) {
+        if let rootEvent = create(request: request, evaluation: evaluation, timestamp: timestamp, properties: PropertiesBuilder()) {
             events.append(rootEvent)
         }
 
@@ -40,7 +40,7 @@ class DefaultUserEventFactory: UserEventFactory {
             let properties = PropertiesBuilder()
             properties.add(DefaultUserEventFactory.ROOT_TYPE, request.key.type.rawValue)
             properties.add(DefaultUserEventFactory.ROOT_ID, request.key.id)
-            if let targetEvent = try create(request: request, evaluation: targetEvaluation, timestamp: timestamp, properties: properties) {
+            if let targetEvent = create(request: request, evaluation: targetEvaluation, timestamp: timestamp, properties: properties) {
                 events.append(targetEvent)
             }
         }
@@ -52,7 +52,7 @@ class DefaultUserEventFactory: UserEventFactory {
         evaluation: EvaluatorEvaluation,
         timestamp: Date,
         properties: PropertiesBuilder
-    ) throws -> UserEvent? {
+    ) -> UserEvent? {
 
         switch evaluation {
         case let evaluation as ExperimentEvaluation:
@@ -73,10 +73,8 @@ class DefaultUserEventFactory: UserEventFactory {
                 properties: properties.build(),
                 timestamp: timestamp
             )
-        case _ as InAppMessageEvaluation:
-            return nil
         default:
-            throw HackleError.error("Unsupported Evaluation [\(evaluation)]")
+            return nil
         }
     }
 }
