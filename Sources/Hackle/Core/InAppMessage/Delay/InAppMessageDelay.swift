@@ -12,7 +12,7 @@ class InAppMessageDelay {
 
 extension InAppMessageDelay: CustomStringConvertible {
     var description: String {
-        "InAppMessageDelay(schedule: \(schedule), requestedAt: \(requestedAt))"
+        "InAppMessageDelay(dispatchId: \(schedule.dispatchId), inAppMessageKey: \(schedule.inAppMessageKey), delay: \(delay)s, requestedAt: \(requestedAt), deliverAt: \(schedule.time.deliverAt))"
     }
 
     var delay: TimeInterval {

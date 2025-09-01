@@ -68,6 +68,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         let eligibilityRequest = InAppMessageEligibilityRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: request.requestedAt)
         let eligibilityEvaluation = try evaluateProcessor.process(type: .deliver, request: eligibilityRequest)
         if !eligibilityEvaluation.isEligible {
+            Log.debug("InAppMessage Deliver Ineligible. dispatchId: \(request.dispatchId), reason: \(eligibilityEvaluation.reason)")
             return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
         }
 

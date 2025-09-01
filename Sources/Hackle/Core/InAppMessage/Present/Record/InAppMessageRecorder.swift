@@ -21,7 +21,6 @@ class DefaultInAppMessageRecorder: InAppMessageRecorder {
 
         do {
             try doRecord(request: request)
-            Log.debug("InAppMessage recorded: \(request)")
         } catch {
             Log.error("Failed to record InAppMessageImpression: \(error)")
         }
@@ -37,5 +36,6 @@ class DefaultInAppMessageRecorder: InAppMessageRecorder {
         }
 
         try storage.set(inAppMessage: request.inAppMessage, impressions: impressions)
+        Log.debug("InAppMessage Impression recorded. dispatchId: \(request.dispatchId), inAppMessageKey: \(request.inAppMessage.key), impression: \(impression)")
     }
 }

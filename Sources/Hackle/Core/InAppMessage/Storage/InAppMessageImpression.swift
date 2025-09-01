@@ -19,6 +19,12 @@ class InAppMessageImpression: Codable {
     }
 }
 
+extension InAppMessageImpression: CustomStringConvertible {
+    var description: String {
+        "InAppMessageImpression(identifiers: \(identifiers), timestamp: \(timestamp))"
+    }
+}
+
 protocol InAppMessageImpressionStorage {
     func get(inAppMessage: InAppMessage) throws -> [InAppMessageImpression]
 

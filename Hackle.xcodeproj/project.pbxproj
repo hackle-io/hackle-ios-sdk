@@ -543,6 +543,7 @@
 		EE81EDAF2E61B31D0044B40E /* DefaultEvaluationEventRecorderSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81EDAE2E61B31D0044B40E /* DefaultEvaluationEventRecorderSpecs.swift */; };
 		EE81EDB12E61B48F0044B40E /* DefaultInAppMessageEvaluateProcessorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81EDB02E61B48F0044B40E /* DefaultInAppMessageEvaluateProcessorSpecs.swift */; };
 		EE81EDB32E61B7B60044B40E /* DefaultInAppMessageLayoutResolverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81EDB22E61B7B60044B40E /* DefaultInAppMessageLayoutResolverSpecs.swift */; };
+		EE81EDB52E6530260044B40E /* InAppMessageDeliverRequestSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81EDB42E6530260044B40E /* InAppMessageDeliverRequestSpecs.swift */; };
 		EE86375F29ECD0AC000268DC /* ContextualEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE86375E29ECD0AC000268DC /* ContextualEvaluator.swift */; };
 		EE86376129ECD0B5000268DC /* DelegatingEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE86376029ECD0B5000268DC /* DelegatingEvaluator.swift */; };
 		EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE86376429ECDA38000268DC /* ExperimentEvaluator.swift */; };
@@ -1195,6 +1196,7 @@
 		EE81EDAE2E61B31D0044B40E /* DefaultEvaluationEventRecorderSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvaluationEventRecorderSpecs.swift; sourceTree = "<group>"; };
 		EE81EDB02E61B48F0044B40E /* DefaultInAppMessageEvaluateProcessorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageEvaluateProcessorSpecs.swift; sourceTree = "<group>"; };
 		EE81EDB22E61B7B60044B40E /* DefaultInAppMessageLayoutResolverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInAppMessageLayoutResolverSpecs.swift; sourceTree = "<group>"; };
+		EE81EDB42E6530260044B40E /* InAppMessageDeliverRequestSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageDeliverRequestSpecs.swift; sourceTree = "<group>"; };
 		EE86375E29ECD0AC000268DC /* ContextualEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualEvaluator.swift; sourceTree = "<group>"; };
 		EE86376029ECD0B5000268DC /* DelegatingEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingEvaluator.swift; sourceTree = "<group>"; };
 		EE86376429ECDA38000268DC /* ExperimentEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentEvaluator.swift; sourceTree = "<group>"; };
@@ -2645,6 +2647,7 @@
 			children = (
 				EE4D03CD2E5D6C3F007BE61A /* MockInAppMessageDeliverProcessor.swift */,
 				EE4D03CF2E5D6C49007BE61A /* DefaultInAppMessageDeliverProcessorSpecs.swift */,
+				EE81EDB42E6530260044B40E /* InAppMessageDeliverRequestSpecs.swift */,
 			);
 			path = Deliver;
 			sourceTree = "<group>";
@@ -3953,6 +3956,7 @@
 				B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */,
 				EE29DAA129CD82C200B1FEAA /* DefaultSessionManagerSpecs.swift in Sources */,
 				B26AC2922E4C5AA900AAE56F /* InvokeDtoSpecs.swift in Sources */,
+				EE81EDB52E6530260044B40E /* InAppMessageDeliverRequestSpecs.swift in Sources */,
 				EE29DA5E29CD82C200B1FEAA /* CumulativeMetricRegistrySpecs.swift in Sources */,
 				EE29DA8829CD82C200B1FEAA /* MockExperimentTargetRuleDeterminer.swift in Sources */,
 				EE29DA9329CD82C200B1FEAA /* Murmur3HasherSpec.swift in Sources */,

@@ -497,3 +497,9 @@ extension InAppMessage: CustomStringConvertible {
         messageContext.platformTypes.contains(platform)
     }
 }
+
+extension InAppMessage.Action: CustomStringConvertible {
+    var description: String {
+        return "InAppMessage.Action(behavior: \(behavior), actionType: \(actionType), value: \(String(describing: value)))"
+    }
+}

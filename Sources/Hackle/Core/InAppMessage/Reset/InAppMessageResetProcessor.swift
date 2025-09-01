@@ -17,8 +17,12 @@ class DefaultInAppMessageResetProcessor: InAppMessageResetProcessor {
     func process(oldUser: User, newUser: User) {
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: oldUser.resolvedIdentifiers, new: newUser.resolvedIdentifiers)
         if isIdentifierChanged {
-            let delays = delayManager.cancelAll()
-            Log.debug("InAppMessage Delay cancelled. count: \(delays.count)")
+            reset()
         }
+    }
+
+    private func reset() {
+        let delays = delayManager.cancelAll()
+        Log.debug("InAppMessage Reset. cancelled: \(delays.count)")
     }
 }
