@@ -278,7 +278,6 @@ extension HackleApp {
         let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
-        let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
@@ -292,7 +291,7 @@ extension HackleApp {
         )
         let pollingSynchronizer = PollingSynchronizer(
             delegate: compositeSynchronizer,
-            scheduler: scheduler,
+            scheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.PollingSynchronizer")),
             interval: config.pollingInterval
         )
 
@@ -410,7 +409,7 @@ extension HackleApp {
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
-            eventFlushScheduler: scheduler,
+            eventFlushScheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.DefaultUserEventProcessor.flush")),
             eventFlushInterval: config.eventFlushInterval,
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
@@ -552,7 +551,7 @@ extension HackleApp {
 
         let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
             clock: clock,
-            scheduler: Schedulers.dispatch()
+            scheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.DefaultInAppMessageDelayScheduler"))
         )
         let inAppMessageDelayManager = DefaultInAppMessageDelayManager(
             scheduler: inAppMessageDelayScheduler
