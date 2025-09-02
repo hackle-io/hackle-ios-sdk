@@ -74,14 +74,12 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
 
             let task = sut.schedule(delay: delay)
 
-            expect(task.isCompleted) == false
             verify(exactly: 0) {
                 listener.onScheduleMock
             }
 
             Thread.sleep(forTimeInterval: 0.2)
 
-            expect(task.isCompleted) == true
             verify(exactly: 1) {
                 listener.onScheduleMock
             }
@@ -104,14 +102,12 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
             )
 
             let task = sut.schedule(delay: delay)
-            expect(task.isCompleted) == false
             verify(exactly: 0) {
                 listener.onScheduleMock
             }
 
             task.cancel()
 
-            expect(task.isCompleted) == true
             verify(exactly: 0) {
                 listener.onScheduleMock
             }

@@ -4,16 +4,16 @@ import Mockery
 
 class MockInAppMessageDelayManager: Mock, InAppMessageDelayManager {
 
-    lazy var registerAndDelayMock = MockFunction.throwable(self, registerAndDelay)
+    lazy var registerAndDelayMock = MockFunction(self, registerAndDelay)
 
-    func registerAndDelay(request: InAppMessageScheduleRequest) throws -> InAppMessageDelay {
-        return try call(registerAndDelayMock, args: request)
+    func registerAndDelay(request: InAppMessageScheduleRequest) -> InAppMessageDelay {
+        return call(registerAndDelayMock, args: request)
     }
 
-    lazy var delayMock = MockFunction.throwable(self, delay)
+    lazy var delayMock = MockFunction(self, delay)
 
-    func delay(request: InAppMessageScheduleRequest) throws -> InAppMessageDelay {
-        return try call(delayMock, args: request)
+    func delay(request: InAppMessageScheduleRequest) -> InAppMessageDelay {
+        return call(delayMock, args: request)
     }
 
     lazy var deleteMock = MockFunction(self, delete)

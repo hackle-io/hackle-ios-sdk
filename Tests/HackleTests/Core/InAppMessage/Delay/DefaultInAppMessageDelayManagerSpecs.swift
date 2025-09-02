@@ -27,14 +27,7 @@ class DefaultInAppMessageDelayManagerSpecs: QuickSpec {
             let delay1 = try sut.delay(request: request1)
             expect(delay1.schedule).to(beIdenticalTo(request1.schedule))
 
-            // existing running task
-            expect {
-                try sut.delay(request: request1)
-            }
-                .to(throwError())
-
             // re-delay
-            task1.isCompleted = true
             let _ = try sut.delay(request: request1)
 
             // delay 2
@@ -53,9 +46,9 @@ class DefaultInAppMessageDelayManagerSpecs: QuickSpec {
             expect(deletedDelay1?.schedule.dispatchId) == "1"
 
             // cancelAll
-            expect(task2.isCompleted) == false
+            expect(task2.cancelled) == false
             let cancelled = sut.cancelAll()
-            expect(task2.isCompleted) == true
+            expect(task2.cancelled) == true
             expect(cancelled.count) == 1
             expect(cancelled[0].schedule.dispatchId) == "2"
         }
@@ -69,7 +62,7 @@ class DefaultInAppMessageDelayManagerSpecs: QuickSpec {
 
     class InAppMessageDelayTaskStub: InAppMessageDelayTask {
 
-        var isCompleted = false
+        var cancelled = false
         let delay: InAppMessageDelay
 
         init(delay: InAppMessageDelay) {
@@ -77,7 +70,7 @@ class DefaultInAppMessageDelayManagerSpecs: QuickSpec {
         }
 
         func cancel() {
-            isCompleted = true
+            cancelled = true
         }
     }
 }

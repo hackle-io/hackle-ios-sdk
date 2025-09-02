@@ -10,7 +10,6 @@ protocol Scheduler {
 }
 
 protocol ScheduledJob {
-    var isCompleted: Bool { get }
     func cancel()
 }
 
@@ -24,28 +23,24 @@ class DispatchSourceTimerScheduler: Scheduler {
     func schedule(delay: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
         let queue = DispatchQueue(label: "io.hackle.DispatchSourceTimerScheduler")
         let timer = DispatchSource.makeTimerSource(queue: queue)
-        let job = Job(timer: timer)
 
         timer.schedule(deadline: .now() + delay, repeating: .never)
-        timer.setEventHandler { [weak job] in
+        timer.setEventHandler {
             task()
-            job?.complete()
         }
         timer.resume()
-        return job
+        return Job(timer: timer)
     }
 
     func schedulePeriodically(delay: TimeInterval, period: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
         let queue = DispatchQueue(label: "io.hackle.DispatchSourceTimerScheduler")
         let timer = DispatchSource.makeTimerSource(queue: queue)
-        let job = Job(timer: timer)
-
         timer.schedule(deadline: .now() + delay, repeating: period)
         timer.setEventHandler {
             task()
         }
         timer.resume()
-        return job
+        return Job(timer: timer)
     }
 
     class Job: ScheduledJob {
@@ -54,20 +49,6 @@ class DispatchSourceTimerScheduler: Scheduler {
 
         init(timer: DispatchSourceTimer) {
             self.timer = timer
-        }
-
-        deinit {
-            timer?.cancel()
-            timer = nil
-        }
-
-        var isCompleted: Bool {
-            return timer == nil
-        }
-
-        func complete() {
-            timer?.cancel()
-            timer = nil
         }
 
         func cancel() {

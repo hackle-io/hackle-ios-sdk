@@ -46,10 +46,6 @@ class DefaultInAppMessageDelayScheduler: InAppMessageDelayScheduler {
             self.job = job
         }
 
-        var isCompleted: Bool {
-            job.isCompleted
-        }
-
         func cancel() {
             job.cancel()
             Log.debug("InAppMessage Delay canclled: \(delay)")

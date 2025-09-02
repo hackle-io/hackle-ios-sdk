@@ -1,9 +1,9 @@
 import Foundation
 
 protocol InAppMessageDelayManager {
-    func registerAndDelay(request: InAppMessageScheduleRequest) throws -> InAppMessageDelay
+    func registerAndDelay(request: InAppMessageScheduleRequest) -> InAppMessageDelay
 
-    func delay(request: InAppMessageScheduleRequest) throws -> InAppMessageDelay
+    func delay(request: InAppMessageScheduleRequest) -> InAppMessageDelay
 
     func delete(request: InAppMessageScheduleRequest) -> InAppMessageDelay?
 
@@ -22,14 +22,12 @@ class DefaultInAppMessageDelayManager: InAppMessageDelayManager {
         self.tasks = [:]
     }
 
-    func registerAndDelay(request: InAppMessageScheduleRequest) throws -> InAppMessageDelay {
+    func registerAndDelay(request: InAppMessageScheduleRequest) -> InAppMessageDelay {
         // App SDK only delays without register
-        return try delay(request: request)
+        return delay(request: request)
     }
 
-    func delay(request: InAppMessageScheduleRequest) throws -> InAppMessageDelay {
-        try ensureDelay(request: request)
-
+    func delay(request: InAppMessageScheduleRequest) -> InAppMessageDelay {
         let delay = InAppMessageDelay.from(request: request)
         let task = scheduler.schedule(delay: delay)
         lock.write {
@@ -38,18 +36,6 @@ class DefaultInAppMessageDelayManager: InAppMessageDelayManager {
 
         Log.debug("InAppMessage Delay started. \(delay)")
         return delay
-    }
-
-    private func ensureDelay(request: InAppMessageScheduleRequest) throws {
-        try lock.write {
-            guard let existing = tasks[request.schedule.dispatchId] else {
-                return
-            }
-            guard existing.isCompleted else {
-                throw HackleError.error("Existing delay is not completed: \(request)")
-            }
-            tasks.removeValue(forKey: request.schedule.dispatchId)
-        }
     }
 
     func delete(request: InAppMessageScheduleRequest) -> InAppMessageDelay? {
