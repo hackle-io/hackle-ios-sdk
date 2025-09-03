@@ -23,6 +23,8 @@ class DefaultInAppMessageEventHandler: InAppMessageEventHandler {
     }
 
     func handle(view: InAppMessageView, event: InAppMessage.Event) {
+        Log.debug("InAppMessage Handle. dispatchId: \(view.context.dispatchId), inAppMessageKey: \(view.context.inAppMessage.key), event: \(event)")
+
         let timestamp = clock.now()
         eventTracker.track(context: view.context, event: event, timestamp: timestamp)
         guard let processor = processorFactory.get(event: event) else {

@@ -34,12 +34,10 @@ protocol ExperimentMatcher {
     func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
 }
 
-protocol ExperimentEvaluatorMatcher: ExperimentMatcher {
-    var evaluator: Evaluator { get }
+protocol ExperimentEvaluatorMatcher: ExperimentMatcher, ExperimentContextualEvaluator {
     var valueOperatorMatcher: ValueOperatorMatcher { get }
 
     func experiment(request: EvaluatorRequest, key: Int64) -> Experiment?
-    func resolve(request: EvaluatorRequest, evaluation: ExperimentEvaluation) -> ExperimentEvaluation
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool
 }
 
@@ -54,21 +52,8 @@ extension ExperimentEvaluatorMatcher {
             return false
         }
 
-        let evaluation = try context.get(experiment) ?? evaluate(request: request, context: context, experiment: experiment)
-
-        return matches(evaluation: evaluation as! ExperimentEvaluation, condition: condition)
-    }
-
-    private func evaluate(
-        request: EvaluatorRequest,
-        context: EvaluatorContext,
-        experiment: Experiment
-    ) throws -> EvaluatorEvaluation {
-        let experimentRequest = ExperimentRequest.of(requestedBy: request, experiment: experiment)
-        let evaluation: ExperimentEvaluation = try evaluator.evaluate(request: experimentRequest, context: context)
-        let resolvedEvaluation = resolve(request: request, evaluation: evaluation)
-        context.add(resolvedEvaluation)
-        return resolvedEvaluation
+        let evaluation = try evaluate(request: request, context: context, experiment: experiment)
+        return matches(evaluation: evaluation, condition: condition)
     }
 }
 
@@ -93,7 +78,7 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
         request.workspace.getExperimentOrNil(experimentKey: key)
     }
 
-    func resolve(request: EvaluatorRequest, evaluation: ExperimentEvaluation) -> ExperimentEvaluation {
+    func resolve(request: EvaluatorRequest, context: EvaluatorContext, evaluation: ExperimentEvaluation) throws -> ExperimentEvaluation {
         if request is ExperimentRequest && evaluation.reason == DecisionReason.TRAFFIC_ALLOCATED {
             return evaluation.with(reason: DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING)
         }
@@ -123,8 +108,8 @@ class FeatureFlagConditionMatcher: ExperimentEvaluatorMatcher {
         request.workspace.getFeatureFlagOrNil(featureKey: key)
     }
 
-    func resolve(request: EvaluatorRequest, evaluation: ExperimentEvaluation) -> ExperimentEvaluation {
-        evaluation
+    func resolve(request: EvaluatorRequest, context: EvaluatorContext, evaluation: ExperimentEvaluation) throws -> ExperimentEvaluation {
+        return evaluation
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
