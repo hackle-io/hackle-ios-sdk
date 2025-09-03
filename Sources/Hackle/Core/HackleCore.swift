@@ -16,7 +16,7 @@ protocol HackleCore {
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
-    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation
+    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: any InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation
 }
 
 class DefaultHackleCore: HackleCore {

@@ -7,9 +7,9 @@ protocol InAppMessageLayoutResolver {
 class DefaultInAppMessageLayoutResolver: InAppMessageLayoutResolver {
 
     private let core: HackleCore
-    private let layoutEvaluator: InAppMessageEvaluator
+    private let layoutEvaluator: any InAppMessageEvaluator
 
-    init(core: HackleCore, layoutEvaluator: InAppMessageEvaluator) {
+    init(core: HackleCore, layoutEvaluator: any InAppMessageEvaluator) {
         self.core = core
         self.layoutEvaluator = layoutEvaluator
     }
