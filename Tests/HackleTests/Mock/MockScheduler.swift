@@ -8,6 +8,12 @@ import Mockery
 
 class MockScheduler: Mock, Scheduler {
 
+    lazy var scheduleMock = MockFunction(self, schedule)
+
+    func schedule(delay: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
+        call(scheduleMock, args: (delay, task))
+    }
+
     lazy var schedulePeriodicallyMock = MockFunction(self, schedulePeriodically)
 
     func schedulePeriodically(delay: TimeInterval, period: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
@@ -16,6 +22,7 @@ class MockScheduler: Mock, Scheduler {
 }
 
 class MockScheduledJob: Mock, ScheduledJob {
+    var isCompleted: Bool = false
 
     lazy var cancelMock = MockFunction(self, cancel)
 

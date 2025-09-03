@@ -39,6 +39,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             let context = InAppMessage.context(
                 inAppMessage: inAppMessage,
                 message: message,
+                decisionReason: DecisionReason.IN_APP_MESSAGE_TARGET,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
             )
 

@@ -10,7 +10,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
 
         var experimentEvaluator: MockEvaluator!
         var remoteConfigEvaluator: MockEvaluator!
-        var inAppMessageEvaluator: MockEvaluator!
         var workspaceFetcher: MockWorkspaceFetcher!
         var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!
@@ -19,14 +18,12 @@ class DefaultHackleCoreSpecs: QuickSpec {
         beforeEach {
             experimentEvaluator = MockEvaluator()
             remoteConfigEvaluator = MockEvaluator()
-            inAppMessageEvaluator = MockEvaluator()
             workspaceFetcher = MockWorkspaceFetcher()
             eventFactory = MockUserEventFactory()
             eventProcessor = MockUserEventProcessor()
             sut = DefaultHackleCore(
                 experimentEvaluator: experimentEvaluator,
                 remoteConfigEvaluator: remoteConfigEvaluator,
-                inAppMessageEvaluator: inAppMessageEvaluator,
                 workspaceFetcher: workspaceFetcher,
                 eventFactory: eventFactory,
                 eventProcessor: eventProcessor,
@@ -142,7 +139,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 let sut = DefaultHackleCore(
                     experimentEvaluator: evaluator,
                     remoteConfigEvaluator: remoteConfigEvaluator,
-                    inAppMessageEvaluator: inAppMessageEvaluator,
                     workspaceFetcher: workspaceFetcher,
                     eventFactory: eventFactory,
                     eventProcessor: eventProcessor,
@@ -346,7 +342,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 let sut = DefaultHackleCore(
                     experimentEvaluator: evaluator,
                     remoteConfigEvaluator: remoteConfigEvaluator,
-                    inAppMessageEvaluator: inAppMessageEvaluator,
                     workspaceFetcher: workspaceFetcher,
                     eventFactory: eventFactory,
                     eventProcessor: eventProcessor,
@@ -384,95 +379,21 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 }
             }
         }
+    }
 
-        describe("inAppMessage") {
-            it("Workspace 가 없는경우") {
-                // given
-                every(workspaceFetcher.fetchMock).returns(nil)
+    private class ContextualEvaluatorStub: ContextualEvaluator {
 
-                // when
-                let actual = try sut.inAppMessage(inAppMessageKey: 42, user: user)
+        typealias Request = InAppMessageEligibilityRequest
+        typealias Evaluation = InAppMessageEligibilityEvaluation
 
-                // then
-                expect(actual.inAppMessage).to(beNil())
-                expect(actual.message).to(beNil())
-                expect(actual.reason) == DecisionReason.SDK_NOT_READY
-            }
+        private let evaluation: Evaluation
 
-            it("InAppMessage 를 찾을 수 없는 경우") {
-                // given
-                let workspace = WorkspaceEntity.create()
-                every(workspaceFetcher.fetchMock).returns(workspace)
-
-                // when
-                let actual = try sut.inAppMessage(inAppMessageKey: 42, user: user)
-
-                // then
-                expect(actual.inAppMessage).to(beNil())
-                expect(actual.message).to(beNil())
-                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_NOT_FOUND
-            }
-
-            it("Evaluator 에서 결정된 결과를 리턴한다") {
-                // given
-                let inAppMessage = InAppMessage.create(key: 42);
-                let message = inAppMessage.messageContext.messages.first!
-
-                let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-                every(workspaceFetcher.fetchMock).returns(workspace)
-
-                let evaluation = InAppMessage.evaluation(reason: DecisionReason.IN_APP_MESSAGE_TARGET, inAppMessage: inAppMessage, message: message)
-                inAppMessageEvaluator.returns = evaluation
-
-                // when
-                let actual = try sut.inAppMessage(inAppMessageKey: 42, user: user)
-
-                // then
-                expect(actual.inAppMessage).to(beIdenticalTo(inAppMessage))
-                expect(actual.message).to(beIdenticalTo(message))
-                expect(actual.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
-            }
-
-            it("process event") {
-                // given
-                let inAppMessage = InAppMessage.create(key: 42);
-                let message = inAppMessage.messageContext.messages.first!
-
-                let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-                every(workspaceFetcher.fetchMock).returns(workspace)
-
-                let evaluation = InAppMessage.evaluation(reason: DecisionReason.IN_APP_MESSAGE_TARGET, inAppMessage: inAppMessage, message: message)
-                inAppMessageEvaluator.returns = evaluation
-                eventFactory.events = [MockUserEvent()]
-
-                // when
-                let _ = try sut.inAppMessage(inAppMessageKey: 42, user: user)
-
-                // then
-                verify(exactly: 1) {
-                    eventProcessor.processMock
-                }
-            }
+        init(evaluation: Evaluation) {
+            self.evaluation = evaluation
         }
 
-        describe("tryInAppMessage") {
-
-            it("success") {
-                let actual = sut.tryInAppMessage(inAppMessageKey: 42, user: user)
-                expect(actual.reason) == DecisionReason.SDK_NOT_READY
-            }
-
-            it("exception") {
-                // given
-                let inAppMessage = InAppMessage.create(key: 42);
-
-                let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-                every(workspaceFetcher.fetchMock).returns(workspace)
-
-                let actual = sut.tryInAppMessage(inAppMessageKey: 42, user: user)
-
-                expect(actual.reason) == DecisionReason.EXCEPTION
-            }
+        func evaluateInternal(request: Request, context: EvaluatorContext) throws -> Evaluation {
+            return evaluation
         }
     }
 }

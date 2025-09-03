@@ -11,7 +11,7 @@ import WebKit
     private let sdk: Sdk
     private let mode: HackleAppMode
     private let hackleInvocator: HackleInvocator
-    
+
     init(
         hackleAppCore: HackleAppCore,
         mode: HackleAppMode,
@@ -103,16 +103,16 @@ import WebKit
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default, completion: completion)
     }
-    
+
     @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updatePushSubscriptions(operations: operations, hackleAppContext: .default)
     }
-    
+
     @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
-    
+
     @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .default)
     }
@@ -132,15 +132,15 @@ import WebKit
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default, completion: completion)
     }
-    
+
     @objc public func unsetPhoneNumber() {
         unsetPhoneNumber(completion: {})
     }
-    
+
     @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
         hackleAppCore.unsetPhoneNumber(hackleAppContext: .default, completion: completion)
     }
-    
+
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
         variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
     }
@@ -160,7 +160,7 @@ import WebKit
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
         hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .default)
     }
-    
+
     @objc public func track(eventKey: String) {
         track(event: Hackle.event(key: eventKey))
     }
@@ -176,7 +176,7 @@ import WebKit
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
     }
-    
+
     @objc public func invocator() -> HackleInvocator {
         return hackleInvocator
     }
@@ -262,7 +262,7 @@ import WebKit
     @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
         DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: user)
     }
-    
+
     @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
     @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
@@ -275,9 +275,9 @@ extension HackleApp {
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
+        let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
 
-        let scheduler = Schedulers.dispatch()
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
@@ -291,7 +291,7 @@ extension HackleApp {
         )
         let pollingSynchronizer = PollingSynchronizer(
             delegate: compositeSynchronizer,
-            scheduler: scheduler,
+            scheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.PollingSynchronizer")),
             interval: config.pollingInterval
         )
 
@@ -320,7 +320,7 @@ extension HackleApp {
             repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             targetFetcher: targetFetcher,
-            clock: SystemClock.shared
+            clock: clock
         )
         compositeSynchronizer.add(synchronizer: userManager)
 
@@ -391,7 +391,7 @@ extension HackleApp {
         ])
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
-        
+
         let sessionUserEventDecorator = SessionUserEventDecorator(sessionManager: sessionManager)
         eventDecorators.append(sessionUserEventDecorator)
 
@@ -399,7 +399,7 @@ extension HackleApp {
             eventFilters.append(WebViewWrapperUserEventFilter())
             eventDecorators.append(WebViewWrapperUserEventDecorator())
         }
-        
+
         let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
 
         let eventProcessor = DefaultUserEventProcessor(
@@ -409,7 +409,7 @@ extension HackleApp {
             eventQueue: eventQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
-            eventFlushScheduler: scheduler,
+            eventFlushScheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.DefaultUserEventProcessor.flush")),
             eventFlushInterval: config.eventFlushInterval,
             eventFlushThreshold: config.eventFlushThreshold,
             eventFlushMaxBatchSize: config.eventFlushThreshold * 2 + 1,
@@ -419,6 +419,17 @@ extension HackleApp {
             appStateManager: appStateManager,
             screenUserEventDecorator: screenUserEventDecorator,
             eventBackoffController: eventBackoffController
+        )
+
+        // - Evaluation Event
+
+        let eventFactory = DefaultUserEventFactory(
+            clock: clock
+        )
+
+        let evaluationEventRecorder = DefaultEvaluationEventRecorder(
+            eventFactory: eventFactory,
+            eventProcessor: eventProcessor
         )
 
         // - Core
@@ -432,6 +443,7 @@ extension HackleApp {
 
         let core = DefaultHackleCore.create(
             workspaceFetcher: workspaceManager,
+            eventFactory: eventFactory,
             eventProcessor: eventProcessor,
             manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
         )
@@ -471,12 +483,7 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let inAppMessageEventMatcher = DefaultInAppMessageEventMatcher(
-            ruleDeterminer: InAppMessageEventTriggerRuleDeterminer(targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!)
-        )
-        let inAppMessageDeterminer = DefaultInAppMessageDeterminer(
-            workspaceFetcher: workspaceManager,
-            eventMatcher: inAppMessageEventMatcher,
+        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
             core: core
         )
         let urlHandler = ApplicationUrlHandler()
@@ -484,29 +491,111 @@ extension HackleApp {
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
             InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
-            InAppMessageHiddenActionHandler(clock: SystemClock.shared, storage: inAppMessageHiddenStorage)
+            InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
-            InAppMessageImpressionEventProcessor(impressionStorage: inAppMessageImpressionStorage),
+            InAppMessageImpressionEventProcessor(),
             InAppMessageActionEventProcessor(actionHandlerFactory: inAppMessageActionHandlerFactory),
             InAppMessageCloseEventProcessor()
         ])
         let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-            clock: SystemClock.shared,
-            eventTracker: DefaultInAppMessageEventTracker(core: core),
+            clock: clock,
+            eventTracker: inAppMessageEventTracker,
             processorFactory: inAppMessageEventProcessorFactory
         )
-
         let inAppMessageUI = HackleInAppMessageUI(
             eventHandler: inAppMessageEventHandler
         )
+
+        let inAppMessageRecorder = DefaultInAppMessageRecorder(
+            storage: inAppMessageImpressionStorage
+        )
+        let inAppMessagePresentProcessor = DefaultInAppMessagePresentProcessor(
+            presenter: inAppMessageUI,
+            recorder: inAppMessageRecorder
+        )
+
+
+        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
+            evaluator: EvaluationContext.shared.get(Evaluator.self)!
+        )
+        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
+            experimentEvaluator: inAppMessageExperimentEvaluator,
+            selector: InAppMessageLayoutSelector(),
+            eventRecorder: evaluationEventRecorder
+        )
+        let inAppMessageEligibilityFlowFactory = DefaultInAppMessageEligibilityFlowFactory(
+            context: EvaluationContext.shared,
+            layoutEvaluator: inAppMessageLayoutEvaluator
+        )
+
+        let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
+            core: core,
+            flowFactory: inAppMessageEligibilityFlowFactory,
+            eventRecorder: evaluationEventRecorder
+        )
+        let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
+        let inAppMessageLayoutResolver = DefaultInAppMessageLayoutResolver(
+            core: core,
+            layoutEvaluator: inAppMessageLayoutEvaluator
+        )
+
+        let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
+            workspaceFetcher: workspaceManager,
+            userManager: userManager,
+            identifierChecker: inAppMessageIdentifierChecker,
+            layoutResolver: inAppMessageLayoutResolver,
+            evaluateProcessor: inAppMessageEvaluateProcessor,
+            presentProcessor: inAppMessagePresentProcessor
+        )
+
+        let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
+            clock: clock,
+            scheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.DefaultInAppMessageDelayScheduler"))
+        )
+        let inAppMessageDelayManager = DefaultInAppMessageDelayManager(
+            scheduler: inAppMessageDelayScheduler
+        )
+
+        let inAppMessageSchedulerFactory = DefaultInAppMessageSchedulerFactory(schedulers: [
+            TriggeredInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
+            DelayedInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
+        ])
+        let inAppMessageScheduleProcessor = DefaultInAppMessageScheduleProcessor(
+            actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
+            schedulerFactory: inAppMessageSchedulerFactory
+        )
+        inAppMessageDelayScheduler.setListener(listsner: inAppMessageScheduleProcessor)
+
+        let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
+            targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!
+        )
+        let inAppMessageTriggerDeterminer = DefaultInAppMessageTriggerDeterminer(
+            workspaceFetcher: workspaceManager,
+            eventMatcher: inAppMessageTriggerEventMatcher,
+            evaluateProcessor: inAppMessageEvaluateProcessor
+        )
+        let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(
+            scheduleProcessor: inAppMessageScheduleProcessor
+        )
+        let inAppMessageTriggerProcessor = DefaultInAppMessageTriggerProcessor(
+            determiner: inAppMessageTriggerDeterminer,
+            handler: inAppMessageTriggerHandler
+        )
+
+        let inAppMessageResetProcessor = DefaultInAppMessageResetProcessor(
+            identifierChecker: inAppMessageIdentifierChecker,
+            delayManager: inAppMessageDelayManager
+        )
+
         let inAppMessageManager = InAppMessageManager(
-            determiner: inAppMessageDeterminer,
-            presenter: inAppMessageUI
+            triggerProcessor: inAppMessageTriggerProcessor,
+            resetProcessor: inAppMessageResetProcessor
         )
 
         if !inAppMessageDisabled(config: config) {
             eventPublisher.addListener(listener: inAppMessageManager)
+            userManager.addListener(listener: inAppMessageManager)
         }
 
         // - Push
@@ -573,7 +662,7 @@ extension HackleApp {
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
-            
+
         let hackleAppCore = DefaultHackleAppCore(
             core: core,
             eventQueue: eventQueue,
@@ -592,7 +681,7 @@ extension HackleApp {
             userExplorer: userExplorer
         )
         let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
-        
+
         return HackleApp(
             hackleAppCore: hackleAppCore,
             mode: config.mode,
@@ -603,7 +692,7 @@ extension HackleApp {
 
     private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
         if let disableInAppMessage = config.extra["$disable_inappmessage"],
-            disableInAppMessage == "true" {
+           disableInAppMessage == "true" {
             return true
         }
 

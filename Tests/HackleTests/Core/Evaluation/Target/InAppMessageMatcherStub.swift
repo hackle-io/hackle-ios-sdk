@@ -15,7 +15,7 @@ class InAppMessageMatcherStub: InAppMessageMatcher {
         self.isMatched = isMatched
     }
 
-    func matches(request: InAppMessageRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
         isMatched
     }
 }

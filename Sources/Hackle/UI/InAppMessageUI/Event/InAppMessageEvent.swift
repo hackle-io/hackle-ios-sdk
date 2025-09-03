@@ -1,10 +1,3 @@
-//
-//  InAppMessageEventTracker.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/20.
-//
-
 import Foundation
 
 extension InAppMessage {
@@ -37,6 +30,21 @@ extension InAppMessage {
 
         static func messageAction(action: Action) -> Event {
             .action(action: action, area: .message, button: nil, image: nil, imageOrder: nil)
+        }
+    }
+}
+
+extension InAppMessage.Event: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .impression:
+            return "InAppMessageEvent.Impression"
+        case .close:
+            return "InAppMessageEvent.Close"
+        case .action(let action, let area, _, _, _):
+            return "InAppMessageEvent.Action(action: \(action), area: \(area))"
+        case .imageImpression(_, let order):
+            return "InAppMessageEvent.ImageImpression(order: \(order))"
         }
     }
 }

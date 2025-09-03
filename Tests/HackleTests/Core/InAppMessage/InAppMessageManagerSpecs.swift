@@ -1,68 +1,45 @@
-//
-//  InAppMessageManagerSpecs.swift
-//  HackleTests
-//
-//  Created by yong on 2023/06/27.
-//
-
 import Foundation
 import Quick
 import Nimble
 @testable import Hackle
 
-
 class InAppMessageManagerSpecs: QuickSpec {
     override func spec() {
-        var determiner: MockInAppMessageDeterminer!
-        var presenter: MockInAppMessagePresenter!
+
+        var triggerProcessor: MockInAppMessageTriggerProcessor!
+        var resetProcessor: MockInAppMessageResetProcessor!
         var sut: InAppMessageManager!
 
         beforeEach {
-            determiner = MockInAppMessageDeterminer()
-            presenter = MockInAppMessagePresenter()
-            sut = InAppMessageManager(determiner: determiner, presenter: presenter)
+            triggerProcessor = MockInAppMessageTriggerProcessor()
+            resetProcessor = MockInAppMessageResetProcessor()
+            sut = InAppMessageManager(triggerProcessor: triggerProcessor, resetProcessor: resetProcessor)
         }
 
-        it("when cannot determine message then should not present") {
+        it("onEvent") {
             // given
-            every(determiner.determineOrNullMock).returns(nil)
+            let event = UserEvents.track("test")
 
             // when
-            sut.onEvent(event: UserEvents.track("test"))
-
-            // then
-            verify(exactly: 0) {
-                presenter.presentMock
-            }
-        }
-
-        it("when exception occurs while determining message then should not present") {  // given
-            every(determiner.determineOrNullMock).answers { _ in
-                throw HackleError.error("fail")
-            }
-
-            // when
-            sut.onEvent(event: UserEvents.track("test"))
-
-            // then
-            verify(exactly: 0) {
-                presenter.presentMock
-            }
-        }
-
-        it("when message is determined then present the message") {
-            // given
-            let context = InAppMessage.context()
-            every(determiner.determineOrNullMock).returns(context)
-
-            // when
-            sut.onEvent(event: UserEvents.track("test"))
+            sut.onEvent(event: event)
 
             // then
             verify(exactly: 1) {
-                presenter.presentMock
+                triggerProcessor.processMock
             }
-            expect(presenter.presentMock.firstInvokation().arguments).to(beIdenticalTo(context))
+        }
+        it("onUserUpdated") {
+            // given
+            let oldUser = User.builder().deviceId("1").build()
+            let newUser = User.builder().deviceId("2").build()
+
+            // when
+            sut.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: Date())
+
+            // then
+            verify(exactly: 1) {
+                resetProcessor.processMock
+            }
         }
     }
 }

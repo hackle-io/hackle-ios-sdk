@@ -36,7 +36,25 @@ class EvaluationFlowSpecs: QuickSpec {
                 .isDecisionWith(f2)!
                 .isDecisionWith(f3)!
                 .isEnd()
+        }
 
+        it("+") {
+            let fe1 = NextFlowEvaluator()
+            let fe2 = NextFlowEvaluator()
+            let fe3 = NextFlowEvaluator()
+            let fe4 = NextFlowEvaluator()
+
+            let f1: ExperimentFlow = ExperimentFlow.of(fe1, fe2)
+            let f2: ExperimentFlow = ExperimentFlow.of(fe3, fe4)
+
+            let f: ExperimentFlow = f1 + f2
+
+            f
+                .isDecisionWith(fe1)!
+                .isDecisionWith(fe2)!
+                .isDecisionWith(fe3)!
+                .isDecisionWith(fe4)!
+                .isEnd()
         }
     }
 }

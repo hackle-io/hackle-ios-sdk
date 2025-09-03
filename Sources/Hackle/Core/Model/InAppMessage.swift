@@ -16,6 +16,7 @@ class InAppMessage: HackleInAppMessage {
     let status: Status
     let period: Period
     let eventTrigger: EventTrigger
+    let evaluateContext: EvaluateContext
     let targetContext: TargetContext
     let messageContext: MessageContext
 
@@ -25,6 +26,7 @@ class InAppMessage: HackleInAppMessage {
         status: Status,
         period: Period,
         eventTrigger: EventTrigger,
+        evaluateContext: EvaluateContext,
         targetContext: TargetContext,
         messageContext: MessageContext
     ) {
@@ -33,6 +35,7 @@ class InAppMessage: HackleInAppMessage {
         self.status = status
         self.period = period
         self.eventTrigger = eventTrigger
+        self.evaluateContext = evaluateContext
         self.targetContext = targetContext
         self.messageContext = messageContext
     }
@@ -64,10 +67,12 @@ extension InAppMessage {
     class EventTrigger {
         let rules: [Rule]
         let frequencyCap: FrequencyCap?
+        let delay: Delay
 
-        init(rules: [Rule], frequencyCap: FrequencyCap?) {
+        init(rules: [Rule], frequencyCap: FrequencyCap?, delay: Delay) {
             self.rules = rules
             self.frequencyCap = frequencyCap
+            self.delay = delay
         }
 
         class Rule {
@@ -108,6 +113,47 @@ extension InAppMessage {
                 self.duration = duration
                 self.count = count
             }
+        }
+
+        class Delay {
+
+            static let `default` = Delay(type: .immediate, afterCondition: nil)
+
+            let type: DelayType
+            let afterCondition: AfterCondition?
+
+            init(type: DelayType, afterCondition: AfterCondition?) {
+                self.type = type
+                self.afterCondition = afterCondition
+            }
+
+            func deliverAt(startedAt: Date) -> Date {
+                switch type {
+                case .immediate:
+                    return startedAt
+                case .after:
+                    return startedAt.addingTimeInterval(afterCondition!.duration)
+                }
+            }
+
+            class AfterCondition {
+                let duration: TimeInterval
+
+                init(duration: TimeInterval) {
+                    self.duration = duration
+                }
+            }
+        }
+    }
+
+    class EvaluateContext {
+
+        static let `default` = EvaluateContext(atDeliverTime: false)
+
+        let atDeliverTime: Bool
+
+        init(atDeliverTime: Bool) {
+            self.atDeliverTime = atDeliverTime
         }
     }
 
@@ -185,6 +231,11 @@ extension InAppMessage {
         case left = "LEFT"
         case center = "CENTER"
         case right = "RIGHT"
+    }
+
+    enum DelayType: String, Codable {
+        case immediate = "IMMEDIATE"
+        case after = "AFTER"
     }
 
     class MessageContext {
@@ -436,8 +487,19 @@ extension InAppMessage {
     }
 }
 
-extension InAppMessage {
+extension InAppMessage: CustomStringConvertible {
+
+    var description: String {
+        return "InAppMessage(id: \(id), key: \(key), status: \(status))"
+    }
+
     func supports(platform: PlatformType) -> Bool {
         messageContext.platformTypes.contains(platform)
+    }
+}
+
+extension InAppMessage.Action: CustomStringConvertible {
+    var description: String {
+        return "InAppMessage.Action(behavior: \(behavior), actionType: \(actionType), value: \(String(describing: value)))"
     }
 }
