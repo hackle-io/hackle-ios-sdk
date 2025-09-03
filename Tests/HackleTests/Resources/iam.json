@@ -69,6 +69,18 @@
           ]
         }
       ],
+      "eventTriggerDelay": {
+        "type": "AFTER",
+        "afterCondition": {
+          "duration": {
+            "timeUnit": "SECONDS",
+            "amount": 42
+          }
+        }
+      },
+      "evaluateContext": {
+        "atDeliverTime": true
+      },
       "targetContext": {
         "targets": [
           {

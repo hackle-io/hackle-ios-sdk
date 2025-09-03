@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 @testable import Hackle
 
 extension InAppMessage {
@@ -16,6 +17,7 @@ extension InAppMessage {
         status: Status = .active,
         period: Period = .always,
         eventTrigger: EventTrigger = eventTrigger(),
+        evaluateContext: EvaluateContext = evaluateContext(),
         targetContext: TargetContext = targetContext(),
         messageContext: MessageContext = messageContext()
     ) -> InAppMessage {
@@ -25,30 +27,54 @@ extension InAppMessage {
             status: status,
             period: period,
             eventTrigger: eventTrigger,
+            evaluateContext: evaluateContext,
             targetContext: targetContext,
             messageContext: messageContext
         )
     }
 
     static func eventTrigger(
-        rules: [InAppMessage.EventTrigger.Rule] = [InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])],
-        frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil
+        rules: [InAppMessage.EventTrigger.Rule] = [
+            InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])
+        ],
+        frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil,
+        delay: InAppMessage.EventTrigger.Delay = delay()
     ) -> InAppMessage.EventTrigger {
-        InAppMessage.EventTrigger(rules: rules, frequencyCap: frequencyCap)
+        InAppMessage.EventTrigger(
+            rules: rules,
+            frequencyCap: frequencyCap,
+            delay: delay
+        )
     }
 
     static func frequencyCap(
         identifierCaps: [InAppMessage.EventTrigger.IdentifierCap] = [],
         durationCap: InAppMessage.EventTrigger.DurationCap? = nil
     ) -> InAppMessage.EventTrigger.FrequencyCap {
-        InAppMessage.EventTrigger.FrequencyCap(identifierCaps: identifierCaps, durationCap: durationCap)
+        InAppMessage.EventTrigger.FrequencyCap(
+            identifierCaps: identifierCaps,
+            durationCap: durationCap
+        )
+    }
+
+    static func delay(
+        type: InAppMessage.DelayType = .immediate,
+        afterCondition: InAppMessage.EventTrigger.Delay.AfterCondition? = nil
+    ) -> InAppMessage.EventTrigger.Delay {
+        return InAppMessage.EventTrigger.Delay(
+            type: type,
+            afterCondition: afterCondition
+        )
     }
 
     static func identifierCap(
         identifierType: String = "$id",
         count: Int64 = 1
     ) -> InAppMessage.EventTrigger.IdentifierCap {
-        InAppMessage.EventTrigger.IdentifierCap(identifierType: identifierType, count: count)
+        InAppMessage.EventTrigger.IdentifierCap(
+            identifierType: identifierType,
+            count: count
+        )
     }
 
     static func durationCap(
@@ -56,6 +82,12 @@ extension InAppMessage {
         count: Int64 = 1
     ) -> InAppMessage.EventTrigger.DurationCap {
         InAppMessage.EventTrigger.DurationCap(duration: duration, count: count)
+    }
+
+    static func evaluateContext(
+        atDeliverTime: Bool = false
+    ) -> InAppMessage.EvaluateContext {
+        return EvaluateContext(atDeliverTime: atDeliverTime)
     }
 
     static func targetContext(
@@ -159,37 +191,193 @@ extension InAppMessage {
         bodyColor: String = "#FFFFFF"
     ) -> Message.Text {
         Message.Text(
-            title: Message.Text.Attribute(text: title, style: Message.Text.Style(textColor: titleColor)),
-            body: Message.Text.Attribute(text: body, style: Message.Text.Style(textColor: bodyColor))
+            title: Message.Text.Attribute(
+                text: title,
+                style: Message.Text.Style(textColor: titleColor)
+            ),
+            body: Message.Text.Attribute(
+                text: body,
+                style: Message.Text.Style(textColor: bodyColor)
+            )
         )
     }
 
-    static func request(
+    static func eligibilityRequest(
         workspace: Workspace = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessage = create(),
         timestamp: Date = Date()
-    ) -> InAppMessageRequest {
-        InAppMessageRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: timestamp)
+    ) -> InAppMessageEligibilityRequest {
+        InAppMessageEligibilityRequest(
+            workspace: workspace,
+            user: user,
+            inAppMessage: inAppMessage,
+            timestamp: timestamp
+        )
     }
 
-    static func evaluation(
+    static func layoutRequest(
+        workspace: Workspace = MockWorkspace(),
+        user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
+        inAppMessage: InAppMessage = create()
+    ) -> InAppMessageLayoutRequest {
+        return InAppMessageLayoutRequest(
+            workspace: workspace,
+            user: user,
+            inAppMessage: inAppMessage
+        )
+    }
+
+    static func layoutEvaluation(
+        request: InAppMessageLayoutRequest = layoutRequest(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        targetEvaluations: [EvaluatorEvaluation] = [],
+        message: InAppMessage.Message = message(),
+        properties: [String: Any] = [:]
+    ) -> InAppMessageLayoutEvaluation {
+        return InAppMessageLayoutEvaluation(
+            request: request,
+            reason: reason,
+            targetEvaluations: targetEvaluations,
+            message: message,
+            properties: properties
+        )
+    }
+
+    static func eligibilityEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        message: InAppMessage.Message? = nil,
-        properties: [String: Any] = [:]
-    ) -> InAppMessageEvaluation {
-        InAppMessageEvaluation(reason: reason, targetEvaluations: targetEvaluations, inAppMessage: inAppMessage, message: message, properties: properties)
+        isEligible: Bool = true,
+        layoutEvaluation: InAppMessageLayoutEvaluation? = nil
+    ) -> InAppMessageEligibilityEvaluation {
+        InAppMessageEligibilityEvaluation(
+            reason: reason,
+            targetEvaluations: targetEvaluations,
+            inAppMessage: inAppMessage,
+            isEligible: isEligible,
+            layoutEvaluation: layoutEvaluation
+        )
     }
 
     static func context(
+        dispatchId: String = UUID().uuidString,
         inAppMessage: InAppMessage = .create(),
         message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        properties: [String: Any] = [:],
-        decisionReason: String = DecisionReason.DEFAULT_RULE
+        decisionReason: String = DecisionReason.DEFAULT_RULE,
+        properties: [String: Any] = [:]
     ) -> InAppMessagePresentationContext {
-        InAppMessagePresentationContext(inAppMessage: inAppMessage, message: message, user: user, properties: properties, decisionReasion: decisionReason)
+        return InAppMessagePresentationContext(
+            dispatchId: dispatchId,
+            inAppMessage: inAppMessage,
+            message: message,
+            user: user,
+            decisionReasion: decisionReason,
+            properties: properties
+        )
+    }
+
+    static func presentRequest(
+        dispatchId: String = UUID().uuidString,
+        inAppMessage: InAppMessage = InAppMessage.create(),
+        message: InAppMessage.Message = InAppMessage.message(),
+        user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
+        requestedAt: Date = Date(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        properties: [String: Any] = [:]
+    ) -> InAppMessagePresentRequest {
+        return InAppMessagePresentRequest(
+            dispatchId: dispatchId,
+            inAppMessage: inAppMessage,
+            message: message,
+            user: user,
+            requestedAt: requestedAt,
+            reason: reason,
+            properties: properties
+        )
+    }
+
+    static func presentResponse(
+        dispatchId: String = UUID().uuidString,
+        context: InAppMessagePresentationContext = InAppMessage.context()
+    ) -> InAppMessagePresentResponse {
+        return InAppMessagePresentResponse(
+            dispatchId: dispatchId,
+            context: context
+        )
+    }
+
+    static func deliverRequest(
+        dispatchId: String = UUID().uuidString,
+        inAppMessageKey: InAppMessage.Key = 1,
+        identifiers: Identifiers = [
+            IdentifierType.device.rawValue: "device_id"
+        ],
+        requestedAt: Date = Date(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        properties: [String: Any] = [:]
+    ) -> InAppMessageDeliverRequest {
+        return InAppMessageDeliverRequest(
+            dispatchId: dispatchId,
+            inAppMessageKey: inAppMessageKey,
+            identifiers: identifiers,
+            requestedAt: requestedAt,
+            reason: reason,
+            properties: properties
+        )
+    }
+
+    static func schedule(
+        dispatchId: String = UUID().uuidString,
+        inAppMessageKey: InAppMessage.Key = 1,
+        identifiers: Identifiers = [
+            IdentifierType.device.rawValue: "device_id"
+        ],
+        time: InAppMessageSchedule.Time = InAppMessageSchedule.Time(
+            startedAt: Date(),
+            deliverAt: Date()
+        ),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        eventBasedContext: InAppMessageSchedule.EventBasedContext =
+        InAppMessageSchedule.EventBasedContext(
+            insertId: UUID().uuidString,
+            event: HackleEventBuilder(key: "test").build()
+        )
+    ) -> InAppMessageSchedule {
+        return InAppMessageSchedule(
+            dispatchId: dispatchId,
+            inAppMessageKey: inAppMessageKey,
+            identifiers: identifiers,
+            time: time,
+            reason: reason,
+            eventBasedContext: eventBasedContext
+        )
+    }
+
+    static func scheduleRequest(
+        schedule: InAppMessageSchedule = schedule(),
+        scheduleType: InAppMessageScheduleType = .triggered,
+        requetedAt: Date = Date()
+    ) -> InAppMessageScheduleRequest {
+        return InAppMessageScheduleRequest(
+            schedule: schedule,
+            scheduleType: scheduleType,
+            requestedAt: requetedAt
+        )
+    }
+
+    static func deliverResponse(
+        dispatchId: String = UUID().uuidString,
+        inAppMessageKey: InAppMessage.Key = 1,
+        code: InAppMessageDeliverResponse.Code = .present,
+        presentResponse: InAppMessagePresentResponse? = nil
+    ) -> InAppMessageDeliverResponse {
+        return InAppMessageDeliverResponse(
+            dispatchId: dispatchId,
+            inAppMessageKey: inAppMessageKey,
+            code: code,
+            presentResponse: presentResponse
+        )
     }
 }
