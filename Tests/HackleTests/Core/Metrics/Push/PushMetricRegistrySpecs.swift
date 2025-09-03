@@ -15,6 +15,9 @@ class PushMetricRegistrySpecs: QuickSpec {
                 jobs.count
             }
 
+            func schedule(delay: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
+                fatalError("schedule(delay:task:) has not been implemented")
+            }
 
             func schedulePeriodically(delay: TimeInterval, period: TimeInterval, task: @escaping () -> ()) -> ScheduledJob {
                 let job = Job()
@@ -23,10 +26,12 @@ class PushMetricRegistrySpecs: QuickSpec {
             }
 
             class Job: ScheduledJob {
+                var isCompleted: Bool = false
                 var isCanceled: Bool = false
 
                 func cancel() {
                     isCanceled = true
+                    isCompleted = true
                 }
             }
         }
