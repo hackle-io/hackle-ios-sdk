@@ -45,3 +45,18 @@ jobs:
           pod trunk push --allow-warnings
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+
+      - name: Promote Prerelease to Release
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releaseId = ${{ github.event.release.id }};
+            
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releaseId,
+              prerelease: false
+            });
+            

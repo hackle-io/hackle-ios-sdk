@@ -1,0 +1,71 @@
+name: Auto Prerelease
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'  # Matches x.y.z format
+
+jobs:
+  create_prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for release notes
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "version=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Verify Versions
+        run: |
+          TAG_VERSION="${{ steps.version.outputs.version }}"
+          
+          # podspec 버전 추출
+          POD_VERSION=$(grep -E 'spec\.version\s*=' Hackle.podspec | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+          
+          # SdkVersion.swift 버전 추출
+          PACKAGE_VERSION=$(grep -E 'static let CURRENT = ' Sources/Hackle/Core/Utilities/SdkVersion.swift | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
+          
+          echo "Tag version: $TAG_VERSION"
+          echo "Pod version: $POD_VERSION"
+          echo "Package version: $PACKAGE_VERSION"
+          
+          # 버전 비교
+          if [ "$TAG_VERSION" = "$POD_VERSION" ] && [ "$TAG_VERSION" = "$PACKAGE_VERSION" ]; then
+            echo "All versions match"
+            exit 0
+          else
+            echo "Error: Version mismatch detected!"
+            echo "Tag version: $TAG_VERSION"
+            echo "Pod version: $POD_VERSION"  
+            echo "Package version: $PACKAGE_VERSION"
+            echo "Ensure that the tag version matches both podspec and SdkVersion.swift"
+            exit 1
+          fi
+
+      - name: Generate Release Notes
+        id: generate_notes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ steps.version.outputs.version }}'
+            });
+            core.setOutput('changelog', data.body);
+
+      - name: Create Prerelease
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: ${{ steps.version.outputs.version }}
+          body: ${{ steps.generate_notes.outputs.changelog }}
+          draft: false
+          prerelease: true
