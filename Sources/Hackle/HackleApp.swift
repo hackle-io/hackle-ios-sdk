@@ -67,7 +67,6 @@ import WebKit
     /// Hides the user explorer UI button.
     @objc public func hideUserExplorer() {
         hackleAppCore.hideUserExplorer()
-        hackleAppCore.hideUserExplorer()
     }
 
     /// Sets or replaces the current user.
