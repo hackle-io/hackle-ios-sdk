@@ -5,7 +5,7 @@
 import Foundation
 import WebKit
 
-/// Entry point of Hackle Sdk.
+/// Entry point of Hackle SDK.
 @objc public final class HackleApp: NSObject {
     private let hackleAppCore: HackleAppCore
     private let sdk: Sdk
@@ -25,63 +25,103 @@ import WebKit
         super.init()
     }
 
+    /// Delegate for handling in-app message events.
     @objc public var inAppMessageDelegate: HackleInAppMessageDelegate? {
         didSet {
             hackleAppCore.setInAppMessageDelegate(inAppMessageDelegate)
         }
     }
 
+    /// The user's device ID.
+    ///
+    /// - Returns: the current device ID
     @objc public var deviceId: String {
         get {
             hackleAppCore.deviceId
         }
     }
 
+    /// Current session ID.
+    ///
+    /// - Returns: the current session ID
     @objc public var sessionId: String {
         get {
             hackleAppCore.sessionId
         }
     }
 
+    /// Current user.
+    ///
+    /// - Returns: the current ``User`` instance
     @objc public var user: User {
         get {
             hackleAppCore.user
         }
     }
 
+    /// Shows the user explorer UI button.
     @objc public func showUserExplorer() {
         hackleAppCore.showUserExplorer()
     }
 
+    /// Hides the user explorer UI button.
     @objc public func hideUserExplorer() {
-        hackleAppCore.hideUserExplorer()
         hackleAppCore.hideUserExplorer()
     }
 
+    /// Sets or replaces the current user.
+    ///
+    /// - Parameter user: the ``User`` to set
     @objc public func setUser(user: User) {
         setUser(user: user, completion: {})
     }
 
+    /// Sets or replaces the current user with completion.
+    ///
+    /// - Parameters:
+    ///   - user: the ``User`` to set
+    ///   - completion: callback to be executed when the operation is complete
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
         hackleAppCore.setUser(user: user, hackleAppContext: .default, completion: completion)
     }
 
+    /// Sets the userId for the current user.
+    ///
+    /// - Parameter userId: the userId to set for the user. Can be null to identify an anonymous user
     @objc public func setUserId(userId: String?) {
         setUserId(userId: userId, completion: {})
     }
 
+    /// Sets the userId for the current user with completion.
+    ///
+    /// - Parameters:
+    ///   - userId: the userId to set for the user. Can be null to identify an anonymous user
+    ///   - completion: callback to be executed when the operation is complete
     @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
         hackleAppCore.setUserId(userId: userId, hackleAppContext: .default, completion: completion)
     }
 
+    /// Sets a custom device ID.
+    ///
+    /// - Parameter deviceId: the custom device ID to set
     @objc public func setDeviceId(deviceId: String) {
         setDeviceId(deviceId: deviceId, completion: {})
     }
 
+    /// Sets a custom device ID with completion.
+    ///
+    /// - Parameters:
+    ///   - deviceId: the custom device ID to set
+    ///   - completion: callback to be executed when the operation is complete
     @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
         hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default, completion: completion)
     }
 
+    /// Sets a single user property.
+    ///
+    /// - Parameters:
+    ///   - key: the key of the property
+    ///   - value: the value of the property
     @objc public func setUserProperty(key: String, value: Any?) {
         let operations = PropertyOperations.builder()
             .set(key, value)
@@ -89,6 +129,12 @@ import WebKit
         updateUserProperties(operations: operations)
     }
 
+    /// Sets a single user property with completion.
+    ///
+    /// - Parameters:
+    ///   - key: the key of the property
+    ///   - value: the value of the property
+    ///   - completion: callback to be executed when the operation is complete
     @objc public func setUserProperty(key: String, value: Any?, completion: @escaping () -> ()) {
         let operations = PropertyOperations.builder()
             .set(key, value)
@@ -96,99 +142,181 @@ import WebKit
         updateUserProperties(operations: operations, completion: completion)
     }
 
+    /// Updates user properties with a set of operations.
+    ///
+    /// - Parameter operations: a set of ``PropertyOperations`` to apply to user properties
     @objc public func updateUserProperties(operations: PropertyOperations) {
         updateUserProperties(operations: operations, completion: {})
     }
 
+    /// Updates user properties with a set of operations with completion.
+    ///
+    /// - Parameters:
+    ///   - operations: a set of ``PropertyOperations`` to apply to user properties
+    ///   - completion: callback to be executed when the operation is complete
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default, completion: completion)
     }
 
+    /// Updates push notification subscription status.
+    ///
+    /// - Parameter operations: a set of subscription operations to apply
     @objc public func updatePushSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updatePushSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
+    /// Updates SMS subscription status.
+    ///
+    /// - Parameter operations: a set of subscription operations to apply
     @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
 
+    /// Updates KakaoTalk subscription status.
+    ///
+    /// - Parameter operations: a set of subscription operations to apply
     @objc public func updateKakaoSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
+    /// Resets the current user.
     @objc public func resetUser() {
         resetUser(completion: {})
     }
 
+    /// Resets the current user with completion.
+    ///
+    /// - Parameter completion: callback to be executed when the operation is complete
     @objc public func resetUser(completion: @escaping () -> ()) {
         hackleAppCore.resetUser(hackleAppContext: .default, completion: completion)
     }
 
+    /// Sets the phone number for the current user.
+    ///
+    /// - Parameter phoneNumber: the phone number to set
     @objc public func setPhoneNumber(phoneNumber: String) {
         setPhoneNumber(phoneNumber: phoneNumber, completion: {})
     }
 
+    /// Sets the phone number for the current user with completion.
+    ///
+    /// - Parameters:
+    ///   - phoneNumber: the phone number to set
+    ///   - completion: callback to be executed when the operation is complete
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default, completion: completion)
     }
 
+    /// Removes the phone number from the current user.
     @objc public func unsetPhoneNumber() {
         unsetPhoneNumber(completion: {})
     }
 
+    /// Removes the phone number from the current user with completion.
+    ///
+    /// - Parameter completion: callback to be executed when the operation is complete
     @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
         hackleAppCore.unsetPhoneNumber(hackleAppContext: .default, completion: completion)
     }
 
+    /// Decide the variation to expose to the user for experiment.
+    ///
+    /// - Parameters:
+    ///   - experimentKey: the unique key of the experiment
+    ///   - defaultVariation: the default variation of the experiment
+    /// - Returns: the decided variation for the user, or defaultVariation
     @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
         variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
     }
 
+    /// Decide the variation to expose to the user for experiment and returns an object that describes the way the variation was decided.
+    ///
+    /// - Parameters:
+    ///   - experimentKey: the unique key for the experiment
+    ///   - defaultVariation: the default variation of the experiment
+    /// - Returns: a ``Decision`` object
     @objc public func variationDetail(experimentKey: Int, defaultVariation: String = "A") -> Decision {
         hackleAppCore.variationDetail(experimentKey: experimentKey, user: nil, defaultVariation: defaultVariation, hackleAppContext: .default)
     }
 
+    /// Decide the variations for all experiments and returns a map of decision results.
+    ///
+    /// - Returns: a dictionary where key is experimentKey and value is ``Decision`` result
     @objc public func allVariationDetails() -> [Int: Decision] {
         hackleAppCore.allVariationDetails(user: nil, hackleAppContext: .default)
     }
 
+    /// Decide whether the feature is turned on to the user.
+    ///
+    /// - Parameter featureKey: the unique key for the feature
+    /// - Returns: True if the feature is on, False if the feature is off
     @objc public func isFeatureOn(featureKey: Int) -> Bool {
         featureFlagDetail(featureKey: featureKey).isOn
     }
 
+    /// Decide whether the feature is turned on to the user and returns an object that describes the way the flag was decided.
+    ///
+    /// - Parameter featureKey: the unique key for the feature
+    /// - Returns: a ``FeatureFlagDecision`` object
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
         hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .default)
     }
 
+    /// Records the event that occurred by the user.
+    ///
+    /// - Parameter eventKey: the unique key of the event that occurred
     @objc public func track(eventKey: String) {
         track(event: Hackle.event(key: eventKey))
     }
 
+    /// Records the event that occurred by the user.
+    ///
+    /// - Parameter event: the ``Event`` that occurred
     @objc public func track(event: Event) {
         hackleAppCore.track(event: event, user: nil, hackleAppContext: .default)
     }
 
+    /// Returns an instance of Hackle Remote Config.
+    ///
+    /// - Returns: a ``HackleRemoteConfig`` instance
     @objc public func remoteConfig() -> HackleRemoteConfig {
         DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: nil)
     }
 
+    /// Injects the supplied object into this WebView.
+    ///
+    /// - Parameters:
+    ///   - webView: Target WebView
+    ///   - uiDelegate: Optional UI delegate for the WebView
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
         webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
     }
 
+    /// Returns the HackleInvocator instance.
+    ///
+    /// - Returns: the ``HackleInvocator`` instance
     @objc public func invocator() -> HackleInvocator {
         return hackleInvocator
     }
 
+    /// Sets the push notification device token.
+    ///
+    /// - Parameter deviceToken: the device token for push notifications
     @objc public func setPushToken(_ deviceToken: Data) {
         hackleAppCore.setPushToken(deviceToken: deviceToken)
     }
 
+    /// Fetches the latest configuration from the Hackle servers with completion.
+    ///
+    /// - Parameter completion: callback to be executed when the fetch is complete
     @objc public func fetch(_ completion: @escaping () -> ()) {
         hackleAppCore.fetch(completion: completion)
     }
 
+    /// Sets the current screen for screen tracking.
+    ///
+    /// - Parameter screen: the ``Screen`` object representing the current screen
     @objc public func setCurrentScreen(screen: Screen) {
         hackleAppCore.setCurrentScreen(screen: screen, hackleAppContext: .default)
     }

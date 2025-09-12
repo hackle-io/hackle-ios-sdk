@@ -1,12 +1,18 @@
 import Foundation
 
+/// Represents the result of an A/B test experiment evaluation.
 @objc(HackleDecision)
 public final class Decision: NSObject, ParameterConfig {
 
+    /// The experiment that was evaluated, if available
     @objc public let experiment: HackleExperiment?
+    /// The variation assigned to the user
     @objc public let variation: String
+    /// The reason for the decision
     @objc public let reason: String
+    /// Configuration parameters associated with the variation
     @objc public let config: ParameterConfig
+    /// Dictionary representation of configuration parameters
     @objc public let parameters: [String: Any]
 
     internal init(experiment: HackleExperiment?, variation: String, reason: String, config: ParameterConfig) {
@@ -26,30 +32,63 @@ public final class Decision: NSObject, ParameterConfig {
         Decision(experiment: experiment?.toPublic(), variation: variation, reason: reason, config: config)
     }
 
+    /// Gets a string parameter value from the variation configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getString(forKey: String, defaultValue: String) -> String {
         config.getString(forKey: forKey, defaultValue: defaultValue)
     }
 
+    /// Gets an integer parameter value from the variation configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getInt(forKey: String, defaultValue: Int) -> Int {
         config.getInt(forKey: forKey, defaultValue: defaultValue)
     }
 
+    /// Gets a double parameter value from the variation configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getDouble(forKey: String, defaultValue: Double) -> Double {
         config.getDouble(forKey: forKey, defaultValue: defaultValue)
     }
 
+    /// Gets a boolean parameter value from the variation configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getBool(forKey: String, defaultValue: Bool) -> Bool {
         config.getBool(forKey: forKey, defaultValue: defaultValue)
     }
 }
 
+/// Represents the result of a feature flag evaluation.
+///
+/// Contains information about whether the feature is enabled, the feature flag details,
+/// and any associated configuration parameters.
 @objc(HackleFeatureFlagDecision)
 public final class FeatureFlagDecision: NSObject, ParameterConfig {
 
+    /// The feature flag that was evaluated, if available
     @objc public let featureFlag: HackleExperiment?
+    /// Whether the feature flag is enabled for the user
     @objc public let isOn: Bool
+    /// The reason for the decision (e.g., "TARGET_RULE_MATCH", "FEATURE_FLAG_NOT_FOUND")
     @objc public let reason: String
+    /// Configuration parameters associated with the feature flag
     @objc public let config: ParameterConfig
+    /// Dictionary representation of configuration parameters
     @objc public let parameters: [String: Any]
 
     init(featureFlag: HackleExperiment?, isOn: Bool, reason: String, config: ParameterConfig) {
@@ -76,18 +115,42 @@ public final class FeatureFlagDecision: NSObject, ParameterConfig {
         FeatureFlagDecision(featureFlag: featureFlag?.toPublic(), isOn: false, reason: reason, config: config)
     }
 
+    /// Gets a string parameter value from the feature flag configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getString(forKey: String, defaultValue: String) -> String {
         config.getString(forKey: forKey, defaultValue: defaultValue)
     }
 
+    /// Gets an integer parameter value from the feature flag configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getInt(forKey: String, defaultValue: Int) -> Int {
         config.getInt(forKey: forKey, defaultValue: defaultValue)
     }
 
+    /// Gets a double parameter value from the feature flag configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getDouble(forKey: String, defaultValue: Double) -> Double {
         config.getDouble(forKey: forKey, defaultValue: defaultValue)
     }
 
+    /// Gets a boolean parameter value from the feature flag configuration.
+    ///
+    /// - Parameters:
+    ///   - forKey: The parameter key
+    ///   - defaultValue: The default value to return if the parameter is not found
+    /// - Returns: The parameter value or the default value
     public func getBool(forKey: String, defaultValue: Bool) -> Bool {
         config.getBool(forKey: forKey, defaultValue: defaultValue)
     }

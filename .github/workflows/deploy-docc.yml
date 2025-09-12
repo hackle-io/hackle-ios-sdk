@@ -1,0 +1,56 @@
+name: Deploy DocC Documentation
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: macos-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Build DocC Documentation
+        run: |
+          xcodebuild docbuild -scheme Hackle-Package -configuration "Release" \
+            -derivedDataPath /tmp/docbuild \
+            -destination 'generic/platform=iOS'
+      
+      - name: Process DocC Archive for Static Hosting
+        run: |
+          $(xcrun --find docc) process-archive \
+          transform-for-static-hosting /tmp/docbuild/Build/Products/Release-iphoneos/Hackle.doccarchive \
+          --hosting-base-path hackle-ios-sdk \
+          --output-path docs
+      
+      - name: Create Index HTML for Auto-redirect
+        run: |
+          echo "<script>window.location.href += \"/documentation/hackle\"</script>" > docs/index.html
+          
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

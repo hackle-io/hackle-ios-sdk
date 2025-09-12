@@ -8,11 +8,19 @@
 import Foundation
 import UIKit
 
+/// Represents a screen in the application for tracking purposes.
+///
+/// Used for screen tracking
 @objc(HackleScreen)
 public class Screen: NSObject {
     let name: String
     let className: String
     
+    /// Creates a new screen instance.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the screen
+    ///   - className: The class name of the screen/view controller
     @objc public init(name: String, className: String) {
         self.name = name
         self.className = className

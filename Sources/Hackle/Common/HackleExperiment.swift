@@ -7,9 +7,12 @@
 
 import Foundation
 
+/// Represents an experiment or feature flag in the Hackle system.
 @objc public final class HackleExperiment: NSObject {
 
+    /// The unique identifier for the experiment or feature flag
     @objc public let key: Int64
+    /// The version of the experiment or feature flag configuration
     @objc public let version: Int
 
     init(key: Int64, version: Int) {
