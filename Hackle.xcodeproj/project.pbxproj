@@ -375,7 +375,6 @@
 		EE29DAC329CD853C00B1FEAA /* hackle_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB029CD83E000B1FEAA /* hackle_logo.png */; };
 		EE29DAC429CD853C00B1FEAA /* hackle_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB129CD83E000B1FEAA /* hackle_logo@2x.png */; };
 		EE29DAC529CD853C00B1FEAA /* hackle_logo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB429CD83E000B1FEAA /* hackle_logo@3x.png */; };
-		EE29DAC629CD854000B1FEAA /* HackleUserExplorerButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB929CD843100B1FEAA /* HackleUserExplorerButton.xib */; };
 		EE29DAC829CD91A400B1FEAA /* ManualOverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAC729CD91A400B1FEAA /* ManualOverrideStorage.swift */; };
 		EE29DACA29CD988100B1FEAA /* HackleUserManualOverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */; };
 		EE29DACC29CD9E6A00B1FEAA /* HackleUserExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */; };
@@ -1027,7 +1026,6 @@
 		EE29DAB329CD83E000B1FEAA /* hackle_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hackle_banner.png; sourceTree = "<group>"; };
 		EE29DAB429CD83E000B1FEAA /* hackle_logo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hackle_logo@3x.png"; sourceTree = "<group>"; };
 		EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerButton.swift; sourceTree = "<group>"; };
-		EE29DAB929CD843100B1FEAA /* HackleUserExplorerButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleUserExplorerButton.xib; sourceTree = "<group>"; };
 		EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerView.swift; sourceTree = "<group>"; };
 		EE29DAC729CD91A400B1FEAA /* ManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualOverrideStorage.swift; sourceTree = "<group>"; };
 		EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserManualOverrideStorage.swift; sourceTree = "<group>"; };
@@ -2464,7 +2462,6 @@
 			isa = PBXGroup;
 			children = (
 				EE29DAAB29CD83D000B1FEAA /* Images */,
-				EE29DAB929CD843100B1FEAA /* HackleUserExplorerButton.xib */,
 				EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */,
 				EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */,
 				EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */,
@@ -3345,7 +3342,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE29DAC629CD854000B1FEAA /* HackleUserExplorerButton.xib in Resources */,
 				EEDA4BB229D15AE800B19482 /* HackleUserExplorerViewController.xib in Resources */,
 				EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */,
 				EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */,
