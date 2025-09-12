@@ -10,19 +10,35 @@ import UIKit
 
 class HackleUserExplorerButton: UIView {
 
+    private let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "hackle_logo.png", in: HackleInternalResources.bundle, compatibleWith: nil)
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        loadViewFromNib()
+        setupUI()
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        loadViewFromNib()
+        setupUI()
     }
 
-    func loadViewFromNib() {
-        let view = HackleInternalResources.bundle.loadNibNamed("HackleUserExplorerButton", owner: nil)?.first as! UIView
-        view.frame = bounds
-        addSubview(view)
+    private func setupUI() {
+        backgroundColor = UIColor.clear
+        
+        addSubview(logoImageView)
+        
+        NSLayoutConstraint.activate([
+            logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 40),
+            logoImageView.heightAnchor.constraint(equalToConstant: 40)
+        ])
     }
 }
