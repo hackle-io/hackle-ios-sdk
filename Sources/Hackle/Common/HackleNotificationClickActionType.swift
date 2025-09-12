@@ -7,8 +7,11 @@
 
 import Foundation
 
+/// Types of actions that can be performed when a push notification is clicked.
 @objc public enum HackleNotificationClickActionType: Int, RawRepresentable {
+    /// Open the application
     case appOpen
+    /// Open a link
     case link
     
     public typealias RawValue = String

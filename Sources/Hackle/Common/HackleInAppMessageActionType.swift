@@ -7,8 +7,11 @@
 
 import Foundation
 
+/// Types of actions that can be performed on in-app messages.
 @objc public enum HackleInAppMessageActionType: Int, RawRepresentable {
+    /// Close the in-app message
     case close
+    /// Open a link
     case link
     
     public typealias RawValue = String
