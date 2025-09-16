@@ -24,7 +24,7 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
     private func setUpTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UINib(nibName: "HackleFeatureFlagTableViewCell", bundle: HackleInternalResources.bundle), forCellReuseIdentifier: "HackleFeatureFlagTableViewCell")
+        tableView.register(HackleFeatureFlagTableViewCell.self, forCellReuseIdentifier: "HackleFeatureFlagTableViewCell")
     }
 
     private func fetchAndUpdate() {
