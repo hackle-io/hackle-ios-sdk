@@ -10,23 +10,222 @@ import UIKit
 
 class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, HackleUserExplorerContainer {
 
-    @IBOutlet weak var dismissButton: UIImageView!
+    // Header View
+    private let headerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let hackleLogoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "hackle_banner.png", in: HackleInternalResources.bundle, compatibleWith: nil)
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private let dismissButton: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "hackle_cancel.png", in: HackleInternalResources.bundle, compatibleWith: nil)
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
 
-    @IBOutlet weak var defaultIdLabel: UILabel!
-    @IBOutlet weak var deviceIdLabel: UILabel!
-    @IBOutlet weak var userIdLabel: UILabel!
-    @IBOutlet weak var pushTokenLabel: UILabel!
+    // Info Section
+    private let infoView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let defaultIdTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Default ID"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let defaultIdLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let deviceIdTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Device ID"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let deviceIdLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let userIdTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "User ID"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let userIdLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let pushTokenTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Push Token"
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let pushTokenLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let defaultIdCopyButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Copy", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = false
+        return button
+    }()
+    
+    private let deviceIdCopyButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Copy", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = false
+        return button
+    }()
+    
+    private let userIdCopyButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Copy", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = false
+        return button
+    }()
+    
+    private let pushTokenCopyButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Copy", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = false
+        return button
+    }()
+    
+    private let copiedLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Copied"
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .systemBlue
+        label.textAlignment = .center
+        label.alpha = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
 
-    @IBOutlet weak var defaultIdCopyButton: UIButton!
-    @IBOutlet weak var deviceIdCopyButton: UIButton!
-    @IBOutlet weak var userIdCopyButton: UIButton!
-    @IBOutlet weak var pushTokenCopyButton: UIButton!
-    @IBOutlet weak var copiedLabel: UILabel!
+    // Tab Section
+    private let tabView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let abTestButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("A/B Test", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private let featureFlagButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Feature Flag", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
 
-    @IBOutlet weak var abTestButton: UIButton!
-    @IBOutlet weak var featureFlagButton: UIButton!
+    // Content Section
+    private let experimentPageView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
-    @IBOutlet weak var experimentPageView: UIView!
+    // Separator Lines
+    private let headerSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let infoSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let tabSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let defaultIdSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let deviceIdSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let userIdSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     private var experimentPageViewController: UIPageViewController!
     private var abTestViewController: HackleAbTestViewController!
     private var featureFlagViewController: HackleFeatureFlagViewController!
@@ -35,9 +234,208 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
         initDismissButton()
         initUser()
         initPageView()
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .white
+        
+        // Add all subviews
+        view.addSubview(headerView)
+        view.addSubview(headerSeparator)
+        view.addSubview(infoView)
+        view.addSubview(infoSeparator)
+        view.addSubview(tabView)
+        view.addSubview(tabSeparator)
+        view.addSubview(experimentPageView)
+        
+        // Header subviews
+        headerView.addSubview(hackleLogoImageView)
+        headerView.addSubview(dismissButton)
+        
+        // Info section subviews
+        infoView.addSubview(defaultIdTitleLabel)
+        infoView.addSubview(defaultIdLabel)
+        infoView.addSubview(defaultIdCopyButton)
+        
+        infoView.addSubview(deviceIdTitleLabel)
+        infoView.addSubview(deviceIdLabel)
+        infoView.addSubview(deviceIdCopyButton)
+        
+        infoView.addSubview(userIdTitleLabel)
+        infoView.addSubview(userIdLabel)
+        infoView.addSubview(userIdCopyButton)
+        
+        infoView.addSubview(pushTokenTitleLabel)
+        infoView.addSubview(pushTokenLabel)
+        infoView.addSubview(pushTokenCopyButton)
+        
+        infoView.addSubview(copiedLabel)
+        
+        // Add separator lines between info sections
+        infoView.addSubview(defaultIdSeparator)
+        infoView.addSubview(deviceIdSeparator)
+        infoView.addSubview(userIdSeparator)
+        
+        // Tab section subviews
+        tabView.addSubview(abTestButton)
+        tabView.addSubview(featureFlagButton)
+        
+        // Setup button actions
+        defaultIdCopyButton.addTarget(self, action: #selector(defaultIdCopyTapped), for: .touchUpInside)
+        deviceIdCopyButton.addTarget(self, action: #selector(deviceIdCopyTapped), for: .touchUpInside)
+        userIdCopyButton.addTarget(self, action: #selector(userIdCopyTapped), for: .touchUpInside)
+        pushTokenCopyButton.addTarget(self, action: #selector(pushTokenCopyTapped), for: .touchUpInside)
+        
+        abTestButton.addTarget(self, action: #selector(abTestButtonTapped), for: .touchUpInside)
+        featureFlagButton.addTarget(self, action: #selector(featureFlagButtonTapped), for: .touchUpInside)
+        
+        // Setup Auto Layout constraints
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            // Header View constraints
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: 48),
+            
+            // Hackle Logo constraints
+            hackleLogoImageView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            hackleLogoImageView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            hackleLogoImageView.widthAnchor.constraint(equalToConstant: 153),
+            hackleLogoImageView.heightAnchor.constraint(equalToConstant: 20),
+            
+            // Dismiss Button constraints
+            dismissButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
+            dismissButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            dismissButton.widthAnchor.constraint(equalToConstant: 20),
+            dismissButton.heightAnchor.constraint(equalToConstant: 20),
+            
+            // Info View constraints
+            infoView.topAnchor.constraint(equalTo: headerSeparator.bottomAnchor, constant: 12),
+            infoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            infoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            infoView.heightAnchor.constraint(equalToConstant: 205),
+            
+            // Default ID section
+            defaultIdTitleLabel.topAnchor.constraint(equalTo: infoView.topAnchor, constant: 8),
+            defaultIdTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            
+            defaultIdLabel.topAnchor.constraint(equalTo: defaultIdTitleLabel.bottomAnchor, constant: 4),
+            defaultIdLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            defaultIdLabel.trailingAnchor.constraint(equalTo: defaultIdCopyButton.leadingAnchor, constant: -8),
+            
+            defaultIdCopyButton.centerYAnchor.constraint(equalTo: defaultIdTitleLabel.centerYAnchor),
+            defaultIdCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            defaultIdCopyButton.widthAnchor.constraint(equalToConstant: 60),
+            defaultIdCopyButton.heightAnchor.constraint(equalToConstant: 25),
+            
+            // Device ID section
+            deviceIdTitleLabel.topAnchor.constraint(equalTo: defaultIdLabel.bottomAnchor, constant: 16),
+            deviceIdTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            
+            deviceIdLabel.topAnchor.constraint(equalTo: deviceIdTitleLabel.bottomAnchor, constant: 4),
+            deviceIdLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            deviceIdLabel.trailingAnchor.constraint(equalTo: deviceIdCopyButton.leadingAnchor, constant: -8),
+            
+            deviceIdCopyButton.centerYAnchor.constraint(equalTo: deviceIdTitleLabel.centerYAnchor),
+            deviceIdCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            deviceIdCopyButton.widthAnchor.constraint(equalToConstant: 60),
+            deviceIdCopyButton.heightAnchor.constraint(equalToConstant: 25),
+            
+            // User ID section
+            userIdTitleLabel.topAnchor.constraint(equalTo: deviceIdLabel.bottomAnchor, constant: 16),
+            userIdTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            
+            userIdLabel.topAnchor.constraint(equalTo: userIdTitleLabel.bottomAnchor, constant: 4),
+            userIdLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            userIdLabel.trailingAnchor.constraint(equalTo: userIdCopyButton.leadingAnchor, constant: -8),
+            
+            userIdCopyButton.centerYAnchor.constraint(equalTo: userIdTitleLabel.centerYAnchor),
+            userIdCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            userIdCopyButton.widthAnchor.constraint(equalToConstant: 60),
+            userIdCopyButton.heightAnchor.constraint(equalToConstant: 25),
+            
+            // Push Token section
+            pushTokenTitleLabel.topAnchor.constraint(equalTo: userIdLabel.bottomAnchor, constant: 16),
+            pushTokenTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            
+            pushTokenLabel.topAnchor.constraint(equalTo: pushTokenTitleLabel.bottomAnchor, constant: 4),
+            pushTokenLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            pushTokenLabel.trailingAnchor.constraint(equalTo: pushTokenCopyButton.leadingAnchor, constant: -8),
+            
+            pushTokenCopyButton.centerYAnchor.constraint(equalTo: pushTokenTitleLabel.centerYAnchor),
+            pushTokenCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            pushTokenCopyButton.widthAnchor.constraint(equalToConstant: 60),
+            pushTokenCopyButton.heightAnchor.constraint(equalToConstant: 25),
+            
+            // Copied Label
+            copiedLabel.centerXAnchor.constraint(equalTo: infoView.centerXAnchor),
+            copiedLabel.topAnchor.constraint(equalTo: infoView.topAnchor),
+            copiedLabel.widthAnchor.constraint(equalToConstant: 80),
+            copiedLabel.heightAnchor.constraint(equalToConstant: 25),
+            
+            // Tab View constraints
+            tabView.topAnchor.constraint(equalTo: infoSeparator.bottomAnchor, constant: 12),
+            tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tabView.heightAnchor.constraint(equalToConstant: 48),
+            
+            // Tab buttons
+            abTestButton.leadingAnchor.constraint(equalTo: tabView.leadingAnchor),
+            abTestButton.topAnchor.constraint(equalTo: tabView.topAnchor),
+            abTestButton.bottomAnchor.constraint(equalTo: tabView.bottomAnchor),
+            abTestButton.widthAnchor.constraint(equalToConstant: 120),
+            
+            featureFlagButton.leadingAnchor.constraint(equalTo: abTestButton.trailingAnchor),
+            featureFlagButton.topAnchor.constraint(equalTo: tabView.topAnchor),
+            featureFlagButton.bottomAnchor.constraint(equalTo: tabView.bottomAnchor),
+            featureFlagButton.widthAnchor.constraint(equalToConstant: 120),
+            
+            // Experiment Page View constraints
+            experimentPageView.topAnchor.constraint(equalTo: tabSeparator.bottomAnchor),
+            experimentPageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            experimentPageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            experimentPageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            // Separator constraints
+            headerSeparator.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            headerSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            infoSeparator.topAnchor.constraint(equalTo: infoView.bottomAnchor),
+            infoSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            infoSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            infoSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            tabSeparator.topAnchor.constraint(equalTo: tabView.bottomAnchor),
+            tabSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tabSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tabSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            // Info section separators
+            defaultIdSeparator.topAnchor.constraint(equalTo: defaultIdLabel.bottomAnchor, constant: 8),
+            defaultIdSeparator.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            defaultIdSeparator.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            defaultIdSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            deviceIdSeparator.topAnchor.constraint(equalTo: deviceIdLabel.bottomAnchor, constant: 8),
+            deviceIdSeparator.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            deviceIdSeparator.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            deviceIdSeparator.heightAnchor.constraint(equalToConstant: 1),
+            
+            userIdSeparator.topAnchor.constraint(equalTo: userIdLabel.bottomAnchor, constant: 8),
+            userIdSeparator.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
+            userIdSeparator.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
+            userIdSeparator.heightAnchor.constraint(equalToConstant: 1)
+        ])
     }
 
     private func initDismissButton() {
@@ -74,25 +472,25 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         copiedLabel.alpha = 0
     }
 
-    @IBAction func defaultIdCopyTapped(_ sender: UIButton) {
+    @objc private func defaultIdCopyTapped(_ sender: UIButton) {
         let pasteboard = UIPasteboard.general
         pasteboard.string = defaultIdLabel.text
         showCopiedLabel()
     }
 
-    @IBAction func deviceIdCopyTapped(_ sender: UIButton) {
+    @objc private func deviceIdCopyTapped(_ sender: UIButton) {
         let pasteboard = UIPasteboard.general
         pasteboard.string = deviceIdLabel.text
         showCopiedLabel()
     }
 
-    @IBAction func userIdCopyTapped(_ sender: UIButton) {
+    @objc private func userIdCopyTapped(_ sender: UIButton) {
         let pasteboard = UIPasteboard.general
         pasteboard.string = userIdLabel.text
         showCopiedLabel()
     }
     
-    @IBAction func pushTokenCopyTapped(_ sender: UIButton) {
+    @objc private func pushTokenCopyTapped(_ sender: UIButton) {
         let pasteboard = UIPasteboard.general
         pasteboard.string = pushTokenLabel.text
         showCopiedLabel()
@@ -134,11 +532,11 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         child.view.frame = experimentPageView.bounds
     }
 
-    @IBAction func abTestButtonTapped(_ sender: UIButton) {
+    @objc private func abTestButtonTapped(_ sender: UIButton) {
         select(experimentType: .abTest)
     }
 
-    @IBAction func featureFlagButtonTapped(_ sender: UIButton) {
+    @objc private func featureFlagButtonTapped(_ sender: UIButton) {
         select(experimentType: .featureFlag)
     }
 
