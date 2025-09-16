@@ -10,10 +10,38 @@ import UIKit
 
 class HackleAbTestTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var experimentKeyLabel: UILabel!
-    @IBOutlet weak var experimentDescLabel: UILabel!
-    @IBOutlet weak var variationButton: UIButton!
-    @IBOutlet weak var resetButton: UIButton!
+    // UI Elements - Created programmatically
+    private lazy var experimentKeyLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var experimentDescLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = UIColor(red: 0.627, green: 0.627, blue: 0.627, alpha: 1.0)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var variationButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Button", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(variationButtonTapped(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var resetButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Reset", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(resetButtonTapped(_:)), for: .touchUpInside)
+        return button
+    }()
 
     private var item: HackleAbTestItem!
     private var overrideSetListener: OnOverrideSetListener!
@@ -23,6 +51,54 @@ class HackleAbTestTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        setupUI()
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
+    
+    private func setupUI() {
+        backgroundColor = .white
+        
+        // Add subviews
+        contentView.addSubview(experimentKeyLabel)
+        contentView.addSubview(experimentDescLabel)
+        contentView.addSubview(variationButton)
+        contentView.addSubview(resetButton)
+        
+        // Setup constraints
+        NSLayoutConstraint.activate([
+            // experimentKeyLabel constraints
+            experimentKeyLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            experimentKeyLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            experimentKeyLabel.widthAnchor.constraint(equalToConstant: 160),
+            
+            // experimentDescLabel constraints
+            experimentDescLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            experimentDescLabel.topAnchor.constraint(equalTo: experimentKeyLabel.bottomAnchor, constant: 4),
+            
+            // resetButton constraints (positioned first to establish right margin)
+            resetButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            resetButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            resetButton.widthAnchor.constraint(equalToConstant: 60),
+            resetButton.heightAnchor.constraint(equalToConstant: 25),
+            
+            // variationButton constraints
+            variationButton.trailingAnchor.constraint(equalTo: resetButton.leadingAnchor, constant: -4),
+            variationButton.centerYAnchor.constraint(equalTo: resetButton.centerYAnchor),
+            variationButton.widthAnchor.constraint(equalToConstant: 60),
+            variationButton.heightAnchor.constraint(equalToConstant: 25),
+            
+            // Ensure experimentKeyLabel doesn't overlap with buttons
+            experimentKeyLabel.trailingAnchor.constraint(equalTo: variationButton.leadingAnchor, constant: -12)
+        ])
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
