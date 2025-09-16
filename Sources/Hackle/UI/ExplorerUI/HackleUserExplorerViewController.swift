@@ -122,7 +122,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     }
 
     private func createController<T: UIViewController & HackleUserExplorerContainer>() -> T {
-        let controller = T.init(nibName: String(describing: T.self), bundle: HackleInternalResources.bundle)
+        let controller = T.init()
         controller.setHackleUserExplorer(explorer)
         addChild(controller)
         controller.view.frame = experimentPageView.bounds
