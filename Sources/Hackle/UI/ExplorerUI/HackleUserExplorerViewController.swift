@@ -45,8 +45,8 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     
     private let defaultIdTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Default ID"
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.text = "ID"
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -55,15 +55,15 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     private let defaultIdLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .gray
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let deviceIdTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Device ID"
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.text = "DEVICE ID"
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -72,15 +72,15 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     private let deviceIdLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .gray
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let userIdTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "User ID"
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.text = "USER ID"
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -89,15 +89,15 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     private let userIdLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .gray
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let pushTokenTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Push Token"
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.text = "PUSH TOKEN"
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -106,7 +106,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     private let pushTokenLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .gray
+        label.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -184,7 +184,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         return view
     }()
 
-    // Separator Lines
+    // Separators - individual named variables for better maintainability
     private let headerSeparator: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
@@ -206,26 +206,6 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         return view
     }()
     
-    private let defaultIdSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let deviceIdSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let userIdSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
     private var experimentPageViewController: UIPageViewController!
     private var abTestViewController: HackleAbTestViewController!
     private var featureFlagViewController: HackleFeatureFlagViewController!
@@ -275,10 +255,6 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         
         infoView.addSubview(copiedLabel)
         
-        // Add separator lines between info sections
-        infoView.addSubview(defaultIdSeparator)
-        infoView.addSubview(deviceIdSeparator)
-        infoView.addSubview(userIdSeparator)
         
         // Tab section subviews
         tabView.addSubview(abTestButton)
@@ -292,6 +268,15 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         
         abTestButton.addTarget(self, action: #selector(abTestButtonTapped), for: .touchUpInside)
         featureFlagButton.addTarget(self, action: #selector(featureFlagButtonTapped), for: .touchUpInside)
+        
+        // Set initial tab selection state - A/B Test selected with underline
+        abTestButton.setTitleColor(.black, for: .normal)
+        featureFlagButton.setTitleColor(.lightGray, for: .normal)
+        
+        // Add selection underline to initially selected A/B Test tab
+        DispatchQueue.main.async {
+            self.addInitialSelectionUnderline()
+        }
         
         // Setup Auto Layout constraints
         setupConstraints()
@@ -317,58 +302,62 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             dismissButton.widthAnchor.constraint(equalToConstant: 20),
             dismissButton.heightAnchor.constraint(equalToConstant: 20),
             
-            // Info View constraints
+            // Info View constraints - increased height to prevent push token cutoff
             infoView.topAnchor.constraint(equalTo: headerSeparator.bottomAnchor, constant: 12),
             infoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             infoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            infoView.heightAnchor.constraint(equalToConstant: 205),
+            infoView.heightAnchor.constraint(equalToConstant: 220),
             
-            // Default ID section
+            // Default ID section - fixed positioning
             defaultIdTitleLabel.topAnchor.constraint(equalTo: infoView.topAnchor, constant: 8),
             defaultIdTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             
             defaultIdLabel.topAnchor.constraint(equalTo: defaultIdTitleLabel.bottomAnchor, constant: 4),
             defaultIdLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             defaultIdLabel.trailingAnchor.constraint(equalTo: defaultIdCopyButton.leadingAnchor, constant: -8),
+            defaultIdLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16),
             
             defaultIdCopyButton.centerYAnchor.constraint(equalTo: defaultIdTitleLabel.centerYAnchor),
             defaultIdCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
             defaultIdCopyButton.widthAnchor.constraint(equalToConstant: 60),
             defaultIdCopyButton.heightAnchor.constraint(equalToConstant: 25),
             
-            // Device ID section
-            deviceIdTitleLabel.topAnchor.constraint(equalTo: defaultIdLabel.bottomAnchor, constant: 16),
+            // Device ID section - fixed positioning relative to infoView top
+            deviceIdTitleLabel.topAnchor.constraint(equalTo: infoView.topAnchor, constant: 55),
             deviceIdTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             
             deviceIdLabel.topAnchor.constraint(equalTo: deviceIdTitleLabel.bottomAnchor, constant: 4),
             deviceIdLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             deviceIdLabel.trailingAnchor.constraint(equalTo: deviceIdCopyButton.leadingAnchor, constant: -8),
+            deviceIdLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16),
             
             deviceIdCopyButton.centerYAnchor.constraint(equalTo: deviceIdTitleLabel.centerYAnchor),
             deviceIdCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
             deviceIdCopyButton.widthAnchor.constraint(equalToConstant: 60),
             deviceIdCopyButton.heightAnchor.constraint(equalToConstant: 25),
             
-            // User ID section
-            userIdTitleLabel.topAnchor.constraint(equalTo: deviceIdLabel.bottomAnchor, constant: 16),
+            // User ID section - fixed positioning relative to infoView top
+            userIdTitleLabel.topAnchor.constraint(equalTo: infoView.topAnchor, constant: 102),
             userIdTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             
             userIdLabel.topAnchor.constraint(equalTo: userIdTitleLabel.bottomAnchor, constant: 4),
             userIdLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             userIdLabel.trailingAnchor.constraint(equalTo: userIdCopyButton.leadingAnchor, constant: -8),
+            userIdLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16),
             
             userIdCopyButton.centerYAnchor.constraint(equalTo: userIdTitleLabel.centerYAnchor),
             userIdCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
             userIdCopyButton.widthAnchor.constraint(equalToConstant: 60),
             userIdCopyButton.heightAnchor.constraint(equalToConstant: 25),
             
-            // Push Token section
-            pushTokenTitleLabel.topAnchor.constraint(equalTo: userIdLabel.bottomAnchor, constant: 16),
+            // Push Token section - fixed positioning relative to infoView top
+            pushTokenTitleLabel.topAnchor.constraint(equalTo: infoView.topAnchor, constant: 149),
             pushTokenTitleLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             
             pushTokenLabel.topAnchor.constraint(equalTo: pushTokenTitleLabel.bottomAnchor, constant: 4),
             pushTokenLabel.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
             pushTokenLabel.trailingAnchor.constraint(equalTo: pushTokenCopyButton.leadingAnchor, constant: -8),
+            pushTokenLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16),
             
             pushTokenCopyButton.centerYAnchor.constraint(equalTo: pushTokenTitleLabel.centerYAnchor),
             pushTokenCopyButton.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
@@ -381,11 +370,11 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             copiedLabel.widthAnchor.constraint(equalToConstant: 80),
             copiedLabel.heightAnchor.constraint(equalToConstant: 25),
             
-            // Tab View constraints
+            // Tab View constraints - reduced height for more compact appearance
             tabView.topAnchor.constraint(equalTo: infoSeparator.bottomAnchor, constant: 12),
             tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabView.heightAnchor.constraint(equalToConstant: 48),
+            tabView.heightAnchor.constraint(equalToConstant: 36),
             
             // Tab buttons
             abTestButton.leadingAnchor.constraint(equalTo: tabView.leadingAnchor),
@@ -404,7 +393,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             experimentPageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             experimentPageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            // Separator constraints
+            // Main Separator constraints
             headerSeparator.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             headerSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -420,21 +409,6 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             tabSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tabSeparator.heightAnchor.constraint(equalToConstant: 1),
             
-            // Info section separators
-            defaultIdSeparator.topAnchor.constraint(equalTo: defaultIdLabel.bottomAnchor, constant: 8),
-            defaultIdSeparator.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
-            defaultIdSeparator.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
-            defaultIdSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
-            deviceIdSeparator.topAnchor.constraint(equalTo: deviceIdLabel.bottomAnchor, constant: 8),
-            deviceIdSeparator.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
-            deviceIdSeparator.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
-            deviceIdSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
-            userIdSeparator.topAnchor.constraint(equalTo: userIdLabel.bottomAnchor, constant: 8),
-            userIdSeparator.leadingAnchor.constraint(equalTo: infoView.leadingAnchor, constant: 12),
-            userIdSeparator.trailingAnchor.constraint(equalTo: infoView.trailingAnchor, constant: -12),
-            userIdSeparator.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
 
@@ -452,21 +426,33 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         if let defaultId = user.id {
             defaultIdLabel.text = defaultId
             defaultIdCopyButton.isEnabled = true
+        } else {
+            defaultIdLabel.text = "N/A"
+            defaultIdCopyButton.isEnabled = false
         }
 
         if let deviceId = user.deviceId {
             deviceIdLabel.text = deviceId
             deviceIdCopyButton.isEnabled = true
+        } else {
+            deviceIdLabel.text = "N/A"
+            deviceIdCopyButton.isEnabled = false
         }
 
         if let userId = user.userId {
             userIdLabel.text = userId
             userIdCopyButton.isEnabled = true
+        } else {
+            userIdLabel.text = "N/A"
+            userIdCopyButton.isEnabled = false
         }
         
         if let pushToken = explorer.registeredPushToken() {
             pushTokenLabel.text = pushToken
             pushTokenCopyButton.isEnabled = true
+        } else {
+            pushTokenLabel.text = "N/A"
+            pushTokenCopyButton.isEnabled = false
         }
 
         copiedLabel.alpha = 0
@@ -561,8 +547,8 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         button.layer.addSublayer(layer)
         button.isEnabled = false
         button.setTitleColor(UIColor.black, for: .normal)
-
     }
+    
 
     private func unselect(button: UIButton) {
         button.layer.sublayers?
@@ -604,5 +590,14 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     
     func setHackleUserExplorer(_ hackleUserExplorer: any HackleUserExplorer) {
         explorer = hackleUserExplorer
+    }
+    
+    private func addInitialSelectionUnderline() {
+        let layer = CALayer()
+        layer.frame = CGRect(x: 0, y: abTestButton.frame.height - 2, width: abTestButton.frame.width, height: 2)
+        layer.backgroundColor = UIColor.black.cgColor
+        layer.name = "io.hackle.experiment.button.selected"
+        abTestButton.layer.addSublayer(layer)
+        abTestButton.isEnabled = false
     }
 }
