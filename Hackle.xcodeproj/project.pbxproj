@@ -131,7 +131,6 @@
 		EE0B71E52A3BF237009D7AF4 /* InAppMessageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E42A3BF237009D7AF4 /* InAppMessageExt.swift */; };
 		EE0B71EA2A419D30009D7AF4 /* InAppMessageEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E92A419D30009D7AF4 /* InAppMessageEvent.swift */; };
 		EE0B71EE2A42E84A009D7AF4 /* InAppMessageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */; };
-		EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */; };
 		EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */; };
 		EE0F33F22A665ECD009DE640 /* InAppMessageEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */; };
 		EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F32A665ED7009DE640 /* InAppMessageEventHandler.swift */; };
@@ -379,9 +378,7 @@
 		EE29DACA29CD988100B1FEAA /* HackleUserManualOverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */; };
 		EE29DACC29CD9E6A00B1FEAA /* HackleUserExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */; };
 		EE29DAD129CDA86200B1FEAA /* HackleUserExplorerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */; };
-		EE3C165829D43219008177F6 /* HackleFeatureFlagViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */; };
 		EE3C165B29D43234008177F6 /* HackleFeatureFlagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165929D43234008177F6 /* HackleFeatureFlagTableViewCell.swift */; };
-		EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */; };
 		EE3C165E29D43246008177F6 /* HackleFeatureFlagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */; };
 		EE3C166029D43253008177F6 /* HackleFeatureFlagItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */; };
 		EE3E36A52C74EF40002A6147 /* MockDevToolsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E36A42C74EF40002A6147 /* MockDevToolsAPI.swift */; };
@@ -602,12 +599,10 @@
 		EECDF3E32C11B271009B2F56 /* InAppMessageUIBannerImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */; };
 		EECDF42E2C145E0E009B2F56 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF42D2C145E0E009B2F56 /* Shadow.swift */; };
 		EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */; };
-		EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */; };
 		EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */; };
 		EED6A1222A0DFC7700A8875D /* PropertyOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A1212A0DFC7700A8875D /* PropertyOperator.swift */; };
 		EED6A1272A0E267D00A8875D /* PropertyOperatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A1262A0E267D00A8875D /* PropertyOperatorSpecs.swift */; };
 		EED6A1292A0E2CD500A8875D /* PropertyOperationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A1282A0E2CD500A8875D /* PropertyOperationSpecs.swift */; };
-		EEDA4BB229D15AE800B19482 /* HackleUserExplorerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */; };
 		EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */; };
 		EEDC58442AC97E5E001E73DB /* HttpHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58432AC97E5E001E73DB /* HttpHeader.swift */; };
 		EEDC58462AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */; };
@@ -783,7 +778,6 @@
 		EE0B71E42A3BF237009D7AF4 /* InAppMessageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageExt.swift; sourceTree = "<group>"; };
 		EE0B71E92A419D30009D7AF4 /* InAppMessageEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEvent.swift; sourceTree = "<group>"; };
 		EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageActionHandler.swift; sourceTree = "<group>"; };
-		EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestViewController.xib; sourceTree = "<group>"; };
 		EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestViewController.swift; sourceTree = "<group>"; };
 		EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventTracker.swift; sourceTree = "<group>"; };
 		EE0F33F32A665ED7009DE640 /* InAppMessageEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventHandler.swift; sourceTree = "<group>"; };
@@ -1031,9 +1025,7 @@
 		EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserManualOverrideStorage.swift; sourceTree = "<group>"; };
 		EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorer.swift; sourceTree = "<group>"; };
 		EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerViewController.swift; sourceTree = "<group>"; };
-		EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleFeatureFlagViewController.xib; sourceTree = "<group>"; };
 		EE3C165929D43234008177F6 /* HackleFeatureFlagTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagTableViewCell.swift; sourceTree = "<group>"; };
-		EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleFeatureFlagTableViewCell.xib; sourceTree = "<group>"; };
 		EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagViewController.swift; sourceTree = "<group>"; };
 		EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagItem.swift; sourceTree = "<group>"; };
 		EE3E36A42C74EF40002A6147 /* MockDevToolsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevToolsAPI.swift; sourceTree = "<group>"; };
@@ -1251,12 +1243,10 @@
 		EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBannerImageView.swift; sourceTree = "<group>"; };
 		EECDF42D2C145E0E009B2F56 /* Shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
 		EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestTableViewCell.swift; sourceTree = "<group>"; };
-		EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestTableViewCell.xib; sourceTree = "<group>"; };
 		EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperation.swift; sourceTree = "<group>"; };
 		EED6A1212A0DFC7700A8875D /* PropertyOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperator.swift; sourceTree = "<group>"; };
 		EED6A1262A0E267D00A8875D /* PropertyOperatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperatorSpecs.swift; sourceTree = "<group>"; };
 		EED6A1282A0E2CD500A8875D /* PropertyOperationSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperationSpecs.swift; sourceTree = "<group>"; };
-		EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleUserExplorerViewController.xib; sourceTree = "<group>"; };
 		EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpWorkspaceFetcher.swift; sourceTree = "<group>"; };
 		EEDC58432AC97E5E001E73DB /* HttpHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpHeader.swift; sourceTree = "<group>"; };
 		EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHttpWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
@@ -2462,11 +2452,6 @@
 			isa = PBXGroup;
 			children = (
 				EE29DAAB29CD83D000B1FEAA /* Images */,
-				EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */,
-				EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */,
-				EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */,
-				EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */,
-				EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3342,19 +3327,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EEDA4BB229D15AE800B19482 /* HackleUserExplorerViewController.xib in Resources */,
 				EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */,
 				EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */,
 				EE29DABF29CD853C00B1FEAA /* hackle_banner@3x.png in Resources */,
-				EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */,
 				EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */,
 				EE29DAC029CD853C00B1FEAA /* hackle_cancel.png in Resources */,
-				EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */,
 				EE29DAC129CD853C00B1FEAA /* hackle_cancel@2x.png in Resources */,
 				EE29DAC229CD853C00B1FEAA /* hackle_cancel@3x.png in Resources */,
-				EE3C165829D43219008177F6 /* HackleFeatureFlagViewController.xib in Resources */,
 				EE29DAC329CD853C00B1FEAA /* hackle_logo.png in Resources */,
-				EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */,
 				EE29DAC429CD853C00B1FEAA /* hackle_logo@2x.png in Resources */,
 				EE29DAC529CD853C00B1FEAA /* hackle_logo@3x.png in Resources */,
 			);

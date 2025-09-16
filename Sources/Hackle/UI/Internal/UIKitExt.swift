@@ -8,6 +8,28 @@
 import Foundation
 import UIKit
 
+extension UIViewController {
+
+    /// iOS 10 호환성을 위한 safe area anchor 설정
+    func setupSafeAreaAnchors() -> (top: NSLayoutYAxisAnchor, leading: NSLayoutXAxisAnchor, trailing: NSLayoutXAxisAnchor, bottom: NSLayoutYAxisAnchor) {
+        if #available(iOS 11.0, *) {
+            return (
+                top: view.safeAreaLayoutGuide.topAnchor,
+                leading: view.safeAreaLayoutGuide.leadingAnchor,
+                trailing: view.safeAreaLayoutGuide.trailingAnchor,
+                bottom: view.safeAreaLayoutGuide.bottomAnchor
+            )
+        } else {
+            return (
+                top: topLayoutGuide.bottomAnchor,
+                leading: view.leadingAnchor,
+                trailing: view.trailingAnchor,
+                bottom: bottomLayoutGuide.topAnchor
+            )
+        }
+    }
+}
+
 extension UIColor {
 
     convenience init?(hex: String, alpha: CGFloat = 1.0) {

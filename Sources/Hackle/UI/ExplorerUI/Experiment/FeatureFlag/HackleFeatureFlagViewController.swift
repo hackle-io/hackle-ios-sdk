@@ -10,6 +10,12 @@ import UIKit
 
 class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener, HackleUserExplorerContainer {
 
+    // iOS 10 compatibility - safe area layout guide alternatives
+    private var safeAreaTop: NSLayoutYAxisAnchor!
+    private var safeAreaLeading: NSLayoutXAxisAnchor!
+    private var safeAreaTrailing: NSLayoutXAxisAnchor!
+    private var safeAreaBottom: NSLayoutYAxisAnchor!
+
     private let headerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -37,6 +43,11 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let safeAreaAnchors = setupSafeAreaAnchors()
+        safeAreaTop = safeAreaAnchors.top
+        safeAreaLeading = safeAreaAnchors.leading
+        safeAreaTrailing = safeAreaAnchors.trailing
+        safeAreaBottom = safeAreaAnchors.bottom
         setupUI()
         setUpTableView()
         fetchAndUpdate()
@@ -49,16 +60,16 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
         view.addSubview(headerView)
         view.addSubview(tableView)
         headerView.addSubview(resetAllButton)
-        
+
         // Setup button action
         resetAllButton.addTarget(self, action: #selector(resetAllButtonTapped), for: .touchUpInside)
         
         // Setup constraints
         NSLayoutConstraint.activate([
             // Header view constraints
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            headerView.topAnchor.constraint(equalTo: safeAreaTop),
+            headerView.leadingAnchor.constraint(equalTo: safeAreaLeading),
+            headerView.trailingAnchor.constraint(equalTo: safeAreaTrailing),
             headerView.heightAnchor.constraint(equalToConstant: 40),
             
             // Reset button constraints
@@ -69,11 +80,12 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
             
             // Table view constraints
             tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            tableView.leadingAnchor.constraint(equalTo: safeAreaLeading),
+            tableView.trailingAnchor.constraint(equalTo: safeAreaTrailing),
+            tableView.bottomAnchor.constraint(equalTo: safeAreaBottom)
         ])
     }
+
 
     private func setUpTableView() {
         tableView.delegate = self

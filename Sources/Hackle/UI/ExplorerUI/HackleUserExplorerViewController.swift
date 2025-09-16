@@ -10,6 +10,12 @@ import UIKit
 
 class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, HackleUserExplorerContainer {
 
+    // iOS 10 compatibility - safe area layout guide alternatives
+    private var safeAreaTop: NSLayoutYAxisAnchor!
+    private var safeAreaLeading: NSLayoutXAxisAnchor!
+    private var safeAreaTrailing: NSLayoutXAxisAnchor!
+    private var safeAreaBottom: NSLayoutYAxisAnchor!
+
     // Header View
     private let headerView: UIView = {
         let view = UIView()
@@ -214,12 +220,18 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let safeAreaAnchors = setupSafeAreaAnchors()
+        safeAreaTop = safeAreaAnchors.top
+        safeAreaLeading = safeAreaAnchors.leading
+        safeAreaTrailing = safeAreaAnchors.trailing
+        safeAreaBottom = safeAreaAnchors.bottom
         setupUI()
         initDismissButton()
         initUser()
         initPageView()
     }
-    
+
+
     private func setupUI() {
         view.backgroundColor = .white
         
@@ -285,7 +297,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             // Header View constraints
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.topAnchor.constraint(equalTo: safeAreaTop),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             headerView.heightAnchor.constraint(equalToConstant: 48),
@@ -391,7 +403,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             experimentPageView.topAnchor.constraint(equalTo: tabSeparator.bottomAnchor),
             experimentPageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             experimentPageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            experimentPageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            experimentPageView.bottomAnchor.constraint(equalTo: safeAreaBottom),
             
             // Main Separator constraints
             headerSeparator.topAnchor.constraint(equalTo: headerView.bottomAnchor),

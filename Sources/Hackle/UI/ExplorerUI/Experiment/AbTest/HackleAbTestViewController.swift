@@ -10,6 +10,12 @@ import UIKit
 
 class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener, HackleUserExplorerContainer {
 
+    // iOS 10 compatibility - safe area layout guide alternatives
+    private var safeAreaTop: NSLayoutYAxisAnchor!
+    private var safeAreaLeading: NSLayoutXAxisAnchor!
+    private var safeAreaTrailing: NSLayoutXAxisAnchor!
+    private var safeAreaBottom: NSLayoutYAxisAnchor!
+
     private let headerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -38,6 +44,11 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let safeAreaAnchors = setupSafeAreaAnchors()
+        safeAreaTop = safeAreaAnchors.top
+        safeAreaLeading = safeAreaAnchors.leading
+        safeAreaTrailing = safeAreaAnchors.trailing
+        safeAreaBottom = safeAreaAnchors.bottom
         setupUI()
         setUpTableView()
         fetchAndUpdate()
@@ -57,9 +68,9 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
         // Setup constraints
         NSLayoutConstraint.activate([
             // Header view constraints
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            headerView.topAnchor.constraint(equalTo: safeAreaTop),
+            headerView.leadingAnchor.constraint(equalTo: safeAreaLeading),
+            headerView.trailingAnchor.constraint(equalTo: safeAreaTrailing),
             headerView.heightAnchor.constraint(equalToConstant: 40),
             
             // Reset button constraints
@@ -70,11 +81,12 @@ class HackleAbTestViewController: UIViewController, UITableViewDelegate, UITable
             
             // Table view constraints
             abTestTableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-            abTestTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            abTestTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            abTestTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            abTestTableView.leadingAnchor.constraint(equalTo: safeAreaLeading),
+            abTestTableView.trailingAnchor.constraint(equalTo: safeAreaTrailing),
+            abTestTableView.bottomAnchor.constraint(equalTo: safeAreaBottom)
         ])
     }
+
 
     private func setUpTableView() {
         abTestTableView.delegate = self
