@@ -99,7 +99,7 @@ class HackleUserExplorerView {
             else {
                 return
             }
-            let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
+            let hackleUserExplorerViewController = HackleUserExplorerViewController()
             hackleUserExplorerViewController.setHackleUserExplorer(hackleUserExplorer)
             hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
             topViewController.present(hackleUserExplorerViewController, animated: true)

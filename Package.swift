@@ -25,7 +25,6 @@ let package = Package(
                 "HackleNotification.m"
             ],
             resources: [
-                .process("Resources/HackleUserExplorerViewController.xib"),
                 .process("Resources/Images/hackle_banner.png"),
                 .process("Resources/Images/hackle_banner@2x.png"),
                 .process("Resources/Images/hackle_banner@3x.png"),
