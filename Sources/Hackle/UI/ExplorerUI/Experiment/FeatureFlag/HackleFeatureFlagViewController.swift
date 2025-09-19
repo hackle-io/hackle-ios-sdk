@@ -11,10 +11,7 @@ import UIKit
 class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener, HackleUserExplorerContainer {
 
     // iOS 10 compatibility - safe area layout guide alternatives
-    private var safeAreaTop: NSLayoutYAxisAnchor!
-    private var safeAreaLeading: NSLayoutXAxisAnchor!
-    private var safeAreaTrailing: NSLayoutXAxisAnchor!
-    private var safeAreaBottom: NSLayoutYAxisAnchor!
+    private var safeAreaAnchors: SafeAreaAnchors!
 
     private let headerView: UIView = {
         let view = UIView()
@@ -43,11 +40,7 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let safeAreaAnchors = setupSafeAreaAnchors()
-        safeAreaTop = safeAreaAnchors.top
-        safeAreaLeading = safeAreaAnchors.leading
-        safeAreaTrailing = safeAreaAnchors.trailing
-        safeAreaBottom = safeAreaAnchors.bottom
+        safeAreaAnchors = configureSafeAreaAnchors()
         setupUI()
         setUpTableView()
         fetchAndUpdate()
@@ -67,9 +60,9 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
         // Setup constraints
         NSLayoutConstraint.activate([
             // Header view constraints
-            headerView.topAnchor.constraint(equalTo: safeAreaTop),
-            headerView.leadingAnchor.constraint(equalTo: safeAreaLeading),
-            headerView.trailingAnchor.constraint(equalTo: safeAreaTrailing),
+            headerView.topAnchor.constraint(equalTo: safeAreaAnchors.top),
+            headerView.leadingAnchor.constraint(equalTo: safeAreaAnchors.leading),
+            headerView.trailingAnchor.constraint(equalTo: safeAreaAnchors.trailing),
             headerView.heightAnchor.constraint(equalToConstant: 40),
             
             // Reset button constraints
@@ -80,9 +73,9 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
             
             // Table view constraints
             tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: safeAreaLeading),
-            tableView.trailingAnchor.constraint(equalTo: safeAreaTrailing),
-            tableView.bottomAnchor.constraint(equalTo: safeAreaBottom)
+            tableView.leadingAnchor.constraint(equalTo: safeAreaAnchors.leading),
+            tableView.trailingAnchor.constraint(equalTo: safeAreaAnchors.trailing),
+            tableView.bottomAnchor.constraint(equalTo: safeAreaAnchors.bottom)
         ])
     }
 
