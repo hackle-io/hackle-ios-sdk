@@ -8,19 +8,27 @@
 import Foundation
 import UIKit
 
+/// iOS 10 호환성을 위한 safe area layout guide 대체
+struct SafeAreaAnchors {
+    let top: NSLayoutYAxisAnchor
+    let leading: NSLayoutXAxisAnchor
+    let trailing: NSLayoutXAxisAnchor
+    let bottom: NSLayoutYAxisAnchor
+}
+
 extension UIViewController {
 
     /// iOS 10 호환성을 위한 safe area anchor 설정
-    func setupSafeAreaAnchors() -> (top: NSLayoutYAxisAnchor, leading: NSLayoutXAxisAnchor, trailing: NSLayoutXAxisAnchor, bottom: NSLayoutYAxisAnchor) {
+    func configureSafeAreaAnchors() -> SafeAreaAnchors {
         if #available(iOS 11.0, *) {
-            return (
+            return SafeAreaAnchors(
                 top: view.safeAreaLayoutGuide.topAnchor,
                 leading: view.safeAreaLayoutGuide.leadingAnchor,
                 trailing: view.safeAreaLayoutGuide.trailingAnchor,
                 bottom: view.safeAreaLayoutGuide.bottomAnchor
             )
         } else {
-            return (
+            return SafeAreaAnchors(
                 top: topLayoutGuide.bottomAnchor,
                 leading: view.leadingAnchor,
                 trailing: view.trailingAnchor,
