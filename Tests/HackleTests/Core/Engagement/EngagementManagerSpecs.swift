@@ -121,5 +121,107 @@ class EngagementManagerSpecs: QuickSpec {
                 }
             }
         }
+
+        describe("call engagement") {
+            it("multiple start without end - only last start is considered") {
+                // given
+                let screen = Screen(name: "name", className: "class")
+
+                // when - multiple start engagements
+                sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
+                sut.onScreenStarted(previousScreen: screen, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 200))
+                sut.onScreenStarted(previousScreen: screen, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 300))
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 500))
+
+                // then - engagement duration calculated from last start (300ms)
+                verify(exactly: 1) {
+                    listener.onEngagementMock
+                }
+                let (engagement, _, timestamp) = listener.onEngagementMock.firstInvokation().arguments
+                expect(engagement.duration).to(equal(200.0))
+                expect(timestamp).to(equal(Date(timeIntervalSince1970: 500)))
+            }
+
+            it("multiple end without start - no engagement published") {
+                // given
+                let screen = Screen(name: "name", className: "class")
+
+                // when - multiple end engagements without start
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 200))
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 300))
+
+                // then - no engagement published
+                verify(exactly: 0) {
+                    listener.onEngagementMock
+                }
+            }
+
+            it("start-end-end sequence - second end does nothing") {
+                // given
+                let screen = Screen(name: "name", className: "class")
+
+                // when
+                sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 300)) // first end - should publish
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 400)) // second end - should do nothing
+
+                // then - only one engagement published
+                verify(exactly: 1) {
+                    listener.onEngagementMock
+                }
+                let (engagement, _, timestamp) = listener.onEngagementMock.firstInvokation().arguments
+                expect(engagement.duration).to(equal(200.0))
+                expect(timestamp).to(equal(Date(timeIntervalSince1970: 300)))
+            }
+
+            it("start-end-start-end sequence - two engagements published") {
+                // given
+                let screen1 = Screen(name: "screen1", className: "class1")
+                let screen2 = Screen(name: "screen2", className: "class2")
+
+                // when
+                sut.onScreenStarted(previousScreen: nil, currentScreen: screen1, user: user, timestamp: Date(timeIntervalSince1970: 100))
+                sut.onScreenEnded(screen: screen1, user: user, timestamp: Date(timeIntervalSince1970: 300)) // first engagement
+                sut.onScreenStarted(previousScreen: screen1, currentScreen: screen2, user: user, timestamp: Date(timeIntervalSince1970: 400))
+                sut.onScreenEnded(screen: screen2, user: user, timestamp: Date(timeIntervalSince1970: 600)) // second engagement
+
+                // then - two engagements published
+                verify(exactly: 2) {
+                    listener.onEngagementMock
+                }
+            }
+        }
+
+        describe("state management") {
+            it("lastEngagementTime cleared after endEngagement") {
+                // given
+                let screen = Screen(name: "name", className: "class")
+
+                // when
+                sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
+                expect(sut.lastEngagementTime).to(equal(Date(timeIntervalSince1970: 100)))
+
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 300))
+
+                // then
+                expect(sut.lastEngagementTime).to(beNil())
+            }
+
+            it("lastEngagementTime cleared after endEngagement even if not published") {
+                // given
+                let screen = Screen(name: "name", className: "class")
+
+                // when - engagement too short to be published
+                sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
+                sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100.1))
+
+                // then - lastEngagementTime should still be cleared
+                expect(sut.lastEngagementTime).to(beNil())
+                verify(exactly: 0) {
+                    listener.onEngagementMock
+                }
+            }
+        }
     }
 }
