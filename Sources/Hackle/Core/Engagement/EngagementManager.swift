@@ -30,7 +30,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
     }
 
     private func endEngagement(screen: Screen, timestamp: Date) {
-        guard let startTime = _lastEngagementTime.getAndSet(newValue: timestamp) else {
+        guard let startTime = _lastEngagementTime.getAndSet(newValue: nil) else {
             return
         }
 
