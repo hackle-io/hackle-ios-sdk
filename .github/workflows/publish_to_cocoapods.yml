@@ -57,6 +57,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               release_id: releaseId,
-              prerelease: false
+              prerelease: false,
+              make_latest: true
             });
             
