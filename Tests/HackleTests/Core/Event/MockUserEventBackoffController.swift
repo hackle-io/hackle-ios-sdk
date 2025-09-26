@@ -5,7 +5,7 @@
 //  Created by sungwoo.yeo on 7/11/25.
 //
 
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class MockUserEventBackoffController: Mock, UserEventBackoffController {

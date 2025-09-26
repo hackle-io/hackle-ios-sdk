@@ -5,7 +5,7 @@
 import Foundation
 
 import Foundation
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class MockWorkspaceFetcher: Mock, WorkspaceFetcher {

@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class MockScheduler: Mock, Scheduler {

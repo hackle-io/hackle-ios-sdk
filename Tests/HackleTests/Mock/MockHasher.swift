@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class MockHasher: Mock, Hasher {
@@ -11,6 +11,6 @@ class MockHasher: Mock, Hasher {
     lazy var mockHash = MockReference(hash)
 
     func hash(data: String, seed: Int32) -> Int32 {
-        invoke(mockHash, args: (data, seed))
+        call(mockHash, args: (data, seed))
     }
 }

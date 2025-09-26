@@ -1,7 +1,7 @@
 import Foundation
 import Quick
 import Nimble
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class HackleInvocationSpec : QuickSpec {
@@ -101,7 +101,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     
                     expect(mock.setUserRef.invokations().count) == 1
-                    let arguments = mock.setUserRef.firstInvokation().arguments.0
+                    let firstInvokation = mock.setUserRef.firstInvokation()
+                    let arguments = firstInvokation.arguments.0
                     expect(arguments.id) == "foo"
                     expect(arguments.userId) == "bar"
                     expect(arguments.identifiers).to(equal(["foobar": "foofoo", "foobar2": "barbar"]))
@@ -138,7 +139,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     
                     expect(mock.setUserIdRef.invokations().count) == 1
-                    expect(mock.setUserIdRef.firstInvokation().arguments.0) == "abcd1234"
+                    let tempInvocation = mock.setUserIdRef.firstInvokation()
+                    expect(tempInvocation.arguments.0) == "abcd1234"
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == true
@@ -175,7 +177,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     
                     expect(mock.setDeviceIdRef.invokations().count) == 1
-                    expect(mock.setDeviceIdRef.firstInvokation().arguments.0) == "abcd1234"
+                    let tempInvocation = mock.setDeviceIdRef.firstInvokation()
+                    expect(tempInvocation.arguments.0) == "abcd1234"
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == true
@@ -204,7 +207,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     
                     expect(mock.updateUserPropertiesRef.invokations().count) == 1
-                    let arguments = mock.updateUserPropertiesRef.firstInvokation().arguments.0.asDictionary()
+                    let firstInvokation = mock.updateUserPropertiesRef.firstInvokation()
+                    let arguments = firstInvokation.arguments.0.asDictionary()
                     let set = arguments[PropertyOperation.set]!
                     expect(set.count) == 1
                     expect(set["foo"] as? String) == "bar"
@@ -247,7 +251,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     
                     expect(mock.updateUserPropertiesRef.invokations().count) == 1
-                    let arguments = mock.updateUserPropertiesRef.firstInvokation().arguments.0.asDictionary()
+                    let firstInvokation = mock.updateUserPropertiesRef.firstInvokation()
+                    let arguments = firstInvokation.arguments.0.asDictionary()
                     
                     let set = arguments[PropertyOperation.set]!
                     expect(set.count) == 3
@@ -296,7 +301,8 @@ class HackleInvocationSpec : QuickSpec {
                     
                     expect(mock.updatePushSubscriptionsRef.invokations().count) == 1
                     
-                    let arguments = mock.updatePushSubscriptionsRef.firstInvokation().arguments
+                    let firstInvokation = mock.updatePushSubscriptionsRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0.count) == 4
                     
                     let mockEvent = arguments.0.toEvent(key: "mock")
@@ -320,7 +326,8 @@ class HackleInvocationSpec : QuickSpec {
                     
                     expect(mock.updateSmsSubscriptionsRef.invokations().count) == 1
                     
-                    let arguments = mock.updateSmsSubscriptionsRef.firstInvokation().arguments
+                    let firstInvokation = mock.updateSmsSubscriptionsRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0.count) == 4
                     
                     let mockEvent = arguments.0.toEvent(key: "mock")
@@ -343,7 +350,8 @@ class HackleInvocationSpec : QuickSpec {
                     
                     expect(mock.updateKakaoSubscriptionsRef.invokations().count) == 1
                     
-                    let arguments = mock.updateKakaoSubscriptionsRef.firstInvokation().arguments
+                    let firstInvokation = mock.updateKakaoSubscriptionsRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0.count) == 4
                     
                     let mockEvent = arguments.0.toEvent(key: "mock")
@@ -410,7 +418,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1).to(beNil())
                         expect(arguments.2) == "D"
@@ -430,7 +439,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1).to(beNil())
                         expect(arguments.2) == "A"
@@ -455,7 +465,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "abcd1234"
                         expect(arguments.2) == "D"
@@ -478,7 +489,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "abcd1234"
                         expect(arguments.2) == "A"
@@ -503,7 +515,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "foo"
                         expect(arguments.2) == "D"
@@ -526,7 +539,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "foo"
                         expect(arguments.2) == "A"
@@ -563,7 +577,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1).to(beNil())
                         expect(arguments.2) == "D"
@@ -591,7 +606,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1).to(beNil())
                         expect(arguments.2) == "A"
@@ -623,7 +639,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "abcd1234"
                         expect(arguments.2) == "D"
@@ -653,7 +670,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "abcd1234"
                         expect(arguments.2) == "A"
@@ -685,7 +703,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "foo"
                         expect(arguments.2) == "D"
@@ -715,7 +734,8 @@ class HackleInvocationSpec : QuickSpec {
                         let result = invocation.invoke(string: jsonString)
                         expect(mock.variationDetailRef.invokations().count) == 1
                         
-                        let arguments = mock.variationDetailRef.firstInvokation().arguments
+                        let firstInvokation = mock.variationDetailRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
                         expect(arguments.1?.id) == "foo"
                         expect(arguments.2) == "A"
@@ -757,7 +777,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
                         
-                    let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
+                    let firstInvokation = mock.featureFlagDetailRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                         
                     let dict = result.jsonObject()!
@@ -778,7 +799,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
                         
-                    let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
+                    let firstInvokation = mock.featureFlagDetailRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                     expect(arguments.1?.id) == "abcd1234"
                         
@@ -800,7 +822,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
                         
-                    let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
+                    let firstInvokation = mock.featureFlagDetailRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                     expect(arguments.1?.id) == "foo"
 
@@ -834,7 +857,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
                         
-                    let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
+                    let firstInvokation = mock.featureFlagDetailRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                         
                     let dict = result.jsonObject()!
@@ -862,7 +886,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
                         
-                    let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
+                    let firstInvokation = mock.featureFlagDetailRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                     expect(arguments.1?.id) == "abcd1234"
                         
@@ -891,7 +916,8 @@ class HackleInvocationSpec : QuickSpec {
                     let result = invocation.invoke(string: jsonString)
                     expect(mock.featureFlagDetailRef.invokations().count) == 1
                         
-                    let arguments = mock.featureFlagDetailRef.firstInvokation().arguments
+                    let firstInvokation = mock.featureFlagDetailRef.firstInvokation()
+                    let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                     expect(arguments.1?.id) == "foo"
 
@@ -931,7 +957,8 @@ class HackleInvocationSpec : QuickSpec {
                         
                         expect(mock.trackRef.invokations().count) == 1
                         
-                        let arguments = mock.trackRef.firstInvokation().arguments
+                        let firstInvokation = mock.trackRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "abcd1234"
                         
                         let dict = result.jsonObject()!
@@ -950,7 +977,8 @@ class HackleInvocationSpec : QuickSpec {
                         
                         expect(mock.trackRef.invokations().count) == 1
                         
-                        let arguments = mock.trackRef.firstInvokation().arguments
+                        let firstInvokation = mock.trackRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "abcd1234"
                         expect(arguments.1?.id) == "foo"
                         
@@ -970,7 +998,8 @@ class HackleInvocationSpec : QuickSpec {
                         
                         expect(mock.trackRef.invokations().count) == 1
                         
-                        let arguments = mock.trackRef.firstInvokation().arguments
+                        let firstInvokation = mock.trackRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "abcd1234"
                         expect(arguments.1?.id) == "foo"
                         
@@ -1001,7 +1030,8 @@ class HackleInvocationSpec : QuickSpec {
                         
                         expect(mock.trackRef.invokations().count) == 1
                         
-                        let arguments = mock.trackRef.firstInvokation().arguments
+                        let firstInvokation = mock.trackRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "foo"
                         expect(arguments.0.value) == 1234
                         expect(arguments.0.properties!.count) == 3
@@ -1040,7 +1070,8 @@ class HackleInvocationSpec : QuickSpec {
                         
                         expect(mock.trackRef.invokations().count) == 1
                         
-                        let arguments = mock.trackRef.firstInvokation().arguments
+                        let firstInvokation = mock.trackRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "foo"
                         expect(arguments.0.value) == 1234
                         expect(arguments.0.properties!.count) == 3
@@ -1080,7 +1111,8 @@ class HackleInvocationSpec : QuickSpec {
                         
                         expect(mock.trackRef.invokations().count) == 1
                         
-                        let arguments = mock.trackRef.firstInvokation().arguments
+                        let firstInvokation = mock.trackRef.firstInvokation()
+                        let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "foo"
                         expect(arguments.0.value) == 1234
                         expect(arguments.0.properties!.count) == 3
@@ -1237,7 +1269,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.userId) == "abcd1234"
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1255,7 +1288,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.userId) == "abcd1234"
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1273,7 +1307,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.userId) == "abcd1234"
                             let dict = result.jsonObject()!
                             expect(dict["success"] as? Bool) == true
@@ -1291,7 +1326,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.userId) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1310,7 +1346,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.userId) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1329,7 +1366,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.userId) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1350,7 +1388,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.id) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1370,7 +1409,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.id) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1389,7 +1429,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.id) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1408,7 +1449,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.id) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1427,7 +1469,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.id) == "abcd1234"
 
                             let dict = result.jsonObject()!
@@ -1446,7 +1489,8 @@ class HackleInvocationSpec : QuickSpec {
                             let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = invocation.invoke(string: jsonString)
                             expect(mock.remoteConfigRef.invokations().count) == 1
-                            let arguments = mock.remoteConfigRef.firstInvokation().arguments
+                            let firstInvokation = mock.remoteConfigRef.firstInvokation()
+                            let arguments = firstInvokation.arguments
                             expect(arguments.2?.id) == "abcd1234"
 
                             let dict = result.jsonObject()!

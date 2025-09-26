@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class MockInAppMessageEventTracker: Mock, InAppMessageEventTracker {

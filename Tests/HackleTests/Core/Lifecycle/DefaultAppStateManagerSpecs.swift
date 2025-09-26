@@ -25,16 +25,16 @@ class DefaultAppStateManagerSpecs: QuickSpec {
                 verify(exactly: 1) {
                     listener.onStateMock
                 }
-                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(.foreground))
+                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(Optional(.foreground)))
             }
             it("didEnterBackground") {
                 sut.onLifecycle(lifecycle: .didEnterBackground(top: nil), timestamp: Date(timeIntervalSince1970: 42))
                 queue.await()
-                expect(sut.currentState).to(equal(.background))
+                expect(sut.currentState).to(equal(Optional(.background)))
                 verify(exactly: 1) {
                     listener.onStateMock
                 }
-                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(.background))
+                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(Optional(.background)))
             }
 
             it("do nothing") {
@@ -43,7 +43,7 @@ class DefaultAppStateManagerSpecs: QuickSpec {
                 sut.onLifecycle(lifecycle: .viewWillDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
                 sut.onLifecycle(lifecycle: .viewDidDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
                 queue.await()
-                expect(sut.currentState).to(equal(.background))
+                expect(sut.currentState).to(equal(Optional(.background)))
                 verify(exactly: 0) {
                     listener.onStateMock
                 }
@@ -51,3 +51,4 @@ class DefaultAppStateManagerSpecs: QuickSpec {
         }
     }
 }
+
