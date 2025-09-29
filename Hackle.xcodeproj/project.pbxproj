@@ -583,7 +583,7 @@
 		EEA7FCC12C04AE550004F858 /* LifecyclePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCC02C04AE550004F858 /* LifecyclePublisher.swift */; };
 		EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86425828DC8006CD00A /* Quick */; };
 		EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F86B25828DE4006CD00A /* Nimble */; };
-		EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* Mockery */; };
+		EEA8BD0C26ECFCAC007230D9 /* MockingKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE67F87225828DFF006CD00A /* MockingKit */; };
 		EEAC3F2D2B9D54DB00DC498E /* PushPlatformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAC3F2C2B9D54DB00DC498E /* PushPlatformType.swift */; };
 		EEAC3F2F2B9D54E000DC498E /* PushProviderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAC3F2E2B9D54E000DC498E /* PushProviderType.swift */; };
 		EEAC3F312B9D54E600DC498E /* PushTokenRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAC3F302B9D54E600DC498E /* PushTokenRegistry.swift */; };
@@ -1330,7 +1330,7 @@
 			buildActionMask = 0;
 			files = (
 				EEA8BD0B26ECFCAC007230D9 /* Nimble in Frameworks */,
-				EEA8BD0C26ECFCAC007230D9 /* Mockery in Frameworks */,
+				EEA8BD0C26ECFCAC007230D9 /* MockingKit in Frameworks */,
 				EEA8BD0A26ECFCAC007230D9 /* Quick in Frameworks */,
 				OBJ_43 /* Hackle.framework in Frameworks */,
 			);
@@ -3296,7 +3296,7 @@
 			packageProductDependencies = (
 				EE67F86425828DC8006CD00A /* Quick */,
 				EE67F86B25828DE4006CD00A /* Nimble */,
-				EE67F87225828DFF006CD00A /* Mockery */,
+				EE67F87225828DFF006CD00A /* MockingKit */,
 			);
 			productName = HackleTests;
 			productReference = "Hackle::HackleTests::Product" /* HackleTests.xctest */;
@@ -3327,7 +3327,7 @@
 			packageReferences = (
 				EE67F86325828DC8006CD00A /* XCRemoteSwiftPackageReference "Quick" */,
 				EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */,
-				EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */,
+				EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "MockingKit" */,
 			);
 			productRefGroup = OBJ_14 /* Products */;
 			projectDirPath = "";
@@ -4303,12 +4303,12 @@
 				minimumVersion = 9.0.0;
 			};
 		};
-		EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */ = {
+		EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "MockingKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielsaidi/Mockery.git";
+			repositoryURL = "https://github.com/danielsaidi/MockingKit.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.7.0;
+				version = 1.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -4324,10 +4324,10 @@
 			package = EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */;
 			productName = Nimble;
 		};
-		EE67F87225828DFF006CD00A /* Mockery */ = {
+		EE67F87225828DFF006CD00A /* MockingKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "Mockery" */;
-			productName = Mockery;
+			package = EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "MockingKit" */;
+			productName = MockingKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

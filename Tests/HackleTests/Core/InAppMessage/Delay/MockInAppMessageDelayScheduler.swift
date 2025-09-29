@@ -1,5 +1,5 @@
 import Foundation
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class MockInAppMessageDelayScheduler: Mock, InAppMessageDelayScheduler {

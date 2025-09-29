@@ -1,7 +1,7 @@
 import Foundation
 import Nimble
 import Quick
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class WorkspaceManagerSpecs: QuickSpec {
