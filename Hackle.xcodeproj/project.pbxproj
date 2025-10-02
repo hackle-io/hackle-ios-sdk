@@ -93,7 +93,6 @@
 		B28499722E8E190000BEA926 /* ApplicationLifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */; };
 		B28499742E8E190D00BEA926 /* ApplicationLifecycleListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499732E8E190500BEA926 /* ApplicationLifecycleListener.swift */; };
 		B28499772E8E191E00BEA926 /* ApplicationLifecycleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499762E8E191900BEA926 /* ApplicationLifecycleManager.swift */; };
-		B284997A2E8E594A00BEA926 /* HackleLifecycleProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = B28499792E8E594A00BEA926 /* HackleLifecycleProvider.m */; };
 		B284997C2E8E59D800BEA926 /* ApplicationLifecycleProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284997B2E8E59D200BEA926 /* ApplicationLifecycleProvider.swift */; };
 		B290E6532D51A09B00F68D35 /* TargetEventConditionMatchSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */; };
 		B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */; };
@@ -750,7 +749,6 @@
 		B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleObserver.swift; sourceTree = "<group>"; };
 		B28499732E8E190500BEA926 /* ApplicationLifecycleListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleListener.swift; sourceTree = "<group>"; };
 		B28499762E8E191900BEA926 /* ApplicationLifecycleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleManager.swift; sourceTree = "<group>"; };
-		B28499792E8E594A00BEA926 /* HackleLifecycleProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HackleLifecycleProvider.m; sourceTree = "<group>"; };
 		B284997B2E8E59D200BEA926 /* ApplicationLifecycleProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleProvider.swift; sourceTree = "<group>"; };
 		B290E6522D51A09000F68D35 /* TargetEventConditionMatchSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatchSpecs.swift; sourceTree = "<group>"; };
 		B290E6542D5592CF00F68D35 /* UserTargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTargetEvent.swift; sourceTree = "<group>"; };
@@ -1652,7 +1650,6 @@
 				EEF629E12B9EA42E002718B7 /* Hackle.h */,
 				EEF629E22B9EA437002718B7 /* HackleNotification.h */,
 				EEF629E32B9EA443002718B7 /* HackleNotification.m */,
-				B28499792E8E594A00BEA926 /* HackleLifecycleProvider.m */,
 				EE668AE92BC3E042003D3E15 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Hackle;
@@ -3554,7 +3551,6 @@
 				EE60C0A32C37B13300830F0A /* Updated.swift in Sources */,
 				EE4D042D2E5D8A26007BE61A /* InAppMessageDelayScheduler.swift in Sources */,
 				EE29D99A29CD825500B1FEAA /* ContainerResolver.swift in Sources */,
-				B284997A2E8E594A00BEA926 /* HackleLifecycleProvider.m in Sources */,
 				EE29D94A29CD825400B1FEAA /* MetricRegistry.swift in Sources */,
 				EE4D04612E5DC390007BE61A /* InAppMessageTriggerHandler.swift in Sources */,
 				EE29D94629CD825400B1FEAA /* FlushMetric.swift in Sources */,
