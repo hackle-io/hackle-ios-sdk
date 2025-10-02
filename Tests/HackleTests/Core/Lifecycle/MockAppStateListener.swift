@@ -2,11 +2,16 @@ import Foundation
 import MockingKit
 @testable import Hackle
 
-class MockAppStateListener: Mock, AppStateListener {
+class MockApplicationLifecycleListener: Mock, ApplicationLifecycleListener {
 
-    lazy var onStateMock = MockFunction(self, onState)
+    lazy var onForegroundMock = MockFunction(self, onForeground)
+    lazy var onBackgroundMock = MockFunction(self, onBackground)
 
-    func onState(state: ApplicationState, timestamp: Date) {
-        call(onStateMock, args: (state, timestamp))
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        call(onForegroundMock, args: (timestamp, isFromBackground))
+    }
+
+    func onBackground(timestamp: Date) {
+        call(onBackgroundMock, args: (timestamp))
     }
 }

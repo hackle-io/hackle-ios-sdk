@@ -4,48 +4,39 @@ import Nimble
 import UIKit
 @testable import Hackle
 
-class DefaultAppStateManagerSpecs: QuickSpec {
+class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
     override func spec() {
         var queue: DispatchQueue!
-        var listener: MockAppStateListener!
-        var sut: DefaultAppStateManager!
+        var listener: MockApplicationLifecycleListener!
 
         beforeEach {
-            queue = DispatchQueue(label: "DefaultAppStateManagerSpecs")
-            listener = MockAppStateListener()
-            sut = DefaultAppStateManager(queue: queue)
-            sut.addListener(listener: listener)
+            queue = DispatchQueue(label: "DefaultApplicationLifecycleManagerSpecs")
+            listener = MockApplicationLifecycleListener()
         }
 
-        describe("onLifecycle") {
+        describe("lifecycle events") {
             it("didBecomeActive") {
-                sut.onLifecycle(lifecycle: .didBecomeActive(top: nil), timestamp: Date(timeIntervalSince1970: 42))
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
+
+                sut.didBecomeActive()
                 queue.await()
-                expect(sut.currentState).to(equal(.foreground))
+                expect(sut.currentState == .foreground).to(beTrue())
                 verify(exactly: 1) {
-                    listener.onStateMock
+                    listener.onForegroundMock
                 }
-                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(Optional(.foreground)))
             }
             it("didEnterBackground") {
-                sut.onLifecycle(lifecycle: .didEnterBackground(top: nil), timestamp: Date(timeIntervalSince1970: 42))
-                queue.await()
-                expect(sut.currentState).to(equal(Optional(.background)))
-                verify(exactly: 1) {
-                    listener.onStateMock
-                }
-                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(Optional(.background)))
-            }
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
 
-            it("do nothing") {
-                sut.onLifecycle(lifecycle: .viewWillAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                sut.onLifecycle(lifecycle: .viewDidAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                sut.onLifecycle(lifecycle: .viewWillDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                sut.onLifecycle(lifecycle: .viewDidDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
+                sut.didEnterBackground()
                 queue.await()
-                expect(sut.currentState).to(equal(Optional(.background)))
-                verify(exactly: 0) {
-                    listener.onStateMock
+                expect(sut.currentState == .background).to(beTrue())
+                verify(exactly: 1) {
+                    listener.onBackgroundMock
                 }
             }
         }

@@ -9,7 +9,7 @@ import Foundation
 @testable import Hackle
 
 
-class AppStateManagerStub: AppStateManager {
+class ApplicationLifecycleManagerStub: ApplicationLifecycleManager {
 
     var currentState: ApplicationState
     var currentScreen: String?
@@ -23,7 +23,7 @@ class AppStateManagerStub: AppStateManager {
         self.callbackScreen = callbackScreen
     }
 
-    private let queue = DispatchQueue(label: "AppStateManagerStub", qos: .utility)
+    private let queue = DispatchQueue(label: "ApplicationLifecycleManagerStub", qos: .utility)
 
     func sync() {
         queue.sync {
@@ -39,7 +39,15 @@ class AppStateManagerStub: AppStateManager {
         return currentScreen
     }
 
-    func onChanged(state: ApplicationState, timestamp: Date) {
-        currentState = state
+    func addListener(listener: ApplicationLifecycleListener) {
+        // Stub implementation
+    }
+
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        currentState = .foreground
+    }
+
+    func onBackground(timestamp: Date) {
+        currentState = .background
     }
 }
