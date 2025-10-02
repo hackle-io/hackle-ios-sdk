@@ -30,7 +30,7 @@ class ExposureEventDedupDeterminer: CachedUserEventDedupDeterminer {
 }
 
 extension ExposureEventDedupDeterminer: AppStateListener {
-    func onState(state: AppState, timestamp: Date) {
+    func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("ExposureEventDedupDeterminer.onState(state: \(state))")
         if state == .background {
             self.dedupCache.saveToRepository()

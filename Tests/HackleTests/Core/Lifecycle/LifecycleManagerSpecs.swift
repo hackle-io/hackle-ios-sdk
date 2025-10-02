@@ -9,12 +9,12 @@ class LifecycleManagerSpecs: QuickSpec {
 
         var viewManager: MockViewManager!
         var listener: MockLifecycleListener!
-        var sut: LifecycleManager!
+        var sut: ViewLifecycleManager!
 
         beforeEach {
             viewManager = MockViewManager()
             listener = MockLifecycleListener()
-            sut = LifecycleManager(viewManager: viewManager, clock: FixedClock(date: Date(timeIntervalSince1970: 42)))
+            sut = ViewLifecycleManager(viewManager: viewManager, clock: FixedClock(date: Date(timeIntervalSince1970: 42)))
             sut.addListener(listener: listener)
         }
 

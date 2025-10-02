@@ -4,7 +4,7 @@
 
 import Foundation
 
-enum AppState {
+enum ApplicationState {
     case background
     case foreground
 }

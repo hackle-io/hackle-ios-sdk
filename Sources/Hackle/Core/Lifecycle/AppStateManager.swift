@@ -8,13 +8,13 @@
 import Foundation
 
 protocol AppStateManager {
-    var currentState: AppState { get }
+    var currentState: ApplicationState { get }
 }
 
-class DefaultAppStateManager: AppStateManager, LifecycleListener {
+class DefaultAppStateManager: AppStateManager, ViewLifecycleListener {
 
-    private var _currentState: AppState = .background
-    var currentState: AppState {
+    private var _currentState: ApplicationState = .background
+    var currentState: ApplicationState {
         _currentState
     }
 
@@ -30,13 +30,13 @@ class DefaultAppStateManager: AppStateManager, LifecycleListener {
         listeners.append(listener)
     }
 
-    private func onState(state: AppState, timestamp: Date) {
+    private func onState(state: ApplicationState, timestamp: Date) {
         queue.async {
             self.publish(state: state, timestamp: timestamp)
         }
     }
 
-    private func publish(state: AppState, timestamp: Date) {
+    private func publish(state: ApplicationState, timestamp: Date) {
         Log.debug("AppStateManager.publish(state: \(state))")
         for listener in listeners {
             listener.onState(state: state, timestamp: timestamp)
@@ -44,7 +44,7 @@ class DefaultAppStateManager: AppStateManager, LifecycleListener {
         _currentState = state
     }
 
-    func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+    func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("AppStateManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
         case .didBecomeActive:

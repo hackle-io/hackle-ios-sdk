@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class EngagementManager: ScreenListener, LifecycleListener {
+class EngagementManager: ScreenListener, ViewLifecycleListener {
 
     private let _lastEngagementTime: AtomicReference<Date?> = AtomicReference(value: nil)
     var lastEngagementTime: Date? {
@@ -58,7 +58,7 @@ class EngagementManager: ScreenListener, LifecycleListener {
         endEngagement(screen: screen, timestamp: timestamp)
     }
 
-    func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+    func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("EngagementManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
         case .didBecomeActive:

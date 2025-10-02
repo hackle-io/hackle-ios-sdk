@@ -11,13 +11,13 @@ import Foundation
 
 class AppStateManagerStub: AppStateManager {
 
-    var currentState: AppState
+    var currentState: ApplicationState
     var currentScreen: String?
     var callbackScreen: String?
 
     var delay: Double = 0.0
 
-    init(currentState: AppState = .background, currentScreen: String? = nil, callbackScreen: String? = nil) {
+    init(currentState: ApplicationState = .background, currentScreen: String? = nil, callbackScreen: String? = nil) {
         self.currentState = currentState
         self.currentScreen = currentScreen
         self.callbackScreen = callbackScreen
@@ -39,7 +39,7 @@ class AppStateManagerStub: AppStateManager {
         return currentScreen
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
+    func onChanged(state: ApplicationState, timestamp: Date) {
         currentState = state
     }
 }

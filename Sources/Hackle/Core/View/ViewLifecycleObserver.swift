@@ -5,38 +5,6 @@ protocol LifecycleObserver {
     func initialize()
 }
 
-class ApplicationLifecycleObserver: LifecycleObserver {
-
-    private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
-
-    func initialize() {
-        guard initialized.compareAndSet(expect: false, update: true) else {
-            Log.debug("ApplicationLifecycleObserver already initialized.")
-            return
-        }
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-    }
-
-    @objc func didBecomeActive() {
-        LifecycleManager.shared.didBecomeActive()
-    }
-
-    @objc func didEnterBackground() {
-        LifecycleManager.shared.didEnterBackground()
-    }
-}
-
 class ViewLifecycleObserver: LifecycleObserver {
 
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
@@ -83,7 +51,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        LifecycleManager.shared.viewWillAppear(vc: self)
+        ViewLifecycleManager.shared.viewWillAppear(vc: self)
     }
 
     @objc func hackle_viewDidAppear(_ animation: Bool) {
@@ -91,7 +59,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        LifecycleManager.shared.viewDidAppear(vc: self)
+        ViewLifecycleManager.shared.viewDidAppear(vc: self)
     }
 
     @objc func hackle_viewWillDisappear(_ animation: Bool) {
@@ -100,7 +68,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        LifecycleManager.shared.viewWillDisappear(vc: self)
+        ViewLifecycleManager.shared.viewWillDisappear(vc: self)
     }
 
     @objc func hackle_viewDidDisappear(_ animation: Bool) {
@@ -108,6 +76,6 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        LifecycleManager.shared.viewDidDisappear(vc: self)
+        ViewLifecycleManager.shared.viewDidDisappear(vc: self)
     }
 }

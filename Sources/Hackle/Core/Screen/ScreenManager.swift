@@ -7,7 +7,7 @@ protocol ScreenManager {
     func setCurrentScreen(screen: Screen, timestamp: Date)
 }
 
-class DefaultScreenManager: ScreenManager, LifecycleListener {
+class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
 
     private let userManager: UserManager
     private var listeners = [ScreenListener]()
@@ -58,7 +58,7 @@ class DefaultScreenManager: ScreenManager, LifecycleListener {
         }
     }
 
-    func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+    func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("ScreenManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
         case .didBecomeActive(let top):

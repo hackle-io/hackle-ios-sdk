@@ -344,7 +344,7 @@ class DefaultUserManager: UserManager, AppStateListener {
         Log.debug("User saved: \(user)")
     }
 
-    func onState(state: AppState, timestamp: Date) {
+    func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("UserManager.onState(state: \(state))")
         switch state {
         case .foreground: return

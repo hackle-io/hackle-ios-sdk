@@ -23,7 +23,7 @@ class PushMetricRegistry: MetricRegistry, AppStateListener {
         super.init()
     }
 
-    final func onState(state: AppState, timestamp: Date) {
+    final func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("PushMetricRegistry.onState(state: \(state))")
         switch state {
         case .foreground:

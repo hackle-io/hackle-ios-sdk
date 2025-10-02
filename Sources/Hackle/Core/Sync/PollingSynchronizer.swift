@@ -52,7 +52,7 @@ class PollingSynchronizer: Synchronizer, AppStateListener {
         }
     }
 
-    func onState(state: AppState, timestamp: Date) {
+    func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("PollingSynchronizer.onState(state: \(state))")
         switch state {
         case .foreground:

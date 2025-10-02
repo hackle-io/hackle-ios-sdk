@@ -1,15 +1,15 @@
 import Foundation
 import UIKit
 
-class LifecycleManager: LifecyclePublisher {
+class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublisher {
 
-    static let shared = LifecycleManager(
+    static let shared = ViewLifecycleManager(
         viewManager: DefaultViewManager.shared,
         clock: SystemClock.shared
     )
 
     private var observers = [LifecycleObserver]()
-    private var listeners = [LifecycleListener]()
+    private var listeners = [ViewLifecycleListener]()
 
     private let viewManager: ViewManager
     private let clock: Clock
@@ -29,7 +29,7 @@ class LifecycleManager: LifecyclePublisher {
         observers.append(observer)
     }
 
-    func addListener(listener: LifecycleListener) {
+    func addListener(listener: ViewLifecycleListener) {
         listeners.append(listener)
     }
 
@@ -72,8 +72,8 @@ class LifecycleManager: LifecyclePublisher {
     }
 
 
-    private func publish(lifecycle: Lifecycle, timestamp: Date) {
-        Log.debug("LifecycleManager.publish(lifecycle: \(lifecycle))")
+    private func publish(lifecycle: ViewLifecycle, timestamp: Date) {
+        Log.debug("ViewLifecycleManager.publish(lifecycle: \(lifecycle))")
         for listener in listeners {
             listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
         }

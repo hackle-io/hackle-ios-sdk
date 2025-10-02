@@ -67,7 +67,7 @@ class DefaultHackleAppCore: HackleAppCore {
     private let sessionManager: SessionManager
     private let screenManager: ScreenManager
     private let eventProcessor: UserEventProcessor
-    private let lifecycleManager: LifecycleManager
+    private let lifecycleManager: ViewLifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
@@ -104,7 +104,7 @@ class DefaultHackleAppCore: HackleAppCore {
         sessionManager: SessionManager,
         screenManager: ScreenManager,
         eventProcessor: UserEventProcessor,
-        lifecycleManager: LifecycleManager,
+        lifecycleManager: ViewLifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,

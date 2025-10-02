@@ -28,7 +28,7 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
         FlushTimer(id: id)
     }
 
-    func onState(state: AppState, timestamp: Date) {
+    func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("MonitoringMetricRegistry.onState(state: \(state))")
         switch state {
         case .foreground: return

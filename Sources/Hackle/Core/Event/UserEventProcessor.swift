@@ -144,7 +144,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         eventDispatcher.dispatch(events: events)
     }
 
-    func onState(state: AppState, timestamp: Date) {
+    func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("UserEventProcessor.onState(state: \(state))")
         switch state {
         case .foreground:

@@ -5,5 +5,5 @@
 import Foundation
 
 protocol AppStateListener {
-    func onState(state: AppState, timestamp: Date)
+    func onState(state: ApplicationState, timestamp: Date)
 }

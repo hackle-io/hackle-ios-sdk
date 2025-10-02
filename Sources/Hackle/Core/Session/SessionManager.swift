@@ -131,7 +131,7 @@ class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
         Log.debug("LastEventTime loaded [\(lastEventTime)]")
     }
 
-    func onState(state: AppState, timestamp: Date) {
+    func onState(state: ApplicationState, timestamp: Date) {
         Log.debug("SessionManager.onState(state: \(state))")
         switch state {
         case .foreground:

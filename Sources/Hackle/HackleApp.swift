@@ -777,10 +777,10 @@ extension HackleApp {
             httpClient: httpClient
         )
 
-        // - Lifecycle
+        // - ViewLifecycle
 
-        let lifecycleManager = LifecycleManager.shared
-        lifecycleManager.addObserver(observer: ApplicationLifecycleObserver())
+        let lifecycleManager = ViewLifecycleManager.shared
+        // lifecycleManager.addObserver(observer: ApplicationLifecycleObserver()) //TODO:
         if config.automaticScreenTracking {
             lifecycleManager.addObserver(observer: ViewLifecycleObserver())
             lifecycleManager.addListener(listener: screenManager)
