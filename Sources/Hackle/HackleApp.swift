@@ -789,9 +789,9 @@ extension HackleApp {
         viewLifecycleManager.setDispatchQueue(queue: eventQueue)
         
         // - ApplicationLifecycleObserve
-        let applicationLifecytcleObserver = ApplicationLifecycleObserver.shared
-        applicationLifecytcleObserver.addPublisher(publisher: applicationLifecycleManager)
-        applicationLifecytcleObserver.addPublisher(publisher: viewLifecycleManager)
+        let applicationLifecycleObserver = ApplicationLifecycleObserver.shared
+        applicationLifecycleObserver.addPublisher(publisher: applicationLifecycleManager)
+        applicationLifecycleObserver.addPublisher(publisher: viewLifecycleManager)
         
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
