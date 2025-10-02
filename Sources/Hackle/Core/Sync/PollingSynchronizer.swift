@@ -1,7 +1,7 @@
 import Foundation
 
 
-class PollingSynchronizer: Synchronizer, AppStateListener {
+class PollingSynchronizer: Synchronizer {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingSynchronizer.Lock")
 
@@ -51,14 +51,16 @@ class PollingSynchronizer: Synchronizer, AppStateListener {
             Log.info("PollingSynchronizer stopped polling.")
         }
     }
+}
 
-    func onState(state: ApplicationState, timestamp: Date) {
-        Log.debug("PollingSynchronizer.onState(state: \(state))")
-        switch state {
-        case .foreground:
-            start()
-        case .background:
-            stop()
-        }
+extension PollingSynchronizer: ApplicationLifecycleListener {
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        Log.debug("PollingSynchronizer.onForeground")
+        start()
+    }
+    
+    func onBackground(timestamp: Date) {
+        Log.debug("PollingSynchronizer.onBackground")
+        stop()
     }
 }

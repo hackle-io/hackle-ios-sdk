@@ -8,7 +8,7 @@
 import Foundation
 
 
-class PushMetricRegistry: MetricRegistry, AppStateListener {
+class PushMetricRegistry: MetricRegistry {
 
     private let lock = ReadWriteLock(label: "io.hackle.PushMetricRegistry.Lock")
 
@@ -21,16 +21,6 @@ class PushMetricRegistry: MetricRegistry, AppStateListener {
         self.scheduler = scheduler
         self.pushInterval = pushInterval
         super.init()
-    }
-
-    final func onState(state: ApplicationState, timestamp: Date) {
-        Log.debug("PushMetricRegistry.onState(state: \(state))")
-        switch state {
-        case .foreground:
-            start()
-        case .background:
-            stop()
-        }
     }
 
     func publish() {
@@ -60,5 +50,17 @@ class PushMetricRegistry: MetricRegistry, AppStateListener {
             self?.publish()
             Log.info("\(self?.name ?? "PushMetricRegistry") stopped.")
         }
+    }
+}
+
+extension PushMetricRegistry: ApplicationLifecycleListener {
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        Log.debug("PushMetricRegistry.oonForeground")
+        start()
+    }
+    
+    func onBackground(timestamp: Date) {
+        Log.debug("PushMetricRegistry.onBackground")
+        stop()
     }
 }

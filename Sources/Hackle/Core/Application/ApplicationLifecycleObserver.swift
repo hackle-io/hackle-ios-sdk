@@ -14,10 +14,6 @@ class ApplicationLifecycleObserver {
 
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
     private var publishers: [ApplicationLifecyclePublisher] = []
-    
-    private init()  {
-        initialize()
-    }
 
     func initialize() {
         guard initialized.compareAndSet(expect: false, update: true) else {

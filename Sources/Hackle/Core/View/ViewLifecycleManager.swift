@@ -12,6 +12,7 @@ class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublishe
     private var listeners = [ViewLifecycleListener]()
 
     private let viewManager: ViewManager
+    private var queue: DispatchQueue?
     private let clock: Clock
 
     init(viewManager: ViewManager, clock: Clock) {
@@ -23,6 +24,10 @@ class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublishe
         for observer in observers {
             observer.initialize()
         }
+    }
+    
+    func setDispatchQueue(queue: DispatchQueue) {
+        self.queue = queue
     }
 
     func addObserver(observer: LifecycleObserver) {
@@ -73,9 +78,19 @@ class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublishe
 
 
     private func publish(lifecycle: ViewLifecycle, timestamp: Date) {
-        Log.debug("ViewLifecycleManager.publish(lifecycle: \(lifecycle))")
-        for listener in listeners {
-            listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
+        execute {
+            Log.debug("ViewLifecycleManager.publish(lifecycle: \(lifecycle))")
+            for listener in self.listeners {
+                listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
+            }
+        }
+    }
+    
+    private func execute(_ action: @escaping () -> Void) {
+        if let queue = queue {
+            queue.async(execute: action)
+        } else {
+            action()
         }
     }
 }

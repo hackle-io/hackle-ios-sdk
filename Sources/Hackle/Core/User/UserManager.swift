@@ -29,7 +29,7 @@ protocol UserManager: Synchronizer {
     func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ())
 }
 
-class DefaultUserManager: UserManager, AppStateListener {
+class DefaultUserManager: UserManager {
 
     private static let USER_KEY = "user"
     private let lock = ReadWriteLock(label: "io.hackle.DefaultUserManager")
@@ -343,13 +343,16 @@ class DefaultUserManager: UserManager, AppStateListener {
         repository.putData(key: DefaultUserManager.USER_KEY, value: data)
         Log.debug("User saved: \(user)")
     }
+}
 
-    func onState(state: ApplicationState, timestamp: Date) {
-        Log.debug("UserManager.onState(state: \(state))")
-        switch state {
-        case .foreground: return
-        case .background: saveUser(user: currentUser)
-        }
+extension DefaultUserManager: ApplicationLifecycleListener {
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        // nothing to do
+    }
+    
+    func onBackground(timestamp: Date) {
+        Log.debug("UserManager.onBackground")
+        saveUser(user: currentUser)
     }
 }
 

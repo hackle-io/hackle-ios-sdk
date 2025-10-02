@@ -409,7 +409,8 @@ extension HackleApp {
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
-
+        let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
+        
         let httpClient = DefaultHttpClient(sdk: sdk)
 
         // - Synchronizer
@@ -482,7 +483,6 @@ extension HackleApp {
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
-        let appStateManager = DefaultAppStateManager(queue: eventQueue)
         let eventBackoffController = DefaultUserEventBackoffController(userEventRetryInterval: config.eventFlushInterval, clock: SystemClock.shared)
 
         let eventDispatcher = DefaultUserEventDispatcher(
@@ -509,9 +509,10 @@ extension HackleApp {
         let exposureEventDedupDeterminer = ExposureEventDedupDeterminer(
             repository: exposureEventDedupRepository,
             dedupInterval: config.exposureEventDedupInterval)
-
-        appStateManager.addListener(listener: rcEventDedupDeterminer)
-        appStateManager.addListener(listener: exposureEventDedupDeterminer)
+        
+        applicationLifecycleManager.setDispatchQueue(queue: eventQueue)
+        applicationLifecycleManager.addListener(listener: rcEventDedupDeterminer)
+        applicationLifecycleManager.addListener(listener: exposureEventDedupDeterminer)
 
         let dedupDeterminer = DelegatingUserEventDedupDeterminer(determiners: [
             rcEventDedupDeterminer,
@@ -544,7 +545,7 @@ extension HackleApp {
             eventDispatcher: eventDispatcher,
             sessionManager: sessionManager,
             userManager: userManager,
-            appStateManager: appStateManager,
+            applicationLifecycleManager: applicationLifecycleManager,
             screenUserEventDecorator: screenUserEventDecorator,
             eventBackoffController: eventBackoffController
         )
@@ -576,12 +577,12 @@ extension HackleApp {
             manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
         )
 
-        // - AppStateListener
+        // - ApplicationLifecycleListener
 
-        appStateManager.addListener(listener: pollingSynchronizer)
-        appStateManager.addListener(listener: sessionManager)
-        appStateManager.addListener(listener: userManager)
-        appStateManager.addListener(listener: eventProcessor)
+        applicationLifecycleManager.addListener(listener: pollingSynchronizer)
+        applicationLifecycleManager.addListener(listener: sessionManager)
+        applicationLifecycleManager.addListener(listener: userManager)
+        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         // - SessionEventTracker
 
@@ -771,7 +772,7 @@ extension HackleApp {
 
         HackleApp.metricConfiguration(
             config: config,
-            appStateManager: appStateManager,
+            applicationLifecycleManager: applicationLifecycleManager,
             eventQueue: eventQueue,
             httpQueue: httpQueue,
             httpClient: httpClient
@@ -779,14 +780,19 @@ extension HackleApp {
 
         // - ViewLifecycle
 
-        let lifecycleManager = ViewLifecycleManager.shared
-        // lifecycleManager.addObserver(observer: ApplicationLifecycleObserver()) //TODO:
+        let viewLifecycleManager = ViewLifecycleManager.shared
         if config.automaticScreenTracking {
-            lifecycleManager.addObserver(observer: ViewLifecycleObserver())
-            lifecycleManager.addListener(listener: screenManager)
+            viewLifecycleManager.addObserver(observer: ViewLifecycleObserver())
+            viewLifecycleManager.addListener(listener: screenManager)
         }
-        lifecycleManager.addListener(listener: engagementManager)
-        lifecycleManager.addListener(listener: appStateManager)
+        viewLifecycleManager.addListener(listener: engagementManager)
+        viewLifecycleManager.setDispatchQueue(queue: eventQueue)
+        
+        // - ApplicationLifecycleObserve
+        let applicationLifecytcleObserver = ApplicationLifecycleObserver.shared
+        applicationLifecytcleObserver.addPublisher(publisher: applicationLifecycleManager)
+        applicationLifecytcleObserver.addPublisher(publisher: viewLifecycleManager)
+        
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
@@ -800,7 +806,7 @@ extension HackleApp {
             sessionManager: sessionManager,
             screenManager: screenManager,
             eventProcessor: eventProcessor,
-            lifecycleManager: lifecycleManager,
+            viewLifecycleManager: viewLifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
@@ -829,7 +835,7 @@ extension HackleApp {
 
     private static func metricConfiguration(
         config: HackleConfig,
-        appStateManager: DefaultAppStateManager,
+        applicationLifecycleManager: ApplicationLifecycleManager,
         eventQueue: DispatchQueue,
         httpQueue: DispatchQueue,
         httpClient: HttpClient
@@ -841,7 +847,7 @@ extension HackleApp {
             httpClient: httpClient
         )
 
-        appStateManager.addListener(listener: monitoringMetricRegistry)
+        applicationLifecycleManager.addListener(listener: monitoringMetricRegistry)
         Metrics.addRegistry(registry: monitoringMetricRegistry)
     }
 }

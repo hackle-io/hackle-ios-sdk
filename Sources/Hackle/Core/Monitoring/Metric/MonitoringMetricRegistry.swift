@@ -5,7 +5,7 @@
 import Foundation
 
 
-class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
+class MonitoringMetricRegistry: MetricRegistry {
 
     private let endpoint: URL
     private let eventQueue: DispatchQueue
@@ -26,17 +26,6 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
 
     override func createTimer(id: MetricId) -> Timer {
         FlushTimer(id: id)
-    }
-
-    func onState(state: ApplicationState, timestamp: Date) {
-        Log.debug("MonitoringMetricRegistry.onState(state: \(state))")
-        switch state {
-        case .foreground: return
-        case .background:
-            eventQueue.async { [weak self] in
-                self?.flush()
-            }
-        }
     }
 
     private func flush() {
@@ -103,6 +92,19 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
                 (measurement.field.rawValue, measurement.value)
             }
         ]
+    }
+}
+
+extension MonitoringMetricRegistry: ApplicationLifecycleListener {
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        // nothing to do
+    }
+    
+    func onBackground(timestamp: Date) {
+        Log.debug("MonitoringMetricRegistry.onBackground")
+        eventQueue.async { [weak self] in
+            self?.flush()
+        }
     }
 }
 

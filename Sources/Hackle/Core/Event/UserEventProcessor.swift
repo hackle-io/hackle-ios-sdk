@@ -20,7 +20,7 @@ extension UserEventProcessor {
     }
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
+class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -37,7 +37,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
     private let eventDispatcher: UserEventDispatcher
     private let sessionManager: SessionManager
     private let userManager: UserManager
-    private let appStateManager: AppStateManager
+    private let applicationLifecycleManager: ApplicationLifecycleManager
     private let screenUserEventDecorator: UserEventDecorator
     private let eventBackoffController: UserEventBackoffController
 
@@ -57,7 +57,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         eventDispatcher: UserEventDispatcher,
         sessionManager: SessionManager,
         userManager: UserManager,
-        appStateManager: AppStateManager,
+        applicationLifecycleManager: ApplicationLifecycleManager,
         screenUserEventDecorator: UserEventDecorator,
         eventBackoffController: UserEventBackoffController
     ) {
@@ -74,7 +74,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
         self.eventDispatcher = eventDispatcher
         self.sessionManager = sessionManager
         self.userManager = userManager
-        self.appStateManager = appStateManager
+        self.applicationLifecycleManager = applicationLifecycleManager
         self.screenUserEventDecorator = screenUserEventDecorator
         self.eventBackoffController = eventBackoffController
     }
@@ -143,15 +143,15 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
 
         eventDispatcher.dispatch(events: events)
     }
-
-    func onState(state: ApplicationState, timestamp: Date) {
-        Log.debug("UserEventProcessor.onState(state: \(state))")
-        switch state {
-        case .foreground:
-            start()
-        case .background:
-            stop()
-        }
+    
+    func onForeground(timestamp: Date, isFromBackground: Bool) {
+        Log.debug("UserEventProcessor.onForeground")
+        start()
+    }
+    
+    func onBackground(timestamp: Date) {
+        Log.debug("UserEventProcessor.onBackground")
+        stop()
     }
 
     private func addEventInternal(event: UserEvent) {
@@ -173,7 +173,7 @@ class DefaultUserEventProcessor: UserEventProcessor, AppStateListener {
             return
         }
 
-        if appStateManager.currentState == .foreground {
+        if applicationLifecycleManager.currentState == .foreground {
             sessionManager.updateLastEventTime(timestamp: event.timestamp)
         } else {
             // Corner case when an event is processed between background and foreground

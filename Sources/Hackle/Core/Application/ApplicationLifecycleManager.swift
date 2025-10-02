@@ -5,8 +5,12 @@
 //  Created by sungwoo.yeo on 10/2/25.
 //
 
+import Foundation
+
 protocol ApplicationLifecycleManager {
     var currentState: ApplicationState { get }
+
+    func addListener(listener: ApplicationLifecycleListener)
 }
 
 class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher {
@@ -16,6 +20,7 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
     )
 
     private let clock: Clock
+    private var queue: DispatchQueue?
     private var listeners: [ApplicationLifecycleListener] = []
     
     private var _currentState: ApplicationState? = nil
@@ -29,23 +34,39 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
         self.clock = clock
     }
     
+    func setDispatchQueue(queue: DispatchQueue) {
+        self.queue = queue
+    }
+    
     func addListener(listener: ApplicationLifecycleListener) {
         listeners.append(listener)
     }
     
     func didBecomeActive() {
-        Log.debug("ApplicationLifecycleManager.didBecomeActive")
-        for listener in listeners {
-            listener.onForeground(timestamp: clock.now(), isFromBackground: _currentState == .background)
+        execute {
+            Log.debug("ApplicationLifecycleManager.didBecomeActive")
+            for listener in self.listeners {
+                listener.onForeground(timestamp: self.clock.now(), isFromBackground: self._currentState == .background)
+            }
+            self._currentState = .foreground
         }
-        _currentState = .foreground
     }
     
     func didEnterBackground() {
-        Log.debug("ApplicationLifecycleManager.didEnterBackground")
-        for listener in listeners {
-            listener.onBackground(timestamp: clock.now())
+        execute {
+            Log.debug("ApplicationLifecycleManager.didEnterBackground")
+            for listener in self.listeners {
+                listener.onBackground(timestamp: self.clock.now())
+            }
+            self._currentState = .background
         }
-        _currentState = .background
+    }
+    
+    private func execute(_ action: @escaping () -> Void) {
+        if let queue = queue {
+            queue.async(execute: action)
+        } else {
+            action()
+        }
     }
 }
