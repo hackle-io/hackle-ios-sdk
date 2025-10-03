@@ -44,7 +44,7 @@ class ApplicationLifecycleObserver {
     func publishDidBecomeActiveIfNeeded() {
         // 현재 상태가 명시적으로 active일 때만 publish
         // - didFinishLaunchingWithOptions: inactive
-        // - didBecomeActive: activie
+        // - didBecomeActive: active
         // - didEnterBackground: background
         if UIApplication.shared.applicationState == .active {
             didBecomeActive()
