@@ -65,7 +65,6 @@ class HackleAppSpecs: QuickSpec {
                 sessionManager: sessionManager,
                 screenManager: screenManager,
                 eventProcessor: eventProcessor,
-                viewLifecycleManager: ViewLifecycleManager.shared,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
                 fetchThrottler: throttler,

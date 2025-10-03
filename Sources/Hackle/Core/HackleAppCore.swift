@@ -67,7 +67,6 @@ class DefaultHackleAppCore: HackleAppCore {
     private let sessionManager: SessionManager
     private let screenManager: ScreenManager
     private let eventProcessor: UserEventProcessor
-    private let viewLifecycleManager: ViewLifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
@@ -104,7 +103,6 @@ class DefaultHackleAppCore: HackleAppCore {
         sessionManager: SessionManager,
         screenManager: ScreenManager,
         eventProcessor: UserEventProcessor,
-        viewLifecycleManager: ViewLifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
@@ -120,7 +118,6 @@ class DefaultHackleAppCore: HackleAppCore {
         self.sessionManager = sessionManager
         self.screenManager = screenManager
         self.eventProcessor = eventProcessor
-        self.viewLifecycleManager = viewLifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
@@ -130,7 +127,8 @@ class DefaultHackleAppCore: HackleAppCore {
     }
     
     func initialize(user: User?, completion: @escaping () -> ()) {
-        viewLifecycleManager.initialize()
+        ApplicationLifecycleObserver.shared.initialize()
+        ViewLifecycleManager.shared.initialize()
         userManager.initialize(user: user)
         eventQueue.async { [weak self] in
             guard let self = self else {

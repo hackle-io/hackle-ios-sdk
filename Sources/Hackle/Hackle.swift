@@ -58,6 +58,7 @@ import UserNotifications
             } else {
                 let app = HackleApp.create(sdkKey: sdkKey, config: config)
                 app.initialize(user: user) {
+                    ApplicationLifecycleObserver.shared.publishDidBecomeActiveIfNeeded()
                     readyToUse(completion: completion)
                 }
                 instance = app

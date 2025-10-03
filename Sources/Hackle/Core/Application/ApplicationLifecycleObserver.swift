@@ -15,6 +15,9 @@ class ApplicationLifecycleObserver {
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
     private var publishers: [ApplicationLifecyclePublisher] = []
 
+    private init() {
+    }
+    
     func initialize() {
         guard initialized.compareAndSet(expect: false, update: true) else {
             Log.debug("ApplicationLifecycleObserver already initialized.")
@@ -36,6 +39,16 @@ class ApplicationLifecycleObserver {
     
     func addPublisher(publisher: ApplicationLifecyclePublisher) {
         publishers.append(publisher)
+    }
+    
+    func publishDidBecomeActiveIfNeeded() {
+        // 현재 상태가 명시적으로 active일 때만 publish
+        // - didFinishLaunchingWithOptions: inactive
+        // - didBecomeActive: activie
+        // - didEnterBackground: background
+        if UIApplication.shared.applicationState == .active {
+            didBecomeActive()
+        }
     }
 
     @objc func didBecomeActive() {

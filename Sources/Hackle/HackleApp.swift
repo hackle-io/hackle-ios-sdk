@@ -806,7 +806,6 @@ extension HackleApp {
             sessionManager: sessionManager,
             screenManager: screenManager,
             eventProcessor: eventProcessor,
-            viewLifecycleManager: viewLifecycleManager,
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
