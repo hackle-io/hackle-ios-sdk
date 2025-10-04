@@ -2,14 +2,6 @@ import Foundation
 @testable import Hackle
 
 class MockPlatform : Platform {
-    func getBundleInfo() -> BundleInfo {
-        return BundleInfo(
-            bundleId: "io.hackle.app",
-            version: "1.1.1",
-            build: "10101"
-        )
-    }
-    
     func getCurrentDeviceInfo() -> DeviceInfo {
         return DeviceInfo(
             osName: "DummyOS",

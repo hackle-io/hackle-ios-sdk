@@ -2,24 +2,13 @@ import Foundation
 import UIKit
 
 protocol Platform {
-    func getBundleInfo() -> BundleInfo
     func getCurrentDeviceInfo() -> DeviceInfo
 }
 
 class IOSPlatform : Platform {
-    private let bundleInfo: BundleInfo
-    
     init() {
-        bundleInfo = BundleInfo(
-            bundleId: Bundle.main.bundleIdentifier ?? "",
-            version: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
-            build: Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        )
     }
-    
-    func getBundleInfo() -> BundleInfo {
-        return bundleInfo
-    }
+
     
     func getCurrentDeviceInfo() -> DeviceInfo {
         return DeviceInfo(

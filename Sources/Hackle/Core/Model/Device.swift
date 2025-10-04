@@ -7,15 +7,12 @@ protocol Device {
 }
 
 class DeviceImpl : Device {
-    var id: String
-    var platform: Platform
-    
-    private let bundleInfo: BundleInfo
-    
+    let id: String
+    let platform: Platform
+        
     init(id: String, platform: Platform) {
         self.id = id
         self.platform = platform
-        self.bundleInfo = platform.getBundleInfo()
     }
     
     var properties: [String : Any] {
@@ -25,9 +22,6 @@ class DeviceImpl : Device {
             let regionCode = deviceInfo.locale.regionCode ?? ""
             return [
                 "platform": "iOS",
-                "packageName": bundleInfo.bundleId,
-                "versionName": bundleInfo.version,
-                "versionCode": Int(bundleInfo.build) ?? 0,
                 "osName": deviceInfo.osName,
                 "osVersion": deviceInfo.osVersion,
                 "deviceModel": deviceInfo.model,

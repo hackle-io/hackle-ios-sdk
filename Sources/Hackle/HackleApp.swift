@@ -409,6 +409,7 @@ extension HackleApp {
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
+        let bundleInfo = BundleInfoImpl.create(keyValueRepository: globalKeyValueRepository)
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -446,6 +447,7 @@ extension HackleApp {
 
         let userManager = DefaultUserManager(
             device: device,
+            bundleInfo: bundleInfo,
             repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             targetFetcher: targetFetcher,

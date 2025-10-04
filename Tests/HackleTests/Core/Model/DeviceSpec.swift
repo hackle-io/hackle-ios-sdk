@@ -11,11 +11,6 @@ class DeviceSpec : QuickSpec {
             let device = DeviceImpl(id: deviceId, platform: platform)
             expect(device.id) == deviceId
             expect(device.properties["platform"] as? String) == "iOS"
-            
-            expect(device.properties["packageName"] as? String) == "io.hackle.app"
-            expect(device.properties["versionName"] as? String) == "1.1.1"
-            expect(device.properties["versionCode"] as? Int) == 10101
-            
             expect(device.properties["osName"] as? String) == "DummyOS"
             expect(device.properties["osVersion"] as? String) == "1.0.0"
             expect(device.properties["deviceModel"] as? String) == "iPhone-hackle"
@@ -35,15 +30,8 @@ class DeviceSpec : QuickSpec {
             let platform = MockPlatform()
             let device = DeviceImpl(id: deviceId, platform: platform)
             expect(device.id) == deviceId
-            self.assertBundleProperties(properties: device.properties, bundleInfo: platform.getBundleInfo())
             self.assertDeviceProperties(properties: device.properties, deviceInfo: platform.getCurrentDeviceInfo())
         }
-    }
-    
-    func assertBundleProperties(properties: [String: Any], bundleInfo: BundleInfo) {
-        expect(properties["packageName"] as? String) == bundleInfo.bundleId
-        expect(properties["versionName"] as? String) == bundleInfo.version
-        expect(properties["versionCode"] as? Int) == Int(bundleInfo.build)!
     }
     
     func assertDeviceProperties(properties: [String: Any], deviceInfo: DeviceInfo) {
