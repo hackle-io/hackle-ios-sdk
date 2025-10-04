@@ -26,8 +26,6 @@
 		7E0E2D942AE7A81B00578C74 /* InvokeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */; };
 		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */; };
-		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
-		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
@@ -68,6 +66,7 @@
 		B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeType.swift */; };
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
 		B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078402E90C21500D26B60 /* BundleVersionInfo.swift */; };
+		B21078452E91583200D26B60 /* ScreenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078442E91582F00D26B60 /* ScreenInfo.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -682,8 +681,6 @@
 		7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeResponse.swift; sourceTree = "<group>"; };
 		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
 		7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationProviderType.swift; sourceTree = "<group>"; };
-		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
-		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
@@ -724,6 +721,7 @@
 		B20B23132E56F0040019EAA7 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeSpecs.swift; sourceTree = "<group>"; };
 		B21078402E90C21500D26B60 /* BundleVersionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleVersionInfo.swift; sourceTree = "<group>"; };
+		B21078442E91582F00D26B60 /* ScreenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenInfo.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -1486,6 +1484,16 @@
 			path = Bundle;
 			sourceTree = "<group>";
 		};
+		B21078432E91568600D26B60 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				EE29D90929CD825300B1FEAA /* Device.swift */,
+				B21078442E91582F00D26B60 /* ScreenInfo.swift */,
+				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+			);
+			path = Device;
+			sourceTree = "<group>";
+		};
 		B24250242D9A2B1B00CF27FC /* PII */ = {
 			isa = PBXGroup;
 			children = (
@@ -1888,7 +1896,6 @@
 		EE29D8FC29CD825300B1FEAA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B21078422E90C28500D26B60 /* Bundle */,
 				EE29D8FD29CD825300B1FEAA /* Slot.swift */,
 				EE29D8FE29CD825300B1FEAA /* Bucket.swift */,
 				EEDC585E2ACB1B60001E73DB /* Cohort.swift */,
@@ -1902,7 +1909,6 @@
 				EE29D90629CD825300B1FEAA /* Segment.swift */,
 				EE29D90729CD825300B1FEAA /* Experiment.swift */,
 				EE29D90829CD825300B1FEAA /* ContainerGroup.swift */,
-				EE29D90929CD825300B1FEAA /* Device.swift */,
 				EE29D90A29CD825300B1FEAA /* HackleValue.swift */,
 				EE29D90B29CD825300B1FEAA /* TargetRule.swift */,
 				EE29D90C29CD825300B1FEAA /* Action.swift */,
@@ -2874,27 +2880,10 @@
 		EE5A78F82ADCD29B005A0F9E /* Platform */ = {
 			isa = PBXGroup;
 			children = (
-				EE5A78F92ADCD2A0005A0F9E /* Helper */,
-				EE5A78FA2ADCD2A5005A0F9E /* Model */,
-				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
+				B21078432E91568600D26B60 /* Device */,
+				B21078422E90C28500D26B60 /* Bundle */,
 			);
 			path = Platform;
-			sourceTree = "<group>";
-		};
-		EE5A78F92ADCD2A0005A0F9E /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
-			);
-			path = Helper;
-			sourceTree = "<group>";
-		};
-		EE5A78FA2ADCD2A5005A0F9E /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		EE6F8F2929D496B10037C482 /* Model */ = {
@@ -3502,6 +3491,7 @@
 				EE29D97229CD825400B1FEAA /* Date.swift in Sources */,
 				EE4D04002E5D7661007BE61A /* InAppMessageScheduleRequest.swift in Sources */,
 				EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */,
+				B21078452E91583200D26B60 /* ScreenInfo.swift in Sources */,
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
 				EE86376129ECD0B5000268DC /* DelegatingEvaluator.swift in Sources */,
 				EE29D98C29CD825400B1FEAA /* HackleValue.swift in Sources */,
@@ -3617,7 +3607,6 @@
 				EE29D94B29CD825400B1FEAA /* Measurement.swift in Sources */,
 				B26AC23C2E4B1CD600AAE56F /* HackleAppCore.swift in Sources */,
 				EEC184D52C6B3CBA00872A9A /* DevToolsAPI.swift in Sources */,
-				7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */,
 				EE86377329ED0085000268DC /* RemoteConfigEvaluation.swift in Sources */,
 				B2C276172C7EFF6000EEAA2A /* HackleInAppMessageAction.swift in Sources */,
 				EE1F5D592A9F3593006E17EF /* HackleExperiment.swift in Sources */,
@@ -3709,7 +3698,6 @@
 				B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */,
 				EEFA31E62BC18A7B00E133F8 /* RemoteConfigEventDedupDeterminer.swift in Sources */,
 				EEDC587C2ACBDA78001E73DB /* WorkspaceManager.swift in Sources */,
-				7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */,
 				EE4D038E2E5C6299007BE61A /* InAppMessageLayoutSelector.swift in Sources */,
 				EE4D04652E5DC3DF007BE61A /* InAppMessageTriggerEventMatcher.swift in Sources */,
 				EED6A1222A0DFC7700A8875D /* PropertyOperator.swift in Sources */,
