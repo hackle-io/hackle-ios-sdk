@@ -36,7 +36,7 @@ class HackleAppSpecs: QuickSpec {
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
-            device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
+            device = DeviceImpl(id: "hackle_device_id")
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,

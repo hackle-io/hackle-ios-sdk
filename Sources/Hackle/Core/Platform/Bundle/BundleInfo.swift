@@ -21,19 +21,32 @@ class BundleInfoImpl: BundleInfo {
         }
     }
     
-    init() {
+    init(previousVersion: String?, previousBuild: Int?) {
         bundleId = Bundle.main.bundleIdentifier ?? ""
         currentBundleVersionInfo = BundleVersionInfo(
             version: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
             build: (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "").toInt()
         )
-        previousBundleVersionInfo = nil // TODO: load in keyvalue
+        
+        guard let previousVersion = previousVersion,
+              let previousBuild = previousBuild else {
+            previousBundleVersionInfo = nil
+            return
+        }
+        
+        previousBundleVersionInfo = BundleVersionInfo(
+            version: previousVersion,
+            build: previousBuild
+        )
+        
     }
 }
 
 extension BundleInfoImpl {
     static func create(keyValueRepository: KeyValueRepository) -> BundleInfo {
-        return BundleInfoImpl()
+        let previousVersion = keyValueRepository.getString(key: "hackle_previous_version")
+        let previousBuild = keyValueRepository.getInteger(key: "hackle_previous_build")
+        return BundleInfoImpl(previousVersion: previousVersion, previousBuild: previousBuild)
     }
 }
 

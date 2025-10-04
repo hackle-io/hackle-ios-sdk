@@ -29,7 +29,6 @@
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
-		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
 		7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666282B2C409600B3CDCF /* SharedDatabase.swift */; };
 		7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */; };
 		7E4666302B30133400B3CDCF /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662F2B30133400B3CDCF /* NotificationHandler.swift */; };
@@ -684,7 +683,6 @@
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
-		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
 		7E4666282B2C409600B3CDCF /* SharedDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDatabase.swift; sourceTree = "<group>"; };
 		7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
 		7E46662F2B30133400B3CDCF /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
@@ -2108,7 +2106,6 @@
 				EE29D9BC29CD82C100B1FEAA /* Mocks.swift */,
 				EE29D9BD29CD82C100B1FEAA /* MockUserEventProcessor.swift */,
 				EE29D9BE29CD82C100B1FEAA /* MockScheduler.swift */,
-				7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */,
 				7E70B5732AA8641900746A5F /* MockDevice.swift */,
 				7E64779E2AD50E5200971F20 /* MockHackleApp.swift */,
 				7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */,
@@ -3887,7 +3884,6 @@
 				EE543CC82C095E8100F64BFA /* MockScreenListener.swift in Sources */,
 				EEF895892A485AA400722CF6 /* InAppMessageTestExt.swift in Sources */,
 				EE29DA9429CD82C200B1FEAA /* MockSlotNumberCalculator.swift in Sources */,
-				7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */,
 				EE29DA6E29CD82C200B1FEAA /* ParameterConfigurationEntitySpecs.swift in Sources */,
 				EE4D04502E5DAB1B007BE61A /* MockInAppMessageSchedulerFactory.swift in Sources */,
 				EE29DA4229CD82C200B1FEAA /* Mocks.swift in Sources */,
