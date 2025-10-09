@@ -1508,7 +1508,7 @@
 			path = Context;
 			sourceTree = "<group>";
 		};
-		B284996E2E8E18D700BEA926 /* Application */ = {
+		B26EB4132E96984F003E7B13 /* Lifecycle */ = {
 			isa = PBXGroup;
 			children = (
 				EE29D8D429CD825300B1FEAA /* ApplicationState.swift */,
@@ -1517,10 +1517,11 @@
 				B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */,
 				B28499762E8E191900BEA926 /* ApplicationLifecycleManager.swift */,
 			);
-			path = Application;
+			path = Lifecycle;
 			sourceTree = "<group>";
 		};
 		B28499782E8E1DEB00BEA926 /* View */ = {
+		B26EB4152E9698E7003E7B13 /* Lifecycle */ = {
 			isa = PBXGroup;
 			children = (
 				EEA7FCBC2C04AB710004F858 /* ViewLifecycle.swift */,
@@ -1528,6 +1529,23 @@
 				EEA7FCC02C04AE550004F858 /* ViewLifecyclePublisher.swift */,
 				EECDF3DC2C0D611A009B2F56 /* ViewLifecycleObserver.swift */,
 				EEA7FCBA2C04AB6B0004F858 /* ViewLifecycleManager.swift */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
+		B284996E2E8E18D700BEA926 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				B26EB4142E96985C003E7B13 /* Install */,
+				B26EB4132E96984F003E7B13 /* Lifecycle */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		B28499782E8E1DEB00BEA926 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B26EB4152E9698E7003E7B13 /* Lifecycle */,
 			);
 			path = View;
 			sourceTree = "<group>";
