@@ -42,10 +42,24 @@ class BundleInfoImpl: BundleInfo {
     }
 }
 
+extension Bundle {
+    static var KEY_PREVIOUS_VERSION: String {
+        get {
+            "hackle_previous_version"
+        }
+    }
+    
+    static var KEY_PREVIOUS_BUILD: String {
+        get {
+            "hackle_previous_build"
+        }
+    }
+}
+
 extension BundleInfoImpl {
     static func create(keyValueRepository: KeyValueRepository) -> BundleInfo {
-        let previousVersion = keyValueRepository.getString(key: "hackle_previous_version")
-        let previousBuild = keyValueRepository.getInteger(key: "hackle_previous_build")
+        let previousVersion = keyValueRepository.getString(key: Bundle.KEY_PREVIOUS_VERSION)
+        let previousBuild = keyValueRepository.getInteger(key: Bundle.KEY_PREVIOUS_BUILD)
         return BundleInfoImpl(previousVersion: previousVersion, previousBuild: previousBuild)
     }
 }

@@ -87,6 +87,10 @@
 		B26AC2442E4B670A00AAE56F /* HackleAppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2432E4B670600AAE56F /* HackleAppContext.swift */; };
 		B26AC2462E4B679D00AAE56F /* HackleInvocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2452E4B679900AAE56F /* HackleInvocator.swift */; };
 		B26AC2922E4C5AA900AAE56F /* InvokeDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */; };
+		B26EB40E2E96974F003E7B13 /* ApplicationInstallState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */; };
+		B26EB4102E96978D003E7B13 /* ApplicationInstallStateListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */; };
+		B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */; };
+		B26EB4172E9789EE003E7B13 /* ApplicationInstallDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B28499702E8E18F100BEA926 /* ApplicationLifecyclePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */; };
 		B28499722E8E190000BEA926 /* ApplicationLifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */; };
@@ -741,6 +745,10 @@
 		B26AC2432E4B670600AAE56F /* HackleAppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppContext.swift; sourceTree = "<group>"; };
 		B26AC2452E4B679900AAE56F /* HackleInvocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInvocator.swift; sourceTree = "<group>"; };
 		B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeDtoSpecs.swift; sourceTree = "<group>"; };
+		B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallState.swift; sourceTree = "<group>"; };
+		B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateListener.swift; sourceTree = "<group>"; };
+		B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManager.swift; sourceTree = "<group>"; };
+		B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallDeterminer.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecyclePublisher.swift; sourceTree = "<group>"; };
 		B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleObserver.swift; sourceTree = "<group>"; };
@@ -1520,7 +1528,17 @@
 			path = Lifecycle;
 			sourceTree = "<group>";
 		};
-		B28499782E8E1DEB00BEA926 /* View */ = {
+		B26EB4142E96985C003E7B13 /* Install */ = {
+			isa = PBXGroup;
+			children = (
+				B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */,
+				B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */,
+				B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */,
+				B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */,
+			);
+			path = Install;
+			sourceTree = "<group>";
+		};
 		B26EB4152E9698E7003E7B13 /* Lifecycle */ = {
 			isa = PBXGroup;
 			children = (
@@ -3488,6 +3506,7 @@
 				EE29D9AE29CD825500B1FEAA /* HackleRemoteConfig.swift in Sources */,
 				EE80DF852A27836600FB12CC /* InAppMessage.swift in Sources */,
 				EE80E0102A2D9F5C00FB12CC /* UserEventPublisher.swift in Sources */,
+				B26EB4102E96978D003E7B13 /* ApplicationInstallStateListener.swift in Sources */,
 				EE29D95329CD825400B1FEAA /* CumulativeMetricRegistry.swift in Sources */,
 				EE29D96229CD825400B1FEAA /* WorkspaceFetcher.swift in Sources */,
 				EE29D95B29CD825400B1FEAA /* EventRepository.swift in Sources */,
@@ -3545,6 +3564,7 @@
 				EE80E00E2A2D9CC500FB12CC /* UserEventListener.swift in Sources */,
 				EE4D04452E5DA0C8007BE61A /* TriggeredInAppMessageScheduler.swift in Sources */,
 				EE5A78DD2ADAEC83005A0F9E /* Base64.swift in Sources */,
+				B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */,
 				EEAC3F312B9D54E600DC498E /* PushTokenRegistry.swift in Sources */,
 				B2DDF7672DB76603006572E2 /* ScreenUserEventDecorator.swift in Sources */,
 				EEFA31E42BC18A6D00E133F8 /* DelegatingUserEventDedupDeterminer.swift in Sources */,
@@ -3615,6 +3635,7 @@
 				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
 				EE4D037C2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift in Sources */,
+				B26EB4172E9789EE003E7B13 /* ApplicationInstallDeterminer.swift in Sources */,
 				EECDF3DD2C0D611A009B2F56 /* ViewLifecycleObserver.swift in Sources */,
 				B26AC2442E4B670A00AAE56F /* HackleAppContext.swift in Sources */,
 				EE81ED952E6181060044B40E /* InAppMessageEvaluatorEvaluation.swift in Sources */,
@@ -3738,6 +3759,7 @@
 				EEA7FCB32C04AB450004F858 /* Engagement.swift in Sources */,
 				EE62927C2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift in Sources */,
 				EE80E01E2A2DCD3F00FB12CC /* InAppMessageUI.swift in Sources */,
+				B26EB40E2E96974F003E7B13 /* ApplicationInstallState.swift in Sources */,
 				B28499772E8E191E00BEA926 /* ApplicationLifecycleManager.swift in Sources */,
 				EE29D95729CD825400B1FEAA /* LoggingMetricRegistry.swift in Sources */,
 				EE86377529ED008C000268DC /* RemoteConfigRequest.swift in Sources */,

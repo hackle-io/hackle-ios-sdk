@@ -3,23 +3,27 @@ import UIKit
 
 protocol Device {
     var id: String { get }
+    var isIdCreated: Bool { get }
     var properties: [String: Any] { get }
 }
 
 class DeviceImpl : Device {
+    private let osName: String
+    private let osVersion: String
+    private let model: String
+    private let type: String
+    private let brand: String
+    private let manufacturer: String
+    private let locale: Locale
+    private let timezone: TimeZone
+    private let screenInfo: ScreenInfo
+    
     let id: String
-    let osName: String
-    let osVersion: String
-    let model: String
-    let type: String
-    let brand: String
-    let manufacturer: String
-    let locale: Locale
-    let timezone: TimeZone
-    let screenInfo: ScreenInfo
+    let isIdCreated: Bool
 
-    init(id: String) {
+    init(id: String, isIdCreated: Bool) {
         self.id = id
+        self.isIdCreated = isIdCreated
         self.osName = "iOS"
         self.osVersion = UIDevice.current.systemVersion
         self.model = DeviceHelper.getDeviceModel()
@@ -59,11 +63,14 @@ class DeviceImpl : Device {
 
 extension DeviceImpl {
     static func create(keyValueRepository: KeyValueRepository) -> Device {
+        var isIdCreated = false
         let deviceId = keyValueRepository.getString(key: "hackle_device_id") { _ in
-            UUID().uuidString
+            isIdCreated = true
+            return UUID().uuidString
         }
         return DeviceImpl(
-            id: deviceId
+            id: deviceId,
+            isIdCreated: isIdCreated
         )
     }
     
