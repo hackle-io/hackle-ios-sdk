@@ -72,6 +72,7 @@ class DefaultHackleAppCore: HackleAppCore {
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
+    private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
     
     private var userExplorerView: HackleUserExplorerView? = nil
@@ -108,6 +109,7 @@ class DefaultHackleAppCore: HackleAppCore {
         fetchThrottler: Throttler,
         device: Device,
         inAppMessageUI: HackleInAppMessageUI,
+        applicationInstallStateManager: ApplicationInstallStateManager,
         userExplorer: HackleUserExplorer
     ) {
         self.core = core
@@ -123,6 +125,7 @@ class DefaultHackleAppCore: HackleAppCore {
         self.fetchThrottler = fetchThrottler
         self.device = device
         self.inAppMessageUI = inAppMessageUI
+        self.applicationInstallStateManager = applicationInstallStateManager
         self.userExplorer = userExplorer
     }
     
@@ -130,6 +133,7 @@ class DefaultHackleAppCore: HackleAppCore {
         ApplicationLifecycleObserver.shared.initialize()
         ViewLifecycleManager.shared.initialize()
         userManager.initialize(user: user)
+        applicationInstallStateManager.checkApplicationInstall()
         eventQueue.async { [weak self] in
             guard let self = self else {
                 completion()

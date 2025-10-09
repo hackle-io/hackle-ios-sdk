@@ -8,53 +8,47 @@ protocol Device {
 }
 
 class DeviceImpl : Device {
-    private let osName: String
-    private let osVersion: String
-    private let model: String
-    private let type: String
-    private let brand: String
-    private let manufacturer: String
-    private let locale: Locale
-    private let timezone: TimeZone
-    private let screenInfo: ScreenInfo
-    
+    private let deviceInfo: DeviceInfo
     let id: String
     let isIdCreated: Bool
 
     init(id: String, isIdCreated: Bool) {
         self.id = id
         self.isIdCreated = isIdCreated
-        self.osName = "iOS"
-        self.osVersion = UIDevice.current.systemVersion
-        self.model = DeviceHelper.getDeviceModel()
-        self.type = DeviceHelper.getDeviceType()
-        self.brand = "Apple"
-        self.manufacturer = "Apple"
-        self.locale = DeviceImpl.getPreferredLocale()
-        self.timezone = TimeZone.current
-        self.screenInfo = ScreenInfo(
-            width: Int(UIScreen.main.nativeBounds.width),
-            height: Int(UIScreen.main.nativeBounds.height)
+        self.deviceInfo = DeviceInfo(
+            osName: "iOS",
+            osVersion: UIDevice.current.systemVersion,
+            model: DeviceHelper.getDeviceModel(),
+            type: DeviceHelper.getDeviceType(),
+            brand: "Apple",
+            manufacturer: "Apple",
+            locale: DeviceImpl.getPreferredLocale(),
+            timezone: TimeZone.current,
+            screenInfo: ScreenInfo(
+                width: Int(UIScreen.main.nativeBounds.width),
+                height: Int(UIScreen.main.nativeBounds.height)
+            )
         )
+        
     }
     
     var properties: [String : Any] {
         get {
-            let languageCode = locale.languageCode ?? ""
-            let regionCode = locale.regionCode ?? ""
+            let languageCode = deviceInfo.locale.languageCode ?? ""
+            let regionCode = deviceInfo.locale.regionCode ?? ""
             return [
                 "platform": "iOS",
-                "osName": osName,
-                "osVersion": osVersion,
-                "deviceModel": model,
-                "deviceType": type,
-                "deviceBrand": brand,
-                "deviceManufacturer": manufacturer,
+                "osName": deviceInfo.osName,
+                "osVersion": deviceInfo.osVersion,
+                "deviceModel": deviceInfo.model,
+                "deviceType": deviceInfo.type,
+                "deviceBrand": deviceInfo.brand,
+                "deviceManufacturer": deviceInfo.manufacturer,
                 "locale": "\(languageCode)-\(regionCode)",
-                "language": locale.languageCode ?? "",
-                "timeZone": timezone.identifier,
-                "screenWidth": screenInfo.width,
-                "screenHeight": screenInfo.height,
+                "language": deviceInfo.locale.languageCode ?? "",
+                "timeZone": deviceInfo.timezone.identifier,
+                "screenWidth": deviceInfo.screenInfo.width,
+                "screenHeight": deviceInfo.screenInfo.height,
                 "isApp": true
             ]
         }

@@ -36,7 +36,7 @@ class HackleAppSpecs: QuickSpec {
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
-            device = DeviceImpl(id: "hackle_device_id")
+            device = MockDevice(id: "hackle_device_id", isIdCreated: true, properties: [:])
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,
@@ -54,6 +54,9 @@ class HackleAppSpecs: QuickSpec {
             )
             inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
             
+            let applicationInstallDeterminer = ApplicationInstallDeterminer(keyValueRepository: MemoryKeyValueRepository(), device: device, bundleInfo: BundleInfoImpl(previousVersion: nil, previousBuild: nil))
+            let applicationInstallStateManager = ApplicationInstallStateManager(clock: SystemClock.shared, queue: eventQueue, applicationInstallDeterminer: applicationInstallDeterminer)
+            
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             
             let hackleAppCore = DefaultHackleAppCore(
@@ -70,6 +73,7 @@ class HackleAppSpecs: QuickSpec {
                 fetchThrottler: throttler,
                 device: device,
                 inAppMessageUI: inAppMessageUI,
+                applicationInstallStateManager: applicationInstallStateManager,
                 userExplorer: userExplorer
             )
             sut = HackleApp(

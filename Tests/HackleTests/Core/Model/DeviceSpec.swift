@@ -7,7 +7,7 @@ class DeviceSpec : QuickSpec {
     override func spec() {
         it("create device with required properties") {
             let deviceId = UUID().uuidString
-            let device = DeviceImpl(id: deviceId)
+            let device = DeviceImpl(id: deviceId, isIdCreated: true)
             expect(device.id) == deviceId
             expect(device.properties["platform"] as? String) == "iOS"
             expect(device.properties["osName"] as? String) == "iOS"
@@ -26,7 +26,7 @@ class DeviceSpec : QuickSpec {
 
         it("create device with valid structure") {
             let deviceId = UUID().uuidString
-            let device = DeviceImpl(id: deviceId)
+            let device = DeviceImpl(id: deviceId, isIdCreated: true)
             expect(device.id) == deviceId
             self.assertDevicePropertiesStructure(properties: device.properties)
         }

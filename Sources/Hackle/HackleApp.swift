@@ -410,6 +410,7 @@ extension HackleApp {
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
         let bundleInfo = BundleInfoImpl.create(keyValueRepository: globalKeyValueRepository)
+        let applicationInstallDeterminer = ApplicationInstallDeterminer(keyValueRepository: globalKeyValueRepository, device: device, bundleInfo: bundleInfo)
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -585,6 +586,14 @@ extension HackleApp {
         applicationLifecycleManager.addListener(listener: sessionManager)
         applicationLifecycleManager.addListener(listener: userManager)
         applicationLifecycleManager.addListener(listener: eventProcessor)
+        
+        // - ApplicationInstallStateManager
+        
+        let applicationInstallStateManager = ApplicationInstallStateManager(
+            clock: clock,
+            queue: eventQueue,
+            applicationInstallDeterminer: applicationInstallDeterminer
+        )
 
         // - SessionEventTracker
 
@@ -813,6 +822,7 @@ extension HackleApp {
             fetchThrottler: throttler,
             device: device,
             inAppMessageUI: inAppMessageUI,
+            applicationInstallStateManager: applicationInstallStateManager,
             userExplorer: userExplorer
         )
         let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
