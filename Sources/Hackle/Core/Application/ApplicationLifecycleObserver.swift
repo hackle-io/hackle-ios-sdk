@@ -14,6 +14,7 @@ class ApplicationLifecycleObserver {
 
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
     private var publishers: [ApplicationLifecyclePublisher] = []
+    private var firstLaunch: AtomicReference<Bool> = AtomicReference(value: false)
 
     private init() {
     }
@@ -46,12 +47,16 @@ class ApplicationLifecycleObserver {
         // - didFinishLaunchingWithOptions: inactive
         // - didBecomeActive: active
         // - didEnterBackground: background
-        if UIApplication.shared.applicationState == .active {
-            didBecomeActive()
+        
+        DispatchQueue.main.async {
+            if UIApplication.shared.applicationState == .active && self.firstLaunch.get() == true {
+                self.didBecomeActive()
+            }
         }
     }
 
     @objc func didBecomeActive() {
+        firstLaunch.set(newValue: false)
         for publisher in publishers {
             publisher.didBecomeActive()
         }
