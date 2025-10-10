@@ -620,6 +620,17 @@ extension HackleApp {
             core: core
         )
         engagementManager.addListener(listener: engagementEventTracker)
+        
+        // - ApplicationEventTracker
+        
+        let applicationEventTracker = ApplicationEventTracker(
+            userManager: userManager,
+            core: core,
+            bundleInfo: bundleInfo
+        )
+        
+        applicationLifecycleManager.addListener(listener: applicationEventTracker)
+        applicationInstallStateManager.addListener(listener: applicationEventTracker)
 
         // - InAppMessage
 

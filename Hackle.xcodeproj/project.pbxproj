@@ -91,6 +91,7 @@
 		B26EB4102E96978D003E7B13 /* ApplicationInstallStateListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */; };
 		B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */; };
 		B26EB4172E9789EE003E7B13 /* ApplicationInstallDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */; };
+		B26F8C352E98968300CE544C /* ApplicationEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B28499702E8E18F100BEA926 /* ApplicationLifecyclePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */; };
 		B28499722E8E190000BEA926 /* ApplicationLifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */; };
@@ -749,6 +750,7 @@
 		B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateListener.swift; sourceTree = "<group>"; };
 		B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManager.swift; sourceTree = "<group>"; };
 		B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallDeterminer.swift; sourceTree = "<group>"; };
+		B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationEventTracker.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecyclePublisher.swift; sourceTree = "<group>"; };
 		B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleObserver.swift; sourceTree = "<group>"; };
@@ -1554,6 +1556,7 @@
 		B284996E2E8E18D700BEA926 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */,
 				B26EB4142E96985C003E7B13 /* Install */,
 				B26EB4132E96984F003E7B13 /* Lifecycle */,
 			);
@@ -3742,6 +3745,7 @@
 				EE29D94F29CD825400B1FEAA /* DelegatingCounter.swift in Sources */,
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,
 				EE29D98029CD825400B1FEAA /* Bucket.swift in Sources */,
+				B26F8C352E98968300CE544C /* ApplicationEventTracker.swift in Sources */,
 				EEA7FCB72C04AB510004F858 /* EngagementManager.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
 				EE4D044B2E5DA671007BE61A /* InAppMessageScheduleProcessor.swift in Sources */,
