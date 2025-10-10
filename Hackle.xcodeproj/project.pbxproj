@@ -92,6 +92,9 @@
 		B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */; };
 		B26EB4172E9789EE003E7B13 /* ApplicationInstallDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */; };
 		B26F8C352E98968300CE544C /* ApplicationEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */; };
+		B26F8C3C2E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C382E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift */; };
+		B26F8C3D2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C3A2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift */; };
+		B26F8C3E2E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C372E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B28499702E8E18F100BEA926 /* ApplicationLifecyclePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */; };
 		B28499722E8E190000BEA926 /* ApplicationLifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */; };
@@ -751,6 +754,9 @@
 		B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManager.swift; sourceTree = "<group>"; };
 		B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallDeterminer.swift; sourceTree = "<group>"; };
 		B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationEventTracker.swift; sourceTree = "<group>"; };
+		B26F8C372E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallDeterminerSpec.swift; sourceTree = "<group>"; };
+		B26F8C382E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManagerSpec.swift; sourceTree = "<group>"; };
+		B26F8C3A2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationEventTrackerSpec.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecyclePublisher.swift; sourceTree = "<group>"; };
 		B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleObserver.swift; sourceTree = "<group>"; };
@@ -1553,6 +1559,24 @@
 			path = Lifecycle;
 			sourceTree = "<group>";
 		};
+		B26F8C392E98AB7200CE544C /* Install */ = {
+			isa = PBXGroup;
+			children = (
+				B26F8C372E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift */,
+				B26F8C382E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift */,
+			);
+			path = Install;
+			sourceTree = "<group>";
+		};
+		B26F8C3B2E98AB7200CE544C /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				B26F8C392E98AB7200CE544C /* Install */,
+				B26F8C3A2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
 		B284996E2E8E18D700BEA926 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -2187,6 +2211,7 @@
 		EE29D9CB29CD82C100B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				B26F8C3B2E98AB7200CE544C /* Application */,
 				EE3E36A32C74EF26002A6147 /* DevTools */,
 				EE543CCB2C098D5700F64BFA /* Engagement */,
 				7E9F7E842B6CA78200A6B0B8 /* Storage */,
@@ -4018,6 +4043,9 @@
 				B24234B32D89616600878096 /* MockSQLiteEventRepository.swift in Sources */,
 				EE81EDA52E61A42C0044B40E /* MockEvaluationEventRecorder.swift in Sources */,
 				B23A60FB2DB23D9F008D410A /* NotificationClickActionSpecs.swift in Sources */,
+				B26F8C3C2E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift in Sources */,
+				B26F8C3D2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift in Sources */,
+				B26F8C3E2E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift in Sources */,
 				EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */,
 				EE29DAA529CD82C200B1FEAA /* UserSpecs.swift in Sources */,
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
