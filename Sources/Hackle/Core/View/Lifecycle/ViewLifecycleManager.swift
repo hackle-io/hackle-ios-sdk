@@ -40,46 +40,47 @@ class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublishe
 
     func willEnterForeground() {
         let top = viewManager.topViewController()
-        publish(lifecycle: .willEnterForeground(top: top), timestamp: clock.now())
+        publish(lifecycle: .willEnterForeground(top: top))
     }
 
     func didEnterBackground() {
         let top = viewManager.topViewController()
-        publish(lifecycle: .didEnterBackground(top: top), timestamp: clock.now())
+        publish(lifecycle: .didEnterBackground(top: top))
     }
 
     func viewWillAppear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewWillAppear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewWillAppear(vc: vc, top: top))
     }
 
     func viewDidAppear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewDidAppear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewDidAppear(vc: vc, top: top))
     }
 
     func viewWillDisappear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewWillDisappear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewWillDisappear(vc: vc, top: top))
     }
 
     func viewDidDisappear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewDidDisappear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewDidDisappear(vc: vc, top: top))
     }
 
 
-    private func publish(lifecycle: ViewLifecycle, timestamp: Date) {
+    private func publish(lifecycle: ViewLifecycle) {
         execute {
             Log.debug("ViewLifecycleManager.publish(lifecycle: \(lifecycle))")
+            let timestamp = self.clock.now()
             for listener in self.listeners {
                 listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
             }

@@ -45,8 +45,9 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
     func willEnterForeground() {
         execute {
             Log.debug("ApplicationLifecycleManager.willEnterForeground")
+            let timestamp = self.clock.now()
             for listener in self.listeners {
-                listener.onForeground(timestamp: self.clock.now(), isFromBackground: self._currentState == .background)
+                listener.onForeground(timestamp: timestamp, isFromBackground: self._currentState == .background)
             }
             self._currentState = .foreground
         }
