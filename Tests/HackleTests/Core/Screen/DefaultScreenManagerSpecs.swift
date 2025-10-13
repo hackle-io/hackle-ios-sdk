@@ -113,10 +113,10 @@ class DefaultScreenManagerSpecs: QuickSpec {
         }
 
         describe("onLifecycle") {
-            context("didBecomeActive") {
+            context("willEnterForeground") {
                 it("when top view is nil then do nothing") {
                     // when
-                    sut.onLifecycle(lifecycle: .didBecomeActive(top: nil), timestamp: Date())
+                    sut.onLifecycle(lifecycle: .willEnterForeground(top: nil), timestamp: Date())
 
                     // then
                     expect(sut.currentScreen).to(beNil())
@@ -124,7 +124,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
 
                 it("when top view is present then update screen") {
                     // when
-                    sut.onLifecycle(lifecycle: .didBecomeActive(top: TestViewController()), timestamp: Date())
+                    sut.onLifecycle(lifecycle: .willEnterForeground(top: TestViewController()), timestamp: Date())
 
                     // then
                     expect(sut.currentScreen).to(equal(Screen(name: "TestViewController", className: "TestViewController")))

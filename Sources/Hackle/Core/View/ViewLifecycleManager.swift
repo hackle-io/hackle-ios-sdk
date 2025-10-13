@@ -38,9 +38,9 @@ class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublishe
         listeners.append(listener)
     }
 
-    func didBecomeActive() {
+    func willEnterForeground() {
         let top = viewManager.topViewController()
-        publish(lifecycle: .didBecomeActive(top: top), timestamp: clock.now())
+        publish(lifecycle: .willEnterForeground(top: top), timestamp: clock.now())
     }
 
     func didEnterBackground() {

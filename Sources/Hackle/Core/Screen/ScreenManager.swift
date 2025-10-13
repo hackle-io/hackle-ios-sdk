@@ -61,7 +61,7 @@ class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
     func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("ScreenManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
-        case .didBecomeActive(let top):
+        case .willEnterForeground(let top):
             guard let top = top else {
                 return
             }

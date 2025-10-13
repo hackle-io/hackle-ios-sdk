@@ -428,7 +428,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 }
             }
 
-            context("didBecomeActive 노티인 경우") {
+            context("willEnterForeground 노티인 경우") {
                 it("start() 를 호출한다") {
                     spy.onForeground(timestamp: Date(), isFromBackground: true)
                     expect(spy.startCalled) == true

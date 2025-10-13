@@ -26,8 +26,8 @@ class ApplicationLifecycleObserver {
         }
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
+            selector: #selector(willEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
@@ -42,23 +42,27 @@ class ApplicationLifecycleObserver {
         publishers.append(publisher)
     }
     
-    func publishDidBecomeActiveIfNeeded() {
+    func publishWillEnterForegroundIfNeeded() {
+        guard firstLaunch.get() else {
+            return
+        }
+        
         // 현재 상태가 명시적으로 active일 때만 publish
         // - didFinishLaunchingWithOptions: inactive
         // - didBecomeActive: active
+        // - willEnterForeground: active
         // - didEnterBackground: background
-        
         DispatchQueue.main.async {
-            if UIApplication.shared.applicationState == .active && self.firstLaunch.get() == true {
-                self.didBecomeActive()
+            if UIApplication.shared.applicationState == .active {
+                self.willEnterForeground()
             }
         }
     }
 
-    @objc func didBecomeActive() {
+    @objc func willEnterForeground() {
         firstLaunch.set(newValue: false)
         for publisher in publishers {
-            publisher.didBecomeActive()
+            publisher.willEnterForeground()
         }
     }
 
