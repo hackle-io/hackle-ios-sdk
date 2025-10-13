@@ -15,12 +15,12 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
         }
 
         describe("lifecycle events") {
-            it("didBecomeActive") {
+            it("willEnterForeground") {
                 let sut = DefaultApplicationLifecycleManager.shared
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
                 expect(sut.currentState == .foreground).to(beTrue())
                 verify(exactly: 1) {
@@ -47,11 +47,11 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 expect(sut.currentState).to(equal(Optional(.background)))
             }
 
-            it("didBecomeActive 호출 후 상태는 foreground") {
+            it("willEnterForeground 호출 후 상태는 foreground") {
                 let sut = DefaultApplicationLifecycleManager.shared
                 sut.setDispatchQueue(queue: queue)
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
 
                 expect(sut.currentState).to(equal(.foreground))
@@ -61,7 +61,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 let sut = DefaultApplicationLifecycleManager.shared
                 sut.setDispatchQueue(queue: queue)
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
                 sut.didEnterBackground()
                 queue.await()
@@ -79,7 +79,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.didEnterBackground()
                 queue.await()
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
 
                 verify(exactly: 1) {
@@ -94,7 +94,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
 
                 verify(exactly: 1) {
@@ -109,13 +109,13 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
                 
                 sut.didEnterBackground()
                 queue.await()
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
 
                 verify(exactly: 2) {
@@ -139,7 +139,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.addListener(listener: listener2)
                 sut.addListener(listener: listener3)
 
-                sut.didBecomeActive()
+                sut.willEnterForeground()
                 queue.await()
 
                 verify(exactly: 1) { listener1.onForegroundMock }

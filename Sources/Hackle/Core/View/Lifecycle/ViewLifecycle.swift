@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 enum ViewLifecycle {
-    case didBecomeActive(top: UIViewController?)
+    case willEnterForeground(top: UIViewController?)
     case didEnterBackground(top: UIViewController?)
     case viewWillAppear(vc: UIViewController, top: UIViewController)
     case viewDidAppear(vc: UIViewController, top: UIViewController)
@@ -13,11 +13,11 @@ enum ViewLifecycle {
 extension ViewLifecycle: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .didBecomeActive(let top):
+        case .willEnterForeground(let top):
             guard let top else {
-                return "didBecomeActive(top: nil)"
+                return "willEnterForeground(top: nil)"
             }
-            return "didBecomeActive(top: \(Screen.screenClass(top)))"
+            return "willEnterForeground(top: \(Screen.screenClass(top)))"
         case .viewWillAppear(let vc, let top):
             return "viewWillAppear(vc: \(Screen.screenClass(vc)), top: \(Screen.screenClass(top))"
         case .viewDidAppear(let vc, let top):

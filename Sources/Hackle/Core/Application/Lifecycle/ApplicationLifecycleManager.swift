@@ -42,9 +42,9 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
         listeners.append(listener)
     }
     
-    func didBecomeActive() {
+    func willEnterForeground() {
         execute {
-            Log.debug("ApplicationLifecycleManager.didBecomeActive")
+            Log.debug("ApplicationLifecycleManager.willEnterForeground")
             for listener in self.listeners {
                 listener.onForeground(timestamp: self.clock.now(), isFromBackground: self._currentState == .background)
             }

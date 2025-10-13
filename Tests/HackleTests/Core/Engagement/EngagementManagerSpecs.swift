@@ -74,9 +74,9 @@ class EngagementManagerSpecs: QuickSpec {
         }
 
         describe("onLifecycle") {
-            context("didBecomeActive") {
+            context("willEnterForeground") {
                 it("start engagement") {
-                    sut.onLifecycle(lifecycle: .didBecomeActive(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
+                    sut.onLifecycle(lifecycle: .willEnterForeground(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
                     expect(sut.lastEngagementTime).to(equal(Date(timeIntervalSince1970: 42)))
                 }
             }

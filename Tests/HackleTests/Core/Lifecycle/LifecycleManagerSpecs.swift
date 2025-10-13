@@ -18,19 +18,19 @@ class LifecycleManagerSpecs: QuickSpec {
             sut.addListener(listener: listener)
         }
 
-        it("didBecomeActive") {
+        it("willEnterForeground") {
             let vc = UIViewController()
             viewManager.top = vc
-            sut.didBecomeActive()
+            sut.willEnterForeground()
 
             verify(exactly: 1) {
                 listener.onLifecycleMock
             }
             let (lifecycle, _) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .didBecomeActive(top) = lifecycle {
+            if case let .willEnterForeground(top) = lifecycle {
                 expect(top).to(beIdenticalTo(vc))
             } else {
-                fail("didBecomeActive")
+                fail("willEnterForeground")
             }
         }
 
