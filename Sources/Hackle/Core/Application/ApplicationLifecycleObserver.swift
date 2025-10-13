@@ -14,7 +14,7 @@ class ApplicationLifecycleObserver {
 
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
     private var publishers: [ApplicationLifecyclePublisher] = []
-    private var firstLaunch: AtomicReference<Bool> = AtomicReference(value: false)
+    private var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
 
     private init() {
     }
