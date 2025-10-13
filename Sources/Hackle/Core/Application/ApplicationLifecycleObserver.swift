@@ -36,6 +36,17 @@ class ApplicationLifecycleObserver {
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
         )
+        
+        if #unavailable(iOS 13.0) {
+            // NOTE: ios 13 미만에서는 앱 최초 실행 시에는 willEnterForeground가 발행이 안되어
+            //  didBecomeActive에서 처리
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(didBecomeActive),
+                name: UIApplication.didBecomeActiveNotification,
+                object: nil
+            )
+        }
     }
     
     func addPublisher(publisher: ApplicationLifecyclePublisher) {
@@ -57,6 +68,14 @@ class ApplicationLifecycleObserver {
                 self.willEnterForeground()
             }
         }
+    }
+    
+    @objc func didBecomeActive() {
+        guard firstLaunch.get() else {
+            return
+        }
+        
+        willEnterForeground()
     }
 
     @objc func willEnterForeground() {
