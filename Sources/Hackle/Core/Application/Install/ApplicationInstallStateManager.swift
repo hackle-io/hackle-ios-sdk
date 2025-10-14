@@ -16,6 +16,7 @@ class ApplicationInstallStateManager {
     
     private var listeners: [ApplicationInstallStateListener] = []
     private var previousVersion: BundleVersionInfo? = nil
+    private var resolveTimestamp: Date? = nil
     
     private static var KEY_PREVIOUS_VERSION: String = "hackle_previous_version"
     private static var KEY_PREVIOUS_BUILD: String  = "hackle_previous_build"
@@ -34,6 +35,7 @@ class ApplicationInstallStateManager {
     
     func initialize() {
         previousVersion = loadPreviouseBundleVersion()
+        resolveTimestamp = clock.now()
     }
     
     func addListener(listener: ApplicationInstallStateListener) {
@@ -42,9 +44,12 @@ class ApplicationInstallStateManager {
     
     func checkApplicationInstall() {
         let state = applicationInstallDeterminer.determine(previousVersion: previousVersion, currentVersion: bundleInfo.versionInfo)
+        saveCurrentBundleVersion(bundleInfo.versionInfo)
         if state != .none {
             Log.debug("ApplicationInstallStateManager.checkApplicationInstall(\(state))")
-            let timestamp = self.clock.now()
+            // NOTE: ios는 foreground 이벤트 호출 시점이 sdk 초기화 시점보다 빨라
+            //  initialize 시점 timestamp 사용
+            let timestamp = self.resolveTimestamp ?? self.clock.now()
             if state == .install {
                 self.publishInstall(version: bundleInfo.versionInfo, timestamp: timestamp)
             } else if state == .update {

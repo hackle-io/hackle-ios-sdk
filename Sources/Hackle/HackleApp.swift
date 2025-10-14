@@ -400,6 +400,7 @@ import WebKit
 extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
+        ApplicationLifecycleObserver.shared.publishWillEnterForegroundIfNeeded()
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {

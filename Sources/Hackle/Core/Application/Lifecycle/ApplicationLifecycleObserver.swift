@@ -54,16 +54,16 @@ class ApplicationLifecycleObserver {
     }
     
     func publishWillEnterForegroundIfNeeded() {
-        guard firstLaunch.get() else {
-            return
-        }
-        
         // 현재 상태가 명시적으로 active일 때만 publish
         // - didFinishLaunchingWithOptions: inactive
         // - didBecomeActive: active
         // - willEnterForeground: active
         // - didEnterBackground: background
         DispatchQueue.main.async {
+            guard self.firstLaunch.get() else {
+                return
+            }
+            
             if UIApplication.shared.applicationState == .active {
                 self.willEnterForeground()
             }
