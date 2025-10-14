@@ -5,52 +5,37 @@ import Nimble
 
 class ApplicationInstallDeterminerSpec: QuickSpec {
     override func spec() {
-        var repository: KeyValueRepository!
-        var device: Device!
-        var bundleInfo: BundleInfo!
         var sut: ApplicationInstallDeterminer!
 
         describe("determine") {
             context("when first installation") {
                 beforeEach {
-                    repository = MemoryKeyValueRepository()
-                    device = MockDevice(id: "device_id", isIdCreated: true, properties: [:])
-                    bundleInfo = BundleInfoImpl(previousVersion: nil, previousBuild: nil)
-                    sut = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
+                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: true)
                 }
 
                 it("returns install state") {
+                    // given
+                    let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
+
                     // when
-                    let state = sut.determine()
+                    let state = sut.determine(previousVersion: nil, currentVersion: currentVersion)
 
                     // then
                     expect(state) == .install
-                }
-
-                it("saves current version info to repository") {
-                    // when
-                    _ = sut.determine()
-
-                    // then
-                    let savedVersion = repository.getString(key: Bundle.KEY_PREVIOUS_VERSION)
-                    let savedBuild = repository.getInteger(key: Bundle.KEY_PREVIOUS_BUILD)
-
-                    expect(savedVersion) == bundleInfo.currentBundleVersionInfo.version
-                    expect(savedBuild) == bundleInfo.currentBundleVersionInfo.build
                 }
             }
 
             context("when device ID already exists but no previous version") {
                 beforeEach {
-                    repository = MemoryKeyValueRepository()
-                    device = MockDevice(id: "device_id", isIdCreated: false, properties: [:])
-                    bundleInfo = BundleInfoImpl(previousVersion: nil, previousBuild: nil)
-                    sut = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
+                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
                 }
 
                 it("returns none state") {
+                    // given
+                    let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
+
                     // when
-                    let state = sut.determine()
+                    let state = sut.determine(previousVersion: nil, currentVersion: currentVersion)
 
                     // then
                     expect(state) == ApplicationInstallState.none
@@ -59,49 +44,33 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
 
             context("when app is updated") {
                 beforeEach {
-                    repository = MemoryKeyValueRepository()
-                    device = MockDevice(id: "device_id", isIdCreated: false, properties: [:])
-                    bundleInfo = BundleInfoImpl(previousVersion: "1.0.0", previousBuild: 100)
-                    sut = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
+                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
                 }
 
                 it("returns update state when version differs") {
+                    // given
+                    let previousVersion = BundleVersionInfo(version: "1.0.0", build: 100)
+                    let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
+
                     // when
-                    let state = sut.determine()
+                    let state = sut.determine(previousVersion: previousVersion, currentVersion: currentVersion)
 
                     // then
                     expect(state) == .update
-                }
-
-                it("saves new version info to repository") {
-                    // when
-                    _ = sut.determine()
-
-                    // then
-                    let savedVersion = repository.getString(key: Bundle.KEY_PREVIOUS_VERSION)
-                    let savedBuild = repository.getInteger(key: Bundle.KEY_PREVIOUS_BUILD)
-
-                    expect(savedVersion) == bundleInfo.currentBundleVersionInfo.version
-                    expect(savedBuild) == bundleInfo.currentBundleVersionInfo.build
                 }
             }
 
             context("when version has not changed") {
                 beforeEach {
-                    repository = MemoryKeyValueRepository()
-                    device = MockDevice(id: "device_id", isIdCreated: false, properties: [:])
-
-                    // Create bundleInfo with same current and previous versions
-                    let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-                    let currentBuild = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "").toInt()
-
-                    bundleInfo = BundleInfoImpl(previousVersion: currentVersion, previousBuild: currentBuild)
-                    sut = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
+                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
                 }
 
                 it("returns none state") {
+                    // given
+                    let version = BundleVersionInfo(version: "2.0.0", build: 200)
+
                     // when
-                    let state = sut.determine()
+                    let state = sut.determine(previousVersion: version, currentVersion: version)
 
                     // then
                     expect(state) == ApplicationInstallState.none
@@ -110,19 +79,16 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
 
             context("when build number changes but version stays the same") {
                 beforeEach {
-                    repository = MemoryKeyValueRepository()
-                    device = MockDevice(id: "device_id", isIdCreated: false, properties: [:])
-
-                    let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-                    let currentBuild = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "").toInt()
-
-                    bundleInfo = BundleInfoImpl(previousVersion: currentVersion, previousBuild: currentBuild - 1)
-                    sut = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
+                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
                 }
 
                 it("returns update state") {
+                    // given
+                    let previousVersion = BundleVersionInfo(version: "2.0.0", build: 199)
+                    let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
+
                     // when
-                    let state = sut.determine()
+                    let state = sut.determine(previousVersion: previousVersion, currentVersion: currentVersion)
 
                     // then
                     expect(state) == .update

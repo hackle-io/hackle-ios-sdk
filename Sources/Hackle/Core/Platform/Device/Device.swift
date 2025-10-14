@@ -3,18 +3,15 @@ import UIKit
 
 protocol Device {
     var id: String { get }
-    var isIdCreated: Bool { get }
     var properties: [String: Any] { get }
 }
 
 class DeviceImpl : Device {
     private let deviceInfo: DeviceInfo
     let id: String
-    let isIdCreated: Bool
 
-    init(id: String, isIdCreated: Bool) {
-        self.id = id
-        self.isIdCreated = isIdCreated
+    init(deviceId: String) {
+        self.id = deviceId
         self.deviceInfo = DeviceInfo(
             osName: "iOS",
             osVersion: UIDevice.current.systemVersion,
@@ -56,16 +53,9 @@ class DeviceImpl : Device {
 }
 
 extension DeviceImpl {
-    static func create(keyValueRepository: KeyValueRepository) -> Device {
-        var isIdCreated = false
-        let deviceId = keyValueRepository.getString(key: "hackle_device_id") { _ in
-            isIdCreated = true
-            return UUID().uuidString
-        }
-        return DeviceImpl(
-            id: deviceId,
-            isIdCreated: isIdCreated
-        )
+    
+    static func getDeviceId(keyValueRepository: KeyValueRepository, mapping: (String) -> String) -> String {
+        return keyValueRepository.getString(key: "hackle_device_id", mapping: mapping)
     }
     
     fileprivate static func getPreferredLocale() -> Locale {

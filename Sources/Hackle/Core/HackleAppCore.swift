@@ -133,7 +133,6 @@ class DefaultHackleAppCore: HackleAppCore {
         ApplicationLifecycleObserver.shared.initialize()
         ViewLifecycleManager.shared.initialize()
         userManager.initialize(user: user)
-        applicationInstallStateManager.checkApplicationInstall()
         eventQueue.async { [weak self] in
             guard let self = self else {
                 completion()
@@ -147,6 +146,7 @@ class DefaultHackleAppCore: HackleAppCore {
         workspaceManager.initialize()
         sessionManager.initialize()
         eventProcessor.initialize()
+        applicationInstallStateManager.initialize()
         synchronizer.sync(completion: { [weak self] in
             guard let self = self else {
                 completion()
@@ -154,6 +154,7 @@ class DefaultHackleAppCore: HackleAppCore {
             }
             self.pushTokenRegistry.flush()
             self.notificationManager.flush()
+            self.applicationInstallStateManager.checkApplicationInstall()
             completion()
         })
     }

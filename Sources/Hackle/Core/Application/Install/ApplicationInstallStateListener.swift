@@ -8,6 +8,6 @@
 import Foundation
 
 protocol ApplicationInstallStateListener {
-    func onInstall(timestamp: Date)
-    func onUpdate(timestamp: Date)
+    func onInstall(version: BundleVersionInfo, timestamp: Date)
+    func onUpdate(previousVersion: BundleVersionInfo?, currentVersion: BundleVersionInfo, timestamp: Date)
 }

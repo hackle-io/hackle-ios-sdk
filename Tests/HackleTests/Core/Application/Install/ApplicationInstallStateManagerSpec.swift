@@ -6,9 +6,7 @@ import Nimble
 class ApplicationInstallStateManagerSpec: QuickSpec {
     override func spec() {
         var clock: Clock!
-        var queue: DispatchQueue!
         var repository: KeyValueRepository!
-        var device: Device!
         var bundleInfo: BundleInfo!
         var determiner: ApplicationInstallDeterminer!
         var listener: MockApplicationInstallStateListener!
@@ -16,34 +14,34 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
 
         beforeEach {
             clock = FixedClock(date: Date(timeIntervalSince1970: 42))
-            queue = DispatchQueue(label: "test.queue")
             repository = MemoryKeyValueRepository()
             listener = MockApplicationInstallStateListener()
+            bundleInfo = BundleInfoImpl()
         }
 
         describe("checkApplicationInstall") {
             context("when install state") {
                 beforeEach {
-                    device = MockDevice(id: "device_id", isIdCreated: true, properties: [:])
-                    bundleInfo = BundleInfoImpl(previousVersion: nil, previousBuild: nil)
-                    determiner = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
-                    sut = ApplicationInstallStateManager(clock: clock, queue: queue, applicationInstallDeterminer: determiner)
+                    determiner = ApplicationInstallDeterminer(isDeviceIdCreated: true)
+                    sut = ApplicationInstallStateManager(
+                        keyValueRepository: repository,
+                        applicationInstallDeterminer: determiner,
+                        bundleInfo: bundleInfo,
+                        clock: clock
+                    )
                     sut.addListener(listener: listener)
+                    sut.initialize()
                 }
 
                 it("notifies listeners with onInstall") {
                     // when
                     sut.checkApplicationInstall()
-                    queue.sync {}
+
                     // then
-                    waitUntil(timeout: .seconds(2)) { done in
-                        if listener.installTimestamps.count > 0 {
-                            expect(listener.installTimestamps.count) == 1
-                            expect(listener.installTimestamps.first) == clock.now()
-                            expect(listener.updateTimestamps.count) == 0
-                            done()
-                        }
-                    }
+                    expect(listener.installVersions.count) == 1
+                    expect(listener.installTimestamps.count) == 1
+                    expect(listener.installTimestamps.first) == clock.now()
+                    expect(listener.updateTimestamps.count) == 0
                 }
 
                 it("notifies multiple listeners") {
@@ -53,112 +51,81 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
 
                     // when
                     sut.checkApplicationInstall()
-                    queue.sync {}
+
                     // then
-                    waitUntil(timeout: .seconds(2)) { done in
-                        if listener.installTimestamps.count > 0 && listener2.installTimestamps.count > 0 {
-                            expect(listener.installTimestamps.count) == 1
-                            expect(listener2.installTimestamps.count) == 1
-                            done()
-                        }
-                    }
+                    expect(listener.installTimestamps.count) == 1
+                    expect(listener2.installTimestamps.count) == 1
                 }
             }
 
             context("when update state") {
                 beforeEach {
-                    device = MockDevice(id: "device_id", isIdCreated: false, properties: [:])
-                    bundleInfo = BundleInfoImpl(previousVersion: "1.0.0", previousBuild: 100)
-                    determiner = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
-                    sut = ApplicationInstallStateManager(clock: clock, queue: queue, applicationInstallDeterminer: determiner)
+                    // Save previous version to repository
+                    repository.putString(key: "hackle_previous_version", value: "1.0.0")
+                    repository.putInteger(key: "hackle_previous_build", value: 100)
+
+                    determiner = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    sut = ApplicationInstallStateManager(
+                        keyValueRepository: repository,
+                        applicationInstallDeterminer: determiner,
+                        bundleInfo: bundleInfo,
+                        clock: clock
+                    )
                     sut.addListener(listener: listener)
+                    sut.initialize()
                 }
 
                 it("notifies listeners with onUpdate") {
                     // when
                     sut.checkApplicationInstall()
-                    queue.sync {}
+
                     // then
-                    waitUntil(timeout: .seconds(2)) { done in
-                        if listener.updateTimestamps.count > 0 {
-                            expect(listener.updateTimestamps.count) == 1
-                            expect(listener.updateTimestamps.first) == clock.now()
-                            expect(listener.installTimestamps.count) == 0
-                            done()
-                        }
-                    }
+                    expect(listener.updateTimestamps.count) == 1
+                    expect(listener.updateTimestamps.first) == clock.now()
+                    expect(listener.installTimestamps.count) == 0
                 }
             }
 
             context("when none state") {
                 beforeEach {
-                    device = MockDevice(id: "device_id", isIdCreated: false, properties: [:])
+                    // Save same version as current to repository
                     let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
                     let currentBuild = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "").toInt()
-                    bundleInfo = BundleInfoImpl(previousVersion: currentVersion, previousBuild: currentBuild)
-                    determiner = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
-                    sut = ApplicationInstallStateManager(clock: clock, queue: queue, applicationInstallDeterminer: determiner)
+                    repository.putString(key: "hackle_previous_version", value: currentVersion)
+                    repository.putInteger(key: "hackle_previous_build", value: currentBuild)
+
+                    determiner = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    sut = ApplicationInstallStateManager(
+                        keyValueRepository: repository,
+                        applicationInstallDeterminer: determiner,
+                        bundleInfo: bundleInfo,
+                        clock: clock
+                    )
                     sut.addListener(listener: listener)
+                    sut.initialize()
                 }
 
                 it("does not notify listeners") {
                     // when
-       
-                    
                     sut.checkApplicationInstall()
 
                     // then
-                    queue.sync {}
-                    queue.sync {
-                        expect(listener.installTimestamps.count) == 0
-                        expect(listener.updateTimestamps.count) == 0
-                    }
-                }
-            }
-
-            context("thread safety") {
-                beforeEach {
-                    device = MockDevice(id: "device_id", isIdCreated: true, properties: [:])
-                    bundleInfo = BundleInfoImpl(previousVersion: nil, previousBuild: nil)
-                    determiner = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
-                    sut = ApplicationInstallStateManager(clock: clock, queue: queue, applicationInstallDeterminer: determiner)
-                }
-
-                it("executes listener callbacks on specified queue") {
-                    // given
-                    let expectedQueue = queue
-                    var executedOnCorrectQueue = false
-
-                    let queueSpecificKey = DispatchSpecificKey<String>()
-                    expectedQueue?.setSpecific(key: queueSpecificKey, value: "test.queue")
-
-                    let checkingListener = CheckingApplicationInstallStateListener { timestamp in
-                        let currentValue = DispatchQueue.getSpecific(key: queueSpecificKey)
-                        executedOnCorrectQueue = (currentValue == "test.queue")
-                    }
-
-                    sut.addListener(listener: checkingListener)
-
-                    // when
-                    sut.checkApplicationInstall()
-                    queue.sync {}
-                    // then
-                    waitUntil(timeout: .seconds(2)) { done in
-                        if executedOnCorrectQueue {
-                            expect(executedOnCorrectQueue) == true
-                            done()
-                        }
-                    }
+                    expect(listener.installTimestamps.count) == 0
+                    expect(listener.updateTimestamps.count) == 0
                 }
             }
         }
 
         describe("addListener") {
             beforeEach {
-                device = MockDevice(id: "device_id", isIdCreated: true, properties: [:])
-                bundleInfo = BundleInfoImpl(previousVersion: nil, previousBuild: nil)
-                determiner = ApplicationInstallDeterminer(keyValueRepository: repository, device: device, bundleInfo: bundleInfo)
-                sut = ApplicationInstallStateManager(clock: clock, queue: queue, applicationInstallDeterminer: determiner)
+                determiner = ApplicationInstallDeterminer(isDeviceIdCreated: true)
+                sut = ApplicationInstallStateManager(
+                    keyValueRepository: repository,
+                    applicationInstallDeterminer: determiner,
+                    bundleInfo: bundleInfo,
+                    clock: clock
+                )
+                sut.initialize()
             }
 
             it("adds listener that receives notifications") {
@@ -167,14 +134,9 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
 
                 // when
                 sut.checkApplicationInstall()
-                queue.sync {}
+
                 // then
-                waitUntil(timeout: .seconds(2)) { done in
-                    if listener.installTimestamps.count > 0 {
-                        expect(listener.installTimestamps.count) == 1
-                        done()
-                    }
-                }
+                expect(listener.installTimestamps.count) == 1
             }
 
             it("maintains order of multiple listeners") {
@@ -189,14 +151,9 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
 
                 // when
                 sut.checkApplicationInstall()
-                queue.sync {}
+
                 // then
-                waitUntil(timeout: .seconds(2)) { done in
-                    if OrderTrackingApplicationInstallStateListener.executionOrder.count == 3 {
-                        expect(OrderTrackingApplicationInstallStateListener.executionOrder) == [1, 2, 3]
-                        done()
-                    }
-                }
+                expect(OrderTrackingApplicationInstallStateListener.executionOrder) == [1, 2, 3]
             }
         }
     }
@@ -205,14 +162,20 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
 // MARK: - Mock Listeners
 
 class MockApplicationInstallStateListener: ApplicationInstallStateListener {
+    var installVersions: [BundleVersionInfo] = []
     var installTimestamps: [Date] = []
+    var updatePreviousVersions: [BundleVersionInfo?] = []
+    var updateCurrentVersions: [BundleVersionInfo] = []
     var updateTimestamps: [Date] = []
 
-    func onInstall(timestamp: Date) {
+    func onInstall(version: BundleVersionInfo, timestamp: Date) {
+        installVersions.append(version)
         installTimestamps.append(timestamp)
     }
 
-    func onUpdate(timestamp: Date) {
+    func onUpdate(previousVersion: BundleVersionInfo?, currentVersion: BundleVersionInfo, timestamp: Date) {
+        updatePreviousVersions.append(previousVersion)
+        updateCurrentVersions.append(currentVersion)
         updateTimestamps.append(timestamp)
     }
 }
@@ -224,11 +187,11 @@ class CheckingApplicationInstallStateListener: ApplicationInstallStateListener {
         self.onInstallCheck = onInstallCheck
     }
 
-    func onInstall(timestamp: Date) {
+    func onInstall(version: BundleVersionInfo, timestamp: Date) {
         onInstallCheck(timestamp)
     }
 
-    func onUpdate(timestamp: Date) {
+    func onUpdate(previousVersion: BundleVersionInfo?, currentVersion: BundleVersionInfo, timestamp: Date) {
         onInstallCheck(timestamp)
     }
 }
@@ -241,11 +204,11 @@ class OrderTrackingApplicationInstallStateListener: ApplicationInstallStateListe
         self.order = order
     }
 
-    func onInstall(timestamp: Date) {
+    func onInstall(version: BundleVersionInfo, timestamp: Date) {
         OrderTrackingApplicationInstallStateListener.executionOrder.append(order)
     }
 
-    func onUpdate(timestamp: Date) {
+    func onUpdate(previousVersion: BundleVersionInfo?, currentVersion: BundleVersionInfo, timestamp: Date) {
         OrderTrackingApplicationInstallStateListener.executionOrder.append(order)
     }
 }

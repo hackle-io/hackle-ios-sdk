@@ -405,12 +405,17 @@ extension HackleApp {
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
         let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
-
+        var isIdCreated = false
+        
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
-        let bundleInfo = BundleInfoImpl.create(keyValueRepository: globalKeyValueRepository)
-        let applicationInstallDeterminer = ApplicationInstallDeterminer(keyValueRepository: globalKeyValueRepository, device: device, bundleInfo: bundleInfo)
+        let deviceId = DeviceImpl.getDeviceId(keyValueRepository: globalKeyValueRepository) { _ in
+            isIdCreated = true
+            return UUID().uuidString
+        }
+        let device = DeviceImpl(deviceId: deviceId)
+        let bundleInfo = BundleInfoImpl()
+        let applicationInstallDeterminer = ApplicationInstallDeterminer(isDeviceIdCreated: isIdCreated)
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -590,9 +595,11 @@ extension HackleApp {
         // - ApplicationInstallStateManager
         
         let applicationInstallStateManager = ApplicationInstallStateManager(
-            clock: clock,
-            queue: eventQueue,
-            applicationInstallDeterminer: applicationInstallDeterminer
+            keyValueRepository: globalKeyValueRepository,
+            applicationInstallDeterminer:
+                applicationInstallDeterminer,
+            bundleInfo: bundleInfo,
+            clock: clock
         )
 
         // - SessionEventTracker
@@ -625,8 +632,7 @@ extension HackleApp {
         
         let applicationEventTracker = ApplicationEventTracker(
             userManager: userManager,
-            core: core,
-            bundleInfo: bundleInfo
+            core: core
         )
         
         applicationLifecycleManager.addListener(listener: applicationEventTracker)
