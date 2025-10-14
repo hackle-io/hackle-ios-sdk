@@ -8,6 +8,7 @@ class HackleAppSpecs: QuickSpec {
         var core: MockHackleCore!
         var eventQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
+        var platformManager: PlatformManager!
         var userManager: MockUserManager!
         var workspaceManager: WorkspaceManager!
         var notificationManager: MockNotificationManager!
@@ -31,6 +32,7 @@ class HackleAppSpecs: QuickSpec {
                 httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
+            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository())
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
@@ -54,11 +56,10 @@ class HackleAppSpecs: QuickSpec {
             )
             inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
             
-            let applicationInstallDeterminer = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+            let applicationInstallDeterminer = ApplicationInstallDeterminer()
             let applicationInstallStateManager = ApplicationInstallStateManager(
-                keyValueRepository: MemoryKeyValueRepository(),
+                platformManager: platformManager,
                 applicationInstallDeterminer: applicationInstallDeterminer,
-                bundleInfo: BundleInfoImpl(),
                 clock: SystemClock.shared
             )
             

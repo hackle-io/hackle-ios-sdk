@@ -9,32 +9,24 @@ import Foundation
 
 class ApplicationInstallStateManager {
     
-    private let keyValueRepository: KeyValueRepository
+    private let platformManager: PlatformManager
     private let applicationInstallDeterminer: ApplicationInstallDeterminer
-    private let bundleInfo: BundleInfo
     private let clock: Clock
     
     private var listeners: [ApplicationInstallStateListener] = []
-    private var previousVersion: BundleVersionInfo? = nil
     private var resolveTimestamp: Date? = nil
-    
-    private static var KEY_PREVIOUS_VERSION: String = "hackle_previous_version"
-    private static var KEY_PREVIOUS_BUILD: String  = "hackle_previous_build"
-    
+
     init(
-        keyValueRepository: KeyValueRepository,
+        platformManager: PlatformManager,
         applicationInstallDeterminer: ApplicationInstallDeterminer,
-        bundleInfo: BundleInfo,
         clock: Clock
     ) {
-        self.keyValueRepository = keyValueRepository
+        self.platformManager = platformManager
         self.applicationInstallDeterminer = applicationInstallDeterminer
-        self.bundleInfo = bundleInfo
         self.clock = clock
     }
     
     func initialize() {
-        previousVersion = loadPreviouseBundleVersion()
         resolveTimestamp = clock.now()
     }
     
@@ -43,17 +35,20 @@ class ApplicationInstallStateManager {
     }
     
     func checkApplicationInstall() {
-        let state = applicationInstallDeterminer.determine(previousVersion: previousVersion, currentVersion: bundleInfo.versionInfo)
-        saveCurrentBundleVersion(bundleInfo.versionInfo)
+        let state = applicationInstallDeterminer.determine(
+            previousVersion: platformManager.previousVersion,
+            currentVersion: platformManager.currentVersion,
+            isDeviceIdCreated: platformManager.isDeviceIdCreated
+        )
         if state != .none {
             Log.debug("ApplicationInstallStateManager.checkApplicationInstall(\(state))")
             // NOTE: ios는 foreground 이벤트 호출 시점이 sdk 초기화 시점보다 빨라
             //  initialize 시점 timestamp 사용
             let timestamp = self.resolveTimestamp ?? self.clock.now()
             if state == .install {
-                self.publishInstall(version: bundleInfo.versionInfo, timestamp: timestamp)
+                self.publishInstall(version: platformManager.currentVersion, timestamp: timestamp)
             } else if state == .update {
-                self.publishUpdate(previousVersion: previousVersion, currentVersion: bundleInfo.versionInfo, timestamp: timestamp)
+                self.publishUpdate(previousVersion: platformManager.previousVersion, currentVersion: platformManager.currentVersion, timestamp: timestamp)
             }
         }
     }
@@ -68,19 +63,5 @@ class ApplicationInstallStateManager {
         for listener in listeners {
             listener.onUpdate(previousVersion: previousVersion, currentVersion: currentVersion, timestamp: timestamp)
         }
-    }
-    
-    private func loadPreviouseBundleVersion() -> BundleVersionInfo? {
-        guard let previousVersion = keyValueRepository.getString(key: ApplicationInstallStateManager.KEY_PREVIOUS_VERSION) else {
-            return nil
-        }
-        let previousBuild = keyValueRepository.getInteger(key: ApplicationInstallStateManager.KEY_PREVIOUS_BUILD)
-        
-        return BundleVersionInfo(version: previousVersion, build: previousBuild)
-    }
-    
-    private func saveCurrentBundleVersion(_ versionInfo: BundleVersionInfo) {
-        keyValueRepository.putString(key: ApplicationInstallStateManager.KEY_PREVIOUS_VERSION, value: versionInfo.version)
-        keyValueRepository.putInteger(key: ApplicationInstallStateManager.KEY_PREVIOUS_BUILD, value: versionInfo.build)
     }
 }

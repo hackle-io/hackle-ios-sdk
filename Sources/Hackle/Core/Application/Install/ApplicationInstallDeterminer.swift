@@ -8,13 +8,7 @@
 import Foundation
 
 class ApplicationInstallDeterminer {
-    private let isDeviceIdCreated: Bool
-    
-    init(isDeviceIdCreated: Bool) {
-        self.isDeviceIdCreated = isDeviceIdCreated
-    }
-    
-    func determine(previousVersion: BundleVersionInfo?, currentVersion: BundleVersionInfo) -> ApplicationInstallState {
+    func determine(previousVersion: BundleVersionInfo?, currentVersion: BundleVersionInfo, isDeviceIdCreated: Bool) -> ApplicationInstallState {
         let state: ApplicationInstallState = if previousVersion == nil && isDeviceIdCreated {
             .install
         } else if previousVersion != nil && previousVersion != currentVersion {

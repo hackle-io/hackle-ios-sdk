@@ -406,17 +406,11 @@ extension HackleApp {
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
         let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
-        var isIdCreated = false
         
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let deviceId = DeviceImpl.getDeviceId(keyValueRepository: globalKeyValueRepository) { _ in
-            isIdCreated = true
-            return UUID().uuidString
-        }
-        let device = DeviceImpl(deviceId: deviceId)
-        let bundleInfo = BundleInfoImpl()
-        let applicationInstallDeterminer = ApplicationInstallDeterminer(isDeviceIdCreated: isIdCreated)
+        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository)
+        let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -453,8 +447,8 @@ extension HackleApp {
         let targetFetcher = DefaultUserTargetEventsFetcher(config: config, httpClient: httpClient)
 
         let userManager = DefaultUserManager(
-            device: device,
-            bundleInfo: bundleInfo,
+            device: platformManager.device,
+            bundleInfo: platformManager.bundleInfo,
             repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             targetFetcher: targetFetcher,
@@ -596,10 +590,9 @@ extension HackleApp {
         // - ApplicationInstallStateManager
         
         let applicationInstallStateManager = ApplicationInstallStateManager(
-            keyValueRepository: globalKeyValueRepository,
+            platformManager: platformManager,
             applicationInstallDeterminer:
                 applicationInstallDeterminer,
-            bundleInfo: bundleInfo,
             clock: clock
         )
 
@@ -838,7 +831,7 @@ extension HackleApp {
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
-            device: device,
+            device: platformManager.device,
             inAppMessageUI: inAppMessageUI,
             applicationInstallStateManager: applicationInstallStateManager,
             userExplorer: userExplorer

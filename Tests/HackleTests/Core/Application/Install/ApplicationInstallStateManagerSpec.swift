@@ -7,8 +7,8 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
     override func spec() {
         var clock: Clock!
         var repository: KeyValueRepository!
-        var bundleInfo: BundleInfo!
         var determiner: ApplicationInstallDeterminer!
+        var platformManager: PlatformManager!
         var listener: MockApplicationInstallStateListener!
         var sut: ApplicationInstallStateManager!
 
@@ -16,17 +16,16 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
             clock = FixedClock(date: Date(timeIntervalSince1970: 42))
             repository = MemoryKeyValueRepository()
             listener = MockApplicationInstallStateListener()
-            bundleInfo = BundleInfoImpl()
         }
 
         describe("checkApplicationInstall") {
             context("when install state") {
                 beforeEach {
-                    determiner = ApplicationInstallDeterminer(isDeviceIdCreated: true)
+                    determiner = ApplicationInstallDeterminer()
+                    platformManager = PlatformManager(keyValueRepository: repository)
                     sut = ApplicationInstallStateManager(
-                        keyValueRepository: repository,
+                        platformManager: platformManager,
                         applicationInstallDeterminer: determiner,
-                        bundleInfo: bundleInfo,
                         clock: clock
                     )
                     sut.addListener(listener: listener)
@@ -64,11 +63,11 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
                     repository.putString(key: "hackle_previous_version", value: "1.0.0")
                     repository.putInteger(key: "hackle_previous_build", value: 100)
 
-                    determiner = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    determiner = ApplicationInstallDeterminer()
+                    platformManager = PlatformManager(keyValueRepository: repository)
                     sut = ApplicationInstallStateManager(
-                        keyValueRepository: repository,
+                        platformManager: platformManager,
                         applicationInstallDeterminer: determiner,
-                        bundleInfo: bundleInfo,
                         clock: clock
                     )
                     sut.addListener(listener: listener)
@@ -94,11 +93,11 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
                     repository.putString(key: "hackle_previous_version", value: currentVersion)
                     repository.putInteger(key: "hackle_previous_build", value: currentBuild)
 
-                    determiner = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    determiner = ApplicationInstallDeterminer()
+                    platformManager = PlatformManager(keyValueRepository: repository)
                     sut = ApplicationInstallStateManager(
-                        keyValueRepository: repository,
+                        platformManager: platformManager,
                         applicationInstallDeterminer: determiner,
-                        bundleInfo: bundleInfo,
                         clock: clock
                     )
                     sut.addListener(listener: listener)
@@ -118,11 +117,11 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
 
         describe("addListener") {
             beforeEach {
-                determiner = ApplicationInstallDeterminer(isDeviceIdCreated: true)
+                determiner = ApplicationInstallDeterminer()
+                platformManager = PlatformManager(keyValueRepository: repository)
                 sut = ApplicationInstallStateManager(
-                    keyValueRepository: repository,
+                    platformManager: platformManager,
                     applicationInstallDeterminer: determiner,
-                    bundleInfo: bundleInfo,
                     clock: clock
                 )
                 sut.initialize()

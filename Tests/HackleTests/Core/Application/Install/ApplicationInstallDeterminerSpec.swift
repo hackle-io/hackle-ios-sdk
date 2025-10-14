@@ -10,7 +10,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
         describe("determine") {
             context("when first installation") {
                 beforeEach {
-                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: true)
+                    sut = ApplicationInstallDeterminer()
                 }
 
                 it("returns install state") {
@@ -18,7 +18,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
                     let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
 
                     // when
-                    let state = sut.determine(previousVersion: nil, currentVersion: currentVersion)
+                    let state = sut.determine(previousVersion: nil, currentVersion: currentVersion, isDeviceIdCreated: true)
 
                     // then
                     expect(state) == .install
@@ -27,7 +27,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
 
             context("when device ID already exists but no previous version") {
                 beforeEach {
-                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    sut = ApplicationInstallDeterminer()
                 }
 
                 it("returns none state") {
@@ -35,7 +35,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
                     let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
 
                     // when
-                    let state = sut.determine(previousVersion: nil, currentVersion: currentVersion)
+                    let state = sut.determine(previousVersion: nil, currentVersion: currentVersion, isDeviceIdCreated: false)
 
                     // then
                     expect(state) == ApplicationInstallState.none
@@ -44,7 +44,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
 
             context("when app is updated") {
                 beforeEach {
-                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    sut = ApplicationInstallDeterminer()
                 }
 
                 it("returns update state when version differs") {
@@ -53,7 +53,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
                     let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
 
                     // when
-                    let state = sut.determine(previousVersion: previousVersion, currentVersion: currentVersion)
+                    let state = sut.determine(previousVersion: previousVersion, currentVersion: currentVersion, isDeviceIdCreated: false)
 
                     // then
                     expect(state) == .update
@@ -62,7 +62,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
 
             context("when version has not changed") {
                 beforeEach {
-                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    sut = ApplicationInstallDeterminer()
                 }
 
                 it("returns none state") {
@@ -70,7 +70,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
                     let version = BundleVersionInfo(version: "2.0.0", build: 200)
 
                     // when
-                    let state = sut.determine(previousVersion: version, currentVersion: version)
+                    let state = sut.determine(previousVersion: version, currentVersion: version, isDeviceIdCreated: false)
 
                     // then
                     expect(state) == ApplicationInstallState.none
@@ -79,7 +79,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
 
             context("when build number changes but version stays the same") {
                 beforeEach {
-                    sut = ApplicationInstallDeterminer(isDeviceIdCreated: false)
+                    sut = ApplicationInstallDeterminer()
                 }
 
                 it("returns update state") {
@@ -88,7 +88,7 @@ class ApplicationInstallDeterminerSpec: QuickSpec {
                     let currentVersion = BundleVersionInfo(version: "2.0.0", build: 200)
 
                     // when
-                    let state = sut.determine(previousVersion: previousVersion, currentVersion: currentVersion)
+                    let state = sut.determine(previousVersion: previousVersion, currentVersion: currentVersion, isDeviceIdCreated: false)
 
                     // then
                     expect(state) == .update
