@@ -6,6 +6,7 @@
 //
 
 protocol ApplicationLifecyclePublisher {
+    func didBecomeActive()
     func willEnterForeground()
     func didEnterBackground()
 }

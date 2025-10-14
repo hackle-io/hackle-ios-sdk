@@ -61,10 +61,10 @@ class EngagementManager: ScreenListener, ViewLifecycleListener {
     func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("EngagementManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
-        case .willEnterForeground:
+        case .onForeground:
             startEngagement(timestamp: timestamp)
             return
-        case .didEnterBackground:
+        case .onBackground:
             guard let screen = screenManager.currentScreen else {
                 return
             }

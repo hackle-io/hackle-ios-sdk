@@ -61,7 +61,7 @@ class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
     func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("ScreenManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
-        case .willEnterForeground(let top):
+        case .onForeground(let top):
             guard let top = top else {
                 return
             }
@@ -73,7 +73,7 @@ class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
         case .viewDidDisappear(_, let top):
             updateScreen(screen: Screen.from(top), timestamp: timestamp)
             return
-        case .viewWillAppear, .viewWillDisappear, .didEnterBackground:
+        case .viewWillAppear, .viewWillDisappear, .onBackground:
             return
         }
     }
