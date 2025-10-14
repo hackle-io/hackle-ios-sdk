@@ -460,6 +460,9 @@ extension HackleApp {
             sessionTimeout: config.sessionTimeoutInterval
         )
         userManager.addListener(listener: sessionManager)
+        
+        let sessionUserDecorator = SessionUserDecorator(sessionManager: sessionManager)
+        
 
         // - ScreenManager
 
@@ -520,7 +523,7 @@ extension HackleApp {
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
 
-        let sessionUserEventDecorator = SessionUserEventDecorator(sessionManager: sessionManager)
+        let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
 
         if config.mode == .web_view_wrapper {
