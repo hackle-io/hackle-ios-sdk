@@ -21,13 +21,13 @@ class LifecycleManagerSpecs: QuickSpec {
         it("willEnterForeground") {
             let vc = UIViewController()
             viewManager.top = vc
-            sut.onForeground(timestamp: Date(), isFromBackground: false)
+            sut.willEnterForeground()
 
             verify(exactly: 1) {
                 listener.onLifecycleMock
             }
             let (lifecycle, _) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .onForeground(top) = lifecycle {
+            if case let .willEnterForeground(top) = lifecycle {
                 expect(top).to(beIdenticalTo(vc))
             } else {
                 fail("willEnterForeground")
@@ -37,13 +37,13 @@ class LifecycleManagerSpecs: QuickSpec {
         it("didEnterBackground") {
             let vc = UIViewController()
             viewManager.top = vc
-            sut.onBackground(timestamp: Date())
+            sut.didEnterBackground()
 
             verify(exactly: 1) {
                 listener.onLifecycleMock
             }
             let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .onBackground(top) = lifecycle {
+            if case let .didEnterBackground(top) = lifecycle {
                 expect(top).to(beIdenticalTo(vc))
             } else {
                 fail("didEnterBackground")

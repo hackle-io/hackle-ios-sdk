@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class ViewLifecycleManager: ViewLifecyclePublisher, ApplicationLifecycleListener {
+class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublisher {
 
     static let shared = ViewLifecycleManager(
         viewManager: DefaultViewManager.shared,
@@ -37,15 +37,15 @@ class ViewLifecycleManager: ViewLifecyclePublisher, ApplicationLifecycleListener
     func addListener(listener: ViewLifecycleListener) {
         listeners.append(listener)
     }
-    
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+
+    func willEnterForeground() {
         let top = viewManager.topViewController()
-        publish(lifecycle: .onForeground(top: top), timestamp: timestamp)
+        publish(lifecycle: .willEnterForeground(top: top), timestamp: clock.now())
     }
-    
-    func onBackground(timestamp: Date) {
+
+    func didEnterBackground() {
         let top = viewManager.topViewController()
-        publish(lifecycle: .onBackground(top: top), timestamp: timestamp)
+        publish(lifecycle: .didEnterBackground(top: top), timestamp: clock.now())
     }
 
     func viewWillAppear(vc: UIViewController) {

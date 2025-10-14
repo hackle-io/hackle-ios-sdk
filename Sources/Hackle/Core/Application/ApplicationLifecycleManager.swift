@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 protocol ApplicationLifecycleManager {
     var currentState: ApplicationState { get }
@@ -15,7 +14,7 @@ protocol ApplicationLifecycleManager {
 }
 
 class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher {
- 
+    
     static let shared = DefaultApplicationLifecycleManager(
         clock: SystemClock.shared
     )
@@ -23,7 +22,6 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
     private let clock: Clock
     private var queue: DispatchQueue?
     private var listeners: [ApplicationLifecycleListener] = []
-    private var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
     
     private var _currentState: ApplicationState? = nil
     var currentState: ApplicationState {
@@ -44,37 +42,7 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
         listeners.append(listener)
     }
     
-    func publishWillEnterForegroundIfNeeded() {
-        // 현재 상태가 명시적으로 active일 때만 publish
-        // - didFinishLaunchingWithOptions: inactive
-        // - didBecomeActive: active
-        // - willEnterForeground: active
-        // - didEnterBackground: background
-        DispatchQueue.main.async {
-            guard self.firstLaunch.get() else {
-                return
-            }
-            
-            if UIApplication.shared.applicationState == .active {
-                self.willEnterForeground()
-            }
-        }
-    }
-    
-    func didBecomeActive() {
-        // NOTE: ios 13 미만에서는 앱 최초 실행 시에는 willEnterForeground가 발행이 안되어
-        //  didBecomeActive에서 처리
-        if #unavailable(iOS 13.0) {
-            guard firstLaunch.get() else {
-                return
-            }
-            
-            willEnterForeground()
-        }
-    }
-    
     func willEnterForeground() {
-        firstLaunch.set(newValue: false)
         execute {
             Log.debug("ApplicationLifecycleManager.willEnterForeground")
             for listener in self.listeners {
