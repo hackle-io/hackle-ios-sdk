@@ -1,13 +1,18 @@
 import Foundation
 import UIKit
 
-protocol LifecycleObserver {
-    func initialize()
-}
+class ViewLifecycleObserver {
 
-class ViewLifecycleObserver: LifecycleObserver {
-
+    static let shared = ViewLifecycleObserver(
+        publisher: ViewLifecycleManager.shared
+    )
+    
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
+    fileprivate let publisher: ViewLifecyclePublisher
+    
+    private init(publisher: ViewLifecyclePublisher) {
+        self.publisher = publisher
+    }
 
     func initialize() {
         guard initialized.compareAndSet(expect: false, update: true) else {
@@ -51,7 +56,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleManager.shared.viewWillAppear(vc: self)
+        ViewLifecycleObserver.shared.publisher.viewWillAppear(vc: self)
     }
 
     @objc func hackle_viewDidAppear(_ animation: Bool) {
@@ -59,7 +64,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleManager.shared.viewDidAppear(vc: self)
+        ViewLifecycleObserver.shared.publisher.viewDidAppear(vc: self)
     }
 
     @objc func hackle_viewWillDisappear(_ animation: Bool) {
@@ -68,7 +73,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleManager.shared.viewWillDisappear(vc: self)
+        ViewLifecycleObserver.shared.publisher.viewWillDisappear(vc: self)
     }
 
     @objc func hackle_viewDidDisappear(_ animation: Bool) {
@@ -76,6 +81,6 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleManager.shared.viewDidDisappear(vc: self)
+        ViewLifecycleObserver.shared.publisher.viewDidDisappear(vc: self)
     }
 }
