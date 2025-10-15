@@ -674,6 +674,7 @@ extension HackleApp {
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
             workspaceFetcher: workspaceManager,
             userManager: userManager,
+            userDecoreator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
             layoutResolver: inAppMessageLayoutResolver,
             evaluateProcessor: inAppMessageEvaluateProcessor,
