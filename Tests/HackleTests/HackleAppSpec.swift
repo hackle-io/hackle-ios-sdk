@@ -69,6 +69,8 @@ class HackleAppSpecs: QuickSpec {
                 core: core,
                 eventQueue: eventQueue,
                 synchronizer: synchronizer,
+                applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
+                viewLifecycleObserver: ViewLifecycleObserver.shared,
                 userManager: userManager,
                 workspaceManager: workspaceManager,
                 sessionManager: sessionManager,

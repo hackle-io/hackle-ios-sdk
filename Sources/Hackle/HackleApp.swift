@@ -804,7 +804,6 @@ extension HackleApp {
 
         let viewLifecycleManager = ViewLifecycleManager.shared
         if config.automaticScreenTracking {
-            viewLifecycleManager.addObserver(observer: ViewLifecycleObserver())
             viewLifecycleManager.addListener(listener: screenManager)
         }
         viewLifecycleManager.addListener(listener: engagementManager)
@@ -820,6 +819,8 @@ extension HackleApp {
             core: core,
             eventQueue: eventQueue,
             synchronizer: pollingSynchronizer,
+            applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
+            viewLifecycleObserver: ViewLifecycleObserver.shared,
             userManager: userManager,
             workspaceManager: workspaceManager,
             sessionManager: sessionManager,

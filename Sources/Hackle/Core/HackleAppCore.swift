@@ -62,6 +62,8 @@ class DefaultHackleAppCore: HackleAppCore {
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
+    private let applicationLifecycleObserver: ApplicationLifecycleObserver
+    private let viewLifecycleObserver: ViewLifecycleObserver
     private let userManager: UserManager
     private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
@@ -99,6 +101,8 @@ class DefaultHackleAppCore: HackleAppCore {
         core: HackleCore,
         eventQueue: DispatchQueue,
         synchronizer: Synchronizer,
+        applicationLifecycleObserver: ApplicationLifecycleObserver,
+        viewLifecycleObserver: ViewLifecycleObserver,
         userManager: UserManager,
         workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
@@ -115,6 +119,8 @@ class DefaultHackleAppCore: HackleAppCore {
         self.core = core
         self.eventQueue = eventQueue
         self.synchronizer = synchronizer
+        self.applicationLifecycleObserver = applicationLifecycleObserver
+        self.viewLifecycleObserver = viewLifecycleObserver
         self.userManager = userManager
         self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
@@ -130,8 +136,8 @@ class DefaultHackleAppCore: HackleAppCore {
     }
     
     func initialize(user: User?, completion: @escaping () -> ()) {
-        ApplicationLifecycleObserver.shared.initialize()
-        ViewLifecycleManager.shared.initialize()
+        applicationLifecycleObserver.initialize()
+        viewLifecycleObserver.initialize()
         userManager.initialize(user: user)
         eventQueue.async { [weak self] in
             guard let self = self else {

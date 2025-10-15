@@ -8,7 +8,6 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         clock: SystemClock.shared
     )
 
-    private var observers = [LifecycleObserver]()
     private var listeners = [ViewLifecycleListener]()
 
     private let viewManager: ViewManager
@@ -19,19 +18,9 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         self.viewManager = viewManager
         self.clock = clock
     }
-
-    func initialize() {
-        for observer in observers {
-            observer.initialize()
-        }
-    }
     
     func setDispatchQueue(queue: DispatchQueue) {
         self.queue = queue
-    }
-
-    func addObserver(observer: LifecycleObserver) {
-        observers.append(observer)
     }
 
     func addListener(listener: ViewLifecycleListener) {
