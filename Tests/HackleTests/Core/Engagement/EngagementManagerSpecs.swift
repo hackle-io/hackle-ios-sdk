@@ -74,39 +74,7 @@ class EngagementManagerSpecs: QuickSpec {
         }
 
         describe("onLifecycle") {
-            context("willEnterForeground") {
-                it("start engagement") {
-                    sut.onLifecycle(lifecycle: .willEnterForeground(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                    expect(sut.lastEngagementTime).to(equal(Date(timeIntervalSince1970: 42)))
-                }
-            }
-            context("didEnterBackground") {
-                it("when current screen is nil then do nothing") {
-                    sut.onLifecycle(lifecycle: .didEnterBackground(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                    verify(exactly: 0) {
-                        listener.onEngagementMock
-                    }
-                }
-
-                it("end engagement") {
-                    // given
-                    let screen = Screen(name: "name", className: "class")
-                    screenManager.currentScreen = screen
-                    sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42))
-
-                    // when
-                    sut.onLifecycle(lifecycle: .didEnterBackground(top: UIViewController()), timestamp: Date(timeIntervalSince1970: 43))
-
-                    // then
-                    verify(exactly: 1) {
-                        listener.onEngagementMock
-                    }
-                    let (engagement, _, timestamp) = listener.onEngagementMock.firstInvokation().arguments
-                    expect(engagement).to(equal(Engagement(screen: screen, duration: 1.0)))
-                    expect(timestamp).to(equal(Date(timeIntervalSince1970: 43)))
-                }
-            }
-            it("do nothing") {
+            it("do nothing for all view lifecycle events") {
                 let screen = Screen(name: "name", className: "class")
                 screenManager.currentScreen = screen
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42))

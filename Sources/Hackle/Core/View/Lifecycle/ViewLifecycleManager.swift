@@ -1,8 +1,7 @@
 import Foundation
 import UIKit
 
-class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublisher {
-    var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
+class ViewLifecycleManager: ViewLifecyclePublisher {
 
     static let shared = ViewLifecycleManager(
         viewManager: DefaultViewManager.shared,
@@ -37,16 +36,6 @@ class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublishe
 
     func addListener(listener: ViewLifecycleListener) {
         listeners.append(listener)
-    }
-
-    func willEnterForeground() {
-        let top = viewManager.topViewController()
-        publish(lifecycle: .willEnterForeground(top: top))
-    }
-
-    func didEnterBackground() {
-        let top = viewManager.topViewController()
-        publish(lifecycle: .didEnterBackground(top: top))
     }
 
     func viewWillAppear(vc: UIViewController) {

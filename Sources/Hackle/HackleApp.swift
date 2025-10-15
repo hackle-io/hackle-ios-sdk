@@ -400,6 +400,7 @@ import WebKit
 extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
+        DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
@@ -809,11 +810,8 @@ extension HackleApp {
         viewLifecycleManager.addListener(listener: engagementManager)
         viewLifecycleManager.setDispatchQueue(queue: eventQueue)
         
-        // - ApplicationLifecycleObserve
-        let applicationLifecycleObserver = ApplicationLifecycleObserver.shared
-        applicationLifecycleObserver.addPublisher(publisher: applicationLifecycleManager)
-        applicationLifecycleObserver.addPublisher(publisher: viewLifecycleManager)
-        
+        applicationLifecycleManager.addListener(listener: screenManager)
+        applicationLifecycleManager.addListener(listener: engagementManager)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)

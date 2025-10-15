@@ -83,7 +83,7 @@ class ApplicationEventTrackerSpec: QuickSpec {
                 let timestamp = Date(timeIntervalSince1970: 3000)
 
                 // when
-                sut.onForeground(timestamp: timestamp, isFromBackground: true)
+                sut.onForeground(nil, timestamp: timestamp, isFromBackground: true)
 
                 // then
                 verify(exactly: 1) {
@@ -101,7 +101,7 @@ class ApplicationEventTrackerSpec: QuickSpec {
                 let timestamp = Date(timeIntervalSince1970: 3000)
 
                 // when
-                sut.onForeground(timestamp: timestamp, isFromBackground: false)
+                sut.onForeground(nil, timestamp: timestamp, isFromBackground: false)
 
                 // then
                 let (event, _, _) = core.trackMock.firstInvokation().arguments
@@ -115,7 +115,7 @@ class ApplicationEventTrackerSpec: QuickSpec {
                 let timestamp = Date(timeIntervalSince1970: 4000)
 
                 // when
-                sut.onBackground(timestamp: timestamp)
+                sut.onBackground(nil, timestamp: timestamp)
 
                 // then
                 verify(exactly: 1) {

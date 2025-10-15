@@ -114,12 +114,12 @@ class PollingSynchronizerSpecs: QuickSpec {
             every(delegate.syncMock).answers({ $0(.success(())) })
             let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.5)
 
-            sut.onForeground(timestamp: Date(), isFromBackground: true)
+            sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
             Thread.sleep(forTimeInterval: 1.25)
             verify(exactly: 2) {
                 delegate.syncMock
             }
-            sut.onBackground(timestamp: Date())
+            sut.onBackground(nil, timestamp: Date())
             Thread.sleep(forTimeInterval: 1.25)
             verify(exactly: 2) {
                 delegate.syncMock

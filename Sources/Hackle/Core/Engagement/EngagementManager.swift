@@ -61,17 +61,23 @@ class EngagementManager: ScreenListener, ViewLifecycleListener {
     func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         Log.debug("EngagementManager.onLifecycle(lifecycle: \(lifecycle))")
         switch lifecycle {
-        case .willEnterForeground:
-            startEngagement(timestamp: timestamp)
-            return
-        case .didEnterBackground:
-            guard let screen = screenManager.currentScreen else {
-                return
-            }
-            endEngagement(screen: screen, timestamp: timestamp)
-            return
         case .viewDidAppear, .viewDidDisappear, .viewWillAppear, .viewWillDisappear:
             return
         }
+    }
+}
+
+extension EngagementManager: ApplicationLifecycleListener {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        Log.debug("EngagementManager.onForeground")
+        startEngagement(timestamp: timestamp)
+    }
+    
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        Log.debug("EngagementManager.onBackground")
+        guard let screen = screenManager.currentScreen else {
+            return
+        }
+        endEngagement(screen: screen, timestamp: timestamp)
     }
 }

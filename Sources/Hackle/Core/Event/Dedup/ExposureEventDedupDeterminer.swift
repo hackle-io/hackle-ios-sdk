@@ -1,5 +1,5 @@
 import Foundation
-
+import UIKit
 
 class ExposureEventDedupDeterminer: CachedUserEventDedupDeterminer {
     typealias Event = UserEvents.Exposure
@@ -30,11 +30,11 @@ class ExposureEventDedupDeterminer: CachedUserEventDedupDeterminer {
 }
 
 extension ExposureEventDedupDeterminer: ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         // nothing to do
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("ExposureEventDedupDeterminer.onBackground")
         self.dedupCache.saveToRepository()
     }

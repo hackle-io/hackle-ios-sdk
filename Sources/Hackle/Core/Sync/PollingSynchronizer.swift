@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 
 class PollingSynchronizer: Synchronizer {
@@ -54,12 +55,12 @@ class PollingSynchronizer: Synchronizer {
 }
 
 extension PollingSynchronizer: ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         Log.debug("PollingSynchronizer.onForeground")
         start()
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("PollingSynchronizer.onBackground")
         stop()
     }

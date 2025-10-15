@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ApplicationEventTracker: ApplicationLifecycleListener, ApplicationInstallStateListener {
 
@@ -40,14 +41,14 @@ class ApplicationEventTracker: ApplicationLifecycleListener, ApplicationInstallS
         track(trackEvent, timestamp)
     }
     
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         let trackEvent = Event.builder(ApplicationEventTracker.APP_OPEN_EVENT_KEY)
             .property("is_from_background", isFromBackground)
             .build()
         track(trackEvent, timestamp)
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         let trackEvent = Event.builder(ApplicationEventTracker.APP_BACKGROUND_EVENT_KEY)
             .build()
         track(trackEvent, timestamp)

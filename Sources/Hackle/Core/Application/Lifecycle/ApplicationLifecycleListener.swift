@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import UIKit
 
 protocol ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool)
-    func onBackground(timestamp: Date)
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool)
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date)
 }

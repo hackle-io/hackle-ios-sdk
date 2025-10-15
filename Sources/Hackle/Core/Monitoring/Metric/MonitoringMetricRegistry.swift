@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 class MonitoringMetricRegistry: MetricRegistry {
@@ -96,11 +97,11 @@ class MonitoringMetricRegistry: MetricRegistry {
 }
 
 extension MonitoringMetricRegistry: ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         // nothing to do
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("MonitoringMetricRegistry.onBackground")
         eventQueue.async { [weak self] in
             self?.flush()

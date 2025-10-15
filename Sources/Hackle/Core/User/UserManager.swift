@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 
 protocol UserManager: Synchronizer {
@@ -350,11 +351,11 @@ class DefaultUserManager: UserManager {
 }
 
 extension DefaultUserManager: ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         // nothing to do
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("UserManager.onBackground")
         saveUser(user: currentUser)
     }
