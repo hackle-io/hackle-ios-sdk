@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 class PushMetricRegistry: MetricRegistry {
@@ -54,12 +55,12 @@ class PushMetricRegistry: MetricRegistry {
 }
 
 extension PushMetricRegistry: ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
-        Log.debug("PushMetricRegistry.oonForeground")
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        Log.debug("PushMetricRegistry.onForeground")
         start()
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("PushMetricRegistry.onBackground")
         stop()
     }

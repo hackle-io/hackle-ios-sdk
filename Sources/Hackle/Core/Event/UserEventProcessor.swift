@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol UserEventProcessor {
     func process(event: UserEvent)
@@ -144,12 +145,12 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         eventDispatcher.dispatch(events: events)
     }
     
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         Log.debug("UserEventProcessor.onForeground")
         start()
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("UserEventProcessor.onBackground")
         stop()
     }

@@ -113,24 +113,6 @@ class DefaultScreenManagerSpecs: QuickSpec {
         }
 
         describe("onLifecycle") {
-            context("willEnterForeground") {
-                it("when top view is nil then do nothing") {
-                    // when
-                    sut.onLifecycle(lifecycle: .willEnterForeground(top: nil), timestamp: Date())
-
-                    // then
-                    expect(sut.currentScreen).to(beNil())
-                }
-
-                it("when top view is present then update screen") {
-                    // when
-                    sut.onLifecycle(lifecycle: .willEnterForeground(top: TestViewController()), timestamp: Date())
-
-                    // then
-                    expect(sut.currentScreen).to(equal(Screen(name: "TestViewController", className: "TestViewController")))
-                }
-            }
-
             context("viewDidAppear") {
                 it("update screen with top view") {
                     sut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
@@ -145,10 +127,9 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 }
             }
 
-            it("do nothing") {
+            it("do nothing for viewWillAppear and viewWillDisappear") {
                 sut.onLifecycle(lifecycle: .viewWillAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
                 sut.onLifecycle(lifecycle: .viewWillDisappear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
-                sut.onLifecycle(lifecycle: .didEnterBackground(top: TopViewController()), timestamp: Date())
                 expect(sut.currentScreen).to(beNil())
             }
         }

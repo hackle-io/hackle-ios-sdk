@@ -7,6 +7,7 @@
 
 import Foundation
 @testable import Hackle
+import UIKit
 
 
 class ApplicationLifecycleManagerStub: ApplicationLifecycleManager {
@@ -43,11 +44,11 @@ class ApplicationLifecycleManagerStub: ApplicationLifecycleManager {
         // Stub implementation
     }
 
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         currentState = .foreground
     }
 
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         currentState = .background
     }
 }

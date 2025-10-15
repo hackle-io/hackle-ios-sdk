@@ -85,7 +85,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 verify(exactly: 1) {
                     listener.onForegroundMock
                 }
-                let (_, isFromBackground) = listener.onForegroundMock.firstInvokation().arguments
+                let (_, _, isFromBackground) = listener.onForegroundMock.firstInvokation().arguments
                 expect(isFromBackground).to(beTrue())
             }
 
@@ -100,7 +100,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 verify(exactly: 1) {
                     listener.onForegroundMock
                 }
-                let (_, isFromBackground) = listener.onForegroundMock.firstInvokation().arguments
+                let (_, _, isFromBackground) = listener.onForegroundMock.firstInvokation().arguments
                 expect(isFromBackground).to(beFalse())
             }
 
@@ -121,7 +121,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 verify(exactly: 2) {
                     listener.onForegroundMock
                 }
-                let (_, isFromBackground) = listener.onForegroundMock.lastInvokation().arguments
+                let (_, _, isFromBackground) = listener.onForegroundMock.lastInvokation().arguments
                 expect(isFromBackground).to(beTrue())
             }
         }

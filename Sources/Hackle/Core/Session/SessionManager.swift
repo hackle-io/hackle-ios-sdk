@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 protocol SessionManager {
@@ -138,12 +139,12 @@ class DefaultSessionManager: SessionManager, UserListener {
 }
 
 extension DefaultSessionManager: ApplicationLifecycleListener {
-    func onForeground(timestamp: Date, isFromBackground: Bool) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         Log.debug("SessionManager.onForeground")
         startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
     }
     
-    func onBackground(timestamp: Date) {
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("SessionManager.onBackground")
         updateLastEventTime(timestamp: timestamp)
         guard let session = currentSession else {

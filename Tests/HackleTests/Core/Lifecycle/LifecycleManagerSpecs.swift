@@ -18,38 +18,6 @@ class LifecycleManagerSpecs: QuickSpec {
             sut.addListener(listener: listener)
         }
 
-        it("willEnterForeground") {
-            let vc = UIViewController()
-            viewManager.top = vc
-            sut.willEnterForeground()
-
-            verify(exactly: 1) {
-                listener.onLifecycleMock
-            }
-            let (lifecycle, _) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .willEnterForeground(top) = lifecycle {
-                expect(top).to(beIdenticalTo(vc))
-            } else {
-                fail("willEnterForeground")
-            }
-        }
-
-        it("didEnterBackground") {
-            let vc = UIViewController()
-            viewManager.top = vc
-            sut.didEnterBackground()
-
-            verify(exactly: 1) {
-                listener.onLifecycleMock
-            }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .didEnterBackground(top) = lifecycle {
-                expect(top).to(beIdenticalTo(vc))
-            } else {
-                fail("didEnterBackground")
-            }
-            expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
-        }
 
         it("viewWillAppear") {
             let vc = UIViewController()

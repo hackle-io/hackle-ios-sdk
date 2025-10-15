@@ -423,14 +423,14 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             context("didEnterBackground 노티인 경우") {
                 it("stop() 을 호출한다") {
-                    spy.onBackground(timestamp: Date())
+                    spy.onBackground(nil, timestamp: Date())
                     expect(spy.stopCalled) == true
                 }
             }
 
             context("willEnterForeground 노티인 경우") {
                 it("start() 를 호출한다") {
-                    spy.onForeground(timestamp: Date(), isFromBackground: true)
+                    spy.onForeground(nil, timestamp: Date(), isFromBackground: true)
                     expect(spy.startCalled) == true
                 }
             }

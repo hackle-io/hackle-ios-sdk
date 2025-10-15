@@ -2,8 +2,6 @@ import Foundation
 import UIKit
 
 enum ViewLifecycle {
-    case willEnterForeground(top: UIViewController?)
-    case didEnterBackground(top: UIViewController?)
     case viewWillAppear(vc: UIViewController, top: UIViewController)
     case viewDidAppear(vc: UIViewController, top: UIViewController)
     case viewWillDisappear(vc: UIViewController, top: UIViewController)
@@ -13,11 +11,6 @@ enum ViewLifecycle {
 extension ViewLifecycle: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .willEnterForeground(let top):
-            guard let top else {
-                return "willEnterForeground(top: nil)"
-            }
-            return "willEnterForeground(top: \(Screen.screenClass(top)))"
         case .viewWillAppear(let vc, let top):
             return "viewWillAppear(vc: \(Screen.screenClass(vc)), top: \(Screen.screenClass(top))"
         case .viewDidAppear(let vc, let top):
@@ -26,11 +19,6 @@ extension ViewLifecycle: CustomStringConvertible {
             return "viewWillDisappear(vc: \(Screen.screenClass(vc)), top: \(Screen.screenClass(top))"
         case .viewDidDisappear(let vc, let top):
             return "viewDidDisappear(vc: \(Screen.screenClass(vc)), top: \(Screen.screenClass(top))"
-        case .didEnterBackground(let top):
-            guard let top else {
-                return "didEnterBackground(top: nil)"
-            }
-            return "didEnterBackground(top: \(Screen.screenClass(top)))"
         }
     }
 }

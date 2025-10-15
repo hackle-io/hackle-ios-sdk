@@ -10,12 +10,15 @@ import UIKit
 
 class ApplicationLifecycleObserver {
     
-    static let shared = ApplicationLifecycleObserver()
+    static let shared = ApplicationLifecycleObserver(
+        publisher: DefaultApplicationLifecycleManager.shared
+    )
 
     private let initialized: AtomicReference<Bool> = AtomicReference(value: false)
-    private var publishers: [ApplicationLifecyclePublisher] = []
+    private var publisher: ApplicationLifecyclePublisher
 
-    private init() {
+    private init(publisher: ApplicationLifecyclePublisher) {
+        self.publisher = publisher
     }
     
     func initialize() {
@@ -41,31 +44,17 @@ class ApplicationLifecycleObserver {
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
         )
-        
-        for publisher in publishers {
-            publisher.publishWillEnterForegroundIfNeeded()
-        }
-    }
-    
-    func addPublisher(publisher: ApplicationLifecyclePublisher) {
-        publishers.append(publisher)
     }
     
     @objc func didBecomeActive() {
-        for publisher in publishers {
-            publisher.didBecomeActive()
-        }
+        publisher.didBecomeActive()
     }
 
     @objc func willEnterForeground() {
-        for publisher in publishers {
-            publisher.willEnterForeground()
-        }
+        publisher.willEnterForeground()
     }
 
     @objc func didEnterBackground() {
-        for publisher in publishers {
-            publisher.didEnterBackground()
-        }
+        publisher.didEnterBackground()
     }
 }
