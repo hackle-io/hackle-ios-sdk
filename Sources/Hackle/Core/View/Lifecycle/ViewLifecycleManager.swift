@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 class ViewLifecycleManager: ApplicationLifecyclePublisher, ViewLifecyclePublisher {
+    var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
 
     static let shared = ViewLifecycleManager(
         viewManager: DefaultViewManager.shared,

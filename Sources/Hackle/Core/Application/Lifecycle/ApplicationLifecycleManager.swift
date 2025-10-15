@@ -14,7 +14,8 @@ protocol ApplicationLifecycleManager {
 }
 
 class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher {
-    
+    var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
+
     static let shared = DefaultApplicationLifecycleManager(
         clock: SystemClock.shared
     )
