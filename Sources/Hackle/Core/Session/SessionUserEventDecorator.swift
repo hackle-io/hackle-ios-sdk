@@ -8,24 +8,14 @@
 import Foundation
 
 class SessionUserEventDecorator: UserEventDecorator {
-    private let sessionManager: SessionManager
+    private let userDecorator: SessionUserDecorator
 
-    init(sessionManager: SessionManager) {
-        self.sessionManager = sessionManager
+    init(userDecorator: SessionUserDecorator) {
+        self.userDecorator = userDecorator
     }
     
     func decorate(event: UserEvent) -> UserEvent {
-        if event.user.sessionId != nil {
-            return event
-        }
-
-        guard let session = sessionManager.currentSession else {
-            return event
-        }
-
-        let decoratedUser = event.user.toBuilder()
-            .identifier(.session, session.id, overwrite: false)
-            .build()
+        let decoratedUser = userDecorator.decorate(user: event.user)
         return event.with(user: decoratedUser)
     }
 }

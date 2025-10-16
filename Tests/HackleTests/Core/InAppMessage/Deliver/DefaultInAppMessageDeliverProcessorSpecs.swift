@@ -14,6 +14,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
         var evaluateProcessor: MockInAppMessageEvaluateProcessor!
         var presentProcessor: MockInAppMessagePresentProcessor!
         var sut: DefaultInAppMessageDeliverProcessor!
+        var sessionManager: MockSessionManager!
 
         beforeEach {
             workspaceFetcher = MockWorkspaceFetcher()
@@ -22,9 +23,11 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             layoutResolver = MockInAppMessageLayoutResolver()
             evaluateProcessor = MockInAppMessageEvaluateProcessor()
             presentProcessor = MockInAppMessagePresentProcessor()
+            sessionManager = MockSessionManager()
             sut = DefaultInAppMessageDeliverProcessor(
                 workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
+                userDecoreator: SessionUserDecorator(sessionManager: sessionManager),
                 identifierChecker: identifierChecker,
                 layoutResolver: layoutResolver,
                 evaluateProcessor: evaluateProcessor,
@@ -161,6 +164,43 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.exception
+        }
+
+        it("userDecorator_injects_session_into_user_context_when_session_exists") {
+            // given
+            let inAppMessage = InAppMessage.create(
+                key: 300,
+                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
+            )
+            let request = InAppMessage.deliverRequest(
+                dispatchId: "sess-deco-1",
+                inAppMessageKey: 300,
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
+            )
+            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            every(workspaceFetcher.fetchMock).returns(workspace)
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+
+            let layoutEvaluation = InAppMessage.layoutEvaluation()
+            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+
+            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
+            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
+
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessage.presentResponse()
+            }
+            let mockSession = Session(id: "0.ffffffff")
+            sessionManager.currentSession = mockSession
+
+            // when
+            _ = sut.process(request: request)
+
+            expect(capturedRequest).toNot(beNil())
+            let user = capturedRequest?.user
+            expect(user?.identifiers.keys.contains(IdentifierType.session.rawValue)).to(beTrue())
         }
     }
 }
