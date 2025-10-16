@@ -47,7 +47,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         func processor(
             eventFilters: [UserEventFilter] = [],
             eventDecorator: [UserEventDecorator] = [
-                SessionUserEventDecorator(sessionManager: sessionManager)
+                SessionUserEventDecorator(userDecorator: SessionUserDecorator(sessionManager: sessionManager))
             ],
             eventQueue: DispatchQueue = eventQueue,
             eventRepository: EventRepository = eventRepository,
@@ -218,7 +218,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 verify(exactly: 1) {
                     eventRepository.saveMock
                 }
-                expect(eventRepository.saveMock.firstInvokation().arguments).to(beIdenticalTo(event))
+                expect(eventRepository.saveMock.firstInvokation().arguments.user.identifiers.keys.contains(IdentifierType.session.rawValue)).to(beFalse())
             }
 
             it("currentSession 의 sessionId 를 추가한다") {
