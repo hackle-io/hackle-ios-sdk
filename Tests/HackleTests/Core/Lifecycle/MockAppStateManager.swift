@@ -1,10 +1,14 @@
 import Foundation
 @testable import Hackle
 
-class MockAppStateManager: AppStateManager {
-    var currentState: AppState
+class MockApplicationLifecycleManager: ApplicationLifecycleManager {
+    var currentState: ApplicationState
 
-    init(currentState: AppState = .background) {
+    init(currentState: ApplicationState = .background) {
         self.currentState = currentState
+    }
+
+    func addListener(listener: ApplicationLifecycleListener) {
+        // Mock implementation
     }
 }

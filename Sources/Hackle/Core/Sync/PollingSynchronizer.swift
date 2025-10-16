@@ -1,7 +1,8 @@
 import Foundation
+import UIKit
 
 
-class PollingSynchronizer: Synchronizer, AppStateListener {
+class PollingSynchronizer: Synchronizer {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingSynchronizer.Lock")
 
@@ -51,14 +52,16 @@ class PollingSynchronizer: Synchronizer, AppStateListener {
             Log.info("PollingSynchronizer stopped polling.")
         }
     }
+}
 
-    func onState(state: AppState, timestamp: Date) {
-        Log.debug("PollingSynchronizer.onState(state: \(state))")
-        switch state {
-        case .foreground:
-            start()
-        case .background:
-            stop()
-        }
+extension PollingSynchronizer: ApplicationLifecycleListener {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        Log.debug("PollingSynchronizer.onForeground")
+        start()
+    }
+    
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        Log.debug("PollingSynchronizer.onBackground")
+        stop()
     }
 }

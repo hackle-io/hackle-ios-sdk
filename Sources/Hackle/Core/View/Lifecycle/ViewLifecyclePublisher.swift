@@ -1,9 +1,7 @@
 import Foundation
 import UIKit
 
-protocol LifecyclePublisher {
-    func didBecomeActive()
-    func didEnterBackground()
+protocol ViewLifecyclePublisher {
     func viewWillAppear(vc: UIViewController)
     func viewDidAppear(vc: UIViewController)
     func viewWillDisappear(vc: UIViewController)
