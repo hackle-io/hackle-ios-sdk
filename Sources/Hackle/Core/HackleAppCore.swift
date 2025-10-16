@@ -62,17 +62,19 @@ class DefaultHackleAppCore: HackleAppCore {
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
+    private let applicationLifecycleObserver: ApplicationLifecycleObserver
+    private let viewLifecycleObserver: ViewLifecycleObserver
     private let userManager: UserManager
     private let workspaceManager: WorkspaceManager
     private let sessionManager: SessionManager
     private let screenManager: ScreenManager
     private let eventProcessor: UserEventProcessor
-    private let lifecycleManager: LifecycleManager
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
     private let device: Device
     private let inAppMessageUI: HackleInAppMessageUI
+    private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
     
     private var userExplorerView: HackleUserExplorerView? = nil
@@ -99,38 +101,43 @@ class DefaultHackleAppCore: HackleAppCore {
         core: HackleCore,
         eventQueue: DispatchQueue,
         synchronizer: Synchronizer,
+        applicationLifecycleObserver: ApplicationLifecycleObserver,
+        viewLifecycleObserver: ViewLifecycleObserver,
         userManager: UserManager,
         workspaceManager: WorkspaceManager,
         sessionManager: SessionManager,
         screenManager: ScreenManager,
         eventProcessor: UserEventProcessor,
-        lifecycleManager: LifecycleManager,
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
         device: Device,
         inAppMessageUI: HackleInAppMessageUI,
+        applicationInstallStateManager: ApplicationInstallStateManager,
         userExplorer: HackleUserExplorer
     ) {
         self.core = core
         self.eventQueue = eventQueue
         self.synchronizer = synchronizer
+        self.applicationLifecycleObserver = applicationLifecycleObserver
+        self.viewLifecycleObserver = viewLifecycleObserver
         self.userManager = userManager
         self.workspaceManager = workspaceManager
         self.sessionManager = sessionManager
         self.screenManager = screenManager
         self.eventProcessor = eventProcessor
-        self.lifecycleManager = lifecycleManager
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
         self.device = device
         self.inAppMessageUI = inAppMessageUI
+        self.applicationInstallStateManager = applicationInstallStateManager
         self.userExplorer = userExplorer
     }
     
     func initialize(user: User?, completion: @escaping () -> ()) {
-        lifecycleManager.initialize()
+        applicationLifecycleObserver.initialize()
+        viewLifecycleObserver.initialize()
         userManager.initialize(user: user)
         eventQueue.async { [weak self] in
             guard let self = self else {
@@ -145,6 +152,7 @@ class DefaultHackleAppCore: HackleAppCore {
         workspaceManager.initialize()
         sessionManager.initialize()
         eventProcessor.initialize()
+        applicationInstallStateManager.initialize()
         synchronizer.sync(completion: { [weak self] in
             guard let self = self else {
                 completion()
@@ -152,6 +160,7 @@ class DefaultHackleAppCore: HackleAppCore {
             }
             self.pushTokenRegistry.flush()
             self.notificationManager.flush()
+            self.applicationInstallStateManager.checkApplicationInstall()
             completion()
         })
     }
