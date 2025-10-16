@@ -31,11 +31,7 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
             _currentState ?? .background
         }
     }
-    var firstLaunch: Bool {
-        get {
-            _currentState == nil
-        }
-    }
+    var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
     
     private init(viewManager: ViewManager, clock: Clock) {
         self.viewManager = viewManager
@@ -51,25 +47,22 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
     }
     
     func didBecomeActive() {
-        guard firstLaunch else {
+        guard firstLaunch.get() else {
             return
         }
         
-        // ios 13 미만은 앱 최초 실행 시 willEnterForeground가 호출이 안되어 여기서 호출
-        if #unavailable(iOS 13.0) {
-            willEnterForeground()
-        }
+        self.willEnterForeground()
     }
     
     func publishWillEnterForegroundIfNeeded() {
         // 현재 상태가 명시적으로 active일 때만 publish
         // - didFinishLaunchingWithOptions: inactive
-        // - didBecomeActive: active
         // - willEnterForeground: active
+        // - didBecomeActive: active
         // - didEnterBackground: background
         DispatchQueue.main.async {
             if UIApplication.shared.applicationState == .active {
-                guard self.firstLaunch else {
+                guard self.firstLaunch.get() else {
                     return
                 }
                 self.willEnterForeground()
@@ -78,6 +71,7 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
     }
     
     func willEnterForeground() {
+        firstLaunch.set(newValue: false)
         let top = viewManager.topViewController()
         execute {
             Log.debug("ApplicationLifecycleManager.willEnterForeground")
