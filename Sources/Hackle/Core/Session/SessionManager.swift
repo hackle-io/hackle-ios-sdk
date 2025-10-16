@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 protocol SessionManager {
@@ -27,7 +28,7 @@ protocol SessionManager {
     func updateLastEventTime(timestamp: Date)
 }
 
-class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
+class DefaultSessionManager: SessionManager, UserListener {
 
     private let userManager: UserManager
     private let keyValueRepository: KeyValueRepository
@@ -131,22 +132,24 @@ class DefaultSessionManager: SessionManager, AppStateListener, UserListener {
         Log.debug("LastEventTime loaded [\(lastEventTime)]")
     }
 
-    func onState(state: AppState, timestamp: Date) {
-        Log.debug("SessionManager.onState(state: \(state))")
-        switch state {
-        case .foreground:
-            startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
-        case .background:
-            updateLastEventTime(timestamp: timestamp)
-            guard let session = currentSession else {
-                return
-            }
-            saveSession(session: session)
-        }
-    }
-
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
         endSession(user: oldUser)
         newSession(user: newUser, timestamp: timestamp)
+    }
+}
+
+extension DefaultSessionManager: ApplicationLifecycleListener {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        Log.debug("SessionManager.onForeground")
+        startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
+    }
+    
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        Log.debug("SessionManager.onBackground")
+        updateLastEventTime(timestamp: timestamp)
+        guard let session = currentSession else {
+            return
+        }
+        saveSession(session: session)
     }
 }

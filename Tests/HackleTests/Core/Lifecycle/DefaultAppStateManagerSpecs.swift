@@ -4,50 +4,156 @@ import Nimble
 import UIKit
 @testable import Hackle
 
-class DefaultAppStateManagerSpecs: QuickSpec {
+class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
     override func spec() {
         var queue: DispatchQueue!
-        var listener: MockAppStateListener!
-        var sut: DefaultAppStateManager!
+        var listener: MockApplicationLifecycleListener!
 
         beforeEach {
-            queue = DispatchQueue(label: "DefaultAppStateManagerSpecs")
-            listener = MockAppStateListener()
-            sut = DefaultAppStateManager(queue: queue)
-            sut.addListener(listener: listener)
+            queue = DispatchQueue(label: "DefaultApplicationLifecycleManagerSpecs")
+            listener = MockApplicationLifecycleListener()
         }
 
-        describe("onLifecycle") {
-            it("didBecomeActive") {
-                sut.onLifecycle(lifecycle: .didBecomeActive(top: nil), timestamp: Date(timeIntervalSince1970: 42))
+        describe("lifecycle events") {
+            it("willEnterForeground") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
+
+                sut.willEnterForeground()
                 queue.await()
-                expect(sut.currentState).to(equal(.foreground))
+                expect(sut.currentState == .foreground).to(beTrue())
                 verify(exactly: 1) {
-                    listener.onStateMock
+                    listener.onForegroundMock
                 }
-                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(.foreground))
             }
             it("didEnterBackground") {
-                sut.onLifecycle(lifecycle: .didEnterBackground(top: nil), timestamp: Date(timeIntervalSince1970: 42))
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
+
+                sut.didEnterBackground()
                 queue.await()
-                expect(sut.currentState).to(equal(.background))
+                expect(sut.currentState == .background).to(beTrue())
                 verify(exactly: 1) {
-                    listener.onStateMock
+                    listener.onBackgroundMock
                 }
-                expect(listener.onStateMock.firstInvokation().arguments.0).to(equal(.background))
+            }
+        }
+
+        describe("상태 추적") {
+            it("초기 상태는 background") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                expect(sut.currentState).to(equal(Optional(.background)))
             }
 
-            it("do nothing") {
-                sut.onLifecycle(lifecycle: .viewWillAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                sut.onLifecycle(lifecycle: .viewDidAppear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                sut.onLifecycle(lifecycle: .viewWillDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
-                sut.onLifecycle(lifecycle: .viewDidDisappear(vc: UIViewController(), top: UIViewController()), timestamp: Date(timeIntervalSince1970: 42))
+            it("willEnterForeground 호출 후 상태는 foreground") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+
+                sut.willEnterForeground()
                 queue.await()
-                expect(sut.currentState).to(equal(.background))
-                verify(exactly: 0) {
-                    listener.onStateMock
+
+                expect(sut.currentState).to(equal(.foreground))
+            }
+
+            it("didEnterBackground 호출 후 상태는 background") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+
+                sut.willEnterForeground()
+                queue.await()
+                sut.didEnterBackground()
+                queue.await()
+
+                expect(sut.currentState).to(equal(Optional(.background)))
+            }
+        }
+
+        describe("isFromBackground 파라미터") {
+            it("background에서 foreground로 전환 시 isFromBackground는 true") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
+
+                sut.didEnterBackground()
+                queue.await()
+
+                sut.willEnterForeground()
+                queue.await()
+
+                verify(exactly: 1) {
+                    listener.onForegroundMock
                 }
+                let (_, _, isFromBackground) = listener.onForegroundMock.firstInvokation().arguments
+                expect(isFromBackground).to(beTrue())
+            }
+
+            it("초기 상태에서 foreground로 전환 시 isFromBackground는 false") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
+
+                sut.willEnterForeground()
+                queue.await()
+
+                verify(exactly: 1) {
+                    listener.onForegroundMock
+                }
+                let (_, _, isFromBackground) = listener.onForegroundMock.firstInvokation().arguments
+                expect(isFromBackground).to(beFalse())
+            }
+
+            it("foreground -> background -> foreground로 전환 시 isFromBackground는 true") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+                sut.addListener(listener: listener)
+
+                sut.willEnterForeground()
+                queue.await()
+                
+                sut.didEnterBackground()
+                queue.await()
+
+                sut.willEnterForeground()
+                queue.await()
+
+                verify(exactly: 2) {
+                    listener.onForegroundMock
+                }
+                let (_, _, isFromBackground) = listener.onForegroundMock.lastInvokation().arguments
+                expect(isFromBackground).to(beTrue())
+            }
+        }
+
+        describe("여러 listener") {
+            it("모든 listener가 통지받음") {
+                let sut = DefaultApplicationLifecycleManager.shared
+                sut.setDispatchQueue(queue: queue)
+
+                let listener1 = MockApplicationLifecycleListener()
+                let listener2 = MockApplicationLifecycleListener()
+                let listener3 = MockApplicationLifecycleListener()
+
+                sut.addListener(listener: listener1)
+                sut.addListener(listener: listener2)
+                sut.addListener(listener: listener3)
+
+                sut.willEnterForeground()
+                queue.await()
+
+                verify(exactly: 1) { listener1.onForegroundMock }
+                verify(exactly: 1) { listener2.onForegroundMock }
+                verify(exactly: 1) { listener3.onForegroundMock }
+
+                sut.didEnterBackground()
+                queue.await()
+
+                verify(exactly: 1) { listener1.onBackgroundMock }
+                verify(exactly: 1) { listener2.onBackgroundMock }
+                verify(exactly: 1) { listener3.onBackgroundMock }
             }
         }
     }
 }
+

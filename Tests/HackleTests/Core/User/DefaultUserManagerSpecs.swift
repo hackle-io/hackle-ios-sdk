@@ -11,6 +11,7 @@ class DefaultUserManagerSpecs: QuickSpec {
         var targetFetcher: MockUserTargetFetcher!
         var clock: Clock!
         var device: Device!
+        var bundleInfo: BundleInfo!
         var sut: DefaultUserManager!
 
         var listener: MockUserListener!
@@ -20,8 +21,9 @@ class DefaultUserManagerSpecs: QuickSpec {
             cohortFetcher = MockUserCohortFetcher()
             targetFetcher = MockUserTargetFetcher()
             clock = FixedClock(date: Date(timeIntervalSince1970: 42))
-            device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
-            sut = DefaultUserManager(device: device, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
+            device = DeviceImpl(deviceId: "hackle_device_id")
+            bundleInfo = BundleInfoImpl()
+            sut = DefaultUserManager(device: device, bundleInfo: bundleInfo, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
             every(cohortFetcher.fetchMock).answers({ _, completion in
                 completion(.success(UserCohorts()))
             })
@@ -176,6 +178,46 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("hackle properties") {
                 let hackleUser = sut.toHackleUser(user: User.builder().build())
                 expect(hackleUser.hackleProperties.count) > 0
+            }
+
+            it("hackle properties contains device properties") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+
+                // Device properties
+                expect(hackleUser.hackleProperties["platform"] as? String) == "iOS"
+                expect(hackleUser.hackleProperties["osName"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["osVersion"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["deviceModel"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["deviceType"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["deviceBrand"] as? String) == "Apple"
+                expect(hackleUser.hackleProperties["deviceManufacturer"] as? String) == "Apple"
+                expect(hackleUser.hackleProperties["locale"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["language"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["timeZone"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["screenWidth"] as? Int).notTo(beNil())
+                expect(hackleUser.hackleProperties["screenHeight"] as? Int).notTo(beNil())
+                expect(hackleUser.hackleProperties["isApp"] as? Bool) == true
+            }
+
+            it("hackle properties contains bundle info properties") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+
+                // BundleInfo properties
+                expect(hackleUser.hackleProperties["packageName"]).notTo(beNil())
+                expect(hackleUser.hackleProperties["versionName"]).notTo(beNil())
+                expect(hackleUser.hackleProperties["versionCode"]).notTo(beNil())
+            }
+
+            it("hackle properties merges device and bundle info") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+
+                // Should contain both device and bundle info properties
+                let hasDeviceProperty = hackleUser.hackleProperties["platform"] != nil
+                let hasBundleProperty = hackleUser.hackleProperties["packageName"] != nil
+
+                expect(hasDeviceProperty) == true
+                expect(hasBundleProperty) == true
+                expect(hackleUser.hackleProperties.count) >= 16 // At least device (13) + bundle (3) properties
             }
         }
 
@@ -932,11 +974,11 @@ class DefaultUserManagerSpecs: QuickSpec {
 
         describe("onChanged") {
             it("foreground - do nothing") {
-                sut.onState(state: .foreground, timestamp: Date())
+                sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
             }
             it("background") {
                 expect(repository.getData(key: "user")).to(beNil())
-                sut.onState(state: .background, timestamp: Date())
+                sut.onBackground(nil, timestamp: Date())
                 expect(repository.getData(key: "user")).notTo(beNil())
             }
         }

@@ -4,7 +4,7 @@
 
 import Nimble
 import Quick
-import Mockery
+import MockingKit
 
 
 class StubScope<T, R> {
@@ -65,7 +65,7 @@ func every<T, R>(_ mockFunction: MockFunction<T, Result<R, Error>>) -> ThrowStub
 func verify<T, R>(exactly: Int? = nil, _ mockFunction: () -> MockFunction<T, R>) {
     let mockFunc = mockFunction()
 
-    let invocations = mockFunc.mock.invokations(of: mockFunc.mockReference)
+    let invocations = mockFunc.mock.calls(to: mockFunc.mockReference)
 
     if let exactly = exactly {
         expect(invocations.count).to(equal(exactly))
@@ -85,16 +85,16 @@ struct MockFunction<T, R> {
         self.mockReference = MockReference(function)
     }
 
-    func firstInvokation() -> MockInvokation<T, R> {
+    func firstInvokation() -> MockCall<T, R> {
         invokations().first!
     }
 
-    func lastInvokation() -> MockInvokation<T, R> {
+    func lastInvokation() -> MockCall<T, R> {
         invokations().last!
     }
 
-    func invokations() -> [MockInvokation<T, R>] {
-        mock.invokations(of: mockReference)
+    func invokations() -> [MockCall<T, R>] {
+        mock.calls(to: mockReference)
     }
 
     func wasCalled() -> Bool {
@@ -126,7 +126,7 @@ extension Mockable {
         line: UInt = #line,
         functionCall: StaticString = #function
     ) -> R {
-        invoke(function.mockReference, args: args, fallback: fallback(file: file, line: line, functionCall: functionCall))
+        call(function.mockReference, args: args, fallback: fallback(file: file, line: line, functionCall: functionCall))
     }
 
     func call<T, R>(
@@ -136,7 +136,7 @@ extension Mockable {
         line: UInt = #line,
         functionCall: StaticString = #function
     ) throws -> R {
-        try invoke(function.mockReference, args: args, fallback: fallback(file: file, line: line, functionCall: functionCall)).get()
+        try call(function.mockReference, args: args, fallback: fallback(file: file, line: line, functionCall: functionCall)).get()
     }
 
     private func fallback<R>(
@@ -153,7 +153,7 @@ extension Mockable {
     }
 
     func call<T, R>(_ function: MockFunction<T, R?>, args: T) -> R? {
-        invoke(function.mockReference, args: args)
+        call(function.mockReference, args: args)
     }
 }
 

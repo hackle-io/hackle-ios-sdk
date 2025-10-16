@@ -1,3 +1,10 @@
+//
+//  DeviceInfo.swift
+//  Hackle
+//
+//  Created by sungwoo.yeo on 10/4/25.
+//
+
 import Foundation
 
 struct DeviceInfo {
@@ -10,9 +17,9 @@ struct DeviceInfo {
     let locale: Locale
     let timezone: TimeZone
     let screenInfo: ScreenInfo
-    
-    struct ScreenInfo {
-        let width: Int
-        let height: Int
-    }
+}
+
+struct ScreenInfo {
+    let width: Int
+    let height: Int
 }

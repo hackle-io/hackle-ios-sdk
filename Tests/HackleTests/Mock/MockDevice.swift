@@ -2,6 +2,7 @@ import Foundation
 @testable import Hackle
 
 class MockDevice : Device {
+
     var id: String
     var properties: [String: Any]
     
