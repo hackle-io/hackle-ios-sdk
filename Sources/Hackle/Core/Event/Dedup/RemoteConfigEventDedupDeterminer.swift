@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 class RemoteConfigEventDedupDeterminer: CachedUserEventDedupDeterminer {
     typealias Event = UserEvents.RemoteConfig
@@ -27,11 +28,13 @@ class RemoteConfigEventDedupDeterminer: CachedUserEventDedupDeterminer {
     }
 }
 
-extension RemoteConfigEventDedupDeterminer: AppStateListener {
-    func onState(state: AppState, timestamp: Date) {
-        Log.debug("RemoteConfigEventDedupDeterminer.onState(state: \(state))")
-        if state == .background {
-            self.dedupCache.saveToRepository()
-        }
+extension RemoteConfigEventDedupDeterminer: ApplicationLifecycleListener {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        // nothing to do
+    }
+    
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        Log.debug("RemoteConfigEventDedupDeterminer.onBackground")
+        self.dedupCache.saveToRepository()
     }
 }

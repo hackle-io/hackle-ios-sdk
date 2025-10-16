@@ -7,23 +7,24 @@
 
 import Foundation
 @testable import Hackle
+import UIKit
 
 
-class AppStateManagerStub: AppStateManager {
+class ApplicationLifecycleManagerStub: ApplicationLifecycleManager {
 
-    var currentState: AppState
+    var currentState: ApplicationState
     var currentScreen: String?
     var callbackScreen: String?
 
     var delay: Double = 0.0
 
-    init(currentState: AppState = .background, currentScreen: String? = nil, callbackScreen: String? = nil) {
+    init(currentState: ApplicationState = .background, currentScreen: String? = nil, callbackScreen: String? = nil) {
         self.currentState = currentState
         self.currentScreen = currentScreen
         self.callbackScreen = callbackScreen
     }
 
-    private let queue = DispatchQueue(label: "AppStateManagerStub", qos: .utility)
+    private let queue = DispatchQueue(label: "ApplicationLifecycleManagerStub", qos: .utility)
 
     func sync() {
         queue.sync {
@@ -39,7 +40,15 @@ class AppStateManagerStub: AppStateManager {
         return currentScreen
     }
 
-    func onChanged(state: AppState, timestamp: Date) {
-        currentState = state
+    func addListener(listener: ApplicationLifecycleListener) {
+        // Stub implementation
+    }
+
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        currentState = .foreground
+    }
+
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        currentState = .background
     }
 }

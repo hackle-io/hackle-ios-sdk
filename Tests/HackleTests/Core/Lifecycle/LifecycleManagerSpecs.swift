@@ -9,47 +9,15 @@ class LifecycleManagerSpecs: QuickSpec {
 
         var viewManager: MockViewManager!
         var listener: MockLifecycleListener!
-        var sut: LifecycleManager!
+        var sut: ViewLifecycleManager!
 
         beforeEach {
             viewManager = MockViewManager()
             listener = MockLifecycleListener()
-            sut = LifecycleManager(viewManager: viewManager, clock: FixedClock(date: Date(timeIntervalSince1970: 42)))
+            sut = ViewLifecycleManager(viewManager: viewManager, clock: FixedClock(date: Date(timeIntervalSince1970: 42)))
             sut.addListener(listener: listener)
         }
 
-        it("didBecomeActive") {
-            let vc = UIViewController()
-            viewManager.top = vc
-            sut.didBecomeActive()
-
-            verify(exactly: 1) {
-                listener.onLifecycleMock
-            }
-            let (lifecycle, _) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .didBecomeActive(top) = lifecycle {
-                expect(top).to(beIdenticalTo(vc))
-            } else {
-                fail("didBecomeActive")
-            }
-        }
-
-        it("didEnterBackground") {
-            let vc = UIViewController()
-            viewManager.top = vc
-            sut.didEnterBackground()
-
-            verify(exactly: 1) {
-                listener.onLifecycleMock
-            }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .didEnterBackground(top) = lifecycle {
-                expect(top).to(beIdenticalTo(vc))
-            } else {
-                fail("didEnterBackground")
-            }
-            expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
-        }
 
         it("viewWillAppear") {
             let vc = UIViewController()

@@ -1,7 +1,7 @@
 import Foundation
 import Quick
 import Nimble
-import Mockery
+import MockingKit
 @testable import Hackle
 
 class DefaultUserEventProcessorSpec: QuickSpec {
@@ -18,7 +18,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var eventDispatcher: MockUserEventDispatcher!
         var sessionManager: MockSessionManager!
         var userManager: MockUserManager!
-        var appStateManager: AppStateManagerStub!
+        var appStateManager: ApplicationLifecycleManagerStub!
         var screenManager: MockScreeManager!
         var eventBackoffControllrer: MockUserEventBackoffController!
 
@@ -31,7 +31,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventDispatcher = MockUserEventDispatcher()
             sessionManager = MockSessionManager()
             userManager = MockUserManager()
-            appStateManager = AppStateManagerStub(currentState: .foreground)
+            appStateManager = ApplicationLifecycleManagerStub(currentState: .foreground)
             screenManager = MockScreeManager()
             eventBackoffControllrer = MockUserEventBackoffController()
 
@@ -47,7 +47,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         func processor(
             eventFilters: [UserEventFilter] = [],
             eventDecorator: [UserEventDecorator] = [
-                SessionUserEventDecorator(sessionManager: sessionManager)
+                SessionUserEventDecorator(userDecorator: SessionUserDecorator(sessionManager: sessionManager))
             ],
             eventQueue: DispatchQueue = eventQueue,
             eventRepository: EventRepository = eventRepository,
@@ -59,7 +59,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventDispatcher: UserEventDispatcher = eventDispatcher,
             sessionManager: SessionManager = sessionManager,
             userManager: UserManager = userManager,
-            appStateManager: AppStateManagerStub = appStateManager
+            appStateManager: ApplicationLifecycleManagerStub = appStateManager
         ) -> DefaultUserEventProcessor {
             let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
             
@@ -77,7 +77,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventDispatcher: eventDispatcher,
                 sessionManager: sessionManager,
                 userManager: userManager,
-                appStateManager: appStateManager,
+                applicationLifecycleManager: appStateManager,
                 screenUserEventDecorator: screenUserEventDecorator,
                 eventBackoffController: eventBackoffControllrer
             )
@@ -160,7 +160,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             it("foreground 가 아닌경우 세션초기화 시도") {
                 // given
-                let sut = processor(appStateManager: AppStateManagerStub(currentState: .background))
+                let sut = processor(appStateManager: ApplicationLifecycleManagerStub(currentState: .background))
                 let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
                 every(sessionManager.startNewSessionIfNeededMock).returns(Session(id: "session_id"))
 
@@ -218,7 +218,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 verify(exactly: 1) {
                     eventRepository.saveMock
                 }
-                expect(eventRepository.saveMock.firstInvokation().arguments).to(beIdenticalTo(event))
+                expect(eventRepository.saveMock.firstInvokation().arguments.user.identifiers.keys.contains(IdentifierType.session.rawValue)).to(beFalse())
             }
 
             it("currentSession 의 sessionId 를 추가한다") {
@@ -415,7 +415,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher: eventDispatcher,
                     sessionManager: sessionManager,
                     userManager: userManager,
-                    appStateManager: appStateManager,
+                    applicationLifecycleManager: appStateManager,
                     screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager()),
                     eventBackoffController: eventBackoffControllrer
                 )
@@ -423,14 +423,14 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             context("didEnterBackground 노티인 경우") {
                 it("stop() 을 호출한다") {
-                    spy.onState(state: .background, timestamp: Date())
+                    spy.onBackground(nil, timestamp: Date())
                     expect(spy.stopCalled) == true
                 }
             }
 
-            context("didBecomeActive 노티인 경우") {
+            context("willEnterForeground 노티인 경우") {
                 it("start() 를 호출한다") {
-                    spy.onState(state: .foreground, timestamp: Date())
+                    spy.onForeground(nil, timestamp: Date(), isFromBackground: true)
                     expect(spy.startCalled) == true
                 }
             }

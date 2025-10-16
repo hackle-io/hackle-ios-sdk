@@ -7,27 +7,34 @@ protocol Device {
 }
 
 class DeviceImpl : Device {
-    var id: String
-    var platform: Platform
-    
-    private let bundleInfo: BundleInfo
-    
-    init(id: String, platform: Platform) {
-        self.id = id
-        self.platform = platform
-        self.bundleInfo = platform.getBundleInfo()
+    private let deviceInfo: DeviceInfo
+    let id: String
+
+    init(deviceId: String) {
+        self.id = deviceId
+        self.deviceInfo = DeviceInfo(
+            osName: "iOS",
+            osVersion: UIDevice.current.systemVersion,
+            model: DeviceHelper.getDeviceModel(),
+            type: DeviceHelper.getDeviceType(),
+            brand: "Apple",
+            manufacturer: "Apple",
+            locale: DeviceImpl.getPreferredLocale(),
+            timezone: TimeZone.current,
+            screenInfo: ScreenInfo(
+                width: Int(UIScreen.main.nativeBounds.width),
+                height: Int(UIScreen.main.nativeBounds.height)
+            )
+        )
+        
     }
     
     var properties: [String : Any] {
         get {
-            let deviceInfo = platform.getCurrentDeviceInfo()
             let languageCode = deviceInfo.locale.languageCode ?? ""
             let regionCode = deviceInfo.locale.regionCode ?? ""
             return [
                 "platform": "iOS",
-                "packageName": bundleInfo.bundleId,
-                "versionName": bundleInfo.version,
-                "versionCode": Int(bundleInfo.build) ?? 0,
                 "osName": deviceInfo.osName,
                 "osVersion": deviceInfo.osVersion,
                 "deviceModel": deviceInfo.model,
@@ -46,13 +53,15 @@ class DeviceImpl : Device {
 }
 
 extension DeviceImpl {
-    static func create(keyValueRepository: KeyValueRepository) -> Device {
-        let deviceId = keyValueRepository.getString(key: "hackle_device_id") { _ in
-            UUID().uuidString
+    
+    static func getDeviceId(keyValueRepository: KeyValueRepository, mapping: (String) -> String) -> String {
+        return keyValueRepository.getString(key: "hackle_device_id", mapping: mapping)
+    }
+    
+    fileprivate static func getPreferredLocale() -> Locale {
+        guard let preferred = Locale.preferredLanguages.first else {
+            return Locale.current
         }
-        return DeviceImpl(
-            id: deviceId,
-            platform: IOSPlatform()
-        )
+        return Locale(identifier: preferred)
     }
 }

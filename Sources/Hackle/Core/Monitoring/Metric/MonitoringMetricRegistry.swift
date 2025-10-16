@@ -3,9 +3,10 @@
 //
 
 import Foundation
+import UIKit
 
 
-class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
+class MonitoringMetricRegistry: MetricRegistry {
 
     private let endpoint: URL
     private let eventQueue: DispatchQueue
@@ -26,17 +27,6 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
 
     override func createTimer(id: MetricId) -> Timer {
         FlushTimer(id: id)
-    }
-
-    func onState(state: AppState, timestamp: Date) {
-        Log.debug("MonitoringMetricRegistry.onState(state: \(state))")
-        switch state {
-        case .foreground: return
-        case .background:
-            eventQueue.async { [weak self] in
-                self?.flush()
-            }
-        }
     }
 
     private func flush() {
@@ -103,6 +93,19 @@ class MonitoringMetricRegistry: MetricRegistry, AppStateListener {
                 (measurement.field.rawValue, measurement.value)
             }
         ]
+    }
+}
+
+extension MonitoringMetricRegistry: ApplicationLifecycleListener {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        // nothing to do
+    }
+    
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        Log.debug("MonitoringMetricRegistry.onBackground")
+        eventQueue.async { [weak self] in
+            self?.flush()
+        }
     }
 }
 

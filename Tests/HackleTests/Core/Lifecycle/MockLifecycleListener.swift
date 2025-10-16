@@ -1,11 +1,11 @@
 import Foundation
-import Mockery
+import MockingKit
 @testable import Hackle
 
-class MockLifecycleListener: Mock, LifecycleListener {
+class MockLifecycleListener: Mock, ViewLifecycleListener {
     lazy var onLifecycleMock = MockFunction(self, onLifecycle)
 
-    func onLifecycle(lifecycle: Lifecycle, timestamp: Date) {
+    func onLifecycle(lifecycle: ViewLifecycle, timestamp: Date) {
         call(onLifecycleMock, args: (lifecycle, timestamp))
     }
 }

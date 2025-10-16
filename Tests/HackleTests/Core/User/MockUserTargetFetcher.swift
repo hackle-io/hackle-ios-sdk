@@ -6,7 +6,7 @@
 //
 
 @testable import Hackle
-import Mockery
+import MockingKit
 
 class MockUserTargetFetcher: Mock, UserTargetEventsFetcher {
 
