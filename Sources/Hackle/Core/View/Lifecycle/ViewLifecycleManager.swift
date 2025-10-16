@@ -31,34 +31,35 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewWillAppear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewWillAppear(vc: vc, top: top))
     }
 
     func viewDidAppear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewDidAppear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewDidAppear(vc: vc, top: top))
     }
 
     func viewWillDisappear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewWillDisappear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewWillDisappear(vc: vc, top: top))
     }
 
     func viewDidDisappear(vc: UIViewController) {
         guard let top = viewManager.topViewController() else {
             return
         }
-        publish(lifecycle: .viewDidDisappear(vc: vc, top: top), timestamp: clock.now())
+        publish(lifecycle: .viewDidDisappear(vc: vc, top: top))
     }
 
 
-    private func publish(lifecycle: ViewLifecycle, timestamp: Date) {
+    private func publish(lifecycle: ViewLifecycle) {
         execute {
             Log.debug("ViewLifecycleManager.publish(lifecycle: \(lifecycle))")
+            let timestamp = self.clock.now()
             for listener in self.listeners {
                 listener.onLifecycle(lifecycle: lifecycle, timestamp: timestamp)
             }

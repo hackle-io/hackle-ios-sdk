@@ -75,7 +75,7 @@ class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
 
 extension DefaultScreenManager: ApplicationLifecycleListener {
     func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
-        Log.debug("ScreenManager.onForeground(\(topViewController?.description ?? "nil")")
+        Log.debug("ScreenManager.onForeground")
         guard let top = topViewController else {
             return
         }

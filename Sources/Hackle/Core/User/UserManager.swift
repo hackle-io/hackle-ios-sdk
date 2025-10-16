@@ -43,6 +43,7 @@ class DefaultUserManager: UserManager {
     private let clock: Clock
 
     private let device: Device
+    private let bundleInfo: BundleInfo
     private let defaultUser: User
     private var context: UserContext
 
@@ -55,13 +56,14 @@ class DefaultUserManager: UserManager {
         currentContext.user
     }
 
-    init(device: Device, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
+    init(device: Device, bundleInfo: BundleInfo, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
         self.cohortFetcher = cohortFetcher
         self.targetFetcher = targetFetcher
         self.clock = clock
         self.device = device
+        self.bundleInfo = bundleInfo
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
         self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
     }
@@ -111,16 +113,18 @@ class DefaultUserManager: UserManager {
             .identifier(.device, device.id, overwrite: false)
             .identifier(.hackleDevice, device.id)
             .properties(context.user.properties)
-            .hackleProperties(hackleProperties(hackleAppContext: hackleAppContext, device: device))
+            .hackleProperties(hackleProperties(hackleAppContext: hackleAppContext, device: device, bundleInfo: bundleInfo))
             .cohorts(context.cohorts.rawCohorts)
             .targetEvents(context.targetEvents)
             .build()
     }
     
-    private func hackleProperties(hackleAppContext: HackleAppContext, device: Device) -> [String: Any] {
-        let hackleProperties = hackleAppContext.browserProperties.merging(device.properties) {
-            (_, new) in new
-        } // 만약 겹치는 값 있으면 device로 교체
+    private func hackleProperties(
+        hackleAppContext: HackleAppContext, device: Device, bundleInfo: BundleInfo) -> [String: Any] {
+            let hackleProperties = hackleAppContext.browserProperties
+                .append(device.properties)
+                .append(bundleInfo.properties)
+
         return hackleProperties
     }
         
@@ -425,5 +429,13 @@ private extension User {
             identifiers: json["identifiers"] as? [String: String] ?? [:],
             properties: json["properties"] as? [String: Any] ?? [:]
         )
+    }
+}
+
+fileprivate extension [String: Any] {
+    func append(_ new: [String: Any]) -> [String: Any] {
+        self.merging(new) {
+            (_, new) in new
+        }
     }
 }

@@ -8,6 +8,7 @@ class HackleAppSpecs: QuickSpec {
         var core: MockHackleCore!
         var eventQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
+        var platformManager: PlatformManager!
         var userManager: MockUserManager!
         var workspaceManager: WorkspaceManager!
         var notificationManager: MockNotificationManager!
@@ -31,12 +32,13 @@ class HackleAppSpecs: QuickSpec {
                 httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
+            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository())
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
-            device = DeviceImpl(id: "hackle_device_id", platform: MockPlatform())
+            device = MockDevice(id: "hackle_device_id", properties: [:])
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,
@@ -53,6 +55,13 @@ class HackleAppSpecs: QuickSpec {
                 processorFactory: inAppMessageEventProcessorFactory
             )
             inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
+            
+            let applicationInstallDeterminer = ApplicationInstallDeterminer()
+            let applicationInstallStateManager = ApplicationInstallStateManager(
+                platformManager: platformManager,
+                applicationInstallDeterminer: applicationInstallDeterminer,
+                clock: SystemClock.shared
+            )
             
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             
@@ -72,6 +81,7 @@ class HackleAppSpecs: QuickSpec {
                 fetchThrottler: throttler,
                 device: device,
                 inAppMessageUI: inAppMessageUI,
+                applicationInstallStateManager: applicationInstallStateManager,
                 userExplorer: userExplorer
             )
             sut = HackleApp(

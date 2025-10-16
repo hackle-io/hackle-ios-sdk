@@ -26,12 +26,9 @@
 		7E0E2D942AE7A81B00578C74 /* InvokeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */; };
 		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */; };
-		7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */; };
-		7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
 		7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */; };
 		7E3F4FCD2AA6FE7B004E0EB0 /* DeviceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */; };
-		7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */; };
 		7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4666282B2C409600B3CDCF /* SharedDatabase.swift */; };
 		7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */; };
 		7E4666302B30133400B3CDCF /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46662F2B30133400B3CDCF /* NotificationHandler.swift */; };
@@ -67,6 +64,9 @@
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
 		B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeType.swift */; };
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
+		B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078402E90C21500D26B60 /* BundleVersionInfo.swift */; };
+		B21078452E91583200D26B60 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078442E91582F00D26B60 /* DeviceInfo.swift */; };
+		B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14962E9E6AB80088EBEC /* PlatformManager.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -88,6 +88,14 @@
 		B26AC2442E4B670A00AAE56F /* HackleAppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2432E4B670600AAE56F /* HackleAppContext.swift */; };
 		B26AC2462E4B679D00AAE56F /* HackleInvocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2452E4B679900AAE56F /* HackleInvocator.swift */; };
 		B26AC2922E4C5AA900AAE56F /* InvokeDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */; };
+		B26EB40E2E96974F003E7B13 /* ApplicationInstallState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */; };
+		B26EB4102E96978D003E7B13 /* ApplicationInstallStateListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */; };
+		B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */; };
+		B26EB4172E9789EE003E7B13 /* ApplicationInstallDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */; };
+		B26F8C352E98968300CE544C /* ApplicationEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */; };
+		B26F8C3C2E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C382E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift */; };
+		B26F8C3D2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C3A2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift */; };
+		B26F8C3E2E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26F8C372E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift */; };
 		B274AE0E2D4397D700C52FF5 /* TargetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */; };
 		B28499702E8E18F100BEA926 /* ApplicationLifecyclePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */; };
 		B28499722E8E190000BEA926 /* ApplicationLifecycleObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */; };
@@ -681,12 +689,9 @@
 		7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeResponse.swift; sourceTree = "<group>"; };
 		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
 		7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationProviderType.swift; sourceTree = "<group>"; };
-		7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
-		7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
 		7E3F4FCC2AA6FE7B004E0EB0 /* DeviceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpec.swift; sourceTree = "<group>"; };
-		7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlatform.swift; sourceTree = "<group>"; };
 		7E4666282B2C409600B3CDCF /* SharedDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDatabase.swift; sourceTree = "<group>"; };
 		7E46662A2B2C419500B3CDCF /* NotificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
 		7E46662F2B30133400B3CDCF /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
@@ -722,6 +727,9 @@
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
 		B20B23132E56F0040019EAA7 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeSpecs.swift; sourceTree = "<group>"; };
+		B21078402E90C21500D26B60 /* BundleVersionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleVersionInfo.swift; sourceTree = "<group>"; };
+		B21078442E91582F00D26B60 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
+		B21A14962E9E6AB80088EBEC /* PlatformManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformManager.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -743,6 +751,14 @@
 		B26AC2432E4B670600AAE56F /* HackleAppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppContext.swift; sourceTree = "<group>"; };
 		B26AC2452E4B679900AAE56F /* HackleInvocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInvocator.swift; sourceTree = "<group>"; };
 		B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeDtoSpecs.swift; sourceTree = "<group>"; };
+		B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallState.swift; sourceTree = "<group>"; };
+		B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateListener.swift; sourceTree = "<group>"; };
+		B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManager.swift; sourceTree = "<group>"; };
+		B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallDeterminer.swift; sourceTree = "<group>"; };
+		B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationEventTracker.swift; sourceTree = "<group>"; };
+		B26F8C372E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallDeterminerSpec.swift; sourceTree = "<group>"; };
+		B26F8C382E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManagerSpec.swift; sourceTree = "<group>"; };
+		B26F8C3A2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationEventTrackerSpec.swift; sourceTree = "<group>"; };
 		B274AE0D2D4397D700C52FF5 /* TargetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEvent.swift; sourceTree = "<group>"; };
 		B284996F2E8E18E800BEA926 /* ApplicationLifecyclePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecyclePublisher.swift; sourceTree = "<group>"; };
 		B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLifecycleObserver.swift; sourceTree = "<group>"; };
@@ -1475,6 +1491,25 @@
 			path = Storage;
 			sourceTree = "<group>";
 		};
+		B21078422E90C28500D26B60 /* Bundle */ = {
+			isa = PBXGroup;
+			children = (
+				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
+				B21078402E90C21500D26B60 /* BundleVersionInfo.swift */,
+			);
+			path = Bundle;
+			sourceTree = "<group>";
+		};
+		B21078432E91568600D26B60 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				EE29D90929CD825300B1FEAA /* Device.swift */,
+				B21078442E91582F00D26B60 /* DeviceInfo.swift */,
+				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+			);
+			path = Device;
+			sourceTree = "<group>";
+		};
 		B24250242D9A2B1B00CF27FC /* PII */ = {
 			isa = PBXGroup;
 			children = (
@@ -1491,7 +1526,7 @@
 			path = Context;
 			sourceTree = "<group>";
 		};
-		B284996E2E8E18D700BEA926 /* Application */ = {
+		B26EB4132E96984F003E7B13 /* Lifecycle */ = {
 			isa = PBXGroup;
 			children = (
 				EE29D8D429CD825300B1FEAA /* ApplicationState.swift */,
@@ -1500,10 +1535,21 @@
 				B28499712E8E18F700BEA926 /* ApplicationLifecycleObserver.swift */,
 				B28499762E8E191900BEA926 /* ApplicationLifecycleManager.swift */,
 			);
-			path = Application;
+			path = Lifecycle;
 			sourceTree = "<group>";
 		};
-		B28499782E8E1DEB00BEA926 /* View */ = {
+		B26EB4142E96985C003E7B13 /* Install */ = {
+			isa = PBXGroup;
+			children = (
+				B26EB4162E9789E6003E7B13 /* ApplicationInstallDeterminer.swift */,
+				B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */,
+				B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */,
+				B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */,
+			);
+			path = Install;
+			sourceTree = "<group>";
+		};
+		B26EB4152E9698E7003E7B13 /* Lifecycle */ = {
 			isa = PBXGroup;
 			children = (
 				EEA7FCBC2C04AB710004F858 /* ViewLifecycle.swift */,
@@ -1511,6 +1557,42 @@
 				EEA7FCC02C04AE550004F858 /* ViewLifecyclePublisher.swift */,
 				EECDF3DC2C0D611A009B2F56 /* ViewLifecycleObserver.swift */,
 				EEA7FCBA2C04AB6B0004F858 /* ViewLifecycleManager.swift */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
+		B26F8C392E98AB7200CE544C /* Install */ = {
+			isa = PBXGroup;
+			children = (
+				B26F8C372E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift */,
+				B26F8C382E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift */,
+			);
+			path = Install;
+			sourceTree = "<group>";
+		};
+		B26F8C3B2E98AB7200CE544C /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				B26F8C392E98AB7200CE544C /* Install */,
+				B26F8C3A2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		B284996E2E8E18D700BEA926 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				B26F8C342E98968000CE544C /* ApplicationEventTracker.swift */,
+				B26EB4142E96985C003E7B13 /* Install */,
+				B26EB4132E96984F003E7B13 /* Lifecycle */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		B28499782E8E1DEB00BEA926 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B26EB4152E9698E7003E7B13 /* Lifecycle */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1890,7 +1972,6 @@
 				EE29D90629CD825300B1FEAA /* Segment.swift */,
 				EE29D90729CD825300B1FEAA /* Experiment.swift */,
 				EE29D90829CD825300B1FEAA /* ContainerGroup.swift */,
-				EE29D90929CD825300B1FEAA /* Device.swift */,
 				EE29D90A29CD825300B1FEAA /* HackleValue.swift */,
 				EE29D90B29CD825300B1FEAA /* TargetRule.swift */,
 				EE29D90C29CD825300B1FEAA /* Action.swift */,
@@ -2090,7 +2171,6 @@
 				EE29D9BC29CD82C100B1FEAA /* Mocks.swift */,
 				EE29D9BD29CD82C100B1FEAA /* MockUserEventProcessor.swift */,
 				EE29D9BE29CD82C100B1FEAA /* MockScheduler.swift */,
-				7E3F4FCE2AA6FE9F004E0EB0 /* MockPlatform.swift */,
 				7E70B5732AA8641900746A5F /* MockDevice.swift */,
 				7E64779E2AD50E5200971F20 /* MockHackleApp.swift */,
 				7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */,
@@ -2133,6 +2213,7 @@
 		EE29D9CB29CD82C100B1FEAA /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				B26F8C3B2E98AB7200CE544C /* Application */,
 				EE3E36A32C74EF26002A6147 /* DevTools */,
 				EE543CCB2C098D5700F64BFA /* Engagement */,
 				7E9F7E842B6CA78200A6B0B8 /* Storage */,
@@ -2862,28 +2943,11 @@
 		EE5A78F82ADCD29B005A0F9E /* Platform */ = {
 			isa = PBXGroup;
 			children = (
-				EE5A78F92ADCD2A0005A0F9E /* Helper */,
-				EE5A78FA2ADCD2A5005A0F9E /* Model */,
-				7E3F4FC02AA6FC04004E0EB0 /* Platform.swift */,
+				B21A14962E9E6AB80088EBEC /* PlatformManager.swift */,
+				B21078432E91568600D26B60 /* Device */,
+				B21078422E90C28500D26B60 /* Bundle */,
 			);
 			path = Platform;
-			sourceTree = "<group>";
-		};
-		EE5A78F92ADCD2A0005A0F9E /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
-			);
-			path = Helper;
-			sourceTree = "<group>";
-		};
-		EE5A78FA2ADCD2A5005A0F9E /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				7E3F4FC42AA6FC41004E0EB0 /* DeviceInfo.swift */,
-				7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		EE6F8F2929D496B10037C482 /* Model */ = {
@@ -3473,6 +3537,7 @@
 				EE29D9AE29CD825500B1FEAA /* HackleRemoteConfig.swift in Sources */,
 				EE80DF852A27836600FB12CC /* InAppMessage.swift in Sources */,
 				EE80E0102A2D9F5C00FB12CC /* UserEventPublisher.swift in Sources */,
+				B26EB4102E96978D003E7B13 /* ApplicationInstallStateListener.swift in Sources */,
 				EE29D95329CD825400B1FEAA /* CumulativeMetricRegistry.swift in Sources */,
 				EE29D96229CD825400B1FEAA /* WorkspaceFetcher.swift in Sources */,
 				EE29D95B29CD825400B1FEAA /* EventRepository.swift in Sources */,
@@ -3481,6 +3546,7 @@
 				EE29DAD129CDA86200B1FEAA /* HackleUserExplorerViewController.swift in Sources */,
 				EE0F33F22A665ECD009DE640 /* InAppMessageEventTracker.swift in Sources */,
 				EE29D9AD29CD825500B1FEAA /* Event.swift in Sources */,
+				B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */,
 				B2E38EA32DC488850024AA64 /* ExperimentContextualEvaluator.swift in Sources */,
 				EEA7FCC12C04AE550004F858 /* ViewLifecyclePublisher.swift in Sources */,
 				EE29D9A829CD825500B1FEAA /* ExposureEventDedupDeterminer.swift in Sources */,
@@ -3488,8 +3554,10 @@
 				7E9F7E812B6B96ED00A6B0B8 /* FileStorage.swift in Sources */,
 				EEDC58822ACC0793001E73DB /* UserContext.swift in Sources */,
 				EE29D97229CD825400B1FEAA /* Date.swift in Sources */,
+				B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */,
 				EE4D04002E5D7661007BE61A /* InAppMessageScheduleRequest.swift in Sources */,
 				EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */,
+				B21078452E91583200D26B60 /* DeviceInfo.swift in Sources */,
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
 				EE86376129ECD0B5000268DC /* DelegatingEvaluator.swift in Sources */,
 				EE29D98C29CD825400B1FEAA /* HackleValue.swift in Sources */,
@@ -3528,6 +3596,7 @@
 				EE80E00E2A2D9CC500FB12CC /* UserEventListener.swift in Sources */,
 				EE4D04452E5DA0C8007BE61A /* TriggeredInAppMessageScheduler.swift in Sources */,
 				EE5A78DD2ADAEC83005A0F9E /* Base64.swift in Sources */,
+				B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */,
 				EEAC3F312B9D54E600DC498E /* PushTokenRegistry.swift in Sources */,
 				B2DDF7672DB76603006572E2 /* ScreenUserEventDecorator.swift in Sources */,
 				EEFA31E42BC18A6D00E133F8 /* DelegatingUserEventDedupDeterminer.swift in Sources */,
@@ -3598,6 +3667,7 @@
 				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
 				EE4D037C2E5C358D007BE61A /* InAppMessageEligibilityRequest.swift in Sources */,
+				B26EB4172E9789EE003E7B13 /* ApplicationInstallDeterminer.swift in Sources */,
 				EECDF3DD2C0D611A009B2F56 /* ViewLifecycleObserver.swift in Sources */,
 				B26AC2442E4B670A00AAE56F /* HackleAppContext.swift in Sources */,
 				EE81ED952E6181060044B40E /* InAppMessageEvaluatorEvaluation.swift in Sources */,
@@ -3605,7 +3675,6 @@
 				EE29D94B29CD825400B1FEAA /* Measurement.swift in Sources */,
 				B26AC23C2E4B1CD600AAE56F /* HackleAppCore.swift in Sources */,
 				EEC184D52C6B3CBA00872A9A /* DevToolsAPI.swift in Sources */,
-				7E3F4FC12AA6FC04004E0EB0 /* Platform.swift in Sources */,
 				EE86377329ED0085000268DC /* RemoteConfigEvaluation.swift in Sources */,
 				B2C276172C7EFF6000EEAA2A /* HackleInAppMessageAction.swift in Sources */,
 				EE1F5D592A9F3593006E17EF /* HackleExperiment.swift in Sources */,
@@ -3697,7 +3766,6 @@
 				B290E6552D5592D300F68D35 /* UserTargetEvent.swift in Sources */,
 				EEFA31E62BC18A7B00E133F8 /* RemoteConfigEventDedupDeterminer.swift in Sources */,
 				EEDC587C2ACBDA78001E73DB /* WorkspaceManager.swift in Sources */,
-				7E3F4FC52AA6FC41004E0EB0 /* DeviceInfo.swift in Sources */,
 				EE4D038E2E5C6299007BE61A /* InAppMessageLayoutSelector.swift in Sources */,
 				EE4D04652E5DC3DF007BE61A /* InAppMessageTriggerEventMatcher.swift in Sources */,
 				EED6A1222A0DFC7700A8875D /* PropertyOperator.swift in Sources */,
@@ -3706,6 +3774,7 @@
 				EE29D94F29CD825400B1FEAA /* DelegatingCounter.swift in Sources */,
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,
 				EE29D98029CD825400B1FEAA /* Bucket.swift in Sources */,
+				B26F8C352E98968300CE544C /* ApplicationEventTracker.swift in Sources */,
 				EEA7FCB72C04AB510004F858 /* EngagementManager.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
 				EE4D044B2E5DA671007BE61A /* InAppMessageScheduleProcessor.swift in Sources */,
@@ -3723,6 +3792,7 @@
 				EEA7FCB32C04AB450004F858 /* Engagement.swift in Sources */,
 				EE62927C2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift in Sources */,
 				EE80E01E2A2DCD3F00FB12CC /* InAppMessageUI.swift in Sources */,
+				B26EB40E2E96974F003E7B13 /* ApplicationInstallState.swift in Sources */,
 				B28499772E8E191E00BEA926 /* ApplicationLifecycleManager.swift in Sources */,
 				EE29D95729CD825400B1FEAA /* LoggingMetricRegistry.swift in Sources */,
 				EE86377529ED008C000268DC /* RemoteConfigRequest.swift in Sources */,
@@ -3887,7 +3957,6 @@
 				EE543CC82C095E8100F64BFA /* MockScreenListener.swift in Sources */,
 				EEF895892A485AA400722CF6 /* InAppMessageTestExt.swift in Sources */,
 				EE29DA9429CD82C200B1FEAA /* MockSlotNumberCalculator.swift in Sources */,
-				7E3F4FCF2AA6FE9F004E0EB0 /* MockPlatform.swift in Sources */,
 				EE29DA6E29CD82C200B1FEAA /* ParameterConfigurationEntitySpecs.swift in Sources */,
 				EE4D04502E5DAB1B007BE61A /* MockInAppMessageSchedulerFactory.swift in Sources */,
 				EE29DA4229CD82C200B1FEAA /* Mocks.swift in Sources */,
@@ -3978,6 +4047,9 @@
 				B24234B32D89616600878096 /* MockSQLiteEventRepository.swift in Sources */,
 				EE81EDA52E61A42C0044B40E /* MockEvaluationEventRecorder.swift in Sources */,
 				B23A60FB2DB23D9F008D410A /* NotificationClickActionSpecs.swift in Sources */,
+				B26F8C3C2E98AB7200CE544C /* ApplicationInstallStateManagerSpec.swift in Sources */,
+				B26F8C3D2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift in Sources */,
+				B26F8C3E2E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift in Sources */,
 				EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */,
 				EE29DAA529CD82C200B1FEAA /* UserSpecs.swift in Sources */,
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,

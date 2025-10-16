@@ -406,10 +406,11 @@ extension HackleApp {
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
         let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
-
+        
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let device = DeviceImpl.create(keyValueRepository: globalKeyValueRepository)
+        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository)
+        let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
         let httpClient = DefaultHttpClient(sdk: sdk)
@@ -446,7 +447,8 @@ extension HackleApp {
         let targetFetcher = DefaultUserTargetEventsFetcher(config: config, httpClient: httpClient)
 
         let userManager = DefaultUserManager(
-            device: device,
+            device: platformManager.device,
+            bundleInfo: platformManager.bundleInfo,
             repository: keyValueRepositoryBySdkKey,
             cohortFetcher: cohortFetcher,
             targetFetcher: targetFetcher,
@@ -584,6 +586,15 @@ extension HackleApp {
         applicationLifecycleManager.addListener(listener: sessionManager)
         applicationLifecycleManager.addListener(listener: userManager)
         applicationLifecycleManager.addListener(listener: eventProcessor)
+        
+        // - ApplicationInstallStateManager
+        
+        let applicationInstallStateManager = ApplicationInstallStateManager(
+            platformManager: platformManager,
+            applicationInstallDeterminer:
+                applicationInstallDeterminer,
+            clock: clock
+        )
 
         // - SessionEventTracker
 
@@ -610,6 +621,16 @@ extension HackleApp {
             core: core
         )
         engagementManager.addListener(listener: engagementEventTracker)
+        
+        // - ApplicationEventTracker
+        
+        let applicationEventTracker = ApplicationEventTracker(
+            userManager: userManager,
+            core: core
+        )
+        
+        applicationLifecycleManager.addListener(listener: applicationEventTracker)
+        applicationInstallStateManager.addListener(listener: applicationEventTracker)
 
         // - InAppMessage
 
@@ -808,8 +829,9 @@ extension HackleApp {
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
-            device: device,
+            device: platformManager.device,
             inAppMessageUI: inAppMessageUI,
+            applicationInstallStateManager: applicationInstallStateManager,
             userExplorer: userExplorer
         )
         let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
