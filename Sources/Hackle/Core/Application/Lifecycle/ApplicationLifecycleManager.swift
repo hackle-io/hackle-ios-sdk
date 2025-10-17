@@ -55,19 +55,12 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
     }
     
     func publishWillEnterForegroundIfNeeded() {
-        // 현재 상태가 명시적으로 active일 때만 publish
-        // - didFinishLaunchingWithOptions: inactive
-        // - willEnterForeground: active
-        // - didBecomeActive: active
-        // - didEnterBackground: background
-        DispatchQueue.main.async {
-            if UIApplication.shared.applicationState == .active {
-                guard self.firstLaunch.get() else {
-                    return
-                }
-                self.willEnterForeground()
-            }
+        guard let _ = viewManager.topViewController(),
+              self.firstLaunch.get() else {
+            return
         }
+        
+        self.willEnterForeground()
     }
     
     func willEnterForeground() {
