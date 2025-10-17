@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 spec.name          = "Hackle"
 spec.module_name   = "Hackle"
-spec.version       = "2.56.0"
+spec.version       = "2.56.1"
 spec.summary       = "Hackle Sdk for iOS"
 spec.homepage      = "https://www.hackle.io"
 spec.license       = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
@@ -13,4 +13,5 @@ spec.resources     = "Sources/**/*.{xib,png}"
 spec.resource_bundles = { "Hackle" => ["Sources/Hackle/PrivacyInfo.xcprivacy"] }
 spec.frameworks    = "Foundation"
 spec.swift_version = "5.0"
+spec.pod_target_xcconfig = { "APPLICATION_EXTENSION_API_ONLY" => "NO" }
 end
