@@ -15,7 +15,7 @@ class DefaultViewManager: ViewManager {
     }
 
     func isOwnedView(vc: UIViewController) -> Bool {
-        if vc is HackleInAppMessageUI.ViewController {
+        if vc is HackleViewController {
             return false
         }
         let viewControllerBundlePath = Bundle(for: vc.classForCoder).bundleURL.resolvingSymlinksInPath().path

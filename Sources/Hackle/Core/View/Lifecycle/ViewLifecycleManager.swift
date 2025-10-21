@@ -28,28 +28,32 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
     }
 
     func viewWillAppear(vc: UIViewController) {
-        guard let top = viewManager.topViewController() else {
+        guard let top = viewManager.topViewController(),
+              viewManager.isOwnedView(vc: top) else {
             return
         }
         publish(lifecycle: .viewWillAppear(vc: vc, top: top))
     }
 
     func viewDidAppear(vc: UIViewController) {
-        guard let top = viewManager.topViewController() else {
+        guard let top = viewManager.topViewController(),
+              viewManager.isOwnedView(vc: top) else {
             return
         }
         publish(lifecycle: .viewDidAppear(vc: vc, top: top))
     }
 
     func viewWillDisappear(vc: UIViewController) {
-        guard let top = viewManager.topViewController() else {
+        guard let top = viewManager.topViewController(),
+              viewManager.isOwnedView(vc: top) else {
             return
         }
         publish(lifecycle: .viewWillDisappear(vc: vc, top: top))
     }
 
     func viewDidDisappear(vc: UIViewController) {
-        guard let top = viewManager.topViewController() else {
+        guard let top = viewManager.topViewController(),
+              viewManager.isOwnedView(vc: top) else {
             return
         }
         publish(lifecycle: .viewDidDisappear(vc: vc, top: top))

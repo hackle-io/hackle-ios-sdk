@@ -66,10 +66,11 @@
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
 		B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078402E90C21500D26B60 /* BundleVersionInfo.swift */; };
 		B21078452E91583200D26B60 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078442E91582F00D26B60 /* DeviceInfo.swift */; };
-		B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14962E9E6AB80088EBEC /* PlatformManager.swift */; };
+		B21992002EA63C20008BD462 /* HackleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21991FF2EA63C1B008BD462 /* HackleViewController.swift */; };
 		B21A14912E9E205A0088EBEC /* SessionUserDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14902E9E20550088EBEC /* SessionUserDecorator.swift */; };
 		B21A14932E9E20B10088EBEC /* UserDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14922E9E20AC0088EBEC /* UserDecorator.swift */; };
 		B21A14952E9E24E80088EBEC /* SessionUserDecoratorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14942E9E24E00088EBEC /* SessionUserDecoratorSpecs.swift */; };
+		B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14962E9E6AB80088EBEC /* PlatformManager.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -732,10 +733,11 @@
 		B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeSpecs.swift; sourceTree = "<group>"; };
 		B21078402E90C21500D26B60 /* BundleVersionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleVersionInfo.swift; sourceTree = "<group>"; };
 		B21078442E91582F00D26B60 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
-		B21A14962E9E6AB80088EBEC /* PlatformManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformManager.swift; sourceTree = "<group>"; };
+		B21991FF2EA63C1B008BD462 /* HackleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleViewController.swift; sourceTree = "<group>"; };
 		B21A14902E9E20550088EBEC /* SessionUserDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserDecorator.swift; sourceTree = "<group>"; };
 		B21A14922E9E20AC0088EBEC /* UserDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDecorator.swift; sourceTree = "<group>"; };
 		B21A14942E9E24E00088EBEC /* SessionUserDecoratorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserDecoratorSpecs.swift; sourceTree = "<group>"; };
+		B21A14962E9E6AB80088EBEC /* PlatformManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformManager.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -3035,6 +3037,7 @@
 		EE80E0142A2DC64500FB12CC /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				B21991FF2EA63C1B008BD462 /* HackleViewController.swift */,
 				7E46662E2B30096500B3CDCF /* Notification */,
 				EE29DAA929CD83C400B1FEAA /* ExplorerUI */,
 				EE80E0152A2DC67000FB12CC /* InAppMessageUI */,
@@ -3604,6 +3607,7 @@
 				EE4D040C2E5D7679007BE61A /* InAppMessageScheduleActionDeterminer.swift in Sources */,
 				EE80E00E2A2D9CC500FB12CC /* UserEventListener.swift in Sources */,
 				EE4D04452E5DA0C8007BE61A /* TriggeredInAppMessageScheduler.swift in Sources */,
+				B21992002EA63C20008BD462 /* HackleViewController.swift in Sources */,
 				EE5A78DD2ADAEC83005A0F9E /* Base64.swift in Sources */,
 				B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */,
 				EEAC3F312B9D54E600DC498E /* PushTokenRegistry.swift in Sources */,
