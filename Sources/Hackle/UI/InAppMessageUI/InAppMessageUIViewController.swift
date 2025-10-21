@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-    class ViewController: UIViewController {
+    class ViewController: UIViewController, HackleViewController {
         var context: InAppMessagePresentationContext
         var messageView: InAppMessageView
         var containerView: ContainerView

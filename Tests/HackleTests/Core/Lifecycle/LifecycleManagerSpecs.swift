@@ -29,6 +29,7 @@ class LifecycleManagerSpecs: QuickSpec {
             }
 
             viewManager.top = top
+            viewManager.isOwnedView = true
             sut.viewWillAppear(vc: vc)
             verify(exactly: 1) {
                 listener.onLifecycleMock
@@ -53,6 +54,7 @@ class LifecycleManagerSpecs: QuickSpec {
             }
 
             viewManager.top = top
+            viewManager.isOwnedView = true
             sut.viewDidAppear(vc: vc)
             verify(exactly: 1) {
                 listener.onLifecycleMock
@@ -77,6 +79,7 @@ class LifecycleManagerSpecs: QuickSpec {
             }
 
             viewManager.top = top
+            viewManager.isOwnedView = true
             sut.viewWillDisappear(vc: vc)
             verify(exactly: 1) {
                 listener.onLifecycleMock
@@ -101,6 +104,7 @@ class LifecycleManagerSpecs: QuickSpec {
             }
 
             viewManager.top = top
+            viewManager.isOwnedView = true
             sut.viewDidDisappear(vc: vc)
             verify(exactly: 1) {
                 listener.onLifecycleMock
