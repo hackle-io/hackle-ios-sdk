@@ -10,6 +10,7 @@ extension WKWebView {
         case getAppSdkKey = "getAppSdkKey"
         case getAppMode = "getAppMode"
         case getInvocationType = "getInvocationType"
+        case getWebViewConfig = "getWebViewConfig"
     }
 
     private struct AssociatedKeys {
@@ -33,7 +34,8 @@ extension WKWebView {
         }
     }
 
-    private func bridgeScript(sdkKey: String, mode: HackleAppMode) -> WKUserScript {
+    private func bridgeScript(sdkKey: String, mode: HackleAppMode, webViewConfig: HackleWebViewConfig) -> WKUserScript {
+        let webViewConfigString = webViewConfigJsonString(webViewConfig)
         let source = """
                      window.\(name) = {
                          \(ReservedKey.getAppSdkKey): function() {
@@ -44,6 +46,9 @@ extension WKWebView {
                          },
                          \(ReservedKey.getInvocationType): function() {
                              return 'prompt'
+                         },
+                         \(ReservedKey.getWebViewConfig): function() {
+                             return '\(webViewConfigString)'
                          }
                      }
                      """
@@ -53,14 +58,23 @@ extension WKWebView {
             forMainFrameOnly: true
         )
     }
+    
+    private func webViewConfigJsonString(_ webViewConfig: HackleWebViewConfig) -> String {
+        guard let json = try? JSONSerialization.data(withJSONObject: webViewConfig, options: []),
+              let jsonString = String(data:json, encoding: .utf8) else {
+            return "" // TODO: fix
+        }
+        
+        return jsonString
+    }
 
-    func prepareForHackleWebBridge(invocator: HackleInvocator, sdkKey: String, mode: HackleAppMode, uiDelegate: WKUIDelegate? = nil) {
+    func prepareForHackleWebBridge(invocator: HackleInvocator, sdkKey: String, mode: HackleAppMode, uiDelegate: WKUIDelegate? = nil, webViewConfig: HackleWebViewConfig) {
         let userContentController = configuration.userContentController
         let userScripts = userContentController.userScripts.filter {
             !$0.source.hasPrefix(identifier)
         }
         userContentController.removeAllUserScripts()
-        userContentController.addUserScript(bridgeScript(sdkKey: sdkKey, mode: mode))
+        userContentController.addUserScript(bridgeScript(sdkKey: sdkKey, mode: mode, webViewConfig: webViewConfig))
         userScripts.forEach {
             userContentController.addUserScript($0)
         }

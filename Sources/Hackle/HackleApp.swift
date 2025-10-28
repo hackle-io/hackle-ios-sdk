@@ -289,8 +289,8 @@ import WebKit
     /// - Parameters:
     ///   - webView: Target WebView
     ///   - uiDelegate: Optional UI delegate for the WebView
-    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil) {
-        webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate)
+    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
+        webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate, webViewConfig: webViewConfig)
     }
 
     /// Returns the HackleInvocator instance.
