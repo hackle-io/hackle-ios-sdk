@@ -32,7 +32,7 @@ jobs:
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' \
-                | xcbeautify --renderer github-actions 
+                | xcbeautify --renderer github-actions --quiet 
 
       - name: Test
         run: |
@@ -44,12 +44,12 @@ jobs:
                 -test-iterations 3 \
                 -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
-                | xcbeautify --renderer github-actions --report junit --report-path junit-report.xml
+                | xcbeautify --renderer github-actions --quiet --report junit
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
           name: Test Results
-          path: junit-report.xml
+          path: build/reports/junit.xml
           reporter: java-junit
