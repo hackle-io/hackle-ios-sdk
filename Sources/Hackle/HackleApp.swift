@@ -287,8 +287,9 @@ import WebKit
     /// Injects the supplied object into this WebView.
     ///
     /// - Parameters:
-    ///   - webView: Target WebView
-    ///   - uiDelegate: Optional UI delegate for the WebView
+    ///   - webView: The target WKWebView instance to integrate with Hackle SDK
+    ///   - uiDelegate: Optional UI delegate for the WebView. If not provided, the WebView's existing delegate will be used
+    ///   - webViewConfig: Configuration for WebView integration behavior. Defaults to ``HackleWebViewConfig/DEFAULT``
     @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
         webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate, webViewConfig: webViewConfig)
     }
