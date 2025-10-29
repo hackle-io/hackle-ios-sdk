@@ -18,7 +18,7 @@ import Foundation
     /// Default configuration with all tracking disabled.
     @objc public static let DEFAULT: HackleWebViewConfig = builder().build()
 
-    init(_ builder: HackleWebViewConfigBuilder) {
+    internal init(_ builder: HackleWebViewConfigBuilder) {
         self.automaticScreenTracking = builder.automaticScreenTracking
         self.automaticEngagementTracking = builder.automaticEngagementTracking
         super.init()
