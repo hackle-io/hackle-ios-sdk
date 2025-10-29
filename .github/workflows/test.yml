@@ -3,11 +3,11 @@ name: test
 on:
   pull_request:
   workflow_dispatch:
-  	
+
 permissions:
   checks: write
   pull-requests: write
-  
+
 jobs:
   ios-sdk-test:
     runs-on: macos-latest
@@ -57,4 +57,4 @@ jobs:
           files: build/reports/junit.xml
           check_name: Test Results
           comment_title: Test Results
-          comment_mode: update last
+          comment_mode: changes
