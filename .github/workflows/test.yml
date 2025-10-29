@@ -32,7 +32,7 @@ jobs:
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.5' \
-                | xcbeautify
+                | xcbeautify --renderer github-actions 
 
       - name: Test
         run: |
@@ -44,7 +44,7 @@ jobs:
                 -test-iterations 3 \
                 -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
-                | xcbeautify
+                | xcbeautify --renderer github-actions
 
       - name: Generate JUnit Report
         if: success() || failure()
