@@ -44,11 +44,7 @@ jobs:
                 -test-iterations 3 \
                 -parallel-testing-enabled NO \
                 -resultBundlePath TestResults \
-                | xcbeautify --renderer github-actions
-
-      - name: Generate JUnit Report
-        if: success() || failure()
-        run: xcbeautify --report junit --report-path junit-report.xml TestResults.xcresult
+                | xcbeautify --renderer github-actions --report junit --report-path junit-report.xml
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v1
