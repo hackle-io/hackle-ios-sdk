@@ -3,6 +3,10 @@ name: test
 on:
   pull_request:
   workflow_dispatch:
+  	
+permissions:
+  checks: write
+  pull-requests: write
   
 jobs:
   ios-sdk-test:
@@ -47,9 +51,10 @@ jobs:
                 | xcbeautify --renderer github-actions --quiet --report junit
 
       - name: Publish Test Report
-        uses: dorny/test-reporter@v1
+        uses: EnricoMi/publish-unit-test-result-action/macos@v2
         if: success() || failure()
         with:
-          name: Test Results
-          path: build/reports/junit.xml
-          reporter: java-junit
+          files: build/reports/junit.xml
+          check_name: Test Results
+          comment_title: Test Results
+          comment_mode: update last
