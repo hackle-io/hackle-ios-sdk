@@ -60,9 +60,9 @@ extension WKWebView {
     }
     
     private func webViewConfigJsonString(_ webViewConfig: HackleWebViewConfig) -> String {
-        guard let json = try? JSONSerialization.data(withJSONObject: webViewConfig, options: []),
-              let jsonString = String(data:json, encoding: .utf8) else {
-            return "" // TODO: fix
+        guard let jsonData = try? JSONEncoder().encode(webViewConfig),
+              let jsonString = String(data: jsonData, encoding: .utf8) else {
+            return "{}"
         }
         
         return jsonString
@@ -82,5 +82,18 @@ extension WKWebView {
         let uiDelegate = uiDelegate ?? self.uiDelegate
         _uiDelegate = HackleUIDelegate(invocator: invocator, uiDelegate: uiDelegate)
         self.uiDelegate = _uiDelegate
+    }
+}
+
+extension HackleWebViewConfig: Encodable {
+    enum CodingKeys: String, CodingKey {
+        case automaticScreenTracking
+        case automaticEngagementTracking
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(automaticScreenTracking, forKey: .automaticScreenTracking)
+        try container.encode(automaticEngagementTracking, forKey: .automaticEngagementTracking)
     }
 }

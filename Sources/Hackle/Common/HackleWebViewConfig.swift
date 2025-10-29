@@ -8,8 +8,8 @@
 import Foundation
 
 @objc public class HackleWebViewConfig: NSObject {
-    let automaticScreenTracking: Bool
-    let automaticEngagementTracking: Bool
+    @objc public let automaticScreenTracking: Bool
+    @objc public let automaticEngagementTracking: Bool
     
     @objc public static let DEFAULT: HackleWebViewConfig = builder().build()
 
