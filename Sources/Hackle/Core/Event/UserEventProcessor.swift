@@ -118,8 +118,8 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
             if self.flushingJob != nil {
                 return
             }
-            self.flushingJob = self.eventFlushScheduler.schedulePeriodically(delay: self.eventFlushInterval, period: self.eventFlushInterval) {
-                self.flush()
+            self.flushingJob = self.eventFlushScheduler.schedulePeriodically(delay: self.eventFlushInterval, period: self.eventFlushInterval) { [weak self] in
+                self?.flush()
             }
             Log.info("UserEventProcessor started. Flush events every \(self.eventFlushInterval)s")
         }

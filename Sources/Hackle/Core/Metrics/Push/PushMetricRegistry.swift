@@ -36,8 +36,8 @@ class PushMetricRegistry: MetricRegistry {
             }
 
             let delay = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: self.pushInterval) + 0.001
-            self.publishingJob = self.scheduler.schedulePeriodically(delay: delay, period: self.pushInterval) {
-                self.publish()
+            self.publishingJob = self.scheduler.schedulePeriodically(delay: delay, period: self.pushInterval) { [weak self] in
+                self?.publish()
             }
 
             Log.info("\(self.name) started. Publish metrics every \(self.pushInterval.format())")
