@@ -113,13 +113,15 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
 
     func start() {
         lock.write { [weak self] in
-            if self?.flushingJob != nil {
+            guard let self = self else { return }
+
+            if self.flushingJob != nil {
                 return
             }
-            self?.flushingJob = eventFlushScheduler.schedulePeriodically(delay: eventFlushInterval, period: eventFlushInterval) {
+            self.flushingJob = self.eventFlushScheduler.schedulePeriodically(delay: self.eventFlushInterval, period: self.eventFlushInterval) { [weak self] in
                 self?.flush()
             }
-            Log.info("UserEventProcessor started. Flush events every \(eventFlushInterval)s")
+            Log.info("UserEventProcessor started. Flush events every \(self.eventFlushInterval)s")
         }
     }
 
