@@ -29,17 +29,18 @@ class PushMetricRegistry: MetricRegistry {
 
     final func start() {
         lock.write { [weak self] in
+            guard let self = self else { return }
 
-            if self?.publishingJob != nil {
+            if self.publishingJob != nil {
                 return
             }
 
-            let delay = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: pushInterval) + 0.001
-            self?.publishingJob = scheduler.schedulePeriodically(delay: delay, period: pushInterval) {
+            let delay = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: self.pushInterval) + 0.001
+            self.publishingJob = self.scheduler.schedulePeriodically(delay: delay, period: self.pushInterval) { [weak self] in
                 self?.publish()
             }
 
-            Log.info("\(self?.name ?? "PushMetricRegistry") started. Publish metrics every \(pushInterval.format())")
+            Log.info("\(self.name) started. Publish metrics every \(self.pushInterval.format())")
         }
 
     }
