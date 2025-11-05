@@ -18,101 +18,220 @@ class LifecycleManagerSpecs: QuickSpec {
             sut.addListener(listener: listener)
         }
 
+        describe("viewWillAppear") {
+            context("when top is nil") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    viewManager.top = nil
+                    viewManager.isOwnedView = true
 
-        it("viewWillAppear") {
-            let vc = UIViewController()
-            let top = UIViewController()
+                    sut.viewWillAppear(vc: vc)
 
-            sut.viewWillAppear(vc: vc)
-            verify(exactly: 0) {
-                listener.onLifecycleMock
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
 
-            viewManager.top = top
-            sut.viewWillAppear(vc: vc)
-            verify(exactly: 1) {
-                listener.onLifecycleMock
+            context("when isOwnedView is false") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = false
+
+                    sut.viewWillAppear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .viewWillAppear(v, t) = lifecycle {
-                expect(v).to(beIdenticalTo(vc))
-                expect(t).to(beIdenticalTo(top))
-            } else {
-                fail("viewWillAppear")
+
+            context("when top is valid and isOwnedView is true") {
+                it("should call listener with correct parameters") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = true
+
+                    sut.viewWillAppear(vc: vc)
+
+                    verify(exactly: 1) {
+                        listener.onLifecycleMock
+                    }
+                    let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
+                    if case let .viewWillAppear(v, t) = lifecycle {
+                        expect(v).to(beIdenticalTo(vc))
+                        expect(t).to(beIdenticalTo(top))
+                    } else {
+                        fail("viewWillAppear")
+                    }
+                    expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
+                }
             }
-            expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
         }
 
-        it("viewDidAppear") {
-            let vc = UIViewController()
-            let top = UIViewController()
+        describe("viewDidAppear") {
+            context("when top is nil") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    viewManager.top = nil
+                    viewManager.isOwnedView = true
 
-            sut.viewDidAppear(vc: vc)
-            verify(exactly: 0) {
-                listener.onLifecycleMock
+                    sut.viewDidAppear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
 
-            viewManager.top = top
-            sut.viewDidAppear(vc: vc)
-            verify(exactly: 1) {
-                listener.onLifecycleMock
+            context("when isOwnedView is false") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = false
+
+                    sut.viewDidAppear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .viewDidAppear(v, t) = lifecycle {
-                expect(v).to(beIdenticalTo(vc))
-                expect(t).to(beIdenticalTo(top))
-            } else {
-                fail("viewDidAppear")
+
+            context("when top is valid and isOwnedView is true") {
+                it("should call listener with correct parameters") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = true
+
+                    sut.viewDidAppear(vc: vc)
+
+                    verify(exactly: 1) {
+                        listener.onLifecycleMock
+                    }
+                    let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
+                    if case let .viewDidAppear(v, t) = lifecycle {
+                        expect(v).to(beIdenticalTo(vc))
+                        expect(t).to(beIdenticalTo(top))
+                    } else {
+                        fail("viewDidAppear")
+                    }
+                    expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
+                }
             }
-            expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
         }
 
-        it("viewWillDisappear") {
-            let vc = UIViewController()
-            let top = UIViewController()
+        describe("viewWillDisappear") {
+            context("when top is nil") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    viewManager.top = nil
+                    viewManager.isOwnedView = true
 
-            sut.viewWillDisappear(vc: vc)
-            verify(exactly: 0) {
-                listener.onLifecycleMock
+                    sut.viewWillDisappear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
 
-            viewManager.top = top
-            sut.viewWillDisappear(vc: vc)
-            verify(exactly: 1) {
-                listener.onLifecycleMock
+            context("when isOwnedView is false") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = false
+
+                    sut.viewWillDisappear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .viewWillDisappear(v, t) = lifecycle {
-                expect(v).to(beIdenticalTo(vc))
-                expect(t).to(beIdenticalTo(top))
-            } else {
-                fail("viewWillDisappear")
+
+            context("when top is valid and isOwnedView is true") {
+                it("should call listener with correct parameters") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = true
+
+                    sut.viewWillDisappear(vc: vc)
+
+                    verify(exactly: 1) {
+                        listener.onLifecycleMock
+                    }
+                    let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
+                    if case let .viewWillDisappear(v, t) = lifecycle {
+                        expect(v).to(beIdenticalTo(vc))
+                        expect(t).to(beIdenticalTo(top))
+                    } else {
+                        fail("viewWillDisappear")
+                    }
+                    expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
+                }
             }
-            expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
         }
 
-        it("viewDidDisappear") {
-            let vc = UIViewController()
-            let top = UIViewController()
+        describe("viewDidDisappear") {
+            context("when top is nil") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    viewManager.top = nil
+                    viewManager.isOwnedView = true
 
-            sut.viewDidDisappear(vc: vc)
-            verify(exactly: 0) {
-                listener.onLifecycleMock
+                    sut.viewDidDisappear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
 
-            viewManager.top = top
-            sut.viewDidDisappear(vc: vc)
-            verify(exactly: 1) {
-                listener.onLifecycleMock
+            context("when isOwnedView is false") {
+                it("should not call listener") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = false
+
+                    sut.viewDidDisappear(vc: vc)
+
+                    verify(exactly: 0) {
+                        listener.onLifecycleMock
+                    }
+                }
             }
-            let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
-            if case let .viewDidDisappear(v, t) = lifecycle {
-                expect(v).to(beIdenticalTo(vc))
-                expect(t).to(beIdenticalTo(top))
-            } else {
-                fail("viewDidDisappear")
+
+            context("when top is valid and isOwnedView is true") {
+                it("should call listener with correct parameters") {
+                    let vc = UIViewController()
+                    let top = UIViewController()
+                    viewManager.top = top
+                    viewManager.isOwnedView = true
+
+                    sut.viewDidDisappear(vc: vc)
+
+                    verify(exactly: 1) {
+                        listener.onLifecycleMock
+                    }
+                    let (lifecycle, timestamp) = listener.onLifecycleMock.firstInvokation().arguments
+                    if case let .viewDidDisappear(v, t) = lifecycle {
+                        expect(v).to(beIdenticalTo(vc))
+                        expect(t).to(beIdenticalTo(top))
+                    } else {
+                        fail("viewDidDisappear")
+                    }
+                    expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
+                }
             }
-            expect(timestamp).to(equal(Date(timeIntervalSince1970: 42)))
         }
     }
 }
