@@ -8,7 +8,7 @@
 import UIKit
 
 
-class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, HackleUserExplorerContainer {
+class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, HackleUserExplorerContainer, HackleViewController {
 
     @IBOutlet weak var dismissButton: UIImageView!
 
