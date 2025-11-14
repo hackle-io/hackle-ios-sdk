@@ -398,6 +398,7 @@ class InAppMessageDto: Codable {
     var timeUnit: String
     var startEpochTimeMillis: Int64?
     var endEpochTimeMillis: Int64?
+    var timetable: TimetableDto?
     var status: String
     var eventTriggerRules: [EventTriggerRuleDto]
     var eventFrequencyCap: EventFrequencyCapDto?
@@ -405,6 +406,17 @@ class InAppMessageDto: Codable {
     var evaluateContext: EvaluateContextDto?
     var targetContext: TargetContextDto
     var messageContext: MessageContextDto
+    
+    class TimetableDto: Codable {
+        var type: String
+        var slots: [TimetableSlotDto]
+    }
+    
+    class TimetableSlotDto: Codable {
+        var dayOfWeek: String
+        var startMillisInclusive: Int64
+        var endMillisExclusive: Int64
+    }
 
     class EventTriggerRuleDto: Codable {
         var eventKey: String
@@ -579,6 +591,33 @@ extension InAppMessageDto {
         default:
             return nil
         }
+        
+        let timetable: InAppMessage.Timetable
+        switch self.timetable?.type {
+        case "ALL":
+            timetable = .all
+            break
+        case "CUSTOM":
+            guard let timetableDto = self.timetable else {
+                timetable = .all
+                break
+            }
+            let slots: [InAppMessage.TimetableSlot] = timetableDto.slots.compactMap { slot in
+                guard let day = DayOfWeek(rawValue: slot.dayOfWeek) else {
+                    Log.debug("Invalid dayOfWeek[\(slot.dayOfWeek)]. Skipping slot.")
+                    return nil
+                }
+                return InAppMessage.TimetableSlot(
+                    dayOfWeek: day,
+                    startMillisInclusive: slot.startMillisInclusive,
+                    endMillisExclusive: slot.endMillisExclusive
+                )
+            }
+            timetable = slots.isEmpty ? .all : .custom(slots: slots)
+        default:
+            timetable = .all
+        }
+
 
         guard let messageContext = messageContext.toMessageContextOrNil() else {
             return nil
@@ -593,6 +632,7 @@ extension InAppMessageDto {
             key: key,
             status: status,
             period: period,
+            timetable: timetable,
             eventTrigger: InAppMessage.EventTrigger(
                 rules: eventTriggerRules,
                 frequencyCap: eventFrequencyCap,

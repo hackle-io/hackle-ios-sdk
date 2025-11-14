@@ -123,6 +123,8 @@
 		B29C53672DCB3675001724B2 /* InAppMessageExtSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */; };
 		B29C53692DCB3785001724B2 /* HackleInAppMessageActionTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */; };
 		B29C536B2DCB3820001724B2 /* HacklePushSubscriptionStatusSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */; };
+		B2A403242EC702E6007CBEE3 /* TimeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A403232EC702E2007CBEE3 /* TimeUtil.swift */; };
+		B2A403262EC70329007CBEE3 /* DayOfWeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A403252EC70324007CBEE3 /* DayOfWeek.swift */; };
 		B2A88D882E209F3D00475B73 /* UserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */; };
 		B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */; };
 		B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */; };
@@ -793,6 +795,8 @@
 		B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageExtSpecs.swift; sourceTree = "<group>"; };
 		B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageActionTypeSpecs.swift; sourceTree = "<group>"; };
 		B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStatusSpecs.swift; sourceTree = "<group>"; };
+		B2A403232EC702E2007CBEE3 /* TimeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeUtil.swift; sourceTree = "<group>"; };
+		B2A403252EC70324007CBEE3 /* DayOfWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayOfWeek.swift; sourceTree = "<group>"; };
 		B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserEventBackoffControllerSpec.swift; sourceTree = "<group>"; };
 		B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserEventBackoffController.swift; sourceTree = "<group>"; };
@@ -1942,8 +1946,10 @@
 			isa = PBXGroup;
 			children = (
 				EE29D8ED29CD825300B1FEAA /* Date.swift */,
+				B2A403252EC70324007CBEE3 /* DayOfWeek.swift */,
 				EE29D8EE29CD825300B1FEAA /* Clock.swift */,
 				EE29D8EF29CD825300B1FEAA /* TimeUnit.swift */,
+				B2A403232EC702E2007CBEE3 /* TimeUtil.swift */,
 			);
 			path = Time;
 			sourceTree = "<group>";
@@ -3578,6 +3584,7 @@
 				EE29D97229CD825400B1FEAA /* Date.swift in Sources */,
 				B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */,
 				EE4D04002E5D7661007BE61A /* InAppMessageScheduleRequest.swift in Sources */,
+				B2A403262EC70329007CBEE3 /* DayOfWeek.swift in Sources */,
 				EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */,
 				B21078452E91583200D26B60 /* DeviceInfo.swift in Sources */,
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
@@ -3688,6 +3695,7 @@
 				EE4D045D2E5DC37B007BE61A /* InAppMessageTrigger.swift in Sources */,
 				EE29D99729CD825500B1FEAA /* OverrideResolver.swift in Sources */,
 				EE29D96429CD825400B1FEAA /* DefaultRemoteConfig.swift in Sources */,
+				B2A403242EC702E6007CBEE3 /* TimeUtil.swift in Sources */,
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,
 				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
