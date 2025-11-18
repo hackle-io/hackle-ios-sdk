@@ -132,7 +132,7 @@ class TimeUtilSpec: QuickSpec {
 
                     // Expected: 2025-11-03T00:00:00.000Z
                     let expectedMidnight = Date(timeIntervalSince1970: TimeInterval(1762128000000) / 1000.0)
-                    expect(midnight.timeIntervalSince1970).to(beCloseTo(expectedMidnight.timeIntervalSince1970, within: 1.0))
+                    expect(midnight.timeIntervalSince1970).to(equal(expectedMidnight.timeIntervalSince1970))
                 }
 
                 it("should normalize different times to same day midnight") {
@@ -144,8 +144,8 @@ class TimeUtilSpec: QuickSpec {
                     let midnightAfternoon = TimeUtil.midnight(afternoon)
                     let midnightEvening = TimeUtil.midnight(evening)
 
-                    expect(midnightMorning.timeIntervalSince1970).to(beCloseTo(midnightAfternoon.timeIntervalSince1970, within: 1.0))
-                    expect(midnightAfternoon.timeIntervalSince1970).to(beCloseTo(midnightEvening.timeIntervalSince1970, within: 1.0))
+                    expect(midnightMorning.timeIntervalSince1970).to(equal(midnightAfternoon.timeIntervalSince1970))
+                    expect(midnightAfternoon.timeIntervalSince1970).to(equal(midnightEvening.timeIntervalSince1970))
                 }
             }
         }
