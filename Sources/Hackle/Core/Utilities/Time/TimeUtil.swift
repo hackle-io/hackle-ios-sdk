@@ -7,15 +7,15 @@
 
 import Foundation
 
-class TimeUtil {
+enum TimeUtil {
     private static var utcCalendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
-            if let utcTimeZone = TimeZone(secondsFromGMT: 0) {
-                calendar.timeZone = utcTimeZone
-            }
+        if let utcTimeZone = TimeZone(secondsFromGMT: 0) {
+            calendar.timeZone = utcTimeZone
+        }
         return calendar
     }()
-    
+
     static func dayOfWeek(_ timestamp: Date) -> DayOfWeek? {
         let dayOfWeek = utcCalendar.component(.weekday, from: timestamp)
 
@@ -28,10 +28,11 @@ class TimeUtil {
         case 6: return .friday
         case 7: return .saturday
         default:
+            Log.error("Invalid weekday component: \(dayOfWeek)")
             return nil
         }
     }
-    
+
     static func midnight(_ timestamp: Date) -> Date {
         return utcCalendar.startOfDay(for: timestamp)
     }

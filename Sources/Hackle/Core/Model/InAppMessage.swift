@@ -93,16 +93,19 @@ extension InAppMessage {
         }
         
         func within(date: Date) -> Bool {
-            let dayOfWeek = TimeUtil.dayOfWeek(date)
+            guard let dayOfWeek = TimeUtil.dayOfWeek(date) else {
+                return false
+            }
+
             if self.dayOfWeek != dayOfWeek {
                 return false
             }
-            
+
             let midnight = TimeUtil.midnight(date)
             let startTimestampInclusive = midnight.addingTimeInterval(TimeInterval(startMillisInclusive) * 0.001)
             let endTimestampExclusive = midnight.addingTimeInterval(TimeInterval(endMillisExclusive) * 0.001)
             let timeRange = startTimestampInclusive..<endTimestampExclusive
-            
+
             return timeRange.contains(date)
         }
     }
