@@ -83,10 +83,10 @@ extension InAppMessage {
     
     class TimetableSlot {
         let dayOfWeek: DayOfWeek
-        let startMillisInclusive: Int64
-        let endMillisExclusive: Int64
+        let startMillisInclusive: TimeInterval
+        let endMillisExclusive: TimeInterval
         
-        init(dayOfWeek: DayOfWeek, startMillisInclusive: Int64, endMillisExclusive: Int64) {
+        init(dayOfWeek: DayOfWeek, startMillisInclusive: TimeInterval, endMillisExclusive: TimeInterval) {
             self.dayOfWeek = dayOfWeek
             self.startMillisInclusive = startMillisInclusive
             self.endMillisExclusive = endMillisExclusive

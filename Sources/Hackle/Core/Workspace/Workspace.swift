@@ -591,38 +591,12 @@ extension InAppMessageDto {
         default:
             return nil
         }
-        
-        let timetable: InAppMessage.Timetable
-        switch self.timetable?.type {
-        case "ALL":
-            timetable = .all
-            break
-        case "CUSTOM":
-            guard let timetableDto = self.timetable else {
-                timetable = .all
-                break
-            }
-            let slots: [InAppMessage.TimetableSlot] = timetableDto.slots.compactMap { slot in
-                guard let day = DayOfWeek(rawValue: slot.dayOfWeek) else {
-                    Log.debug("Invalid dayOfWeek[\(slot.dayOfWeek)]. Skipping slot.")
-                    return nil
-                }
-                return InAppMessage.TimetableSlot(
-                    dayOfWeek: day,
-                    startMillisInclusive: slot.startMillisInclusive,
-                    endMillisExclusive: slot.endMillisExclusive
-                )
-            }
-            timetable = slots.isEmpty ? .all : .custom(slots: slots)
-        default:
-            timetable = .all
-        }
-
 
         guard let messageContext = messageContext.toMessageContextOrNil() else {
             return nil
         }
-
+        
+        let timetable = self.timetable?.toTimetable() ?? .all
         let eventTriggerRules = eventTriggerRules.map({ $0.toTriggerRule() })
         let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
         let eventTriggerDelay = eventTriggerDelay?.toDelayOrNil() ?? InAppMessage.EventTrigger.Delay.default
@@ -645,6 +619,38 @@ extension InAppMessageDto {
     }
 }
 
+extension InAppMessageDto.TimetableDto {
+    func toTimetable() -> InAppMessage.Timetable {
+        let timetable: InAppMessage.Timetable
+        switch type {
+        case "ALL":
+            timetable = .all
+            break
+        case "CUSTOM":
+            let slots: [InAppMessage.TimetableSlot] = self.slots.compactMap { slot in
+                return slot.toTimetableSlot()
+            }
+            timetable = slots.isEmpty ? .all : .custom(slots: slots)
+        default:
+            timetable = .all
+        }
+        return timetable
+    }
+}
+
+extension InAppMessageDto.TimetableSlotDto {
+    func toTimetableSlot() -> InAppMessage.TimetableSlot? {
+        guard let day = DayOfWeek(rawValue: dayOfWeek) else {
+            Log.debug("Invalid dayOfWeek[\(dayOfWeek)]. Skipping slot.")
+            return nil
+        }
+        return InAppMessage.TimetableSlot(
+            dayOfWeek: day,
+            startMillisInclusive: TimeInterval(self.startMillisInclusive),
+            endMillisExclusive: TimeInterval(self.endMillisExclusive)
+        )
+    }
+}
 
 extension InAppMessageDto.EventTriggerRuleDto {
     func toTriggerRule() -> InAppMessage.EventTrigger.Rule {

@@ -273,8 +273,8 @@ class InAppMessageSpec: QuickSpec {
                     it("should match \(day.rawValue) correctly") {
                         let slot = InAppMessage.TimetableSlot(
                             dayOfWeek: day,
-                            startMillisInclusive: Int64(businessHours.lowerBound),
-                            endMillisExclusive: Int64(businessHours.upperBound)
+                            startMillisInclusive: TimeInterval(businessHours.lowerBound),
+                            endMillisExclusive: TimeInterval(businessHours.upperBound)
                         )
 
                         // Get a timestamp for this day at noon
