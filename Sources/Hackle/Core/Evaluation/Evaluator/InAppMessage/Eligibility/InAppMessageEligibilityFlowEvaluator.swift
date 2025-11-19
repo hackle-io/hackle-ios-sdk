@@ -110,6 +110,19 @@ class PeriodInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEva
     }
 }
 
+class TimetableInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
+    func evaluateInAppMessage(
+        request: InAppMessageEligibilityRequest,
+        context: EvaluatorContext,
+        nextFlow: InAppMessageEligibilityFlow
+    ) throws -> InAppMessageEligibilityEvaluation? {
+        guard request.inAppMessage.timetable.within(date: request.timestamp) else {
+            return InAppMessageEligibilityEvaluation.ineligible(request: request, context: context, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE)
+        }
+        return try nextFlow.evaluate(request: request, context: context)
+    }
+}
+
 class TargetInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
     private let targetMatcher: InAppMessageMatcher
 

@@ -18,6 +18,7 @@ class DefaultInAppMessageEligibilityFlowFactory: InAppMessageEligibilityFlowFact
             DraftInAppMessageEligibilityFlowEvaluator(),
             PausedInAppMessageEligibilityFlowEvaluator(),
             PeriodInAppMessageEligibilityFlowEvaluator(),
+            TimetableInAppMessageEligibilityFlowEvaluator(),
             TargetInAppMessageEligibilityFlowEvaluator(targetMatcher: context.get(InAppMessageTargetMatcher.self)!)
         )
 

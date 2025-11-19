@@ -398,6 +398,7 @@ class InAppMessageDto: Codable {
     var timeUnit: String
     var startEpochTimeMillis: Int64?
     var endEpochTimeMillis: Int64?
+    var timetable: TimetableDto?
     var status: String
     var eventTriggerRules: [EventTriggerRuleDto]
     var eventFrequencyCap: EventFrequencyCapDto?
@@ -405,6 +406,17 @@ class InAppMessageDto: Codable {
     var evaluateContext: EvaluateContextDto?
     var targetContext: TargetContextDto
     var messageContext: MessageContextDto
+    
+    class TimetableDto: Codable {
+        var type: String
+        var slots: [TimetableSlotDto]
+    }
+    
+    class TimetableSlotDto: Codable {
+        var dayOfWeek: String
+        var startMillisInclusive: Int64
+        var endMillisExclusive: Int64
+    }
 
     class EventTriggerRuleDto: Codable {
         var eventKey: String
@@ -583,7 +595,8 @@ extension InAppMessageDto {
         guard let messageContext = messageContext.toMessageContextOrNil() else {
             return nil
         }
-
+        
+        let timetable = self.timetable?.toTimetableOrNil() ?? .all
         let eventTriggerRules = eventTriggerRules.map({ $0.toTriggerRule() })
         let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
         let eventTriggerDelay = eventTriggerDelay?.toDelayOrNil() ?? InAppMessage.EventTrigger.Delay.default
@@ -593,6 +606,7 @@ extension InAppMessageDto {
             key: key,
             status: status,
             period: period,
+            timetable: timetable,
             eventTrigger: InAppMessage.EventTrigger(
                 rules: eventTriggerRules,
                 frequencyCap: eventFrequencyCap,
@@ -605,6 +619,35 @@ extension InAppMessageDto {
     }
 }
 
+extension InAppMessageDto.TimetableDto {
+    func toTimetableOrNil() -> InAppMessage.Timetable? {
+        switch type {
+        case "ALL":
+            return .all
+        case "CUSTOM":
+            let slots: [InAppMessage.TimetableSlot] = self.slots.compactMap {
+                $0.toTimetableSlotOrNil()
+            }
+            return slots.isEmpty ? nil : .custom(slots: slots)
+        default:
+            return nil
+        }
+    }
+}
+
+extension InAppMessageDto.TimetableSlotDto {
+    func toTimetableSlotOrNil() -> InAppMessage.TimetableSlot? {
+        guard let dayOfWeek: DayOfWeek = Enums.parseOrNil(rawValue: dayOfWeek) else {
+            return nil
+        }
+        let timeUnit = TimeUnit.milliseconds
+        return InAppMessage.TimetableSlot(
+            dayOfWeek: dayOfWeek,
+            startSecondsInclusive: timeUnit.convert(Double(self.startMillisInclusive), to: .seconds),
+            endSecondsExclusive: timeUnit.convert(Double(self.endMillisExclusive), to: .seconds)
+        )
+    }
+}
 
 extension InAppMessageDto.EventTriggerRuleDto {
     func toTriggerRule() -> InAppMessage.EventTrigger.Rule {

@@ -28,6 +28,7 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
                 .isDecisionWith(DraftInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(PausedInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
+                .isDecisionWith(TimetableInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(TargetInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(LayoutResolveInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
@@ -47,6 +48,7 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
                 .isDecisionWith(DraftInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(PausedInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
+                .isDecisionWith(TimetableInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(TargetInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
