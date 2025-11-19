@@ -16,7 +16,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         it("valid") {
             let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
 
-            expect(workspace.inAppMessages.count) == 1
+            expect(workspace.inAppMessages.count) == 10
 
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
             expect(iam.id) == 1
@@ -117,6 +117,144 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].innerButtons[0].button.action.actionType) == .close
             expect(iam.messageContext.messages[0].innerButtons[0].alignment.horizontal) == .right
             expect(iam.messageContext.messages[0].innerButtons[0].alignment.vertical) == .bottom
+
+        }
+
+        it("timetable - custom with multiple slots") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
+
+            switch iam.timetable {
+            case .custom(let slots):
+                expect(slots.count) == 2
+                expect(slots[0].dayOfWeek) == .monday
+                expect(slots[0].startSecondsInclusive) == 32400
+                expect(slots[0].endSecondsExclusive) == 64800
+                expect(slots[1].dayOfWeek) == .friday
+                expect(slots[1].startSecondsInclusive) == 68400
+                expect(slots[1].endSecondsExclusive) == 79200
+            default:
+                fail("Expected custom timetable for iam key 1")
+            }
+        }
+
+        it("timetable - all type") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 2)!
+
+            switch iam.timetable {
+            case .all:
+                expect(true) == true
+            default:
+                fail("Expected all timetable for iam key 2")
+            }
+        }
+
+        it("timetable - missing field defaults to all") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 3)!
+
+            switch iam.timetable {
+            case .all:
+                expect(true) == true
+            default:
+                fail("Expected all timetable for iam key 3 (missing timetable)")
+            }
+        }
+
+        it("timetable - invalid dayOfWeek skipped") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 4)!
+
+            switch iam.timetable {
+            case .custom(let slots):
+                expect(slots.count) == 1
+                expect(slots[0].dayOfWeek) == .tuesday
+            default:
+                fail("Expected custom timetable for iam key 4")
+            }
+        }
+
+        it("timetable - all invalid slots fallback to all") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 5)!
+
+            switch iam.timetable {
+            case .all:
+                expect(true) == true
+            default:
+                fail("Expected all timetable for iam key 5 (all invalid slots)")
+            }
+        }
+
+        it("timetable - empty slots fallback to all") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 6)!
+
+            switch iam.timetable {
+            case .all:
+                expect(true) == true
+            default:
+                fail("Expected all timetable for iam key 6 (empty slots)")
+            }
+        }
+
+        it("timetable - null value defaults to all") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 7)!
+
+            switch iam.timetable {
+            case .all:
+                expect(true) == true
+            default:
+                fail("Expected all timetable for iam key 7 (null timetable)")
+            }
+        }
+
+        it("timetable - unknown type defaults to all") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 8)!
+
+            switch iam.timetable {
+            case .all:
+                expect(true) == true
+            default:
+                fail("Expected all timetable for iam key 8 (unknown type)")
+            }
+        }
+
+        it("timetable - boundary time full day") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 9)!
+
+            switch iam.timetable {
+            case .custom(let slots):
+                expect(slots.count) == 1
+                expect(slots[0].dayOfWeek) == .wednesday
+                expect(slots[0].startSecondsInclusive) == 0
+                expect(slots[0].endSecondsExclusive) == 86400
+            default:
+                fail("Expected custom timetable for iam key 9")
+            }
+        }
+
+        it("timetable - all days of week") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 10)!
+
+            switch iam.timetable {
+            case .custom(let slots):
+                expect(slots.count) == 7
+                expect(slots[0].dayOfWeek) == .monday
+                expect(slots[1].dayOfWeek) == .tuesday
+                expect(slots[2].dayOfWeek) == .wednesday
+                expect(slots[3].dayOfWeek) == .thursday
+                expect(slots[4].dayOfWeek) == .friday
+                expect(slots[5].dayOfWeek) == .saturday
+                expect(slots[6].dayOfWeek) == .sunday
+            default:
+                fail("Expected custom timetable for iam key 10")
+            }
         }
 
         it("invalid") {

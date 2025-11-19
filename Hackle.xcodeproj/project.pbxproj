@@ -123,11 +123,16 @@
 		B29C53672DCB3675001724B2 /* InAppMessageExtSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */; };
 		B29C53692DCB3785001724B2 /* HackleInAppMessageActionTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */; };
 		B29C536B2DCB3820001724B2 /* HacklePushSubscriptionStatusSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */; };
+		B2A403242EC702E6007CBEE3 /* TimeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A403232EC702E2007CBEE3 /* TimeUtil.swift */; };
+		B2A403262EC70329007CBEE3 /* DayOfWeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A403252EC70324007CBEE3 /* DayOfWeek.swift */; };
 		B2A88D882E209F3D00475B73 /* UserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */; };
 		B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */; };
 		B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */; };
 		B2A88D8E2E20DC4D00475B73 /* SQLiteEventRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */; };
 		B2C0527D2E55919800D30787 /* UserDefaultKeyValueRepositorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0527C2E55918E00D30787 /* UserDefaultKeyValueRepositorySpecs.swift */; };
+		B2C0A68F2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0A68E2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift */; };
+		B2C0A6912ECC0324006564C9 /* InAppMessageSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0A6902ECC0324006564C9 /* InAppMessageSpec.swift */; };
+		B2C0A6932ECC0336006564C9 /* TimeUtilSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0A6922ECC0336006564C9 /* TimeUtilSpec.swift */; };
 		B2C276112C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */; };
 		B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */; };
 		B2C276152C7EFE6D00EEAA2A /* HackleInAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */; };
@@ -793,11 +798,16 @@
 		B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageExtSpecs.swift; sourceTree = "<group>"; };
 		B29C53682DCB377B001724B2 /* HackleInAppMessageActionTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageActionTypeSpecs.swift; sourceTree = "<group>"; };
 		B29C536A2DCB3818001724B2 /* HacklePushSubscriptionStatusSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionStatusSpecs.swift; sourceTree = "<group>"; };
+		B2A403232EC702E2007CBEE3 /* TimeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeUtil.swift; sourceTree = "<group>"; };
+		B2A403252EC70324007CBEE3 /* DayOfWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayOfWeek.swift; sourceTree = "<group>"; };
 		B2A88D872E209F3100475B73 /* UserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserEventBackoffControllerSpec.swift; sourceTree = "<group>"; };
 		B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteEventRepositorySpec.swift; sourceTree = "<group>"; };
 		B2C0527C2E55918E00D30787 /* UserDefaultKeyValueRepositorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeyValueRepositorySpecs.swift; sourceTree = "<group>"; };
+		B2C0A68E2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift; sourceTree = "<group>"; };
+		B2C0A6902ECC0324006564C9 /* InAppMessageSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageSpec.swift; sourceTree = "<group>"; };
+		B2C0A6922ECC0336006564C9 /* TimeUtilSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeUtilSpec.swift; sourceTree = "<group>"; };
 		B2C276102C7EF27100EEAA2A /* HackleInAppMessageDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageDelegate.swift; sourceTree = "<group>"; };
 		B2C276122C7EF48D00EEAA2A /* HackleInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageView.swift; sourceTree = "<group>"; };
 		B2C276142C7EFE6D00EEAA2A /* HackleInAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessage.swift; sourceTree = "<group>"; };
@@ -1942,8 +1952,10 @@
 			isa = PBXGroup;
 			children = (
 				EE29D8ED29CD825300B1FEAA /* Date.swift */,
+				B2A403252EC70324007CBEE3 /* DayOfWeek.swift */,
 				EE29D8EE29CD825300B1FEAA /* Clock.swift */,
 				EE29D8EF29CD825300B1FEAA /* TimeUnit.swift */,
+				B2A403232EC702E2007CBEE3 /* TimeUtil.swift */,
 			);
 			path = Time;
 			sourceTree = "<group>";
@@ -2387,6 +2399,7 @@
 		EE29D9F029CD82C100B1FEAA /* Time */ = {
 			isa = PBXGroup;
 			children = (
+				B2C0A6922ECC0336006564C9 /* TimeUtilSpec.swift */,
 				EE29D9F129CD82C100B1FEAA /* TimeUnitSpecs.swift */,
 				EE29D9F229CD82C100B1FEAA /* ClockSpecs.swift */,
 				EEE636782A47458600428681 /* FixedClock.swift */,
@@ -2409,6 +2422,7 @@
 		EE29D9F529CD82C100B1FEAA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B2C0A6902ECC0324006564C9 /* InAppMessageSpec.swift */,
 				EE29D9F629CD82C100B1FEAA /* HackleValueSpecs.swift */,
 				EE29D9F729CD82C100B1FEAA /* ParameterConfigurationEntitySpecs.swift */,
 				EE789E2529EFE7EB0088D8A6 /* ExperimentSpecs.swift */,
@@ -2653,6 +2667,7 @@
 		EE4D03832E5C5C47007BE61A /* Eligibility */ = {
 			isa = PBXGroup;
 			children = (
+				B2C0A68E2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift */,
 				EE81EDAC2E61B10E0044B40E /* DefaultInAppMessageEligibilityFlowFactorySpecs.swift */,
 				EEF895862A48586500722CF6 /* InAppMessageEligibilityEvaluatorSpecs.swift */,
 				EEF8958E2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift */,
@@ -3578,6 +3593,7 @@
 				EE29D97229CD825400B1FEAA /* Date.swift in Sources */,
 				B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */,
 				EE4D04002E5D7661007BE61A /* InAppMessageScheduleRequest.swift in Sources */,
+				B2A403262EC70329007CBEE3 /* DayOfWeek.swift in Sources */,
 				EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */,
 				B21078452E91583200D26B60 /* DeviceInfo.swift in Sources */,
 				EE80E0262A2DD5EC00FB12CC /* InAppMessageUIModalView.swift in Sources */,
@@ -3688,6 +3704,7 @@
 				EE4D045D2E5DC37B007BE61A /* InAppMessageTrigger.swift in Sources */,
 				EE29D99729CD825500B1FEAA /* OverrideResolver.swift in Sources */,
 				EE29D96429CD825400B1FEAA /* DefaultRemoteConfig.swift in Sources */,
+				B2A403242EC702E6007CBEE3 /* TimeUtil.swift in Sources */,
 				EE86376D29ED0046000268DC /* ExperimentRequest.swift in Sources */,
 				EE0F33F42A665ED7009DE640 /* InAppMessageEventHandler.swift in Sources */,
 				EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */,
@@ -3927,6 +3944,7 @@
 				EE29DA6329CD82C200B1FEAA /* MockEventRepository.swift in Sources */,
 				B29C535F2DCB2F1A001724B2 /* DefaultRemoteConfigSpecs.swift in Sources */,
 				EE5A78E12ADBECFE005A0F9E /* UserCohortSpecs.swift in Sources */,
+				B2C0A68F2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift in Sources */,
 				B29C53692DCB3785001724B2 /* HackleInAppMessageActionTypeSpecs.swift in Sources */,
 				EE29DA8F29CD82C200B1FEAA /* MockActionResolver.swift in Sources */,
 				EEDC58462AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift in Sources */,
@@ -3988,6 +4006,7 @@
 				EE29DA4229CD82C200B1FEAA /* Mocks.swift in Sources */,
 				B29C535C2DCB2A4E001724B2 /* InAppMessageButtonViewSpecs.swift in Sources */,
 				EEF8958F2A496F8500722CF6 /* InAppMessageEligibilityFlowEvaluatorSpecs.swift in Sources */,
+				B2C0A6932ECC0336006564C9 /* TimeUtilSpec.swift in Sources */,
 				EE29DA6629CD82C200B1FEAA /* MockUserManager.swift in Sources */,
 				EE4D03952E5C8956007BE61A /* InAppMessageLayoutRequestSpecs.swift in Sources */,
 				EEAC3F432B9D6D6800DC498E /* DefaultPushTokenManagerSpecs.swift in Sources */,
@@ -4050,6 +4069,7 @@
 				EEFA31E82BC18E0F00E133F8 /* MockUserEventDedupDeterminer.swift in Sources */,
 				EE4D04192E5D7C14007BE61A /* MockInAppMessageScheduleActionDeterminer.swift in Sources */,
 				EE29DA5129CD82C200B1FEAA /* NoopTimerSpecs.swift in Sources */,
+				B2C0A6912ECC0324006564C9 /* InAppMessageSpec.swift in Sources */,
 				EE29DA7C29CD82C200B1FEAA /* MockSegmentMatcher.swift in Sources */,
 				EE4B810E2C007C7F00719C41 /* MockPushEventTracker.swift in Sources */,
 				EEDC58632ACB1BF8001E73DB /* CohortConditionMatcherSpecs.swift in Sources */,
