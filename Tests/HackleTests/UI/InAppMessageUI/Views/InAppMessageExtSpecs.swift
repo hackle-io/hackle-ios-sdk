@@ -27,6 +27,7 @@ class InAppMessageExtSpecs: QuickSpec {
                     key: 1,
                     status: .active,
                     period: .always,
+                    timetable: .all,
                     eventTrigger: InAppMessage.EventTrigger(
                         rules: [],
                         frequencyCap: nil,

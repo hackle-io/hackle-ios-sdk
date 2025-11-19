@@ -15,6 +15,7 @@ class InAppMessage: HackleInAppMessage {
     let key: Key
     let status: Status
     let period: Period
+    let timetable: Timetable
     let eventTrigger: EventTrigger
     let evaluateContext: EvaluateContext
     let targetContext: TargetContext
@@ -25,6 +26,7 @@ class InAppMessage: HackleInAppMessage {
         key: Key,
         status: Status,
         period: Period,
+        timetable: Timetable,
         eventTrigger: EventTrigger,
         evaluateContext: EvaluateContext,
         targetContext: TargetContext,
@@ -34,6 +36,7 @@ class InAppMessage: HackleInAppMessage {
         self.key = key
         self.status = status
         self.period = period
+        self.timetable = timetable
         self.eventTrigger = eventTrigger
         self.evaluateContext = evaluateContext
         self.targetContext = targetContext
@@ -61,6 +64,49 @@ extension InAppMessage {
             case .range(let startInclusive, let endExclusive):
                 return startInclusive <= date && date < endExclusive
             }
+        }
+    }
+    
+    enum Timetable {
+        case all
+        case custom(slots: [TimetableSlot])
+        
+        func within(date: Date) -> Bool {
+            switch self {
+            case .all:
+                return true
+            case .custom(slots: let slots):
+                return slots.contains(where: { $0.within(date: date) })
+            }
+        }
+    }
+    
+    class TimetableSlot {
+        let dayOfWeek: DayOfWeek
+        let startSecondsInclusive: TimeInterval
+        let endSecondsExclusive: TimeInterval
+        
+        init(dayOfWeek: DayOfWeek, startSecondsInclusive: TimeInterval, endSecondsExclusive: TimeInterval) {
+            self.dayOfWeek = dayOfWeek
+            self.startSecondsInclusive = startSecondsInclusive
+            self.endSecondsExclusive = endSecondsExclusive
+        }
+        
+        func within(date: Date) -> Bool {
+            guard let dayOfWeek = TimeUtil.dayOfWeek(date) else {
+                return false
+            }
+
+            if self.dayOfWeek != dayOfWeek {
+                return false
+            }
+
+            let midnight = TimeUtil.midnight(date)
+            let startTimestampInclusive = midnight.addingTimeInterval(startSecondsInclusive)
+            let endTimestampExclusive = midnight.addingTimeInterval(endSecondsExclusive)
+            let timeRange = startTimestampInclusive..<endTimestampExclusive
+
+            return timeRange.contains(date)
         }
     }
 
