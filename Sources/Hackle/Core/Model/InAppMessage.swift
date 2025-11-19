@@ -83,13 +83,13 @@ extension InAppMessage {
     
     class TimetableSlot {
         let dayOfWeek: DayOfWeek
-        let startMillisInclusive: TimeInterval
-        let endMillisExclusive: TimeInterval
+        let startSecondsInclusive: TimeInterval
+        let endSecondsExclusive: TimeInterval
         
-        init(dayOfWeek: DayOfWeek, startMillisInclusive: TimeInterval, endMillisExclusive: TimeInterval) {
+        init(dayOfWeek: DayOfWeek, startSecondsInclusive: TimeInterval, endSecondsExclusive: TimeInterval) {
             self.dayOfWeek = dayOfWeek
-            self.startMillisInclusive = startMillisInclusive
-            self.endMillisExclusive = endMillisExclusive
+            self.startSecondsInclusive = startSecondsInclusive
+            self.endSecondsExclusive = endSecondsExclusive
         }
         
         func within(date: Date) -> Bool {
@@ -102,8 +102,8 @@ extension InAppMessage {
             }
 
             let midnight = TimeUtil.midnight(date)
-            let startTimestampInclusive = midnight.addingTimeInterval(TimeInterval(startMillisInclusive) * 0.001)
-            let endTimestampExclusive = midnight.addingTimeInterval(TimeInterval(endMillisExclusive) * 0.001)
+            let startTimestampInclusive = midnight.addingTimeInterval(startSecondsInclusive)
+            let endTimestampExclusive = midnight.addingTimeInterval(endSecondsExclusive)
             let timeRange = startTimestampInclusive..<endTimestampExclusive
 
             return timeRange.contains(date)

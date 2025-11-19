@@ -637,14 +637,14 @@ extension InAppMessageDto.TimetableDto {
 
 extension InAppMessageDto.TimetableSlotDto {
     func toTimetableSlotOrNil() -> InAppMessage.TimetableSlot? {
-        guard let day = DayOfWeek(rawValue: dayOfWeek) else {
-            Log.debug("Invalid dayOfWeek[\(dayOfWeek)]. Skipping slot.")
+        guard let dayOfWeek: DayOfWeek = Enums.parseOrNil(rawValue: dayOfWeek) else {
             return nil
         }
+        let timeUnit = TimeUnit.milliseconds
         return InAppMessage.TimetableSlot(
-            dayOfWeek: day,
-            startMillisInclusive: TimeInterval(self.startMillisInclusive),
-            endMillisExclusive: TimeInterval(self.endMillisExclusive)
+            dayOfWeek: dayOfWeek,
+            startSecondsInclusive: timeUnit.convert(Double(self.startMillisInclusive), to: .seconds),
+            endSecondsExclusive: timeUnit.convert(Double(self.endMillisExclusive), to: .seconds)
         )
     }
 }

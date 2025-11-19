@@ -128,11 +128,11 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             case .custom(let slots):
                 expect(slots.count) == 2
                 expect(slots[0].dayOfWeek) == .monday
-                expect(slots[0].startMillisInclusive) == 32400000
-                expect(slots[0].endMillisExclusive) == 64800000
+                expect(slots[0].startSecondsInclusive) == 32400
+                expect(slots[0].endSecondsExclusive) == 64800
                 expect(slots[1].dayOfWeek) == .friday
-                expect(slots[1].startMillisInclusive) == 68400000
-                expect(slots[1].endMillisExclusive) == 79200000
+                expect(slots[1].startSecondsInclusive) == 68400
+                expect(slots[1].endSecondsExclusive) == 79200
             default:
                 fail("Expected custom timetable for iam key 1")
             }
@@ -231,8 +231,8 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             case .custom(let slots):
                 expect(slots.count) == 1
                 expect(slots[0].dayOfWeek) == .wednesday
-                expect(slots[0].startMillisInclusive) == 0
-                expect(slots[0].endMillisExclusive) == 86400000
+                expect(slots[0].startSecondsInclusive) == 0
+                expect(slots[0].endSecondsExclusive) == 86400
             default:
                 fail("Expected custom timetable for iam key 9")
             }

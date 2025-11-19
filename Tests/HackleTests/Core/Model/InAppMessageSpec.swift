@@ -100,8 +100,8 @@ class InAppMessageSpec: QuickSpec {
             context("when timetable is CUSTOM with single slot") {
                 let mondaySlot = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,  // 09:00
-                    endMillisExclusive: 18 * 60 * 60 * 1000    // 18:00
+                    startSecondsInclusive: 9 * 60 * 60,  // 09:00
+                    endSecondsExclusive: 18 * 60 * 60    // 18:00
                 )
                 let timetable = InAppMessage.Timetable.custom(slots: [mondaySlot])
 
@@ -121,20 +121,20 @@ class InAppMessageSpec: QuickSpec {
             context("when timetable is CUSTOM with multiple slots") {
                 let mondayMorning = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,   // 09:00
-                    endMillisExclusive: 12 * 60 * 60 * 1000     // 12:00
+                    startSecondsInclusive: 9 * 60 * 60,   // 09:00
+                    endSecondsExclusive: 12 * 60 * 60     // 12:00
                 )
 
                 let mondayAfternoon = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 14 * 60 * 60 * 1000,  // 14:00
-                    endMillisExclusive: 18 * 60 * 60 * 1000     // 18:00
+                    startSecondsInclusive: 14 * 60 * 60,  // 14:00
+                    endSecondsExclusive: 18 * 60 * 60     // 18:00
                 )
 
                 let fridayEvening = InAppMessage.TimetableSlot(
                     dayOfWeek: .friday,
-                    startMillisInclusive: 19 * 60 * 60 * 1000,  // 19:00
-                    endMillisExclusive: 22 * 60 * 60 * 1000     // 22:00
+                    startSecondsInclusive: 19 * 60 * 60,  // 19:00
+                    endSecondsExclusive: 22 * 60 * 60     // 22:00
                 )
 
                 let timetable = InAppMessage.Timetable.custom(slots: [
@@ -173,8 +173,8 @@ class InAppMessageSpec: QuickSpec {
             context("when testing basic slot matching") {
                 let slot = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,  // 09:00
-                    endMillisExclusive: 18 * 60 * 60 * 1000    // 18:00
+                    startSecondsInclusive: 9 * 60 * 60,  // 09:00
+                    endSecondsExclusive: 18 * 60 * 60    // 18:00
                 )
 
                 it("should return true when day and time match") {
@@ -205,8 +205,8 @@ class InAppMessageSpec: QuickSpec {
             context("when testing boundary conditions") {
                 let slot = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,  // 09:00
-                    endMillisExclusive: 18 * 60 * 60 * 1000    // 18:00
+                    startSecondsInclusive: 9 * 60 * 60,  // 09:00
+                    endSecondsExclusive: 18 * 60 * 60    // 18:00
                 )
 
                 it("should include start time (inclusive)") {
@@ -237,8 +237,8 @@ class InAppMessageSpec: QuickSpec {
             context("when testing all-day slot") {
                 let allDaySlot = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 0,                     // 00:00:00.000
-                    endMillisExclusive: 24 * 60 * 60 * 1000      // 24:00:00.000 (next day 00:00)
+                    startSecondsInclusive: 0,              // 00:00:00.000
+                    endSecondsExclusive: 24 * 60 * 60      // 24:00:00.000 (next day 00:00)
                 )
 
                 it("should match midnight") {
@@ -267,14 +267,14 @@ class InAppMessageSpec: QuickSpec {
             }
 
             context("when testing different days of week") {
-                let businessHours = 9 * 60 * 60 * 1000..<18 * 60 * 60 * 1000
+                let businessHours = 9 * 60 * 60..<18 * 60 * 60
 
                 for day in DayOfWeek.allCases {
                     it("should match \(day.rawValue) correctly") {
                         let slot = InAppMessage.TimetableSlot(
                             dayOfWeek: day,
-                            startMillisInclusive: TimeInterval(businessHours.lowerBound),
-                            endMillisExclusive: TimeInterval(businessHours.upperBound)
+                            startSecondsInclusive: TimeInterval(businessHours.lowerBound),
+                            endSecondsExclusive: TimeInterval(businessHours.upperBound)
                         )
 
                         // Get a timestamp for this day at noon

@@ -48,8 +48,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
             context("when timetable is CUSTOM with single slot") {
                 let mondayBusinessHours = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,  // 09:00
-                    endMillisExclusive: 18 * 60 * 60 * 1000    // 18:00
+                    startSecondsInclusive: 9 * 60 * 60,  // 09:00
+                    endSecondsExclusive: 18 * 60 * 60    // 18:00
                 )
 
                 it("should proceed when timestamp is within slot") {
@@ -143,14 +143,14 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
             context("when timetable has multiple slots") {
                 let mondayMorning = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,   // 09:00
-                    endMillisExclusive: 12 * 60 * 60 * 1000     // 12:00
+                    startSecondsInclusive: 9 * 60 * 60,   // 09:00
+                    endSecondsExclusive: 12 * 60 * 60     // 12:00
                 )
 
                 let tuesdayAfternoon = InAppMessage.TimetableSlot(
                     dayOfWeek: .tuesday,
-                    startMillisInclusive: 14 * 60 * 60 * 1000,  // 14:00
-                    endMillisExclusive: 17 * 60 * 60 * 1000     // 17:00
+                    startSecondsInclusive: 14 * 60 * 60,  // 14:00
+                    endSecondsExclusive: 17 * 60 * 60     // 17:00
                 )
 
                 it("should proceed when matching first slot") {
@@ -221,8 +221,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
             context("when testing boundary conditions") {
                 let slot = InAppMessage.TimetableSlot(
                     dayOfWeek: .monday,
-                    startMillisInclusive: 9 * 60 * 60 * 1000,  // 09:00
-                    endMillisExclusive: 18 * 60 * 60 * 1000    // 18:00
+                    startSecondsInclusive: 9 * 60 * 60,  // 09:00
+                    endSecondsExclusive: 18 * 60 * 60    // 18:00
                 )
 
                 it("should include start time (inclusive)") {
