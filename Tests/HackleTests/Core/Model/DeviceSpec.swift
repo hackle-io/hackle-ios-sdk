@@ -30,6 +30,31 @@ class DeviceSpec : QuickSpec {
             expect(device.id) == deviceId
             self.assertDevicePropertiesStructure(properties: device.properties)
         }
+
+        it("screenWidth and screenHeight should be positive values") {
+            let deviceId = UUID().uuidString
+            let device = DeviceImpl(deviceId: deviceId)
+
+            let screenWidth = device.properties["screenWidth"] as? Int
+            let screenHeight = device.properties["screenHeight"] as? Int
+
+            expect(screenWidth).notTo(beNil())
+            expect(screenHeight).notTo(beNil())
+            expect(screenWidth).to(beGreaterThan(0))
+            expect(screenHeight).to(beGreaterThan(0))
+        }
+
+        it("screen dimensions should use native bounds") {
+            let deviceId = UUID().uuidString
+            let device = DeviceImpl(deviceId: deviceId)
+
+            let screenWidth = device.properties["screenWidth"] as? Int
+            let screenHeight = device.properties["screenHeight"] as? Int
+
+            // Native bounds는 보통 points bounds보다 크거나 같음 (scale factor 때문)
+            expect(screenWidth).to(beGreaterThanOrEqualTo(Int(UIUtils.currentScreen.bounds.width)))
+            expect(screenHeight).to(beGreaterThanOrEqualTo(Int(UIUtils.currentScreen.bounds.height)))
+        }
     }
 
     func assertDevicePropertiesStructure(properties: [String: Any]) {
