@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-
 class UIUtils {
 
     static var application: UIApplication? {
@@ -57,6 +56,13 @@ class UIUtils {
         } else {
             return application?.keyWindow
         }
+    }
+
+    static var currentScreen: UIScreen {
+        if #available(iOS 13.0, *) {
+            return activeWindowScene?.screen ?? UIScreen.main
+        }
+        return UIScreen.main
     }
 
     static var topViewController: UIViewController? {
