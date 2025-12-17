@@ -28,29 +28,17 @@ class UIUtils {
 
     @available(iOS 13.0, *)
     static var activeWindowScene: UIWindowScene? {
-        var windowScene: UIWindowScene? = nil
-        var activeWindowScene: UIWindowScene? = nil
-
         guard let application = application else {
             return nil
         }
-
-        for scene in application.connectedScenes {
-            guard let scene = scene as? UIWindowScene else {
-                continue
-            }
-            windowScene = scene
-            if scene.activationState == .foregroundActive {
-                activeWindowScene = windowScene
-            }
-        }
-
-        return activeWindowScene ?? windowScene
+        
+        let windowScenes = application.connectedScenes.compactMap { $0 as? UIWindowScene }
+        return windowScenes.first { $0.activationState == .foregroundActive } ?? windowScenes.first
     }
 
     static var keyWindow: UIWindow? {
         if #available(iOS 13, *) {
-            return application?.windows.first { window in
+            return activeWindowScene?.windows.first { window in
                 window.isKeyWindow
             }
         } else {
