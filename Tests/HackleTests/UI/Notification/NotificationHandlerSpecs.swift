@@ -49,10 +49,23 @@ class NotificationHandlerSpecs: QuickSpec {
                 expect(mockReceiver.receivedTimestamp).to(equal(testTimestamp))
             }
 
-            it("handlePushClickAction이 deepLink일 때 urlHandler.open을 호출한다") {
+            it("handlePushClickAction이 deepLink이고 https scheme이면 urlHandler.open을 호출한다") {
                 let testData = mockNotificationData(
                     clickAction: .deepLink,
                     link: "https://www.hackle.io"
+                )
+
+                handler.handlePushClickAction(notificationData: testData)
+
+                verify(exactly: 1) {
+                    mockUrlHandler.openMock
+                }
+            }
+            
+            it("handlePushClickAction이 deepLink이고 custom scheme이면 urlHandler.open을 호출한다") {
+                let testData = mockNotificationData(
+                    clickAction: .deepLink,
+                    link: "hackleapp://www.hackle.io"
                 )
 
                 handler.handlePushClickAction(notificationData: testData)
