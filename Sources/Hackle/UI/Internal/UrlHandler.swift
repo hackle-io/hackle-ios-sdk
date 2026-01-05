@@ -14,6 +14,8 @@ protocol UrlHandler {
 }
 
 class ApplicationUrlHandler: UrlHandler {
+    static let shared: UrlHandler = ApplicationUrlHandler()
+    
     func open(url: URL) {
         guard let scheme = url.scheme else {
             return

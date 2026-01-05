@@ -641,7 +641,7 @@ extension HackleApp {
         let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
             core: core
         )
-        let urlHandler = ApplicationUrlHandler()
+        let urlHandler = ApplicationUrlHandler.shared
         let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
