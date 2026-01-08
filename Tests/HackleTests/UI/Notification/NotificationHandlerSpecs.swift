@@ -27,21 +27,78 @@ class NotificationHandlerSpecs: QuickSpec {
         describe("NotificationHandler") {
             var handler: NotificationHandler!
             var mockReceiver: MockNotificationDataReceiver!
+            var mockUrlHandler: MockUrlHandler!
 
             beforeEach {
-                handler = NotificationHandler(dispatchQueue: DispatchQueue(label: "test.queue"))
+                mockUrlHandler = MockUrlHandler()
+                handler = NotificationHandler(
+                    dispatchQueue: DispatchQueue(label: "test.queue"),
+                    urlHandler: mockUrlHandler
+                )
                 mockReceiver = MockNotificationDataReceiver()
                 handler.setNotificationDataReceiver(receiver: mockReceiver)
             }
 
             it("trackPushClickEvent가 receiver.onNotificationDataReceived를 호출한다") {
-                let testData = mockNotificationData(imageUrl: nil)
+                let testData = mockNotificationData()
                 let testTimestamp = Date()
 
                 handler.trackPushClickEvent(notificationData: testData, timestamp: testTimestamp)
 
                 expect(mockReceiver.receivedData?.pushMessageId).to(equal(1))
                 expect(mockReceiver.receivedTimestamp).to(equal(testTimestamp))
+            }
+
+            it("handlePushClickAction이 deepLink이고 https scheme이면 urlHandler.open을 호출한다") {
+                let testData = mockNotificationData(
+                    clickAction: .deepLink,
+                    link: "https://www.hackle.io"
+                )
+
+                handler.handlePushClickAction(notificationData: testData)
+
+                verify(exactly: 1) {
+                    mockUrlHandler.openMock
+                }
+            }
+            
+            it("handlePushClickAction이 deepLink이고 custom scheme이면 urlHandler.open을 호출한다") {
+                let testData = mockNotificationData(
+                    clickAction: .deepLink,
+                    link: "hackleapp://www.hackle.io"
+                )
+
+                handler.handlePushClickAction(notificationData: testData)
+
+                verify(exactly: 1) {
+                    mockUrlHandler.openMock
+                }
+            }
+
+            it("handlePushClickAction이 appOpen일 때 urlHandler.open을 호출하지 않는다") {
+                let testData = mockNotificationData(
+                    clickAction: .appOpen,
+                    link: ""
+                )
+
+                handler.handlePushClickAction(notificationData: testData)
+
+                verify(exactly: 0) {
+                    mockUrlHandler.openMock
+                }
+            }
+
+            it("handlePushClickAction에서 link가 비어있으면 urlHandler.open을 호출하지 않는다") {
+                let testData = mockNotificationData(
+                    clickAction: .deepLink,
+                    link: ""
+                )
+
+                handler.handlePushClickAction(notificationData: testData)
+
+                verify(exactly: 0) {
+                    mockUrlHandler.openMock
+                }
             }
             
             it("should return a attachment on download success") {
@@ -104,7 +161,11 @@ class NotificationHandlerSpecs: QuickSpec {
                 expect(resultAttachment).to(beNil())
             }
             
-            func mockNotificationData(imageUrl: String?) -> NotificationData {
+            func mockNotificationData(
+                imageUrl: String? = nil,
+                clickAction: NotificationClickAction = .appOpen,
+                link: String = ""
+            ) -> NotificationData {
                 NotificationData(
                     workspaceId: 123,
                     environmentId: 456,
@@ -114,8 +175,8 @@ class NotificationHandlerSpecs: QuickSpec {
                     pushMessageDeliveryId: 4,
                     showForeground: true,
                     imageUrl: imageUrl,
-                    clickAction: .appOpen,
-                    link: "",
+                    clickAction: clickAction,
+                    link: link,
                     journeyId: nil,
                     journeyKey: nil,
                     journeyNodeId: nil,

@@ -83,6 +83,7 @@
 		B24234B32D89616600878096 /* MockSQLiteEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */; };
 		B24234B52D8A646E00878096 /* DatabaseDDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24234B42D8A646900878096 /* DatabaseDDL.swift */; };
 		B24250262D9A2B7800CF27FC /* PIIEventExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250252D9A2B7800CF27FC /* PIIEventExtensions.swift */; };
+		B249CF9C2EF390E0008969AD /* ApplicationUrlHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B249CF9B2EF390E0008969AD /* ApplicationUrlHandlerSpecs.swift */; };
 		B25603112E015B04004794B9 /* HackleSubscriptionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25603102E015B04004794B9 /* HackleSubscriptionOperations.swift */; };
 		B256031A2E029668004794B9 /* HackleSubscriptionSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */; };
 		B256031C2E0B9336004794B9 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B256031B2E0B9334004794B9 /* Screen.swift */; };
@@ -759,6 +760,7 @@
 		B24234B22D89615B00878096 /* MockSQLiteEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSQLiteEventRepository.swift; sourceTree = "<group>"; };
 		B24234B42D8A646900878096 /* DatabaseDDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDDL.swift; sourceTree = "<group>"; };
 		B24250252D9A2B7800CF27FC /* PIIEventExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PIIEventExtensions.swift; sourceTree = "<group>"; };
+		B249CF9B2EF390E0008969AD /* ApplicationUrlHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationUrlHandlerSpecs.swift; sourceTree = "<group>"; };
 		B25603102E015B04004794B9 /* HackleSubscriptionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSubscriptionOperations.swift; sourceTree = "<group>"; };
 		B25603192E029655004794B9 /* HackleSubscriptionSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSubscriptionSpecs.swift; sourceTree = "<group>"; };
 		B256031B2E0B9334004794B9 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
@@ -1720,6 +1722,7 @@
 		EE0F34062A66962F009DE640 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				B249CF9B2EF390E0008969AD /* ApplicationUrlHandlerSpecs.swift */,
 				B23C91EC2EF165DB009F42BA /* HackleUIUtilsSpec.swift */,
 				EE0F34072A669659009DE640 /* MockUrlHandler.swift */,
 				EE543CDC2C09AA8600F64BFA /* MockViewManager.swift */,
@@ -3897,6 +3900,7 @@
 				EE81EDA32E61A3220044B40E /* MockExperimentFlowFactory.swift in Sources */,
 				B256031A2E029668004794B9 /* HackleSubscriptionSpecs.swift in Sources */,
 				EE29DA7E29CD82C200B1FEAA /* VersionSpecs.swift in Sources */,
+				B249CF9C2EF390E0008969AD /* ApplicationUrlHandlerSpecs.swift in Sources */,
 				EEF895992A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift in Sources */,
 				EE789E3E29F0F9B50088D8A6 /* RemoteConfigRequestSpecs.swift in Sources */,
 				EE9E49102B6B6F0000436530 /* EvaluatorContextSpecs.swift in Sources */,
