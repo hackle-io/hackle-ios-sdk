@@ -69,8 +69,13 @@ class ApplicationUrlHandler: UrlHandler {
     }
 
     private func continueUserActivity(userActivity: NSUserActivity) {
-        let success = UIUtils.application?.delegate?.application?(
-            UIUtils.application!,
+        guard let application = UIUtils.application else {
+            Log.info("UIApplication is not available")
+            return
+        }
+        
+        let success = application.delegate?.application?(
+            application,
             continue: userActivity,
             restorationHandler: { _ in }
         )
