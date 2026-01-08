@@ -60,8 +60,8 @@ class ApplicationUrlHandler: UrlHandler {
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,
             queue: .main
-        ) { [weak observer] _ in
-            self.continueUserActivity(userActivity: userActivity)
+        ) { [weak self, weak observer] _ in
+            self?.continueUserActivity(userActivity: userActivity)
             if let obs = observer {
                 NotificationCenter.default.removeObserver(obs)
             }
