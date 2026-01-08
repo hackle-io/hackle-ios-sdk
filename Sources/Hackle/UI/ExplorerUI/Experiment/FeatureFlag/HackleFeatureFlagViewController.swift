@@ -10,9 +10,6 @@ import UIKit
 
 class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, OnOverrideSetListener, OnOverrideResetListener, HackleUserExplorerContainer, HackleViewController {
 
-    // iOS 10 compatibility - safe area layout guide alternatives
-    private var safeAreaAnchors: SafeAreaAnchors!
-
     private let headerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -40,13 +37,14 @@ class HackleFeatureFlagViewController: UIViewController, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        safeAreaAnchors = configureSafeAreaAnchors()
         setupUI()
         setUpTableView()
         fetchAndUpdate()
     }
     
     private func setupUI() {
+        let safeAreaAnchors = configureSafeAreaAnchors()
+        
         view.backgroundColor = .white
         
         // Add subviews

@@ -10,9 +10,6 @@ import UIKit
 
 class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, HackleUserExplorerContainer, HackleViewController {
 
-    // iOS 10 compatibility - safe area layout guide alternatives
-    private var safeAreaAnchors: SafeAreaAnchors!
-
     // Header View
     private let headerView: UIView = {
         let view = UIView()
@@ -202,13 +199,6 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         return view
     }()
     
-    private let tabSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     private var experimentPageViewController: UIPageViewController!
     private var abTestViewController: HackleAbTestViewController!
     private var featureFlagViewController: HackleFeatureFlagViewController!
@@ -217,7 +207,6 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        safeAreaAnchors = configureSafeAreaAnchors()
         setupUI()
         initDismissButton()
         initUser()
@@ -226,7 +215,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
 
 
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
         
         // Add all subviews
         view.addSubview(headerView)
@@ -234,7 +223,6 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         view.addSubview(infoView)
         view.addSubview(infoSeparator)
         view.addSubview(tabView)
-        view.addSubview(tabSeparator)
         view.addSubview(experimentPageView)
         
         // Header subviews
@@ -288,6 +276,8 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
     }
     
     private func setupConstraints() {
+        let safeAreaAnchors = configureSafeAreaAnchors()
+        
         NSLayoutConstraint.activate([
             // Header View constraints
             headerView.topAnchor.constraint(equalTo: safeAreaAnchors.top),
@@ -393,7 +383,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             featureFlagButton.widthAnchor.constraint(equalToConstant: 120),
             
             // Experiment Page View constraints
-            experimentPageView.topAnchor.constraint(equalTo: tabSeparator.bottomAnchor),
+            experimentPageView.topAnchor.constraint(equalTo: tabView.bottomAnchor),
             experimentPageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             experimentPageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             experimentPageView.bottomAnchor.constraint(equalTo: safeAreaAnchors.bottom),
@@ -407,13 +397,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
             infoSeparator.topAnchor.constraint(equalTo: infoView.bottomAnchor),
             infoSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             infoSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            infoSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
-            tabSeparator.topAnchor.constraint(equalTo: tabView.bottomAnchor),
-            tabSeparator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabSeparator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabSeparator.heightAnchor.constraint(equalToConstant: 1),
-            
+            infoSeparator.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
 
@@ -504,6 +488,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
 
         addChild(experimentPageViewController)
         experimentPageView.addSubview(experimentPageViewController.view)
+        experimentPageViewController.didMove(toParent: self)
 
         abTestViewController = createController()
         featureFlagViewController = createController()
@@ -515,6 +500,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         controller.setHackleUserExplorer(explorer)
         addChild(controller)
         controller.view.frame = experimentPageView.bounds
+        controller.didMove(toParent: self)
         return controller
     }
     
