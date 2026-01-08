@@ -34,7 +34,7 @@ extension HackleInAppMessageUI {
         if #available(iOS 13.0, *), let windowScene = UIUtils.activeWindowScene {
             window = Window(windowScene: windowScene)
         } else {
-            window = Window(frame: UIScreen.main.bounds)
+            window = Window(frame: UIUtils.currentScreen.bounds)
         }
         window.accessibilityViewIsModal = true
         window.windowLevel = .normal
