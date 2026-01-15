@@ -18,6 +18,7 @@ public class HackleConfig: NSObject {
     var monitoringUrl: URL
     var mode: HackleAppMode
     var automaticScreenTracking: Bool
+    var automaticAppLifecycleTracking: Bool
     var sessionTracking: Bool
     var sessionTimeoutInterval: TimeInterval
     var pollingInterval: TimeInterval
@@ -33,6 +34,7 @@ public class HackleConfig: NSObject {
         monitoringUrl = builder.monitoringUrl
         mode = builder.mode
         automaticScreenTracking = builder.automaticScreenTracking
+        automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
         sessionTracking = (mode == .native && builder.sessionTracking)
         sessionTimeoutInterval = builder.sessionTimeoutInterval
         pollingInterval = builder.pollingInterval
@@ -79,6 +81,7 @@ public class HackleConfigBuilder: NSObject {
     var mode: HackleAppMode = .native
 
     var automaticScreenTracking: Bool = true
+    var automaticAppLifecycleTracking: Bool = true
 
     var sessionTracking: Bool = true
     var sessionTimeoutInterval: TimeInterval = HackleConfig.DEFAULT_SESSION_TIMEOUT_INTERVAL
@@ -143,6 +146,15 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func automaticScreenTracking(_ automaticScreenTracking: Bool) -> HackleConfigBuilder {
         self.automaticScreenTracking = automaticScreenTracking
+        return self
+    }
+    
+    /// Enables or disables automatic app lifecycle tracking
+    ///
+    /// - Parameter automaticAppLifecycleTracking: Whether to automatically track app lifecycle
+    /// - Returns: This builder instance for method chaining
+    @objc public func automaticAppLifecycleTracking(_ automaticAppLifecycleTracking: Bool) -> HackleConfigBuilder {
+        self.automaticAppLifecycleTracking = automaticAppLifecycleTracking
         return self
     }
 
