@@ -633,7 +633,9 @@ extension HackleApp {
             core: core
         )
         
-        applicationLifecycleManager.addListener(listener: applicationEventTracker)
+        if config.automaticAppLifecycleTracking {
+            applicationLifecycleManager.addListener(listener: applicationEventTracker)
+        }
         applicationInstallStateManager.addListener(listener: applicationEventTracker)
 
         // - InAppMessage
