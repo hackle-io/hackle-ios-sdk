@@ -572,7 +572,7 @@ class HackleAppSpecs: QuickSpec {
         
         describe("setCurrentScreen") {
             it("set") {
-                let screen = Screen(name: "currentScreen", className: "currentClass")
+                let screen = Screen.builder(name: "currentScreen", className: "currentClass").build()
                 sut.setCurrentScreen(screen: screen)
                 verify(exactly: 1) {
                     screenManager.setCurrentScreenMock

@@ -105,7 +105,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             it("decorate screenName") {
                 // given
                 let sut = processor()
-                screenManager.currentScreen = Screen(name: "name", className: "class")
+                screenManager.currentScreen = Screen.builder(name: "name", className: "class").build()
                 let event = UserEvents.track("test")
 
                 // when

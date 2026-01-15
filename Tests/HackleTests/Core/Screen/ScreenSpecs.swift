@@ -10,7 +10,8 @@ class ScreenSpecs: QuickSpec {
         it("create") {
             let vc = TestViewController()
             let screen = Screen.from(vc)
-            expect(screen).to(equal(Screen(name: "TestViewController", className: "TestViewController")))
+            let expectedScreen = Screen.builder(name: "TestViewController", className: "TestViewController").build()
+            expect(screen).to(equal(expectedScreen))
         }
 
         it("screenClass") {
