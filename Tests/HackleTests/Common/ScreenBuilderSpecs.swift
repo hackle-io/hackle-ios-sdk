@@ -322,7 +322,85 @@ class ScreenBuilderSpecs: QuickSpec {
                 }
             }
 
-            
+            context("screen equality") {
+
+                it("screens with same name and className but different properties are equal") {
+                    // given
+                    let screen1 = Screen.builder(name: "Home", className: "HomeVC")
+                        .property("user_id", 123)
+                        .property("session", "abc")
+                        .build()
+
+                    let screen2 = Screen.builder(name: "Home", className: "HomeVC")
+                        .property("user_id", 456)
+                        .property("session", "xyz")
+                        .build()
+
+                    // when & then
+                    expect(screen1.isEqual(screen2)).to(beTrue())
+                    expect(screen2.isEqual(screen1)).to(beTrue())
+                    expect(screen1).to(equal(screen2))
+                }
+
+                it("screens with same name and className, one with properties and one without, are equal") {
+                    // given
+                    let screenWithProperties = Screen.builder(name: "Detail", className: "DetailVC")
+                        .property("product_id", "ABC-123")
+                        .property("category", "electronics")
+                        .build()
+
+                    let screenWithoutProperties = Screen.builder(name: "Detail", className: "DetailVC")
+                        .build()
+
+                    // when & then
+                    expect(screenWithProperties.isEqual(screenWithoutProperties)).to(beTrue())
+                    expect(screenWithoutProperties.isEqual(screenWithProperties)).to(beTrue())
+                }
+
+                it("screens with different name but same properties are not equal") {
+                    // given
+                    let screen1 = Screen.builder(name: "Home", className: "HomeVC")
+                        .property("key", "value")
+                        .build()
+
+                    let screen2 = Screen.builder(name: "Detail", className: "HomeVC")
+                        .property("key", "value")
+                        .build()
+
+                    // when & then
+                    expect(screen1.isEqual(screen2)).to(beFalse())
+                    expect(screen2.isEqual(screen1)).to(beFalse())
+                }
+
+                it("screens with different className but same properties are not equal") {
+                    // given
+                    let screen1 = Screen.builder(name: "Home", className: "HomeVC")
+                        .property("key", "value")
+                        .build()
+
+                    let screen2 = Screen.builder(name: "Home", className: "DetailVC")
+                        .property("key", "value")
+                        .build()
+
+                    // when & then
+                    expect(screen1.isEqual(screen2)).to(beFalse())
+                    expect(screen2.isEqual(screen1)).to(beFalse())
+                }
+
+                it("screen equality is consistent with deprecated init") {
+                    // given
+                    let legacyScreen = Screen(name: "Settings", className: "SettingsVC")
+                    let modernScreenWithProperties = Screen.builder(name: "Settings", className: "SettingsVC")
+                        .property("theme", "dark")
+                        .property("notifications", true)
+                        .build()
+
+                    // when & then - should be equal despite different properties
+                    expect(legacyScreen.isEqual(modernScreenWithProperties)).to(beTrue())
+                    expect(modernScreenWithProperties.isEqual(legacyScreen)).to(beTrue())
+                }
+            }
+
         }
     }
 }
