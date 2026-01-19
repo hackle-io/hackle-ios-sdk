@@ -18,11 +18,11 @@ class ScreenEventTracker: ScreenListener {
 
     func onScreenStarted(previousScreen: Screen?, currentScreen: Screen, user: User, timestamp: Date) {
         let event = Event.builder(Self.SCREEN_VIEW_EVENT_KEY)
+            .properties(currentScreen.properties)
             .property(Self.SCREEN_NAME_PROPERTY_KEY, currentScreen.name)
             .property(Self.SCREEN_CLASS_PROPERTY_KEY, currentScreen.className)
             .property(Self.PREVIOUS_SCREEN_NAME_PROPERTY_KEY, previousScreen?.name)
             .property(Self.PREVIOUS_SCREEN_CLASS_PROPERTY_KEY, previousScreen?.className)
-            .properties(currentScreen.properties)
             .build()
         let hackleUser = userManager.toHackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)

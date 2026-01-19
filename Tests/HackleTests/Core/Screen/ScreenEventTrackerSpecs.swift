@@ -156,11 +156,34 @@ class ScreenEventTrackerSpecs: QuickSpec {
                 expect(event.properties!["session_id"] as? String).to(equal("session-123"))
                 expect(event.properties!["user_action"] as? String).to(equal("button_click"))
             }
-        }
-
-        describe("onScreenStarted") {
-            it("do nothing") {
-                sut.onScreenEnded(screen: Screen.builder(name: "name", className: "class").build(), user: User.builder().build(), timestamp: Date())
+            
+            it("screen properties contain page_name and page_class then they are overridden by screen name and className") {
+                // given
+                let currentScreen = Screen.builder(name: "correct_screen_name", className: "correct_screen_class")
+                    .property("$page_name", "wrong_name")
+                    .property("$page_class", "wrong_class")
+                    .property("$previous_page_name", "wrong_prev_name")
+                    .property("$previous_page_class", "wrong_prev_class")
+                    .property("custom_key", "custom_value")
+                    .build()
+                let prevScreen = Screen.builder(name: "correct_prev_name", className: "correct_prev_class")
+                    .build()
+                
+                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                
+                // when
+                sut.onScreenStarted(previousScreen: prevScreen, currentScreen: currentScreen, user: User.builder().build(), timestamp: Date())
+                // then
+                verify(exactly: 1) {
+                    core.trackMock
+                }
+                
+                let event = core.trackMock.firstInvokation().arguments.0
+                expect(event.properties!["$page_name"] as? String).to(equal("correct_screen_name"))
+                expect(event.properties!["$page_class"] as? String).to(equal("correct_screen_class"))
+                expect(event.properties!["$previous_page_name"] as? String).to(equal("correct_prev_name"))
+                expect(event.properties!["$previous_page_class"] as? String).to(equal("correct_prev_class"))
+                expect(event.properties!["custom_key"] as? String).to(equal("custom_value"))
             }
         }
     }
