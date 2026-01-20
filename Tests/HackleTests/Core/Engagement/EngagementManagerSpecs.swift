@@ -22,7 +22,7 @@ class EngagementManagerSpecs: QuickSpec {
 
         describe("onScreenStarted") {
             it("start engagement") {
-                sut.onScreenStarted(previousScreen: nil, currentScreen: Screen(name: "name", className: "class"), user: User.builder().build(), timestamp: Date(timeIntervalSince1970: 42))
+                sut.onScreenStarted(previousScreen: nil, currentScreen: Screen.builder(name: "name", className: "class").build(), user: User.builder().build(), timestamp: Date(timeIntervalSince1970: 42))
                 expect(sut.lastEngagementTime).to(equal(Date(timeIntervalSince1970: 42)))
             }
         }
@@ -30,7 +30,7 @@ class EngagementManagerSpecs: QuickSpec {
         describe("onScreenEnded") {
             it("when last engagement time is nil then do nothing") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when
                 sut.onScreenEnded(screen: screen, user: User.builder().build(), timestamp: Date(timeIntervalSince1970: 42))
@@ -43,7 +43,7 @@ class EngagementManagerSpecs: QuickSpec {
 
             it("when engagement time is less than min time then do nothing") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42.0))
 
                 // when
@@ -57,7 +57,7 @@ class EngagementManagerSpecs: QuickSpec {
 
             it("track engagement event") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42.0))
 
                 // when
@@ -75,7 +75,7 @@ class EngagementManagerSpecs: QuickSpec {
 
         describe("onLifecycle") {
             it("do nothing for all view lifecycle events") {
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
                 screenManager.currentScreen = screen
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 42))
 
@@ -93,7 +93,7 @@ class EngagementManagerSpecs: QuickSpec {
         describe("call engagement") {
             it("multiple start without end - only last start is considered") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when - multiple start engagements
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
@@ -112,7 +112,7 @@ class EngagementManagerSpecs: QuickSpec {
 
             it("multiple end without start - no engagement published") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when - multiple end engagements without start
                 sut.onScreenEnded(screen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
@@ -127,7 +127,7 @@ class EngagementManagerSpecs: QuickSpec {
 
             it("start-end-end sequence - second end does nothing") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
@@ -145,8 +145,8 @@ class EngagementManagerSpecs: QuickSpec {
 
             it("start-end-start-end sequence - two engagements published") {
                 // given
-                let screen1 = Screen(name: "screen1", className: "class1")
-                let screen2 = Screen(name: "screen2", className: "class2")
+                let screen1 = Screen.builder(name: "screen1", className: "class1").build()
+                let screen2 = Screen.builder(name: "screen2", className: "class2").build()
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen1, user: user, timestamp: Date(timeIntervalSince1970: 100))
@@ -164,7 +164,7 @@ class EngagementManagerSpecs: QuickSpec {
         describe("state management") {
             it("lastEngagementTime cleared after endEngagement") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
@@ -178,7 +178,7 @@ class EngagementManagerSpecs: QuickSpec {
 
             it("lastEngagementTime cleared after endEngagement even if not published") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when - engagement too short to be published
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: user, timestamp: Date(timeIntervalSince1970: 100))
