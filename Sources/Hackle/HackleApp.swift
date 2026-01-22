@@ -798,14 +798,15 @@ extension HackleApp {
         )
 
         // - Metrics
-
-        HackleApp.metricConfiguration(
-            config: config,
-            applicationLifecycleManager: applicationLifecycleManager,
-            eventQueue: eventQueue,
-            httpQueue: httpQueue,
-            httpClient: httpClient
-        )
+        if config.monitoringEnabled {
+            HackleApp.metricConfiguration(
+                config: config,
+                applicationLifecycleManager: applicationLifecycleManager,
+                eventQueue: eventQueue,
+                httpQueue: httpQueue,
+                httpClient: httpClient
+            )
+        }
 
         // - ViewLifecycle
 
