@@ -813,11 +813,11 @@ extension HackleApp {
         let viewLifecycleManager = ViewLifecycleManager.shared
         if config.automaticScreenTracking {
             viewLifecycleManager.addListener(listener: screenManager)
+            applicationLifecycleManager.addListener(listener: screenManager)
         }
         viewLifecycleManager.addListener(listener: engagementManager)
         viewLifecycleManager.setDispatchQueue(queue: eventQueue)
         
-        applicationLifecycleManager.addListener(listener: screenManager)
         applicationLifecycleManager.addListener(listener: engagementManager)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
