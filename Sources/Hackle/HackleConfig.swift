@@ -16,6 +16,7 @@ public class HackleConfig: NSObject {
     var eventUrl: URL
     var apiUrl: URL
     var monitoringUrl: URL
+    var monitoringEnabled: Bool
     var mode: HackleAppMode
     var automaticScreenTracking: Bool
     var automaticAppLifecycleTracking: Bool
@@ -32,6 +33,7 @@ public class HackleConfig: NSObject {
         eventUrl = builder.eventUrl
         apiUrl = builder.apiUrl
         monitoringUrl = builder.monitoringUrl
+        monitoringEnabled = builder.monitoringEnabled
         mode = builder.mode
         automaticScreenTracking = builder.automaticScreenTracking
         automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
@@ -77,6 +79,7 @@ public class HackleConfigBuilder: NSObject {
     var eventUrl: URL = URL(string: "https://event-api.hackle.io")!
     var apiUrl: URL = URL(string: "https://api.hackle.io")!
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
+    var monitoringEnabled: Bool = true
 
     var mode: HackleAppMode = .native
 
@@ -128,6 +131,15 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func monitoringUrl(_ monitoringUrl: URL) -> HackleConfigBuilder {
         self.monitoringUrl = monitoringUrl
+        return self
+    }
+
+    /// Enables or disables monitoring.
+    ///
+    /// - Parameter enabled: Whether to enable monitoring
+    /// - Returns: This builder instance for method chaining
+    @objc public func monitoringEnabled(_ enabled: Bool) -> HackleConfigBuilder {
+        self.monitoringEnabled = enabled
         return self
     }
 
