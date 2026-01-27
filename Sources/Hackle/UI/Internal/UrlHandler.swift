@@ -73,18 +73,20 @@ class ApplicationUrlHandler: UrlHandler {
             Log.info("UIApplication is not available")
             return
         }
-        
-        let success = application.delegate?.application?(
-            application,
-            continue: userActivity,
-            restorationHandler: { _ in }
-        )
-        Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
 
-        if success != true {
-            Log.info("Attempt to open URL alternative")
-            if let url = userActivity.webpageURL {
-                openLink(url)
+        DispatchQueue.main.async { [weak self] in
+            let success = application.delegate?.application?(
+                application,
+                continue: userActivity,
+                restorationHandler: { _ in }
+            )
+            Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
+
+            if success != true {
+                Log.info("Attempt to open URL alternative")
+                if let url = userActivity.webpageURL {
+                    self?.openLink(url)
+                }
             }
         }
     }
