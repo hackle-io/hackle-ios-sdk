@@ -2,7 +2,7 @@
 //  TimeUtilSpec.swift
 //  HackleTests
 //
-//  Created by Claude Code on 11/18/25.
+//  Created by sungwoo.yeo on 11/18/25.
 //
 
 import Foundation

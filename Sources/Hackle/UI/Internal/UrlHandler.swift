@@ -5,8 +5,8 @@
 //  Created by yong on 2023/07/18.
 //
 
-import Foundation
-import UIKit
+@preconcurrency import Foundation
+@preconcurrency import UIKit
 
 
 protocol UrlHandler {
@@ -55,13 +55,20 @@ class ApplicationUrlHandler: UrlHandler {
     }
 
     private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
+        guard let url = userActivity.webpageURL else {
+            return
+        }
+        
         var observer: NSObjectProtocol?
         observer = NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,
             queue: .main
         ) { [weak self, weak observer] _ in
-            self?.continueUserActivity(userActivity: userActivity)
+            // for swift 6
+            let copiedUserActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
+            copiedUserActivity.webpageURL = url
+            self?.continueUserActivity(userActivity: copiedUserActivity)
             if let obs = observer {
                 NotificationCenter.default.removeObserver(obs)
             }
@@ -73,18 +80,20 @@ class ApplicationUrlHandler: UrlHandler {
             Log.info("UIApplication is not available")
             return
         }
-        
-        let success = application.delegate?.application?(
-            application,
-            continue: userActivity,
-            restorationHandler: { _ in }
-        )
-        Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
 
-        if success != true {
-            Log.info("Attempt to open URL alternative")
-            if let url = userActivity.webpageURL {
-                openLink(url)
+        DispatchQueue.main.async { [weak self] in
+            let success = application.delegate?.application?(
+                application,
+                continue: userActivity,
+                restorationHandler: { _ in }
+            )
+            Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
+
+            if success != true {
+                Log.info("Attempt to open URL alternative")
+                if let url = userActivity.webpageURL {
+                    self?.openLink(url)
+                }
             }
         }
     }
