@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import UIKit
+@preconcurrency import UIKit
 
 protocol UserEventProcessor {
     func process(event: UserEvent)

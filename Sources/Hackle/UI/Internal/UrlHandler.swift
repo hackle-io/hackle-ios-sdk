@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+@preconcurrency import UIKit
 
 
 protocol UrlHandler {

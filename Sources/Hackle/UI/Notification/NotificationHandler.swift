@@ -1,5 +1,5 @@
 import Foundation
-import UIKit
+@preconcurrency import UIKit
 import UserNotifications
 
 class NotificationHandler {

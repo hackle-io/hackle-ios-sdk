@@ -1,8 +1,8 @@
 import Foundation
-import UIKit
+@preconcurrency import UIKit
 
 
-class PollingSynchronizer: Synchronizer {
+class PollingSynchronizer: Synchronizer, @unchecked Sendable {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.PollingSynchronizer.Lock")
 
