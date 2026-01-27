@@ -2,7 +2,7 @@
 //  ApplicationUrlHandlerSpecs.swift
 //  HackleTests
 //
-//  Created by Claude Code
+//  Created by sungwoo.yeo
 //
 
 import Foundation
