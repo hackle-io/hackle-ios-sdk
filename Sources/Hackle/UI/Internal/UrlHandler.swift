@@ -5,7 +5,7 @@
 //  Created by yong on 2023/07/18.
 //
 
-import Foundation
+@preconcurrency import Foundation
 @preconcurrency import UIKit
 
 
@@ -55,13 +55,20 @@ class ApplicationUrlHandler: UrlHandler {
     }
 
     private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
+        guard let url = userActivity.webpageURL else {
+            return
+        }
+        
         var observer: NSObjectProtocol?
         observer = NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,
             queue: .main
         ) { [weak self, weak observer] _ in
-            self?.continueUserActivity(userActivity: userActivity)
+            // for swift 6
+            let copiedUserActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
+            copiedUserActivity.webpageURL = url
+            self?.continueUserActivity(userActivity: copiedUserActivity)
             if let obs = observer {
                 NotificationCenter.default.removeObserver(obs)
             }
