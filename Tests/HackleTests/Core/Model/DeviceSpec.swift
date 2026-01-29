@@ -30,6 +30,19 @@ class DeviceSpec : QuickSpec {
             expect(device.id) == deviceId
             self.assertDevicePropertiesStructure(properties: device.properties)
         }
+
+        it("screenWidth and screenHeight should be positive values") {
+            let deviceId = UUID().uuidString
+            let device = DeviceImpl(deviceId: deviceId)
+
+            let screenWidth = device.properties["screenWidth"] as? Int
+            let screenHeight = device.properties["screenHeight"] as? Int
+
+            expect(screenWidth).notTo(beNil())
+            expect(screenHeight).notTo(beNil())
+            expect(screenWidth).to(beGreaterThan(0))
+            expect(screenHeight).to(beGreaterThan(0))
+        }
     }
 
     func assertDevicePropertiesStructure(properties: [String: Any]) {

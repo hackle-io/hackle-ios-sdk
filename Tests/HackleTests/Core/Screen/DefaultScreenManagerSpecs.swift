@@ -19,7 +19,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
         
         describe("setCurrentScreen") {
             it("when call setCurrentScreen, updateScreen is call") {
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
                 sut.setCurrentScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
                 
                 expect(sut.currentScreen).to(equal(screen))
@@ -35,7 +35,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
         describe("updateScreen") {
             it("when first screen then start screen") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
 
                 // when
                 sut.updateScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
@@ -52,7 +52,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
 
             it("when current screen and new screen are same then do nothing") {
                 // given
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
                 sut.updateScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
 
                 // when
@@ -76,13 +76,13 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 let listener2 = ScreenListenerStub(screenManager: sut)
                 sut.addListener(listener: listener2)
 
-                let screen = Screen(name: "name", className: "class")
+                let screen = Screen.builder(name: "name", className: "class").build()
                 sut.updateScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
                 expect(listener2.onScreenEndedScreens).to(beEmpty())
                 expect(listener2.onScreenStartedScreens[0].0).to(equal(screen))
                 expect(listener2.onScreenStartedScreens[0].1).to(equal(screen))
 
-                let newScreen = Screen(name: "new_name", className: "new_class")
+                let newScreen = Screen.builder(name: "new_name", className: "new_class").build()
                 sut.updateScreen(screen: newScreen, timestamp: Date(timeIntervalSince1970: 43))
 
                 expect(listener2.onScreenEndedScreens[0].0).to(equal(screen))
@@ -116,14 +116,14 @@ class DefaultScreenManagerSpecs: QuickSpec {
             context("viewDidAppear") {
                 it("update screen with top view") {
                     sut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
-                    expect(sut.currentScreen).to(equal(Screen(name: "TopViewController", className: "TopViewController")))
+                    expect(sut.currentScreen).to(equal(Screen.builder(name: "TopViewController", className: "TopViewController").build()))
                 }
             }
 
             context("viewDidDisappear") {
                 it("update screen with top view") {
                     sut.onLifecycle(lifecycle: .viewDidDisappear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
-                    expect(sut.currentScreen).to(equal(Screen(name: "TopViewController", className: "TopViewController")))
+                    expect(sut.currentScreen).to(equal(Screen.builder(name: "TopViewController", className: "TopViewController").build()))
                 }
             }
 

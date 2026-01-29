@@ -633,7 +633,9 @@ extension HackleApp {
             core: core
         )
         
-        applicationLifecycleManager.addListener(listener: applicationEventTracker)
+        if config.automaticAppLifecycleTracking {
+            applicationLifecycleManager.addListener(listener: applicationEventTracker)
+        }
         applicationInstallStateManager.addListener(listener: applicationEventTracker)
 
         // - InAppMessage
@@ -641,7 +643,7 @@ extension HackleApp {
         let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
             core: core
         )
-        let urlHandler = ApplicationUrlHandler()
+        let urlHandler = ApplicationUrlHandler.shared
         let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
@@ -796,25 +798,26 @@ extension HackleApp {
         )
 
         // - Metrics
-
-        HackleApp.metricConfiguration(
-            config: config,
-            applicationLifecycleManager: applicationLifecycleManager,
-            eventQueue: eventQueue,
-            httpQueue: httpQueue,
-            httpClient: httpClient
-        )
+        if config.monitoringEnabled {
+            HackleApp.metricConfiguration(
+                config: config,
+                applicationLifecycleManager: applicationLifecycleManager,
+                eventQueue: eventQueue,
+                httpQueue: httpQueue,
+                httpClient: httpClient
+            )
+        }
 
         // - ViewLifecycle
 
         let viewLifecycleManager = ViewLifecycleManager.shared
         if config.automaticScreenTracking {
             viewLifecycleManager.addListener(listener: screenManager)
+            applicationLifecycleManager.addListener(listener: screenManager)
         }
         viewLifecycleManager.addListener(listener: engagementManager)
         viewLifecycleManager.setDispatchQueue(queue: eventQueue)
         
-        applicationLifecycleManager.addListener(listener: screenManager)
         applicationLifecycleManager.addListener(listener: engagementManager)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
