@@ -16,8 +16,10 @@ public class HackleConfig: NSObject {
     var eventUrl: URL
     var apiUrl: URL
     var monitoringUrl: URL
+    var monitoringEnabled: Bool
     var mode: HackleAppMode
     var automaticScreenTracking: Bool
+    var automaticAppLifecycleTracking: Bool
     var sessionTracking: Bool
     var sessionTimeoutInterval: TimeInterval
     var pollingInterval: TimeInterval
@@ -31,8 +33,10 @@ public class HackleConfig: NSObject {
         eventUrl = builder.eventUrl
         apiUrl = builder.apiUrl
         monitoringUrl = builder.monitoringUrl
+        monitoringEnabled = builder.monitoringEnabled
         mode = builder.mode
         automaticScreenTracking = builder.automaticScreenTracking
+        automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
         sessionTracking = (mode == .native && builder.sessionTracking)
         sessionTimeoutInterval = builder.sessionTimeoutInterval
         pollingInterval = builder.pollingInterval
@@ -75,10 +79,12 @@ public class HackleConfigBuilder: NSObject {
     var eventUrl: URL = URL(string: "https://event-api.hackle.io")!
     var apiUrl: URL = URL(string: "https://api.hackle.io")!
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
+    var monitoringEnabled: Bool = true
 
     var mode: HackleAppMode = .native
 
     var automaticScreenTracking: Bool = true
+    var automaticAppLifecycleTracking: Bool = true
 
     var sessionTracking: Bool = true
     var sessionTimeoutInterval: TimeInterval = HackleConfig.DEFAULT_SESSION_TIMEOUT_INTERVAL
@@ -128,6 +134,15 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
+    /// Enables or disables monitoring.
+    ///
+    /// - Parameter enabled: Whether to enable monitoring
+    /// - Returns: This builder instance for method chaining
+    @objc public func monitoringEnabled(_ enabled: Bool) -> HackleConfigBuilder {
+        self.monitoringEnabled = enabled
+        return self
+    }
+
     /// Sets the application mode.
     ///
     /// - Parameter mode: The ``HackleAppMode`` to use
@@ -143,6 +158,15 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func automaticScreenTracking(_ automaticScreenTracking: Bool) -> HackleConfigBuilder {
         self.automaticScreenTracking = automaticScreenTracking
+        return self
+    }
+    
+    /// Enables or disables automatic app lifecycle tracking
+    ///
+    /// - Parameter automaticAppLifecycleTracking: Whether to automatically track app lifecycle
+    /// - Returns: This builder instance for method chaining
+    @objc public func automaticAppLifecycleTracking(_ automaticAppLifecycleTracking: Bool) -> HackleConfigBuilder {
+        self.automaticAppLifecycleTracking = automaticAppLifecycleTracking
         return self
     }
 

@@ -17,10 +17,12 @@ class HackleWebViewConfigSpecs: QuickSpec {
             describe("builder") {
                 it("should build with all properties set") {
                     let config = HackleWebViewConfig.builder()
+                        .automaticRouteTracking(false)
                         .automaticScreenTracking(true)
                         .automaticEngagementTracking(true)
                         .build()
 
+                    expect(config.automaticRouteTracking) == false
                     expect(config.automaticScreenTracking) == true
                     expect(config.automaticEngagementTracking) == true
                 }
@@ -28,15 +30,18 @@ class HackleWebViewConfigSpecs: QuickSpec {
                 it("should build with default values") {
                     let config = HackleWebViewConfig.builder().build()
 
+                    expect(config.automaticRouteTracking) == true
                     expect(config.automaticScreenTracking) == false
                     expect(config.automaticEngagementTracking) == false
                 }
 
                 it("should support fluent interface") {
                     let builder = HackleWebViewConfig.builder()
+                    let result0 = builder.automaticRouteTracking(false)
                     let result1 = builder.automaticScreenTracking(true)
                     let result2 = builder.automaticEngagementTracking(false)
 
+                    expect(result0).to(beIdenticalTo(builder))
                     expect(result1).to(beIdenticalTo(builder))
                     expect(result2).to(beIdenticalTo(builder))
                 }
@@ -46,15 +51,17 @@ class HackleWebViewConfigSpecs: QuickSpec {
                         .automaticScreenTracking(true)
                         .build()
 
+                    expect(config.automaticRouteTracking) == true
                     expect(config.automaticScreenTracking) == true
                     expect(config.automaticEngagementTracking) == false
                 }
             }
 
             describe("DEFAULT") {
-                it("should have all tracking disabled by default") {
+                it("should have correct default values") {
                     let config = HackleWebViewConfig.DEFAULT
 
+                    expect(config.automaticRouteTracking) == true
                     expect(config.automaticScreenTracking) == false
                     expect(config.automaticEngagementTracking) == false
                 }
@@ -99,8 +106,9 @@ class HackleWebViewConfigSpecs: QuickSpec {
                     expect(jsonString).to(contain("true"))
                 }
 
-                it("should encode JSON with both properties") {
+                it("should encode JSON with all properties") {
                     let config = HackleWebViewConfig.builder()
+                        .automaticRouteTracking(true)
                         .automaticScreenTracking(true)
                         .automaticEngagementTracking(false)
                         .build()
@@ -109,9 +117,23 @@ class HackleWebViewConfigSpecs: QuickSpec {
                     let jsonData = try? encoder.encode(config)
                     let jsonString = String(data: jsonData!, encoding: .utf8)!
 
+                    expect(jsonString).to(contain("automaticRouteTracking"))
                     expect(jsonString).to(contain("automaticScreenTracking"))
                     expect(jsonString).to(contain("automaticEngagementTracking"))
                     expect(jsonString).toNot(beEmpty())
+                }
+
+                it("should encode JSON with automaticRouteTracking") {
+                    let config = HackleWebViewConfig.builder()
+                        .automaticRouteTracking(false)
+                        .build()
+
+                    let encoder = JSONEncoder()
+                    let jsonData = try? encoder.encode(config)
+                    let jsonString = String(data: jsonData!, encoding: .utf8)
+
+                    expect(jsonString).to(contain("automaticRouteTracking"))
+                    expect(jsonString).to(contain("false"))
                 }
             }
         }

@@ -84,6 +84,7 @@ class HackleWebBridgeSpecs: QuickSpec {
 
                 it("should include webViewConfig JSON string in script") {
                     let config = HackleWebViewConfig.builder()
+                        .automaticRouteTracking(false)
                         .automaticScreenTracking(true)
                         .automaticEngagementTracking(false)
                         .build()
@@ -98,6 +99,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                     let scripts = webView.configuration.userContentController.userScripts
                     let hackleScript = scripts.first { $0.source.contains("getWebViewConfig") }
 
+                    expect(hackleScript?.source).to(contain("automaticRouteTracking"))
                     expect(hackleScript?.source).to(contain("automaticScreenTracking"))
                     expect(hackleScript?.source).to(contain("automaticEngagementTracking"))
                 }

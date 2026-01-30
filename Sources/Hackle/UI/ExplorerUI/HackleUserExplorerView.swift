@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+@preconcurrency import UIKit
 
 
 class HackleUserExplorerView {
@@ -56,7 +56,7 @@ class HackleUserExplorerView {
     }
 
     private func createButton() -> HackleUserExplorerButton {
-        let rect = UIScreen.main.bounds
+        let rect = UIUtils.currentScreen.bounds
         let width = rect.size.width
         let height = rect.size.height
         let offset = offset()
@@ -77,7 +77,7 @@ class HackleUserExplorerView {
         let barHeight = barHeight()
         let bottomOffset = offset()
 
-        let rect = UIScreen.main.bounds
+        let rect = UIUtils.currentScreen.bounds
         let width = rect.size.width
         let height = rect.size.height
 

@@ -75,5 +75,63 @@ class HackleConfigSpec: QuickSpec {
                 expect(HackleAppMode.web_view_wrapper.description).to(equal("web_view_wrapper"))
             }
         }
+
+        describe("monitoringEnabled") {
+            it("default value should be true") {
+                let config = HackleConfigBuilder().build()
+                expect(config.monitoringEnabled) == true
+            }
+
+            it("should be able to set to false") {
+                let config = HackleConfigBuilder()
+                    .monitoringEnabled(false)
+                    .build()
+                expect(config.monitoringEnabled) == false
+            }
+
+            it("should be able to set to true explicitly") {
+                let config = HackleConfigBuilder()
+                    .monitoringEnabled(true)
+                    .build()
+                expect(config.monitoringEnabled) == true
+            }
+
+            it("last value should take precedence when called multiple times") {
+                let config = HackleConfigBuilder()
+                    .monitoringEnabled(false)
+                    .monitoringEnabled(true)
+                    .build()
+                expect(config.monitoringEnabled) == true
+            }
+        }
+
+        describe("automaticAppLifecycleTracking") {
+            it("default value should be true") {
+                let config = HackleConfigBuilder().build()
+                expect(config.automaticAppLifecycleTracking) == true
+            }
+
+            it("should be able to set to false") {
+                let config = HackleConfigBuilder()
+                    .automaticAppLifecycleTracking(false)
+                    .build()
+                expect(config.automaticAppLifecycleTracking) == false
+            }
+
+            it("should be able to set to true explicitly") {
+                let config = HackleConfigBuilder()
+                    .automaticAppLifecycleTracking(true)
+                    .build()
+                expect(config.automaticAppLifecycleTracking) == true
+            }
+
+            it("last value should take precedence when called multiple times") {
+                let config = HackleConfigBuilder()
+                    .automaticAppLifecycleTracking(false)
+                    .automaticAppLifecycleTracking(true)
+                    .build()
+                expect(config.automaticAppLifecycleTracking) == true
+            }
+        }
     }
 }
