@@ -9,13 +9,17 @@ import Foundation
 import UIKit
 
 
+@MainActor
 protocol UrlHandler {
     func open(url: URL)
 }
 
-class ApplicationUrlHandler: UrlHandler {
+@MainActor
+final class ApplicationUrlHandler: NSObject, UrlHandler {
     static let shared: UrlHandler = ApplicationUrlHandler()
-    
+
+    private var pendingUrl: URL?
+
     func open(url: URL) {
         guard let scheme = url.scheme else {
             return
@@ -55,24 +59,28 @@ class ApplicationUrlHandler: UrlHandler {
     }
 
     private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
-        guard let url = userActivity.webpageURL else {
-            return
-        }
-        
-        var observer: NSObjectProtocol?
-        observer = NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self, weak observer] _ in
-            // for swift 6
-            let copiedUserActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
-            copiedUserActivity.webpageURL = url
-            self?.continueUserActivity(userActivity: copiedUserActivity)
-            if let obs = observer {
-                NotificationCenter.default.removeObserver(obs)
-            }
-        }
+        pendingUrl = userActivity.webpageURL
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(openPendingUniversalLink),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
+    @objc private func openPendingUniversalLink() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
+        guard let url = pendingUrl else { return }
+        pendingUrl = nil
+
+        let userActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
+        userActivity.webpageURL = url
+        continueUserActivity(userActivity: userActivity)
     }
 
     private func continueUserActivity(userActivity: NSUserActivity) {
