@@ -8,19 +8,16 @@
 import Foundation
 import UIKit
 
-
-@MainActor
 protocol UrlHandler {
-    func open(url: URL)
+    @MainActor func open(url: URL)
 }
 
-@MainActor
 final class ApplicationUrlHandler: NSObject, UrlHandler {
     static let shared: UrlHandler = ApplicationUrlHandler()
 
     private var pendingUrl: URL?
 
-    func open(url: URL) {
+    @MainActor func open(url: URL) {
         guard let scheme = url.scheme else {
             return
         }
