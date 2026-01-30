@@ -5,8 +5,8 @@
 //  Created by yong on 2023/07/18.
 //
 
-@preconcurrency import Foundation
-@preconcurrency import UIKit
+import Foundation
+import UIKit
 
 
 protocol UrlHandler {

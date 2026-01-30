@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 class DeviceHelper {
     static func getDeviceModel() -> String {
