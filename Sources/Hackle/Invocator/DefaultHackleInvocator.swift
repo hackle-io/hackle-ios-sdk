@@ -277,6 +277,12 @@ fileprivate extension DefaultHackleInvocator {
             throw HackleError.error("Valid 'className' parameter must be provided.")
         }
         
-        hackleAppCore.setCurrentScreen(screen: Screen(name: screenName, className: className), hackleAppContext: hackleAppContext)
+        hackleAppCore.setCurrentScreen(
+            screen: Screen.builder(
+                name: screenName,
+                className: className
+            ).build(),
+            hackleAppContext: hackleAppContext
+        )
     }
 }

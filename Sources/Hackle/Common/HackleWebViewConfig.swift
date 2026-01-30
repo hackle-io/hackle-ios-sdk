@@ -9,6 +9,8 @@ import Foundation
 
 /// Configuration for Hackle WebView integration.
 @objc public class HackleWebViewConfig: NSObject {
+    /// Whether automatic route tracking is enabled for WebView events.
+    @objc public let automaticRouteTracking: Bool
     /// Whether automatic screen tracking is enabled for WebView events.
     @objc public let automaticScreenTracking: Bool
 
@@ -19,6 +21,7 @@ import Foundation
     @objc public static let DEFAULT: HackleWebViewConfig = builder().build()
 
     internal init(_ builder: HackleWebViewConfigBuilder) {
+        self.automaticRouteTracking = builder.automaticRouteTracking
         self.automaticScreenTracking = builder.automaticScreenTracking
         self.automaticEngagementTracking = builder.automaticEngagementTracking
         super.init()
@@ -34,9 +37,20 @@ import Foundation
 
 /// Builder for constructing ``HackleWebViewConfig`` instances.
 @objc public class HackleWebViewConfigBuilder: NSObject {
+    var automaticRouteTracking: Bool = true
     var automaticScreenTracking: Bool = false
     var automaticEngagementTracking: Bool = false
 
+    /// Enables or disables automatic route tracking for WebView events.
+    ///
+    /// - Parameter automaticTracking: `true` to enable automatic route tracking, `false` to disable
+    /// - Returns: This builder instance for method chaining
+    @discardableResult
+    @objc public func automaticRouteTracking(_ automaticTracking: Bool) -> HackleWebViewConfigBuilder {
+        self.automaticRouteTracking = automaticTracking
+        return self
+    }
+    
     /// Enables or disables automatic screen tracking for WebView events.
     ///
     /// - Parameter automaticTracking: `true` to enable automatic screen tracking, `false` to disable

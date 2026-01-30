@@ -87,12 +87,14 @@ extension WKWebView {
 
 extension HackleWebViewConfig: Encodable {
     enum CodingKeys: String, CodingKey {
+        case automaticRouteTracking
         case automaticScreenTracking
         case automaticEngagementTracking
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(automaticRouteTracking, forKey: .automaticRouteTracking)
         try container.encode(automaticScreenTracking, forKey: .automaticScreenTracking)
         try container.encode(automaticEngagementTracking, forKey: .automaticEngagementTracking)
     }

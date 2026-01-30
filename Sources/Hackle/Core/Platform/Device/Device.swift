@@ -1,5 +1,5 @@
 import Foundation
-import UIKit
+@preconcurrency import UIKit
 
 protocol Device {
     var id: String { get }
@@ -22,11 +22,10 @@ class DeviceImpl : Device {
             locale: DeviceImpl.getPreferredLocale(),
             timezone: TimeZone.current,
             screenInfo: ScreenInfo(
-                width: Int(UIScreen.main.nativeBounds.width),
-                height: Int(UIScreen.main.nativeBounds.height)
+                width: Int(UIUtils.currentScreen.nativeBounds.width),
+                height: Int(UIUtils.currentScreen.nativeBounds.height)
             )
         )
-        
     }
     
     var properties: [String : Any] {
