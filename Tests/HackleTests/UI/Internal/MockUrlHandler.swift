@@ -6,7 +6,7 @@ class MockUrlHandler: Mock, UrlHandler {
 
     lazy var openMock = MockFunction(self, open)
 
-    func open(url: URL) {
+    @MainActor func open(url: URL) {
         call(openMock, args: url)
     }
 }

@@ -57,11 +57,16 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 1) {
-                    mockUrlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 1) {
+                            mockUrlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
-            
+
             it("handlePushClickAction이 deepLink이고 custom scheme이면 urlHandler.open을 호출한다") {
                 let testData = mockNotificationData(
                     clickAction: .deepLink,
@@ -70,8 +75,13 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 1) {
-                    mockUrlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 1) {
+                            mockUrlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
 
@@ -83,8 +93,13 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 0) {
-                    mockUrlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 0) {
+                            mockUrlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
 
@@ -96,8 +111,13 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 0) {
-                    mockUrlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 0) {
+                            mockUrlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
             

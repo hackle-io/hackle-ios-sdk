@@ -23,21 +23,36 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                 context("when URL has HTTP scheme") {
                     it("should attempt to use Universal Link if supported") {
                         let url = URL(string: "http://www.hackle.io")!
-                        expect { sut.open(url: url) }.toNot(throwError())
+                        waitUntil { done in
+                            DispatchQueue.main.async {
+                                sut.open(url: url)
+                                done()
+                            }
+                        }
                     }
                 }
 
                 context("when URL has HTTPS scheme") {
                     it("should attempt to use Universal Link if supported") {
                         let url = URL(string: "https://www.hackle.io/path")!
-                        expect { sut.open(url: url) }.toNot(throwError())
+                        waitUntil { done in
+                            DispatchQueue.main.async {
+                                sut.open(url: url)
+                                done()
+                            }
+                        }
                     }
                 }
 
                 context("when URL has custom scheme") {
                     it("should use fallback to open URL directly") {
                         let url = URL(string: "hackleapp://path")!
-                        expect { sut.open(url: url) }.toNot(throwError())
+                        waitUntil { done in
+                            DispatchQueue.main.async {
+                                sut.open(url: url)
+                                done()
+                            }
+                        }
                     }
                 }
             }
@@ -52,8 +67,13 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                         URL(string: "mailto:test@example.com")!
                     ]
 
-                    for url in urls {
-                        expect { sut.open(url: url) }.toNot(throwError())
+                    waitUntil { done in
+                        DispatchQueue.main.async {
+                            for url in urls {
+                                sut.open(url: url)
+                            }
+                            done()
+                        }
                     }
                 }
             }

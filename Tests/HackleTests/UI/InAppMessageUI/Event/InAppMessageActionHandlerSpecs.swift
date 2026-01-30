@@ -51,8 +51,13 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 sut.handle(view: view, action: action)
 
                 // then
-                verify(exactly: 0) {
-                    urlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 0) {
+                            urlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
 
@@ -65,8 +70,13 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 sut.handle(view: view, action: action)
 
                 // then
-                verify(exactly: 0) {
-                    urlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 0) {
+                            urlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
 
@@ -79,8 +89,13 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 sut.handle(view: view, action: action)
 
                 // then
-                verify {
-                    urlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify {
+                            urlHandler.openMock
+                        }
+                        done()
+                    }
                 }
             }
         }
@@ -110,10 +125,15 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 sut.handle(view: view, action: action)
 
                 // then
-                verify(exactly: 0) {
-                    urlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 0) {
+                            urlHandler.openMock
+                        }
+                        expect(view.presented) == true
+                        done()
+                    }
                 }
-                expect(view.presented) == true
             }
 
             it("when invalid url then do nothing") {
@@ -125,10 +145,15 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 sut.handle(view: view, action: action)
 
                 // then
-                verify(exactly: 0) {
-                    urlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify(exactly: 0) {
+                            urlHandler.openMock
+                        }
+                        expect(view.presented) == true
+                        done()
+                    }
                 }
-                expect(view.presented) == true
             }
 
             it("hackle link and close") {
@@ -140,10 +165,15 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 sut.handle(view: view, action: action)
 
                 // then
-                verify {
-                    urlHandler.openMock
+                waitUntil(timeout: .seconds(1)) { done in
+                    DispatchQueue.main.async {
+                        verify {
+                            urlHandler.openMock
+                        }
+                        expect(view.presented) == false
+                        done()
+                    }
                 }
-                expect(view.presented) == false
             }
         }
 
