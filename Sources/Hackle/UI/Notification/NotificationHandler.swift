@@ -69,7 +69,9 @@ extension NotificationHandler {
             }
 
             if let url = URL(string: link) {
-                urlHandler.open(url: url)
+                Task { @MainActor in
+                    urlHandler.open(url: url)
+                }
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")
             }
