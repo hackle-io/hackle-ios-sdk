@@ -15,7 +15,7 @@ protocol UrlHandler {
 final class ApplicationUrlHandler: NSObject, UrlHandler {
     static let shared: UrlHandler = ApplicationUrlHandler()
 
-    private var pendingUrl: URL?
+    @MainActor private var pendingUrl: URL?
 
     @MainActor func open(url: URL) {
         guard let scheme = url.scheme else {
@@ -41,7 +41,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         return appDelegate.responds(to: selector)
     }
 
-    private func openUniversalLink(_ url: URL) {
+    @MainActor private func openUniversalLink(_ url: URL) {
         let userActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
         userActivity.webpageURL = url
 
@@ -55,7 +55,14 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         }
     }
 
-    private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
+    @MainActor private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
+        // 기존 observer 제거 (중복 방지)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
         pendingUrl = userActivity.webpageURL
         NotificationCenter.default.addObserver(
             self,
@@ -65,7 +72,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         )
     }
 
-    @objc private func openPendingUniversalLink() {
+    @MainActor @objc private func openPendingUniversalLink() {
         NotificationCenter.default.removeObserver(
             self,
             name: UIApplication.didBecomeActiveNotification,
