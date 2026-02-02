@@ -87,25 +87,23 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         continueUserActivity(userActivity: userActivity)
     }
 
-    private func continueUserActivity(userActivity: NSUserActivity) {
+    @MainActor private func continueUserActivity(userActivity: NSUserActivity) {
         guard let application = UIUtils.application else {
             Log.info("UIApplication is not available")
             return
         }
 
-        DispatchQueue.main.async { [weak self] in
-            let success = application.delegate?.application?(
-                application,
-                continue: userActivity,
-                restorationHandler: { _ in }
-            )
-            Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
+        let success = application.delegate?.application?(
+            application,
+            continue: userActivity,
+            restorationHandler: { _ in }
+        )
+        Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
 
-            if success != true {
-                Log.info("Attempt to open URL alternative")
-                if let url = userActivity.webpageURL {
-                    self?.openLink(url)
-                }
+        if success != true {
+            Log.info("Attempt to open URL alternative")
+            if let url = userActivity.webpageURL {
+                self.openLink(url)
             }
         }
     }
