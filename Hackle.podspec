@@ -6,12 +6,12 @@ spec.summary       = "Hackle Sdk for iOS"
 spec.homepage      = "https://www.hackle.io"
 spec.license       = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
 spec.author        = { "Hackle" => "platform@hackle.io" }
-spec.ios.deployment_target = "12.0"
+spec.ios.deployment_target = "13.0"
 spec.source        = { :git => "https://github.com/hackle-io/hackle-ios-sdk.git", :tag => "#{spec.version}" }
 spec.source_files  = "Sources/**/*.{swift,h,m}"
 spec.resources     = "Sources/**/*.{xib,png}"
 spec.resource_bundles = { "Hackle" => ["Sources/Hackle/PrivacyInfo.xcprivacy"] }
 spec.frameworks    = "Foundation"
-spec.swift_version = "5.0"
+spec.swift_version = "5.5"
 spec.pod_target_xcconfig = { "APPLICATION_EXTENSION_API_ONLY" => "NO" }
 end
