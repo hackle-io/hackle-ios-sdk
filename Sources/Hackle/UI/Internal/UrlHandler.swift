@@ -13,8 +13,6 @@ protocol UrlHandler {
 }
 
 final class ApplicationUrlHandler: NSObject, UrlHandler {
-    static let shared: UrlHandler = ApplicationUrlHandler()
-
     @MainActor private var pendingUrl: URL?
 
     @MainActor func open(url: URL) {

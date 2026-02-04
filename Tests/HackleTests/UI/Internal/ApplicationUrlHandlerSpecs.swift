@@ -237,11 +237,6 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                     expect(handler).notTo(beNil())
                 }
 
-                it("shared 인스턴스에 접근할 수 있어야 함") {
-                    let shared = ApplicationUrlHandler.shared
-                    expect(shared).notTo(beNil())
-                }
-
                 it("여러 인스턴스가 독립적으로 동작해야 함") {
                     let handler1 = ApplicationUrlHandler()
                     let handler2 = ApplicationUrlHandler()

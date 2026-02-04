@@ -8,7 +8,7 @@ class NotificationHandler {
             label: "io.hackle.NotificationHandler",
             qos: .utility
         ),
-        urlHandler: ApplicationUrlHandler.shared
+        urlHandler: ApplicationUrlHandler()
     )
 
     private var receiver: NotificationDataReceiver
