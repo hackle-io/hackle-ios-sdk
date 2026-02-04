@@ -33,6 +33,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             beforeEach {
                 urlHandler = MockUrlHandler()
+                urlHandler.reset()
                 sut = InAppMessageLinkActionHandler(urlHandler: urlHandler)
             }
 
@@ -50,15 +51,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // when
                 sut.handle(view: view, action: action)
 
-                // then
-                waitUntil(timeout: .seconds(1)) { done in
-                    DispatchQueue.main.async {
-                        verify(exactly: 0) {
-                            urlHandler.openMock
-                        }
-                        done()
-                    }
-                }
+                // then - 비동기 작업이 실행될 시간을 준 후 호출되지 않음을 확인
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(urlHandler.openCallCount).to(equal(0))
             }
 
             it("when invalid url then do nothing") {
@@ -69,15 +64,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // when
                 sut.handle(view: view, action: action)
 
-                // then
-                waitUntil(timeout: .seconds(1)) { done in
-                    DispatchQueue.main.async {
-                        verify(exactly: 0) {
-                            urlHandler.openMock
-                        }
-                        done()
-                    }
-                }
+                // then - guard에서 early return되므로 Task 자체가 생성되지 않음
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(urlHandler.openCallCount).to(equal(0))
             }
 
             it("hackle link") {
@@ -88,15 +77,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // when
                 sut.handle(view: view, action: action)
 
-                // then
-                waitUntil(timeout: .seconds(1)) { done in
-                    DispatchQueue.main.async {
-                        verify {
-                            urlHandler.openMock
-                        }
-                        done()
-                    }
-                }
+                // then - toEventually로 비동기 호출 대기
+                expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
         }
 
@@ -106,6 +89,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             beforeEach {
                 urlHandler = MockUrlHandler()
+                urlHandler.reset()
                 sut = InAppMessageLinkAndCloseHandler(urlHandler: urlHandler)
             }
 
@@ -124,16 +108,10 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // when
                 sut.handle(view: view, action: action)
 
-                // then
-                waitUntil(timeout: .seconds(1)) { done in
-                    DispatchQueue.main.async {
-                        verify(exactly: 0) {
-                            urlHandler.openMock
-                        }
-                        expect(view.presented) == true
-                        done()
-                    }
-                }
+                // then - guard에서 early return되므로 dismiss도 호출되지 않음
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(urlHandler.openCallCount).to(equal(0))
+                expect(view.presented).to(beTrue())
             }
 
             it("when invalid url then do nothing") {
@@ -144,16 +122,10 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // when
                 sut.handle(view: view, action: action)
 
-                // then
-                waitUntil(timeout: .seconds(1)) { done in
-                    DispatchQueue.main.async {
-                        verify(exactly: 0) {
-                            urlHandler.openMock
-                        }
-                        expect(view.presented) == true
-                        done()
-                    }
-                }
+                // then - guard에서 early return
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(urlHandler.openCallCount).to(equal(0))
+                expect(view.presented).to(beTrue())
             }
 
             it("hackle link and close") {
@@ -164,16 +136,10 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // when
                 sut.handle(view: view, action: action)
 
-                // then
-                waitUntil(timeout: .seconds(1)) { done in
-                    DispatchQueue.main.async {
-                        verify {
-                            urlHandler.openMock
-                        }
-                        expect(view.presented) == false
-                        done()
-                    }
-                }
+                // then - view.dismiss()는 동기적으로 호출되고, urlHandler.open은 비동기로 호출됨
+                expect(view.presented).to(beFalse())
+                expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
         }
 
