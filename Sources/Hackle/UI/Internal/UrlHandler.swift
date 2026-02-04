@@ -15,6 +15,14 @@ protocol UrlHandler {
 final class ApplicationUrlHandler: NSObject, UrlHandler {
     @MainActor private var pendingUrl: URL?
 
+    deinit {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
     @MainActor func open(url: URL) {
         guard let scheme = url.scheme else {
             return
@@ -71,8 +79,8 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
     }
 
     @objc private func openPendingUniversalLink() {
-        Task { @MainActor in
-            self.handlePendingUniversalLink()
+        Task { @MainActor [weak self] in
+            self?.handlePendingUniversalLink()
         }
     }
 
