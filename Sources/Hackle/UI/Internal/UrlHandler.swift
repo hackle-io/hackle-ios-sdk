@@ -33,7 +33,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         return scheme == "http" || scheme == "https"
     }
 
-    private func isContinueUserActivitySupported() -> Bool {
+    @MainActor private func isContinueUserActivitySupported() -> Bool {
         guard let appDelegate = UIUtils.application?.delegate else {
             return false
         }
@@ -108,7 +108,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         }
     }
 
-    private func openLink(_ url: URL) {
+    @MainActor private func openLink(_ url: URL) {
         UIUtils.application?.open(url, options: [:]) { success in
             Log.debug("Redirected to: \(url.absoluteString) [success=\(success)]")
         }
