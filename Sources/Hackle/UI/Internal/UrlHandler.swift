@@ -72,7 +72,13 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
         )
     }
 
-    @MainActor @objc private func openPendingUniversalLink() {
+    @objc private func openPendingUniversalLink() {
+        Task { @MainActor in
+            self.handlePendingUniversalLink()
+        }
+    }
+
+    @MainActor private func handlePendingUniversalLink() {
         NotificationCenter.default.removeObserver(
             self,
             name: UIApplication.didBecomeActiveNotification,
