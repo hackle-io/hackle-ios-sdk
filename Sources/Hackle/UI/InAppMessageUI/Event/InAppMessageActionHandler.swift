@@ -52,7 +52,9 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
             Log.error("Invalid url: \(action.value.orNil)")
             return
         }
-        urlHandler.open(url: url)
+        Task { @MainActor in
+            urlHandler.open(url: url)
+        }
     }
 }
 
@@ -73,7 +75,9 @@ class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
             return
         }
         view.dismiss()
-        urlHandler.open(url: url)
+        Task { @MainActor in
+            urlHandler.open(url: url)
+        }
     }
 }
 

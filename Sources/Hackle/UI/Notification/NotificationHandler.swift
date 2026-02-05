@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 import UserNotifications
 
 class NotificationHandler {
@@ -8,7 +8,7 @@ class NotificationHandler {
             label: "io.hackle.NotificationHandler",
             qos: .utility
         ),
-        urlHandler: ApplicationUrlHandler.shared
+        urlHandler: ApplicationUrlHandler()
     )
 
     private var receiver: NotificationDataReceiver
@@ -69,7 +69,9 @@ extension NotificationHandler {
             }
 
             if let url = URL(string: link) {
-                urlHandler.open(url: url)
+                Task { @MainActor in
+                    urlHandler.open(url: url)
+                }
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")
             }

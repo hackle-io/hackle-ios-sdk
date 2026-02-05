@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 extension HackleInAppMessageUI {
     func createMessageView(context: InAppMessagePresentationContext) -> InAppMessageView? {

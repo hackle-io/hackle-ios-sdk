@@ -8,6 +8,7 @@
 import Foundation
 import Quick
 import Nimble
+import UIKit
 @testable import Hackle
 
 class ApplicationUrlHandlerSpecs: QuickSpec {
@@ -19,41 +20,46 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                 sut = ApplicationUrlHandler()
             }
 
-            describe("open(url:)") {
-                context("when URL has HTTP scheme") {
-                    it("should attempt to use Universal Link if supported") {
-                        let url = URL(string: "http://www.hackle.io")!
-                        expect { sut.open(url: url) }.toNot(throwError())
-                    }
-                }
+            // MARK: - 인스턴스 생성
 
-                context("when URL has HTTPS scheme") {
-                    it("should attempt to use Universal Link if supported") {
-                        let url = URL(string: "https://www.hackle.io/path")!
-                        expect { sut.open(url: url) }.toNot(throwError())
-                    }
-                }
-
-                context("when URL has custom scheme") {
-                    it("should use fallback to open URL directly") {
-                        let url = URL(string: "hackleapp://path")!
-                        expect { sut.open(url: url) }.toNot(throwError())
-                    }
+            describe("인스턴스 생성") {
+                it("새 인스턴스를 생성할 수 있어야 함") {
+                    let handler = ApplicationUrlHandler()
+                    expect(handler).notTo(beNil())
                 }
             }
 
-            describe("Integration scenarios") {
-                it("should handle various URL types without crashing") {
-                    let urls = [
-                        URL(string: "https://www.hackle.io")!,
-                        URL(string: "http://example.com")!,
-                        URL(string: "myapp://deep/link")!,
-                        URL(string: "tel:+1234567890")!,
-                        URL(string: "mailto:test@example.com")!
-                    ]
+            // MARK: - open(url:) 기본 동작
 
-                    for url in urls {
-                        expect { sut.open(url: url) }.toNot(throwError())
+            describe("open(url:)") {
+                context("scheme이 없는 URL") {
+                    it("크래시 없이 early return 해야 함") {
+                        guard let url = URL(string: "//example.com/path") else {
+                            fail("URL 생성 실패")
+                            return
+                        }
+
+                        waitUntil { done in
+                            DispatchQueue.main.async {
+                                sut.open(url: url)
+                                done()
+                            }
+                        }
+                    }
+                }
+
+                context("유효한 URL") {
+                    it("크래시 없이 처리해야 함") {
+                        let url = URL(string: "https://www.hackle.io")!
+
+                        // 테스트 환경: UIUtils.application이 nil이므로
+                        // 실제 동작은 검증 불가, nil 안전성만 확인
+                        waitUntil { done in
+                            DispatchQueue.main.async {
+                                sut.open(url: url)
+                                done()
+                            }
+                        }
                     }
                 }
             }
