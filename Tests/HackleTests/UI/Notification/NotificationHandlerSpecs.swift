@@ -31,6 +31,7 @@ class NotificationHandlerSpecs: QuickSpec {
 
             beforeEach {
                 mockUrlHandler = MockUrlHandler()
+                mockUrlHandler.reset()
                 handler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.queue"),
                     urlHandler: mockUrlHandler
@@ -57,11 +58,11 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 1) {
-                    mockUrlHandler.openMock
-                }
+                // toEventually로 비동기 Task 완료 대기
+                expect(mockUrlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(mockUrlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
-            
+
             it("handlePushClickAction이 deepLink이고 custom scheme이면 urlHandler.open을 호출한다") {
                 let testData = mockNotificationData(
                     clickAction: .deepLink,
@@ -70,9 +71,9 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 1) {
-                    mockUrlHandler.openMock
-                }
+                // toEventually로 비동기 Task 완료 대기
+                expect(mockUrlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(mockUrlHandler.lastOpenedUrl?.absoluteString).to(equal("hackleapp://www.hackle.io"))
             }
 
             it("handlePushClickAction이 appOpen일 때 urlHandler.open을 호출하지 않는다") {
@@ -83,9 +84,9 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 0) {
-                    mockUrlHandler.openMock
-                }
+                // 비동기 작업이 실행될 시간을 준 후 호출되지 않음을 확인
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(mockUrlHandler.openCallCount).to(equal(0))
             }
 
             it("handlePushClickAction에서 link가 비어있으면 urlHandler.open을 호출하지 않는다") {
@@ -96,9 +97,9 @@ class NotificationHandlerSpecs: QuickSpec {
 
                 handler.handlePushClickAction(notificationData: testData)
 
-                verify(exactly: 0) {
-                    mockUrlHandler.openMock
-                }
+                // 비동기 작업이 실행될 시간을 준 후 호출되지 않음을 확인
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(mockUrlHandler.openCallCount).to(equal(0))
             }
             
             it("should return a attachment on download success") {

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 @objc(HackleInAppMessageUI)
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter {

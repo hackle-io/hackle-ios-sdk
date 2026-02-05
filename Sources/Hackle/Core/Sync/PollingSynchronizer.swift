@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 
 class PollingSynchronizer: Synchronizer, @unchecked Sendable {

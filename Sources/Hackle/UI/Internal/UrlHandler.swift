@@ -5,18 +5,25 @@
 //  Created by yong on 2023/07/18.
 //
 
-@preconcurrency import Foundation
-@preconcurrency import UIKit
-
+import Foundation
+import UIKit
 
 protocol UrlHandler {
-    func open(url: URL)
+    @MainActor func open(url: URL)
 }
 
-class ApplicationUrlHandler: UrlHandler {
-    static let shared: UrlHandler = ApplicationUrlHandler()
-    
-    func open(url: URL) {
+final class ApplicationUrlHandler: NSObject, UrlHandler {
+    @MainActor private var pendingUrl: URL?
+
+    deinit {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
+    @MainActor func open(url: URL) {
         guard let scheme = url.scheme else {
             return
         }
@@ -32,7 +39,7 @@ class ApplicationUrlHandler: UrlHandler {
         return scheme == "http" || scheme == "https"
     }
 
-    private func isContinueUserActivitySupported() -> Bool {
+    @MainActor private func isContinueUserActivitySupported() -> Bool {
         guard let appDelegate = UIUtils.application?.delegate else {
             return false
         }
@@ -40,7 +47,7 @@ class ApplicationUrlHandler: UrlHandler {
         return appDelegate.responds(to: selector)
     }
 
-    private func openUniversalLink(_ url: URL) {
+    @MainActor private func openUniversalLink(_ url: URL) {
         let userActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
         userActivity.webpageURL = url
 
@@ -54,51 +61,66 @@ class ApplicationUrlHandler: UrlHandler {
         }
     }
 
-    private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
-        guard let url = userActivity.webpageURL else {
-            return
-        }
-        
-        var observer: NSObjectProtocol?
-        observer = NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self, weak observer] _ in
-            // for swift 6
-            let copiedUserActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
-            copiedUserActivity.webpageURL = url
-            self?.continueUserActivity(userActivity: copiedUserActivity)
-            if let obs = observer {
-                NotificationCenter.default.removeObserver(obs)
-            }
+    @MainActor private func scheduleOpenWhenActive(userActivity: NSUserActivity) {
+        // 기존 observer 제거 (중복 방지)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
+        pendingUrl = userActivity.webpageURL
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(openPendingUniversalLink),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
+    @objc private func openPendingUniversalLink() {
+        Task { @MainActor [weak self] in
+            self?.handlePendingUniversalLink()
         }
     }
 
-    private func continueUserActivity(userActivity: NSUserActivity) {
+    @MainActor private func handlePendingUniversalLink() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
+        guard let url = pendingUrl else { return }
+        pendingUrl = nil
+
+        let userActivity = NSUserActivity(activityType: NSUserActivityTypeBrowsingWeb)
+        userActivity.webpageURL = url
+        continueUserActivity(userActivity: userActivity)
+    }
+
+    @MainActor private func continueUserActivity(userActivity: NSUserActivity) {
         guard let application = UIUtils.application else {
             Log.info("UIApplication is not available")
             return
         }
 
-        DispatchQueue.main.async { [weak self] in
-            let success = application.delegate?.application?(
-                application,
-                continue: userActivity,
-                restorationHandler: { _ in }
-            )
-            Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
+        let success = application.delegate?.application?(
+            application,
+            continue: userActivity,
+            restorationHandler: { _ in }
+        )
+        Log.debug("Redirected to universal link: \(userActivity.webpageURL?.absoluteString ?? "") [success=\(success ?? false)]")
 
-            if success != true {
-                Log.info("Attempt to open URL alternative")
-                if let url = userActivity.webpageURL {
-                    self?.openLink(url)
-                }
+        if success != true {
+            Log.info("Attempt to open URL alternative")
+            if let url = userActivity.webpageURL {
+                self.openLink(url)
             }
         }
     }
 
-    private func openLink(_ url: URL) {
+    @MainActor private func openLink(_ url: URL) {
         UIUtils.application?.open(url, options: [:]) { success in
             Log.debug("Redirected to: \(url.absoluteString) [success=\(success)]")
         }
