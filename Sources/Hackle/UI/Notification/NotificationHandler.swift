@@ -16,28 +16,26 @@ class NotificationHandler {
 
     init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
         self.urlHandler = urlHandler
-        receiver = DefaultNotificationDataReceiver(
+        self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
-            repository: DefaultNotificationRepository(
-                sharedDatabase: DatabaseHelper.getSharedDatabase()
-            )
+            repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
         )
     }
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
     }
-    
+
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
         Log.info("track push click event")
         receiver.onNotificationDataReceived(data: notificationData, timestamp: timestamp)
     }
-    
+
     func handlePushClickAction(notificationData: NotificationData) {
         Log.info("handle push click action: \(notificationData.actionType.rawValue)")
         trampoline(data: notificationData)
     }
-    
+
     func handlePushImage(notificationData: NotificationData, completion: @escaping (UNNotificationAttachment?) -> Void) {
         Log.info("handle push image action")
         downloadImage(data: notificationData) { imageLocalPath in
@@ -77,7 +75,7 @@ extension NotificationHandler {
             }
         }
     }
-    
+
     private func downloadImage(data: NotificationData, completion: @escaping (URL?) -> Void) {
         guard let imageUrl = data.imageUrl,
               !imageUrl.isEmpty else {

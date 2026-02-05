@@ -3,8 +3,10 @@ import Foundation
 class SharedDatabase: Database {
     static let DATABASE_VERSION = 2
     static let MAX_DATABASE_VERSION = 2
-    
-    init() {
+
+    static let shared = SharedDatabase()
+
+    private init() {
         super.init(
             label: "io.hackle.SharedDatabase",
             filename: "shared_hackle.sqlite",
