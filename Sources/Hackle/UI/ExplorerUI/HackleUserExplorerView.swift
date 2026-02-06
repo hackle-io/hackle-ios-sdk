@@ -9,49 +9,44 @@ import Foundation
 import UIKit
 
 
+@MainActor
 class HackleUserExplorerView {
     private let hackleUserExplorer: HackleUserExplorer
     private var button: HackleUserExplorerButton? = nil
-    
+
     init(hackleUserExplorer: HackleUserExplorer) {
         self.hackleUserExplorer = hackleUserExplorer
     }
 
     func attach() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, let window = UIUtils.keyWindow else {
-                return
-            }
+        guard let window = UIUtils.keyWindow else {
+            return
+        }
 
-            if window.subviews.contains(where: { view in
-                view is HackleUserExplorerButton
-            }) {
-                return
-            }
+        if window.subviews.contains(where: { view in
+            view is HackleUserExplorerButton
+        }) {
+            return
+        }
 
-            if self.button == nil {
-                self.button = self.createButton()
-            }
-            let button = self.button!
+        if self.button == nil {
+            self.button = self.createButton()
+        }
+        let button = self.button!
 
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                window.addSubview(button)
-            }
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+            window.addSubview(button)
         }
     }
 
     func detach() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, let _ = UIUtils.keyWindow else {
-                return
-            }
+        guard let _ = UIUtils.keyWindow else {
+            return
+        }
 
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-                if self.button != nil {
-                    self.button?.removeFromSuperview()
-                    self.button = nil
-                }
-            }
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) { [weak self] in
+            self?.button?.removeFromSuperview()
+            self?.button = nil
         }
     }
 
@@ -92,18 +87,15 @@ class HackleUserExplorerView {
     }
 
     @objc func onClick() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self,
-                  self.button != nil,
-                  let topViewController = UIUtils.topViewController
-            else {
-                return
-            }
-            let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
-            hackleUserExplorerViewController.setHackleUserExplorer(hackleUserExplorer)
-            hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
-            topViewController.present(hackleUserExplorerViewController, animated: true)
+        guard self.button != nil,
+              let topViewController = UIUtils.topViewController
+        else {
+            return
         }
+        let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
+        hackleUserExplorerViewController.setHackleUserExplorer(hackleUserExplorer)
+        hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
+        topViewController.present(hackleUserExplorerViewController, animated: true)
     }
 
     private func barHeight() -> CGFloat {
