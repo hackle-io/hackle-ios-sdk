@@ -7,7 +7,7 @@ class MockViewManager: ViewManager {
     var top: UIViewController? = nil
     var isOwnedView: Bool = false
 
-    func topViewController() -> UIViewController? {
+    @MainActor func topViewController() -> UIViewController? {
         top
     }
 

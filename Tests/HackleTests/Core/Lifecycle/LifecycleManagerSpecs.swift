@@ -4,6 +4,7 @@ import Nimble
 import UIKit
 @testable import Hackle
 
+@MainActor
 class LifecycleManagerSpecs: QuickSpec {
     override func spec() {
 
