@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 protocol ViewManager {
-    func topViewController() -> UIViewController?
+    @MainActor func topViewController() -> UIViewController?
     func isOwnedView(vc: UIViewController) -> Bool
 }
 
@@ -10,7 +10,7 @@ class DefaultViewManager: ViewManager {
 
     static let shared = DefaultViewManager()
 
-    func topViewController() -> UIViewController? {
+    @MainActor func topViewController() -> UIViewController? {
         UIUtils.topViewController
     }
 
