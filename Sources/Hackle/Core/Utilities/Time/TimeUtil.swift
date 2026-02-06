@@ -8,7 +8,7 @@
 import Foundation
 
 enum TimeUtil {
-    private static var utcCalendar: Calendar = {
+    private static let utcCalendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         if let utcTimeZone = TimeZone(secondsFromGMT: 0) {
             calendar.timeZone = utcTimeZone
