@@ -10,7 +10,7 @@ class DeviceImpl : Device {
     private let deviceInfo: DeviceInfo
     let id: String
 
-    init(deviceId: String) {
+    init(deviceId: String, screenInfo: ScreenInfo) {
         self.id = deviceId
         self.deviceInfo = DeviceInfo(
             osName: "iOS",
@@ -21,10 +21,7 @@ class DeviceImpl : Device {
             manufacturer: "Apple",
             locale: DeviceImpl.getPreferredLocale(),
             timezone: TimeZone.current,
-            screenInfo: ScreenInfo(
-                width: Int(UIUtils.currentScreen.nativeBounds.width),
-                height: Int(UIUtils.currentScreen.nativeBounds.height)
-            )
+            screenInfo: screenInfo
         )
     }
     

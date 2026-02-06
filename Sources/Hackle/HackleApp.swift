@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import UIKit
 import WebKit
 
 /// Entry point of Hackle SDK.
@@ -410,7 +411,11 @@ extension HackleApp {
         
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository)
+        let screenInfo = ScreenInfo(
+            width: Int(UIScreen.main.nativeBounds.width),
+            height: Int(UIScreen.main.nativeBounds.height)
+        )
+        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository, screenInfo: screenInfo)
         let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         

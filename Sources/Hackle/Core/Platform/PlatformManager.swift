@@ -32,13 +32,13 @@ class PlatformManager {
         }
     }
 
-    init(keyValueRepository: KeyValueRepository) {
+    init(keyValueRepository: KeyValueRepository, screenInfo: ScreenInfo) {
         var isIdCreated = false
         let deviceId = PlatformManager.getDeviceId(keyValueRepository: keyValueRepository) { _ in
             isIdCreated = true
             return UUID().uuidString
         }
-        device = DeviceImpl(deviceId: deviceId)
+        device = DeviceImpl(deviceId: deviceId, screenInfo: screenInfo)
         _isDeviceIdCreated = isIdCreated
         _previousVersion = PlatformManager.loadPreviouseBundleVersion(keyValueRepository: keyValueRepository)
         bundleInfo = BundleInfoImpl()
