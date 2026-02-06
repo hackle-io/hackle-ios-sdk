@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 class UIUtils {
 
     static var application: UIApplication? {
