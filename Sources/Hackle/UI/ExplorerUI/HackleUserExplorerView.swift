@@ -33,10 +33,7 @@ class HackleUserExplorerView {
             self.button = self.createButton()
         }
         let button = self.button!
-
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-            window.addSubview(button)
-        }
+        window.addSubview(button)
     }
 
     func detach() {
@@ -44,10 +41,8 @@ class HackleUserExplorerView {
             return
         }
 
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) { [weak self] in
-            self?.button?.removeFromSuperview()
-            self?.button = nil
-        }
+        self.button?.removeFromSuperview()
+        self.button = nil
     }
 
     private func createButton() -> HackleUserExplorerButton {

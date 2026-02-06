@@ -31,8 +31,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
     }
 
     @MainActor private func presentNow(context: InAppMessagePresentationContext) {
-        guard isMainThread(),
-              checkRootViewController(),
+        guard checkRootViewController(),
               noMessagePresented(),
               orientationSupported(context: context) else {
             return
@@ -62,12 +61,6 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         } else {
             window.isHidden = false
         }
-    }
-
-    // Present Validation
-
-    private func isMainThread() -> Bool {
-        Thread.isMainThread
     }
 
     @MainActor private func checkRootViewController() -> Bool {

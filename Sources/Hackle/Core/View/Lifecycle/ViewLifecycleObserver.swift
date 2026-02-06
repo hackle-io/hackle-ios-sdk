@@ -56,7 +56,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             ViewLifecycleObserver.shared.publisher.viewWillAppear(vc: self)
         }
     }
@@ -66,7 +66,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             ViewLifecycleObserver.shared.publisher.viewDidAppear(vc: self)
         }
     }
@@ -77,7 +77,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             ViewLifecycleObserver.shared.publisher.viewWillDisappear(vc: self)
         }
     }
@@ -87,7 +87,7 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             ViewLifecycleObserver.shared.publisher.viewDidDisappear(vc: self)
         }
     }

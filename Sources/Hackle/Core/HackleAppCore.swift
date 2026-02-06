@@ -170,11 +170,13 @@ class DefaultHackleAppCore: HackleAppCore {
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }
             if self.userExplorerView == nil {
-                self.userExplorerView = HackleUserExplorerView(hackleUserExplorer: self.userExplorer)
+                self.userExplorerView = HackleUserExplorerView(
+                    hackleUserExplorer: self.userExplorer
+                )
             }
             self.userExplorerView?.attach()
+            Metrics.counter(name: "user.explorer.show").increment()
         }
-        Metrics.counter(name: "user.explorer.show").increment()
     }
 
     func hideUserExplorer() {
