@@ -47,14 +47,20 @@ class ApplicationLifecycleObserver {
     }
     
     @objc func didBecomeActive() {
-        publisher.didBecomeActive()
+        Task { @MainActor in
+            publisher.didBecomeActive()
+        }
     }
 
     @objc func willEnterForeground() {
-        publisher.willEnterForeground()
+        Task { @MainActor in
+            publisher.willEnterForeground()
+        }
     }
 
     @objc func didEnterBackground() {
-        publisher.didEnterBackground()
+        Task { @MainActor in
+            publisher.didEnterBackground()
+        }
     }
 }

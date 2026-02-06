@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 protocol ApplicationLifecyclePublisher {
-    func didBecomeActive()
-    func willEnterForeground()
-    func didEnterBackground()
-    func publishWillEnterForegroundIfNeeded()
+    @MainActor func didBecomeActive()
+    @MainActor func willEnterForeground()
+    @MainActor func didEnterBackground()
+    @MainActor func publishWillEnterForegroundIfNeeded()
 }

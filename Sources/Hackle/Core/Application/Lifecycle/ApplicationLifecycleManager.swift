@@ -46,24 +46,24 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
         listeners.append(listener)
     }
     
-    func didBecomeActive() {
+    @MainActor func didBecomeActive() {
         guard firstLaunch.get() else {
             return
         }
-        
+
         self.willEnterForeground()
     }
-    
-    func publishWillEnterForegroundIfNeeded() {
+
+    @MainActor func publishWillEnterForegroundIfNeeded() {
         guard let _ = viewManager.topViewController(),
               self.firstLaunch.get() else {
             return
         }
-        
+
         self.willEnterForeground()
     }
-    
-    func willEnterForeground() {
+
+    @MainActor func willEnterForeground() {
         firstLaunch.set(newValue: false)
         let top = viewManager.topViewController()
         execute {
@@ -74,8 +74,8 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
             self._currentState = .foreground
         }
     }
-    
-    func didEnterBackground() {
+
+    @MainActor func didEnterBackground() {
         let top = viewManager.topViewController()
         execute {
             Log.debug("ApplicationLifecycleManager.didEnterBackground")
