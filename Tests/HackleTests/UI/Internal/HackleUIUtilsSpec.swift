@@ -3,6 +3,7 @@ import Quick
 import Nimble
 @testable import Hackle
 
+@MainActor
 class HackleUIUtilsSpec: QuickSpec {
     override func spec() {
         describe("UIUtils") {
