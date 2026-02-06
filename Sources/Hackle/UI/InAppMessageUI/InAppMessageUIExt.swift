@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-    func createMessageView(context: InAppMessagePresentationContext) -> InAppMessageView? {
+    @MainActor func createMessageView(context: InAppMessagePresentationContext) -> InAppMessageView? {
         switch (context.message.layout.displayType, context.message.layout.layoutType) {
         case (.none, _):
             return nil
@@ -29,7 +29,7 @@ extension HackleInAppMessageUI {
         }
     }
 
-    func createWindow(viewController: ViewController) -> Window {
+    @MainActor func createWindow(viewController: ViewController) -> Window {
         let window: Window
         if let windowScene = UIUtils.activeWindowScene {
             window = Window(windowScene: windowScene)
