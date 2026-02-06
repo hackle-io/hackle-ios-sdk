@@ -31,7 +31,7 @@ extension HackleInAppMessageUI {
 
     func createWindow(viewController: ViewController) -> Window {
         let window: Window
-        if #available(iOS 13.0, *), let windowScene = UIUtils.activeWindowScene {
+        if let windowScene = UIUtils.activeWindowScene {
             window = Window(windowScene: windowScene)
         } else {
             window = Window(frame: UIUtils.currentScreen.bounds)

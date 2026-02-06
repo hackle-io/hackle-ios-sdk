@@ -107,18 +107,10 @@ class HackleUserExplorerView {
     }
 
     private func barHeight() -> CGFloat {
-        if #available(iOS 13.0, *) {
-            guard let size = UIUtils.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.size else {
-                return 0.0
-            }
-            return min(size.width, size.height)
-        } else {
-            guard let application = UIUtils.application else {
-                return 0.0
-            }
-            let size = application.statusBarFrame.size
-            return min(size.width, size.height)
+        guard let size = UIUtils.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.size else {
+            return 0.0
         }
+        return min(size.width, size.height)
     }
 
     private func offset() -> CGFloat {

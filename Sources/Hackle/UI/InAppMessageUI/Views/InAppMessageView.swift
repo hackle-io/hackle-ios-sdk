@@ -64,9 +64,7 @@ extension InAppMessageView {
         ui.delegate?.inAppMessageDidDisappear?(inAppMessage: context.inAppMessage)
 
         removeFromSuperview()
-        if #available(iOS 13.0, *) {
-            ui.window?.windowScene = nil
-        }
+        ui.window?.windowScene = nil
         ui.window = nil
     }
 
