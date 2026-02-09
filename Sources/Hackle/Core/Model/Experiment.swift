@@ -4,7 +4,7 @@
 
 import Foundation
 
-protocol Experiment {
+protocol Experiment: Sendable {
     typealias Id = Int64
     typealias Key = Int64
 
