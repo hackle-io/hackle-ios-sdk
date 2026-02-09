@@ -4,7 +4,7 @@ protocol ThrottleLimiter {
     func tryAcquire() -> Bool
 }
 
-class ScopingThrottleLimiter: ThrottleLimiter {
+final class ScopingThrottleLimiter: ThrottleLimiter, @unchecked Sendable {
 
     private let lock = ReadWriteLock(label: "io.hackle.ScopingThrottleLimiter.Lock")
 

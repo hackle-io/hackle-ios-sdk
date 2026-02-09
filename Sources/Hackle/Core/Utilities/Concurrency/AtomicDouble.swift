@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AtomicDouble {
+final class AtomicDouble: @unchecked Sendable {
 
     private let lock = ReadWriteLock(label: "io.hackle.AtomicDouble.Lock")
 
