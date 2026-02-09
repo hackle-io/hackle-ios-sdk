@@ -79,7 +79,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler {
     }
 
     @objc private func openPendingUniversalLink() {
-        Task { @MainActor [weak self] in
+        MainActor.assumeIsolated { [weak self] in
             self?.handlePendingUniversalLink()
         }
     }

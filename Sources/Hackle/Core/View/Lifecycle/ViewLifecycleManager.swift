@@ -27,7 +27,7 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         listeners.append(listener)
     }
 
-    func viewWillAppear(vc: UIViewController) {
+    @MainActor func viewWillAppear(vc: UIViewController) {
         guard let top = viewManager.topViewController(),
               viewManager.isOwnedView(vc: top) else {
             return
@@ -35,7 +35,7 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         publish(lifecycle: .viewWillAppear(vc: vc, top: top))
     }
 
-    func viewDidAppear(vc: UIViewController) {
+    @MainActor func viewDidAppear(vc: UIViewController) {
         guard let top = viewManager.topViewController(),
               viewManager.isOwnedView(vc: top) else {
             return
@@ -43,7 +43,7 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         publish(lifecycle: .viewDidAppear(vc: vc, top: top))
     }
 
-    func viewWillDisappear(vc: UIViewController) {
+    @MainActor func viewWillDisappear(vc: UIViewController) {
         guard let top = viewManager.topViewController(),
               viewManager.isOwnedView(vc: top) else {
             return
@@ -51,7 +51,7 @@ class ViewLifecycleManager: ViewLifecyclePublisher {
         publish(lifecycle: .viewWillDisappear(vc: vc, top: top))
     }
 
-    func viewDidDisappear(vc: UIViewController) {
+    @MainActor func viewDidDisappear(vc: UIViewController) {
         guard let top = viewManager.topViewController(),
               viewManager.isOwnedView(vc: top) else {
             return

@@ -22,7 +22,7 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
             context("when install state") {
                 beforeEach {
                     determiner = ApplicationInstallDeterminer()
-                    platformManager = PlatformManager(keyValueRepository: repository)
+                    platformManager = PlatformManager(keyValueRepository: repository, screenInfo: ScreenInfo(width: 0, height: 0))
                     sut = ApplicationInstallStateManager(
                         platformManager: platformManager,
                         applicationInstallDeterminer: determiner,
@@ -64,7 +64,7 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
                     repository.putInteger(key: "hackle_previous_build", value: 100)
 
                     determiner = ApplicationInstallDeterminer()
-                    platformManager = PlatformManager(keyValueRepository: repository)
+                    platformManager = PlatformManager(keyValueRepository: repository, screenInfo: ScreenInfo(width: 0, height: 0))
                     sut = ApplicationInstallStateManager(
                         platformManager: platformManager,
                         applicationInstallDeterminer: determiner,
@@ -94,7 +94,7 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
                     repository.putInteger(key: "hackle_previous_build", value: currentBuild)
 
                     determiner = ApplicationInstallDeterminer()
-                    platformManager = PlatformManager(keyValueRepository: repository)
+                    platformManager = PlatformManager(keyValueRepository: repository, screenInfo: ScreenInfo(width: 0, height: 0))
                     sut = ApplicationInstallStateManager(
                         platformManager: platformManager,
                         applicationInstallDeterminer: determiner,
@@ -118,7 +118,7 @@ class ApplicationInstallStateManagerSpec: QuickSpec {
         describe("addListener") {
             beforeEach {
                 determiner = ApplicationInstallDeterminer()
-                platformManager = PlatformManager(keyValueRepository: repository)
+                platformManager = PlatformManager(keyValueRepository: repository, screenInfo: ScreenInfo(width: 0, height: 0))
                 sut = ApplicationInstallStateManager(
                     platformManager: platformManager,
                     applicationInstallDeterminer: determiner,

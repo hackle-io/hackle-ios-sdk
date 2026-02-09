@@ -25,14 +25,13 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
     }
 
     func present(context: InAppMessagePresentationContext) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.presentNow(context: context)
         }
     }
 
-    private func presentNow(context: InAppMessagePresentationContext) {
-        guard isMainThread(),
-              checkRootViewController(),
+    @MainActor private func presentNow(context: InAppMessagePresentationContext) {
+        guard checkRootViewController(),
               noMessagePresented(),
               orientationSupported(context: context) else {
             return
@@ -64,13 +63,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         }
     }
 
-    // Present Validation
-
-    private func isMainThread() -> Bool {
-        Thread.isMainThread
-    }
-
-    private func checkRootViewController() -> Bool {
+    @MainActor private func checkRootViewController() -> Bool {
         UIUtils.keyWindow?.rootViewController != nil
     }
 
@@ -78,7 +71,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         currentMessageView == nil
     }
 
-    private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {
+    @MainActor private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {
         context.inAppMessage.supports(orientation: UIUtils.interfaceOrientation)
     }
 }

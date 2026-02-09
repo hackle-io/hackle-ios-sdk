@@ -77,7 +77,7 @@ class DefaultHackleAppCore: HackleAppCore {
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
     
-    private var userExplorerView: HackleUserExplorerView? = nil
+    @MainActor private var userExplorerView: HackleUserExplorerView? = nil
     
     var deviceId: String {
         get {
@@ -166,9 +166,13 @@ class DefaultHackleAppCore: HackleAppCore {
     }
     
     func showUserExplorer() {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            guard let self else { return }
             if self.userExplorerView == nil {
-                self.userExplorerView = HackleUserExplorerView(hackleUserExplorer: self.userExplorer)
+                self.userExplorerView = HackleUserExplorerView(
+                    hackleUserExplorer: self.userExplorer
+                )
             }
             self.userExplorerView?.attach()
         }
@@ -176,8 +180,9 @@ class DefaultHackleAppCore: HackleAppCore {
     }
 
     func hideUserExplorer() {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-            self.userExplorerView?.detach()
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            self?.userExplorerView?.detach()
         }
     }
 

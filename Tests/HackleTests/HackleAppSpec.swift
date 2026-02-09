@@ -32,7 +32,7 @@ class HackleAppSpecs: QuickSpec {
                 httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
-            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository())
+            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository(), screenInfo: ScreenInfo(width: 0, height: 0))
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
