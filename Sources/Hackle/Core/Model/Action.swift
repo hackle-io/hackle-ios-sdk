@@ -1,6 +1,6 @@
 import Foundation
 
-protocol Action {
+protocol Action: Sendable {
     var type: ActionType { get }
     var variationId: Variation.Id? { get }
     var bucketId: Bucket.Id? { get }
@@ -12,7 +12,7 @@ enum ActionType: String, Codable {
 }
 
 
-class ActionEntity: Action {
+final class ActionEntity: Action, Sendable {
     let type: ActionType
     let variationId: Variation.Id?
     let bucketId: Bucket.Id?

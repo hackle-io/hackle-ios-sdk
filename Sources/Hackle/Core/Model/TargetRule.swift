@@ -1,12 +1,12 @@
 import Foundation
 
 
-protocol TargetRule {
+protocol TargetRule: Sendable {
     var target: Target { get }
     var action: Action { get }
 }
 
-class TargetRuleEntity: TargetRule {
+final class TargetRuleEntity: TargetRule, Sendable {
     let target: Target
     let action: Action
 
