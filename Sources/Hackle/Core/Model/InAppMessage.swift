@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class InAppMessage: HackleInAppMessage, @unchecked Sendable {
+final class InAppMessage: HackleInAppMessage, Sendable {
     typealias Id = Int64
     typealias Key = Int64
 
@@ -110,7 +110,7 @@ extension InAppMessage {
         }
     }
 
-    final class EventTrigger: @unchecked Sendable {
+    final class EventTrigger: Sendable {
         let rules: [Rule]
         let frequencyCap: FrequencyCap?
         let delay: Delay
@@ -121,7 +121,7 @@ extension InAppMessage {
             self.delay = delay
         }
 
-        final class Rule: @unchecked Sendable {
+        final class Rule: Sendable {
             let eventKey: String
             let targets: [Target]
 
@@ -203,7 +203,7 @@ extension InAppMessage {
         }
     }
 
-    final class TargetContext: @unchecked Sendable {
+    final class TargetContext: Sendable {
         let overrides: [UserOverride]
         let targets: [Target]
 
@@ -284,7 +284,7 @@ extension InAppMessage {
         case after = "AFTER"
     }
 
-    final class MessageContext: @unchecked Sendable {
+    final class MessageContext: Sendable {
         let defaultLang: String
         let experimentContext: ExperimentContext?
         let platformTypes: [PlatformType]
@@ -314,7 +314,7 @@ extension InAppMessage {
         }
     }
 
-    final class Message: @unchecked Sendable {
+    final class Message: Sendable {
         let variationKey: String?
         let lang: String
         let layout: Layout
@@ -368,7 +368,7 @@ extension InAppMessage {
             }
         }
 
-        final class Image: @unchecked Sendable {
+        final class Image: Sendable {
             let orientation: Orientation
             let imagePath: String
             let action: Action?
@@ -416,7 +416,7 @@ extension InAppMessage {
             }
         }
 
-        final class Button: @unchecked Sendable {
+        final class Button: Sendable {
             let text: String
             let style: Style
             let action: Action
@@ -458,7 +458,7 @@ extension InAppMessage {
             }
         }
 
-        final class PositionalButton: @unchecked Sendable {
+        final class PositionalButton: Sendable {
             let button: Button
             let alignment: Alignment
 
@@ -487,7 +487,7 @@ extension InAppMessage {
         }
     }
 
-    final class Action: HackleInAppMessageAction, @unchecked Sendable {
+    final class Action: HackleInAppMessageAction, Sendable {
         let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
 
         let behavior: Behavior

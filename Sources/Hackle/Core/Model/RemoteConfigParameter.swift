@@ -8,7 +8,7 @@
 import Foundation
 
 
-final class RemoteConfigParameter: @unchecked Sendable {
+final class RemoteConfigParameter: Sendable {
     typealias Id = Int64
     typealias Key = String
 
@@ -38,7 +38,7 @@ final class RemoteConfigParameter: @unchecked Sendable {
         }
     }
 
-    final class TargetRule: @unchecked Sendable {
+    final class TargetRule: Sendable {
         let key: String
         let name: String
         let target: Target
