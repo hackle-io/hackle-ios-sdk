@@ -6,7 +6,7 @@ import Foundation
 
 /// Represents an event to be tracked in Hackle analytics.
 @objc(HackleEvent)
-public class Event: NSObject {
+public class Event: NSObject, @unchecked Sendable {
 
     let key: String
     let value: Double?

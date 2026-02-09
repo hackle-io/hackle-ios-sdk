@@ -42,7 +42,7 @@ enum ExperimentStatus: String {
     case completed
 }
 
-class ExperimentEntity: Experiment {
+final class ExperimentEntity: Experiment, @unchecked Sendable {
     let id: Id
     let key: Key
     let name: String?

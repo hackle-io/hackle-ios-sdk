@@ -71,7 +71,7 @@ enum UserEvents {
         )
     }
 
-    struct Exposure: UserEvent {
+    struct Exposure: UserEvent, @unchecked Sendable {
         let type: UserEventType = .exposure
         let insertId: String
         let timestamp: Date
@@ -107,7 +107,7 @@ enum UserEvents {
         }
     }
 
-    struct Track: UserEvent {
+    struct Track: UserEvent, @unchecked Sendable {
         let type: UserEventType = .track
         let insertId: String
         let timestamp: Date
@@ -134,7 +134,7 @@ enum UserEvents {
         }
     }
 
-    struct RemoteConfig: UserEvent {
+    struct RemoteConfig: UserEvent, @unchecked Sendable {
         let type: UserEventType = .remoteConfig
         let insertId: String
         let timestamp: Date

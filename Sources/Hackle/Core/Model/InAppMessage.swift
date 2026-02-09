@@ -7,7 +7,7 @@
 
 import Foundation
 
-class InAppMessage: HackleInAppMessage {
+final class InAppMessage: HackleInAppMessage, @unchecked Sendable {
     typealias Id = Int64
     typealias Key = Int64
 
@@ -81,7 +81,7 @@ extension InAppMessage {
         }
     }
     
-    class TimetableSlot {
+    final class TimetableSlot: Sendable {
         let dayOfWeek: DayOfWeek
         let startSecondsInclusive: TimeInterval
         let endSecondsExclusive: TimeInterval
@@ -110,7 +110,7 @@ extension InAppMessage {
         }
     }
 
-    class EventTrigger {
+    final class EventTrigger: @unchecked Sendable {
         let rules: [Rule]
         let frequencyCap: FrequencyCap?
         let delay: Delay
@@ -121,7 +121,7 @@ extension InAppMessage {
             self.delay = delay
         }
 
-        class Rule {
+        final class Rule: @unchecked Sendable {
             let eventKey: String
             let targets: [Target]
 
@@ -131,7 +131,7 @@ extension InAppMessage {
             }
         }
 
-        class FrequencyCap {
+        final class FrequencyCap: Sendable {
             let identifierCaps: [IdentifierCap]
             let durationCap: DurationCap?
 
@@ -141,7 +141,7 @@ extension InAppMessage {
             }
         }
 
-        class IdentifierCap {
+        final class IdentifierCap: Sendable {
             let identifierType: String
             let count: Int64
 
@@ -151,7 +151,7 @@ extension InAppMessage {
             }
         }
 
-        class DurationCap {
+        final class DurationCap: Sendable {
             let duration: TimeInterval
             let count: Int64
 
@@ -161,7 +161,7 @@ extension InAppMessage {
             }
         }
 
-        class Delay {
+        final class Delay: Sendable {
 
             static let `default` = Delay(type: .immediate, afterCondition: nil)
 
@@ -182,7 +182,7 @@ extension InAppMessage {
                 }
             }
 
-            class AfterCondition {
+            final class AfterCondition: Sendable {
                 let duration: TimeInterval
 
                 init(duration: TimeInterval) {
@@ -192,7 +192,7 @@ extension InAppMessage {
         }
     }
 
-    class EvaluateContext {
+    final class EvaluateContext: Sendable {
 
         static let `default` = EvaluateContext(atDeliverTime: false)
 
@@ -203,7 +203,7 @@ extension InAppMessage {
         }
     }
 
-    class TargetContext {
+    final class TargetContext: @unchecked Sendable {
         let overrides: [UserOverride]
         let targets: [Target]
 
@@ -213,7 +213,7 @@ extension InAppMessage {
         }
     }
 
-    class UserOverride {
+    final class UserOverride: Sendable {
         let identifierType: String
         let identifiers: [String]
 
@@ -284,7 +284,7 @@ extension InAppMessage {
         case after = "AFTER"
     }
 
-    class MessageContext {
+    final class MessageContext: @unchecked Sendable {
         let defaultLang: String
         let experimentContext: ExperimentContext?
         let platformTypes: [PlatformType]
@@ -306,7 +306,7 @@ extension InAppMessage {
         }
     }
 
-    class ExperimentContext {
+    final class ExperimentContext: Sendable {
         let key: Int64
 
         init(key: Int64) {
@@ -314,7 +314,7 @@ extension InAppMessage {
         }
     }
 
-    class Message {
+    final class Message: @unchecked Sendable {
         let variationKey: String?
         let lang: String
         let layout: Layout
@@ -356,7 +356,7 @@ extension InAppMessage {
             self.innerButtons = innerButtons
         }
 
-        class Layout {
+        final class Layout: Sendable {
             let displayType: DisplayType
             let layoutType: LayoutType
             let alignment: Alignment?
@@ -368,7 +368,7 @@ extension InAppMessage {
             }
         }
 
-        class Image {
+        final class Image: @unchecked Sendable {
             let orientation: Orientation
             let imagePath: String
             let action: Action?
@@ -380,7 +380,7 @@ extension InAppMessage {
             }
         }
 
-        class ImageAutoScroll {
+        final class ImageAutoScroll: Sendable {
             let interval: TimeInterval
 
             init(interval: TimeInterval) {
@@ -388,7 +388,7 @@ extension InAppMessage {
             }
         }
 
-        class Text {
+        final class Text: Sendable {
             let title: Attribute
             let body: Attribute
 
@@ -397,7 +397,7 @@ extension InAppMessage {
                 self.body = body
             }
 
-            class Attribute {
+            final class Attribute: Sendable {
                 let text: String
                 let style: Style
 
@@ -407,7 +407,7 @@ extension InAppMessage {
                 }
             }
 
-            class Style {
+            final class Style: Sendable {
                 let textColor: String
 
                 init(textColor: String) {
@@ -416,7 +416,7 @@ extension InAppMessage {
             }
         }
 
-        class Button {
+        final class Button: @unchecked Sendable {
             let text: String
             let style: Style
             let action: Action
@@ -427,7 +427,7 @@ extension InAppMessage {
                 self.action = action
             }
 
-            class Style {
+            final class Style: Sendable {
                 let textColor: String
                 let bgColor: String
                 let borderColor: String
@@ -440,7 +440,7 @@ extension InAppMessage {
             }
         }
 
-        class Background {
+        final class Background: Sendable {
             let color: String
 
             init(color: String) {
@@ -448,7 +448,7 @@ extension InAppMessage {
             }
         }
 
-        class Alignment {
+        final class Alignment: Sendable {
             let vertical: VerticalAlignment
             let horizontal: HorizontalAlignment
 
@@ -458,7 +458,7 @@ extension InAppMessage {
             }
         }
 
-        class PositionalButton {
+        final class PositionalButton: @unchecked Sendable {
             let button: Button
             let alignment: Alignment
 
@@ -469,17 +469,17 @@ extension InAppMessage {
         }
     }
 
-    class CloseActionInfo: HackleInAppMessageActionClose {
-        var hideDuration: TimeInterval
+    final class CloseActionInfo: HackleInAppMessageActionClose, Sendable {
+        let hideDuration: TimeInterval
 
         init(hideDuration: TimeInterval) {
             self.hideDuration = hideDuration
         }
     }
 
-    class LinkActionInfo: HackleInAppMessageActionLink {
-        var url: String
-        var shouldCloseAfterLink: Bool
+    final class LinkActionInfo: HackleInAppMessageActionLink, Sendable {
+        let url: String
+        let shouldCloseAfterLink: Bool
 
         init(url: String, shouldCloseAfterLink: Bool) {
             self.url = url
@@ -487,7 +487,7 @@ extension InAppMessage {
         }
     }
 
-    class Action: HackleInAppMessageAction {
+    final class Action: HackleInAppMessageAction, @unchecked Sendable {
         let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
 
         let behavior: Behavior
