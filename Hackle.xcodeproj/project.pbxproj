@@ -207,7 +207,6 @@
 		EE29D95A29CD825400B1FEAA /* EventEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8CF29CD825300B1FEAA /* EventEntity.swift */; };
 		EE29D95B29CD825400B1FEAA /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D029CD825300B1FEAA /* EventRepository.swift */; };
 		EE29D95C29CD825400B1FEAA /* KeyValueRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */; };
-		EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */; };
 		EE29D95E29CD825400B1FEAA /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D429CD825300B1FEAA /* ApplicationState.swift */; };
 		EE29D96129CD825400B1FEAA /* HackleCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D729CD825300B1FEAA /* HackleCore.swift */; };
 		EE29D96229CD825400B1FEAA /* WorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8D929CD825300B1FEAA /* WorkspaceFetcher.swift */; };
@@ -885,7 +884,6 @@
 		EE29D8CF29CD825300B1FEAA /* EventEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEntity.swift; sourceTree = "<group>"; };
 		EE29D8D029CD825300B1FEAA /* EventRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventRepository.swift; sourceTree = "<group>"; };
 		EE29D8D129CD825300B1FEAA /* KeyValueRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueRepository.swift; sourceTree = "<group>"; };
-		EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseHelper.swift; sourceTree = "<group>"; };
 		EE29D8D429CD825300B1FEAA /* ApplicationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
 		EE29D8D729CD825300B1FEAA /* HackleCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackleCore.swift; sourceTree = "<group>"; };
 		EE29D8D929CD825300B1FEAA /* WorkspaceFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceFetcher.swift; sourceTree = "<group>"; };
@@ -1891,7 +1889,6 @@
 				EE29D8CE29CD825300B1FEAA /* SQLiteDatabase.swift */,
 				7E5206012B2BE6A90095DCD9 /* Database.swift */,
 				B24234B42D8A646900878096 /* DatabaseDDL.swift */,
-				EE29D8D229CD825300B1FEAA /* DatabaseHelper.swift */,
 				B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */,
 			);
 			path = Database;
@@ -3549,7 +3546,6 @@
 				EE81ED9D2E6191B00044B40E /* InAppMessageEvaluateProcessor.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
-				EE29D95D29CD825400B1FEAA /* DatabaseHelper.swift in Sources */,
 				EE29D95229CD825400B1FEAA /* Counter.swift in Sources */,
 				EE29D96C29CD825400B1FEAA /* ConcurrentArray.swift in Sources */,
 				EEDC58442AC97E5E001E73DB /* HttpHeader.swift in Sources */,

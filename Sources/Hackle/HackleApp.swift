@@ -493,7 +493,7 @@ extension HackleApp {
 
         // - EventProcessor
 
-        let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: sdkKey)
+        let workspaceDatabase = WorkspaceDatabase(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
@@ -780,13 +780,14 @@ extension HackleApp {
 
         // - Notification
 
+        let sharedDatabase = SharedDatabase.shared
         let notificationManager = DefaultNotificationManager(
             core: core,
             dispatchQueue: DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility),
             workspaceFetcher: workspaceManager,
             userManager: userManager,
             repository: DefaultNotificationRepository(
-                sharedDatabase: DatabaseHelper.getSharedDatabase()
+                sharedDatabase: sharedDatabase
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
