@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TargetingType {
+final class TargetingType: Sendable {
 
     private let supportedKeyTypes: [Target.KeyType]
 
