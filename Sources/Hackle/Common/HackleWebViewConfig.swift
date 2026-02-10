@@ -8,7 +8,7 @@
 import Foundation
 
 /// Configuration for Hackle WebView integration.
-@objc public class HackleWebViewConfig: NSObject {
+@objc public final class HackleWebViewConfig: NSObject, Sendable {
     /// Whether automatic route tracking is enabled for WebView events.
     @objc public let automaticRouteTracking: Bool
     /// Whether automatic screen tracking is enabled for WebView events.
