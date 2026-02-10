@@ -5,7 +5,7 @@
 //  Created by sungwoo.yeo on 8/12/25.
 //
 
-struct HackleAppContext {
+struct HackleAppContext: @unchecked Sendable {
     let browserProperties: [String: Any]
 }
 
