@@ -12,7 +12,7 @@ protocol PropertyOperator {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any]
 }
 
-class PropertySetOperator: PropertyOperator {
+final class PropertySetOperator: PropertyOperator, Sendable {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any] {
         if base.isEmpty {
             return properties
@@ -24,7 +24,7 @@ class PropertySetOperator: PropertyOperator {
     }
 }
 
-class PropertySetOnceOperator: PropertyOperator {
+final class PropertySetOnceOperator: PropertyOperator, Sendable {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any] {
         if base.isEmpty {
             return properties
@@ -36,7 +36,7 @@ class PropertySetOnceOperator: PropertyOperator {
     }
 }
 
-class PropertyUnsetOperator: PropertyOperator {
+final class PropertyUnsetOperator: PropertyOperator, Sendable {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any] {
         if base.isEmpty {
             return [:]
@@ -48,7 +48,7 @@ class PropertyUnsetOperator: PropertyOperator {
     }
 }
 
-class PropertyIncrementOperator: PropertyOperator {
+final class PropertyIncrementOperator: PropertyOperator, Sendable {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any] {
         if properties.isEmpty {
             return base
@@ -123,13 +123,13 @@ extension ArrayPropertyOperator {
     }
 }
 
-class PropertyAppendOperator: ArrayPropertyOperator {
+final class PropertyAppendOperator: ArrayPropertyOperator, Sendable {
     func operate(base: [Any], values: [Any]) -> [Any] {
         base + values
     }
 }
 
-class PropertyAppendOnceOperator: ArrayPropertyOperator {
+final class PropertyAppendOnceOperator: ArrayPropertyOperator, Sendable {
     func operate(base: [Any], values: [Any]) -> [Any] {
         var base = base
         for value in values {
@@ -141,13 +141,13 @@ class PropertyAppendOnceOperator: ArrayPropertyOperator {
     }
 }
 
-class PropertyPrependOperator: ArrayPropertyOperator {
+final class PropertyPrependOperator: ArrayPropertyOperator, Sendable {
     func operate(base: [Any], values: [Any]) -> [Any] {
         values + base
     }
 }
 
-class PropertyPrependOnceOperator: ArrayPropertyOperator {
+final class PropertyPrependOnceOperator: ArrayPropertyOperator, Sendable {
     func operate(base: [Any], values: [Any]) -> [Any] {
         var array = [Any]()
         for value in values {
@@ -159,7 +159,7 @@ class PropertyPrependOnceOperator: ArrayPropertyOperator {
     }
 }
 
-class PropertyRemoveOperator: ArrayPropertyOperator {
+final class PropertyRemoveOperator: ArrayPropertyOperator, Sendable {
     func operate(base: [Any], values: [Any]) -> [Any] {
         var array = [Any]()
         for value in base {
@@ -171,7 +171,7 @@ class PropertyRemoveOperator: ArrayPropertyOperator {
     }
 }
 
-class PropertyClearAllOperator: PropertyOperator {
+final class PropertyClearAllOperator: PropertyOperator, Sendable {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any] {
         [:]
     }
