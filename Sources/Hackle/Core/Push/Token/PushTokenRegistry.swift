@@ -9,7 +9,7 @@ protocol PushTokenRegistry {
 }
 
 
-class DefaultPushTokenRegistry: PushTokenRegistry {
+class DefaultPushTokenRegistry: PushTokenRegistry, @unchecked Sendable {
 
     static let shared = DefaultPushTokenRegistry()
 
