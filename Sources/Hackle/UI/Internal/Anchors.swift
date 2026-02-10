@@ -15,6 +15,7 @@ protocol LayoutItem {
 extension UIView: LayoutItem {
 }
 
+@MainActor
 extension UILayoutGuide: LayoutItem {
     var superview: UIView? {
         owningView
