@@ -6,7 +6,7 @@ protocol Throttler {
 }
 
 
-class DefaultThrottler: Throttler {
+final class DefaultThrottler: Throttler, @unchecked Sendable {
     private let limiter: ThrottleLimiter
 
     init(limiter: ThrottleLimiter) {

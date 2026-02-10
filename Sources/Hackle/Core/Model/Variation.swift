@@ -4,7 +4,7 @@
 
 import Foundation
 
-protocol Variation {
+protocol Variation: Sendable {
 
     typealias Id = Int64
     typealias Key = String
@@ -15,7 +15,7 @@ protocol Variation {
     var parameterConfigurationId: ParameterConfiguration.Id? { get }
 }
 
-class VariationEntity: Variation {
+final class VariationEntity: Variation, Sendable {
 
     let id: Id
     let key: Key

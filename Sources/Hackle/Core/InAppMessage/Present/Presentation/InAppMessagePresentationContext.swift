@@ -1,6 +1,6 @@
 import Foundation
 
-class InAppMessagePresentationContext {
+final class InAppMessagePresentationContext: @unchecked Sendable {
 
     let dispatchId: String
     let inAppMessage: InAppMessage

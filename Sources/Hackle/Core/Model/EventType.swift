@@ -4,7 +4,7 @@
 
 import Foundation
 
-protocol EventType {
+protocol EventType: Sendable {
 
     typealias Id = Int64
     typealias Key = String
@@ -13,7 +13,7 @@ protocol EventType {
     var key: Key { get }
 }
 
-class EventTypeEntity: EventType {
+final class EventTypeEntity: EventType {
     let id: Id
     let key: Key
 
@@ -23,7 +23,7 @@ class EventTypeEntity: EventType {
     }
 }
 
-class UndefinedEventType: EventType {
+final class UndefinedEventType: EventType {
     let id: Id = 0
     let key: Key
 

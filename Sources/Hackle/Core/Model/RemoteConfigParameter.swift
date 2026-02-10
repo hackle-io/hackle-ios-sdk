@@ -8,7 +8,7 @@
 import Foundation
 
 
-class RemoteConfigParameter {
+final class RemoteConfigParameter: Sendable {
     typealias Id = Int64
     typealias Key = String
 
@@ -28,7 +28,7 @@ class RemoteConfigParameter {
         self.defaultValue = defaultValue
     }
 
-    class Value {
+    final class Value: Sendable {
         let id: Int64
         let rawValue: HackleValue
 
@@ -38,7 +38,7 @@ class RemoteConfigParameter {
         }
     }
 
-    class TargetRule {
+    final class TargetRule: Sendable {
         let key: String
         let name: String
         let target: Target

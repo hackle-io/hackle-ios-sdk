@@ -1,7 +1,7 @@
 import Foundation
 
 
-enum HackleValue: Codable, Equatable {
+enum HackleValue: Codable, Equatable, Sendable {
 
     case string(String)
     case int(Int64)
