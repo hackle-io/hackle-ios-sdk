@@ -104,6 +104,23 @@ class HackleWebBridgeSpecs: QuickSpec {
                     expect(hackleScript?.source).to(contain("automaticEngagementTracking"))
                 }
 
+                it("should assign independent HackleUIDelegate to each WKWebView") {
+                    let webView1 = WKWebView()
+                    let webView2 = WKWebView()
+                    let config = HackleWebViewConfig.DEFAULT
+
+                    webView1.prepareForHackleWebBridge(
+                        invocator: invocator, sdkKey: "key1", mode: .native, webViewConfig: config
+                    )
+                    webView2.prepareForHackleWebBridge(
+                        invocator: invocator, sdkKey: "key2", mode: .native, webViewConfig: config
+                    )
+
+                    expect(webView1.uiDelegate).toNot(beNil())
+                    expect(webView2.uiDelegate).toNot(beNil())
+                    expect(webView1.uiDelegate).toNot(beIdenticalTo(webView2.uiDelegate))
+                }
+
                 it("should replace previous Hackle UserScript when called multiple times") {
                     let config1 = HackleWebViewConfig.builder()
                         .automaticScreenTracking(true)
