@@ -73,7 +73,7 @@ class PushMetricRegistrySpecs: QuickSpec {
 
             it("publish") {
 
-                class Stub: PushMetricRegistry {
+                class Stub: PushMetricRegistry, @unchecked Sendable {
                     var publishCount = 0
 
                     override func publish() {

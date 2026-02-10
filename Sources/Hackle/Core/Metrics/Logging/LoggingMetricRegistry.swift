@@ -8,7 +8,7 @@
 import Foundation
 
 
-class LoggingMetricRegistry: FlushMetricRegistry {
+class LoggingMetricRegistry: FlushMetricRegistry, @unchecked Sendable {
 
     override init(scheduler: Scheduler, pushInterval: TimeInterval) {
         super.init(scheduler: scheduler, pushInterval: pushInterval)
