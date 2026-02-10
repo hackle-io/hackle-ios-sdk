@@ -190,7 +190,7 @@ class DatabaseSpec: QuickSpec {
         }
     }
     
-    class MockDatabase: Database {
+    class MockDatabase: Database, @unchecked Sendable {
         var onDropCalled = false
         var ddl: [DatabaseDDL]
         
