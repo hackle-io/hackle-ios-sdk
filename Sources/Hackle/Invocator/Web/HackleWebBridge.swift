@@ -13,6 +13,7 @@ extension WKWebView {
         case getWebViewConfig = "getWebViewConfig"
     }
 
+    @MainActor
     private struct AssociatedKeys {
         static let _uiDelegate: UnsafeRawPointer = {
             let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
