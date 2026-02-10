@@ -16,7 +16,7 @@ public protocol ParameterConfig: Config {
     func getBool(forKey: String, defaultValue: Bool) -> Bool
 }
 
-class EmptyParameterConfig: ParameterConfig {
+final class EmptyParameterConfig: ParameterConfig, @unchecked Sendable {
     let parameters: [String: Any] = [:]
 
     private init() {
