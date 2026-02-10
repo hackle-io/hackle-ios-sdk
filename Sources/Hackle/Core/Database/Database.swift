@@ -1,6 +1,6 @@
 import Foundation
 
-class Database {
+class Database: @unchecked Sendable {
     private let lock: ReadWriteLock
     private let filepath: String?
     private(set) var version: Int
