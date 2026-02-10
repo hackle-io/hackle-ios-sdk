@@ -9,5 +9,5 @@ import Foundation
 
 
 protocol OnOverrideSetListener {
-    func onOverrideSet(experiment: Experiment, variation: Variation)
+    @MainActor func onOverrideSet(experiment: Experiment, variation: Variation)
 }
