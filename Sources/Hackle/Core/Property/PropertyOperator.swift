@@ -8,7 +8,7 @@
 import Foundation
 
 
-protocol PropertyOperator {
+protocol PropertyOperator: Sendable {
     func operate(base: [String: Any], properties: [String: Any]) -> [String: Any]
 }
 
