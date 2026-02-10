@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ApplicationLifecycleObserver {
+class ApplicationLifecycleObserver: @unchecked Sendable {
     
     static let shared = ApplicationLifecycleObserver(
         publisher: DefaultApplicationLifecycleManager.shared
