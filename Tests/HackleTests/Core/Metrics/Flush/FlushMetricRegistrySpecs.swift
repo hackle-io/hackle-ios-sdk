@@ -19,7 +19,7 @@ class FlushMetricRegistrySpecs: QuickSpec {
         }
 
         it("reset metric after publish") {
-            class Registry: FlushMetricRegistry {
+            class Registry: FlushMetricRegistry, @unchecked Sendable {
                 var flushCount = 0
 
                 override func flushMetrics(metrics: [Metric]) {

@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import UserNotifications
 
-class NotificationHandler {
+class NotificationHandler: @unchecked Sendable {
     static let shared = NotificationHandler(
         dispatchQueue: DispatchQueue(
             label: "io.hackle.NotificationHandler",

@@ -8,7 +8,7 @@
 import Foundation
 
 
-class FlushMetricRegistry: PushMetricRegistry {
+class FlushMetricRegistry: PushMetricRegistry, @unchecked Sendable {
 
     final override func createCounter(id: MetricId) -> Counter {
         FlushCounter(id: id)

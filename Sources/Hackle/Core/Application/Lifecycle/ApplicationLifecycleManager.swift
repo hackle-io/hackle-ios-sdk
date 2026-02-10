@@ -14,7 +14,7 @@ protocol ApplicationLifecycleManager {
     func addListener(listener: ApplicationLifecycleListener)
 }
 
-class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher {
+class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher, @unchecked Sendable {
     static let shared = DefaultApplicationLifecycleManager(
         viewManager: DefaultViewManager.shared,
         clock: SystemClock.shared
@@ -31,7 +31,7 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
             _currentState ?? .background
         }
     }
-    var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
+    private let firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
     
     private init(viewManager: ViewManager, clock: Clock) {
         self.viewManager = viewManager

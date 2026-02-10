@@ -6,7 +6,7 @@ protocol ViewManager {
     func isOwnedView(vc: UIViewController) -> Bool
 }
 
-class DefaultViewManager: ViewManager {
+class DefaultViewManager: ViewManager, @unchecked Sendable {
 
     static let shared = DefaultViewManager()
 

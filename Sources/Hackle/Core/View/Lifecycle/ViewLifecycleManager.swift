@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class ViewLifecycleManager: ViewLifecyclePublisher {
+class ViewLifecycleManager: ViewLifecyclePublisher, @unchecked Sendable {
 
     static let shared = ViewLifecycleManager(
         viewManager: DefaultViewManager.shared,

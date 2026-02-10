@@ -1,6 +1,6 @@
 import Foundation
 
-class SharedDatabase: Database {
+class SharedDatabase: Database, @unchecked Sendable {
     static let DATABASE_VERSION = 2
     static let MAX_DATABASE_VERSION = 2
 
