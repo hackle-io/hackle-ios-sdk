@@ -106,5 +106,5 @@ class HackleUserExplorerView {
 }
 
 protocol HackleUserExplorerContainer {
-    func setHackleUserExplorer(_ hackleUserExplorer: HackleUserExplorer)
+    @MainActor func setHackleUserExplorer(_ hackleUserExplorer: HackleUserExplorer)
 }

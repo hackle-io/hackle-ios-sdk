@@ -9,12 +9,13 @@ import Foundation
 import UIKit
 
 protocol LayoutItem {
-    var superview: UIView? { get }
+    @MainActor var superview: UIView? { get }
 }
 
 extension UIView: LayoutItem {
 }
 
+@MainActor
 extension UILayoutGuide: LayoutItem {
     var superview: UIView? {
         owningView
@@ -148,6 +149,7 @@ struct AnchorSize<Item: LayoutItem> {
     }
 }
 
+@MainActor
 extension Anchors where Item: UIView {
 
     @discardableResult
@@ -318,6 +320,7 @@ extension Anchor where Delegate: NSLayoutDimension {
 
 // XAxisAnchor
 
+@MainActor
 extension Anchor where Delegate: NSLayoutXAxisAnchor {
 
     @discardableResult
@@ -334,6 +337,7 @@ extension Anchor where Delegate: NSLayoutXAxisAnchor {
 
 // YAxisAnchor
 
+@MainActor
 extension Anchor where Delegate: NSLayoutYAxisAnchor {
 
     @discardableResult
