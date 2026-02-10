@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class ViewLifecycleObserver {
+class ViewLifecycleObserver: @unchecked Sendable {
 
     static let shared = ViewLifecycleObserver(
         publisher: ViewLifecycleManager.shared
