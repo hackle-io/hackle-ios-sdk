@@ -36,7 +36,7 @@ class InAppMessageCloseActionHandler: InAppMessageActionHandler {
     }
 }
 
-class InAppMessageLinkActionHandler: InAppMessageActionHandler {
+class InAppMessageLinkActionHandler: InAppMessageActionHandler, @unchecked Sendable {
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
@@ -58,7 +58,7 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
     }
 }
 
-class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
+class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, @unchecked Sendable {
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
