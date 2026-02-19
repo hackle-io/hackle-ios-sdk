@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @objc(HackleInAppMessageUI)
-class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
+class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable {
     let eventHandler: InAppMessageEventHandler
     
     init(eventHandler: InAppMessageEventHandler) {
