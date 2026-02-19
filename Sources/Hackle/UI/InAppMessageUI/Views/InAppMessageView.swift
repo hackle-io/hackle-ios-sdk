@@ -5,18 +5,19 @@ import UIKit
 protocol InAppMessageView: UIView, HackleInAppMessageView {
 
     /// Indicates whether the InAppMessageView is currently presented.
-    var presented: Bool { get }
+    @MainActor var presented: Bool { get }
 
     /// The context in which this InAppMessageView is presented.
-    var context: InAppMessagePresentationContext { get }
+    @MainActor var context: InAppMessagePresentationContext { get }
 
     /// Presents the InAppMessageView on the screen.
-    func present()
+    @MainActor func present()
 
     /// Dismisses the InAppMessageView from the screen.
-    func dismiss()
+    @MainActor func dismiss()
 }
 
+@MainActor
 extension InAppMessageView {
 
     var controller: HackleInAppMessageUI.ViewController? {
@@ -77,12 +78,13 @@ extension InAppMessageView {
 }
 
 @objc protocol InAppMessageViewLifecycleListener {
-    @objc optional func inAppMessageWillPresent()
-    @objc optional func inAppMessageDidPresent()
-    @objc optional func inAppMessageWillDismiss()
-    @objc optional func inAppMessageDidDismiss()
+    @MainActor @objc optional func inAppMessageWillPresent()
+    @MainActor @objc optional func inAppMessageDidPresent()
+    @MainActor @objc optional func inAppMessageWillDismiss()
+    @MainActor @objc optional func inAppMessageDidDismiss()
 }
 
+@MainActor
 private extension InAppMessageViewLifecycleListener {
     func onLifecycle(lifecycle: InAppMessageLifecycle) {
         switch lifecycle {
