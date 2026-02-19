@@ -1,12 +1,8 @@
 import Foundation
-import MockingKit
 @testable import Hackle
 
-class MockUrlHandler: Mock, UrlHandler {
+class MockUrlHandler: UrlHandler, @unchecked Sendable {
 
-    lazy var openMock = MockFunction(self, open)
-
-    // 테스트에서 toEventually로 검증할 수 있는 상태 변수
     private let lock = NSLock()
     private var _openCallCount: Int = 0
     private var _lastOpenedUrl: URL?
@@ -35,6 +31,5 @@ class MockUrlHandler: Mock, UrlHandler {
         _openCallCount += 1
         _lastOpenedUrl = url
         lock.unlock()
-        call(openMock, args: url)
     }
 }

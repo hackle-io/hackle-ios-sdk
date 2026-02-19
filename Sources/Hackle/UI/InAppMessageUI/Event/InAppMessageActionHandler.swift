@@ -36,7 +36,7 @@ class InAppMessageCloseActionHandler: InAppMessageActionHandler {
     }
 }
 
-class InAppMessageLinkActionHandler: InAppMessageActionHandler {
+final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
@@ -58,7 +58,7 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
     }
 }
 
-class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
+final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable {
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {

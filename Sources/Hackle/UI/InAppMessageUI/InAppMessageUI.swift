@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @objc(HackleInAppMessageUI)
-class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
+class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable {
     let eventHandler: InAppMessageEventHandler
     
     init(eventHandler: InAppMessageEventHandler) {
@@ -17,10 +17,10 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         super.init()
     }
     
-    var window: Window?
+    @MainActor var window: Window?
     var delegate: HackleInAppMessageDelegate?
-    
-    var currentMessageView: InAppMessageView? {
+
+    @MainActor var currentMessageView: InAppMessageView? {
         window?.messageViewController?.messageView
     }
 
@@ -67,7 +67,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         UIUtils.keyWindow?.rootViewController != nil
     }
 
-    private func noMessagePresented() -> Bool {
+    @MainActor private func noMessagePresented() -> Bool {
         currentMessageView == nil
     }
 

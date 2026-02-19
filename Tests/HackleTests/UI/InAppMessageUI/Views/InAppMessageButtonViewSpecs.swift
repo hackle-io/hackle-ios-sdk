@@ -45,14 +45,17 @@ class ButtonViewSpecs: QuickSpec {
             }
 
             it("intrinsicContentSize가 minWidth/maxHeight를 반영한다") {
-                let size = sut.intrinsicContentSize
-                expect(size.width) >= CGFloat(attributes.minWidth)
-                expect(size.height) <= CGFloat(attributes.maxHeight)
+                MainActor.assumeIsolated {
+                    let size = sut.intrinsicContentSize
+                    expect(size.width) >= CGFloat(attributes.minWidth)
+                    expect(size.height) <= CGFloat(attributes.maxHeight)
+                }
             }
 
             it("traitCollectionDidChange 호출 시 content/layout이 재적용된다") {
-                sut.traitCollectionDidChange(nil)
-                // crash 없이 정상 동작하면 성공
+                MainActor.assumeIsolated {
+                    sut.traitCollectionDidChange(nil)
+                }
             }
         }
     }

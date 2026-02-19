@@ -8,11 +8,11 @@
 import Foundation
 import UIKit
 
-protocol UrlHandler {
+protocol UrlHandler: Sendable {
     @MainActor func open(url: URL)
 }
 
-final class ApplicationUrlHandler: NSObject, UrlHandler {
+final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
     @MainActor private var pendingUrl: URL?
 
     deinit {

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol ApplicationLifecyclePublisher {
+protocol ApplicationLifecyclePublisher: Sendable {
     @MainActor func didBecomeActive()
     @MainActor func willEnterForeground()
     @MainActor func didEnterBackground()
