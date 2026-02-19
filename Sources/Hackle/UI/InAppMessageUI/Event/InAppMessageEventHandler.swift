@@ -8,7 +8,7 @@
 import Foundation
 
 protocol InAppMessageEventHandler {
-    func handle(view: InAppMessageView, event: InAppMessage.Event)
+    @MainActor func handle(view: InAppMessageView, event: InAppMessage.Event)
 }
 
 class DefaultInAppMessageEventHandler: InAppMessageEventHandler {
