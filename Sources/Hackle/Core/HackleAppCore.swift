@@ -58,7 +58,7 @@ protocol HackleAppCore: AnyObject {
 }
 
 
-class DefaultHackleAppCore: HackleAppCore {
+class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
