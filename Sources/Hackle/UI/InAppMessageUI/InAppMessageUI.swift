@@ -17,10 +17,10 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable
         super.init()
     }
     
-    var window: Window?
+    @MainActor var window: Window?
     var delegate: HackleInAppMessageDelegate?
-    
-    var currentMessageView: InAppMessageView? {
+
+    @MainActor var currentMessageView: InAppMessageView? {
         window?.messageViewController?.messageView
     }
 
@@ -67,7 +67,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable
         UIUtils.keyWindow?.rootViewController != nil
     }
 
-    private func noMessagePresented() -> Bool {
+    @MainActor private func noMessagePresented() -> Bool {
         currentMessageView == nil
     }
 
