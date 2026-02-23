@@ -4,14 +4,14 @@ import WebKit
 class HackleUIDelegate: NSObject, WKUIDelegate {
 
     private let invocator: HackleInvocator
-    private let uiDelegate: WKUIDelegate?
+    private nonisolated let uiDelegate: WKUIDelegate?
 
     init(invocator: HackleInvocator, uiDelegate: WKUIDelegate? = nil) {
         self.invocator = invocator
         self.uiDelegate = uiDelegate
     }
 
-    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
+    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable (String?) -> Void) {
         let processable = invocator.isInvocableString(string: prompt)
         if (processable) {
             invocator.invoke(string: prompt, completionHandler: completionHandler)
