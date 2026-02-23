@@ -86,6 +86,29 @@ class HackleUIDelegateSpecs: QuickSpec {
                     expect(callbackResult) == "delegated_result"
                 }
             }
+
+            it("non-invocable prompt with uiDelegate that does not implement prompt method should call completionHandler with nil") {
+                MainActor.assumeIsolated {
+                    let minimalDelegate = MinimalWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: minimalDelegate)
+                    mockInvocator.invocable = false
+
+                    let webView = WKWebView()
+                    let frame = WKFrameInfo()
+                    var callbackResult: String? = "not_called"
+
+                    sut.webView(
+                        webView,
+                        runJavaScriptTextInputPanelWithPrompt: "some_prompt",
+                        defaultText: nil,
+                        initiatedByFrame: frame
+                    ) { result in
+                        callbackResult = result
+                    }
+
+                    expect(callbackResult).to(beNil())
+                }
+            }
         }
 
         describe("responds(to:)") {
@@ -136,6 +159,15 @@ class HackleUIDelegateSpecs: QuickSpec {
                     expect(target).to(beIdenticalTo(mockUIDelegate))
                 }
             }
+
+            it("should return nil when no uiDelegate and selector is unknown") {
+                MainActor.assumeIsolated {
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: nil)
+                    let selector = #selector(MockWKUIDelegate.customMethod)
+                    let target = sut.forwardingTarget(for: selector)
+                    expect(target).to(beNil())
+                }
+            }
         }
     }
 }
@@ -175,4 +207,7 @@ private class MockWKUIDelegate: NSObject, WKUIDelegate {
     }
 
     @objc func customMethod() {}
+}
+
+private class MinimalWKUIDelegate: NSObject, WKUIDelegate {
 }
