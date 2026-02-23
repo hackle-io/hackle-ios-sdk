@@ -98,6 +98,7 @@ extension Anchors {
         Anchor(item, .bottomMargin)
     }
 
+    @MainActor
     var size: AnchorSize<Item> {
         AnchorSize(anchors: self)
     }
@@ -128,6 +129,7 @@ struct AnchorAlignment {
     }
 }
 
+@MainActor
 struct AnchorSize<Item: LayoutItem> {
     private let anchors: Anchors<Item>
 
@@ -271,6 +273,7 @@ struct Anchor<Item: LayoutItem, Delegate> {
     }
 }
 
+@MainActor
 extension Anchor {
 
     @discardableResult
@@ -300,6 +303,7 @@ extension Anchor {
 
 // Dimension
 
+@MainActor
 extension Anchor where Delegate: NSLayoutDimension {
 
     @discardableResult
@@ -354,6 +358,7 @@ extension Anchor where Delegate: NSLayoutYAxisAnchor {
 
 // Constraint
 
+@MainActor
 class Constraints {
 
     private var constraints = [NSLayoutConstraint]()
