@@ -26,5 +26,12 @@ import Foundation
     /// - Parameters:
     ///   - string: the string to invoke
     ///   - completionHandler: callback to be executed when the operation is complete
+    ///
+    /// Invokes an operation with the given string and completion handler.
+    ///
+    /// In Swift 6, WKUIDelegate is isolated to @MainActor, so passing
+    /// an @MainActor @Sendable completionHandler to this method loses actor isolation.
+    /// Use `invoke(string:)` instead.
+    @available(*, deprecated, message: "Use invoke(string:) instead. Passing @MainActor completionHandler loses actor isolation in Swift 6.")
     @objc func invoke(string: String, completionHandler: (String?) -> Void)
 }
