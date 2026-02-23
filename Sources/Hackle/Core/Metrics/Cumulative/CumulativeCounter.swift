@@ -7,7 +7,7 @@
 
 import Foundation
 
-class CumulativeCounter: Counter {
+class CumulativeCounter: Counter, @unchecked Sendable {
 
     let id: MetricId
 
