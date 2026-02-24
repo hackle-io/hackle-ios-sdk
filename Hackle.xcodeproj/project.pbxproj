@@ -132,6 +132,7 @@
 		B2A88D8A2E20A9F600475B73 /* DefaultUserEventBackoffControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */; };
 		B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */; };
 		B2A88D8E2E20DC4D00475B73 /* SQLiteEventRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */; };
+		B2B087252F4DA7D200259674 /* ScreenInfoSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B087242F4DA7D200259674 /* ScreenInfoSynchronizer.swift */; };
 		B2C0527D2E55919800D30787 /* UserDefaultKeyValueRepositorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0527C2E55918E00D30787 /* UserDefaultKeyValueRepositorySpecs.swift */; };
 		B2C0A68F2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0A68E2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift */; };
 		B2C0A6912ECC0324006564C9 /* InAppMessageSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0A6902ECC0324006564C9 /* InAppMessageSpec.swift */; };
@@ -809,6 +810,7 @@
 		B2A88D892E20A9D800475B73 /* DefaultUserEventBackoffControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserEventBackoffControllerSpec.swift; sourceTree = "<group>"; };
 		B2A88D8B2E20AE8800475B73 /* MockUserEventBackoffController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserEventBackoffController.swift; sourceTree = "<group>"; };
 		B2A88D8D2E20DC4500475B73 /* SQLiteEventRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteEventRepositorySpec.swift; sourceTree = "<group>"; };
+		B2B087242F4DA7D200259674 /* ScreenInfoSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenInfoSynchronizer.swift; sourceTree = "<group>"; };
 		B2C0527C2E55918E00D30787 /* UserDefaultKeyValueRepositorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeyValueRepositorySpecs.swift; sourceTree = "<group>"; };
 		B2C0A68E2ECC0317006564C9 /* TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift; sourceTree = "<group>"; };
 		B2C0A6902ECC0324006564C9 /* InAppMessageSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageSpec.swift; sourceTree = "<group>"; };
@@ -1535,6 +1537,7 @@
 				EE29D90929CD825300B1FEAA /* Device.swift */,
 				B21078442E91582F00D26B60 /* DeviceInfo.swift */,
 				7E3F4FC82AA6FC69004E0EB0 /* DeviceHelper.swift */,
+				B2B087242F4DA7D200259674 /* ScreenInfoSynchronizer.swift */,
 			);
 			path = Device;
 			sourceTree = "<group>";
@@ -3669,6 +3672,7 @@
 				EE29D99E29CD825500B1FEAA /* Murmur3.swift in Sources */,
 				EE4D03902E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift in Sources */,
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
+				B2B087252F4DA7D200259674 /* ScreenInfoSynchronizer.swift in Sources */,
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,

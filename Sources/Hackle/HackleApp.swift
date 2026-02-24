@@ -405,7 +405,6 @@ extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
         Task { @MainActor in
-            ScreenInfo.initialize()
             DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
         }
     }
@@ -462,6 +461,10 @@ extension HackleApp {
             clock: clock
         )
         compositeSynchronizer.add(synchronizer: userManager)
+        
+        // - ScreenInfo
+        let screenInfoSynchronizer = ScreenInfoSynchronizer()
+        compositeSynchronizer.add(synchronizer: screenInfoSynchronizer)
 
         // - SessionManager
 
