@@ -57,10 +57,6 @@ import UserNotifications
     ///   - config: SDK configuration options. Defaults to ``HackleConfig/DEFAULT``
     ///   - completion: Completion handler called when initialization is complete
     @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
-        if Thread.isMainThread {
-            MainActor.assumeIsolated { ScreenInfo.initialize() }
-        }
-
         lock.write {
             if container.app != nil {
                 readyToUse(completion: completion)
