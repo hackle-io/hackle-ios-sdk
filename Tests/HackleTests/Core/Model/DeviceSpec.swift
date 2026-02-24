@@ -7,7 +7,7 @@ class DeviceSpec : QuickSpec {
     override func spec() {
         it("create device with required properties") {
             let deviceId = UUID().uuidString
-            let device = DeviceImpl(deviceId: deviceId, screenInfo: ScreenInfo(width: 750, height: 1334))
+            let device = DeviceImpl(deviceId: deviceId)
             expect(device.id) == deviceId
             expect(device.properties["platform"] as? String) == "iOS"
             expect(device.properties["osName"] as? String) == "iOS"
@@ -26,14 +26,14 @@ class DeviceSpec : QuickSpec {
 
         it("create device with valid structure") {
             let deviceId = UUID().uuidString
-            let device = DeviceImpl(deviceId: deviceId, screenInfo: ScreenInfo(width: 750, height: 1334))
+            let device = DeviceImpl(deviceId: deviceId)
             expect(device.id) == deviceId
             self.assertDevicePropertiesStructure(properties: device.properties)
         }
 
         it("screenWidth and screenHeight should be positive values") {
             let deviceId = UUID().uuidString
-            let device = DeviceImpl(deviceId: deviceId, screenInfo: ScreenInfo(width: 750, height: 1334))
+            let device = DeviceImpl(deviceId: deviceId)
 
             let screenWidth = device.properties["screenWidth"] as? Int
             let screenHeight = device.properties["screenHeight"] as? Int

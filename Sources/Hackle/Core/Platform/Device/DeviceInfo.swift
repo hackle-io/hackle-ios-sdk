@@ -17,7 +17,6 @@ struct DeviceInfo {
     let manufacturer: String
     let locale: Locale
     let timezone: TimeZone
-    let screenInfo: ScreenInfo
 }
 
 struct ScreenInfo {

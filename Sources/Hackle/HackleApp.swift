@@ -416,8 +416,7 @@ extension HackleApp {
         
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let screenInfo = ScreenInfo.current
-        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository, screenInfo: screenInfo)
+        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository)
         let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
