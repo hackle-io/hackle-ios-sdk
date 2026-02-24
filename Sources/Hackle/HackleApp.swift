@@ -405,6 +405,7 @@ extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
         Task { @MainActor in
+            ScreenInfo.initialize()
             DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
         }
     }
@@ -415,10 +416,7 @@ extension HackleApp {
         
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let screenInfo = ScreenInfo(
-            width: Int(UIScreen.main.nativeBounds.width),
-            height: Int(UIScreen.main.nativeBounds.height)
-        )
+        let screenInfo = ScreenInfo.current
         let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository, screenInfo: screenInfo)
         let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
