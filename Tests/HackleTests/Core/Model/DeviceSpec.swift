@@ -46,6 +46,58 @@ class DeviceSpec : QuickSpec {
             expect(screenWidth).to(beGreaterThan(0))
             expect(screenHeight).to(beGreaterThan(0))
         }
+
+        describe("before initialize") {
+            it("properties should return only platform and isApp") {
+                let device = DeviceImpl(deviceId: UUID().uuidString)
+                let properties = device.properties
+
+                expect(properties.count) == 2
+                expect(properties["platform"] as? String) == "iOS"
+                expect(properties["isApp"] as? Bool) == true
+            }
+
+            it("properties should not contain device info") {
+                let device = DeviceImpl(deviceId: UUID().uuidString)
+                let properties = device.properties
+
+                expect(properties["osName"]).to(beNil())
+                expect(properties["osVersion"]).to(beNil())
+                expect(properties["deviceModel"]).to(beNil())
+                expect(properties["deviceType"]).to(beNil())
+                expect(properties["deviceBrand"]).to(beNil())
+                expect(properties["deviceManufacturer"]).to(beNil())
+                expect(properties["locale"]).to(beNil())
+                expect(properties["language"]).to(beNil())
+                expect(properties["timeZone"]).to(beNil())
+                expect(properties["screenWidth"]).to(beNil())
+                expect(properties["screenHeight"]).to(beNil())
+            }
+
+            it("id should be available without initialize") {
+                let deviceId = UUID().uuidString
+                let device = DeviceImpl(deviceId: deviceId)
+                expect(device.id) == deviceId
+            }
+        }
+
+        it("initialize should populate full properties") {
+            let device = DeviceImpl(deviceId: UUID().uuidString)
+            expect(device.properties.count) == 2
+
+            MainActor.assumeIsolated { device.initialize() }
+            expect(device.properties.count) == 13
+            self.assertDevicePropertiesStructure(properties: device.properties)
+        }
+
+        it("multiple initialize calls should be safe") {
+            let device = DeviceImpl(deviceId: UUID().uuidString)
+            MainActor.assumeIsolated {
+                device.initialize()
+                device.initialize()
+            }
+            self.assertDevicePropertiesStructure(properties: device.properties)
+        }
     }
 
     func assertDevicePropertiesStructure(properties: [String: Any]) {

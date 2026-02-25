@@ -31,7 +31,9 @@ class HackleAppSpecs: QuickSpec {
                 httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
-            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository())
+            let globalRepository = MemoryKeyValueRepository()
+            globalRepository.putString(key: "hackle_device_id", value: "test_device_id")
+            platformManager = PlatformManager(keyValueRepository: globalRepository)
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
@@ -91,7 +93,7 @@ class HackleAppSpecs: QuickSpec {
         }
 
         it("deviceId") {
-            expect(sut.deviceId) == platformManager.device.id
+            expect(sut.deviceId) == "test_device_id"
         }
 
         it("sessionId") {
