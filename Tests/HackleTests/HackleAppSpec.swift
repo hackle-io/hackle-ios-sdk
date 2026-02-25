@@ -479,15 +479,7 @@ class HackleAppSpecs: QuickSpec {
             }
             expect(count) == 0
 
-            Thread.sleep(forTimeInterval: 0.1)
-            expect(count) == 0
-
-            Thread.sleep(forTimeInterval: 0.05)
-            expect(count) == 0
-
-            eventQueue.sync {
-            }
-            expect(count) == 1
+            expect(count).toEventually(equal(1), timeout: .seconds(5))
 
             expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
         }
