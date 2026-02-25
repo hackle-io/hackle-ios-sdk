@@ -481,9 +481,10 @@ class HackleAppSpecs: QuickSpec {
             }
             expect(count) == 0
 
-            expect(count).toEventually(equal(1), timeout: .seconds(5))
+            expect(count).toEventually(equal(1), timeout: .seconds(2))
 
             expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
+            expect(platformManager.device.properties.count) == 13
         }
 
         it("create") {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PlatformManager {
+class PlatformManager: @unchecked Sendable {
     private let _device: DeviceImpl
     private var _previousVersion: BundleVersionInfo?
     private var _isDeviceIdCreated: Bool

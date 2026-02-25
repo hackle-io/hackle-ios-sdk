@@ -6,7 +6,7 @@ protocol Device {
     var properties: [String: Any] { get }
 }
 
-class DeviceImpl : Device {
+class DeviceImpl : Device, @unchecked Sendable {
     let id: String
     private let _deviceInfo = AtomicReference<DeviceInfo?>(value: nil)
 
@@ -61,11 +61,6 @@ class DeviceImpl : Device {
 }
 
 extension DeviceImpl {
-    
-    static func getDeviceId(keyValueRepository: KeyValueRepository, mapping: (String) -> String) -> String {
-        return keyValueRepository.getString(key: "hackle_device_id", mapping: mapping)
-    }
-    
     fileprivate static func getPreferredLocale() -> Locale {
         guard let preferred = Locale.preferredLanguages.first else {
             return Locale.current
