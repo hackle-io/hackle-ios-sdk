@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 class DeviceHelper {
     static func getDeviceModel() -> String {
         if let simulatorModelIdentifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
