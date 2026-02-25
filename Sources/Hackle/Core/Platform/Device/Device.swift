@@ -7,12 +7,20 @@ protocol Device {
 }
 
 class DeviceImpl : Device {
-    private let deviceInfo: DeviceInfo
     let id: String
+    private let _deviceInfo = AtomicReference<DeviceInfo?>(value: nil)
 
-    init(deviceId: String, screenInfo: ScreenInfo) {
+    init(deviceId: String) {
         self.id = deviceId
-        self.deviceInfo = DeviceInfo(
+    }
+
+    @MainActor func initialize() {
+        let screen = UIUtils.currentScreen
+        let screenInfo = ScreenInfo(
+            width: Int(screen.nativeBounds.width),
+            height: Int(screen.nativeBounds.height)
+        )
+        let info = DeviceInfo(
             osName: "iOS",
             osVersion: UIDevice.current.systemVersion,
             model: DeviceHelper.getDeviceModel(),
@@ -23,10 +31,14 @@ class DeviceImpl : Device {
             timezone: TimeZone.current,
             screenInfo: screenInfo
         )
+        _deviceInfo.set(newValue: info)
     }
-    
+
     var properties: [String : Any] {
         get {
+            guard let deviceInfo = _deviceInfo.get() else {
+                return ["platform": "iOS", "isApp": true]
+            }
             let languageCode = deviceInfo.locale.languageCode ?? ""
             let regionCode = deviceInfo.locale.regionCode ?? ""
             return [
