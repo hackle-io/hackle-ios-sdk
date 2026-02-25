@@ -76,7 +76,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let inAppMessageUI: HackleInAppMessageUI
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
-    
+    private var onInitialized: (() -> ())?
+
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
     
     var deviceId: String {
@@ -137,17 +138,18 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
+        onInitialized = completion
         Task {
             await self.platformManager.initialize()
             self.applicationLifecycleObserver.initialize()
             self.viewLifecycleObserver.initialize()
             await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
             self.eventQueue.async { [weak self] in
-                guard let self = self else {
-                    completion()
-                    return
+                guard let self = self else { return }
+                if let completion = self.onInitialized {
+                    self.onInitialized = nil
+                    self.initialize(completion: completion)
                 }
-                self.initialize(completion: completion)
             }
         }
     }
