@@ -16,7 +16,6 @@ class HackleAppSpecs: QuickSpec {
         var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
         var pushTokenRegistry = DefaultPushTokenRegistry()
-        var device: Device!
         var userExplorer: HackleUserExplorer!
         var inAppMessageUI: HackleInAppMessageUI!
 
@@ -32,13 +31,12 @@ class HackleAppSpecs: QuickSpec {
                 httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
-            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository(), screenInfo: ScreenInfo(width: 0, height: 0))
+            platformManager = PlatformManager(keyValueRepository: MemoryKeyValueRepository())
             notificationManager = MockNotificationManager()
             sessionManager = MockSessionManager()
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
-            device = MockDevice(id: "hackle_device_id", properties: [:])
             userExplorer = DefaultHackleUserExplorer(
                 core: core,
                 userManager: userManager,
@@ -79,7 +77,7 @@ class HackleAppSpecs: QuickSpec {
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
                 fetchThrottler: throttler,
-                device: device,
+                platformManager: platformManager,
                 inAppMessageUI: inAppMessageUI,
                 applicationInstallStateManager: applicationInstallStateManager,
                 userExplorer: userExplorer
@@ -93,7 +91,7 @@ class HackleAppSpecs: QuickSpec {
         }
 
         it("deviceId") {
-            expect(sut.deviceId) == "hackle_device_id"
+            expect(sut.deviceId) == platformManager.device.id
         }
 
         it("sessionId") {
