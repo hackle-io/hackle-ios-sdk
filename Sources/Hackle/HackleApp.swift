@@ -404,9 +404,6 @@ import WebKit
 extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
-        Task { @MainActor in
-            DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
-        }
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
@@ -415,11 +412,7 @@ extension HackleApp {
         
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
-        let screenInfo = ScreenInfo(
-            width: Int(UIScreen.main.nativeBounds.width),
-            height: Int(UIScreen.main.nativeBounds.height)
-        )
-        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository, screenInfo: screenInfo)
+        let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository)
         let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
         
@@ -847,7 +840,7 @@ extension HackleApp {
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
-            device: platformManager.device,
+            platformManager: platformManager,
             inAppMessageUI: inAppMessageUI,
             applicationInstallStateManager: applicationInstallStateManager,
             userExplorer: userExplorer
