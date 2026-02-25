@@ -72,7 +72,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
-    private let device: Device
+    private let platformManager: PlatformManager
     private let inAppMessageUI: HackleInAppMessageUI
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
@@ -81,7 +81,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     
     var deviceId: String {
         get {
-            device.id
+            platformManager.device.id
         }
     }
     
@@ -111,7 +111,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
-        device: Device,
+        platformManager: PlatformManager,
         inAppMessageUI: HackleInAppMessageUI,
         applicationInstallStateManager: ApplicationInstallStateManager,
         userExplorer: HackleUserExplorer
@@ -129,22 +129,26 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
-        self.device = device
+        self.platformManager = platformManager
         self.inAppMessageUI = inAppMessageUI
         self.applicationInstallStateManager = applicationInstallStateManager
         self.userExplorer = userExplorer
     }
     
     func initialize(user: User?, completion: @escaping () -> ()) {
-        applicationLifecycleObserver.initialize()
-        viewLifecycleObserver.initialize()
         userManager.initialize(user: user)
-        eventQueue.async { [weak self] in
-            guard let self = self else {
-                completion()
-                return
+        Task {
+            await self.platformManager.initialize()
+            self.applicationLifecycleObserver.initialize()
+            self.viewLifecycleObserver.initialize()
+            await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
+            self.eventQueue.async { [weak self] in
+                guard let self = self else {
+                    completion()
+                    return
+                }
+                self.initialize(completion: completion)
             }
-            self.initialize(completion: completion)
         }
     }
 
