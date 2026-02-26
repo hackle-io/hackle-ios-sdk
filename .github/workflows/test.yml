@@ -50,3 +50,33 @@ jobs:
           check_name: Test Results
           comment_title: Test Results
           comment_mode: changes
+
+  swift6-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.1.1'
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Build Hackle (Swift 6)
+        id: swift6
+        run: |
+            set -o pipefail && xcodebuild build \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                SWIFT_VERSION=6 \
+                | xcbeautify --renderer github-actions --quiet
+
+      - name: Swift 6 Build Status Comment
+        if: always() && github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: swift6-build
+          message: |
+            ## ${{ steps.swift6.outcome == 'success' && ':white_check_mark: Swift 6 Build Passed' || ':x: Swift 6 Build Failed' }}
