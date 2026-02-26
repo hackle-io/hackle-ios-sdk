@@ -6,7 +6,7 @@ import Foundation
 
 /// Represents a user in the Hackle.
 @objc(HackleUser)
-public class User: NSObject, @unchecked Sendable {
+public final class User: NSObject, @unchecked Sendable {
 
     /// Primary user identifier
     @objc public let id: String?
