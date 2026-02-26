@@ -12,6 +12,6 @@ spec.source_files  = "Sources/**/*.{swift,h,m}"
 spec.resources     = "Sources/**/*.{xib,png}"
 spec.resource_bundles = { "Hackle" => ["Sources/Hackle/PrivacyInfo.xcprivacy"] }
 spec.frameworks    = "Foundation"
-spec.swift_version = "5.5"
+spec.swift_version = "5.9"
 spec.pod_target_xcconfig = { "APPLICATION_EXTENSION_API_ONLY" => "NO" }
 end

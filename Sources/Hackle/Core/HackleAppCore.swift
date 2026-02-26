@@ -76,7 +76,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let inAppMessageUI: HackleInAppMessageUI
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
-    private var onInitialized: (() -> ())?
+    private let onInitializedRef = AtomicReference<(() -> ())?>(value: nil)
 
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
     
@@ -138,7 +138,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
-        onInitialized = completion
+        onInitializedRef.set(newValue: completion)
         Task {
             await self.platformManager.initialize()
             self.applicationLifecycleObserver.initialize()
@@ -146,8 +146,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
             self.eventQueue.async { [weak self] in
                 guard let self = self else { return }
-                if let completion = self.onInitialized {
-                    self.onInitialized = nil
+                if let completion = self.onInitializedRef.getAndSet(newValue: nil) {
                     self.initialize(completion: completion)
                 }
             }

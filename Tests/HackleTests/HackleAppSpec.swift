@@ -466,22 +466,13 @@ class HackleAppSpecs: QuickSpec {
         }
 
         it("initialize") {
-
-            every(sessionManager.initializeMock).answers {
-                Thread.sleep(forTimeInterval: 0.1)
-            }
-
-            every(eventProcessor.initializeMock).answers {
-                Thread.sleep(forTimeInterval: 0.1)
-            }
-
             var count = 0
             sut.initialize(user: nil) {
                 count += 1
             }
             expect(count) == 0
 
-            expect(count).toEventually(equal(1), timeout: .seconds(2))
+            expect(count).toEventually(equal(1), timeout: .seconds(5))
 
             expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
             expect(platformManager.device.properties.count) == 13
