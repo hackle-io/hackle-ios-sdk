@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MetricRegistry {
+class MetricRegistry: @unchecked Sendable {
 
     let id = UUID()
     var name: String {

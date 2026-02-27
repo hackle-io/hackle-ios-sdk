@@ -10,23 +10,23 @@ import Foundation
 /// Configuration options for the Hackle SDK.
 ///
 /// Use ``HackleConfigBuilder`` to create and customize configuration settings for the SDK.
-public class HackleConfig: NSObject {
+public final class HackleConfig: NSObject, Sendable {
 
-    var sdkUrl: URL
-    var eventUrl: URL
-    var apiUrl: URL
-    var monitoringUrl: URL
-    var monitoringEnabled: Bool
-    var mode: HackleAppMode
-    var automaticScreenTracking: Bool
-    var automaticAppLifecycleTracking: Bool
-    var sessionTracking: Bool
-    var sessionTimeoutInterval: TimeInterval
-    var pollingInterval: TimeInterval
-    var eventFlushInterval: TimeInterval
-    var eventFlushThreshold: Int
-    var exposureEventDedupInterval: TimeInterval
-    var extra: [String: String]
+    let sdkUrl: URL
+    let eventUrl: URL
+    let apiUrl: URL
+    let monitoringUrl: URL
+    let monitoringEnabled: Bool
+    let mode: HackleAppMode
+    let automaticScreenTracking: Bool
+    let automaticAppLifecycleTracking: Bool
+    let sessionTracking: Bool
+    let sessionTimeoutInterval: TimeInterval
+    let pollingInterval: TimeInterval
+    let eventFlushInterval: TimeInterval
+    let eventFlushThreshold: Int
+    let exposureEventDedupInterval: TimeInterval
+    let extra: [String: String]
 
     init(builder: HackleConfigBuilder) {
         sdkUrl = builder.sdkUrl
@@ -257,7 +257,7 @@ public class HackleConfigBuilder: NSObject {
 }
 
 /// Application mode for the Hackle SDK.
-@objc public enum HackleAppMode: Int {
+@objc public enum HackleAppMode: Int, Sendable {
     /// Native iOS application mode
     case native
     /// WebView wrapper mode for certain web applications

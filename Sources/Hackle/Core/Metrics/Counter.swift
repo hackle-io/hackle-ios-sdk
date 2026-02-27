@@ -8,7 +8,7 @@
 import Foundation
 
 
-protocol Counter: Metric {
+protocol Counter: Metric, Sendable {
 
     func count() -> Int64
 

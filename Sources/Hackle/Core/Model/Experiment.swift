@@ -4,7 +4,7 @@
 
 import Foundation
 
-protocol Experiment {
+protocol Experiment: Sendable {
     typealias Id = Int64
     typealias Key = Int64
 
@@ -42,7 +42,7 @@ enum ExperimentStatus: String {
     case completed
 }
 
-class ExperimentEntity: Experiment {
+final class ExperimentEntity: Experiment, Sendable {
     let id: Id
     let key: Key
     let name: String?

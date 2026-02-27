@@ -1,6 +1,6 @@
 import Foundation
 
-class WorkspaceDatabase: Database {
+class WorkspaceDatabase: Database, @unchecked Sendable {
     static let DATABASE_VERSION = 1
     static let MAX_DATABASE_VERSION = 1
 

@@ -9,7 +9,7 @@ import Foundation
 
 protocol InAppMessageActionHandler {
     func supports(action: InAppMessage.Action) -> Bool
-    func handle(view: InAppMessageView, action: InAppMessage.Action)
+    @MainActor func handle(view: InAppMessageView, action: InAppMessage.Action)
 }
 
 class InAppMessageActionHandlerFactory {
@@ -36,7 +36,7 @@ class InAppMessageCloseActionHandler: InAppMessageActionHandler {
     }
 }
 
-class InAppMessageLinkActionHandler: InAppMessageActionHandler {
+final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
@@ -52,11 +52,13 @@ class InAppMessageLinkActionHandler: InAppMessageActionHandler {
             Log.error("Invalid url: \(action.value.orNil)")
             return
         }
-        urlHandler.open(url: url)
+        Task { @MainActor in
+            urlHandler.open(url: url)
+        }
     }
 }
 
-class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
+final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable {
     private let urlHandler: UrlHandler
 
     init(urlHandler: UrlHandler) {
@@ -73,7 +75,9 @@ class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler {
             return
         }
         view.dismiss()
-        urlHandler.open(url: url)
+        Task { @MainActor in
+            urlHandler.open(url: url)
+        }
     }
 }
 

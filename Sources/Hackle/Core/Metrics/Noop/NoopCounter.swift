@@ -8,7 +8,7 @@
 import Foundation
 
 
-class NoopCounter: Counter {
+class NoopCounter: Counter, @unchecked Sendable {
 
     let id: MetricId
 

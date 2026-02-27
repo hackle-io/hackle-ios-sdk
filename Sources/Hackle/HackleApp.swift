@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import UIKit
 import WebKit
 
 /// Entry point of Hackle SDK.
@@ -290,7 +291,7 @@ import WebKit
     ///   - webView: The target WKWebView instance to integrate with Hackle SDK
     ///   - uiDelegate: Optional UI delegate for the WebView. If not provided, the WebView's existing delegate will be used
     ///   - webViewConfig: Configuration for WebView integration behavior. Defaults to ``HackleWebViewConfig/DEFAULT``
-    @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
+    @MainActor @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
         webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate, webViewConfig: webViewConfig)
     }
 
@@ -401,7 +402,6 @@ import WebKit
 extension HackleApp {
     func initialize(user: User? = nil, completion: @escaping () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
-        DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
     }
 
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
@@ -486,7 +486,7 @@ extension HackleApp {
 
         // - EventProcessor
 
-        let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: sdkKey)
+        let workspaceDatabase = WorkspaceDatabase(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
         let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
@@ -643,7 +643,7 @@ extension HackleApp {
         let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
             core: core
         )
-        let urlHandler = ApplicationUrlHandler.shared
+        let urlHandler = ApplicationUrlHandler()
         let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
@@ -773,13 +773,14 @@ extension HackleApp {
 
         // - Notification
 
+        let sharedDatabase = SharedDatabase.shared
         let notificationManager = DefaultNotificationManager(
             core: core,
             dispatchQueue: DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility),
             workspaceFetcher: workspaceManager,
             userManager: userManager,
             repository: DefaultNotificationRepository(
-                sharedDatabase: DatabaseHelper.getSharedDatabase()
+                sharedDatabase: sharedDatabase
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
@@ -837,7 +838,7 @@ extension HackleApp {
             pushTokenRegistry: pushTokenRegistry,
             notificationManager: notificationManager,
             fetchThrottler: throttler,
-            device: platformManager.device,
+            platformManager: platformManager,
             inAppMessageUI: inAppMessageUI,
             applicationInstallStateManager: applicationInstallStateManager,
             userExplorer: userExplorer

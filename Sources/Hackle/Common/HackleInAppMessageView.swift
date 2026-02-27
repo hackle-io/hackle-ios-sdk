@@ -10,5 +10,5 @@ import Foundation
 /// Protocol for controlling in-app message view presentation.
 @objc public protocol HackleInAppMessageView {
     /// Dismisses the in-app message view.
-    func dismiss()
+    @MainActor func dismiss()
 }

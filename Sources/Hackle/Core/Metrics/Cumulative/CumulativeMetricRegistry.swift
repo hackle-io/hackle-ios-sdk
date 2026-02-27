@@ -8,7 +8,7 @@
 import Foundation
 
 
-class CumulativeMetricRegistry: MetricRegistry {
+class CumulativeMetricRegistry: MetricRegistry, @unchecked Sendable {
     override func createCounter(id: MetricId) -> Counter {
         CumulativeCounter(id: id)
     }

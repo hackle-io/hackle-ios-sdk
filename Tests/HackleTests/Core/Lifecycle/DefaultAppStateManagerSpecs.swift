@@ -20,7 +20,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
                 expect(sut.currentState == .foreground).to(beTrue())
                 verify(exactly: 1) {
@@ -32,7 +32,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.didEnterBackground()
+                MainActor.assumeIsolated { sut.didEnterBackground() }
                 queue.await()
                 expect(sut.currentState == .background).to(beTrue())
                 verify(exactly: 1) {
@@ -51,7 +51,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 let sut = DefaultApplicationLifecycleManager.shared
                 sut.setDispatchQueue(queue: queue)
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
 
                 expect(sut.currentState).to(equal(.foreground))
@@ -61,9 +61,9 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 let sut = DefaultApplicationLifecycleManager.shared
                 sut.setDispatchQueue(queue: queue)
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
-                sut.didEnterBackground()
+                MainActor.assumeIsolated { sut.didEnterBackground() }
                 queue.await()
 
                 expect(sut.currentState).to(equal(Optional(.background)))
@@ -76,10 +76,10 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.didEnterBackground()
+                MainActor.assumeIsolated { sut.didEnterBackground() }
                 queue.await()
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
 
                 verify(exactly: 1) {
@@ -94,7 +94,7 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
 
                 verify(exactly: 1) {
@@ -109,13 +109,13 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.setDispatchQueue(queue: queue)
                 sut.addListener(listener: listener)
 
-                sut.willEnterForeground()
-                queue.await()
-                
-                sut.didEnterBackground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.didEnterBackground() }
+                queue.await()
+
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
 
                 verify(exactly: 2) {
@@ -139,14 +139,14 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
                 sut.addListener(listener: listener2)
                 sut.addListener(listener: listener3)
 
-                sut.willEnterForeground()
+                MainActor.assumeIsolated { sut.willEnterForeground() }
                 queue.await()
 
                 verify(exactly: 1) { listener1.onForegroundMock }
                 verify(exactly: 1) { listener2.onForegroundMock }
                 verify(exactly: 1) { listener3.onForegroundMock }
 
-                sut.didEnterBackground()
+                MainActor.assumeIsolated { sut.didEnterBackground() }
                 queue.await()
 
                 verify(exactly: 1) { listener1.onBackgroundMock }
@@ -156,4 +156,3 @@ class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
         }
     }
 }
-

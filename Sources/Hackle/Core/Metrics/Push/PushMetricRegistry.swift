@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-class PushMetricRegistry: MetricRegistry {
+class PushMetricRegistry: MetricRegistry, @unchecked Sendable {
 
     private let lock = ReadWriteLock(label: "io.hackle.PushMetricRegistry.Lock")
 

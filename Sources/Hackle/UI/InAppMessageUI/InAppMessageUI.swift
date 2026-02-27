@@ -6,10 +6,10 @@
 //
 
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 @objc(HackleInAppMessageUI)
-class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
+class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable {
     let eventHandler: InAppMessageEventHandler
     
     init(eventHandler: InAppMessageEventHandler) {
@@ -17,22 +17,21 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         super.init()
     }
     
-    var window: Window?
+    @MainActor var window: Window?
     var delegate: HackleInAppMessageDelegate?
-    
-    var currentMessageView: InAppMessageView? {
+
+    @MainActor var currentMessageView: InAppMessageView? {
         window?.messageViewController?.messageView
     }
 
     func present(context: InAppMessagePresentationContext) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.presentNow(context: context)
         }
     }
 
-    private func presentNow(context: InAppMessagePresentationContext) {
-        guard isMainThread(),
-              checkRootViewController(),
+    @MainActor private func presentNow(context: InAppMessagePresentationContext) {
+        guard checkRootViewController(),
               noMessagePresented(),
               orientationSupported(context: context) else {
             return
@@ -64,21 +63,15 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter {
         }
     }
 
-    // Present Validation
-
-    private func isMainThread() -> Bool {
-        Thread.isMainThread
-    }
-
-    private func checkRootViewController() -> Bool {
+    @MainActor private func checkRootViewController() -> Bool {
         UIUtils.keyWindow?.rootViewController != nil
     }
 
-    private func noMessagePresented() -> Bool {
+    @MainActor private func noMessagePresented() -> Bool {
         currentMessageView == nil
     }
 
-    private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {
+    @MainActor private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {
         context.inAppMessage.supports(orientation: UIUtils.interfaceOrientation)
     }
 }

@@ -1,16 +1,16 @@
 import Foundation
 
-class Target {
+final class Target: Sendable {
 
-    var conditions: [Condition]
+    let conditions: [Condition]
 
     init(conditions: [Condition]) {
         self.conditions = conditions
     }
 
-    class Condition {
-        var key: Key
-        var match: Match
+    final class Condition: Sendable {
+        let key: Key
+        let match: Match
 
         init(key: Key, match: Match) {
             self.key = key
@@ -18,9 +18,9 @@ class Target {
         }
     }
 
-    class Key {
-        var type: KeyType
-        var name: String
+    final class Key: Sendable {
+        let type: KeyType
+        let name: String
 
         init(type: KeyType, name: String) {
             self.type = type
@@ -41,12 +41,12 @@ class Target {
         case numberOfEventsWithPropertyInDays = "NUMBER_OF_EVENTS_WITH_PROPERTY_IN_DAYS"
     }
 
-    class Match {
+    final class Match: Sendable {
 
-        var type: MatchType
-        var matchOperator: Operator
-        var valueType: HackleValueType
-        var values: [HackleValue]
+        let type: MatchType
+        let matchOperator: Operator
+        let valueType: HackleValueType
+        let values: [HackleValue]
 
         init(type: MatchType, matchOperator: Operator, valueType: HackleValueType, values: [HackleValue]) {
             self.type = type
@@ -74,7 +74,7 @@ class Target {
     }
 
     /// 기간 동안 이벤트 발생 횟수
-    class NumberOfEventsInDays: NumberOfEventInDay {
+    final class NumberOfEventsInDays: NumberOfEventInDay {
         /// 이벤트 키
         let eventKey: String
         /// 기간
@@ -87,7 +87,7 @@ class Target {
     }
     
     /// 기간 동안 프로퍼티를 포함한 이벤트 발생 횟수
-    class NumberOfEventsWithPropertyInDays: NumberOfEventInDay {
+    final class NumberOfEventsWithPropertyInDays: NumberOfEventInDay {
         /// 이벤트 키
         let eventKey: String
         /// 기간

@@ -1,14 +1,14 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 import UserNotifications
 
-class NotificationHandler {
+class NotificationHandler: @unchecked Sendable {
     static let shared = NotificationHandler(
         dispatchQueue: DispatchQueue(
             label: "io.hackle.NotificationHandler",
             qos: .utility
         ),
-        urlHandler: ApplicationUrlHandler.shared
+        urlHandler: ApplicationUrlHandler()
     )
 
     private var receiver: NotificationDataReceiver
@@ -16,28 +16,26 @@ class NotificationHandler {
 
     init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
         self.urlHandler = urlHandler
-        receiver = DefaultNotificationDataReceiver(
+        self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
-            repository: DefaultNotificationRepository(
-                sharedDatabase: DatabaseHelper.getSharedDatabase()
-            )
+            repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
         )
     }
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
     }
-    
+
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
         Log.info("track push click event")
         receiver.onNotificationDataReceived(data: notificationData, timestamp: timestamp)
     }
-    
+
     func handlePushClickAction(notificationData: NotificationData) {
         Log.info("handle push click action: \(notificationData.actionType.rawValue)")
         trampoline(data: notificationData)
     }
-    
+
     func handlePushImage(notificationData: NotificationData, completion: @escaping (UNNotificationAttachment?) -> Void) {
         Log.info("handle push image action")
         downloadImage(data: notificationData) { imageLocalPath in
@@ -69,13 +67,15 @@ extension NotificationHandler {
             }
 
             if let url = URL(string: link) {
-                urlHandler.open(url: url)
+                Task { @MainActor in
+                    urlHandler.open(url: url)
+                }
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")
             }
         }
     }
-    
+
     private func downloadImage(data: NotificationData, completion: @escaping (URL?) -> Void) {
         guard let imageUrl = data.imageUrl,
               !imageUrl.isEmpty else {

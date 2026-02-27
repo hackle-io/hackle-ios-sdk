@@ -13,21 +13,25 @@ extension WKWebView {
         case getWebViewConfig = "getWebViewConfig"
     }
 
+    @MainActor
     private struct AssociatedKeys {
-        static var _uiDelegate: UInt8 = 0
+        static let _uiDelegate: UnsafeRawPointer = {
+            let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
+            return UnsafeRawPointer(key)
+        }()
     }
 
     private var _uiDelegate: HackleUIDelegate? {
         get {
             objc_getAssociatedObject(
                 self,
-                &AssociatedKeys._uiDelegate
+                AssociatedKeys._uiDelegate
             ) as? HackleUIDelegate
         }
         set {
             objc_setAssociatedObject(
                 self,
-                &AssociatedKeys._uiDelegate,
+                AssociatedKeys._uiDelegate,
                 newValue,
                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC
             )

@@ -32,7 +32,9 @@ class DefaultInAppMessageEventHandlerSpecs: QuickSpec {
                 let event = InAppMessage.Event.impression
 
                 // when
-                sut.handle(view: view, event: event)
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, event: event)
+                }
 
                 // then
                 verify(exactly: 1) {
@@ -47,7 +49,9 @@ class DefaultInAppMessageEventHandlerSpecs: QuickSpec {
                 let event = InAppMessage.Event.impression
 
                 // when
-                sut.handle(view: view, event: event)
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, event: event)
+                }
 
                 // then
                 verify(exactly: 0) {
@@ -61,7 +65,9 @@ class DefaultInAppMessageEventHandlerSpecs: QuickSpec {
                 let event = InAppMessage.Event.impression
 
                 // when
-                sut.handle(view: view, event: event)
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, event: event)
+                }
 
                 // then
                 verify(exactly: 1) {
