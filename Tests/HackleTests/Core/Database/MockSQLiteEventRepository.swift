@@ -13,14 +13,14 @@ import MockingKit
 
 class MockSQLiteEventRepository: SQLiteEventRepository {
     init() {
-        let workspaceDatabase = DatabaseHelper.getWorkspaceDatabase(sdkKey: "mock_test_sdk_key")
+        let workspaceDatabase = WorkspaceDatabase(sdkKey: "mock_test_sdk_key")
         super.init(database: workspaceDatabase)
     }
-    
+
     func deleteAll() {
         let flusingEvent = findAllBy(status: .flushing)
         let pendingEvent = findAllBy(status: .pending)
-        
+
         delete(events: flusingEvent)
         delete(events: pendingEvent)
     }

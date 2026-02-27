@@ -4,7 +4,7 @@
 
 import Foundation
 
-class ReadWriteLock {
+final class ReadWriteLock: Sendable {
 
     private let queue: DispatchQueue
 

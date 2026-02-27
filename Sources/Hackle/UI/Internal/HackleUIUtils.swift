@@ -6,8 +6,9 @@
 //
 
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
+@MainActor
 class UIUtils {
 
     static var application: UIApplication? {
@@ -16,18 +17,13 @@ class UIUtils {
     }
 
     static var interfaceOrientation: UIInterfaceOrientation {
-        if #available(iOS 13.0, *), let windowScene = activeWindowScene {
+        if let windowScene = activeWindowScene {
             return windowScene.interfaceOrientation
-        }
-
-        if let application = application {
-            return application.statusBarOrientation
         } else {
             return .unknown
         }
     }
 
-    @available(iOS 13.0, *)
     static var activeWindowScene: UIWindowScene? {
         guard let application = application else {
             return nil
@@ -38,23 +34,16 @@ class UIUtils {
     }
 
     static var keyWindow: UIWindow? {
-        if #available(iOS 13, *) {
-            return activeWindowScene?.windows.first { window in
-                window.isKeyWindow
-            }
-        } else {
-            return application?.keyWindow
+        return activeWindowScene?.windows.first { window in
+            window.isKeyWindow
         }
     }
 
     static var currentScreen: UIScreen {
-        if #available(iOS 13.0, *) {
-            // NOTE: 앱에 scene이 연결되기 전에는 (ex. didFinishLaunchingWithOptions 시점) activeWindowScene이 nil
-            //  currentScreen을 이용해서 sdk 초기화 시 화면 사이즈를 캐싱하는데, 이 때 UIScreen.main을 사용할 수 있음
-            //  deprecate 되었지만 정상적인 값을 리턴해서 기존 로직 일단 유지
-            return activeWindowScene?.screen ?? UIScreen.main
-        }
-        return UIScreen.main
+        // NOTE: 앱에 scene이 연결되기 전에는 (ex. didFinishLaunchingWithOptions 시점) activeWindowScene이 nil
+        //  currentScreen을 이용해서 sdk 초기화 시 화면 사이즈를 캐싱하는데, 이 때 UIScreen.main을 사용할 수 있음
+        //  deprecate 되었지만 정상적인 값을 리턴해서 기존 로직 일단 유지
+        return activeWindowScene?.screen ?? UIScreen.main
     }
 
     static var topViewController: UIViewController? {

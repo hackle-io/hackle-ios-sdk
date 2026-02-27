@@ -57,7 +57,7 @@ extension HackleInAppMessageUI {
             var borderWidth = 1.0
             var cornerRadius = 4.0
             var font = UIFont.boldSystemFont(ofSize: 16)
-            static var defaults = Self()
+            static let defaults = Self()
         }
 
         override var intrinsicContentSize: CGSize {
@@ -141,7 +141,7 @@ extension HackleInAppMessageUI {
         struct Attributes {
             var padding = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
             var font = UIFont.boldSystemFont(ofSize: 16)
-            static var defaults = Self()
+            static let defaults = Self()
         }
     }
 }

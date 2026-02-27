@@ -11,24 +11,22 @@ import UIKit
 extension UIColor {
 
     convenience init?(hex: String, alpha: CGFloat = 1.0) {
-        let hexString = hex.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
-        let scanner = Scanner(string: hexString)
+        var hexString = hex.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
 
         if hexString.hasPrefix("#") {
-            scanner.scanLocation = 1
+            hexString = String(hexString.dropFirst())
         }
 
-        var color: UInt32 = 0
-        if scanner.scanHexInt32(&color) {
-            let mask = 0x000000FF
-            let red = CGFloat(Int(color >> 16) & mask) / 255.0
-            let green = CGFloat(Int(color >> 8) & mask) / 255.0
-            let blue = CGFloat(Int(color) & mask) / 255.0
-
-            self.init(red: red, green: green, blue: blue, alpha: alpha)
-            return
+        guard let color = UInt64(hexString, radix: 16) else {
+            return nil
         }
-        return nil
+
+        let mask = 0x000000FF
+        let red = CGFloat(Int(color >> 16) & mask) / 255.0
+        let green = CGFloat(Int(color >> 8) & mask) / 255.0
+        let blue = CGFloat(Int(color) & mask) / 255.0
+
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
 }
 

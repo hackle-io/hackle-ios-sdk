@@ -50,7 +50,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
             describe("process") {
                 it("do nothing") {
                     let view = MockInAppMessageView(presented: true)
-                    sut.process(view: view, event: .impression, timestamp: Date())
+                    MainActor.assumeIsolated {
+                        sut.process(view: view, event: .impression, timestamp: Date())
+                    }
                 }
             }
         }
@@ -79,7 +81,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 let event = InAppMessage.Event.impression
 
                 // when
-                sut.process(view: view, event: event, timestamp: Date())
+                MainActor.assumeIsolated {
+                    sut.process(view: view, event: event, timestamp: Date())
+                }
 
                 // then
                 verify(exactly: 0) {
@@ -93,7 +97,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 actionHandler.supportsReturn = false
 
                 // when
-                sut.process(view: view, event: event, timestamp: Date())
+                MainActor.assumeIsolated {
+                    sut.process(view: view, event: event, timestamp: Date())
+                }
 
                 // then
                 verify(exactly: 0) {
@@ -106,7 +112,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 let event = InAppMessage.Event.buttonAction(action: InAppMessage.action(), button: InAppMessage.button())
 
                 // when
-                sut.process(view: view, event: event, timestamp: Date())
+                MainActor.assumeIsolated {
+                    sut.process(view: view, event: event, timestamp: Date())
+                }
 
                 // then
                 verify(exactly: 0) {
@@ -119,7 +127,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
                 let event = InAppMessage.Event.buttonAction(action: InAppMessage.action(), button: InAppMessage.button())
 
                 // when
-                sut.process(view: view, event: event, timestamp: Date())
+                MainActor.assumeIsolated {
+                    sut.process(view: view, event: event, timestamp: Date())
+                }
 
                 // then
                 verify(exactly: 1) {
@@ -144,7 +154,9 @@ class InAppMessageEventProcessorSpecs: QuickSpec {
 
             it("process do nothing") {
                 let view = MockInAppMessageView(presented: true)
-                sut.process(view: view, event: .close, timestamp: Date())
+                MainActor.assumeIsolated {
+                    sut.process(view: view, event: .close, timestamp: Date())
+                }
             }
         }
     }

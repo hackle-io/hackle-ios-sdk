@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 protocol ApplicationLifecycleManager {
     var currentState: ApplicationState { get }
@@ -14,7 +14,7 @@ protocol ApplicationLifecycleManager {
     func addListener(listener: ApplicationLifecycleListener)
 }
 
-class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher {
+class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, ApplicationLifecyclePublisher, @unchecked Sendable {
     static let shared = DefaultApplicationLifecycleManager(
         viewManager: DefaultViewManager.shared,
         clock: SystemClock.shared
@@ -31,7 +31,7 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
             _currentState ?? .background
         }
     }
-    var firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
+    private let firstLaunch: AtomicReference<Bool> = AtomicReference(value: true)
     
     private init(viewManager: ViewManager, clock: Clock) {
         self.viewManager = viewManager
@@ -46,24 +46,24 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
         listeners.append(listener)
     }
     
-    func didBecomeActive() {
+    @MainActor func didBecomeActive() {
         guard firstLaunch.get() else {
             return
         }
-        
+
         self.willEnterForeground()
     }
-    
-    func publishWillEnterForegroundIfNeeded() {
+
+    @MainActor func publishWillEnterForegroundIfNeeded() {
         guard let _ = viewManager.topViewController(),
               self.firstLaunch.get() else {
             return
         }
-        
+
         self.willEnterForeground()
     }
-    
-    func willEnterForeground() {
+
+    @MainActor func willEnterForeground() {
         firstLaunch.set(newValue: false)
         let top = viewManager.topViewController()
         execute {
@@ -74,8 +74,8 @@ class DefaultApplicationLifecycleManager: ApplicationLifecycleManager, Applicati
             self._currentState = .foreground
         }
     }
-    
-    func didEnterBackground() {
+
+    @MainActor func didEnterBackground() {
         let top = viewManager.topViewController()
         execute {
             Log.debug("ApplicationLifecycleManager.didEnterBackground")

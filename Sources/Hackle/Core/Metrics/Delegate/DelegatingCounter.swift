@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DelegatingCounter: DelegatingMetric, Counter {
+class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
 
     let id: MetricId
 

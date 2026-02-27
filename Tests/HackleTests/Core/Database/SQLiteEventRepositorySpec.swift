@@ -31,7 +31,7 @@ class SQLiteEventRepositorySpec: QuickSpec {
                     sut.save(event: UserEvents.track(UUID().uuidString))
                     sut.save(event: UserEvents.track(UUID().uuidString))
                     sut.save(event: UserEvents.track(UUID().uuidString))
-                    
+
                     // Then
                     expect(sut.count()).to(equal(3))
                 }
@@ -44,7 +44,7 @@ class SQLiteEventRepositorySpec: QuickSpec {
                 sut.save(event: UserEvents.track(UUID().uuidString))
                 sut.save(event: UserEvents.track(UUID().uuidString))
                 _ = sut.getEventToFlush(limit: 1) // 1개를 flushing 상태로 변경
-                
+
                 // Then
                 expect(sut.countBy(status: .pending)).to(equal(1))
                 expect(sut.countBy(status: .flushing)).to(equal(1))
@@ -74,11 +74,11 @@ class SQLiteEventRepositorySpec: QuickSpec {
                     sut.save(event: UserEvents.track(UUID().uuidString))
                 }
             }
-            
+
             it("pending 상태의 이벤트를 가져오고, 상태를 flushing으로 변경해야 한다") {
                 // When
                 let events = sut.getEventToFlush(limit: 3)
-                
+
                 // Then
                 expect(events.count).to(equal(3))
                 expect(sut.countBy(status: .pending)).to(equal(2))
@@ -91,7 +91,7 @@ class SQLiteEventRepositorySpec: QuickSpec {
                 // Given
                 sut.save(event: UserEvents.track(UUID().uuidString))
                 _ = sut.getEventToFlush(limit: 1) // 1개를 flushing으로
-                
+
                 // Then
                 expect(sut.findAllBy(status: .pending).count).to(equal(0))
                 expect(sut.findAllBy(status: .flushing).count).to(equal(1))
@@ -104,10 +104,10 @@ class SQLiteEventRepositorySpec: QuickSpec {
                 sut.save(event: UserEvents.track(UUID().uuidString))
                 sut.save(event: UserEvents.track(UUID().uuidString))
                 let events = sut.findAllBy(status: .pending)
-                
+
                 // When
                 sut.update(events: events, status: .flushing)
-                
+
                 // Then
                 expect(sut.countBy(status: .pending)).to(equal(0))
                 expect(sut.countBy(status: .flushing)).to(equal(2))
@@ -121,10 +121,10 @@ class SQLiteEventRepositorySpec: QuickSpec {
                 sut.save(event: UserEvents.track(UUID().uuidString))
                 let allEvents = sut.findAllBy(status: .pending)
                 let eventsToDelete = [allEvents[0]]
-                
+
                 // When
                 sut.delete(events: eventsToDelete)
-                
+
                 // Then
                 expect(sut.count()).to(equal(1))
                 expect(sut.findAllBy(status: .pending).first?.id).to(equal(allEvents[1].id))
@@ -137,22 +137,22 @@ class SQLiteEventRepositorySpec: QuickSpec {
                     sut.save(event: UserEvents.track(UUID().uuidString))
                 }
             }
-            
+
             context("DB의 총 이벤트 수가 count보다 클 때") {
                 it("가장 오래된 이벤트를 삭제하여 count 개수만큼 남겨야 한다") {
                     // When: 7개만 남기도록 삭제
                     sut.deleteOldEvents(count: 3)
-                    
+
                     // Then
                     expect(sut.count()).to(equal(7))
                 }
             }
-            
+
             context("DB의 총 이벤트 수가 count보다 작거나 같을 때") {
                 it("아무것도 삭제하지 않아야 한다") {
                     // When
                     sut.deleteOldEvents(count: 15)
-                    
+
                     // Then
                     expect(sut.count()).to(equal(10))
                 }
@@ -170,7 +170,7 @@ class SQLiteEventRepositorySpec: QuickSpec {
             it("만료된 pending 상태의 이벤트만 삭제해야 한다") {
                 // 만료되지 않은 이벤트
                 sut.save(event: UserEvents.track(UUID().uuidString))
-                
+
                 let events = sut.findAllBy(status: .pending)
                 expect(events.count).to(equal(1001)) // 만료된 이벤트 1000개 + 만료되지 않은 이벤트 1개
 

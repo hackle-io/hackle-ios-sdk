@@ -1,16 +1,16 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
 protocol ViewManager {
-    func topViewController() -> UIViewController?
+    @MainActor func topViewController() -> UIViewController?
     func isOwnedView(vc: UIViewController) -> Bool
 }
 
-class DefaultViewManager: ViewManager {
+class DefaultViewManager: ViewManager, @unchecked Sendable {
 
     static let shared = DefaultViewManager()
 
-    func topViewController() -> UIViewController? {
+    @MainActor func topViewController() -> UIViewController? {
         UIUtils.topViewController
     }
 

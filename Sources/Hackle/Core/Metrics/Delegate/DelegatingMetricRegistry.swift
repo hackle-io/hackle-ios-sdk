@@ -8,7 +8,7 @@
 import Foundation
 
 
-class DelegatingMetricRegistry: MetricRegistry {
+class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
 
     private var registries = Set<MetricRegistry>()
 

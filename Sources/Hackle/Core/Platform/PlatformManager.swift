@@ -7,25 +7,26 @@
 
 import Foundation
 
-class PlatformManager {
+class PlatformManager: @unchecked Sendable {
+    private let _device: DeviceImpl
     private var _previousVersion: BundleVersionInfo?
     private var _isDeviceIdCreated: Bool
-    
-    let device: Device
+
+    var device: Device { _device }
     let bundleInfo: BundleInfo
-    
+
     var isDeviceIdCreated: Bool {
         get {
             _isDeviceIdCreated
         }
     }
-    
+
     var currentVersion: BundleVersionInfo {
         get {
             bundleInfo.versionInfo
         }
     }
-    
+
     var previousVersion: BundleVersionInfo? {
         get {
             _previousVersion
@@ -38,12 +39,16 @@ class PlatformManager {
             isIdCreated = true
             return UUID().uuidString
         }
-        device = DeviceImpl(deviceId: deviceId)
+        _device = DeviceImpl(deviceId: deviceId)
         _isDeviceIdCreated = isIdCreated
         _previousVersion = PlatformManager.loadPreviouseBundleVersion(keyValueRepository: keyValueRepository)
         bundleInfo = BundleInfoImpl()
-        
+
         PlatformManager.saveCurrentBundleVersion(keyValueRepository: keyValueRepository, versionInfo: currentVersion)
+    }
+
+    @MainActor func initialize() {
+        _device.initialize()
     }
 }
 

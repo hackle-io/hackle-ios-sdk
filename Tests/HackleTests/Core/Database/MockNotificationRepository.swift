@@ -6,7 +6,7 @@ class MockNotificationRepository: DefaultNotificationRepository {
     private let reservedEnvironmentIdList: [Int64] = [456, 222]
     
     init() {
-        super.init(sharedDatabase: SharedDatabase())
+        super.init(sharedDatabase: SharedDatabase.shared)
     }
 
     func putAll(entities: [NotificationHistoryEntity]) {

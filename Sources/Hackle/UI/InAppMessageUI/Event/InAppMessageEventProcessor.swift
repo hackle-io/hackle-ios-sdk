@@ -9,7 +9,7 @@ import Foundation
 
 protocol InAppMessageEventProcessor {
     func supports(event: InAppMessage.Event) -> Bool
-    func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date)
+    @MainActor func process(view: InAppMessageView, event: InAppMessage.Event, timestamp: Date)
 }
 
 class InAppMessageEventProcessorFactory {

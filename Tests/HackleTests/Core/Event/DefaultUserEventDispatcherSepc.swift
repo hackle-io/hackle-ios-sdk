@@ -24,7 +24,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             httpQueue = DispatchQueue(label: "test.HttpQueue")
             httpClient = MockHttpClient()
             eventBackoffController = MockUserEventBackoffController()
-            
+
             eventRepository.deleteAll()
 
             //every(eventRepository.deleteMock).returns(())
@@ -36,13 +36,13 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 httpClient: httpClient,
                 eventBackoffController: eventBackoffController
             )
-            
+
             let event = UserEvents.track("test", properties: [:], user: HackleUser(identifiers: [:], properties: [:], hackleProperties: [:]), timestamp: 0)
-            
+
             eventRepository.save(event: event)
             eventEntities = eventRepository.findAllBy(status: .pending)
             eventRepository.update(events: eventEntities, status: .flushing)
-            
+
             every(eventBackoffController.checkResponseMock).returns(())
             every(eventBackoffController.isAllowNextFlushMock).returns(true)
         }
@@ -73,7 +73,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 httpClient.executeMock.firstInvokation().arguments.1(response)
                 eventQueue.sync {
                 }
-                
+
                 // then
                 let count = eventRepository.countBy(status: .pending)
                 expect(count) == 1

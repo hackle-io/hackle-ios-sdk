@@ -7,7 +7,7 @@
 
 import Foundation
 
-class EventEntity {
+final class EventEntity: Sendable {
     let id: Int64
     let type: UserEventType
     let status: EventEntityStatus
