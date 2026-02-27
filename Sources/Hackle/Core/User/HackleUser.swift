@@ -7,7 +7,7 @@
 
 import Foundation
 
-class HackleUser {
+final class HackleUser: @unchecked Sendable {
 
     let identifiers: [String: String]
     let properties: [String: Any]

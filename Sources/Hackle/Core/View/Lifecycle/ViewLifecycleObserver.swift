@@ -1,7 +1,7 @@
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
-class ViewLifecycleObserver {
+class ViewLifecycleObserver: @unchecked Sendable {
 
     static let shared = ViewLifecycleObserver(
         publisher: ViewLifecycleManager.shared
@@ -56,7 +56,9 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleObserver.shared.publisher.viewWillAppear(vc: self)
+        MainActor.assumeIsolated {
+            ViewLifecycleObserver.shared.publisher.viewWillAppear(vc: self)
+        }
     }
 
     @objc func hackle_viewDidAppear(_ animation: Bool) {
@@ -64,7 +66,9 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleObserver.shared.publisher.viewDidAppear(vc: self)
+        MainActor.assumeIsolated {
+            ViewLifecycleObserver.shared.publisher.viewDidAppear(vc: self)
+        }
     }
 
     @objc func hackle_viewWillDisappear(_ animation: Bool) {
@@ -73,7 +77,9 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleObserver.shared.publisher.viewWillDisappear(vc: self)
+        MainActor.assumeIsolated {
+            ViewLifecycleObserver.shared.publisher.viewWillDisappear(vc: self)
+        }
     }
 
     @objc func hackle_viewDidDisappear(_ animation: Bool) {
@@ -81,6 +87,8 @@ extension UIViewController {
         guard DefaultViewManager.shared.isOwnedView(vc: self) else {
             return
         }
-        ViewLifecycleObserver.shared.publisher.viewDidDisappear(vc: self)
+        MainActor.assumeIsolated {
+            ViewLifecycleObserver.shared.publisher.viewDidDisappear(vc: self)
+        }
     }
 }

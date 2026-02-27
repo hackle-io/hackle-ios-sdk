@@ -19,123 +19,154 @@ class HackleWebBridgeSpecs: QuickSpec {
             var invocator: HackleInvocator!
 
             beforeEach {
-                webView = WKWebView()
+                MainActor.assumeIsolated {
+                    webView = WKWebView()
+                }
                 invocator = DefaultHackleInvocator(hackleAppCore: MockHackleAppCore())
             }
 
             describe("prepareForHackleWebBridge") {
                 it("should add UserScript to webView") {
-                    let config = HackleWebViewConfig.DEFAULT
-                    let initialScriptCount = webView.configuration.userContentController.userScripts.count
+                    MainActor.assumeIsolated {
+                        let config = HackleWebViewConfig.DEFAULT
+                        let initialScriptCount = webView.configuration.userContentController.userScripts.count
 
-                    webView.prepareForHackleWebBridge(
-                        invocator: invocator,
-                        sdkKey: "test-sdk-key",
-                        mode: .native,
-                        webViewConfig: config
-                    )
+                        webView.prepareForHackleWebBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: config
+                        )
 
-                    let scripts = webView.configuration.userContentController.userScripts
-                    expect(scripts.count) > initialScriptCount
+                        let scripts = webView.configuration.userContentController.userScripts
+                        expect(scripts.count) > initialScriptCount
+                    }
                 }
 
                 it("should inject JavaScript bridge with getWebViewConfig function") {
-                    let config = HackleWebViewConfig.builder()
-                        .automaticScreenTracking(true)
-                        .automaticEngagementTracking(false)
-                        .build()
+                    MainActor.assumeIsolated {
+                        let config = HackleWebViewConfig.builder()
+                            .automaticScreenTracking(true)
+                            .automaticEngagementTracking(false)
+                            .build()
 
-                    webView.prepareForHackleWebBridge(
-                        invocator: invocator,
-                        sdkKey: "test-sdk-key",
-                        mode: .native,
-                        webViewConfig: config
-                    )
+                        webView.prepareForHackleWebBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: config
+                        )
 
-                    let scripts = webView.configuration.userContentController.userScripts
-                    let hackleScript = scripts.first { $0.source.contains("/* Hackle App JavaScript Controller */") }
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let hackleScript = scripts.first { $0.source.contains("/* Hackle App JavaScript Controller */") }
 
-                    expect(hackleScript).toNot(beNil())
-                    expect(hackleScript?.source).to(contain("getWebViewConfig"))
+                        expect(hackleScript).toNot(beNil())
+                        expect(hackleScript?.source).to(contain("getWebViewConfig"))
+                    }
                 }
 
                 it("should preserve existing UserScripts") {
-                    let existingScript = WKUserScript(
-                        source: "console.log('existing');",
-                        injectionTime: .atDocumentStart,
-                        forMainFrameOnly: true
-                    )
-                    webView.configuration.userContentController.addUserScript(existingScript)
+                    MainActor.assumeIsolated {
+                        let existingScript = WKUserScript(
+                            source: "console.log('existing');",
+                            injectionTime: .atDocumentStart,
+                            forMainFrameOnly: true
+                        )
+                        webView.configuration.userContentController.addUserScript(existingScript)
 
-                    let config = HackleWebViewConfig.DEFAULT
+                        let config = HackleWebViewConfig.DEFAULT
 
-                    webView.prepareForHackleWebBridge(
-                        invocator: invocator,
-                        sdkKey: "test-sdk-key",
-                        mode: .native,
-                        webViewConfig: config
-                    )
+                        webView.prepareForHackleWebBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: config
+                        )
 
-                    let scripts = webView.configuration.userContentController.userScripts
-                    let existingScriptPresent = scripts.contains { $0.source.contains("console.log('existing')") }
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let existingScriptPresent = scripts.contains { $0.source.contains("console.log('existing')") }
 
-                    expect(existingScriptPresent) == true
+                        expect(existingScriptPresent) == true
+                    }
                 }
 
                 it("should include webViewConfig JSON string in script") {
-                    let config = HackleWebViewConfig.builder()
-                        .automaticRouteTracking(false)
-                        .automaticScreenTracking(true)
-                        .automaticEngagementTracking(false)
-                        .build()
+                    MainActor.assumeIsolated {
+                        let config = HackleWebViewConfig.builder()
+                            .automaticRouteTracking(false)
+                            .automaticScreenTracking(true)
+                            .automaticEngagementTracking(false)
+                            .build()
 
-                    webView.prepareForHackleWebBridge(
-                        invocator: invocator,
-                        sdkKey: "test-sdk-key",
-                        mode: .native,
-                        webViewConfig: config
-                    )
+                        webView.prepareForHackleWebBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: config
+                        )
 
-                    let scripts = webView.configuration.userContentController.userScripts
-                    let hackleScript = scripts.first { $0.source.contains("getWebViewConfig") }
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let hackleScript = scripts.first { $0.source.contains("getWebViewConfig") }
 
-                    expect(hackleScript?.source).to(contain("automaticRouteTracking"))
-                    expect(hackleScript?.source).to(contain("automaticScreenTracking"))
-                    expect(hackleScript?.source).to(contain("automaticEngagementTracking"))
+                        expect(hackleScript?.source).to(contain("automaticRouteTracking"))
+                        expect(hackleScript?.source).to(contain("automaticScreenTracking"))
+                        expect(hackleScript?.source).to(contain("automaticEngagementTracking"))
+                    }
+                }
+
+                it("should assign independent HackleUIDelegate to each WKWebView") {
+                    MainActor.assumeIsolated {
+                        let webView1 = WKWebView()
+                        let webView2 = WKWebView()
+                        let config = HackleWebViewConfig.DEFAULT
+
+                        webView1.prepareForHackleWebBridge(
+                            invocator: invocator, sdkKey: "key1", mode: .native, webViewConfig: config
+                        )
+                        webView2.prepareForHackleWebBridge(
+                            invocator: invocator, sdkKey: "key2", mode: .native, webViewConfig: config
+                        )
+
+                        expect(webView1.uiDelegate).toNot(beNil())
+                        expect(webView2.uiDelegate).toNot(beNil())
+                        expect(webView1.uiDelegate).toNot(beIdenticalTo(webView2.uiDelegate))
+                    }
                 }
 
                 it("should replace previous Hackle UserScript when called multiple times") {
-                    let config1 = HackleWebViewConfig.builder()
-                        .automaticScreenTracking(true)
-                        .build()
+                    MainActor.assumeIsolated {
+                        let config1 = HackleWebViewConfig.builder()
+                            .automaticScreenTracking(true)
+                            .build()
 
-                    webView.prepareForHackleWebBridge(
-                        invocator: invocator,
-                        sdkKey: "test-sdk-key",
-                        mode: .native,
-                        webViewConfig: config1
-                    )
+                        webView.prepareForHackleWebBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: config1
+                        )
 
-                    let scriptsAfterFirst = webView.configuration.userContentController.userScripts
-                    let hackleScriptCountAfterFirst = scriptsAfterFirst.filter { $0.source.contains("/* Hackle App JavaScript Controller */") }.count
+                        let scriptsAfterFirst = webView.configuration.userContentController.userScripts
+                        let hackleScriptCountAfterFirst = scriptsAfterFirst.filter { $0.source.contains("/* Hackle App JavaScript Controller */") }.count
 
-                    let config2 = HackleWebViewConfig.builder()
-                        .automaticEngagementTracking(true)
-                        .build()
+                        let config2 = HackleWebViewConfig.builder()
+                            .automaticEngagementTracking(true)
+                            .build()
 
-                    webView.prepareForHackleWebBridge(
-                        invocator: invocator,
-                        sdkKey: "test-sdk-key",
-                        mode: .native,
-                        webViewConfig: config2
-                    )
+                        webView.prepareForHackleWebBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: config2
+                        )
 
-                    let scriptsAfterSecond = webView.configuration.userContentController.userScripts
-                    let hackleScriptCountAfterSecond = scriptsAfterSecond.filter { $0.source.contains("/* Hackle App JavaScript Controller */") }.count
+                        let scriptsAfterSecond = webView.configuration.userContentController.userScripts
+                        let hackleScriptCountAfterSecond = scriptsAfterSecond.filter { $0.source.contains("/* Hackle App JavaScript Controller */") }.count
 
-                    // Hackle UserScript는 항상 1개만 존재해야 함
-                    expect(hackleScriptCountAfterFirst) == 1
-                    expect(hackleScriptCountAfterSecond) == 1
+                        // Hackle UserScript는 항상 1개만 존재해야 함
+                        expect(hackleScriptCountAfterFirst) == 1
+                        expect(hackleScriptCountAfterSecond) == 1
+                    }
                 }
             }
         }

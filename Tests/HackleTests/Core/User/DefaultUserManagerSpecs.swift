@@ -21,7 +21,9 @@ class DefaultUserManagerSpecs: QuickSpec {
             cohortFetcher = MockUserCohortFetcher()
             targetFetcher = MockUserTargetFetcher()
             clock = FixedClock(date: Date(timeIntervalSince1970: 42))
-            device = DeviceImpl(deviceId: "hackle_device_id")
+            let deviceImpl = DeviceImpl(deviceId: "hackle_device_id")
+            MainActor.assumeIsolated { deviceImpl.initialize() }
+            device = deviceImpl
             bundleInfo = BundleInfoImpl()
             sut = DefaultUserManager(device: device, bundleInfo: bundleInfo, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
             every(cohortFetcher.fetchMock).answers({ _, completion in

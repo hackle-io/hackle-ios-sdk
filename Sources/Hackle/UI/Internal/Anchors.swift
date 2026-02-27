@@ -9,12 +9,13 @@ import Foundation
 import UIKit
 
 protocol LayoutItem {
-    var superview: UIView? { get }
+    @MainActor var superview: UIView? { get }
 }
 
 extension UIView: LayoutItem {
 }
 
+@MainActor
 extension UILayoutGuide: LayoutItem {
     var superview: UIView? {
         owningView
@@ -97,6 +98,7 @@ extension Anchors {
         Anchor(item, .bottomMargin)
     }
 
+    @MainActor
     var size: AnchorSize<Item> {
         AnchorSize(anchors: self)
     }
@@ -127,6 +129,7 @@ struct AnchorAlignment {
     }
 }
 
+@MainActor
 struct AnchorSize<Item: LayoutItem> {
     private let anchors: Anchors<Item>
 
@@ -148,6 +151,7 @@ struct AnchorSize<Item: LayoutItem> {
     }
 }
 
+@MainActor
 extension Anchors where Item: UIView {
 
     @discardableResult
@@ -269,6 +273,7 @@ struct Anchor<Item: LayoutItem, Delegate> {
     }
 }
 
+@MainActor
 extension Anchor {
 
     @discardableResult
@@ -298,6 +303,7 @@ extension Anchor {
 
 // Dimension
 
+@MainActor
 extension Anchor where Delegate: NSLayoutDimension {
 
     @discardableResult
@@ -318,6 +324,7 @@ extension Anchor where Delegate: NSLayoutDimension {
 
 // XAxisAnchor
 
+@MainActor
 extension Anchor where Delegate: NSLayoutXAxisAnchor {
 
     @discardableResult
@@ -334,6 +341,7 @@ extension Anchor where Delegate: NSLayoutXAxisAnchor {
 
 // YAxisAnchor
 
+@MainActor
 extension Anchor where Delegate: NSLayoutYAxisAnchor {
 
     @discardableResult
@@ -350,6 +358,7 @@ extension Anchor where Delegate: NSLayoutYAxisAnchor {
 
 // Constraint
 
+@MainActor
 class Constraints {
 
     private var constraints = [NSLayoutConstraint]()

@@ -5,7 +5,7 @@
 //  Created by sungwoo.yeo on 11/14/25.
 //
 
-enum DayOfWeek: String, Codable, CaseIterable {
+enum DayOfWeek: String, Codable, CaseIterable, Sendable {
     case monday = "MONDAY"
     case tuesday = "TUESDAY"
     case wednesday = "WEDNESDAY"

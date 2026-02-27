@@ -38,7 +38,9 @@ extension HackleInAppMessageUI {
         }
 
         deinit {
-            stopAutoScroll()
+            MainActor.assumeIsolated {
+                stopAutoScroll()
+            }
         }
 
         struct Attributes {
@@ -75,7 +77,9 @@ extension HackleInAppMessageUI {
             stopAutoScroll()
             if let interval = attributes.autoScrollInterval {
                 timer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-                    self?.scroll()
+                    MainActor.assumeIsolated {
+                        self?.scroll()
+                    }
                 }
             }
         }

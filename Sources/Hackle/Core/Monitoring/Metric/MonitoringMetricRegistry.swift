@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 
 
-class MonitoringMetricRegistry: MetricRegistry {
+class MonitoringMetricRegistry: MetricRegistry, @unchecked Sendable {
 
     private let endpoint: URL
     private let eventQueue: DispatchQueue

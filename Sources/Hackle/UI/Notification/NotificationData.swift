@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
 
-class NotificationData: HackleNotification {
+final class NotificationData: HackleNotification, Sendable {
     let workspaceId: Int64
     let environmentId: Int64
     
@@ -41,7 +41,7 @@ class NotificationData: HackleNotification {
         }
     }
     
-    private var _link: String?
+    private let _link: String?
     
     init(
         workspaceId: Int64,

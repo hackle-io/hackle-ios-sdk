@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AtomicInt64 {
+final class AtomicInt64: @unchecked Sendable {
 
     private let lock = ReadWriteLock(label: "io.hackle.AtomicInt64.Lock")
 

@@ -17,7 +17,7 @@ protocol Clock {
     func tick() -> UInt64
 }
 
-class SystemClock: Clock {
+final class SystemClock: Clock, Sendable {
 
     static let shared = SystemClock()
 

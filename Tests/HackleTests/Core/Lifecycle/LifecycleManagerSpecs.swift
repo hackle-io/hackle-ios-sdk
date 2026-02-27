@@ -25,7 +25,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = nil
                     viewManager.isOwnedView = true
 
-                    sut.viewWillAppear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewWillAppear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -40,7 +40,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = false
 
-                    sut.viewWillAppear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewWillAppear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -55,7 +55,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = true
 
-                    sut.viewWillAppear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewWillAppear(vc: vc) }
 
                     verify(exactly: 1) {
                         listener.onLifecycleMock
@@ -79,7 +79,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = nil
                     viewManager.isOwnedView = true
 
-                    sut.viewDidAppear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewDidAppear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -94,7 +94,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = false
 
-                    sut.viewDidAppear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewDidAppear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -109,7 +109,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = true
 
-                    sut.viewDidAppear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewDidAppear(vc: vc) }
 
                     verify(exactly: 1) {
                         listener.onLifecycleMock
@@ -133,7 +133,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = nil
                     viewManager.isOwnedView = true
 
-                    sut.viewWillDisappear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewWillDisappear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -148,7 +148,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = false
 
-                    sut.viewWillDisappear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewWillDisappear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -163,7 +163,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = true
 
-                    sut.viewWillDisappear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewWillDisappear(vc: vc) }
 
                     verify(exactly: 1) {
                         listener.onLifecycleMock
@@ -187,7 +187,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = nil
                     viewManager.isOwnedView = true
 
-                    sut.viewDidDisappear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewDidDisappear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -202,7 +202,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = false
 
-                    sut.viewDidDisappear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewDidDisappear(vc: vc) }
 
                     verify(exactly: 0) {
                         listener.onLifecycleMock
@@ -217,7 +217,7 @@ class LifecycleManagerSpecs: QuickSpec {
                     viewManager.top = top
                     viewManager.isOwnedView = true
 
-                    sut.viewDidDisappear(vc: vc)
+                    MainActor.assumeIsolated { sut.viewDidDisappear(vc: vc) }
 
                     verify(exactly: 1) {
                         listener.onLifecycleMock

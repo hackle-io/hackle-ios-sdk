@@ -62,15 +62,12 @@ class DatabaseSpec: QuickSpec {
                     expect(ddlCount.count).to(equal(2))
                     
                     // 테이블 존재 여부 검증
-                    var tableExists = false
                     try mockDB.execute { db in
                         try db.execute(sql: "SELECT * FROM Users")
-                        tableExists = true
                     }
-                    expect(tableExists).to(beTrue())
                 }
             }
-            
+
             context("버전 업데이트 필요 시") {
                 it("DDL 순차 실행 및 스키마 업데이트") {
                     mockDB = MockDatabase(
@@ -78,8 +75,8 @@ class DatabaseSpec: QuickSpec {
                         filename: fileName,
                         version: 0
                     )
-                    
-                    
+
+
                     mockDB = MockDatabase(
                         label: testLabel,
                         filename: fileName,
@@ -103,14 +100,11 @@ class DatabaseSpec: QuickSpec {
                     // ddl 리스트 갯수 검증
                     let ddlCount = mockDB.ddl.filter { $0.version > 0 && $0.version <= 2 }
                     expect(ddlCount.count).to(equal(1))
-                    
+
                     // 테이블 존재 여부 검증
-                    var tableExists = false
                     try mockDB.execute { db in
                         try db.execute(sql: "SELECT * FROM Users")
-                        tableExists = true
                     }
-                    expect(tableExists).to(beTrue())
                 }
             }
             
@@ -143,29 +137,25 @@ class DatabaseSpec: QuickSpec {
             context("execute 메서드") {
                 it("잠금이 정상 작동해야 함") {
                     mockDB = MockDatabase(label: testLabel, filename: fileName, version: 2)
-                    var result = 0
-                    
-                    
-                    let result2 = mockDB.execute { db in
-                        result = 42
-                        return result
+
+                    let result = mockDB.execute { db in
+                        return 42
                     }
-                    
-                    expect(result2).to(equal(result))
+
                     expect(result).to(equal(42))
                 }
             }
             
             it("배타적 락 획득") {
                 mockDB = MockDatabase(label: testLabel, filename: fileName, version: 1)
-                
+
                 let concurrentQueue = DispatchQueue(
                     label: "test.concurrent",
                     attributes: .concurrent
                 )
-                
-                var executionLog = [Int]()
-                
+
+                let executionLog = SyncArray<Int>()
+
                 concurrentQueue.async {
                     mockDB.execute { _ in
                         executionLog.append(1)
@@ -173,16 +163,16 @@ class DatabaseSpec: QuickSpec {
                         executionLog.append(2)
                     }
                 }
-                
+
                 Thread.sleep(forTimeInterval: 0.1)
-                
+
                 concurrentQueue.async {
                     mockDB.execute { _ in
                         executionLog.append(3)
                     }
                 }
-                
-                expect(executionLog).toEventually(
+
+                expect(executionLog.values).toEventually(
                     equal([1,2,3]),
                     timeout: .seconds(1)
                 )
@@ -190,7 +180,24 @@ class DatabaseSpec: QuickSpec {
         }
     }
     
-    class MockDatabase: Database {
+    private final class SyncArray<T>: @unchecked Sendable {
+        private let lock = NSLock()
+        private var _values = [T]()
+
+        var values: [T] {
+            lock.lock()
+            defer { lock.unlock() }
+            return _values
+        }
+
+        func append(_ value: T) {
+            lock.lock()
+            _values.append(value)
+            lock.unlock()
+        }
+    }
+
+    class MockDatabase: Database, @unchecked Sendable {
         var onDropCalled = false
         var ddl: [DatabaseDDL]
         

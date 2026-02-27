@@ -8,7 +8,7 @@
 import Foundation
 
 
-class EvaluationContext {
+class EvaluationContext: @unchecked Sendable {
 
     static let shared = EvaluationContext()
 

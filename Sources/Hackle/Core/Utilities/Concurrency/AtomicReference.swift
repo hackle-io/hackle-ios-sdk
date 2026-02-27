@@ -8,7 +8,7 @@
 import Foundation
 
 
-class AtomicReference<T> {
+final class AtomicReference<T>: @unchecked Sendable {
 
     private let lock = ReadWriteLock(label: "io.hackle.AtomicReference.Lock")
 

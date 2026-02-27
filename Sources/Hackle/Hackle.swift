@@ -13,7 +13,12 @@ import UserNotifications
 
     private static let queue = DispatchQueue(label: "io.hackle.InitializeQueue", qos: .utility)
     static let lock = ReadWriteLock(label: "io.hackle.HackleApp")
-    static var instance: HackleApp?
+
+    private final class AppContainer: @unchecked Sendable {
+        var app: HackleApp?
+    }
+
+    private static let container = AppContainer()
 
     /// Initializes the Hackle SDK with the provided SDK key and configuration.
     ///
@@ -53,14 +58,14 @@ import UserNotifications
     ///   - completion: Completion handler called when initialization is complete
     @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
         lock.write {
-            if instance != nil {
+            if container.app != nil {
                 readyToUse(completion: completion)
             } else {
                 let app = HackleApp.create(sdkKey: sdkKey, config: config)
                 app.initialize(user: user) {
                     readyToUse(completion: completion)
                 }
-                instance = app
+                container.app = app
             }
         }
     }
@@ -75,11 +80,11 @@ import UserNotifications
     ///
     /// - Returns: The HackleApp instance or `nil` if not initialized
     @objc public static func app() -> HackleApp? {
-        lock.write {
-            if instance == nil {
+        lock.read {
+            if container.app == nil {
                 Log.error("HackleApp is not initialized. Make sure to call Hackle.initialize() first")
             }
-            return instance
+            return container.app
         }
     }
 }

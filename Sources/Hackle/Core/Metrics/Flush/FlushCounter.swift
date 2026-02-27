@@ -8,7 +8,7 @@
 import Foundation
 
 
-class FlushCounter: FlushMetric, Counter {
+class FlushCounter: FlushMetric, Counter, @unchecked Sendable {
 
     let id: MetricId
     private let current: AtomicReference<Counter>

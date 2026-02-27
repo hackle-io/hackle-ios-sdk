@@ -23,7 +23,7 @@ enum PropertyOperation: String {
 
 /// Represents a collection of user property operations to be applied.
 @objc(HacklePropertyOperations)
-public class PropertyOperations: NSObject {
+public final class PropertyOperations: NSObject, @unchecked Sendable {
 
     private let operations: [PropertyOperation: [String: Any]]
 

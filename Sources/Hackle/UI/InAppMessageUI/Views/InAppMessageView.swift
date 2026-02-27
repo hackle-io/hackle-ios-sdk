@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 /// Base view protocol for InAppMessage
+@MainActor
 protocol InAppMessageView: UIView, HackleInAppMessageView {
 
     /// Indicates whether the InAppMessageView is currently presented.
@@ -17,6 +18,7 @@ protocol InAppMessageView: UIView, HackleInAppMessageView {
     func dismiss()
 }
 
+@MainActor
 extension InAppMessageView {
 
     var controller: HackleInAppMessageUI.ViewController? {
@@ -64,9 +66,7 @@ extension InAppMessageView {
         ui.delegate?.inAppMessageDidDisappear?(inAppMessage: context.inAppMessage)
 
         removeFromSuperview()
-        if #available(iOS 13.0, *) {
-            ui.window?.windowScene = nil
-        }
+        ui.window?.windowScene = nil
         ui.window = nil
     }
 
@@ -78,6 +78,7 @@ extension InAppMessageView {
     }
 }
 
+@MainActor
 @objc protocol InAppMessageViewLifecycleListener {
     @objc optional func inAppMessageWillPresent()
     @objc optional func inAppMessageDidPresent()
@@ -85,6 +86,7 @@ extension InAppMessageView {
     @objc optional func inAppMessageDidDismiss()
 }
 
+@MainActor
 private extension InAppMessageViewLifecycleListener {
     func onLifecycle(lifecycle: InAppMessageLifecycle) {
         switch lifecycle {

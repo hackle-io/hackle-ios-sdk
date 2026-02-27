@@ -6,9 +6,9 @@
 //
 
 import Foundation
-@preconcurrency import UIKit
+import UIKit
 
-class ApplicationLifecycleObserver {
+class ApplicationLifecycleObserver: @unchecked Sendable {
     
     static let shared = ApplicationLifecycleObserver(
         publisher: DefaultApplicationLifecycleManager.shared
@@ -47,14 +47,20 @@ class ApplicationLifecycleObserver {
     }
     
     @objc func didBecomeActive() {
-        publisher.didBecomeActive()
+        MainActor.assumeIsolated {
+            publisher.didBecomeActive()
+        }
     }
 
     @objc func willEnterForeground() {
-        publisher.willEnterForeground()
+        MainActor.assumeIsolated {
+            publisher.willEnterForeground()
+        }
     }
 
     @objc func didEnterBackground() {
-        publisher.didEnterBackground()
+        MainActor.assumeIsolated {
+            publisher.didEnterBackground()
+        }
     }
 }

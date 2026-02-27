@@ -58,7 +58,7 @@ protocol HackleAppCore: AnyObject {
 }
 
 
-class DefaultHackleAppCore: HackleAppCore {
+class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
     private let eventQueue: DispatchQueue
     private let synchronizer: Synchronizer
@@ -72,16 +72,17 @@ class DefaultHackleAppCore: HackleAppCore {
     private let pushTokenRegistry: PushTokenRegistry
     private let notificationManager: NotificationManager
     private let fetchThrottler: Throttler
-    private let device: Device
+    private let platformManager: PlatformManager
     private let inAppMessageUI: HackleInAppMessageUI
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
-    
-    private var userExplorerView: HackleUserExplorerView? = nil
+    private let onInitializedRef = AtomicReference<(() -> ())?>(value: nil)
+
+    @MainActor private var userExplorerView: HackleUserExplorerView? = nil
     
     var deviceId: String {
         get {
-            device.id
+            platformManager.device.id
         }
     }
     
@@ -111,7 +112,7 @@ class DefaultHackleAppCore: HackleAppCore {
         pushTokenRegistry: PushTokenRegistry,
         notificationManager: NotificationManager,
         fetchThrottler: Throttler,
-        device: Device,
+        platformManager: PlatformManager,
         inAppMessageUI: HackleInAppMessageUI,
         applicationInstallStateManager: ApplicationInstallStateManager,
         userExplorer: HackleUserExplorer
@@ -129,22 +130,26 @@ class DefaultHackleAppCore: HackleAppCore {
         self.pushTokenRegistry = pushTokenRegistry
         self.notificationManager = notificationManager
         self.fetchThrottler = fetchThrottler
-        self.device = device
+        self.platformManager = platformManager
         self.inAppMessageUI = inAppMessageUI
         self.applicationInstallStateManager = applicationInstallStateManager
         self.userExplorer = userExplorer
     }
     
     func initialize(user: User?, completion: @escaping () -> ()) {
-        applicationLifecycleObserver.initialize()
-        viewLifecycleObserver.initialize()
         userManager.initialize(user: user)
-        eventQueue.async { [weak self] in
-            guard let self = self else {
-                completion()
-                return
+        onInitializedRef.set(newValue: completion)
+        Task {
+            await self.platformManager.initialize()
+            self.applicationLifecycleObserver.initialize()
+            self.viewLifecycleObserver.initialize()
+            await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
+            self.eventQueue.async { [weak self] in
+                guard let self = self else { return }
+                if let completion = self.onInitializedRef.getAndSet(newValue: nil) {
+                    self.initialize(completion: completion)
+                }
             }
-            self.initialize(completion: completion)
         }
     }
 
@@ -166,9 +171,13 @@ class DefaultHackleAppCore: HackleAppCore {
     }
     
     func showUserExplorer() {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            guard let self else { return }
             if self.userExplorerView == nil {
-                self.userExplorerView = HackleUserExplorerView(hackleUserExplorer: self.userExplorer)
+                self.userExplorerView = HackleUserExplorerView(
+                    hackleUserExplorer: self.userExplorer
+                )
             }
             self.userExplorerView?.attach()
         }
@@ -176,8 +185,9 @@ class DefaultHackleAppCore: HackleAppCore {
     }
 
     func hideUserExplorer() {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
-            self.userExplorerView?.detach()
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            self?.userExplorerView?.detach()
         }
     }
 
