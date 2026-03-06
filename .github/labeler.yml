@@ -3,3 +3,7 @@ enhancement:
 
 bug:
   - head-branch: ['^bug', '^fix']
+
+  
+maintenance:
+  - head-branch: ['.*maintenance.*', '.*migration.*']
