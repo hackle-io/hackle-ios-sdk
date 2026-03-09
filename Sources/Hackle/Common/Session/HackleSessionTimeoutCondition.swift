@@ -5,7 +5,7 @@
 
 import Foundation
 
-@objc public class HackleSessionTimeoutCondition: NSObject {
+@objc public class HackleSessionTimeoutCondition: NSObject, @unchecked Sendable {
 
     @objc public let timeoutIntervalSeconds: TimeInterval
     @objc public let onForeground: Bool
@@ -54,26 +54,26 @@ import Foundation
     private var _onBackground: Bool = true
     private var _onApplicationStateChange: Bool = true
 
-    @objc @discardableResult
-    public func timeoutIntervalSeconds(_ timeoutIntervalSeconds: TimeInterval) -> HackleSessionTimeoutConditionBuilder {
+    @discardableResult
+    @objc public func timeoutIntervalSeconds(_ timeoutIntervalSeconds: TimeInterval) -> HackleSessionTimeoutConditionBuilder {
         self._timeoutIntervalSeconds = timeoutIntervalSeconds
         return self
     }
 
-    @objc @discardableResult
-    public func onForeground(_ onForeground: Bool) -> HackleSessionTimeoutConditionBuilder {
+    @discardableResult
+    @objc public func onForeground(_ onForeground: Bool) -> HackleSessionTimeoutConditionBuilder {
         self._onForeground = onForeground
         return self
     }
 
-    @objc @discardableResult
-    public func onBackground(_ onBackground: Bool) -> HackleSessionTimeoutConditionBuilder {
+    @discardableResult
+    @objc public func onBackground(_ onBackground: Bool) -> HackleSessionTimeoutConditionBuilder {
         self._onBackground = onBackground
         return self
     }
 
-    @objc @discardableResult
-    public func onApplicationStateChange(_ onApplicationStateChange: Bool) -> HackleSessionTimeoutConditionBuilder {
+    @discardableResult
+    @objc public func onApplicationStateChange(_ onApplicationStateChange: Bool) -> HackleSessionTimeoutConditionBuilder {
         self._onApplicationStateChange = onApplicationStateChange
         return self
     }

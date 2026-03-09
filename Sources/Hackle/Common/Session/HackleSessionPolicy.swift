@@ -5,7 +5,7 @@
 
 import Foundation
 
-@objc public class HackleSessionPolicy: NSObject {
+@objc public class HackleSessionPolicy: NSObject, @unchecked Sendable {
 
     @objc public let persistCondition: HackleSessionPersistCondition
     @objc public let timeoutCondition: HackleSessionTimeoutCondition

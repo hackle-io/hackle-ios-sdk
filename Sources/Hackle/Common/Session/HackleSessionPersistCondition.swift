@@ -5,7 +5,7 @@
 
 import Foundation
 
-@objc public class HackleSessionPersistCondition: NSObject {
+@objc public class HackleSessionPersistCondition: NSObject, @unchecked Sendable {
 
     @objc public static let ALWAYS_NEW_SESSION: HackleSessionPersistCondition = AlwaysNewSession()
     @objc public static let NULL_TO_USER_ID: HackleSessionPersistCondition = NullToUserId()
