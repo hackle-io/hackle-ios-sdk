@@ -18,7 +18,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
         var eventDispatcher: MockUserEventDispatcher!
         var sessionManager: MockSessionManager!
         var userManager: MockUserManager!
-        var appStateManager: ApplicationLifecycleManagerStub!
         var screenManager: MockScreeManager!
         var eventBackoffControllrer: MockUserEventBackoffController!
 
@@ -31,7 +30,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventDispatcher = MockUserEventDispatcher()
             sessionManager = MockSessionManager()
             userManager = MockUserManager()
-            appStateManager = ApplicationLifecycleManagerStub(currentState: .foreground)
             screenManager = MockScreeManager()
             eventBackoffControllrer = MockUserEventBackoffController()
 
@@ -42,6 +40,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             every(eventRepository.deleteExpiredEventsMock).returns(())
             every(eventBackoffControllrer.checkResponseMock).returns(())
             every(eventBackoffControllrer.isAllowNextFlushMock).returns(true)
+            every(sessionManager.startNewSessionIfNeededMock).returns(Session.UNKNOWN)
         }
 
         func processor(
@@ -58,11 +57,10 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventFlushMaxBatchSize: Int = 21,
             eventDispatcher: UserEventDispatcher = eventDispatcher,
             sessionManager: SessionManager = sessionManager,
-            userManager: UserManager = userManager,
-            appStateManager: ApplicationLifecycleManagerStub = appStateManager
+            userManager: UserManager = userManager
         ) -> DefaultUserEventProcessor {
             let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
-            
+
             return DefaultUserEventProcessor(
                 eventFilters: eventFilters,
                 eventDecorator: eventDecorator,
@@ -77,7 +75,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 eventDispatcher: eventDispatcher,
                 sessionManager: sessionManager,
                 userManager: userManager,
-                applicationLifecycleManager: appStateManager,
                 screenUserEventDecorator: screenUserEventDecorator,
                 eventBackoffController: eventBackoffControllrer
             )
@@ -137,30 +134,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             }
 
 
-            it("update lastEventTime") {
+            it("이벤트 처리 시 세션 초기화 시도") {
                 // given
                 let sut = processor()
-                let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
-
-                // when
-                Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.process(event: event)
-                    eventQueue.sync {
-                        done()
-                    }
-                }
-
-                // then
-                verify(exactly: 1) {
-                    sessionManager.updateLastEventTimeMock
-                }
-
-                expect(sessionManager.updateLastEventTimeMock.firstInvokation().arguments.timeIntervalSince1970) == 42
-            }
-
-            it("foreground 가 아닌경우 세션초기화 시도") {
-                // given
-                let sut = processor(appStateManager: ApplicationLifecycleManagerStub(currentState: .background))
                 let event = MockUserEvent(user: user, timestamp: Date(timeIntervalSince1970: 42))
                 every(sessionManager.startNewSessionIfNeededMock).returns(Session(id: "session_id"))
 
@@ -415,7 +391,6 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     eventDispatcher: eventDispatcher,
                     sessionManager: sessionManager,
                     userManager: userManager,
-                    applicationLifecycleManager: appStateManager,
                     screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager()),
                     eventBackoffController: eventBackoffControllrer
                 )
