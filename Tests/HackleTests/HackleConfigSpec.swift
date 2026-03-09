@@ -133,5 +133,123 @@ class HackleConfigSpec: QuickSpec {
                 expect(config.automaticAppLifecycleTracking) == true
             }
         }
+
+        describe("sessionPolicy") {
+            it("기본값은 DEFAULT 이다") {
+                let config = HackleConfigBuilder().build()
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.ALWAYS_NEW_SESSION
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
+                expect(config.sessionPolicy.timeoutCondition.onForeground) == false
+                expect(config.sessionPolicy.timeoutCondition.onBackground) == true
+                expect(config.sessionPolicy.timeoutCondition.onApplicationStateChange) == true
+            }
+
+            it("커스텀 sessionPolicy 설정") {
+                let policy = HackleSessionPolicy.builder()
+                    .persistCondition(.NULL_TO_USER_ID)
+                    .timeoutCondition(
+                        HackleSessionTimeoutCondition.builder()
+                            .timeoutIntervalSeconds(600)
+                            .onForeground(true)
+                            .build()
+                    )
+                    .build()
+                let config = HackleConfigBuilder().sessionPolicy(policy).build()
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.NULL_TO_USER_ID
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 600
+                expect(config.sessionPolicy.timeoutCondition.onForeground) == true
+            }
+
+            it("deprecated sessionTimeoutIntervalSeconds 설정 시 policy timeout 에 반영된다") {
+                let config = HackleConfigBuilder().sessionTimeoutIntervalSeconds(900).build()
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 900
+            }
+
+            it("sessionPolicy 직접 설정 시 deprecated timeout 설정을 무시한다") {
+                let policy = HackleSessionPolicy.builder()
+                    .timeoutCondition(
+                        HackleSessionTimeoutCondition.builder()
+                            .timeoutIntervalSeconds(600)
+                            .build()
+                    )
+                    .build()
+                let config = HackleConfigBuilder()
+                    .sessionTimeoutIntervalSeconds(900)
+                    .sessionPolicy(policy)
+                    .build()
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 600
+            }
+
+            it("아무것도 설정하지 않으면 기본값이다") {
+                let config = HackleConfigBuilder().build()
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.ALWAYS_NEW_SESSION
+            }
+
+            it("deprecated sessionTimeoutIntervalSeconds 설정 시 기존 persistCondition 을 유지한다") {
+                let config = HackleConfigBuilder()
+                    .sessionPolicy(
+                        HackleSessionPolicy.builder()
+                            .persistCondition(.NULL_TO_USER_ID)
+                            .build()
+                    )
+                    .sessionTimeoutIntervalSeconds(900)
+                    .build()
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.NULL_TO_USER_ID
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 900
+            }
+
+            it("sessionTimeoutInterval computed property 는 policy 의 timeout 을 반환한다") {
+                let config = HackleConfigBuilder()
+                    .sessionPolicy(
+                        HackleSessionPolicy.builder()
+                            .timeoutCondition(
+                                HackleSessionTimeoutCondition.builder()
+                                    .timeoutIntervalSeconds(600)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+                expect(config.sessionTimeoutInterval) == 600
+            }
+
+            it("sessionTimeoutInterval 기본값은 1800초(30분) 이다") {
+                let config = HackleConfigBuilder().build()
+                expect(config.sessionTimeoutInterval) == 1800
+            }
+
+            it("toBuilder 는 모든 필드를 복사한다") {
+                let original = HackleSessionPolicy.builder()
+                    .persistCondition(.NULL_TO_USER_ID)
+                    .timeoutCondition(
+                        HackleSessionTimeoutCondition.builder()
+                            .timeoutIntervalSeconds(600)
+                            .onForeground(true)
+                            .onBackground(false)
+                            .onApplicationStateChange(false)
+                            .build()
+                    )
+                    .build()
+
+                let copy = original.toBuilder().build()
+
+                expect(copy.persistCondition) === HackleSessionPersistCondition.NULL_TO_USER_ID
+                expect(copy.timeoutCondition.timeoutIntervalSeconds) == 600
+                expect(copy.timeoutCondition.onForeground) == true
+                expect(copy.timeoutCondition.onBackground) == false
+                expect(copy.timeoutCondition.onApplicationStateChange) == false
+            }
+
+            it("timeout 이 0 이하이면 기본값으로 교체된다") {
+                let config = HackleConfigBuilder().sessionTimeoutIntervalSeconds(0).build()
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
+            }
+
+            it("timeout 이 음수이면 기본값으로 교체된다") {
+                let config = HackleConfigBuilder().sessionTimeoutIntervalSeconds(-1).build()
+                expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
+            }
+        }
     }
 }

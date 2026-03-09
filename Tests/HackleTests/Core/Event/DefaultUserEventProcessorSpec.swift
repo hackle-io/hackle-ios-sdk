@@ -152,6 +152,9 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 verify(exactly: 1) {
                     sessionManager.startNewSessionIfNeededMock
                 }
+                let context = sessionManager.startNewSessionIfNeededMock.firstInvokation().arguments
+                expect(context.timestamp) == Date(timeIntervalSince1970: 42)
+                expect(context.isApplicationStateChange) == false
             }
 
             it("중복제거 대상이면 이벤트를 저장하지 않는다") {

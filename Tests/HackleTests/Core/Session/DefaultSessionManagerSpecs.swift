@@ -10,6 +10,9 @@ class DefaultSessionManagerSpecs: QuickSpec {
         func manager(
             persistCondition: HackleSessionPersistCondition = .ALWAYS_NEW_SESSION,
             sessionTimeout: TimeInterval = 10,
+            onForeground: Bool = false,
+            onBackground: Bool = true,
+            onApplicationStateChange: Bool = true,
             repository: KeyValueRepository = MemoryKeyValueRepository(),
             appStateManager: MockApplicationLifecycleManager = MockApplicationLifecycleManager(currentState: .foreground),
             _ listeners: SessionListener...
@@ -19,6 +22,9 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 .timeoutCondition(
                     HackleSessionTimeoutCondition.builder()
                         .timeoutIntervalSeconds(sessionTimeout)
+                        .onForeground(onForeground)
+                        .onBackground(onBackground)
+                        .onApplicationStateChange(onApplicationStateChange)
                         .build()
                 )
                 .build()
@@ -138,6 +144,376 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 expect(listener.started[1].0) == session2
                 expect(listener.ended.count) == 1
                 expect(listener.ended[0].0) == session1
+            }
+
+            context("timeout flag 조합") {
+                it("foreground + onForeground true + 만료 시 새 세션") {
+                    let sut = manager(sessionTimeout: 10, onForeground: true,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .foreground))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52))
+                    )
+
+                    expect(session2) != session1
+                }
+
+                it("foreground + onForeground true + 미만료 시 기존 세션 유지") {
+                    let sut = manager(sessionTimeout: 10, onForeground: true,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .foreground))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 51))
+                    )
+
+                    expect(session2) == session1
+                }
+
+                it("foreground + onForeground false 이면 lastEventTime 만 갱신") {
+                    let sut = manager(sessionTimeout: 10, onForeground: false,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .foreground))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52))
+                    )
+
+                    expect(session2) == session1
+                    expect(sut.lastEventTime) == Date(timeIntervalSince1970: 52)
+                }
+
+                it("foreground + onForeground false 여도 식별자 변경 시 새 세션") {
+                    let sut = manager(sessionTimeout: 10, onForeground: false,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .foreground))
+
+                    let oldUser = User.builder().deviceId("d1").userId("A").build()
+                    sut.startNewSession(oldUser: oldUser, newUser: oldUser, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let newUser = User.builder().deviceId("d1").userId("B").build()
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(oldUser: oldUser, newUser: newUser, timestamp: Date(timeIntervalSince1970: 43))
+                    )
+
+                    expect(session2) != session1
+                }
+
+                it("background + onBackground true + 만료 시 새 세션") {
+                    let sut = manager(sessionTimeout: 10, onBackground: true,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .background))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52))
+                    )
+
+                    expect(session2) != session1
+                }
+
+                it("background + onBackground true + 미만료 시 기존 세션 유지") {
+                    let sut = manager(sessionTimeout: 10, onBackground: true,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .background))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 51))
+                    )
+
+                    expect(session2) == session1
+                }
+
+                it("background + onBackground false + 만료 시에도 기존 세션 유지") {
+                    let sut = manager(sessionTimeout: 10, onBackground: false,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .background))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52))
+                    )
+
+                    expect(session2) == session1
+                }
+
+                it("background + onBackground false 여도 식별자 변경 시 새 세션") {
+                    let sut = manager(sessionTimeout: 10, onBackground: false,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .background))
+
+                    let oldUser = User.builder().deviceId("d1").userId("A").build()
+                    sut.startNewSession(oldUser: oldUser, newUser: oldUser, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let newUser = User.builder().deviceId("d1").userId("B").build()
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(oldUser: oldUser, newUser: newUser, timestamp: Date(timeIntervalSince1970: 43))
+                    )
+
+                    expect(session2) != session1
+                }
+
+                it("onApplicationStateChange true + 만료 시 새 세션") {
+                    let sut = manager(sessionTimeout: 10, onApplicationStateChange: true)
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52), isApplicationStateChange: true)
+                    )
+
+                    expect(session2) != session1
+                }
+
+                it("onApplicationStateChange true + 미만료 시 기존 세션 유지") {
+                    let sut = manager(sessionTimeout: 10, onApplicationStateChange: true)
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 51), isApplicationStateChange: true)
+                    )
+
+                    expect(session2) == session1
+                }
+
+                it("onApplicationStateChange false 이면 앱 상태 전환 시 타임아웃으로 만료되지 않는다") {
+                    let sut = manager(sessionTimeout: 10, onApplicationStateChange: false)
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52), isApplicationStateChange: true)
+                    )
+
+                    expect(session2) == session1
+                }
+
+                it("onApplicationStateChange false + onBackground true 이면 background 에서만 타임아웃") {
+                    let sut = manager(sessionTimeout: 10, onBackground: true, onApplicationStateChange: false,
+                                      appStateManager: MockApplicationLifecycleManager(currentState: .background))
+
+                    sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                    let session1 = sut.currentSession!
+
+                    // 앱 상태 전환 (isApplicationStateChange=true) → onApplicationStateChange=false이므로 만료 안됨
+                    let session2 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 52), isApplicationStateChange: true)
+                    )
+                    expect(session2) == session1
+
+                    // background 이벤트 (isApplicationStateChange=false) → onBackground=true이므로 만료됨
+                    let session3 = sut.startNewSessionIfNeeded(
+                        context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 62))
+                    )
+                    expect(session3) != session1
+                }
+            }
+        }
+
+        describe("통합 테스트") {
+            it("onBackground false - 백그라운드 이벤트 후 포그라운드 전환 시 세션 재시작") {
+                let appStateManager = MockApplicationLifecycleManager(currentState: .foreground)
+                let sut = manager(sessionTimeout: 10, onBackground: false, appStateManager: appStateManager)
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                // background로 전환
+                appStateManager.currentState = .background
+                sut.onBackground(nil, timestamp: Date(timeIntervalSince1970: 43))
+
+                // background 이벤트 (onBackground=false이므로 만료 안됨)
+                let session2 = sut.startNewSessionIfNeeded(
+                    context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 53))
+                )
+                expect(session2) == session1
+
+                // foreground 전환 (onApplicationStateChange=true이므로 만료됨)
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 54), isFromBackground: true)
+                expect(sut.currentSession) != session1
+            }
+
+            it("onBackground true - 백그라운드 이벤트로 세션 재시작") {
+                let appStateManager = MockApplicationLifecycleManager(currentState: .foreground)
+                let sut = manager(sessionTimeout: 10, onBackground: true, appStateManager: appStateManager)
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                // background로 전환
+                appStateManager.currentState = .background
+                sut.onBackground(nil, timestamp: Date(timeIntervalSince1970: 43))
+
+                // background 이벤트 (onBackground=true이므로 만료됨)
+                let session2 = sut.startNewSessionIfNeeded(
+                    context: SessionContext.of(user: user, timestamp: Date(timeIntervalSince1970: 53))
+                )
+                expect(session2) != session1
+            }
+        }
+
+        describe("onForeground") {
+            it("lastEventTime 이 없으면 새 세션을 시작한다") {
+                let sut = manager()
+
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 42), isFromBackground: true)
+
+                expect(sut.currentSession).toNot(beNil())
+                expect(sut.currentSession!.id.hasPrefix("42000.")) == true
+            }
+
+            it("세션 만료 전이면 기존 세션을 유지한다") {
+                let sut = manager(sessionTimeout: 10)
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 51), isFromBackground: true)
+
+                expect(sut.currentSession) == session1
+            }
+
+            it("세션이 만료됐으면 새 세션을 시작한다") {
+                let sut = manager(sessionTimeout: 10)
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 52), isFromBackground: true)
+
+                expect(sut.currentSession) != session1
+            }
+
+            it("onApplicationStateChange false 이면 타임아웃으로 만료되지 않는다") {
+                let sut = manager(sessionTimeout: 10, onApplicationStateChange: false)
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 52), isFromBackground: true)
+
+                expect(sut.currentSession) == session1
+            }
+
+            it("onApplicationStateChange false 여도 세션이 없으면 새 세션을 시작한다") {
+                let sut = manager(sessionTimeout: 10, onApplicationStateChange: false)
+
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 42), isFromBackground: true)
+
+                expect(sut.currentSession).toNot(beNil())
+            }
+        }
+
+        describe("onBackground") {
+            it("lastEventTime 을 업데이트한다") {
+                let sut = manager()
+
+                sut.onBackground(nil, timestamp: Date(timeIntervalSince1970: 42))
+
+                expect(sut.lastEventTime) == Date(timeIntervalSince1970: 42)
+            }
+
+            it("현재 세션을 저장한다") {
+                let repository = MemoryKeyValueRepository()
+                let sut = manager(repository: repository)
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session = sut.currentSession!
+
+                sut.onBackground(nil, timestamp: Date(timeIntervalSince1970: 43))
+
+                expect(repository.getString(key: "session_id")) == session.id
+            }
+
+            it("현재 세션이 없으면 저장하지 않는다") {
+                let repository = MemoryKeyValueRepository()
+                let sut = manager(repository: repository)
+
+                sut.onBackground(nil, timestamp: Date(timeIntervalSince1970: 42))
+
+                expect(repository.getString(key: "session_id")).to(beNil())
+            }
+        }
+
+        describe("onUserUpdated") {
+            it("identifier 가 변경되지 않으면 세션을 유지한다") {
+                let sut = manager()
+
+                sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                sut.onUserUpdated(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 43))
+
+                expect(sut.currentSession) == session1
+            }
+
+            it("default policy 에서 identifier 가 변경되면 새 세션을 시작한다") {
+                let sut = manager()
+
+                let oldUser = User.builder().deviceId("d1").userId("A").build()
+                sut.startNewSession(oldUser: oldUser, newUser: oldUser, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                let newUser = User.builder().deviceId("d1").userId("B").build()
+                sut.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: Date(timeIntervalSince1970: 43))
+
+                expect(sut.currentSession) != session1
+            }
+
+            it("custom policy 로 null → userId 시 세션을 유지한다") {
+                let sut = manager(persistCondition: .NULL_TO_USER_ID)
+
+                let oldUser = User.builder().deviceId("d1").build()
+                sut.startNewSession(oldUser: oldUser, newUser: oldUser, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                let newUser = User.builder().deviceId("d1").userId("A").build()
+                sut.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: Date(timeIntervalSince1970: 43))
+
+                expect(sut.currentSession) == session1
+            }
+
+            it("identifier 가 동일하면 세션을 유지한다") {
+                let sut = manager()
+
+                let sameUser = User.builder().deviceId("d1").userId("A").build()
+                sut.startNewSession(oldUser: sameUser, newUser: sameUser, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                sut.onUserUpdated(oldUser: sameUser, newUser: sameUser, timestamp: Date(timeIntervalSince1970: 43))
+
+                expect(sut.currentSession) == session1
+            }
+
+            it("policy 가 유지를 결정해도 타임아웃이 만료되면 새 세션을 시작한다") {
+                let sut = manager(persistCondition: .NULL_TO_USER_ID, sessionTimeout: 10,
+                                  appStateManager: MockApplicationLifecycleManager(currentState: .background))
+
+                let oldUser = User.builder().deviceId("d1").build()
+                sut.startNewSession(oldUser: oldUser, newUser: oldUser, timestamp: Date(timeIntervalSince1970: 42))
+                let session1 = sut.currentSession!
+
+                let newUser = User.builder().deviceId("d1").userId("A").build()
+                sut.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: Date(timeIntervalSince1970: 52))
+
+                // NULL_TO_USER_ID persist condition은 세션 유지를 원하지만, timeout 만료이므로 새 세션
+                // 단, onUserUpdated는 isApplicationStateChange=false이므로 background의 onBackground flag(true)를 따름
+                expect(sut.currentSession) != session1
             }
         }
 
