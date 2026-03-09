@@ -71,6 +71,10 @@
 		B21A14932E9E20B10088EBEC /* UserDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14922E9E20AC0088EBEC /* UserDecorator.swift */; };
 		B21A14952E9E24E80088EBEC /* SessionUserDecoratorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14942E9E24E00088EBEC /* SessionUserDecoratorSpecs.swift */; };
 		B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14962E9E6AB80088EBEC /* PlatformManager.swift */; };
+		B21D7F592F5E6BF400C842F0 /* HackleSessionTimeoutCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F582F5E6BF400C842F0 /* HackleSessionTimeoutCondition.swift */; };
+		B21D7F5A2F5E6BF400C842F0 /* HackleSessionPersistCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F562F5E6BF400C842F0 /* HackleSessionPersistCondition.swift */; };
+		B21D7F5B2F5E6BF400C842F0 /* HackleSessionPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F572F5E6BF400C842F0 /* HackleSessionPolicy.swift */; };
+		B21D7F5E2F5E6C2C00C842F0 /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F5D2F5E6C2C00C842F0 /* SessionContext.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -748,6 +752,10 @@
 		B21A14922E9E20AC0088EBEC /* UserDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDecorator.swift; sourceTree = "<group>"; };
 		B21A14942E9E24E00088EBEC /* SessionUserDecoratorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserDecoratorSpecs.swift; sourceTree = "<group>"; };
 		B21A14962E9E6AB80088EBEC /* PlatformManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformManager.swift; sourceTree = "<group>"; };
+		B21D7F562F5E6BF400C842F0 /* HackleSessionPersistCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSessionPersistCondition.swift; sourceTree = "<group>"; };
+		B21D7F572F5E6BF400C842F0 /* HackleSessionPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSessionPolicy.swift; sourceTree = "<group>"; };
+		B21D7F582F5E6BF400C842F0 /* HackleSessionTimeoutCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSessionTimeoutCondition.swift; sourceTree = "<group>"; };
+		B21D7F5D2F5E6C2C00C842F0 /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -1539,6 +1547,16 @@
 			path = Device;
 			sourceTree = "<group>";
 		};
+		B21D7F5C2F5E6BFB00C842F0 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				B21D7F572F5E6BF400C842F0 /* HackleSessionPolicy.swift */,
+				B21D7F562F5E6BF400C842F0 /* HackleSessionPersistCondition.swift */,
+				B21D7F582F5E6BF400C842F0 /* HackleSessionTimeoutCondition.swift */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
 		B24250242D9A2B1B00CF27FC /* PII */ = {
 			isa = PBXGroup;
 			children = (
@@ -2142,6 +2160,7 @@
 			isa = PBXGroup;
 			children = (
 				EE29D93329CD825300B1FEAA /* Session.swift */,
+				B21D7F5D2F5E6C2C00C842F0 /* SessionContext.swift */,
 				EE29D93429CD825300B1FEAA /* SessionEventTracker.swift */,
 				EE29D93529CD825300B1FEAA /* SessionListener.swift */,
 				EE29D93629CD825300B1FEAA /* SessionManager.swift */,
@@ -2154,6 +2173,7 @@
 		EE29D93829CD825300B1FEAA /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B21D7F5C2F5E6BFB00C842F0 /* Session */,
 				B2931DFA2E0159E600E5931E /* Subscription */,
 				B256031B2E0B9334004794B9 /* Screen.swift */,
 				EE29D93929CD825300B1FEAA /* Event.swift */,
@@ -3649,7 +3669,11 @@
 				EE29D9A229CD825500B1FEAA /* ExperimentFlowFactory.swift in Sources */,
 				B26AC23E2E4B2E7900AAE56F /* HackleInvokeParameters.swift in Sources */,
 				B21A14912E9E205A0088EBEC /* SessionUserDecorator.swift in Sources */,
+				B21D7F592F5E6BF400C842F0 /* HackleSessionTimeoutCondition.swift in Sources */,
+				B21D7F5A2F5E6BF400C842F0 /* HackleSessionPersistCondition.swift in Sources */,
+				B21D7F5B2F5E6BF400C842F0 /* HackleSessionPolicy.swift in Sources */,
 				EE4D03BD2E5D56B7007BE61A /* InAppMessageIdentifierChecker.swift in Sources */,
+				B21D7F5E2F5E6C2C00C842F0 /* SessionContext.swift in Sources */,
 				EE29D9A329CD825500B1FEAA /* Log.swift in Sources */,
 				EEA7FCBB2C04AB6B0004F858 /* ViewLifecycleManager.swift in Sources */,
 				EE29D99D29CD825500B1FEAA /* Hasher.swift in Sources */,

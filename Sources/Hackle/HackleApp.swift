@@ -462,7 +462,8 @@ extension HackleApp {
         let sessionManager = DefaultSessionManager(
             userManager: userManager,
             keyValueRepository: globalKeyValueRepository,
-            sessionTimeout: config.sessionTimeoutInterval
+            applicationLifecycleManager: applicationLifecycleManager,
+            sessionPolicy: config.sessionPolicy
         )
         userManager.addListener(listener: sessionManager)
         
@@ -552,7 +553,6 @@ extension HackleApp {
             eventDispatcher: eventDispatcher,
             sessionManager: sessionManager,
             userManager: userManager,
-            applicationLifecycleManager: applicationLifecycleManager,
             screenUserEventDecorator: screenUserEventDecorator,
             eventBackoffController: eventBackoffController
         )
