@@ -96,6 +96,12 @@ extension DefaultHackleInvocator {
         case .setCurrentScreen:
             try setCurrentScreen(parameters: parameters, hackleAppContext: hackleAppContext)
             return .success()
+        case .setOptOutTracking:
+            guard let optOut = parameters.optOut() else {
+                throw HackleError.error("Valid 'optOut' parameter must be provided.")
+            }
+            hackleAppCore.setOptOutTracking(optOut: optOut)
+            return .success()
         case .showUserExplorer:
             hackleAppCore.showUserExplorer()
             return .success()

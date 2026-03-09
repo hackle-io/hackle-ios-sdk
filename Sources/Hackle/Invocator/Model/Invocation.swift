@@ -30,6 +30,7 @@ class Invocation {
         case track = "track"
         case remoteConfig = "remoteConfig"
         case setCurrentScreen = "setCurrentScreen"
+        case setOptOutTracking = "setOptOutTracking"
         case showUserExplorer = "showUserExplorer"
         case hideUserExplorer = "hideUserExplorer"
     }

@@ -50,6 +50,9 @@ protocol HackleAppCore: AnyObject {
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
 
+    var isOptOutTracking: Bool { get }
+    func setOptOutTracking(optOut: Bool)
+
     func fetch(completion: @escaping () -> ())
     
     func setPushToken(deviceToken: Data)
@@ -76,6 +79,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let inAppMessageUI: HackleInAppMessageUI
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
+    private let optOutManager: OptOutManager
     private let onInitializedRef = AtomicReference<(() -> ())?>(value: nil)
 
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
@@ -97,6 +101,10 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             userManager.currentUser
         }
     }
+
+    var isOptOutTracking: Bool {
+        optOutManager.isOptOutTracking
+    }
     
     init(
         core: HackleCore,
@@ -115,7 +123,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         platformManager: PlatformManager,
         inAppMessageUI: HackleInAppMessageUI,
         applicationInstallStateManager: ApplicationInstallStateManager,
-        userExplorer: HackleUserExplorer
+        userExplorer: HackleUserExplorer,
+        optOutManager: OptOutManager
     ) {
         self.core = core
         self.eventQueue = eventQueue
@@ -134,6 +143,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         self.inAppMessageUI = inAppMessageUI
         self.applicationInstallStateManager = applicationInstallStateManager
         self.userExplorer = userExplorer
+        self.optOutManager = optOutManager
     }
     
     func initialize(user: User?, completion: @escaping () -> ()) {
@@ -323,6 +333,13 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {
         screenManager.setCurrentScreen(screen: screen, timestamp: SystemClock.shared.now())
+    }
+
+    func setOptOutTracking(optOut: Bool) {
+        if optOut {
+            eventProcessor.flush()
+        }
+        optOutManager.setOptOutTracking(optOut: optOut)
     }
 
     func fetch(completion: @escaping () -> ()) {
