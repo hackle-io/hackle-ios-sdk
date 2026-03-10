@@ -73,7 +73,7 @@ import WebKit
     /// pending events will be attempted before blocking begins.
     ///
     /// - Parameter optOut: true to opt out of all event tracking, false to opt back in
-    @objc public func setOptOutTracking(_ optOut: Bool) {
+    @objc public func setOptOutTracking(optOut: Bool) {
         hackleAppCore.setOptOutTracking(optOut: optOut)
     }
 
