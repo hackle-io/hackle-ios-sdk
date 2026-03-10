@@ -49,6 +49,7 @@ public final class HackleConfig: NSObject, Sendable {
         super.init()
     }
 
+    @available(*, deprecated, message: "Use sessionPolicy.timeoutCondition.timeoutIntervalSeconds instead.")
     var sessionTimeoutInterval: TimeInterval {
         sessionPolicy.timeoutCondition.timeoutIntervalSeconds
     }
@@ -182,13 +183,7 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @available(*, deprecated, message: "Use sessionPolicy(_:) instead.")
     @objc public func sessionTimeoutIntervalSeconds(_ sessionTimeoutInterval: TimeInterval) -> HackleConfigBuilder {
-        self.sessionPolicy = sessionPolicy.toBuilder()
-            .timeoutCondition(
-                sessionPolicy.timeoutCondition.toBuilder()
-                    .timeoutIntervalSeconds(sessionTimeoutInterval)
-                    .build()
-            )
-            .build()
+        self.sessionPolicy = sessionPolicy.withTimeoutInterval(sessionTimeoutInterval)
         return self
     }
 
@@ -264,13 +259,7 @@ public class HackleConfigBuilder: NSObject {
 
         if sessionPolicy.timeoutCondition.timeoutIntervalSeconds <= 0 {
             Log.info("Session timeout interval must be positive. Setting to default value[1800s]")
-            self.sessionPolicy = sessionPolicy.toBuilder()
-                .timeoutCondition(
-                    sessionPolicy.timeoutCondition.toBuilder()
-                        .timeoutIntervalSeconds(HackleSessionTimeoutCondition.DEFAULT_SESSION_TIMEOUT_INTERVAL)
-                        .build()
-                )
-                .build()
+            self.sessionPolicy = sessionPolicy.withTimeoutInterval(HackleSessionTimeoutCondition.DEFAULT_SESSION_TIMEOUT_INTERVAL)
         }
 
         if pollingInterval != HackleConfig.NO_POLLING && pollingInterval < 60 {
