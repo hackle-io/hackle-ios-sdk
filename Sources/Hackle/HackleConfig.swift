@@ -26,6 +26,7 @@ public final class HackleConfig: NSObject, Sendable {
     let eventFlushInterval: TimeInterval
     let eventFlushThreshold: Int
     let exposureEventDedupInterval: TimeInterval
+    let optOutTracking: Bool
     let extra: [String: String]
 
     init(builder: HackleConfigBuilder) {
@@ -43,6 +44,7 @@ public final class HackleConfig: NSObject, Sendable {
         eventFlushInterval = builder.eventFlushInterval
         eventFlushThreshold = builder.eventFlushThreshold
         exposureEventDedupInterval = builder.exposureEventDedupInterval
+        optOutTracking = builder.optOutTracking
         extra = builder.extra
         super.init()
     }
@@ -97,6 +99,8 @@ public class HackleConfigBuilder: NSObject {
     var eventFlushThreshold: Int = HackleConfig.DEFAULT_EVENT_FLUSH_THRESHOLD
 
     var exposureEventDedupInterval: TimeInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
+
+    var optOutTracking: Bool = false
 
     var extra: [String: String] = [:]
 
@@ -230,6 +234,15 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func exposureEventDedupIntervalSeconds(_ exposureEventDedupInterval: TimeInterval) -> HackleConfigBuilder {
         self.exposureEventDedupInterval = exposureEventDedupInterval
+        return self
+    }
+
+    /// Sets whether opt-out tracking is enabled.
+    ///
+    /// - Parameter optOutTracking: true to opt out of tracking, false to opt in (default)
+    /// - Returns: This builder instance for method chaining
+    @objc public func optOutTracking(_ optOutTracking: Bool) -> HackleConfigBuilder {
+        self.optOutTracking = optOutTracking
         return self
     }
 

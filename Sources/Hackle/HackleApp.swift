@@ -60,6 +60,23 @@ import WebKit
         }
     }
 
+    /// Whether opt-out tracking is currently enabled.
+    /// When true, all event tracking is blocked.
+    @objc public var isOptOutTracking: Bool {
+        hackleAppCore.isOptOutTracking
+    }
+
+    /// Sets whether opt-out tracking is enabled.
+    ///
+    /// When opt-out is enabled (true), all event tracking will be blocked.
+    /// When switching from opt-in to opt-out, a best-effort flush of any
+    /// pending events will be attempted before blocking begins.
+    ///
+    /// - Parameter optOut: true to opt out of all event tracking, false to opt back in
+    @objc public func setOptOutTracking(optOut: Bool) {
+        hackleAppCore.setOptOutTracking(optOut: optOut)
+    }
+
     /// Shows the user explorer UI button.
     @objc public func showUserExplorer() {
         hackleAppCore.showUserExplorer()
@@ -529,6 +546,14 @@ extension HackleApp {
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
 
+        // OptOutManager
+        let optOutManager = OptOutManager(
+            keyValueRepository: keyValueRepositoryBySdkKey,
+            configOptOutTracking: config.optOutTracking
+        )
+        let optOutUserEventFilter = OptOutUserEventFilter(optOutManager: optOutManager)
+        eventFilters.append(optOutUserEventFilter)
+
         let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
 
@@ -841,7 +866,8 @@ extension HackleApp {
             platformManager: platformManager,
             inAppMessageUI: inAppMessageUI,
             applicationInstallStateManager: applicationInstallStateManager,
-            userExplorer: userExplorer
+            userExplorer: userExplorer,
+            optOutManager: optOutManager
         )
         let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
 
