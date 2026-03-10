@@ -146,4 +146,11 @@ class MockHackleAppCore : Mock, HackleAppCore {
     func setInAppMessageDelegate(_ delegate: (any HackleInAppMessageDelegate)?) {
         fatalError("NOT IMPLEMENTED")
     }
+
+    var isOptOutTracking: Bool = false
+
+    lazy var setOptOutTrackingRef = MockFunction(self, setOptOutTracking)
+    func setOptOutTracking(optOut: Bool) {
+        call(setOptOutTrackingRef, args: optOut)
+    }
 }
