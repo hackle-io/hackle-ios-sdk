@@ -178,6 +178,50 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 }
             }
 
+            it("opt-out 상태이면 이벤트를 저장하지 않는다") {
+                // given
+                let optOutManager = OptOutManager(keyValueRepository: MemoryKeyValueRepository(), configOptOutTracking: true)
+                let sut = processor(
+                    eventFilters: [OptOutUserEventFilter(optOutManager: optOutManager)]
+                )
+                let event = MockUserEvent(user: user)
+
+                // when
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
+                }
+
+                // then
+                verify(exactly: 0) {
+                    eventRepository.saveMock
+                }
+            }
+
+            it("opt-in 상태이면 이벤트를 정상 저장한다") {
+                // given
+                let optOutManager = OptOutManager(keyValueRepository: MemoryKeyValueRepository(), configOptOutTracking: false)
+                let sut = processor(
+                    eventFilters: [OptOutUserEventFilter(optOutManager: optOutManager)]
+                )
+                let event = MockUserEvent(user: user)
+
+                // when
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
+                }
+
+                // then
+                verify(exactly: 1) {
+                    eventRepository.saveMock
+                }
+            }
+
             it("중복제거 대상이면 이벤트를 저장하지 않는다") {
                 // given
                 every(eventDedupDeterminer.isDedupTargetMock).returns(true)
