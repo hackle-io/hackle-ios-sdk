@@ -73,6 +73,8 @@
 		B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14962E9E6AB80088EBEC /* PlatformManager.swift */; };
 		B21D7F622F5E908F00C842F0 /* OptOutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F5F2F5E908F00C842F0 /* OptOutManager.swift */; };
 		B21D7F632F5E908F00C842F0 /* OptOutUserEventFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F602F5E908F00C842F0 /* OptOutUserEventFilter.swift */; };
+		B21D7F672F5FABBC00C842F0 /* OptOutManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F642F5FABBC00C842F0 /* OptOutManagerSpec.swift */; };
+		B21D7F682F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F652F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift */; };
 		B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5762DB75D4B00185581 /* UserEventDecorator.swift */; };
 		B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */; };
 		B235D57B2DB75E5800185581 /* SessionUserEventDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */; };
@@ -752,6 +754,8 @@
 		B21A14962E9E6AB80088EBEC /* PlatformManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformManager.swift; sourceTree = "<group>"; };
 		B21D7F5F2F5E908F00C842F0 /* OptOutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutManager.swift; sourceTree = "<group>"; };
 		B21D7F602F5E908F00C842F0 /* OptOutUserEventFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutUserEventFilter.swift; sourceTree = "<group>"; };
+		B21D7F642F5FABBC00C842F0 /* OptOutManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutManagerSpec.swift; sourceTree = "<group>"; };
+		B21D7F652F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutUserEventFilterSpec.swift; sourceTree = "<group>"; };
 		B235D5762DB75D4B00185581 /* UserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D5782DB75DEF00185581 /* WebViewWrapperUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewWrapperUserEventDecorator.swift; sourceTree = "<group>"; };
 		B235D57A2DB75E4B00185581 /* SessionUserEventDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserEventDecorator.swift; sourceTree = "<group>"; };
@@ -1552,6 +1556,15 @@
 			path = OptOut;
 			sourceTree = "<group>";
 		};
+		B21D7F662F5FABBC00C842F0 /* OptOut */ = {
+			isa = PBXGroup;
+			children = (
+				B21D7F642F5FABBC00C842F0 /* OptOutManagerSpec.swift */,
+				B21D7F652F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift */,
+			);
+			path = OptOut;
+			sourceTree = "<group>";
+		};
 		B24250242D9A2B1B00CF27FC /* PII */ = {
 			isa = PBXGroup;
 			children = (
@@ -2275,6 +2288,7 @@
 				EEF895B32A4AD95600722CF6 /* Lifecycle */,
 				EE29D9CC29CD82C100B1FEAA /* Metrics */,
 				EE29D9F529CD82C100B1FEAA /* Model */,
+				B21D7F662F5FABBC00C842F0 /* OptOut */,
 				EED6A1252A0E266500A8875D /* Property */,
 				EEAC3F3A2B9D6A7800DC498E /* Push */,
 				B29C535D2DCB2F09001724B2 /* RemoteConfig */,
@@ -3906,6 +3920,8 @@
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
 				EE0F34102A66B8C2009DE640 /* MockInAppMessageEventProcessor.swift in Sources */,
 				EE789E2F29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift in Sources */,
+				B21D7F672F5FABBC00C842F0 /* OptOutManagerSpec.swift in Sources */,
+				B21D7F682F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift in Sources */,
 				EEF895A42A4A67CF00722CF6 /* InAppMessageEligibilityRequestSpecs.swift in Sources */,
 				EE0F340A2A66B026009DE640 /* DefaultInAppMessageEventHandlerSpecs.swift in Sources */,
 				EE4D04232E5D8185007BE61A /* InAppMessageScheduleRequestSpecs.swift in Sources */,

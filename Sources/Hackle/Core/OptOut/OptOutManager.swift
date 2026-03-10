@@ -1,6 +1,6 @@
 import Foundation
 
-class OptOutManager {
+class OptOutManager: @unchecked Sendable {
 
     private let keyValueRepository: KeyValueRepository
     private let lock = ReadWriteLock(label: "io.hackle.OptOutManager.Lock")
