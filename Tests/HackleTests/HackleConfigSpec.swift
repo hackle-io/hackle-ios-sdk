@@ -251,5 +251,14 @@ class HackleConfigSpec: QuickSpec {
                 expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
             }
         }
+
+        describe("HackleSessionPersistCondition") {
+            it("기본 구현은 false 를 반환한다") {
+                let condition = HackleSessionPersistCondition()
+                let user = User.builder().build()
+                let result = condition.shouldPersist(oldUser: user, newUser: user)
+                expect(result) == false
+            }
+        }
     }
 }

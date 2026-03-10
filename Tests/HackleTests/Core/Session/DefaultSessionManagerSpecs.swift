@@ -343,8 +343,8 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 )
                 expect(session2) == session1
 
-                // foreground 전환 (onApplicationStateChange=true이므로 만료됨)
-                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 54), isFromBackground: true)
+                // foreground 전환 (onApplicationStateChange=true이고 timeout 경과이므로 만료됨)
+                sut.onForeground(nil, timestamp: Date(timeIntervalSince1970: 64), isFromBackground: true)
                 expect(sut.currentSession) != session1
             }
 

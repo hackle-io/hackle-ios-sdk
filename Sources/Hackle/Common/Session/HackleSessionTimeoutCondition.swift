@@ -5,7 +5,7 @@
 
 import Foundation
 
-@objc public class HackleSessionTimeoutCondition: NSObject, @unchecked Sendable {
+@objc public final class HackleSessionTimeoutCondition: NSObject, Sendable {
 
     @objc public let timeoutIntervalSeconds: TimeInterval
     @objc public let onForeground: Bool

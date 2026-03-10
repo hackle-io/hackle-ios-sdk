@@ -10,8 +10,11 @@ import Foundation
     @objc public static let ALWAYS_NEW_SESSION: HackleSessionPersistCondition = AlwaysNewSession()
     @objc public static let NULL_TO_USER_ID: HackleSessionPersistCondition = NullToUserId()
 
+    /// Subclasses must override this method.
+    /// - Important: Subclass implementations must be thread-safe to preserve `Sendable` guarantees.
     @objc open func shouldPersist(oldUser: User, newUser: User) -> Bool {
-        fatalError("must override shouldPersist")
+        Log.error("HackleSessionPersistCondition.shouldPersist must be overridden")
+        return false
     }
 
     private class AlwaysNewSession: HackleSessionPersistCondition {
