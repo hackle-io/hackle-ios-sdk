@@ -260,5 +260,34 @@ class HackleConfigSpec: QuickSpec {
                 expect(result) == false
             }
         }
+        describe("optOutTracking") {
+            it("default value should be false") {
+                let config = HackleConfigBuilder().build()
+                expect(config.optOutTracking) == false
+            }
+
+            it("should be able to set to true") {
+                let config = HackleConfigBuilder()
+                    .optOutTracking(true)
+                    .build()
+                expect(config.optOutTracking) == true
+            }
+
+            it("should be able to set to false explicitly") {
+                let config = HackleConfigBuilder()
+                    .optOutTracking(false)
+                    .build()
+                expect(config.optOutTracking) == false
+            }
+
+            it("last value should take precedence when called multiple times") {
+                let config = HackleConfigBuilder()
+                    .optOutTracking(true)
+                    .optOutTracking(false)
+                    .build()
+                expect(config.optOutTracking) == false
+            }
+        }
+
     }
 }
