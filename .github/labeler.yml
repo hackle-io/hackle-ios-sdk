@@ -1,9 +1,8 @@
 enhancement:
-  - head-branch: ['^feature']
+  - head-branch: ['^feature', '^add']
 
 bug:
-  - head-branch: ['^bug', '^fix']
+  - head-branch: ['*bug*', '*fix*']
 
-  
 maintenance:
-  - head-branch: ['.*maintenance.*', '.*migration.*']
+  - head-branch: ['.*maintenance.*', '.*migration.*', '*refector*']
