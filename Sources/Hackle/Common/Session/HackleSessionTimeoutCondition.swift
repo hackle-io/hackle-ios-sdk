@@ -79,10 +79,10 @@ import Foundation
 /// Builder for creating ``HackleSessionTimeoutCondition`` instances.
 @objc public class HackleSessionTimeoutConditionBuilder: NSObject {
 
-    private var _timeoutIntervalSeconds: TimeInterval = HackleSessionTimeoutCondition.DEFAULT_SESSION_TIMEOUT_INTERVAL
-    private var _onForeground: Bool = false
-    private var _onBackground: Bool = true
-    private var _onApplicationStateChange: Bool = true
+    private var timeoutIntervalSeconds: TimeInterval = HackleSessionTimeoutCondition.DEFAULT_SESSION_TIMEOUT_INTERVAL
+    private var onForeground: Bool = false
+    private var onBackground: Bool = true
+    private var onApplicationStateChange: Bool = true
 
     /// Sets the session timeout interval in seconds.
     ///
@@ -90,7 +90,7 @@ import Foundation
     /// - Returns: This builder instance for method chaining
     @discardableResult
     @objc public func timeoutIntervalSeconds(_ timeoutIntervalSeconds: TimeInterval) -> HackleSessionTimeoutConditionBuilder {
-        self._timeoutIntervalSeconds = timeoutIntervalSeconds
+        self.timeoutIntervalSeconds = timeoutIntervalSeconds
         return self
     }
 
@@ -100,7 +100,7 @@ import Foundation
     /// - Returns: This builder instance for method chaining
     @discardableResult
     @objc public func onForeground(_ onForeground: Bool) -> HackleSessionTimeoutConditionBuilder {
-        self._onForeground = onForeground
+        self.onForeground = onForeground
         return self
     }
 
@@ -110,7 +110,7 @@ import Foundation
     /// - Returns: This builder instance for method chaining
     @discardableResult
     @objc public func onBackground(_ onBackground: Bool) -> HackleSessionTimeoutConditionBuilder {
-        self._onBackground = onBackground
+        self.onBackground = onBackground
         return self
     }
 
@@ -120,7 +120,7 @@ import Foundation
     /// - Returns: This builder instance for method chaining
     @discardableResult
     @objc public func onApplicationStateChange(_ onApplicationStateChange: Bool) -> HackleSessionTimeoutConditionBuilder {
-        self._onApplicationStateChange = onApplicationStateChange
+        self.onApplicationStateChange = onApplicationStateChange
         return self
     }
 
@@ -129,10 +129,10 @@ import Foundation
     /// - Returns: A configured ``HackleSessionTimeoutCondition`` instance
     @objc public func build() -> HackleSessionTimeoutCondition {
         HackleSessionTimeoutCondition(
-            timeoutIntervalSeconds: _timeoutIntervalSeconds,
-            onForeground: _onForeground,
-            onBackground: _onBackground,
-            onApplicationStateChange: _onApplicationStateChange
+            timeoutIntervalSeconds: timeoutIntervalSeconds,
+            onForeground: onForeground,
+            onBackground: onBackground,
+            onApplicationStateChange: onApplicationStateChange
         )
     }
 }

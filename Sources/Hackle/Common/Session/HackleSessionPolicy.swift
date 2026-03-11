@@ -62,8 +62,8 @@ import Foundation
 /// Builder for creating ``HackleSessionPolicy`` instances.
 @objc public class HackleSessionPolicyBuilder: NSObject {
 
-    private var _persistCondition: HackleSessionPersistCondition = .ALWAYS_NEW_SESSION
-    private var _timeoutCondition: HackleSessionTimeoutCondition = .DEFAULT
+    private var persistCondition: HackleSessionPersistCondition = .ALWAYS_NEW_SESSION
+    private var timeoutCondition: HackleSessionTimeoutCondition = .DEFAULT
 
     /// Sets the session persist condition.
     ///
@@ -71,7 +71,7 @@ import Foundation
     /// - Returns: This builder instance for method chaining
     @discardableResult
     @objc public func persistCondition(_ persistCondition: HackleSessionPersistCondition) -> HackleSessionPolicyBuilder {
-        self._persistCondition = persistCondition
+        self.persistCondition = persistCondition
         return self
     }
 
@@ -81,7 +81,7 @@ import Foundation
     /// - Returns: This builder instance for method chaining
     @discardableResult
     @objc public func timeoutCondition(_ timeoutCondition: HackleSessionTimeoutCondition) -> HackleSessionPolicyBuilder {
-        self._timeoutCondition = timeoutCondition
+        self.timeoutCondition = timeoutCondition
         return self
     }
 
@@ -90,8 +90,8 @@ import Foundation
     /// - Returns: A configured ``HackleSessionPolicy`` instance
     @objc public func build() -> HackleSessionPolicy {
         HackleSessionPolicy(
-            persistCondition: _persistCondition,
-            timeoutCondition: _timeoutCondition
+            persistCondition: persistCondition,
+            timeoutCondition: timeoutCondition
         )
     }
 }
