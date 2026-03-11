@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct SessionContext {
+struct SessionContext: Sendable {
     let oldUser: User
     let newUser: User
     let timestamp: Date
