@@ -6,7 +6,7 @@
 import Foundation
 
 /// Determines whether an existing session should be persisted when the user identity changes.
-@objc public class HackleSessionPersistCondition: NSObject, @unchecked Sendable {
+@objc open class HackleSessionPersistCondition: NSObject, @unchecked Sendable {
 
     /// Always starts a new session when the user identity changes.
     ///
