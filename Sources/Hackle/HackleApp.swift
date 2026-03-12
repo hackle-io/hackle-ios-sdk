@@ -72,6 +72,9 @@ import WebKit
     /// When switching from opt-in to opt-out, a best-effort flush of any
     /// pending events will be attempted before blocking begins.
     ///
+    /// This setting is not persisted across app restarts.
+    /// On each launch, the opt-out state is determined solely by `HackleConfig.optOutTracking`.
+    ///
     /// - Parameter optOut: true to opt out of all event tracking, false to opt back in
     @objc public func setOptOutTracking(optOut: Bool) {
         hackleAppCore.setOptOutTracking(optOut: optOut)
