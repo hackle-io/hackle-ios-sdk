@@ -2,22 +2,16 @@ import Foundation
 
 class OptOutManager: @unchecked Sendable {
 
-    private let keyValueRepository: KeyValueRepository
     private let lock = ReadWriteLock(label: "io.hackle.OptOutManager.Lock")
 
-    private var _isOptOutTracking: Bool = false
+    private var _isOptOutTracking: Bool
 
     var isOptOutTracking: Bool {
         lock.read { _isOptOutTracking }
     }
 
-    init(keyValueRepository: KeyValueRepository, configOptOutTracking: Bool) {
-        self.keyValueRepository = keyValueRepository
-
-        let savedOptOut = keyValueRepository.getString(key: OptOutManager.OPT_OUT_KEY)
-            .flatMap { Bool($0) } ?? false
-        _isOptOutTracking = configOptOutTracking || savedOptOut
-        save(optOut: _isOptOutTracking)
+    init(configOptOutTracking: Bool) {
+        _isOptOutTracking = configOptOutTracking
     }
 
     func setOptOutTracking(optOut: Bool) {
@@ -26,14 +20,7 @@ class OptOutManager: @unchecked Sendable {
                 return
             }
             _isOptOutTracking = optOut
-            save(optOut: optOut)
             Log.info("OptOutTracking changed to \(optOut)")
         }
     }
-
-    private func save(optOut: Bool) {
-        keyValueRepository.putString(key: OptOutManager.OPT_OUT_KEY, value: String(optOut))
-    }
-
-    private static let OPT_OUT_KEY = "opt_out_tracking"
 }

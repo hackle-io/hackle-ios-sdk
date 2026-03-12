@@ -221,6 +221,10 @@ public class HackleConfigBuilder: NSObject {
 
     /// Sets whether opt-out tracking is enabled.
     ///
+    /// When opt-out is enabled (true), all event tracking will be blocked from app launch.
+    /// To change the opt-out state at runtime, use `HackleApp.setOptOutTracking(optOut:)`.
+    /// Runtime changes are not persisted and will be reset to this config value on next launch.
+    ///
     /// - Parameter optOutTracking: true to opt out of tracking, false to opt in (default)
     /// - Returns: This builder instance for method chaining
     @objc public func optOutTracking(_ optOutTracking: Bool) -> HackleConfigBuilder {
