@@ -547,7 +547,6 @@ extension HackleApp {
 
         // OptOutManager
         let optOutManager = OptOutManager(
-            keyValueRepository: keyValueRepositoryBySdkKey,
             configOptOutTracking: config.optOutTracking
         )
         let optOutUserEventFilter = OptOutUserEventFilter(optOutManager: optOutManager)

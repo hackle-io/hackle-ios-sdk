@@ -7,8 +7,7 @@ class OptOutUserEventFilterSpec: QuickSpec {
     override func spec() {
 
         it("opt-out 상태이면 block") {
-            let repository = MemoryKeyValueRepository()
-            let optOutManager = OptOutManager(keyValueRepository: repository, configOptOutTracking: true)
+            let optOutManager = OptOutManager(configOptOutTracking: true)
             let sut = OptOutUserEventFilter(optOutManager: optOutManager)
 
             let actual = sut.check(event: UserEvents.track("test"))
@@ -17,8 +16,7 @@ class OptOutUserEventFilterSpec: QuickSpec {
         }
 
         it("opt-in 상태이면 pass") {
-            let repository = MemoryKeyValueRepository()
-            let optOutManager = OptOutManager(keyValueRepository: repository, configOptOutTracking: false)
+            let optOutManager = OptOutManager(configOptOutTracking: false)
             let sut = OptOutUserEventFilter(optOutManager: optOutManager)
 
             let actual = sut.check(event: UserEvents.track("test"))

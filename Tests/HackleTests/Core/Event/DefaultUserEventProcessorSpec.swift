@@ -180,7 +180,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             it("opt-out 상태이면 이벤트를 저장하지 않는다") {
                 // given
-                let optOutManager = OptOutManager(keyValueRepository: MemoryKeyValueRepository(), configOptOutTracking: true)
+                let optOutManager = OptOutManager(configOptOutTracking: true)
                 let sut = processor(
                     eventFilters: [OptOutUserEventFilter(optOutManager: optOutManager)]
                 )
@@ -202,7 +202,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
 
             it("opt-in 상태이면 이벤트를 정상 저장한다") {
                 // given
-                let optOutManager = OptOutManager(keyValueRepository: MemoryKeyValueRepository(), configOptOutTracking: false)
+                let optOutManager = OptOutManager(configOptOutTracking: false)
                 let sut = processor(
                     eventFilters: [OptOutUserEventFilter(optOutManager: optOutManager)]
                 )
