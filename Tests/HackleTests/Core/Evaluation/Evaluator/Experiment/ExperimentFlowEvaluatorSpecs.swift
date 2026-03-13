@@ -76,7 +76,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("DRAFT상태면 기본그룹으로 평가한다") {
                 // given
                 let experiment = experiment(type: .abTest, status: .draft)
-                let variation = experiment.variations.first !
+                let variation = experiment.variations.first!
 
                 let request = experimentRequest(experiment: experiment)
 
@@ -91,7 +91,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("DRAFT상태가 아니면 다름 flow로 평가한다") {
                 // given
                 let experiment = experiment(type: .abTest, status: .running)
-                _ = experiment.variations.first !
+                _ = experiment.variations.first!
 
                 let request = experimentRequest(experiment: experiment)
 
@@ -108,7 +108,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("AB 테스트가 PAUSED 상태면 기본그룹, EXPERIMENT_PAUSED으로 평가한다") {
                 // given
                 let experiment = experiment(type: .abTest, status: .paused)
-                let variation = experiment.variations.first !
+                let variation = experiment.variations.first!
 
                 let request = experimentRequest(experiment: experiment)
 
@@ -123,7 +123,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("기능 플래그가 PAUSED 상태면 기본그룹, FEATURE_FLAG_INACTIVE 로 평가한다") {
                 // given
                 let experiment = experiment(type: .featureFlag, status: .paused)
-                _ = experiment.variations.first !
+                _ = experiment.variations.first!
 
                 let request = experimentRequest(experiment: experiment)
 
@@ -200,7 +200,8 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("abTest 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment type must be abTest [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment type must be abTest [42]")))
             }
 
             it("사용자가 실험 참여 대상이면 다음 플로우를 실행한다") {
@@ -244,13 +245,15 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("실행중이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .abTest, status: .draft)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment status must be running [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("abTest 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .running)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment type must be abTest [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment type must be abTest [42]")))
             }
 
             it("기본룰에 해당하는 Variation이 없으면 기본그룹으로 평가한다") {
@@ -313,13 +316,15 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("실행중이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .draft)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment status must be running [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("featureFlag 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .abTest, status: .running)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
             it("identifierType에 해당하는 식별자가 없으면 다음 플로우를 실행한다") {
@@ -372,7 +377,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
                 let targetRule = MockTargetRule()
                 every(targetRuleDeterminer.determineTargetRuleOrNilMock).returns(targetRule)
 
-                let variation = experiment.variations.first !
+                let variation = experiment.variations.first!
                 every(actionResolver.resolveOrNilMock).returns(variation)
 
                 let request = experimentRequest(experiment: experiment)
@@ -399,13 +404,15 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
             it("실행중이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .draft)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment status must be running [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment status must be running [42]")))
             }
 
             it("featureFlag 타입이 아니면 예외 발생") {
                 let experiment = experiment(id: 42, type: .abTest, status: .running)
                 let request = experimentRequest(experiment: experiment)
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
             it("identifierType에 해당하는 식별자가 없으면 defaultVariation을 리턴한다") {
@@ -427,7 +434,8 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
                 let request = experimentRequest(experiment: experiment)
                 every(actionResolver.resolveOrNilMock).returns(nil)
 
-                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow)).to(throwError(HackleError.error("FeatureFlag must decide the Variation [42]")))
+                expect(try sut.evaluateExperiment(request: request, context: context, nextFlow: nextFlow))
+                    .to(throwError(HackleError.error("FeatureFlag must decide the Variation [42]")))
             }
 
             it("기본 룰에 해당하는 Variation 으로 평가한다") {
@@ -435,7 +443,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
                 let experiment = experiment(id: 42, type: .featureFlag, status: .running)
                 let request = experimentRequest(experiment: experiment)
 
-                let variation = experiment.variations.first !
+                let variation = experiment.variations.first!
                 every(actionResolver.resolveOrNilMock).returns(variation)
 
                 // when
