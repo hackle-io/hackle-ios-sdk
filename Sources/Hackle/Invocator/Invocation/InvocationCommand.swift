@@ -37,7 +37,7 @@ enum InvocationCommand: String, CaseIterable {
     // RemoteConfig
     case remoteConfig
     
-    // Event
+    // Event
     case track
     
     // Screen

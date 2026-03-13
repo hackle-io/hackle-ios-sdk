@@ -40,7 +40,7 @@ class SetUserInvocationHandler: InvocationHandler {
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
         guard let data = request.parameters.userAsDictionary() else {
-            throw HackleError.error("parameter.user must be provided.")
+            throw HackleError.error("parameters.user must be provided.")
         }
         let user = User.from(dto: data)
         core.setUser(user: user, hackleAppContext: request.appContext, completion: {})
@@ -178,52 +178,52 @@ class UnsetPhoneNumberInvocationHandler: InvocationHandler {
 
 // MARK: User - Subscriptions
 
-protocol SubscriotionsInvocationHandler: InvocationHandler where T == Void {
+protocol SubscriptionsInvocationHandler: InvocationHandler where T == Void {
     var core: HackleAppCore { get }
-    func update(core: HackleAppCore, opertions: HackleSubscriptionOperations, context: HackleAppContext)
+    func update(core: HackleAppCore, operations: HackleSubscriptionOperations, context: HackleAppContext)
 }
 
-extension SubscriotionsInvocationHandler {
+extension SubscriptionsInvocationHandler {
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
         guard let dto = request.parameters.subscriptionOperationDto() else {
             throw HackleError.error("parameters.subscriptions must be provided.")
         }
         let operations = HackleSubscriptionOperations.from(dto: dto)
-        update(core: core, opertions: operations, context: request.appContext)
+        update(core: core, operations: operations, context: request.appContext)
         return .success()
     }
 }
 
-class UpdatePushSubscriptionsInvocationHandler: SubscriotionsInvocationHandler {
+class UpdatePushSubscriptionsInvocationHandler: SubscriptionsInvocationHandler {
     let core: HackleAppCore
     init(core: HackleAppCore) {
         self.core = core
     }
 
-    func update(core: HackleAppCore, opertions: HackleSubscriptionOperations, context: HackleAppContext) {
-        core.updatePushSubscriptions(operations: opertions, hackleAppContext: context)
+    func update(core: HackleAppCore, operations: HackleSubscriptionOperations, context: HackleAppContext) {
+        core.updatePushSubscriptions(operations: operations, hackleAppContext: context)
     }
 }
 
-class UpdateSmsSubscriptionsInvocationHandler: SubscriotionsInvocationHandler {
+class UpdateSmsSubscriptionsInvocationHandler: SubscriptionsInvocationHandler {
     let core: HackleAppCore
     init(core: HackleAppCore) {
         self.core = core
     }
 
-    func update(core: HackleAppCore, opertions: HackleSubscriptionOperations, context: HackleAppContext) {
-        core.updateSmsSubscriptions(operations: opertions, hackleAppContext: context)
+    func update(core: HackleAppCore, operations: HackleSubscriptionOperations, context: HackleAppContext) {
+        core.updateSmsSubscriptions(operations: operations, hackleAppContext: context)
     }
 }
 
-class UpdateKakaoSubscriptionsInvocationHandler: SubscriotionsInvocationHandler {
+class UpdateKakaoSubscriptionsInvocationHandler: SubscriptionsInvocationHandler {
     let core: HackleAppCore
     init(core: HackleAppCore) {
         self.core = core
     }
 
-    func update(core: HackleAppCore, opertions: HackleSubscriptionOperations, context: HackleAppContext) {
-        core.updateKakaoSubscriptions(operations: opertions, hackleAppContext: context)
+    func update(core: HackleAppCore, operations: HackleSubscriptionOperations, context: HackleAppContext) {
+        core.updateKakaoSubscriptions(operations: operations, hackleAppContext: context)
     }
 }
 
