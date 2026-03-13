@@ -11,13 +11,13 @@ import Foundation
     /// Always starts a new session when the user identity changes.
     ///
     /// This is the default persist condition.
-    @objc public static let ALWAYS_NEW_SESSION: HackleSessionPersistCondition = AlwaysNewSession()
+    @objc public static let alwaysNewSession: HackleSessionPersistCondition = AlwaysNewSession()
 
     /// Persists the current session when transitioning from an anonymous user to an identified user.
     ///
     /// The session is preserved only when the old user has no userId (`nil`) and the new user has a userId.
     /// In all other identity change cases, a new session is started.
-    @objc public static let NULL_TO_USER_ID: HackleSessionPersistCondition = NullToUserId()
+    @objc public static let nullToUserId: HackleSessionPersistCondition = NullToUserId()
 
     /// Returns whether the current session should be persisted when the user changes.
     ///

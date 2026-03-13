@@ -41,11 +41,11 @@ import Foundation
 
     /// The default session policy.
     ///
-    /// Uses ``HackleSessionPersistCondition/ALWAYS_NEW_SESSION`` for persist condition
-    /// and ``HackleSessionTimeoutCondition/DEFAULT`` for timeout condition.
-    @objc public static let DEFAULT = HackleSessionPolicy(
-        persistCondition: .ALWAYS_NEW_SESSION,
-        timeoutCondition: .DEFAULT
+    /// Uses ``HackleSessionPersistCondition/alwaysNewSession`` for persist condition
+    /// and ``HackleSessionTimeoutCondition/default`` for timeout condition.
+    @objc public static let `default` = HackleSessionPolicy(
+        persistCondition: .alwaysNewSession,
+        timeoutCondition: .default
     )
 
     func withTimeoutInterval(_ interval: TimeInterval) -> HackleSessionPolicy {
@@ -62,8 +62,8 @@ import Foundation
 /// Builder for creating ``HackleSessionPolicy`` instances.
 @objc public class HackleSessionPolicyBuilder: NSObject {
 
-    private var persistCondition: HackleSessionPersistCondition = .ALWAYS_NEW_SESSION
-    private var timeoutCondition: HackleSessionTimeoutCondition = .DEFAULT
+    private var persistCondition: HackleSessionPersistCondition = .alwaysNewSession
+    private var timeoutCondition: HackleSessionTimeoutCondition = .default
 
     /// Sets the session persist condition.
     ///

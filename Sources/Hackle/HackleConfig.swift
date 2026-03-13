@@ -92,7 +92,7 @@ public class HackleConfigBuilder: NSObject {
     var automaticAppLifecycleTracking: Bool = true
 
     var sessionTracking: Bool = true
-    var sessionPolicy: HackleSessionPolicy = .DEFAULT
+    var sessionPolicy: HackleSessionPolicy = .default
 
     var pollingInterval: TimeInterval = HackleConfig.NO_POLLING
 
@@ -263,7 +263,7 @@ public class HackleConfigBuilder: NSObject {
 
         if sessionPolicy.timeoutCondition.timeoutIntervalSeconds <= 0 {
             Log.info("Session timeout interval must be positive. Setting to default value[1800s]")
-            self.sessionPolicy = sessionPolicy.withTimeoutInterval(HackleSessionTimeoutCondition.DEFAULT_SESSION_TIMEOUT_INTERVAL)
+            self.sessionPolicy = sessionPolicy.withTimeoutInterval(HackleSessionTimeoutCondition.defaultSessionTimeoutInterval)
         }
 
         if pollingInterval != HackleConfig.NO_POLLING && pollingInterval < 60 {
