@@ -1,24 +1,14 @@
 import Foundation
 
-class InvocationRequest {
+struct InvocationRequest {
     let command: InvocationCommand
     let parameters: HackleInvokeParameters
     let browserProperties: [String: Any]
-
-    init(command: InvocationCommand, parameters: HackleInvokeParameters, browserProperties: [String: Any]) {
-        self.command = command
-        self.parameters = parameters
-        self.browserProperties = browserProperties
-    }
 }
 
-extension InvocationRequest: CustomStringConvertible {
+extension InvocationRequest {
     var appContext: HackleAppContext {
         return HackleAppContext(browserProperties: browserProperties)
-    }
-
-    var description: String {
-        return "InvocationRequest(command: \(command), parameters=\(parameters), browserProperties: \(browserProperties))"
     }
 
     static func parse(string: String) throws -> InvocationRequest {
@@ -53,5 +43,11 @@ extension InvocationRequest: CustomStringConvertible {
         }
 
         return !command.isEmpty
+    }
+}
+
+extension InvocationRequest: CustomStringConvertible {
+    var description: String {
+        return "InvocationRequest(command: \(command), parameters=\(parameters), browserProperties: \(browserProperties))"
     }
 }
