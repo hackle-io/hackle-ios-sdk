@@ -117,6 +117,9 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].innerButtons[0].button.action.actionType) == .close
             expect(iam.messageContext.messages[0].innerButtons[0].alignment.horizontal) == .right
             expect(iam.messageContext.messages[0].innerButtons[0].alignment.vertical) == .bottom
+            
+            expect(iam.messageContext.messages[0].html?.resourceType) == .path
+            expect(iam.messageContext.messages[0].html?.path) == "https://hackle.io"
 
         }
 

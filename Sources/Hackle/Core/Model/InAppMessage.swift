@@ -66,11 +66,11 @@ extension InAppMessage {
             }
         }
     }
-    
+
     enum Timetable {
         case all
         case custom(slots: [TimetableSlot])
-        
+
         func within(date: Date) -> Bool {
             switch self {
             case .all:
@@ -80,18 +80,18 @@ extension InAppMessage {
             }
         }
     }
-    
+
     final class TimetableSlot: Sendable {
         let dayOfWeek: DayOfWeek
         let startSecondsInclusive: TimeInterval
         let endSecondsExclusive: TimeInterval
-        
+
         init(dayOfWeek: DayOfWeek, startSecondsInclusive: TimeInterval, endSecondsExclusive: TimeInterval) {
             self.dayOfWeek = dayOfWeek
             self.startSecondsInclusive = startSecondsInclusive
             self.endSecondsExclusive = endSecondsExclusive
         }
-        
+
         func within(date: Date) -> Bool {
             guard let dayOfWeek = TimeUtil.dayOfWeek(date) else {
                 return false
@@ -104,7 +104,7 @@ extension InAppMessage {
             let midnight = TimeUtil.midnight(date)
             let startTimestampInclusive = midnight.addingTimeInterval(startSecondsInclusive)
             let endTimestampExclusive = midnight.addingTimeInterval(endSecondsExclusive)
-            let timeRange = startTimestampInclusive..<endTimestampExclusive
+            let timeRange = startTimestampInclusive ..< endTimestampExclusive
 
             return timeRange.contains(date)
         }
@@ -162,7 +162,6 @@ extension InAppMessage {
         }
 
         final class Delay: Sendable {
-
             static let `default` = Delay(type: .immediate, afterCondition: nil)
 
             let type: DelayType
@@ -193,7 +192,6 @@ extension InAppMessage {
     }
 
     final class EvaluateContext: Sendable {
-
         static let `default` = EvaluateContext(atDeliverTime: false)
 
         let atDeliverTime: Bool
@@ -284,6 +282,11 @@ extension InAppMessage {
         case after = "AFTER"
     }
 
+    enum HtmlResourceType: String, Codable {
+        case text = "TEXT"
+        case path = "PATH"
+    }
+
     final class MessageContext: Sendable {
         let defaultLang: String
         let experimentContext: ExperimentContext?
@@ -327,6 +330,7 @@ extension InAppMessage {
         let action: Action?
         let outerButtons: [PositionalButton]
         let innerButtons: [PositionalButton]
+        let html: Html?
 
         init(
             variationKey: String?,
@@ -340,7 +344,8 @@ extension InAppMessage {
             background: Background,
             action: Action?,
             outerButtons: [PositionalButton],
-            innerButtons: [PositionalButton]
+            innerButtons: [PositionalButton],
+            html: Html?
         ) {
             self.variationKey = variationKey
             self.lang = lang
@@ -354,6 +359,7 @@ extension InAppMessage {
             self.action = action
             self.outerButtons = outerButtons
             self.innerButtons = innerButtons
+            self.html = html
         }
 
         final class Layout: Sendable {
@@ -467,6 +473,18 @@ extension InAppMessage {
                 self.alignment = alignment
             }
         }
+
+        final class Html: Sendable {
+            let resourceType: HtmlResourceType
+            let text: String?
+            let path: String?
+
+            init(resourceType: HtmlResourceType, text: String?, path: String?) {
+                self.resourceType = resourceType
+                self.text = text
+                self.path = path
+            }
+        }
     }
 
     final class CloseActionInfo: HackleInAppMessageActionClose, Sendable {
@@ -534,7 +552,6 @@ extension InAppMessage {
 }
 
 extension InAppMessage: CustomStringConvertible {
-
     var description: String {
         return "InAppMessage(id: \(id), key: \(key), status: \(status))"
     }
