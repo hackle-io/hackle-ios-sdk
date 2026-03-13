@@ -38,7 +38,6 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
     private let eventDispatcher: UserEventDispatcher
     private let sessionManager: SessionManager
     private let userManager: UserManager
-    private let applicationLifecycleManager: ApplicationLifecycleManager
     private let screenUserEventDecorator: UserEventDecorator
     private let eventBackoffController: UserEventBackoffController
 
@@ -58,7 +57,6 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         eventDispatcher: UserEventDispatcher,
         sessionManager: SessionManager,
         userManager: UserManager,
-        applicationLifecycleManager: ApplicationLifecycleManager,
         screenUserEventDecorator: UserEventDecorator,
         eventBackoffController: UserEventBackoffController
     ) {
@@ -75,7 +73,6 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         self.eventDispatcher = eventDispatcher
         self.sessionManager = sessionManager
         self.userManager = userManager
-        self.applicationLifecycleManager = applicationLifecycleManager
         self.screenUserEventDecorator = screenUserEventDecorator
         self.eventBackoffController = eventBackoffController
     }
@@ -175,13 +172,10 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         if SessionEventTracker.isSessionEvent(event: event) {
             return
         }
-
-        if applicationLifecycleManager.currentState == .foreground {
-            sessionManager.updateLastEventTime(timestamp: event.timestamp)
-        } else {
-            // Corner case when an event is processed between background and foreground
-            sessionManager.startNewSessionIfNeeded(user: userManager.currentUser, timestamp: event.timestamp)
-        }
+        let currentUser = userManager.currentUser
+        sessionManager.startNewSessionIfNeeded(
+            context: SessionContext.of(user: currentUser, timestamp: event.timestamp)
+        )
     }
 
     private func saveEvent(event: UserEvent) {

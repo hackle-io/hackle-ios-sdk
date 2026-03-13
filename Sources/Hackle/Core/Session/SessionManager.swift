@@ -20,10 +20,10 @@ protocol SessionManager {
     func initialize()
 
     @discardableResult
-    func startNewSession(user: User, timestamp: Date) -> Session
+    func startNewSession(oldUser: User, newUser: User, timestamp: Date) -> Session
 
     @discardableResult
-    func startNewSessionIfNeeded(user: User, timestamp: Date) -> Session
+    func startNewSessionIfNeeded(context: SessionContext) -> Session
 
     func updateLastEventTime(timestamp: Date)
 }
@@ -32,7 +32,8 @@ class DefaultSessionManager: SessionManager, UserListener {
 
     private let userManager: UserManager
     private let keyValueRepository: KeyValueRepository
-    private let sessionTimeout: TimeInterval
+    private let applicationLifecycleManager: ApplicationLifecycleManager
+    private let sessionPolicy: HackleSessionPolicy
     private var sessionListeners: [SessionListener]
 
     var requiredSession: Session {
@@ -42,10 +43,16 @@ class DefaultSessionManager: SessionManager, UserListener {
     private(set) var currentSession: Session? = nil
     private(set) var lastEventTime: Date? = nil
 
-    init(userManager: UserManager, keyValueRepository: KeyValueRepository, sessionTimeout: TimeInterval) {
+    init(
+        userManager: UserManager,
+        keyValueRepository: KeyValueRepository,
+        applicationLifecycleManager: ApplicationLifecycleManager,
+        sessionPolicy: HackleSessionPolicy
+    ) {
         self.userManager = userManager
         self.keyValueRepository = keyValueRepository
-        self.sessionTimeout = sessionTimeout
+        self.applicationLifecycleManager = applicationLifecycleManager
+        self.sessionPolicy = sessionPolicy
         self.sessionListeners = []
     }
 
@@ -63,28 +70,56 @@ class DefaultSessionManager: SessionManager, UserListener {
         Log.debug("SessionListener added [\(listener)]")
     }
 
-    func startNewSession(user: User, timestamp: Date) -> Session {
-        endSession(user: user)
-        return newSession(user: user, timestamp: timestamp)
+    func startNewSession(oldUser: User, newUser: User, timestamp: Date) -> Session {
+        endSession(user: oldUser)
+        return newSession(user: newUser, timestamp: timestamp)
     }
 
     @discardableResult
-    func startNewSessionIfNeeded(user: User, timestamp: Date) -> Session {
-        guard let lastEventTime = lastEventTime else {
-            return startNewSession(user: user, timestamp: timestamp)
+    func startNewSessionIfNeeded(context: SessionContext) -> Session {
+        if shouldStartNewSession(context: context) {
+            return startNewSession(oldUser: context.oldUser, newUser: context.newUser, timestamp: context.timestamp)
         }
 
-        guard let currentSession = currentSession, timestamp.timeIntervalSince1970 - lastEventTime.timeIntervalSince1970 < sessionTimeout else {
-            return startNewSession(user: user, timestamp: timestamp)
-        }
-
-        updateLastEventTime(timestamp: timestamp)
-        return currentSession
+        updateLastEventTime(timestamp: context.timestamp)
+        return requiredSession
     }
 
     func updateLastEventTime(timestamp: Date) {
         lastEventTime = timestamp
         keyValueRepository.putDouble(key: DefaultSessionManager.LAST_EVENT_TIME_KEY, value: timestamp.timeIntervalSince1970)
+    }
+
+    private func shouldStartNewSession(context: SessionContext) -> Bool {
+        if currentSession == nil {
+            return true
+        }
+
+        if !context.oldUser.identifierEquals(other: context.newUser) {
+            if !sessionPolicy.persistCondition.shouldPersist(oldUser: context.oldUser, newUser: context.newUser) {
+                return true
+            }
+        }
+
+        return isTimeoutEnabled(context: context) && isSessionTimedOut(timestamp: context.timestamp)
+    }
+
+    private func isTimeoutEnabled(context: SessionContext) -> Bool {
+        let timeoutCondition = sessionPolicy.timeoutCondition
+        if context.isApplicationStateChange {
+            return timeoutCondition.onApplicationStateChange
+        }
+        if applicationLifecycleManager.currentState == .background {
+            return timeoutCondition.onBackground
+        }
+        return timeoutCondition.onForeground
+    }
+
+    private func isSessionTimedOut(timestamp: Date) -> Bool {
+        guard let lastEventTime = lastEventTime else {
+            return true
+        }
+        return timestamp.timeIntervalSince1970 - lastEventTime.timeIntervalSince1970 >= sessionPolicy.timeoutCondition.timeoutIntervalSeconds
     }
 
     private func endSession(user: User) {
@@ -133,17 +168,16 @@ class DefaultSessionManager: SessionManager, UserListener {
     }
 
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
-        endSession(user: oldUser)
-        newSession(user: newUser, timestamp: timestamp)
+        startNewSessionIfNeeded(context: SessionContext.of(oldUser: oldUser, newUser: newUser, timestamp: timestamp))
     }
 }
 
 extension DefaultSessionManager: ApplicationLifecycleListener {
     func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         Log.debug("SessionManager.onForeground")
-        startNewSessionIfNeeded(user: userManager.currentUser, timestamp: timestamp)
+        startNewSessionIfNeeded(context: SessionContext.of(user: userManager.currentUser, timestamp: timestamp, isApplicationStateChange: true))
     }
-    
+
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("SessionManager.onBackground")
         updateLastEventTime(timestamp: timestamp)
