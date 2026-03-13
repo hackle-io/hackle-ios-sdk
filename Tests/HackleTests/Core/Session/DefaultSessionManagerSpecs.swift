@@ -8,7 +8,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
     override func spec() {
 
         func manager(
-            persistCondition: HackleSessionPersistCondition = .ALWAYS_NEW_SESSION,
+            persistCondition: HackleSessionPersistCondition = .alwaysNewSession,
             sessionTimeout: TimeInterval = 10,
             onForeground: Bool = false,
             onBackground: Bool = true,
@@ -476,7 +476,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
             }
 
             it("custom policy 로 null → userId 시 세션을 유지한다") {
-                let sut = manager(persistCondition: .NULL_TO_USER_ID)
+                let sut = manager(persistCondition: .nullToUserId)
 
                 let oldUser = User.builder().deviceId("d1").build()
                 sut.startNewSession(oldUser: oldUser, newUser: oldUser, timestamp: Date(timeIntervalSince1970: 42))
@@ -501,7 +501,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
             }
 
             it("policy 가 유지를 결정해도 타임아웃이 만료되면 새 세션을 시작한다") {
-                let sut = manager(persistCondition: .NULL_TO_USER_ID, sessionTimeout: 10,
+                let sut = manager(persistCondition: .nullToUserId, sessionTimeout: 10,
                                   appStateManager: MockApplicationLifecycleManager(currentState: .background))
 
                 let oldUser = User.builder().deviceId("d1").build()
@@ -531,7 +531,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
 
         describe("persistPolicy") {
 
-            let nullToUserId: HackleSessionPersistCondition = .NULL_TO_USER_ID
+            let nullToUserId: HackleSessionPersistCondition = .nullToUserId
             let userIdChange = UserIdChangePersistCondition()
             let userIdToNull = UserIdToNullPersistCondition()
             let deviceIdChange = DeviceIdChangePersistCondition()
@@ -594,7 +594,7 @@ class DefaultSessionManagerSpecs: QuickSpec {
                 // 1
                 PolicyCase(
                     name: "Default",
-                    condition: .ALWAYS_NEW_SESSION,
+                    condition: .alwaysNewSession,
                     expected: [false, false, false, false, false, false, false]
                 ),
                 // 2
