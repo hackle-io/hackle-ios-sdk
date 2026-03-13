@@ -37,27 +37,21 @@ import WebKit
     ///
     /// - Returns: the current device ID
     @objc public var deviceId: String {
-        get {
-            hackleAppCore.deviceId
-        }
+        hackleAppCore.deviceId
     }
 
     /// Current session ID.
     ///
     /// - Returns: the current session ID
     @objc public var sessionId: String {
-        get {
-            hackleAppCore.sessionId
-        }
+        hackleAppCore.sessionId
     }
 
     /// Current user.
     ///
     /// - Returns: the current ``User`` instance
     @objc public var user: User {
-        get {
-            hackleAppCore.user
-        }
+        hackleAppCore.user
     }
 
     /// Whether opt-out tracking is currently enabled.
@@ -192,7 +186,6 @@ import WebKit
     @objc public func updateSmsSubscriptions(operations: HackleSubscriptionOperations) {
         hackleAppCore.updateSmsSubscriptions(operations: operations, hackleAppContext: .default)
     }
-
 
     /// Updates KakaoTalk subscription status.
     ///
@@ -427,13 +420,13 @@ extension HackleApp {
     static func create(sdkKey: String, config: HackleConfig) -> HackleApp {
         let clock = SystemClock.shared
         let sdk = Sdk.of(sdkKey: sdkKey, config: config)
-        
+
         let globalKeyValueRepository = UserDefaultsKeyValueRepository(userDefaults: UserDefaults.standard, suiteName: nil)
         let keyValueRepositoryBySdkKey = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameDefault, sdkKey))
         let platformManager = PlatformManager(keyValueRepository: globalKeyValueRepository)
         let applicationInstallDeterminer = ApplicationInstallDeterminer()
         let applicationLifecycleManager = DefaultApplicationLifecycleManager.shared
-        
+
         let httpClient = DefaultHttpClient(sdk: sdk)
 
         // - Synchronizer
@@ -486,9 +479,8 @@ extension HackleApp {
             sessionPolicy: config.sessionPolicy
         )
         userManager.addListener(listener: sessionManager)
-        
+
         let sessionUserDecorator = SessionUserDecorator(sessionManager: sessionManager)
-        
 
         // - ScreenManager
 
@@ -529,15 +521,16 @@ extension HackleApp {
         let rcEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameRemoteConfigEventDedup, sdkKey))
         let exposureEventDedupRepository = UserDefaultsKeyValueRepository.of(suiteName: String(format: storageSuiteNameExposureEventDedup, sdkKey))
 
-
         let rcEventDedupDeterminer = RemoteConfigEventDedupDeterminer(
             repository: rcEventDedupRepository,
-            dedupInterval: config.exposureEventDedupInterval)
+            dedupInterval: config.exposureEventDedupInterval
+        )
 
         let exposureEventDedupDeterminer = ExposureEventDedupDeterminer(
             repository: exposureEventDedupRepository,
-            dedupInterval: config.exposureEventDedupInterval)
-        
+            dedupInterval: config.exposureEventDedupInterval
+        )
+
         applicationLifecycleManager.setDispatchQueue(queue: eventQueue)
         applicationLifecycleManager.addListener(listener: rcEventDedupDeterminer)
         applicationLifecycleManager.addListener(listener: exposureEventDedupDeterminer)
@@ -617,13 +610,13 @@ extension HackleApp {
         applicationLifecycleManager.addListener(listener: sessionManager)
         applicationLifecycleManager.addListener(listener: userManager)
         applicationLifecycleManager.addListener(listener: eventProcessor)
-        
+
         // - ApplicationInstallStateManager
-        
+
         let applicationInstallStateManager = ApplicationInstallStateManager(
             platformManager: platformManager,
             applicationInstallDeterminer:
-                applicationInstallDeterminer,
+            applicationInstallDeterminer,
             clock: clock
         )
 
@@ -652,14 +645,14 @@ extension HackleApp {
             core: core
         )
         engagementManager.addListener(listener: engagementEventTracker)
-        
+
         // - ApplicationEventTracker
-        
+
         let applicationEventTracker = ApplicationEventTracker(
             userManager: userManager,
             core: core
         )
-        
+
         if config.automaticAppLifecycleTracking {
             applicationLifecycleManager.addListener(listener: applicationEventTracker)
         }
@@ -698,7 +691,6 @@ extension HackleApp {
             presenter: inAppMessageUI,
             recorder: inAppMessageRecorder
         )
-
 
         let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
             evaluator: EvaluationContext.shared.get(Evaluator.self)!
@@ -744,7 +736,7 @@ extension HackleApp {
 
         let inAppMessageSchedulerFactory = DefaultInAppMessageSchedulerFactory(schedulers: [
             TriggeredInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
-            DelayedInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager),
+            DelayedInAppMessageScheduler(deliverProcessor: inAppMessageDeliverProcessor, delayManager: inAppMessageDelayManager)
         ])
         let inAppMessageScheduleProcessor = DefaultInAppMessageScheduleProcessor(
             actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
@@ -845,7 +837,7 @@ extension HackleApp {
         }
         viewLifecycleManager.addListener(listener: engagementManager)
         viewLifecycleManager.setDispatchQueue(queue: eventQueue)
-        
+
         applicationLifecycleManager.addListener(listener: engagementManager)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
@@ -871,7 +863,10 @@ extension HackleApp {
             userExplorer: userExplorer,
             optOutManager: optOutManager
         )
-        let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
+
+        let invocationHandlerFactory = DefaultInvocationHandlerFactory(core: hackleAppCore)
+        let invocationProcessor = DefaultInvocationProcessor(handlerFactory: invocationHandlerFactory)
+        let hackleInvocator = DefaultHackleInvocator(processor: invocationProcessor)
 
         return HackleApp(
             hackleAppCore: hackleAppCore,
@@ -883,7 +878,8 @@ extension HackleApp {
 
     private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
         if let disableInAppMessage = config.extra["$disable_inappmessage"],
-           disableInAppMessage == "true" {
+           disableInAppMessage == "true"
+        {
             return true
         }
 
