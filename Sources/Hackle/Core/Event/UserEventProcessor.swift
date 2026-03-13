@@ -157,8 +157,8 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         stop()
     }
 
-    func onOptOutChanged(previous: Bool, current: Bool) {
-        if !previous && current {
+    func onOptOutChanged(current: Bool) {
+        if current {
             flush()
         }
     }

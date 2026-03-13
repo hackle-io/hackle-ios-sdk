@@ -57,7 +57,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             eventFlushMaxBatchSize: Int = 21,
             eventDispatcher: UserEventDispatcher = eventDispatcher,
             sessionManager: SessionManager = sessionManager,
-            userManager: UserManager = userManager
+            userManager: UserManager = userManager,
+            optOutManager: OptOutManager = OptOutManager(configOptOutTracking: false)
         ) -> DefaultUserEventProcessor {
             let screenUserEventDecorator = ScreenUserEventDecorator(screenManager: screenManager)
 
@@ -76,7 +77,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 sessionManager: sessionManager,
                 userManager: userManager,
                 screenUserEventDecorator: screenUserEventDecorator,
-                eventBackoffController: eventBackoffControllrer
+                eventBackoffController: eventBackoffControllrer,
+                optOutManager: optOutManager
             )
         }
 
@@ -157,12 +159,10 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 expect(context.isApplicationStateChange) == false
             }
 
-            it("opt-out 상태이면 이벤트를 저장하지 않는다") {
+            it("opt-out 상태이면 save 미호출") {
                 // given
                 let optOutManager = OptOutManager(configOptOutTracking: true)
-                let sut = processor(
-                    eventFilters: [OptOutUserEventFilter(optOutManager: optOutManager)]
-                )
+                let sut = processor(optOutManager: optOutManager)
                 let event = MockUserEvent(user: user)
 
                 // when
@@ -179,12 +179,28 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 }
             }
 
-            it("opt-in 상태이면 이벤트를 정상 저장한다") {
+            it("opt-out 상태이면 publish 호출") {
+                // given
+                let optOutManager = OptOutManager(configOptOutTracking: true)
+                let sut = processor(optOutManager: optOutManager)
+                let event = MockUserEvent(user: user)
+
+                // when
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    eventQueue.sync {
+                        done()
+                    }
+                }
+
+                // then
+                expect(eventPublisher.events.count) == 1
+            }
+
+            it("opt-in 상태이면 save + publish 모두 호출") {
                 // given
                 let optOutManager = OptOutManager(configOptOutTracking: false)
-                let sut = processor(
-                    eventFilters: [OptOutUserEventFilter(optOutManager: optOutManager)]
-                )
+                let sut = processor(optOutManager: optOutManager)
                 let event = MockUserEvent(user: user)
 
                 // when
@@ -199,6 +215,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 verify(exactly: 1) {
                     eventRepository.saveMock
                 }
+                expect(eventPublisher.events.count) == 1
             }
 
             it("중복제거 대상이면 이벤트를 저장하지 않는다") {
@@ -421,6 +438,39 @@ class DefaultUserEventProcessorSpec: QuickSpec {
             }
         }
 
+        describe("onOptOutChanged") {
+
+            it("false → true 시 flush 호출") {
+                // given
+                let sut = processor()
+                let events = [EventEntity(id: 1, type: .track, status: .pending, body: "body")]
+                every(eventRepository.getEventToFlushMock).returns(events)
+
+                // when
+                sut.onOptOutChanged(current: true)
+                eventQueue.sync {}
+
+                // then
+                verify(exactly: 1) {
+                    eventDispatcher.dispatchMock
+                }
+            }
+
+            it("true → false 시 flush 미호출") {
+                // given
+                let sut = processor()
+
+                // when
+                sut.onOptOutChanged(current: false)
+                eventQueue.sync {}
+
+                // then
+                verify(exactly: 0) {
+                    eventDispatcher.dispatchMock
+                }
+            }
+        }
+
         describe("onNotified") {
             var spy: OnNotifiedSpy!
             beforeEach {
@@ -439,7 +489,8 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                     sessionManager: sessionManager,
                     userManager: userManager,
                     screenUserEventDecorator: ScreenUserEventDecorator(screenManager: MockScreeManager()),
-                    eventBackoffController: eventBackoffControllrer
+                    eventBackoffController: eventBackoffControllrer,
+                    optOutManager: OptOutManager(configOptOutTracking: false)
                 )
             }
 

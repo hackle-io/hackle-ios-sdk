@@ -20,16 +20,13 @@ class OptOutManager: @unchecked Sendable {
     }
 
     func setOptOutTracking(optOut: Bool) {
-        let previous: Bool? = lock.write {
-            if optOut == _isOptOutTracking { return nil }
-            let prev = _isOptOutTracking
+        lock.write {
+            if _isOptOutTracking == optOut { return }
             _isOptOutTracking = optOut
-            return prev
         }
-        guard let previous else { return }
         Log.info("OptOutTracking changed to \(optOut)")
         for listener in listeners {
-            listener.onOptOutChanged(previous: previous, current: optOut)
+            listener.onOptOutChanged(current: optOut)
         }
     }
 }
