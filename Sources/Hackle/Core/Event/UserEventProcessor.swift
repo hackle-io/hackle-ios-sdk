@@ -21,7 +21,7 @@ extension UserEventProcessor {
     }
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener {
+class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener, OptOutListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -40,6 +40,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
     private let userManager: UserManager
     private let screenUserEventDecorator: UserEventDecorator
     private let eventBackoffController: UserEventBackoffController
+    private let optOutManager: OptOutManager
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -58,7 +59,8 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         sessionManager: SessionManager,
         userManager: UserManager,
         screenUserEventDecorator: UserEventDecorator,
-        eventBackoffController: UserEventBackoffController
+        eventBackoffController: UserEventBackoffController,
+        optOutManager: OptOutManager
     ) {
         self.eventFilters = eventFilters
         self.eventDecorator = eventDecorator
@@ -75,6 +77,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         self.userManager = userManager
         self.screenUserEventDecorator = screenUserEventDecorator
         self.eventBackoffController = eventBackoffController
+        self.optOutManager = optOutManager
     }
 
     func process(event: UserEvent) {
@@ -154,6 +157,12 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         stop()
     }
 
+    func onOptOutChanged(previous: Bool, current: Bool) {
+        if !previous && current {
+            flush()
+        }
+    }
+
     private func addEventInternal(event: UserEvent) {
         updateEvent(event: event)
         if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
@@ -164,7 +173,9 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
             eventDecorator.decorate(event: userEvent)
         }
 
-        saveEvent(event: decoratedEvent)
+        if !optOutManager.isOptOutTracking {
+            saveEvent(event: decoratedEvent)
+        }
         eventPublisher.publish(event: decoratedEvent)
     }
 

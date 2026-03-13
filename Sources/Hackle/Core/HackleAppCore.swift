@@ -336,9 +336,6 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func setOptOutTracking(optOut: Bool) {
-        if optOut {
-            eventProcessor.flush()
-        }
         optOutManager.setOptOutTracking(optOut: optOut)
     }
 
