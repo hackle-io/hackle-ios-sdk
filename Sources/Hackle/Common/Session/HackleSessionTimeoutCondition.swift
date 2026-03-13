@@ -60,7 +60,7 @@ import Foundation
             .onApplicationStateChange(onApplicationStateChange)
     }
 
-    static let DEFAULT_SESSION_TIMEOUT_INTERVAL: TimeInterval = 1800 // 30m
+    static let defaultSessionTimeoutInterval: TimeInterval = 1800 // 30m
 
     /// The default timeout condition.
     ///
@@ -68,8 +68,8 @@ import Foundation
     /// - On foreground: `false`
     /// - On background: `true`
     /// - On application state change: `true`
-    @objc public static let DEFAULT = HackleSessionTimeoutCondition(
-        timeoutIntervalSeconds: DEFAULT_SESSION_TIMEOUT_INTERVAL,
+    @objc public static let `default` = HackleSessionTimeoutCondition(
+        timeoutIntervalSeconds: defaultSessionTimeoutInterval,
         onForeground: false,
         onBackground: true,
         onApplicationStateChange: true
@@ -79,7 +79,7 @@ import Foundation
 /// Builder for creating ``HackleSessionTimeoutCondition`` instances.
 @objc public class HackleSessionTimeoutConditionBuilder: NSObject {
 
-    private var timeoutIntervalSeconds: TimeInterval = HackleSessionTimeoutCondition.DEFAULT_SESSION_TIMEOUT_INTERVAL
+    private var timeoutIntervalSeconds: TimeInterval = HackleSessionTimeoutCondition.defaultSessionTimeoutInterval
     private var onForeground: Bool = false
     private var onBackground: Bool = true
     private var onApplicationStateChange: Bool = true

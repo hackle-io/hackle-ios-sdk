@@ -135,9 +135,9 @@ class HackleConfigSpec: QuickSpec {
         }
 
         describe("sessionPolicy") {
-            it("기본값은 DEFAULT 이다") {
+            it("기본값은 default 이다") {
                 let config = HackleConfigBuilder().build()
-                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.ALWAYS_NEW_SESSION
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.alwaysNewSession
                 expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
                 expect(config.sessionPolicy.timeoutCondition.onForeground) == false
                 expect(config.sessionPolicy.timeoutCondition.onBackground) == true
@@ -146,7 +146,7 @@ class HackleConfigSpec: QuickSpec {
 
             it("커스텀 sessionPolicy 설정") {
                 let policy = HackleSessionPolicy.builder()
-                    .persistCondition(.NULL_TO_USER_ID)
+                    .persistCondition(.nullToUserId)
                     .timeoutCondition(
                         HackleSessionTimeoutCondition.builder()
                             .timeoutIntervalSeconds(600)
@@ -155,7 +155,7 @@ class HackleConfigSpec: QuickSpec {
                     )
                     .build()
                 let config = HackleConfigBuilder().sessionPolicy(policy).build()
-                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.NULL_TO_USER_ID
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.nullToUserId
                 expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 600
                 expect(config.sessionPolicy.timeoutCondition.onForeground) == true
             }
@@ -183,19 +183,19 @@ class HackleConfigSpec: QuickSpec {
             it("아무것도 설정하지 않으면 기본값이다") {
                 let config = HackleConfigBuilder().build()
                 expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 1800
-                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.ALWAYS_NEW_SESSION
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.alwaysNewSession
             }
 
             it("deprecated sessionTimeoutIntervalSeconds 설정 시 기존 persistCondition 을 유지한다") {
                 let config = HackleConfigBuilder()
                     .sessionPolicy(
                         HackleSessionPolicy.builder()
-                            .persistCondition(.NULL_TO_USER_ID)
+                            .persistCondition(.nullToUserId)
                             .build()
                     )
                     .sessionTimeoutIntervalSeconds(900)
                     .build()
-                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.NULL_TO_USER_ID
+                expect(config.sessionPolicy.persistCondition) === HackleSessionPersistCondition.nullToUserId
                 expect(config.sessionPolicy.timeoutCondition.timeoutIntervalSeconds) == 900
             }
 
@@ -221,7 +221,7 @@ class HackleConfigSpec: QuickSpec {
 
             it("toBuilder 는 모든 필드를 복사한다") {
                 let original = HackleSessionPolicy.builder()
-                    .persistCondition(.NULL_TO_USER_ID)
+                    .persistCondition(.nullToUserId)
                     .timeoutCondition(
                         HackleSessionTimeoutCondition.builder()
                             .timeoutIntervalSeconds(600)
@@ -234,7 +234,7 @@ class HackleConfigSpec: QuickSpec {
 
                 let copy = original.toBuilder().build()
 
-                expect(copy.persistCondition) === HackleSessionPersistCondition.NULL_TO_USER_ID
+                expect(copy.persistCondition) === HackleSessionPersistCondition.nullToUserId
                 expect(copy.timeoutCondition.timeoutIntervalSeconds) == 600
                 expect(copy.timeoutCondition.onForeground) == true
                 expect(copy.timeoutCondition.onBackground) == false
