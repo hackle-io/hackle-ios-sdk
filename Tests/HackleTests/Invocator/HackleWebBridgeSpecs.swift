@@ -22,7 +22,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                 MainActor.assumeIsolated {
                     webView = WKWebView()
                 }
-                invocator = DefaultHackleInvocator(hackleAppCore: MockHackleAppCore())
+                invocator = DefaultHackleInvocator(processor: MockInvocationProcessor())
             }
 
             describe("prepareForHackleWebBridge") {

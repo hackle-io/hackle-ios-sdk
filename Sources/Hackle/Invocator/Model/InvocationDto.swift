@@ -28,7 +28,7 @@ extension User {
         return sanitized
     }
 
-    static func from(dto: UserDto) -> User? {
+    static func from(dto: UserDto) -> User {
         let builder = User.builder()
         if let id = dto["id"] as? String {
             builder.id(id)
