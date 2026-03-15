@@ -1,24 +1,15 @@
 import Foundation
-import MockingKit
 @testable import Hackle
-
+import MockingKit
 
 class MockInAppMessageActionHandler: Mock, InAppMessageActionHandler {
-
-    var supportsReturn: Bool
-
-    init(supportsReturn: Bool = true) {
-        self.supportsReturn = supportsReturn
-        super.init()
-    }
-
+    lazy var supportsMock = MockFunction(self, supports)
     func supports(action: InAppMessage.Action) -> Bool {
-        supportsReturn
+        return call(supportsMock, args: action)
     }
 
     lazy var handleMock = MockFunction(self, handle)
-
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
-        call(handleMock, args: (view, action))
+        return call(handleMock, args: (view, action))
     }
 }

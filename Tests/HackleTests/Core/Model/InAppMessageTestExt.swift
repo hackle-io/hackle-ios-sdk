@@ -122,7 +122,7 @@ extension InAppMessage {
         imageAutoScroll: Message.ImageAutoScroll? = nil,
         text: Message.Text? = text(),
         buttons: [Message.Button] = [button()],
-        closeButton: Message.Button? = nil
+        closeButton: Message.Button? = nil,
     ) -> Message {
         Message(
             variationKey: variationKey,
@@ -140,7 +140,8 @@ extension InAppMessage {
             background: Message.Background(color: "#FFFFFF"),
             action: nil,
             outerButtons: [],
-            innerButtons: []
+            innerButtons: [],
+            html: nil
         )
     }
 
@@ -275,7 +276,7 @@ extension InAppMessage {
             inAppMessage: inAppMessage,
             message: message,
             user: user,
-            decisionReasion: decisionReason,
+            decisionReason: decisionReason,
             properties: properties
         )
     }

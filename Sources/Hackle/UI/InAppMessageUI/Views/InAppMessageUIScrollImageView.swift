@@ -2,18 +2,14 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
-    class ScrollImageView: UIView, InAppMessageViewLifecycleListener, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    class ScrollImageView: UIView, InAppMessageViewAware, InAppMessageViewLifecycleListener, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
         private let context: ScrollContext
-        private let handleEvent: (InAppMessage.Event) -> ()
         private var attributes: Attributes
         private var initialized: Bool = false
-        private var timer: Foundation.Timer? = nil
+        private var timer: Foundation.Timer?
 
-        init(items: [ImageItem], attributes: Attributes, handleEvent: @escaping (InAppMessage.Event) -> ()) {
+        init(items: [ImageItem], attributes: Attributes) {
             self.context = ScrollContext(items: items)
-            self.handleEvent = handleEvent
             self.attributes = attributes
             super.init(frame: .zero)
 
@@ -33,6 +29,7 @@ extension HackleInAppMessageUI {
             updatePage(extendedIndex: 1)
         }
 
+        @available(*, unavailable)
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
@@ -67,7 +64,7 @@ extension HackleInAppMessageUI {
             let isFirstImpression = impressions[item.order] == nil
             if isFirstImpression {
                 impressions[item.order] = true
-                handleEvent(.imageImpression(image: item.image, order: item.order))
+                handle(event: .imageImpression(timestamp: clock.now(), image: item.image, order: item.order))
             }
         }
 
@@ -118,7 +115,7 @@ extension HackleInAppMessageUI {
 
         override func layoutSubviews() {
             super.layoutSubviews()
-            if !initialized && collectionView.bounds.size != .zero {
+            if !initialized, collectionView.bounds.size != .zero {
                 initialized = true
                 collectionView.scrollToItem(at: .init(item: 1, section: 0), at: .centeredHorizontally, animated: false)
             }
@@ -131,7 +128,7 @@ extension HackleInAppMessageUI {
             guard let action = item.image.action else {
                 return
             }
-            handleEvent(.imageAction(action: action, image: item.image, order: item.order))
+            handle(event: .action(timestamp: clock.now(), action: action, image: item.image, order: item.order))
         }
 
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -180,7 +177,6 @@ extension HackleInAppMessageUI {
             return view
         }()
 
-
         private lazy var pageView: UILabel = {
             let view = UILabel()
             view.backgroundColor = UIColor(hex: "#1c1c1c", alpha: 0.5)
@@ -206,6 +202,7 @@ extension HackleInAppMessageUI {
                 imageView.anchors.pin()
             }
 
+            @available(*, unavailable)
             required init?(coder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
             }

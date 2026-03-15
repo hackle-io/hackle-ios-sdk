@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Quick
-import Nimble
 @testable import Hackle
-
+import Nimble
+import Quick
 
 class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
     override func spec() {
@@ -44,7 +43,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             )
 
             // when
-            sut.track(context: context, event: .impression, timestamp: Date())
+            sut.track(context: context, event: .impression(timestamp: Date()))
 
             // then
             expect(core.tracked.count) == 1
@@ -82,7 +81,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             )
 
             // when
-            sut.track(context: context, event: .close, timestamp: Date())
+            sut.track(context: context, event: .close(timestamp: Date()))
 
             // then
             expect(core.tracked.count) == 1
@@ -116,7 +115,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             )
 
             // when
-            sut.track(context: context, event: .buttonAction(action: action, button: message.buttons[0]), timestamp: Date())
+            sut.track(context: context, event: .action(timestamp: Date(), action: action, button: message.buttons[0]))
 
             // then
             expect(core.tracked.count) == 1
@@ -156,7 +155,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             )
 
             // when
-            sut.track(context: context, event: .imageAction(action: action, image: message.images[0], order: 42), timestamp: Date())
+            sut.track(context: context, event: .action(timestamp: Date(), action: action, image: message.images[0], order: 42))
 
             // then
             expect(core.tracked.count) == 1
@@ -196,7 +195,7 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             )
 
             // when
-            sut.track(context: context, event: .imageImpression(image: message.images[0], order: 42), timestamp: Date())
+            sut.track(context: context, event: .imageImpression(timestamp: Date(), image: message.images[0], order: 42))
 
             // then
             expect(core.tracked.count) == 1

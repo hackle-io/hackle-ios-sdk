@@ -10,13 +10,15 @@ import UIKit
 
 @objc(HackleInAppMessageUI)
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable {
-    let eventHandler: InAppMessageEventHandler
-    
-    init(eventHandler: InAppMessageEventHandler) {
-        self.eventHandler = eventHandler
+    let clock: Clock
+    let eventProcessor: InAppMessageViewEventProcessor
+
+    init(clock: Clock, eventProcessor: InAppMessageViewEventProcessor) {
+        self.clock = clock
+        self.eventProcessor = eventProcessor
         super.init()
     }
-    
+
     @MainActor var window: Window?
     var delegate: HackleInAppMessageDelegate?
 
@@ -33,7 +35,8 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable
     @MainActor private func presentNow(context: InAppMessagePresentationContext) {
         guard checkRootViewController(),
               noMessagePresented(),
-              orientationSupported(context: context) else {
+              orientationSupported(context: context)
+        else {
             return
         }
 

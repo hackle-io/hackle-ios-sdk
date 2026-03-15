@@ -278,7 +278,12 @@
                   "vertical": "BOTTOM"
                 }
               }
-            ]
+            ],
+            "html": {
+              "resourceType": "PATH",
+              "text": null,
+              "path": "https://hackle.io"
+            }
           }
         ]
       }

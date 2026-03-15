@@ -660,28 +660,37 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
-            core: core
-        )
         let urlHandler = ApplicationUrlHandler()
-        let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
+        let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
             InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
             InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
-        let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
-            InAppMessageImpressionEventProcessor(),
-            InAppMessageActionEventProcessor(actionHandlerFactory: inAppMessageActionHandlerFactory),
-            InAppMessageCloseEventProcessor()
+        let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
+            InAppMessageViewImpressionEventActor(),
+            InAppMessageViewActionEventActor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+            InAppMessageViewCloseEventActor()
         ])
-        let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-            clock: clock,
-            eventTracker: inAppMessageEventTracker,
-            processorFactory: inAppMessageEventProcessorFactory
+        let inAppMessageViewEventActionHandler = InAppMessageViewEventActionHandler(
+            actorFactory: inAppMessageViewEventActorFactory
+        )
+        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
+            core: core
+        )
+        let inAppMessageViewEventTrackHandler = InAppMessageViewEventTrackHandler(
+            tracker: inAppMessageEventTracker
+        )
+        let inAppMessageViewEventHandlerFactory = DefaultInAppMessageViewEventHandlerFactory(handlers: [
+            inAppMessageViewEventActionHandler,
+            inAppMessageViewEventTrackHandler
+        ])
+        let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
+            handlerFactory: inAppMessageViewEventHandlerFactory
         )
         let inAppMessageUI = HackleInAppMessageUI(
-            eventHandler: inAppMessageEventHandler
+            clock: clock,
+            eventProcessor: inAppMessageViewEventProcessor
         )
 
         let inAppMessageRecorder = DefaultInAppMessageRecorder(

@@ -3,8 +3,7 @@ import UIKit
 
 /// Base view protocol for InAppMessage
 @MainActor
-protocol InAppMessageView: UIView, HackleInAppMessageView {
-
+protocol InAppMessageView: UIView, InAppMessageViewAware, HackleInAppMessageView {
     /// Indicates whether the InAppMessageView is currently presented.
     var presented: Bool { get }
 
@@ -20,9 +19,8 @@ protocol InAppMessageView: UIView, HackleInAppMessageView {
 
 @MainActor
 extension InAppMessageView {
-
     var controller: HackleInAppMessageUI.ViewController? {
-        responders
+        return responders
             .lazy
             .compactMap {
                 $0 as? HackleInAppMessageUI.ViewController
@@ -69,12 +67,42 @@ extension InAppMessageView {
         ui.window?.windowScene = nil
         ui.window = nil
     }
+}
 
-    func handle(event: InAppMessage.Event) {
-        guard let controller = controller, let ui = controller.ui else {
+@MainActor
+protocol InAppMessageViewAware: UIView {
+    var messageView: InAppMessageView? { get }
+}
+
+extension InAppMessageViewAware {
+    var messageView: InAppMessageView? {
+        var current: UIView? = self
+        while let view = current {
+            if let messageView = view as? InAppMessageView {
+                return messageView
+            }
+            current = view.superview
+        }
+        return nil
+    }
+
+    var clock: Clock {
+        return messageView?.controller?.ui?.clock ?? SystemClock.shared
+    }
+
+    func handle(event: InAppMessageViewEvent, types: [InAppMessageViewEventHandleType] = [.track, .action]) {
+        guard let messageView = messageView,
+              let controller = messageView.controller,
+              let ui = controller.ui
+        else {
             return
         }
-        ui.eventHandler.handle(view: self, event: event)
+
+        ui.eventProcessor.process(view: messageView, event: event, types: types)
+    }
+
+    func handle(event: InAppMessageViewEvent, type: InAppMessageViewEventHandleType) {
+        handle(event: event, types: [type])
     }
 }
 
