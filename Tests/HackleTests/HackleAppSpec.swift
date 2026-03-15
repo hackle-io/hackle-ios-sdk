@@ -47,14 +47,30 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
-
-            let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [])
-            let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-                clock: SystemClock.shared,
-                eventTracker: DefaultInAppMessageEventTracker(core: core),
-                processorFactory: inAppMessageEventProcessorFactory
+            let urlHandler = ApplicationUrlHandler()
+            let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])
+            let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
+                InAppMessageViewImpressionEventActor(),
+                InAppMessageViewActionEventActor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+                InAppMessageViewCloseEventActor()
+            ])
+            let inAppMessageViewEventActionHandler = InAppMessageViewEventActionHandler(
+                actorFactory: inAppMessageViewEventActorFactory
             )
-            inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
+            let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
+                core: core
+            )
+            let inAppMessageViewEventTrackHandler = InAppMessageViewEventTrackHandler(
+                tracker: inAppMessageEventTracker
+            )
+            let inAppMessageViewEventHandlerFactory = DefaultInAppMessageViewEventHandlerFactory(handlers: [
+                inAppMessageViewEventActionHandler,
+                inAppMessageViewEventTrackHandler
+            ])
+            let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
+                handlerFactory: inAppMessageViewEventHandlerFactory
+            )
+            inAppMessageUI = HackleInAppMessageUI(clock: SystemClock.shared, eventProcessor: inAppMessageViewEventProcessor)
 
             let applicationInstallDeterminer = ApplicationInstallDeterminer()
             let applicationInstallStateManager = ApplicationInstallStateManager(

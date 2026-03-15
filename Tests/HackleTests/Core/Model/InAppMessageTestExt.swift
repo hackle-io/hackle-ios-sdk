@@ -276,7 +276,7 @@ extension InAppMessage {
             inAppMessage: inAppMessage,
             message: message,
             user: user,
-            decisionReasion: decisionReason,
+            decisionReason: decisionReason,
             properties: properties
         )
     }

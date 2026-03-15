@@ -1,11 +1,10 @@
 import Foundation
-import Quick
-import Nimble
 @testable import Hackle
+import Nimble
+import Quick
 
 class InAppMessageActionHandlerSpecs: QuickSpec {
     override func spec() {
-
         describe("InAppMessageCloseActionHandler") {
             var sut: InAppMessageCloseActionHandler!
 
@@ -29,7 +28,6 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
         }
 
         describe("InAppMessageLinkActionHandler") {
-
             var urlHandler: MockUrlHandler!
             var sut: InAppMessageLinkActionHandler!
 
@@ -192,7 +190,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 // then
                 expect(repository.getDouble(key: "42")) == (60 * 60 * 24) + 42
             }
-            
+
             it("when override, do not save hidden info") {
                 // given
                 let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42), decisionReason: DecisionReason.OVERRIDDEN)

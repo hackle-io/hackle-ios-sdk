@@ -24,7 +24,8 @@ extension HackleInAppMessageUI {
             layoutContent()
         }
 
-        public required init?(coder: NSCoder) {
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
 
@@ -42,12 +43,11 @@ extension HackleInAppMessageUI {
 
         // Layout
 
-        private var contentConstraints: Constraints? = nil
+        private var contentConstraints: Constraints?
 
         private func layoutContent() {
             contentConstraints?.deactivate()
             contentConstraints = Constraints {
-
                 // ContentView
                 if #available(iOS 11.0, *) {
                     contentView.layer.cornerRadius = attributes.cornerRadius
@@ -122,7 +122,7 @@ extension HackleInAppMessageUI {
 
         // Presentation
 
-        public var presented: Bool = false {
+        var presented: Bool = false {
             didSet {
                 if presented {
                     frameView.alpha = 1
@@ -151,14 +151,14 @@ extension HackleInAppMessageUI {
                     self.superview?.layoutIfNeeded()
                 },
                 completion: { _ in
-                    self.handle(event: .impression)
+                    self.handle(event: .impression(timestamp: self.clock.now()))
                     self.didPresent()
                 }
             )
         }
 
         func dismiss() {
-            if !self.presented {
+            if !presented {
                 return
             }
 
@@ -172,7 +172,7 @@ extension HackleInAppMessageUI {
                     self.superview?.layoutIfNeeded()
                 },
                 completion: { _ in
-                    self.handle(event: .close)
+                    self.handle(event: .close(timestamp: self.clock.now()))
                     self.didDismiss()
                 }
             )
@@ -227,7 +227,10 @@ extension HackleInAppMessageUI {
             view.setTitleColor(closeButton.textColor, for: .normal)
             view.titleLabel?.font = .systemFont(ofSize: 20)
             view.onClick { [weak self] in
-                self?.handle(event: .closeButtonAction(action: closeButton.action))
+                guard let self = self else {
+                    return
+                }
+                self.handle(event: .action(timestamp: self.clock.now(), action: closeButton.action, area: .xButton))
             }
             return view
         }()
@@ -238,10 +241,7 @@ extension HackleInAppMessageUI {
                 return nil
             }
             let attributes = ImageContainerView.Attributes(autoScrollInterval: context.message.imageAutoScroll?.interval)
-            let view = ImageContainerView(items: items, attributes: attributes) { [weak self] event in
-                self?.handle(event: event)
-            }
-            return view
+            return ImageContainerView(items: items, attributes: attributes)
         }()
 
         lazy var buttonContainer: UIView? = {
@@ -270,7 +270,10 @@ extension HackleInAppMessageUI {
             attrs.padding = attributes.buttonPadding
             let view = PositionalButtonView(button: button.button, alignment: button.alignment, attributes: attrs)
             view.onClick { [weak self] in
-                self?.handle(event: .buttonAction(action: button.button.action, button: button.button))
+                guard let self = self else {
+                    return
+                }
+                self.handle(event: .action(timestamp: self.clock.now(), action: button.button.action, button: button.button))
             }
             return view
         }()
@@ -284,7 +287,10 @@ extension HackleInAppMessageUI {
             attrs.padding = attributes.buttonPadding
             let view = PositionalButtonView(button: button.button, alignment: button.alignment, attributes: attrs)
             view.onClick { [weak self] in
-                self?.handle(event: .buttonAction(action: button.button.action, button: button.button))
+                guard let self = self else {
+                    return
+                }
+                self.handle(event: .action(timestamp: self.clock.now(), action: button.button.action, button: button.button))
             }
             return view
         }()

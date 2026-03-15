@@ -28,7 +28,8 @@ extension HackleInAppMessageUI {
             alpha = 0
         }
 
-        public required init?(coder: NSCoder) {
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
 
@@ -57,12 +58,11 @@ extension HackleInAppMessageUI {
 
         // Layout
 
-        private var contentConstraints: Constraints? = nil
+        private var contentConstraints: Constraints?
 
         private func layoutContent() {
             contentConstraints?.deactivate()
             contentConstraints = Constraints {
-
                 // Shadow
                 layer.shadowColor = attributes.shadow.color.cgColor
                 layer.shadowOffset = attributes.shadow.offset
@@ -118,13 +118,10 @@ extension HackleInAppMessageUI {
                 switch alignment.vertical {
                 case .top:
                     anchors.top.pin(inset: attributes.margin.top)
-                    break
                 case .middle:
                     anchors.centerY.align()
-                    break
                 case .bottom:
                     anchors.bottom.pin(inset: attributes.margin.bottom)
-                    break
                 }
             }
             setNeedsLayout()
@@ -133,7 +130,7 @@ extension HackleInAppMessageUI {
 
         // Presentation
 
-        public var presented: Bool = false {
+        var presented: Bool = false {
             didSet {
                 alpha = presented ? 1 : 0
             }
@@ -152,14 +149,14 @@ extension HackleInAppMessageUI {
                 withDuration: 0.05,
                 animations: { self.presented = true },
                 completion: { _ in
-                    self.handle(event: .impression)
+                    self.handle(event: .impression(timestamp: self.clock.now()))
                     self.didPresent()
                 }
             )
         }
 
         func dismiss() {
-            if !self.presented {
+            if !presented {
                 return
             }
 
@@ -172,7 +169,7 @@ extension HackleInAppMessageUI {
                     self.presented = false
                 },
                 completion: { _ in
-                    self.handle(event: .close)
+                    self.handle(event: .close(timestamp: self.clock.now()))
                     self.didDismiss()
                 }
             )
@@ -187,7 +184,7 @@ extension HackleInAppMessageUI {
             guard gesture.state == .ended, let action = context.message.action else {
                 return
             }
-            handle(event: .messageAction(action: action))
+            handle(event: .action(timestamp: clock.now(), action: action, area: .message))
         }
 
         // Views
@@ -202,8 +199,10 @@ extension HackleInAppMessageUI {
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20)
             button.onClick { [weak self] in
-                self?.handle(event: .closeButtonAction(action: closeButton.action))
-
+                guard let self = self else {
+                    return
+                }
+                self.handle(event: .action(timestamp: self.clock.now(), action: closeButton.action, area: .xButton))
             }
             return button
         }()

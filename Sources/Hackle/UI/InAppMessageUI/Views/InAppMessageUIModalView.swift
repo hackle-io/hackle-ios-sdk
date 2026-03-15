@@ -29,7 +29,8 @@ extension HackleInAppMessageUI {
             layoutContent()
         }
 
-        public required init?(coder: NSCoder) {
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
 
@@ -99,7 +100,7 @@ extension HackleInAppMessageUI {
 
         // Layout
 
-        private var contentConstraints: Constraints? = nil
+        private var contentConstraints: Constraints?
 
         private func layoutContent() {
             layoutMargins = attributes.margin
@@ -183,7 +184,7 @@ extension HackleInAppMessageUI {
 
         // Presentation
 
-        public var presented: Bool = false {
+        var presented: Bool = false {
             didSet {
                 alpha = presented ? 1 : 0
             }
@@ -204,14 +205,14 @@ extension HackleInAppMessageUI {
                     self.presented = true
                 },
                 completion: { _ in
-                    self.handle(event: .impression)
+                    self.handle(event: .impression(timestamp: self.clock.now()))
                     self.didPresent()
                 }
             )
         }
 
         func dismiss() {
-            if !self.presented {
+            if !presented {
                 return
             }
 
@@ -224,7 +225,7 @@ extension HackleInAppMessageUI {
                     self.presented = false
                 },
                 completion: { _ in
-                    self.handle(event: .close)
+                    self.handle(event: .close(timestamp: self.clock.now()))
                     self.didDismiss()
                 }
             )
@@ -279,7 +280,10 @@ extension HackleInAppMessageUI {
             button.setTitleColor(closeButton.textColor, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20)
             button.onClick { [weak self] in
-                self?.handle(event: .closeButtonAction(action: closeButton.action))
+                guard let self = self else {
+                    return
+                }
+                self.handle(event: .action(timestamp: self.clock.now(), action: closeButton.action, area: .xButton))
             }
             return button
         }()
@@ -291,10 +295,7 @@ extension HackleInAppMessageUI {
             }
 
             let attributes = ImageContainerView.Attributes(autoScrollInterval: context.message.imageAutoScroll?.interval)
-            let view = ImageContainerView(items: items, attributes: attributes) { [weak self] event in
-                self?.handle(event: event)
-            }
-            return view
+            return ImageContainerView(items: items, attributes: attributes)
         }()
 
         lazy var textView: UITextView? = {
@@ -330,7 +331,10 @@ extension HackleInAppMessageUI {
             let buttonViews = buttons.map { it in
                 let button = ButtonView(button: it)
                 button.onClick { [weak self] in
-                    self?.handle(event: .buttonAction(action: it.action, button: it))
+                    guard let self = self else {
+                        return
+                    }
+                    self.handle(event: .action(timestamp: self.clock.now(), action: it.action, button: it))
                 }
                 return button
             }
@@ -350,7 +354,10 @@ extension HackleInAppMessageUI {
             context.message.outerButtons.map { it in
                 let button = PositionalButtonView(button: it.button, alignment: it.alignment)
                 button.onClick { [weak self] in
-                    self?.handle(event: .buttonAction(action: it.button.action, button: it.button))
+                    guard let self = self else {
+                        return
+                    }
+                    self.handle(event: .action(timestamp: self.clock.now(), action: it.button.action, button: it.button))
                 }
                 return button
             }

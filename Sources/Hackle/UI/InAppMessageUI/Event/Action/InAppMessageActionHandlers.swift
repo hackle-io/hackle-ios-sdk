@@ -1,30 +1,4 @@
-//
-//  InAppMessageActionHandler.swift
-//  Hackle
-//
-//  Created by yong on 2023/06/21.
-//
-
 import Foundation
-
-protocol InAppMessageActionHandler {
-    func supports(action: InAppMessage.Action) -> Bool
-    @MainActor func handle(view: InAppMessageView, action: InAppMessage.Action)
-}
-
-class InAppMessageActionHandlerFactory {
-    private let handlers: [InAppMessageActionHandler]
-
-    init(handlers: [InAppMessageActionHandler]) {
-        self.handlers = handlers
-    }
-
-    func get(action: InAppMessage.Action) -> InAppMessageActionHandler? {
-        handlers.first {
-            $0.supports(action: action)
-        }
-    }
-}
 
 class InAppMessageCloseActionHandler: InAppMessageActionHandler {
     func supports(action: InAppMessage.Action) -> Bool {
@@ -95,11 +69,11 @@ class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
-        if view.context.decisionReasion == DecisionReason.OVERRIDDEN {
+        if view.context.decisionReason == DecisionReason.OVERRIDDEN {
             view.dismiss()
             return
         }
-        
+
         let expireAt = clock.now() + action.DEFAULT_HIDDEN_TIME_INTERVAL
         storage.put(inAppMessage: view.context.inAppMessage, expireAt: expireAt)
         view.dismiss()
