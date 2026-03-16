@@ -1745,6 +1745,31 @@
 			path = RemoteConfig;
 			sourceTree = "<group>";
 		};
+		EE02021D2F67DF16002A8D4F /* Modal */ = {
+			isa = PBXGroup;
+			children = (
+				EE80E0252A2DD5EC00FB12CC /* InAppMessageUIModalView.swift */,
+			);
+			path = Modal;
+			sourceTree = "<group>";
+		};
+		EE02021E2F67DF20002A8D4F /* Banner */ = {
+			isa = PBXGroup;
+			children = (
+				EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */,
+				EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */,
+			);
+			path = Banner;
+			sourceTree = "<group>";
+		};
+		EE02021F2F67DF27002A8D4F /* BottomSheet */ = {
+			isa = PBXGroup;
+			children = (
+				EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */,
+			);
+			path = BottomSheet;
+			sourceTree = "<group>";
+		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
 			isa = PBXGroup;
 			children = (
@@ -3277,14 +3302,13 @@
 		EE80E0162A2DC74D00FB12CC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EE02021F2F67DF27002A8D4F /* BottomSheet */,
+				EE02021E2F67DF20002A8D4F /* Banner */,
+				EE02021D2F67DF16002A8D4F /* Modal */,
 				EE80E01B2A2DC79600FB12CC /* InAppMessageView.swift */,
 				EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */,
 				EEF8D5AA2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift */,
 				EE62927B2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift */,
-				EE80E0252A2DD5EC00FB12CC /* InAppMessageUIModalView.swift */,
-				EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */,
-				EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */,
-				EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */,
 				EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */,
 				EEA01CC22A36E56600E0C021 /* InAppMessageUIButtonView.swift */,
 			);
