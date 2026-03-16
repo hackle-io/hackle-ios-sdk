@@ -67,6 +67,8 @@ class DefaultInvocationHandlerFactory: InvocationHandlerFactory {
                 return SetCurrentScreenInvocationHandler(core: core)
             case .setOptOutTracking:
                 return SetOptOutTrackingInvocationHandler(core: core)
+            case .isOptOutTracking:
+                return IsOptOutTrackingInvocationHandler(core: core)
             case .showUserExplorer:
                 return ShowUserExplorerInvocationHandler(core: core)
             case .hideUserExplorer:

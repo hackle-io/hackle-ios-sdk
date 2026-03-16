@@ -45,6 +45,7 @@ enum InvocationCommand: String, CaseIterable {
     
     // Configuration
     case setOptOutTracking
+    case isOptOutTracking
     
     // DevTools
     case showUserExplorer

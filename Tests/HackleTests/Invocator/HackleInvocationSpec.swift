@@ -1568,6 +1568,29 @@ class HackleInvocationSpec: QuickSpec {
                     expect(dict["success"] as? Bool) == false
                 }
             }
+            describe("isOptOutTracking") {
+                it("isOptOutTracking이 true이면 data=true 반환") {
+                    core.isOptOutTracking = true
+                    let jsonString = self.createJsonString(command: "isOptOutTracking")
+                    let result = sut.invoke(string: jsonString)
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"] as? Bool) == true
+                }
+
+                it("isOptOutTracking이 false이면 data=false 반환") {
+                    core.isOptOutTracking = false
+                    let jsonString = self.createJsonString(command: "isOptOutTracking")
+                    let result = sut.invoke(string: jsonString)
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"] as? Bool) == false
+                }
+            }
             describe("user explorer") {
                 it("show") {
                     let jsonString = self.createJsonString(command: "showUserExplorer", parameters: [:])
