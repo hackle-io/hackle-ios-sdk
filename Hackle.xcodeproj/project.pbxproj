@@ -22,8 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		7E0E2D8A2ADCD75300578C74 /* HackleWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */; };
-		7E0E2D922AE75FCD00578C74 /* Invocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D912AE75FCD00578C74 /* Invocation.swift */; };
-		7E0E2D942AE7A81B00578C74 /* InvokeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */; };
 		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
@@ -98,10 +96,10 @@
 		B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */; };
 		B26AC23C2E4B1CD600AAE56F /* HackleAppCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23B2E4B1CD200AAE56F /* HackleAppCore.swift */; };
 		B26AC23E2E4B2E7900AAE56F /* HackleInvokeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23D2E4B2E7000AAE56F /* HackleInvokeParameters.swift */; };
-		B26AC2402E4B305200AAE56F /* InvokeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23F2E4B305100AAE56F /* InvokeDto.swift */; };
+		B26AC2402E4B305200AAE56F /* InvocationDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC23F2E4B305100AAE56F /* InvocationDto.swift */; };
 		B26AC2442E4B670A00AAE56F /* HackleAppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2432E4B670600AAE56F /* HackleAppContext.swift */; };
 		B26AC2462E4B679D00AAE56F /* HackleInvocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2452E4B679900AAE56F /* HackleInvocator.swift */; };
-		B26AC2922E4C5AA900AAE56F /* InvokeDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */; };
+		B26AC2922E4C5AA900AAE56F /* InvocationDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26AC2912E4C5AA300AAE56F /* InvocationDtoSpecs.swift */; };
 		B26EB40E2E96974F003E7B13 /* ApplicationInstallState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */; };
 		B26EB4102E96978D003E7B13 /* ApplicationInstallStateListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */; };
 		B26EB4122E9697BE003E7B13 /* ApplicationInstallStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */; };
@@ -516,6 +514,20 @@
 		EE543CD92C099D9D00F64BFA /* DefaultAppStateManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CD82C099D9D00F64BFA /* DefaultAppStateManagerSpecs.swift */; };
 		EE543CDB2C099DA700F64BFA /* LifecycleManagerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CDA2C099DA700F64BFA /* LifecycleManagerSpecs.swift */; };
 		EE543CDD2C09AA8600F64BFA /* MockViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE543CDC2C09AA8600F64BFA /* MockViewManager.swift */; };
+		EE55B4832F62B74B00A36359 /* InvocationCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4822F62B74B00A36359 /* InvocationCommand.swift */; };
+		EE55B4862F62BAAE00A36359 /* InvocationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4852F62BAAE00A36359 /* InvocationRequest.swift */; };
+		EE55B4882F62BAE900A36359 /* InvocationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4872F62BAE900A36359 /* InvocationResponse.swift */; };
+		EE55B48A2F62BAF200A36359 /* InvocationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4892F62BAF200A36359 /* InvocationHandler.swift */; };
+		EE55B48C2F62BB0100A36359 /* InvocationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B48B2F62BB0100A36359 /* InvocationProcessor.swift */; };
+		EE55B48E2F62BB0800A36359 /* InvocationHandlerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B48D2F62BB0800A36359 /* InvocationHandlerFactory.swift */; };
+		EE55B4932F63972800A36359 /* InvocationHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4922F63972800A36359 /* InvocationHandlers.swift */; };
+		EE55B4962F63C73500A36359 /* MockInvocationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4952F63C73500A36359 /* MockInvocationProcessor.swift */; };
+		EE55B4982F63C7F000A36359 /* MockInvocationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4972F63C7F000A36359 /* MockInvocationHandler.swift */; };
+		EE55B49A2F63C86500A36359 /* MockInvocationHandlerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4992F63C86500A36359 /* MockInvocationHandlerFactory.swift */; };
+		EE55B49C2F63CCDE00A36359 /* DefaultInvocationProcessorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B49B2F63CCDE00A36359 /* DefaultInvocationProcessorSpecs.swift */; };
+		EE55B49E2F63D0AB00A36359 /* DefaultInvocationHandlerFactorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B49D2F63D0AB00A36359 /* DefaultInvocationHandlerFactorySpecs.swift */; };
+		EE55B4A02F63D34B00A36359 /* InvocationRequestSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B49F2F63D34B00A36359 /* InvocationRequestSpecs.swift */; };
+		EE55B4A42F63F82500A36359 /* InvocationResponseSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55B4A32F63F82500A36359 /* InvocationResponseSpecs.swift */; };
 		EE5A78DD2ADAEC83005A0F9E /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78DC2ADAEC83005A0F9E /* Base64.swift */; };
 		EE5A78DF2ADBE8E0005A0F9E /* SynchronizerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78DE2ADBE8E0005A0F9E /* SynchronizerSpecs.swift */; };
 		EE5A78E12ADBECFE005A0F9E /* UserCohortSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */; };
@@ -707,8 +719,6 @@
 
 /* Begin PBXFileReference section */
 		7E0E2D892ADCD75300578C74 /* HackleWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleWebBridge.swift; sourceTree = "<group>"; };
-		7E0E2D912AE75FCD00578C74 /* Invocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invocation.swift; sourceTree = "<group>"; };
-		7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeResponse.swift; sourceTree = "<group>"; };
 		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
 		7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationProviderType.swift; sourceTree = "<group>"; };
 		7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
@@ -783,10 +793,10 @@
 		B2623C412CBD19BF0051D2D6 /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		B26AC23B2E4B1CD200AAE56F /* HackleAppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppCore.swift; sourceTree = "<group>"; };
 		B26AC23D2E4B2E7000AAE56F /* HackleInvokeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInvokeParameters.swift; sourceTree = "<group>"; };
-		B26AC23F2E4B305100AAE56F /* InvokeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeDto.swift; sourceTree = "<group>"; };
+		B26AC23F2E4B305100AAE56F /* InvocationDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationDto.swift; sourceTree = "<group>"; };
 		B26AC2432E4B670600AAE56F /* HackleAppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAppContext.swift; sourceTree = "<group>"; };
 		B26AC2452E4B679900AAE56F /* HackleInvocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInvocator.swift; sourceTree = "<group>"; };
-		B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvokeDtoSpecs.swift; sourceTree = "<group>"; };
+		B26AC2912E4C5AA300AAE56F /* InvocationDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationDtoSpecs.swift; sourceTree = "<group>"; };
 		B26EB40D2E96974A003E7B13 /* ApplicationInstallState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallState.swift; sourceTree = "<group>"; };
 		B26EB40F2E969786003E7B13 /* ApplicationInstallStateListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateListener.swift; sourceTree = "<group>"; };
 		B26EB4112E9697B6003E7B13 /* ApplicationInstallStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInstallStateManager.swift; sourceTree = "<group>"; };
@@ -1201,6 +1211,20 @@
 		EE543CD82C099D9D00F64BFA /* DefaultAppStateManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAppStateManagerSpecs.swift; sourceTree = "<group>"; };
 		EE543CDA2C099DA700F64BFA /* LifecycleManagerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleManagerSpecs.swift; sourceTree = "<group>"; };
 		EE543CDC2C09AA8600F64BFA /* MockViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockViewManager.swift; sourceTree = "<group>"; };
+		EE55B4822F62B74B00A36359 /* InvocationCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationCommand.swift; sourceTree = "<group>"; };
+		EE55B4852F62BAAE00A36359 /* InvocationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationRequest.swift; sourceTree = "<group>"; };
+		EE55B4872F62BAE900A36359 /* InvocationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationResponse.swift; sourceTree = "<group>"; };
+		EE55B4892F62BAF200A36359 /* InvocationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationHandler.swift; sourceTree = "<group>"; };
+		EE55B48B2F62BB0100A36359 /* InvocationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationProcessor.swift; sourceTree = "<group>"; };
+		EE55B48D2F62BB0800A36359 /* InvocationHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationHandlerFactory.swift; sourceTree = "<group>"; };
+		EE55B4922F63972800A36359 /* InvocationHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationHandlers.swift; sourceTree = "<group>"; };
+		EE55B4952F63C73500A36359 /* MockInvocationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInvocationProcessor.swift; sourceTree = "<group>"; };
+		EE55B4972F63C7F000A36359 /* MockInvocationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInvocationHandler.swift; sourceTree = "<group>"; };
+		EE55B4992F63C86500A36359 /* MockInvocationHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInvocationHandlerFactory.swift; sourceTree = "<group>"; };
+		EE55B49B2F63CCDE00A36359 /* DefaultInvocationProcessorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInvocationProcessorSpecs.swift; sourceTree = "<group>"; };
+		EE55B49D2F63D0AB00A36359 /* DefaultInvocationHandlerFactorySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultInvocationHandlerFactorySpecs.swift; sourceTree = "<group>"; };
+		EE55B49F2F63D34B00A36359 /* InvocationRequestSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationRequestSpecs.swift; sourceTree = "<group>"; };
+		EE55B4A32F63F82500A36359 /* InvocationResponseSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationResponseSpecs.swift; sourceTree = "<group>"; };
 		EE5A78DC2ADAEC83005A0F9E /* Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
 		EE5A78DE2ADBE8E0005A0F9E /* SynchronizerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizerSpecs.swift; sourceTree = "<group>"; };
 		EE5A78E02ADBECFE005A0F9E /* UserCohortSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCohortSpecs.swift; sourceTree = "<group>"; };
@@ -1415,7 +1439,8 @@
 		7E0E2D8B2ADE532B00578C74 /* Invocator */ = {
 			isa = PBXGroup;
 			children = (
-				B26AC2912E4C5AA300AAE56F /* InvokeDtoSpecs.swift */,
+				EE55B4942F63C72100A36359 /* Invocation */,
+				B26AC2912E4C5AA300AAE56F /* InvocationDtoSpecs.swift */,
 				7E64779A2AD4F19D00971F20 /* HackleInvocationSpec.swift */,
 				B2FCB8BF2EB1B069001C6B14 /* HackleWebBridgeSpecs.swift */,
 			);
@@ -1425,9 +1450,7 @@
 		7E0E2D902AE75F1C00578C74 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				7E0E2D912AE75FCD00578C74 /* Invocation.swift */,
-				7E0E2D932AE7A81B00578C74 /* InvokeResponse.swift */,
-				B26AC23F2E4B305100AAE56F /* InvokeDto.swift */,
+				B26AC23F2E4B305100AAE56F /* InvocationDto.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1494,6 +1517,7 @@
 		7E825C7E2ABD56D20003F0B7 /* Invocator */ = {
 			isa = PBXGroup;
 			children = (
+				EE55B4842F62B9DC00A36359 /* Invocation */,
 				7E0E2D902AE75F1C00578C74 /* Model */,
 				7E0E2D7E2AD8D8D100578C74 /* Web */,
 				7E65EB7D2ACE503E00900097 /* DefaultHackleInvocator.swift */,
@@ -3029,6 +3053,34 @@
 			path = Engagement;
 			sourceTree = "<group>";
 		};
+		EE55B4842F62B9DC00A36359 /* Invocation */ = {
+			isa = PBXGroup;
+			children = (
+				EE55B4822F62B74B00A36359 /* InvocationCommand.swift */,
+				EE55B4852F62BAAE00A36359 /* InvocationRequest.swift */,
+				EE55B4872F62BAE900A36359 /* InvocationResponse.swift */,
+				EE55B4892F62BAF200A36359 /* InvocationHandler.swift */,
+				EE55B4922F63972800A36359 /* InvocationHandlers.swift */,
+				EE55B48D2F62BB0800A36359 /* InvocationHandlerFactory.swift */,
+				EE55B48B2F62BB0100A36359 /* InvocationProcessor.swift */,
+			);
+			path = Invocation;
+			sourceTree = "<group>";
+		};
+		EE55B4942F63C72100A36359 /* Invocation */ = {
+			isa = PBXGroup;
+			children = (
+				EE55B4952F63C73500A36359 /* MockInvocationProcessor.swift */,
+				EE55B4992F63C86500A36359 /* MockInvocationHandlerFactory.swift */,
+				EE55B4972F63C7F000A36359 /* MockInvocationHandler.swift */,
+				EE55B49B2F63CCDE00A36359 /* DefaultInvocationProcessorSpecs.swift */,
+				EE55B49D2F63D0AB00A36359 /* DefaultInvocationHandlerFactorySpecs.swift */,
+				EE55B49F2F63D34B00A36359 /* InvocationRequestSpecs.swift */,
+				EE55B4A32F63F82500A36359 /* InvocationResponseSpecs.swift */,
+			);
+			path = Invocation;
+			sourceTree = "<group>";
+		};
 		EE5A78F82ADCD29B005A0F9E /* Platform */ = {
 			isa = PBXGroup;
 			children = (
@@ -3609,7 +3661,6 @@
 				EEDC58712ACBD807001E73DB /* PollingSynchronizer.swift in Sources */,
 				EE789E2129EFD7670088D8A6 /* UserEventFactory.swift in Sources */,
 				B2FCB8BA2EB0CAFD001C6B14 /* HackleWebViewConfig.swift in Sources */,
-				7E0E2D922AE75FCD00578C74 /* Invocation.swift in Sources */,
 				EEAC3F372B9D550D00DC498E /* PushToken.swift in Sources */,
 				EE29D98F29CD825400B1FEAA /* Evaluator.swift in Sources */,
 				EEDC585F2ACB1B60001E73DB /* Cohort.swift in Sources */,
@@ -3639,6 +3690,7 @@
 				B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */,
 				B2E38EA32DC488850024AA64 /* ExperimentContextualEvaluator.swift in Sources */,
 				EEA7FCC12C04AE550004F858 /* ViewLifecyclePublisher.swift in Sources */,
+				EE55B48A2F62BAF200A36359 /* InvocationHandler.swift in Sources */,
 				EE29D9A829CD825500B1FEAA /* ExposureEventDedupDeterminer.swift in Sources */,
 				EEDC58842ACC07C4001E73DB /* UserCohort.swift in Sources */,
 				7E9F7E812B6B96ED00A6B0B8 /* FileStorage.swift in Sources */,
@@ -3663,6 +3715,7 @@
 				B2C276132C7EF48D00EEAA2A /* HackleInAppMessageView.swift in Sources */,
 				B28499742E8E190D00BEA926 /* ApplicationLifecycleListener.swift in Sources */,
 				EE4D03802E5C35A2007BE61A /* InAppMessageEligibilityFlowEvaluator.swift in Sources */,
+				EE55B4832F62B74B00A36359 /* InvocationCommand.swift in Sources */,
 				EE29D9B029CD825500B1FEAA /* Config.swift in Sources */,
 				EE29D94529CD825400B1FEAA /* NoopCounter.swift in Sources */,
 				EE29D94829CD825400B1FEAA /* FlushCounter.swift in Sources */,
@@ -3675,6 +3728,7 @@
 				EEA01CB42A3069B000E0C021 /* InAppMessagePresenter.swift in Sources */,
 				EEA01CC92A37136900E0C021 /* InAppMessageUIExt.swift in Sources */,
 				EE29D9AF29CD825500B1FEAA /* Decision.swift in Sources */,
+				EE55B4862F62BAAE00A36359 /* InvocationRequest.swift in Sources */,
 				EE29D97129CD825400B1FEAA /* Json.swift in Sources */,
 				7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */,
 				EE29D97529CD825400B1FEAA /* AtomicDouble.swift in Sources */,
@@ -3723,6 +3777,7 @@
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
 				EE86377729ED312F000268DC /* ExperimentConditionMatcher.swift in Sources */,
+				EE55B48C2F62BB0100A36359 /* InvocationProcessor.swift in Sources */,
 				EE4D03C82E5D58EA007BE61A /* InAppMessageDeliverRequest.swift in Sources */,
 				B24250262D9A2B7800CF27FC /* PIIEventExtensions.swift in Sources */,
 				EE29D95029CD825400B1FEAA /* DelegatingMetricRegistry.swift in Sources */,
@@ -3733,7 +3788,6 @@
 				B26AC2462E4B679D00AAE56F /* HackleInvocator.swift in Sources */,
 				7E4666302B30133400B3CDCF /* NotificationHandler.swift in Sources */,
 				EE80E0282A2E10F700FB12CC /* InAppMessageUIViewController.swift in Sources */,
-				7E0E2D942AE7A81B00578C74 /* InvokeResponse.swift in Sources */,
 				EEAC3F352B9D54F400DC498E /* PushTokenManager.swift in Sources */,
 				EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */,
 				EE81ED992E61843A0044B40E /* EvaluationEventRecorder.swift in Sources */,
@@ -3813,6 +3867,7 @@
 				EE29D96B29CD825400B1FEAA /* UserListener.swift in Sources */,
 				EE3C165B29D43234008177F6 /* HackleFeatureFlagTableViewCell.swift in Sources */,
 				EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */,
+				EE55B4882F62BAE900A36359 /* InvocationResponse.swift in Sources */,
 				EE86375F29ECD0AC000268DC /* ContextualEvaluator.swift in Sources */,
 				EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */,
 				EE29D95829CD825400B1FEAA /* MetricField.swift in Sources */,
@@ -3826,6 +3881,7 @@
 				7E4666292B2C409600B3CDCF /* SharedDatabase.swift in Sources */,
 				EE29D95E29CD825400B1FEAA /* ApplicationState.swift in Sources */,
 				EE4D039B2E5C93E6007BE61A /* InAppMessagePresentRequest.swift in Sources */,
+				EE55B48E2F62BB0800A36359 /* InvocationHandlerFactory.swift in Sources */,
 				EEF8D5AB2CEA056B00C384A9 /* InAppMessageUIScrollImageView.swift in Sources */,
 				EE29D97B29CD825400B1FEAA /* SdkVersion.swift in Sources */,
 				EE29D9A129CD825500B1FEAA /* EvaluationFlow.swift in Sources */,
@@ -3840,7 +3896,7 @@
 				EE29D96D29CD825400B1FEAA /* Objects.swift in Sources */,
 				EE4D04792E5DD356007BE61A /* InAppMessageResetProcessor.swift in Sources */,
 				EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */,
-				B26AC2402E4B305200AAE56F /* InvokeDto.swift in Sources */,
+				B26AC2402E4B305200AAE56F /* InvocationDto.swift in Sources */,
 				EE0F33FA2A66781E009DE640 /* InAppMessageEventProcessor.swift in Sources */,
 				EEA01CBC2A32A8C600E0C021 /* EventConditionMatcher.swift in Sources */,
 				EE4D03FC2E5D7658007BE61A /* InAppMessageScheduleType.swift in Sources */,
@@ -3882,6 +3938,7 @@
 				B21D7F962F5FD56E00C842F0 /* HackleSessionTimeoutCondition.swift in Sources */,
 				B21D7F972F5FD56E00C842F0 /* HackleSessionPolicy.swift in Sources */,
 				7E5206022B2BE6A90095DCD9 /* Database.swift in Sources */,
+				EE55B4932F63972800A36359 /* InvocationHandlers.swift in Sources */,
 				EE4D039F2E5C93F2007BE61A /* InAppMessagePresentProcessor.swift in Sources */,
 				EE86376529ECDA38000268DC /* ExperimentEvaluator.swift in Sources */,
 				EE29D98129CD825400B1FEAA /* ParameterConfiguration.swift in Sources */,
@@ -3972,6 +4029,7 @@
 				7E9065BF2B5E593F00FE6E52 /* MockWorkspaceConfigRepository.swift in Sources */,
 				EE4D03AF2E5D4157007BE61A /* MockInAppMessagePresentProcessor.swift in Sources */,
 				EE0F34122A66C3CF009DE640 /* MockInAppMessageActionHandler.swift in Sources */,
+				EE55B49C2F63CCDE00A36359 /* DefaultInvocationProcessorSpecs.swift in Sources */,
 				7E9065C32B5E902700FE6E52 /* MockHttpWorkspaceFetcher.swift in Sources */,
 				EE81EDA72E61A6DF0044B40E /* MockInAppMessageEvaluateProcessor.swift in Sources */,
 				EE29DAA429CD82C200B1FEAA /* PropertiesBuilderSpecs.swift in Sources */,
@@ -4032,6 +4090,7 @@
 				EEF895912A4971DE00722CF6 /* InAppMessageMatcherStub.swift in Sources */,
 				EEAC3F452B9D6D7000DC498E /* DefaultPushTokenRegistrySpecs.swift in Sources */,
 				EEFA31EC2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift in Sources */,
+				EE55B4A42F63F82500A36359 /* InvocationResponseSpecs.swift in Sources */,
 				EE4D04582E5DAB81007BE61A /* MockInAppMessageScheduleProcessor.swift in Sources */,
 				EEC2FB2E29D550A10032A030 /* DelegatingManualOverrideStorageSpecs.swift in Sources */,
 				EE81EDAD2E61B10E0044B40E /* DefaultInAppMessageEligibilityFlowFactorySpecs.swift in Sources */,
@@ -4049,6 +4108,7 @@
 				EE29DA5A29CD82C200B1FEAA /* DelegatingTimerSpecs.swift in Sources */,
 				EEE636792A47458700428681 /* FixedClock.swift in Sources */,
 				EE29DA4129CD82C200B1FEAA /* MockHttpClient.swift in Sources */,
+				EE55B49A2F63C86500A36359 /* MockInvocationHandlerFactory.swift in Sources */,
 				EE29DA7A29CD82C200B1FEAA /* MockUserValueResolver.swift in Sources */,
 				EE5A78DF2ADBE8E0005A0F9E /* SynchronizerSpecs.swift in Sources */,
 				7E9F7E872B6CA7C300A6B0B8 /* DefaultFileStorageSpecs.swift in Sources */,
@@ -4105,6 +4165,7 @@
 				EE29DA5629CD82C200B1FEAA /* MetricFieldSpecs.swift in Sources */,
 				7E70B5742AA8641900746A5F /* MockDevice.swift in Sources */,
 				EE4D04562E5DAB63007BE61A /* TriggeredInAppMessageSchedulerSpecs.swift in Sources */,
+				EE55B4982F63C7F000A36359 /* MockInvocationHandler.swift in Sources */,
 				EE4D04742E5DCB96007BE61A /* MockInAppMessageTriggerProcessor.swift in Sources */,
 				EE4D03C22E5D57F7007BE61A /* MockInAppMessageIdentifierChecker.swift in Sources */,
 				EE5A78E32ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift in Sources */,
@@ -4145,10 +4206,11 @@
 				EE4D045A2E5DAB87007BE61A /* DefaultInAppMessageScheduleProcessorSpecs.swift in Sources */,
 				B290E6602D55DE2D00F68D35 /* DefaultUserTargetFetcherSpecs.swift in Sources */,
 				EE29DAA129CD82C200B1FEAA /* DefaultSessionManagerSpecs.swift in Sources */,
-				B26AC2922E4C5AA900AAE56F /* InvokeDtoSpecs.swift in Sources */,
+				B26AC2922E4C5AA900AAE56F /* InvocationDtoSpecs.swift in Sources */,
 				EE81EDB52E6530260044B40E /* InAppMessageDeliverRequestSpecs.swift in Sources */,
 				EE29DA5E29CD82C200B1FEAA /* CumulativeMetricRegistrySpecs.swift in Sources */,
 				EE29DA8829CD82C200B1FEAA /* MockExperimentTargetRuleDeterminer.swift in Sources */,
+				EE55B49E2F63D0AB00A36359 /* DefaultInvocationHandlerFactorySpecs.swift in Sources */,
 				EE29DA9329CD82C200B1FEAA /* Murmur3HasherSpec.swift in Sources */,
 				EE29DA7329CD82C200B1FEAA /* ValueMatcherSpecs.swift in Sources */,
 				EE4B81152C00829C00719C41 /* WebViewWrapperUserEventFilterSpecs.swift in Sources */,
@@ -4192,9 +4254,11 @@
 				EE29DA7B29CD82C200B1FEAA /* ValueMatcherFactorySpecs.swift in Sources */,
 				EE29DAA329CD82C200B1FEAA /* MockSessionManager.swift in Sources */,
 				EE789E2B29F008F30088D8A6 /* MockUserEventFactory.swift in Sources */,
+				EE55B4962F63C73500A36359 /* MockInvocationProcessor.swift in Sources */,
 				EE29DA7429CD82C200B1FEAA /* DefaultConditionMatcherFactorySpecs.swift in Sources */,
 				EEF895AC2A4A927700722CF6 /* DefaultInAppMessageHiddenStorageSpecs.swift in Sources */,
 				EE29DA8B29CD82C200B1FEAA /* DefaultRemoteConfigTargetRuleMatcherSpecs.swift in Sources */,
+				EE55B4A02F63D34B00A36359 /* InvocationRequestSpecs.swift in Sources */,
 				EE29DA8C29CD82C200B1FEAA /* DefaultContainerResolverSpecs.swift in Sources */,
 				B2A88D8C2E20AE9400475B73 /* MockUserEventBackoffController.swift in Sources */,
 				EE29DA6F29CD82C200B1FEAA /* MockEvaluator.swift in Sources */,

@@ -73,14 +73,13 @@ class InvokeDtoSpecs: QuickSpec {
                     let user = User.from(dto: dto)
 
                     // then
-                    expect(user).toNot(beNil())
-                    expect(user?.id).to(equal("hackle_id"))
-                    expect(user?.userId).to(equal("test_user"))
-                    expect(user?.deviceId).to(equal("test_device"))
-                    expect(user?.identifiers).to(equal(["customId": "custom_value"]))
-                    let properties = user?.properties
-                    expect(properties?["age"] as? Int).to(equal(30))
-                    expect(properties?["isVip"] as? Bool).to(beTrue())
+                    expect(user.id).to(equal("hackle_id"))
+                    expect(user.userId).to(equal("test_user"))
+                    expect(user.deviceId).to(equal("test_device"))
+                    expect(user.identifiers).to(equal(["customId": "custom_value"]))
+                    let properties = user.properties
+                    expect(properties["age"] as? Int).to(equal(30))
+                    expect(properties["isVip"] as? Bool).to(beTrue())
                 }
 
                 it("should create a User even if some properties are missing") {
@@ -91,9 +90,8 @@ class InvokeDtoSpecs: QuickSpec {
                     let user = User.from(dto: dto)
 
                     // then
-                    expect(user).toNot(beNil())
-                    expect(user?.userId).to(equal("test_user"))
-                    expect(user?.id).to(beNil())
+                    expect(user.userId).to(equal("test_user"))
+                    expect(user.id).to(beNil())
                 }
             }
         }
