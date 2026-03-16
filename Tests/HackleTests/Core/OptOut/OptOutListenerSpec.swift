@@ -41,8 +41,8 @@ class OptOutListenerSpec: QuickSpec {
         it("상태 변경이 리스너 통지 전에 완료") {
             let sut = OptOutManager(configOptOutTracking: false)
             var stateAtNotification: Bool?
-            let listener = BlockOptOutListener { _ in
-                stateAtNotification = sut.isOptOutTracking
+            let listener = BlockOptOutListener { current in
+                stateAtNotification = current
             }
             sut.addListener(listener: listener)
 
