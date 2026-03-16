@@ -108,6 +108,8 @@ extension DefaultHackleInvocator {
         case .hideUserExplorer:
             hackleAppCore.hideUserExplorer()
             return .success()
+        case .isOptOutTracking:
+            return .success(hackleAppCore.isOptOutTracking)
         }
     }
 }

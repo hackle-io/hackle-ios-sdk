@@ -33,6 +33,7 @@ class Invocation {
         case setOptOutTracking = "setOptOutTracking"
         case showUserExplorer = "showUserExplorer"
         case hideUserExplorer = "hideUserExplorer"
+        case isOptOutTracking = "isOptOutTracking"
     }
     
     let command: Command

@@ -553,8 +553,6 @@ extension HackleApp {
         let optOutManager = OptOutManager(
             configOptOutTracking: config.optOutTracking
         )
-        let optOutUserEventFilter = OptOutUserEventFilter(optOutManager: optOutManager)
-        eventFilters.append(optOutUserEventFilter)
 
         let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
@@ -581,8 +579,10 @@ extension HackleApp {
             sessionManager: sessionManager,
             userManager: userManager,
             screenUserEventDecorator: screenUserEventDecorator,
-            eventBackoffController: eventBackoffController
+            eventBackoffController: eventBackoffController,
+            optOutManager: optOutManager
         )
+        optOutManager.addListener(listener: eventProcessor)
 
         // - Evaluation Event
 
