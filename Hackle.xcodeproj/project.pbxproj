@@ -70,9 +70,9 @@
 		B21A14972E9E6ABD0088EBEC /* PlatformManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21A14962E9E6AB80088EBEC /* PlatformManager.swift */; };
 		B21D7F5E2F5E6C2C00C842F0 /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F5D2F5E6C2C00C842F0 /* SessionContext.swift */; };
 		B21D7F622F5E908F00C842F0 /* OptOutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F5F2F5E908F00C842F0 /* OptOutManager.swift */; };
-		B21D7F632F5E908F00C842F0 /* OptOutUserEventFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F602F5E908F00C842F0 /* OptOutUserEventFilter.swift */; };
+		B21D7F632F5E908F00C842F0 /* OptOutListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F602F5E908F00C842F0 /* OptOutListener.swift */; };
 		B21D7F672F5FABBC00C842F0 /* OptOutManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F642F5FABBC00C842F0 /* OptOutManagerSpec.swift */; };
-		B21D7F682F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F652F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift */; };
+		B21D7F682F5FABBC00C842F0 /* OptOutListenerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F652F5FABBC00C842F0 /* OptOutListenerSpec.swift */; };
 		B21D7F952F5FD56E00C842F0 /* HackleSessionPersistCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F912F5FD56E00C842F0 /* HackleSessionPersistCondition.swift */; };
 		B21D7F962F5FD56E00C842F0 /* HackleSessionTimeoutCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F932F5FD56E00C842F0 /* HackleSessionTimeoutCondition.swift */; };
 		B21D7F972F5FD56E00C842F0 /* HackleSessionPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21D7F922F5FD56E00C842F0 /* HackleSessionPolicy.swift */; };
@@ -789,9 +789,9 @@
 		B21A14962E9E6AB80088EBEC /* PlatformManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformManager.swift; sourceTree = "<group>"; };
 		B21D7F5D2F5E6C2C00C842F0 /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		B21D7F5F2F5E908F00C842F0 /* OptOutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutManager.swift; sourceTree = "<group>"; };
-		B21D7F602F5E908F00C842F0 /* OptOutUserEventFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutUserEventFilter.swift; sourceTree = "<group>"; };
+		B21D7F602F5E908F00C842F0 /* OptOutListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutListener.swift; sourceTree = "<group>"; };
 		B21D7F642F5FABBC00C842F0 /* OptOutManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutManagerSpec.swift; sourceTree = "<group>"; };
-		B21D7F652F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutUserEventFilterSpec.swift; sourceTree = "<group>"; };
+		B21D7F652F5FABBC00C842F0 /* OptOutListenerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptOutListenerSpec.swift; sourceTree = "<group>"; };
 		B21D7F912F5FD56E00C842F0 /* HackleSessionPersistCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSessionPersistCondition.swift; sourceTree = "<group>"; };
 		B21D7F922F5FD56E00C842F0 /* HackleSessionPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSessionPolicy.swift; sourceTree = "<group>"; };
 		B21D7F932F5FD56E00C842F0 /* HackleSessionTimeoutCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSessionTimeoutCondition.swift; sourceTree = "<group>"; };
@@ -1627,7 +1627,7 @@
 			isa = PBXGroup;
 			children = (
 				B21D7F5F2F5E908F00C842F0 /* OptOutManager.swift */,
-				B21D7F602F5E908F00C842F0 /* OptOutUserEventFilter.swift */,
+				B21D7F602F5E908F00C842F0 /* OptOutListener.swift */,
 			);
 			path = OptOut;
 			sourceTree = "<group>";
@@ -1636,7 +1636,7 @@
 			isa = PBXGroup;
 			children = (
 				B21D7F642F5FABBC00C842F0 /* OptOutManagerSpec.swift */,
-				B21D7F652F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift */,
+				B21D7F652F5FABBC00C842F0 /* OptOutListenerSpec.swift */,
 			);
 			path = OptOut;
 			sourceTree = "<group>";
@@ -3969,7 +3969,7 @@
 				EE86377329ED0085000268DC /* RemoteConfigEvaluation.swift in Sources */,
 				B2C276172C7EFF6000EEAA2A /* HackleInAppMessageAction.swift in Sources */,
 				B21D7F622F5E908F00C842F0 /* OptOutManager.swift in Sources */,
-				B21D7F632F5E908F00C842F0 /* OptOutUserEventFilter.swift in Sources */,
+				B21D7F632F5E908F00C842F0 /* OptOutListener.swift in Sources */,
 				EE1F5D592A9F3593006E17EF /* HackleExperiment.swift in Sources */,
 				B235D5792DB75DFB00185581 /* WebViewWrapperUserEventDecorator.swift in Sources */,
 				EEA01CB82A31CEAA00E0C021 /* InAppMessagePresentationContext.swift in Sources */,
@@ -4144,7 +4144,7 @@
 				EE29DA3E29CD82C200B1FEAA /* MockHasher.swift in Sources */,
 				EE789E2F29F01C700088D8A6 /* ResourcesWorkspaceFetcher.swift in Sources */,
 				B21D7F672F5FABBC00C842F0 /* OptOutManagerSpec.swift in Sources */,
-				B21D7F682F5FABBC00C842F0 /* OptOutUserEventFilterSpec.swift in Sources */,
+				B21D7F682F5FABBC00C842F0 /* OptOutListenerSpec.swift in Sources */,
 				EEF895A42A4A67CF00722CF6 /* InAppMessageEligibilityRequestSpecs.swift in Sources */,
 				EE4D04232E5D8185007BE61A /* InAppMessageScheduleRequestSpecs.swift in Sources */,
 				EE0F34052A6692BC009DE640 /* InAppMessageActionHandlerSpecs.swift in Sources */,

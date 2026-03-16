@@ -427,6 +427,19 @@ class SetOptOutTrackingInvocationHandler: InvocationHandler {
     }
 }
 
+class IsOptOutTrackingInvocationHandler: InvocationHandler {
+    typealias T = Bool
+    
+    private let core: HackleAppCore
+    init(core: HackleAppCore) {
+        self.core = core
+    }
+    
+    func invoke(request: InvocationRequest) throws -> InvocationResponse<Bool> {
+        return .success(data: core.isOptOutTracking)
+    }
+}
+
 // MARK: - DevTools
 
 class ShowUserExplorerInvocationHandler: InvocationHandler {

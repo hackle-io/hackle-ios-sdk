@@ -54,6 +54,8 @@ class DefaultInvocationHandlerFactorySpecs: QuickSpec {
                         expect(handler).to(beAnInstanceOf(SetCurrentScreenInvocationHandler.self))
                     case .setOptOutTracking:
                         expect(handler).to(beAnInstanceOf(SetOptOutTrackingInvocationHandler.self))
+                    case .isOptOutTracking:
+                        expect(handler).to(beAnInstanceOf(IsOptOutTrackingInvocationHandler.self))
                     case .showUserExplorer:
                         expect(handler).to(beAnInstanceOf(ShowUserExplorerInvocationHandler.self))
                     case .hideUserExplorer:
