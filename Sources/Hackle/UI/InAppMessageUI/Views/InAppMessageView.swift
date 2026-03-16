@@ -4,6 +4,9 @@ import UIKit
 /// Base view protocol for InAppMessage
 @MainActor
 protocol InAppMessageView: UIView, InAppMessageViewAware, HackleInAppMessageView {
+    /// The unique identifier of this view.
+    var id: String { get }
+
     /// Indicates whether the InAppMessageView is currently presented.
     var presented: Bool { get }
 

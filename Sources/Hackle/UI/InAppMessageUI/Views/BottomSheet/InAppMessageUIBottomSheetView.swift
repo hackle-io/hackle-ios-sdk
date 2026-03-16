@@ -3,6 +3,7 @@ import UIKit
 
 extension HackleInAppMessageUI {
     class BottomSheetView: UIView, InAppMessageView {
+        let id: String = UUID().uuidString
         let context: InAppMessagePresentationContext
         private var attributes: Attributes
 

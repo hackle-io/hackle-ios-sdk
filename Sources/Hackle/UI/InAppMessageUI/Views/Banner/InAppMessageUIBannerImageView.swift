@@ -3,6 +3,7 @@ import UIKit
 
 extension HackleInAppMessageUI {
     class BannerImageView: UIView, InAppMessageView {
+        let id: String = UUID().uuidString
         let context: InAppMessagePresentationContext
         private let alignment: InAppMessage.Message.Alignment
         private var attributes: Attributes

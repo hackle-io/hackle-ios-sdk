@@ -162,6 +162,7 @@
 		EE02022B2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */; };
 		EE02022D2F68104F002A8D4F /* InAppMessageViewJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022C2F68104F002A8D4F /* InAppMessageViewJavascriptBridge.swift */; };
 		EE02022F2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022E2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift */; };
+		EE0202332F681713002A8D4F /* InAppMessageViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -880,6 +881,7 @@
 		EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHtmlContentResolver.swift; sourceTree = "<group>"; };
 		EE02022C2F68104F002A8D4F /* InAppMessageViewJavascriptBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageViewJavascriptBridge.swift; sourceTree = "<group>"; };
 		EE02022E2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHtmlBridgeScript.swift; sourceTree = "<group>"; };
+		EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageViewProvider.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -3330,6 +3332,7 @@
 				EE62927B2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift */,
 				EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */,
 				EEA01CC22A36E56600E0C021 /* InAppMessageUIButtonView.swift */,
+				EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3852,6 +3855,7 @@
 				EE29D94529CD825400B1FEAA /* NoopCounter.swift in Sources */,
 				EE29D94829CD825400B1FEAA /* FlushCounter.swift in Sources */,
 				7E65EB802ACEAE2000900097 /* HackleUIDelegate.swift in Sources */,
+				EE0202332F681713002A8D4F /* InAppMessageViewProvider.swift in Sources */,
 				EEA01CC72A3712CC00E0C021 /* InAppMessageUIWindow.swift in Sources */,
 				EE86376B29ECE950000268DC /* SegmentConditionMatcher.swift in Sources */,
 				EE55B4B22F646E4400A36359 /* InAppMessageViewEventProcessor.swift in Sources */,
