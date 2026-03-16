@@ -159,6 +159,7 @@
 		B2FCB8C02EB1B069001C6B14 /* HackleJavascriptBridgeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8BF2EB1B069001C6B14 /* HackleJavascriptBridgeSpecs.swift */; };
 		EE0202262F67EE52002A8D4F /* WebViewUserScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202252F67EE52002A8D4F /* WebViewUserScript.swift */; };
 		EE0202282F67F408002A8D4F /* HackleJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202272F67F408002A8D4F /* HackleJavascriptBridge.swift */; };
+		EE02022B2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -874,6 +875,7 @@
 		B2FCB8BF2EB1B069001C6B14 /* HackleJavascriptBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleJavascriptBridgeSpecs.swift; sourceTree = "<group>"; };
 		EE0202252F67EE52002A8D4F /* WebViewUserScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewUserScript.swift; sourceTree = "<group>"; };
 		EE0202272F67F408002A8D4F /* HackleJavascriptBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleJavascriptBridge.swift; sourceTree = "<group>"; };
+		EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHtmlContentResolver.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -1770,6 +1772,14 @@
 				EE67281F2C50BE7000167355 /* InAppMessageUIBottomSheetView.swift */,
 			);
 			path = BottomSheet;
+			sourceTree = "<group>";
+		};
+		EE0202292F680F30002A8D4F /* Html */ = {
+			isa = PBXGroup;
+			children = (
+				EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */,
+			);
+			path = Html;
 			sourceTree = "<group>";
 		};
 		EE0E925729D2A18F009C7F31 /* Experiment */ = {
@@ -3304,6 +3314,7 @@
 		EE80E0162A2DC74D00FB12CC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EE0202292F680F30002A8D4F /* Html */,
 				EE02021F2F67DF27002A8D4F /* BottomSheet */,
 				EE02021E2F67DF20002A8D4F /* Banner */,
 				EE02021D2F67DF16002A8D4F /* Modal */,
@@ -4047,6 +4058,7 @@
 				EE29D94F29CD825400B1FEAA /* DelegatingCounter.swift in Sources */,
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,
 				EE29D98029CD825400B1FEAA /* Bucket.swift in Sources */,
+				EE02022B2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift in Sources */,
 				B26F8C352E98968300CE544C /* ApplicationEventTracker.swift in Sources */,
 				EEA7FCB72C04AB510004F858 /* EngagementManager.swift in Sources */,
 				EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */,
