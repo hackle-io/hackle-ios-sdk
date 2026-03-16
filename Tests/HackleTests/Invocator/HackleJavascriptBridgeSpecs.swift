@@ -13,7 +13,7 @@ import WebKit
 
 class HackleWebBridgeSpecs: QuickSpec {
     override func spec() {
-        describe("WKWebView+HackleWebBridge") {
+        describe("WKWebView+HackleJavascriptBridge") {
 
             var webView: WKWebView!
             var invocator: HackleInvocator!
@@ -31,7 +31,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                         let config = HackleWebViewConfig.DEFAULT
                         let initialScriptCount = webView.configuration.userContentController.userScripts.count
 
-                        webView.prepareForHackleWebBridge(
+                        webView.prepareForHackleJavascriptBridge(
                             invocator: invocator,
                             sdkKey: "test-sdk-key",
                             mode: .native,
@@ -50,7 +50,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                             .automaticEngagementTracking(false)
                             .build()
 
-                        webView.prepareForHackleWebBridge(
+                        webView.prepareForHackleJavascriptBridge(
                             invocator: invocator,
                             sdkKey: "test-sdk-key",
                             mode: .native,
@@ -58,7 +58,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                         )
 
                         let scripts = webView.configuration.userContentController.userScripts
-                        let hackleScript = scripts.first { $0.source.contains("/* Hackle App JavaScript Controller */") }
+                        let hackleScript = scripts.first { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }
 
                         expect(hackleScript).toNot(beNil())
                         expect(hackleScript?.source).to(contain("getWebViewConfig"))
@@ -76,7 +76,7 @@ class HackleWebBridgeSpecs: QuickSpec {
 
                         let config = HackleWebViewConfig.DEFAULT
 
-                        webView.prepareForHackleWebBridge(
+                        webView.prepareForHackleJavascriptBridge(
                             invocator: invocator,
                             sdkKey: "test-sdk-key",
                             mode: .native,
@@ -98,7 +98,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                             .automaticEngagementTracking(false)
                             .build()
 
-                        webView.prepareForHackleWebBridge(
+                        webView.prepareForHackleJavascriptBridge(
                             invocator: invocator,
                             sdkKey: "test-sdk-key",
                             mode: .native,
@@ -120,10 +120,10 @@ class HackleWebBridgeSpecs: QuickSpec {
                         let webView2 = WKWebView()
                         let config = HackleWebViewConfig.DEFAULT
 
-                        webView1.prepareForHackleWebBridge(
+                        webView1.prepareForHackleJavascriptBridge(
                             invocator: invocator, sdkKey: "key1", mode: .native, webViewConfig: config
                         )
-                        webView2.prepareForHackleWebBridge(
+                        webView2.prepareForHackleJavascriptBridge(
                             invocator: invocator, sdkKey: "key2", mode: .native, webViewConfig: config
                         )
 
@@ -139,7 +139,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                             .automaticScreenTracking(true)
                             .build()
 
-                        webView.prepareForHackleWebBridge(
+                        webView.prepareForHackleJavascriptBridge(
                             invocator: invocator,
                             sdkKey: "test-sdk-key",
                             mode: .native,
@@ -147,13 +147,13 @@ class HackleWebBridgeSpecs: QuickSpec {
                         )
 
                         let scriptsAfterFirst = webView.configuration.userContentController.userScripts
-                        let hackleScriptCountAfterFirst = scriptsAfterFirst.filter { $0.source.contains("/* Hackle App JavaScript Controller */") }.count
+                        let hackleScriptCountAfterFirst = scriptsAfterFirst.filter { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }.count
 
                         let config2 = HackleWebViewConfig.builder()
                             .automaticEngagementTracking(true)
                             .build()
 
-                        webView.prepareForHackleWebBridge(
+                        webView.prepareForHackleJavascriptBridge(
                             invocator: invocator,
                             sdkKey: "test-sdk-key",
                             mode: .native,
@@ -161,7 +161,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                         )
 
                         let scriptsAfterSecond = webView.configuration.userContentController.userScripts
-                        let hackleScriptCountAfterSecond = scriptsAfterSecond.filter { $0.source.contains("/* Hackle App JavaScript Controller */") }.count
+                        let hackleScriptCountAfterSecond = scriptsAfterSecond.filter { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }.count
 
                         // Hackle UserScript는 항상 1개만 존재해야 함
                         expect(hackleScriptCountAfterFirst) == 1
