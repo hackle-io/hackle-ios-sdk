@@ -387,7 +387,7 @@ class TrackInvocationHandler: InvocationHandler {
 
 // MARK: - InAppMessage
 
-class GetCurrentInAppMessageViewInvocationHandler: InvocationHandler {
+class GetCurrentInAppMessageViewInvocationHandler: InvocationHandler, @unchecked Sendable {
     typealias T = HackleInAppMessageViewDto
 
     private let core: HackleAppCore
@@ -404,7 +404,7 @@ class GetCurrentInAppMessageViewInvocationHandler: InvocationHandler {
     }
 }
 
-class CloseInAppMessageViewInvocationHandler: InvocationHandler {
+class CloseInAppMessageViewInvocationHandler: InvocationHandler, @unchecked Sendable {
     typealias T = Void
 
     private let core: HackleAppCore
@@ -427,7 +427,7 @@ class CloseInAppMessageViewInvocationHandler: InvocationHandler {
     }
 }
 
-class HandleInAppMessageViewInvocationHandler: InvocationHandler {
+class HandleInAppMessageViewInvocationHandler: InvocationHandler, @unchecked Sendable {
     typealias T = Void
 
     private let core: HackleAppCore
