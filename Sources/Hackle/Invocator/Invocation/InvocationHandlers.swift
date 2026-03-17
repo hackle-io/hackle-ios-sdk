@@ -396,13 +396,11 @@ class GetCurrentInAppMessageViewInvocationHandler: InvocationHandler {
     }
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<HackleInAppMessageViewDto> {
-        return MainActor.assumeIsolated {
-            guard let view = core.currentInAppMessageView else {
-                return .success()
-            }
-            let viewDto = view.toDto()
-            return .success(data: viewDto)
+        guard let view = MainActor.assumeIsolated({ core.currentInAppMessageView }) else {
+            return .success()
         }
+        let viewDto = view.toDto()
+        return .success(data: viewDto)
     }
 }
 
@@ -415,16 +413,17 @@ class CloseInAppMessageViewInvocationHandler: InvocationHandler {
     }
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
-        return try MainActor.assumeIsolated {
-            guard let viewId = request.parameters.viewId() else {
-                throw HackleError.error("parameters.viewId must be provided.")
-            }
+        guard let viewId = request.parameters.viewId() else {
+            throw HackleError.error("parameters.viewId must be provided.")
+        }
+
+        MainActor.assumeIsolated {
             guard let view = core.getInAppMessageView(viewId: viewId) else {
-                return .success()
+                return
             }
             view.dismiss()
-            return .success()
         }
+        return .success()
     }
 }
 
@@ -437,16 +436,16 @@ class HandleInAppMessageViewInvocationHandler: InvocationHandler {
     }
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
-        return try MainActor.assumeIsolated {
-            let invocationDto: HandleInAppMessageViewInvocationDto = try request.parameters()
+        let invocationDto: HandleInAppMessageViewInvocationDto = try request.parameters()
+        try MainActor.assumeIsolated {
             guard let view = core.getInAppMessageView(viewId: invocationDto.viewId) else {
-                return .success()
+                return
             }
             let event = try viewEvent(view: view, dto: invocationDto.event)
             let handleTypes: [InAppMessageViewEventHandleType] = try Enums.parseAll(invocationDto.handleTypes)
             view.handle(event: event, types: handleTypes)
-            return .success()
         }
+        return .success()
     }
 
     @MainActor

@@ -165,7 +165,7 @@ struct HackleInAppMessageViewDto: Codable {
 }
 
 extension InAppMessageView {
-    func toDto() -> HackleInAppMessageViewDto {
+    nonisolated func toDto() -> HackleInAppMessageViewDto {
         return HackleInAppMessageViewDto(
             id: id,
             inAppMessage: inAppMessage.toDto()

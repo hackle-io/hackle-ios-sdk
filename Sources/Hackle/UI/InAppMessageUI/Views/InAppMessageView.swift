@@ -5,13 +5,13 @@ import UIKit
 @MainActor
 protocol InAppMessageView: UIView, InAppMessageViewAware, HackleInAppMessageView {
     /// The unique identifier of this view.
-    var id: String { get }
+    nonisolated var id: String { get }
+
+    /// The context in which this InAppMessageView is presented.
+    nonisolated var context: InAppMessagePresentationContext { get }
 
     /// Indicates whether the InAppMessageView is currently presented.
     var presented: Bool { get }
-
-    /// The context in which this InAppMessageView is presented.
-    var context: InAppMessagePresentationContext { get }
 
     /// Presents the InAppMessageView on the screen.
     func present()
@@ -22,7 +22,7 @@ protocol InAppMessageView: UIView, InAppMessageViewAware, HackleInAppMessageView
 
 @MainActor
 extension InAppMessageView {
-    var inAppMessage: InAppMessage {
+    nonisolated var inAppMessage: InAppMessage {
         return context.inAppMessage
     }
 
