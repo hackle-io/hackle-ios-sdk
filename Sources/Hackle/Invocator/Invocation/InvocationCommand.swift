@@ -40,6 +40,11 @@ enum InvocationCommand: String, CaseIterable {
     // Event
     case track
     
+    // InAppMessage
+    case getCurrentInAppMessageView
+    case closeInAppMessageView
+    case handleInAppMessageView
+    
     // Screen
     case setCurrentScreen
     

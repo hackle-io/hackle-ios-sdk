@@ -13,7 +13,6 @@ typealias PropertyOperationsDto = [String: [String: Any]]
 typealias HackleSubscriptionOperationsDto = [String: String]
 
 extension User {
-
     func toDto() -> UserDto {
         let dictionary: [String: Any?] = [
             "id": id,
@@ -22,10 +21,9 @@ extension User {
             "identifiers": identifiers,
             "properties": properties
         ]
-        let sanitized = dictionary.compactMapValues {
+        return dictionary.compactMapValues {
             $0
         }
-        return sanitized
     }
 
     static func from(dto: UserDto) -> User {
@@ -50,7 +48,6 @@ extension User {
 }
 
 extension Event {
-
     static func from(dto: EventDto) -> Event? {
         guard let key = dto["key"] as? String else {
             return nil
@@ -67,7 +64,6 @@ extension Event {
 }
 
 extension Decision {
-
     func toDto() -> DecisionDto {
         var dictionary: [String: Any] = [:]
         dictionary["variation"] = variation
@@ -80,7 +76,6 @@ extension Decision {
 }
 
 extension FeatureFlagDecision {
-
     func toDto() -> FeatureFlagDecisionDto {
         var dictionary: [String: Any] = [:]
         dictionary["isOn"] = isOn
@@ -93,7 +88,6 @@ extension FeatureFlagDecision {
 }
 
 extension PropertyOperations {
-
     static func from(dto: PropertyOperationsDto) -> PropertyOperations {
         let builder = PropertyOperationsBuilder()
         for (operation, properties) in dto {
@@ -103,43 +97,43 @@ extension PropertyOperations {
 
             switch operation {
             case PropertyOperation.set:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.set(key, value)
                 }
             case PropertyOperation.setOnce:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.setOnce(key, value)
                 }
             case PropertyOperation.unset:
-                properties.forEach { key, value in
+                for (key, _) in properties {
                     builder.unset(key)
                 }
             case PropertyOperation.increment:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.increment(key, value)
                 }
             case PropertyOperation.append:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.append(key, value)
                 }
             case .appendOnce:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.appendOnce(key, value)
                 }
             case .prepend:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.prepend(key, value)
                 }
             case .prependOnce:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.prependOnce(key, value)
                 }
             case .remove:
-                properties.forEach { key, value in
+                for (key, value) in properties {
                     builder.remove(key, value)
                 }
             case .clearAll:
-                properties.forEach { key, value in
+                for (_, _) in properties {
                     builder.clearAll()
                 }
             }
@@ -149,7 +143,6 @@ extension PropertyOperations {
 }
 
 extension HackleSubscriptionOperations {
-    
     static func from(dto: HackleSubscriptionOperationsDto) -> HackleSubscriptionOperations {
         let builder = HackleSubscriptionOperations.builder()
         for (key, value) in dto {
@@ -159,5 +152,64 @@ extension HackleSubscriptionOperations {
             builder.custom(key, status: status)
         }
         return builder.build()
+    }
+}
+
+struct HackleInAppMessageDto: Codable {
+    let key: Int64
+}
+
+struct HackleInAppMessageViewDto: Codable {
+    let id: String
+    let inAppMessage: HackleInAppMessageDto
+}
+
+extension InAppMessageView {
+    func toDto() -> HackleInAppMessageViewDto {
+        return HackleInAppMessageViewDto(
+            id: id,
+            inAppMessage: inAppMessage.toDto()
+        )
+    }
+}
+
+extension HackleInAppMessage {
+    func toDto() -> HackleInAppMessageDto {
+        return HackleInAppMessageDto(
+            key: key
+        )
+    }
+}
+
+struct HandleInAppMessageViewInvocationDto: Codable {
+    let viewId: String
+    let handleTypes: [String]
+    let event: InAppMessageViewEventDto
+}
+
+struct InAppMessageActionDto: Codable {
+    var behavior: String
+    var type: String
+    var value: String?
+}
+
+struct InAppMessageViewEventDto: Codable {
+    let type: String
+    let action: InAppMessageActionDto?
+    let element: InAppMessageElementDto?
+}
+
+struct InAppMessageElementDto: Codable {
+    let elementId: String?
+    let area: String?
+}
+
+extension InAppMessageActionDto {
+    func toAction() throws -> InAppMessage.Action {
+        return try InAppMessage.Action(
+            behavior: Enums.parse(rawValue: behavior),
+            type: Enums.parse(rawValue: type),
+            value: value
+        )
     }
 }

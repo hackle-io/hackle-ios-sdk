@@ -146,4 +146,10 @@ extension HackleInvokeParameters {
     func optOut() -> Bool? {
         self["optOut"] as? Bool
     }
+
+    /// InAppMessageView의 id를 반환합니다
+    /// - Returns: `InAppMessageView.id` or `nil`
+    func viewId() -> String? {
+        self["viewId"] as? String
+    }
 }

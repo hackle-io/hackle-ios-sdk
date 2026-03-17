@@ -22,6 +22,10 @@ protocol InAppMessageView: UIView, InAppMessageViewAware, HackleInAppMessageView
 
 @MainActor
 extension InAppMessageView {
+    var inAppMessage: InAppMessage {
+        return context.inAppMessage
+    }
+
     var controller: HackleInAppMessageUI.ViewController? {
         return responders
             .lazy

@@ -63,6 +63,12 @@ class DefaultInvocationHandlerFactory: InvocationHandlerFactory {
                 return RemoteConfigInvocationHandler(core: core)
             case .track:
                 return TrackInvocationHandler(core: core)
+            case .getCurrentInAppMessageView:
+                return GetCurrentInAppMessageViewInvocationHandler(core: core)
+            case .closeInAppMessageView:
+                return CloseInAppMessageViewInvocationHandler(core: core)
+            case .handleInAppMessageView:
+                return HandleInAppMessageViewInvocationHandler(core: core)
             case .setCurrentScreen:
                 return SetCurrentScreenInvocationHandler(core: core)
             case .setOptOutTracking:

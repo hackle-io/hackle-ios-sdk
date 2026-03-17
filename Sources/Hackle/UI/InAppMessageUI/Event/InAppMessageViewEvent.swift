@@ -15,11 +15,11 @@ protocol InAppMessageViewEvent {
     var timestamp: Date { get }
 }
 
-enum InAppMessageViewEventType: CaseIterable {
-    case impression
-    case close
-    case action
-    case imageImpression
+enum InAppMessageViewEventType: String, CaseIterable {
+    case impression = "IMPRESSION"
+    case close = "CLOSE"
+    case action = "ACTION"
+    case imageImpression = "IMAGE_IMPRESSION"
 }
 
 // MARK: - Impression

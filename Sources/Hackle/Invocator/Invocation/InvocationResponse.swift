@@ -1,6 +1,6 @@
 import Foundation
 
-struct InvocationResponse<T> {
+struct InvocationResponse<T: Sendable> {
     let isSuccess: Bool
     let message: String
     let data: T?

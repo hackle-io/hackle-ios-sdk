@@ -60,6 +60,11 @@ import WebKit
         hackleAppCore.isOptOutTracking
     }
 
+    @MainActor
+    @objc public var displayedInAppMessageView: HackleInAppMessageView? {
+        hackleAppCore.currentInAppMessageView
+    }
+
     /// Sets whether opt-out tracking is enabled.
     ///
     /// When opt-out is enabled (true), all event tracking will be blocked.
