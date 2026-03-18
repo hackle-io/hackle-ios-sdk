@@ -226,6 +226,7 @@ extension InAppMessage {
         case modal = "MODAL"
         case banner = "BANNER"
         case bottomSheet = "BOTTOM_SHEET"
+        case html = "HTML"
     }
 
     enum LayoutType: String, Codable {

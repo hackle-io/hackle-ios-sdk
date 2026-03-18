@@ -12,10 +12,16 @@ import UIKit
 class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewProvider, @unchecked Sendable {
     let clock: Clock
     let eventProcessor: InAppMessageViewEventProcessor
+    let htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory
 
-    init(clock: Clock, eventProcessor: InAppMessageViewEventProcessor) {
+    init(
+        clock: Clock,
+        eventProcessor: InAppMessageViewEventProcessor,
+        htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory
+    ) {
         self.clock = clock
         self.eventProcessor = eventProcessor
+        self.htmlContentResolverFactory = htmlContentResolverFactory
         super.init()
     }
 

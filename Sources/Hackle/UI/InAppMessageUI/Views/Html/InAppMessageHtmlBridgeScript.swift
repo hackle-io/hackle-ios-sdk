@@ -27,10 +27,10 @@ class InAppMessageHtmlBridgeScript: WebViewUserScript {
 
 extension InAppMessageHtmlBridgeScript {
     private static let javascriptSdkUrlKey = "$javascript_sdk_url"
-    private static let defaultJavaScriptSdkUrl = "https://cdn2.hackle.io/npm/@hackler/javascript-sdk@11.54.0/lib/index.browser.umd.min.js"
+    private static let defaultJavaScriptSdkUrl = "https://cdn2.hackle.io/npm/@hackler/javascript-sdk@11.55.0/lib/index.browser.umd.min.js"
     
-    func create(config: HackleConfig) -> InAppMessageHtmlBridgeScript {
-        let url = config.get(Self.javascriptSdkUrlKey) ?? Self.defaultJavaScriptSdkUrl
+    static func create(config: HackleConfig) -> InAppMessageHtmlBridgeScript {
+        let url = config.get(javascriptSdkUrlKey) ?? defaultJavaScriptSdkUrl
         return InAppMessageHtmlBridgeScript(url: url)
     }
 }

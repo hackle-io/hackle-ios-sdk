@@ -70,7 +70,11 @@ class HackleAppSpecs: QuickSpec {
             let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
                 handlerFactory: inAppMessageViewEventHandlerFactory
             )
-            inAppMessageUI = HackleInAppMessageUI(clock: SystemClock.shared, eventProcessor: inAppMessageViewEventProcessor)
+            inAppMessageUI = HackleInAppMessageUI(
+                clock: SystemClock.shared,
+                eventProcessor: inAppMessageViewEventProcessor,
+                htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory()
+            )
 
             let applicationInstallDeterminer = ApplicationInstallDeterminer()
             let applicationInstallStateManager = ApplicationInstallStateManager(
@@ -103,8 +107,8 @@ class HackleAppSpecs: QuickSpec {
             )
             sut = HackleApp(
                 hackleAppCore: hackleAppCore,
-                mode: .native,
                 sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
+                config: HackleConfig.builder().mode(.native).build(),
                 hackleInvocator: DefaultHackleInvocator(processor: DefaultInvocationProcessor(handlerFactory: DefaultInvocationHandlerFactory(core: hackleAppCore)))
             )
         }

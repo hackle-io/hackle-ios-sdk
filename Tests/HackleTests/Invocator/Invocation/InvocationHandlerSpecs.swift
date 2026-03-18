@@ -125,7 +125,7 @@ class InvocationHandlerSpecs: QuickSpec {
                     every(core.getInAppMessageViewRef).returns(view)
                     
                     let eventProcessor = MockInAppMessageViewEventProcessor()
-                    let ui = HackleInAppMessageUI(clock: SystemClock.shared, eventProcessor: eventProcessor)
+                    let ui = HackleInAppMessageUI(clock: SystemClock.shared, eventProcessor: eventProcessor, htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory())
                     let controller = HackleInAppMessageUI.ViewController(ui: ui, context: context, messageView: view)
                     controller.viewDidAppear(false)
                     
@@ -151,7 +151,7 @@ class InvocationHandlerSpecs: QuickSpec {
                     every(core.getInAppMessageViewRef).returns(view)
                     
                     let eventProcessor = MockInAppMessageViewEventProcessor()
-                    let ui = HackleInAppMessageUI(clock: SystemClock.shared, eventProcessor: eventProcessor)
+                    let ui = HackleInAppMessageUI(clock: SystemClock.shared, eventProcessor: eventProcessor, htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory())
                     let controller = HackleInAppMessageUI.ViewController(ui: ui, context: context, messageView: view)
                     controller.viewDidAppear(false)
                     

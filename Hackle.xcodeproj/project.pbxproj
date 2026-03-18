@@ -165,6 +165,9 @@
 		EE0202332F681713002A8D4F /* InAppMessageViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */; };
 		EE0202392F690AA5002A8D4F /* MockInAppMessageViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202382F690AA5002A8D4F /* MockInAppMessageViewProvider.swift */; };
 		EE02023B2F690B8E002A8D4F /* InvocationHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02023A2F690B8E002A8D4F /* InvocationHandlerSpecs.swift */; };
+		EE02023D2F6930F5002A8D4F /* InAppMessageUIHtmlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02023C2F6930F5002A8D4F /* InAppMessageUIHtmlView.swift */; };
+		EE02023F2F6A4575002A8D4F /* InAppMessageUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02023E2F6A4575002A8D4F /* InAppMessageUIWebView.swift */; };
+		EE0202422F6A96D9002A8D4F /* MockInAppMessageHtmlContentResolverFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202412F6A96D9002A8D4F /* MockInAppMessageHtmlContentResolverFactory.swift */; };
 		EE0B71DF2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */; };
 		EE0B71E12A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */; };
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
@@ -886,6 +889,9 @@
 		EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageViewProvider.swift; sourceTree = "<group>"; };
 		EE0202382F690AA5002A8D4F /* MockInAppMessageViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageViewProvider.swift; sourceTree = "<group>"; };
 		EE02023A2F690B8E002A8D4F /* InvocationHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationHandlerSpecs.swift; sourceTree = "<group>"; };
+		EE02023C2F6930F5002A8D4F /* InAppMessageUIHtmlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIHtmlView.swift; sourceTree = "<group>"; };
+		EE02023E2F6A4575002A8D4F /* InAppMessageUIWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIWebView.swift; sourceTree = "<group>"; };
+		EE0202412F6A96D9002A8D4F /* MockInAppMessageHtmlContentResolverFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageHtmlContentResolverFactory.swift; sourceTree = "<group>"; };
 		EE0B71DE2A38700E009D7AF4 /* InAppMessageHiddenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHiddenStorage.swift; sourceTree = "<group>"; };
 		EE0B71E02A39A4F4009D7AF4 /* InAppMessageUIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIContainerView.swift; sourceTree = "<group>"; };
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
@@ -1789,6 +1795,15 @@
 			children = (
 				EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */,
 				EE02022E2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift */,
+				EE02023C2F6930F5002A8D4F /* InAppMessageUIHtmlView.swift */,
+			);
+			path = Html;
+			sourceTree = "<group>";
+		};
+		EE0202402F6A96CE002A8D4F /* Html */ = {
+			isa = PBXGroup;
+			children = (
+				EE0202412F6A96D9002A8D4F /* MockInAppMessageHtmlContentResolverFactory.swift */,
 			);
 			path = Html;
 			sourceTree = "<group>";
@@ -1862,6 +1877,7 @@
 		EE0F33FF2A668A13009DE640 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EE0202402F6A96CE002A8D4F /* Html */,
 				B29C53662DCB366C001724B2 /* InAppMessageExtSpecs.swift */,
 				B29C535B2DCB2A44001724B2 /* InAppMessageButtonViewSpecs.swift */,
 				EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */,
@@ -3339,6 +3355,7 @@
 				EE62927B2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift */,
 				EEA01CC02A36E1DF00E0C021 /* InAppMessageUIStackView.swift */,
 				EEA01CC22A36E56600E0C021 /* InAppMessageUIButtonView.swift */,
+				EE02023E2F6A4575002A8D4F /* InAppMessageUIWebView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3875,6 +3892,7 @@
 				EE55B4862F62BAAE00A36359 /* InvocationRequest.swift in Sources */,
 				EE29D97129CD825400B1FEAA /* Json.swift in Sources */,
 				7E3F4FC92AA6FC69004E0EB0 /* DeviceHelper.swift in Sources */,
+				EE02023F2F6A4575002A8D4F /* InAppMessageUIWebView.swift in Sources */,
 				EE29D97529CD825400B1FEAA /* AtomicDouble.swift in Sources */,
 				EE29D9A729CD825500B1FEAA /* UserEvent.swift in Sources */,
 				EE4D038C2E5C6292007BE61A /* InAppMessageLayoutEvaluation.swift in Sources */,
@@ -3906,6 +3924,7 @@
 				EE4D03CA2E5D58EF007BE61A /* InAppMessageDeliverResponse.swift in Sources */,
 				EE1D9B082CF8635700D6B74D /* InAppMessageLifecycle.swift in Sources */,
 				EE929D8D2BFFACD7003B7596 /* DedupUserEventFilter.swift in Sources */,
+				EE02023D2F6930F5002A8D4F /* InAppMessageUIHtmlView.swift in Sources */,
 				EE29D99429CD825400B1FEAA /* OperatorMatcher.swift in Sources */,
 				EE60C0A32C37B13300830F0A /* Updated.swift in Sources */,
 				B21A14932E9E20B10088EBEC /* UserDecorator.swift in Sources */,
@@ -4160,6 +4179,7 @@
 				B256031A2E029668004794B9 /* HackleSubscriptionSpecs.swift in Sources */,
 				EE29DA7E29CD82C200B1FEAA /* VersionSpecs.swift in Sources */,
 				B249CF9C2EF390E0008969AD /* ApplicationUrlHandlerSpecs.swift in Sources */,
+				EE0202422F6A96D9002A8D4F /* MockInAppMessageHtmlContentResolverFactory.swift in Sources */,
 				EEF895992A49A4CB00722CF6 /* InAppMessageMatcherSpecs.swift in Sources */,
 				EE789E3E29F0F9B50088D8A6 /* RemoteConfigRequestSpecs.swift in Sources */,
 				EE9E49102B6B6F0000436530 /* EvaluatorContextSpecs.swift in Sources */,
