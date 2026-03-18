@@ -1530,6 +1530,43 @@ class HackleInvocationSpec : QuickSpec {
                     expect(mock.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
             }
+            describe("setOptOutTracking") {
+                it("optOut=true이면 setOptOutTracking(true) 호출") {
+                    let jsonString = self.createJsonString(command: "setOptOutTracking", parameters: ["optOut": true])
+                    let result = invocation.invoke(string: jsonString)
+
+                    expect(mock.setOptOutTrackingRef.invokations().count) == 1
+                    expect(mock.setOptOutTrackingRef.invokations().first?.arguments) == true
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+
+                it("optOut=false이면 setOptOutTracking(false) 호출") {
+                    let jsonString = self.createJsonString(command: "setOptOutTracking", parameters: ["optOut": false])
+                    let result = invocation.invoke(string: jsonString)
+
+                    expect(mock.setOptOutTrackingRef.invokations().count) == 1
+                    expect(mock.setOptOutTrackingRef.invokations().first?.arguments) == false
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+
+                it("optOut 파라미터 누락 시 에러 응답") {
+                    let jsonString = self.createJsonString(command: "setOptOutTracking", parameters: [:])
+                    let result = invocation.invoke(string: jsonString)
+
+                    expect(mock.setOptOutTrackingRef.invokations().count) == 0
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == false
+                }
+            }
             describe("user explorer") {
                 it("show") {
                     let jsonString = self.createJsonString(command: "showUserExplorer", parameters: [:])

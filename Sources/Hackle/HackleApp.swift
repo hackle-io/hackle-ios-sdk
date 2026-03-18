@@ -60,6 +60,26 @@ import WebKit
         }
     }
 
+    /// Whether opt-out tracking is currently enabled.
+    /// When true, all event tracking is blocked.
+    @objc public var isOptOutTracking: Bool {
+        hackleAppCore.isOptOutTracking
+    }
+
+    /// Sets whether opt-out tracking is enabled.
+    ///
+    /// When opt-out is enabled (true), all event tracking will be blocked.
+    /// When switching from opt-in to opt-out, a best-effort flush of any
+    /// pending events will be attempted before blocking begins.
+    ///
+    /// This setting is not persisted across app restarts.
+    /// On each launch, the opt-out state is determined solely by `HackleConfig.optOutTracking`.
+    ///
+    /// - Parameter optOut: true to opt out of all event tracking, false to opt back in
+    @objc public func setOptOutTracking(optOut: Bool) {
+        hackleAppCore.setOptOutTracking(optOut: optOut)
+    }
+
     /// Shows the user explorer UI button.
     @objc public func showUserExplorer() {
         hackleAppCore.showUserExplorer()
@@ -462,7 +482,8 @@ extension HackleApp {
         let sessionManager = DefaultSessionManager(
             userManager: userManager,
             keyValueRepository: globalKeyValueRepository,
-            sessionTimeout: config.sessionTimeoutInterval
+            applicationLifecycleManager: applicationLifecycleManager,
+            sessionPolicy: config.sessionPolicy
         )
         userManager.addListener(listener: sessionManager)
         
@@ -528,6 +549,11 @@ extension HackleApp {
         let dedupEventFilter = DedupUserEventFilter(eventDedupDeterminer: dedupDeterminer)
         eventFilters.append(dedupEventFilter)
 
+        // OptOutManager
+        let optOutManager = OptOutManager(
+            configOptOutTracking: config.optOutTracking
+        )
+
         let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
 
@@ -552,10 +578,11 @@ extension HackleApp {
             eventDispatcher: eventDispatcher,
             sessionManager: sessionManager,
             userManager: userManager,
-            applicationLifecycleManager: applicationLifecycleManager,
             screenUserEventDecorator: screenUserEventDecorator,
-            eventBackoffController: eventBackoffController
+            eventBackoffController: eventBackoffController,
+            optOutManager: optOutManager
         )
+        optOutManager.addListener(listener: eventProcessor)
 
         // - Evaluation Event
 
@@ -841,7 +868,8 @@ extension HackleApp {
             platformManager: platformManager,
             inAppMessageUI: inAppMessageUI,
             applicationInstallStateManager: applicationInstallStateManager,
-            userExplorer: userExplorer
+            userExplorer: userExplorer,
+            optOutManager: optOutManager
         )
         let hackleInvocator = DefaultHackleInvocator(hackleAppCore: hackleAppCore)
 
