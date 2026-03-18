@@ -82,7 +82,8 @@ class HackleAppSpecs: QuickSpec {
                 platformManager: platformManager,
                 inAppMessageUI: inAppMessageUI,
                 applicationInstallStateManager: applicationInstallStateManager,
-                userExplorer: userExplorer
+                userExplorer: userExplorer,
+                optOutManager: OptOutManager(configOptOutTracking: false)
             )
             sut = HackleApp(
                 hackleAppCore: hackleAppCore,
