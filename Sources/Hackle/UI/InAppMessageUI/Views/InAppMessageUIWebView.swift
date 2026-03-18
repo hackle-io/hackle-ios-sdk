@@ -10,6 +10,7 @@ extension HackleInAppMessageUI {
             isOpaque = false
             scrollView.bounces = false
             scrollView.contentInsetAdjustmentBehavior = .never
+            allowsLinkPreview = false
             if #available(iOS 16.4, *) {
                 isInspectable = true
             }

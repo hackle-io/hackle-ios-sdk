@@ -70,6 +70,13 @@ extension InAppMessageView {
         publish(lifecycle: .didDismiss)
         ui.delegate?.inAppMessageDidDisappear?(inAppMessage: context.inAppMessage)
 
+        cleanup()
+    }
+
+    func cleanup() {
+        guard let controller = controller, let ui = controller.ui else {
+            return
+        }
         removeFromSuperview()
         ui.window?.windowScene = nil
         ui.window = nil

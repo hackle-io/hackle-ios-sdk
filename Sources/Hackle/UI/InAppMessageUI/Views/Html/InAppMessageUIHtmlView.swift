@@ -86,6 +86,7 @@ extension HackleInAppMessageUI {
             webView.navigationDelegate = nil
 
             if !presented {
+                cleanup()
                 return
             }
 
@@ -199,6 +200,11 @@ extension HackleInAppMessageUI.HtmlView: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         Log.debug("WebView provisional navigation failed: \(error) [\(context.inAppMessage.id)]")
+        dismiss()
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        Log.debug("WebView content process did terminate [\(context.inAppMessage.id)]")
         dismiss()
     }
 }
