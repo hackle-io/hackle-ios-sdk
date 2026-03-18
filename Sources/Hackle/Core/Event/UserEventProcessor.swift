@@ -21,7 +21,7 @@ extension UserEventProcessor {
     }
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener {
+class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener, OptOutListener {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 
@@ -38,9 +38,9 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
     private let eventDispatcher: UserEventDispatcher
     private let sessionManager: SessionManager
     private let userManager: UserManager
-    private let applicationLifecycleManager: ApplicationLifecycleManager
     private let screenUserEventDecorator: UserEventDecorator
     private let eventBackoffController: UserEventBackoffController
+    private let optOutManager: OptOutManager
 
     private var flushingJob: ScheduledJob? = nil
 
@@ -58,9 +58,9 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         eventDispatcher: UserEventDispatcher,
         sessionManager: SessionManager,
         userManager: UserManager,
-        applicationLifecycleManager: ApplicationLifecycleManager,
         screenUserEventDecorator: UserEventDecorator,
-        eventBackoffController: UserEventBackoffController
+        eventBackoffController: UserEventBackoffController,
+        optOutManager: OptOutManager
     ) {
         self.eventFilters = eventFilters
         self.eventDecorator = eventDecorator
@@ -75,9 +75,9 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         self.eventDispatcher = eventDispatcher
         self.sessionManager = sessionManager
         self.userManager = userManager
-        self.applicationLifecycleManager = applicationLifecycleManager
         self.screenUserEventDecorator = screenUserEventDecorator
         self.eventBackoffController = eventBackoffController
+        self.optOutManager = optOutManager
     }
 
     func process(event: UserEvent) {
@@ -157,6 +157,12 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         stop()
     }
 
+    func onOptOutChanged(current: Bool) {
+        if current {
+            flush()
+        }
+    }
+
     private func addEventInternal(event: UserEvent) {
         updateEvent(event: event)
         if eventFilters.contains(where: { filter in filter.isBlock(event: event) }) {
@@ -167,7 +173,9 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
             eventDecorator.decorate(event: userEvent)
         }
 
-        saveEvent(event: decoratedEvent)
+        if !optOutManager.isOptOutTracking {
+            saveEvent(event: decoratedEvent)
+        }
         eventPublisher.publish(event: decoratedEvent)
     }
 
@@ -175,13 +183,10 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         if SessionEventTracker.isSessionEvent(event: event) {
             return
         }
-
-        if applicationLifecycleManager.currentState == .foreground {
-            sessionManager.updateLastEventTime(timestamp: event.timestamp)
-        } else {
-            // Corner case when an event is processed between background and foreground
-            sessionManager.startNewSessionIfNeeded(user: userManager.currentUser, timestamp: event.timestamp)
-        }
+        let currentUser = userManager.currentUser
+        sessionManager.startNewSessionIfNeeded(
+            context: SessionContext.of(user: currentUser, timestamp: event.timestamp)
+        )
     }
 
     private func saveEvent(event: UserEvent) {

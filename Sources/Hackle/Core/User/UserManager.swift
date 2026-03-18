@@ -361,6 +361,15 @@ extension DefaultUserManager: ApplicationLifecycleListener {
     }
 }
 
+extension User {
+    func identifierEquals(other: User?) -> Bool {
+        guard let other = other else {
+            return false
+        }
+        return userId == other.userId && deviceId == other.deviceId
+    }
+}
+
 private extension User {
     func mergeWith(other: User?) -> User {
         guard let other = other else {
@@ -401,13 +410,6 @@ private extension User {
             builder.deviceId(device.id)
         }
         return builder.build()
-    }
-
-    func identifierEquals(other: User?) -> Bool {
-        guard let other = other else {
-            return false
-        }
-        return userId == other.userId && deviceId == other.deviceId
     }
 
     func toData() -> Data? {

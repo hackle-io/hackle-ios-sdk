@@ -154,4 +154,10 @@ extension HackleInvokeParameters {
     func className() -> String? {
         self["className"] as? String
     }
+
+    /// opt-out 추적 여부를 반환합니다.
+    /// - Returns: opt-out 여부 또는 `nil`
+    func optOut() -> Bool? {
+        self["optOut"] as? Bool
+    }
 }
