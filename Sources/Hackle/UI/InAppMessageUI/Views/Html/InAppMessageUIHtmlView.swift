@@ -119,7 +119,8 @@ extension HackleInAppMessageUI {
                         switch result {
                         case .success(let content):
                             self?.webView.load(html: content)
-                        case .failure:
+                        case .failure(let error):
+                            Log.error("Failed to resolve Html content: \(error)")
                             self?.dismiss()
                         }
                     }

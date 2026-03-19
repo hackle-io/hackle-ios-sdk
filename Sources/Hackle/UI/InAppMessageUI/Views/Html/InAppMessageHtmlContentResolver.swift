@@ -26,6 +26,8 @@ class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
         self.httpClient = httpClient
     }
 
+    private static let timeout = 5.0
+
     func supports(resourceType: InAppMessage.HtmlResourceType) -> Bool {
         resourceType == .path
     }
@@ -38,7 +40,7 @@ class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
 
         let request = HttpRequest.get(url: url)
         let sample = TimerSample.start()
-        httpClient.execute(request: request) { [weak self] response in
+        httpClient.execute(request: request, timeout: Self.timeout) { [weak self] response in
             guard let self = self else {
                 completion(.failure(HackleError.error("Failed to resolve html: instance deallocated")))
                 return
