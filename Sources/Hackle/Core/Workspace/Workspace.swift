@@ -998,11 +998,18 @@ extension InAppMessageDto.MessageContextDto.MessageDto.HtmlDto {
         guard let resourceType: InAppMessage.HtmlResourceType = Enums.parseOrNil(rawValue: resourceType) else {
             return nil
         }
-        return InAppMessage.Message.Html(
-            resourceType: resourceType,
-            text: text,
-            path: path
-        )
+        switch resourceType {
+        case .text:
+            guard let text = text else {
+                return nil
+            }
+            return InAppMessage.Message.Html(resourceType: resourceType, text: text, path: nil)
+        case .path:
+            guard let path = path else {
+                return nil
+            }
+            return InAppMessage.Message.Html(resourceType: resourceType, text: nil, path: path)
+        }
     }
 }
 
