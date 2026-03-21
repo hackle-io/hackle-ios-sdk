@@ -507,8 +507,6 @@ extension InAppMessage {
     }
 
     final class Action: HackleInAppMessageAction, Sendable {
-        let DEFAULT_HIDDEN_TIME_INTERVAL = TimeInterval(60 * 60 * 24) // 24H
-
         let behavior: Behavior
         let actionType: ActionType
         let value: String?
@@ -527,7 +525,7 @@ extension InAppMessage {
             case .close:
                 return CloseActionInfo(hideDuration: 0)
             case .hidden:
-                return CloseActionInfo(hideDuration: DEFAULT_HIDDEN_TIME_INTERVAL)
+                return CloseActionInfo(hideDuration: hiddenTimeInterval)
             case .webLink, .linkAndClose:
                 return nil
             }
@@ -565,5 +563,20 @@ extension InAppMessage: CustomStringConvertible {
 extension InAppMessage.Action: CustomStringConvertible {
     var description: String {
         return "InAppMessage.Action(behavior: \(behavior), actionType: \(actionType), value: \(String(describing: value)))"
+    }
+}
+
+extension InAppMessage.Action {
+    private static let defaultHiddenTimeInterval = TimeInterval(60 * 60 * 24) // 24H
+
+    var hiddenTimeInterval: TimeInterval {
+        guard let value = value else {
+            return Self.defaultHiddenTimeInterval
+        }
+
+        guard let hiddenDurationMillis = Double(value) else {
+            return Self.defaultHiddenTimeInterval
+        }
+        return TimeUnit.milliseconds.convert(hiddenDurationMillis, to: .seconds)
     }
 }

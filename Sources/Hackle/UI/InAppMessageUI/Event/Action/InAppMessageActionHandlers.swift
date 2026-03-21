@@ -74,7 +74,7 @@ class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
             return
         }
 
-        let expireAt = clock.now() + action.DEFAULT_HIDDEN_TIME_INTERVAL
+        let expireAt = clock.now() + action.hiddenTimeInterval
         storage.put(inAppMessage: view.context.inAppMessage, expireAt: expireAt)
         view.dismiss()
     }

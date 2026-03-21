@@ -176,7 +176,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 expect(sut.supports(action: InAppMessage.action(type: .hidden))) == true
             }
 
-            it("handle") {
+            it("handle - default") {
                 // given
                 let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42))
                 let view = MockInAppMessageView(context: context, presented: true)
@@ -189,6 +189,21 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
                 // then
                 expect(repository.getDouble(key: "42")) == (60 * 60 * 24) + 42
+            }
+
+            it("handle - custom") {
+                // given
+                let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42))
+                let view = MockInAppMessageView(context: context, presented: true)
+                let action = InAppMessage.action(type: .hidden, value: "100000")
+
+                // when
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                }
+
+                // then
+                expect(repository.getDouble(key: "42")) == 142
             }
 
             it("when override, do not save hidden info") {
