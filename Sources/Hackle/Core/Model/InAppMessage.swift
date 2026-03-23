@@ -252,11 +252,15 @@ extension InAppMessage {
         case click = "CLICK"
     }
 
-    enum ActionType: String, Codable {
+    enum ActionType: String, Codable, CaseIterable {
         case close = "CLOSE"
-        case webLink = "WEB_LINK"
         case hidden = "HIDDEN"
+        case webLink = "WEB_LINK"
         case linkAndClose = "LINK_AND_CLOSE"
+        case linkNewTab = "LINK_NEW_TAB"
+        case linkNewTabAndClose = "LINK_NEW_TAB_AND_CLOSE"
+        case linkNewWindow = "LINK_NEW_WINDOW"
+        case linkNewWindowAndClose = "LINK_NEW_WINDOW_AND_CLOSE"
     }
 
     enum ActionArea: String, Codable {
@@ -515,31 +519,23 @@ extension InAppMessage {
             switch actionType {
             case .close, .hidden:
                 return .close
-            case .webLink, .linkAndClose:
+            case .webLink, .linkAndClose, .linkNewTab, .linkNewTabAndClose, .linkNewWindow, .linkNewWindowAndClose:
                 return .link
             }
         }
 
         var close: HackleInAppMessageActionClose? {
-            switch actionType {
-            case .close:
-                return CloseActionInfo(hideDuration: 0)
-            case .hidden:
-                return CloseActionInfo(hideDuration: hiddenTimeInterval)
-            case .webLink, .linkAndClose:
+            guard actionType.shouldClose else {
                 return nil
             }
+            return CloseActionInfo(hideDuration: hiddenTimeInterval)
         }
 
         var link: HackleInAppMessageActionLink? {
-            switch actionType {
-            case .close, .hidden:
+            guard actionType.shouldLink else {
                 return nil
-            case .webLink:
-                return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: false)
-            case .linkAndClose:
-                return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: true)
             }
+            return LinkActionInfo(url: value ?? "", shouldCloseAfterLink: actionType.shouldClose)
         }
 
         init(behavior: Behavior, type: ActionType, value: String?) {
@@ -560,6 +556,26 @@ extension InAppMessage: CustomStringConvertible {
     }
 }
 
+extension InAppMessage.ActionType {
+    var shouldClose: Bool {
+        switch self {
+        case .close, .hidden, .linkAndClose, .linkNewTabAndClose, .linkNewWindowAndClose:
+            return true
+        case .webLink, .linkNewTab, .linkNewWindow:
+            return false
+        }
+    }
+
+    var shouldLink: Bool {
+        switch self {
+        case .close, .hidden:
+            return false
+        case .linkAndClose, .linkNewTabAndClose, .linkNewWindowAndClose, .webLink, .linkNewTab, .linkNewWindow:
+            return true
+        }
+    }
+}
+
 extension InAppMessage.Action: CustomStringConvertible {
     var description: String {
         return "InAppMessage.Action(behavior: \(behavior), actionType: \(actionType), value: \(String(describing: value)))"
@@ -570,6 +586,10 @@ extension InAppMessage.Action {
     private static let defaultHiddenTimeInterval = TimeInterval(60 * 60 * 24) // 24H
 
     var hiddenTimeInterval: TimeInterval {
+        guard actionType == .hidden else {
+            return 0
+        }
+
         guard let value = value else {
             return Self.defaultHiddenTimeInterval
         }

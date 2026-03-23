@@ -2,7 +2,7 @@ import Foundation
 
 class InAppMessageCloseActionHandler: InAppMessageActionHandler {
     func supports(action: InAppMessage.Action) -> Bool {
-        action.actionType == .close
+        return action.actionType == .close
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
@@ -18,7 +18,7 @@ final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
-        action.actionType == .webLink
+        return action.actionType.shouldLink && !action.actionType.shouldClose
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
@@ -40,7 +40,7 @@ final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
-        action.actionType == .linkAndClose
+        return action.actionType.shouldLink && action.actionType.shouldClose
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
@@ -65,7 +65,7 @@ class InAppMessageHiddenActionHandler: InAppMessageActionHandler {
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
-        action.actionType == .hidden
+        return action.actionType == .hidden
     }
 
     func handle(view: InAppMessageView, action: InAppMessage.Action) {

@@ -13,9 +13,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             }
 
             it("supports") {
-                expect(sut.supports(action: InAppMessage.action(type: .close))) == true
-                expect(sut.supports(action: InAppMessage.action(type: .webLink))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .hidden))) == false
+                for actionType in InAppMessage.ActionType.allCases {
+                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal(actionType == .close))
+                }
             }
 
             it("handle close") {
@@ -38,9 +38,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             }
 
             it("supports") {
-                expect(sut.supports(action: InAppMessage.action(type: .close))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .webLink))) == true
-                expect(sut.supports(action: InAppMessage.action(type: .hidden))) == false
+                for actionType in InAppMessage.ActionType.allCases {
+                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal([.webLink, .linkNewTab, .linkNewWindow].contains(actionType)))
+                }
             }
 
             it("when action value is nil then do nothing") {
@@ -100,10 +100,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             }
 
             it("supports") {
-                expect(sut.supports(action: InAppMessage.action(type: .close))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .webLink))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .hidden))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .linkAndClose))) == true
+                for actionType in InAppMessage.ActionType.allCases {
+                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal([.linkAndClose, .linkNewTabAndClose, .linkNewWindowAndClose].contains(actionType)))
+                }
             }
 
             it("when action value is nil then do nothing") {
@@ -171,9 +170,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             }
 
             it("supports") {
-                expect(sut.supports(action: InAppMessage.action(type: .close))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .webLink))) == false
-                expect(sut.supports(action: InAppMessage.action(type: .hidden))) == true
+                for actionType in InAppMessage.ActionType.allCases {
+                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal(actionType == .hidden))
+                }
             }
 
             it("handle - default") {
