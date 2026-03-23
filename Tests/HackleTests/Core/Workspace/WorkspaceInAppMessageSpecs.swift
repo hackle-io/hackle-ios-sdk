@@ -16,7 +16,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         it("valid") {
             let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
 
-            expect(workspace.inAppMessages.count) == 10
+            expect(workspace.inAppMessages.count) == 11
 
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
             expect(iam.id) == 1
@@ -263,6 +263,21 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         it("invalid") {
             let workspace = ResourcesWorkspaceFetcher(fileName: "iam_invalid").fetch()!
             expect(workspace.inAppMessages.count) == 0
+        }
+
+        it("html - displayType HTML with valid html data") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 12)!
+            expect(iam.messageContext.messages.count) == 1
+            expect(iam.messageContext.messages[0].layout.displayType) == .html
+            expect(iam.messageContext.messages[0].html?.resourceType) == .text
+            expect(iam.messageContext.messages[0].html?.text) == "<h1>Hello</h1>"
+        }
+
+        it("html - displayType HTML without html data should exclude message") {
+            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 11)
+            expect(iam).to(beNil())
         }
     }
 }

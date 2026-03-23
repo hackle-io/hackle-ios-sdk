@@ -825,6 +825,10 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             messageHtml = html
         }
 
+        if layout.displayType == .html && messageHtml == nil {
+            return nil
+        }
+
         return InAppMessage.Message(
             variationKey: variationKey,
             lang: lang,
