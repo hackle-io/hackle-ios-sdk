@@ -172,7 +172,7 @@ extension HackleInAppMessageUI.HtmlView: WKNavigationDelegate {
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
-        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+        decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void
     ) {
         if let url = navigationAction.request.url, shouldOverrideUrlLoading(navigationAction) {
             decisionHandler(.cancel)

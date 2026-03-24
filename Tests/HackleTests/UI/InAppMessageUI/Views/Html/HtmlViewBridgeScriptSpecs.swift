@@ -5,20 +5,18 @@ import Quick
 
 class HtmlViewBridgeScriptSpecs: QuickSpec {
     override func spec() {
-
         typealias BridgeScript = HackleInAppMessageUI.HtmlViewBridgeScript
         typealias Loader = HackleInAppMessageUI.WebViewResourceLoader
 
-        // Test-owned expected value — must be updated together with the JS SDK file.
-        // If this value is stale, the tests below will pinpoint which step was missed.
+        // Version checkpoint — must be updated when JS SDK is upgraded.
         let expectedResource = "hackle-javascript-sdk-11.55.0.min.js"
+        let actualResource = BridgeScript.javascriptSdkResource
 
         let thisFilePath = #filePath
 
         describe("javascriptSdkResource consistency") {
-
             it("matches the test-expected file name") {
-                expect(BridgeScript.javascriptSdkResource).to(equal(expectedResource))
+                expect(actualResource).to(equal(expectedResource))
             }
 
             it("exists as a file in the Resources directory") {
@@ -34,7 +32,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
                 }
 
                 expect(resourcesDir).toNot(beNil())
-                let filePath = resourcesDir!.appendingPathComponent(expectedResource).path
+                let filePath = resourcesDir!.appendingPathComponent(actualResource).path
                 expect(FileManager.default.fileExists(atPath: filePath)).to(beTrue())
             }
 
@@ -51,11 +49,11 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
                 }
 
                 expect(content).toNot(beNil())
-                expect(content).to(contain(expectedResource))
+                expect(content).to(contain(actualResource))
             }
 
             it("is loadable from the app bundle") {
-                let fileURL = URL(fileURLWithPath: expectedResource)
+                let fileURL = URL(fileURLWithPath: actualResource)
                 let name = fileURL.deletingPathExtension().lastPathComponent
                 let ext = fileURL.pathExtension
 
@@ -67,7 +65,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
         describe("create(config:)") {
             it("uses the default custom-scheme URL when no override is set") {
                 let sut = BridgeScript.create(config: .DEFAULT)
-                let expectedURL = Loader.resourceURL(fileName: expectedResource).absoluteString
+                let expectedURL = Loader.resourceURL(fileName: actualResource).absoluteString
 
                 expect(sut.source).to(contain(expectedURL))
             }
@@ -81,7 +79,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
                 let sut = BridgeScript.create(config: config)
 
                 expect(sut.source).to(contain(customURL))
-                expect(sut.source).toNot(contain(Loader.resourceURL(fileName: expectedResource).absoluteString))
+                expect(sut.source).toNot(contain(Loader.resourceURL(fileName: actualResource).absoluteString))
             }
         }
 
