@@ -90,7 +90,7 @@ extension HackleInAppMessageUI {
             switch ext.lowercased() {
             case "js": return "application/javascript"
             case "css": return "text/css"
-            case "html": return"text/html"
+            case "html": return "text/html"
             default: return "text/plain"
             }
         }
