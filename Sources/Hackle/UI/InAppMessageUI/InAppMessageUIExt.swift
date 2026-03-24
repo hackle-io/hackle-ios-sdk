@@ -27,7 +27,7 @@ extension HackleInAppMessageUI {
             guard let app = Hackle.app() else {
                 return nil
             }
-            let bridgeScript = InAppMessageHtmlBridgeScript.create(config: app.config)
+            let bridgeScript = HtmlViewBridgeScript.create(config: app.config)
             return HtmlView(context: context, app: app, contentResolverFactory: htmlContentResolverFactory, bridgeScript: bridgeScript)
         default:
             Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType), \(context.message.layout.layoutType)]")

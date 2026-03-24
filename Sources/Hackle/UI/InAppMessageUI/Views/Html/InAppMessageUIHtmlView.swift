@@ -8,13 +8,13 @@ extension HackleInAppMessageUI {
         let context: InAppMessagePresentationContext
         private let app: HackleApp
         private let contentResolverFactory: InAppMessageHtmlContentResolverFactory
-        private let bridgeScript: InAppMessageHtmlBridgeScript
+        private let bridgeScript: HtmlViewBridgeScript
 
         init(
             context: InAppMessagePresentationContext,
             app: HackleApp,
             contentResolverFactory: InAppMessageHtmlContentResolverFactory,
-            bridgeScript: InAppMessageHtmlBridgeScript
+            bridgeScript: HtmlViewBridgeScript
         ) {
             self.context = context
             self.app = app
@@ -152,6 +152,7 @@ extension HackleInAppMessageUI {
             let configuration = WKWebViewConfiguration()
             configuration.suppressesIncrementalRendering = true
             configuration.allowsInlineMediaPlayback = true
+            configuration.setURLSchemeHandler(handler: WebViewSchemeHandler(scheme: WebViewResourceLoader.scheme, loader: WebViewResourceLoader()))
 
             let webView = WebView(configuration: configuration)
             webView.navigationDelegate = self
@@ -173,7 +174,7 @@ extension HackleInAppMessageUI.HtmlView: WKNavigationDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        if let url = navigationAction.request.url, shouldIntercept(navigationAction) {
+        if let url = navigationAction.request.url, shouldOverrideUrlLoading(navigationAction) {
             decisionHandler(.cancel)
             let action = InAppMessage.Action(behavior: .click, type: .webLink, value: url.absoluteString)
             handle(event: .action(timestamp: clock.now(), action: action, area: nil), type: .action)
@@ -212,13 +213,13 @@ extension HackleInAppMessageUI.HtmlView: WKNavigationDelegate {
 
 extension HackleInAppMessageUI.HtmlView {
     /// Determine whether the WebView link needs to be handled by the App SDK.
-    func shouldIntercept(_ navigationAction: WKNavigationAction) -> Bool {
+    func shouldOverrideUrlLoading(_ navigationAction: WKNavigationAction) -> Bool {
         guard let url = navigationAction.request.url else {
             return false
         }
 
         // initial HTML load
-        if url.host == HackleInAppMessageUI.WebView.baseURL?.host {
+        if url.host == HackleInAppMessageUI.WebViewResourceLoader.baseURL.host {
             return false
         }
 
