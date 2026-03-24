@@ -5,6 +5,7 @@ extension HackleInAppMessageUI {
         private static let javascriptSdkUrlKey = "$javascript_sdk_url"
 
         static let javascriptSdkResource = "hackle-javascript-sdk-11.55.0.min.js"
+        static let bridgeFunctionName = "setAppWebViewInAppMessageBridge"
         private static let defaultJavascriptSdkUrl = WebViewResourceLoader.resourceURL(fileName: javascriptSdkResource)
 
         private let url: String
@@ -28,7 +29,7 @@ extension HackleInAppMessageUI {
                 var s = document.createElement('script');
                 s.src = '\(url)';
                 s.onload = function() {
-                    Hackle.setWebAppInAppMessageHtmlBridge();
+                    Hackle.\(Self.bridgeFunctionName)();
                 };
                 document.head.appendChild(s);
             })();
