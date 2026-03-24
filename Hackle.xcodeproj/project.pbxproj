@@ -161,7 +161,6 @@
 		EE0202282F67F408002A8D4F /* HackleJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202272F67F408002A8D4F /* HackleJavascriptBridge.swift */; };
 		EE02022B2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */; };
 		EE02022D2F68104F002A8D4F /* InAppMessageViewJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022C2F68104F002A8D4F /* InAppMessageViewJavascriptBridge.swift */; };
-		EE02022F2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022E2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift */; };
 		EE0202332F681713002A8D4F /* InAppMessageViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */; };
 		EE0202392F690AA5002A8D4F /* MockInAppMessageViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202382F690AA5002A8D4F /* MockInAppMessageViewProvider.swift */; };
 		EE02023B2F690B8E002A8D4F /* InvocationHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02023A2F690B8E002A8D4F /* InvocationHandlerSpecs.swift */; };
@@ -588,6 +587,13 @@
 		EE789E4829F107710088D8A6 /* MockExperimentMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E4729F107710088D8A6 /* MockExperimentMatcher.swift */; };
 		EE789E4A29F1097E0088D8A6 /* AbTestConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E4929F1097E0088D8A6 /* AbTestConditionMatcherSpecs.swift */; };
 		EE789E4C29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE789E4B29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift */; };
+		EE7BC01A2F7178170017BE4E /* WebResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC0192F7178170017BE4E /* WebResource.swift */; };
+		EE7BC01C2F71787F0017BE4E /* WebViewSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC01B2F71787F0017BE4E /* WebViewSchemeHandler.swift */; };
+		EE7BC01E2F71794E0017BE4E /* WebResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC01D2F71794E0017BE4E /* WebResourceLoader.swift */; };
+		EE7BC0202F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC01F2F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift */; };
+		EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js in Resources */ = {isa = PBXBuildFile; fileRef = EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js */; };
+		EE7BC0242F7226370017BE4E /* WebViewResourceLoaderSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC0232F7226370017BE4E /* WebViewResourceLoaderSpecs.swift */; };
+		EE7BC0262F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC0252F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift */; };
 		EE80378829D3DB04000DC77E /* HackleAbTestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */; };
 		EE80DF852A27836600FB12CC /* InAppMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF842A27836600FB12CC /* InAppMessage.swift */; };
 		EE80DF902A285B2600FB12CC /* EvaluationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80DF8F2A285B2600FB12CC /* EvaluationContext.swift */; };
@@ -885,7 +891,6 @@
 		EE0202272F67F408002A8D4F /* HackleJavascriptBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleJavascriptBridge.swift; sourceTree = "<group>"; };
 		EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHtmlContentResolver.swift; sourceTree = "<group>"; };
 		EE02022C2F68104F002A8D4F /* InAppMessageViewJavascriptBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageViewJavascriptBridge.swift; sourceTree = "<group>"; };
-		EE02022E2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageHtmlBridgeScript.swift; sourceTree = "<group>"; };
 		EE0202322F681713002A8D4F /* InAppMessageViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageViewProvider.swift; sourceTree = "<group>"; };
 		EE0202382F690AA5002A8D4F /* MockInAppMessageViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageViewProvider.swift; sourceTree = "<group>"; };
 		EE02023A2F690B8E002A8D4F /* InvocationHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationHandlerSpecs.swift; sourceTree = "<group>"; };
@@ -1312,6 +1317,13 @@
 		EE789E4729F107710088D8A6 /* MockExperimentMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExperimentMatcher.swift; sourceTree = "<group>"; };
 		EE789E4929F1097E0088D8A6 /* AbTestConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestConditionMatcherSpecs.swift; sourceTree = "<group>"; };
 		EE789E4B29F10E5B0088D8A6 /* FeatureFlagConditionMatcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagConditionMatcherSpecs.swift; sourceTree = "<group>"; };
+		EE7BC0192F7178170017BE4E /* WebResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebResource.swift; sourceTree = "<group>"; };
+		EE7BC01B2F71787F0017BE4E /* WebViewSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSchemeHandler.swift; sourceTree = "<group>"; };
+		EE7BC01D2F71794E0017BE4E /* WebResourceLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebResourceLoader.swift; sourceTree = "<group>"; };
+		EE7BC01F2F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIHtmlViewBridgeScript.swift; sourceTree = "<group>"; };
+		EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "hackle-javascript-sdk-11.55.0.min.js"; sourceTree = "<group>"; };
+		EE7BC0232F7226370017BE4E /* WebViewResourceLoaderSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewResourceLoaderSpecs.swift; sourceTree = "<group>"; };
+		EE7BC0252F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlViewBridgeScriptSpecs.swift; sourceTree = "<group>"; };
 		EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestItem.swift; sourceTree = "<group>"; };
 		EE80DF842A27836600FB12CC /* InAppMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessage.swift; sourceTree = "<group>"; };
 		EE80DF8F2A285B2600FB12CC /* EvaluationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluationContext.swift; sourceTree = "<group>"; };
@@ -1794,8 +1806,8 @@
 			isa = PBXGroup;
 			children = (
 				EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */,
-				EE02022E2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift */,
 				EE02023C2F6930F5002A8D4F /* InAppMessageUIHtmlView.swift */,
+				EE7BC01F2F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift */,
 			);
 			path = Html;
 			sourceTree = "<group>";
@@ -1804,6 +1816,7 @@
 			isa = PBXGroup;
 			children = (
 				EE0202412F6A96D9002A8D4F /* MockInAppMessageHtmlContentResolverFactory.swift */,
+				EE7BC0252F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift */,
 			);
 			path = Html;
 			sourceTree = "<group>";
@@ -1882,6 +1895,7 @@
 				B29C535B2DCB2A44001724B2 /* InAppMessageButtonViewSpecs.swift */,
 				EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */,
 				EE0202382F690AA5002A8D4F /* MockInAppMessageViewProvider.swift */,
+				EE7BC0232F7226370017BE4E /* WebViewResourceLoaderSpecs.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2778,7 +2792,6 @@
 				EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */,
 				EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */,
 				EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */,
-				EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */,
 			);
 			path = ExplorerUI;
 			sourceTree = "<group>";
@@ -2793,6 +2806,7 @@
 				EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */,
 				EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */,
 				EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */,
+				EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3285,6 +3299,16 @@
 			path = RemoteConfig;
 			sourceTree = "<group>";
 		};
+		EE7BC0182F71780F0017BE4E /* Web */ = {
+			isa = PBXGroup;
+			children = (
+				EE7BC0192F7178170017BE4E /* WebResource.swift */,
+				EE7BC01D2F71794E0017BE4E /* WebResourceLoader.swift */,
+				EE7BC01B2F71787F0017BE4E /* WebViewSchemeHandler.swift */,
+			);
+			path = Web;
+			sourceTree = "<group>";
+		};
 		EE80DF862A2831D100FB12CC /* InAppMessage */ = {
 			isa = PBXGroup;
 			children = (
@@ -3400,6 +3424,7 @@
 		EEA01CBD2A36B9A100E0C021 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				EE7BC0182F71780F0017BE4E /* Web */,
 				EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */,
 				EECDF42D2C145E0E009B2F56 /* Shadow.swift */,
 				EE0F34022A6690D2009DE640 /* UrlHandler.swift */,
@@ -3408,6 +3433,7 @@
 				EEA01CCA2A37138300E0C021 /* UIKitExt.swift */,
 				EEA01CBE2A36B9B100E0C021 /* HackleUIUtils.swift */,
 				EE0202252F67EE52002A8D4F /* WebViewUserScript.swift */,
+				EE14A3EB29D5B555000775C2 /* HackleInternalResources.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -3717,6 +3743,7 @@
 				EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */,
 				EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */,
 				EE29DABF29CD853C00B1FEAA /* hackle_banner@3x.png in Resources */,
+				EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js in Resources */,
 				EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */,
 				EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */,
 				EE29DAC029CD853C00B1FEAA /* hackle_cancel.png in Resources */,
@@ -3799,6 +3826,7 @@
 				EE81ED9D2E6191B00044B40E /* InAppMessageEvaluateProcessor.swift in Sources */,
 				EE55B4B02F646C9700A36359 /* InAppMessageViewEventHandlerFactory.swift in Sources */,
 				EE29D99229CD825400B1FEAA /* ValueOperatorMatcher.swift in Sources */,
+				EE7BC0202F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift in Sources */,
 				EE0F34032A6690D2009DE640 /* UrlHandler.swift in Sources */,
 				EE29D95229CD825400B1FEAA /* Counter.swift in Sources */,
 				EE29D96C29CD825400B1FEAA /* ConcurrentArray.swift in Sources */,
@@ -3938,7 +3966,6 @@
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
-				EE02022F2F68114F002A8D4F /* InAppMessageHtmlBridgeScript.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
 				EE86377729ED312F000268DC /* ExperimentConditionMatcher.swift in Sources */,
@@ -4036,7 +4063,9 @@
 				EE55B4882F62BAE900A36359 /* InvocationResponse.swift in Sources */,
 				EE86375F29ECD0AC000268DC /* ContextualEvaluator.swift in Sources */,
 				EE6F8F2B29D496D10037C482 /* ExperimentExtensions.swift in Sources */,
+				EE7BC01E2F71794E0017BE4E /* WebResourceLoader.swift in Sources */,
 				EE29D95829CD825400B1FEAA /* MetricField.swift in Sources */,
+				EE7BC01C2F71787F0017BE4E /* WebViewSchemeHandler.swift in Sources */,
 				EEFA31E22BC18A6500E133F8 /* CachedUserEventDedupDeterminer.swift in Sources */,
 				B24234B52D8A646E00878096 /* DatabaseDDL.swift in Sources */,
 				EEA01CCB2A37138300E0C021 /* UIKitExt.swift in Sources */,
@@ -4116,6 +4145,7 @@
 				EE29D95529CD825400B1FEAA /* CumulativeCounter.swift in Sources */,
 				B23A60F52DB0E4DA008D410A /* HackleNotificationClickActionType.swift in Sources */,
 				EEA7FCB32C04AB450004F858 /* Engagement.swift in Sources */,
+				EE7BC01A2F7178170017BE4E /* WebResource.swift in Sources */,
 				EE62927C2CE8CEB10083600B /* InAppMessageUIImageContainerView.swift in Sources */,
 				EE80E01E2A2DCD3F00FB12CC /* InAppMessageUI.swift in Sources */,
 				B26EB40E2E96974F003E7B13 /* ApplicationInstallState.swift in Sources */,
@@ -4347,6 +4377,7 @@
 				EE4D04562E5DAB63007BE61A /* TriggeredInAppMessageSchedulerSpecs.swift in Sources */,
 				EE55B4982F63C7F000A36359 /* MockInvocationHandler.swift in Sources */,
 				EE4D04742E5DCB96007BE61A /* MockInAppMessageTriggerProcessor.swift in Sources */,
+				EE7BC0262F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift in Sources */,
 				EE4D03C22E5D57F7007BE61A /* MockInAppMessageIdentifierChecker.swift in Sources */,
 				EE5A78E32ADCCD06005A0F9E /* DefaultUserCohortFetcherSpecs.swift in Sources */,
 				B29C535A2DCB2621001724B2 /* NotificationHandlerSpecs.swift in Sources */,
@@ -4416,6 +4447,7 @@
 				EE4B81102C007DFE00719C41 /* DedupUserEventFilterSpecs.swift in Sources */,
 				EE29DA6229CD82C200B1FEAA /* MemoryKeyValueRepository.swift in Sources */,
 				EE4D03932E5C68A4007BE61A /* InAppMessageLayoutEvaluatorSpecs.swift in Sources */,
+				EE7BC0242F7226370017BE4E /* WebViewResourceLoaderSpecs.swift in Sources */,
 				EE29DA6A29CD82C200B1FEAA /* TimeUnitSpecs.swift in Sources */,
 				EE29DA6029CD82C200B1FEAA /* CumulativeTimerSpecs.swift in Sources */,
 				B2FCB8C02EB1B069001C6B14 /* HackleJavascriptBridgeSpecs.swift in Sources */,
