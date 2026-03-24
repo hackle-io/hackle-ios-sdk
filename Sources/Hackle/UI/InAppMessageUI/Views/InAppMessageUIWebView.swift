@@ -32,29 +32,48 @@ extension HackleInAppMessageUI {
         static let scheme = "hackle-resource"
         static let domain = "cache.hackle"
 
-        /// hackle-resource://cache.hackle/
+        /// Base URL that `WebViewResourceLoader` handles.
+        /// URLs must be built on top of this base to be resolved by the loader.
+        /// `hackle-resource://cache.hackle/`
         static let baseURL = URL(string: "\(scheme)://\(domain)/")!
 
-        /// Returns the full custom-scheme URL for a bundled file (e.g., `hackle-resource://cache.hackle/sdk.js`).
+        /// Converts a bundle file name to a custom-scheme URL.
+        /// e.g., `"sdk.min.js"` → `hackle-resource://cache.hackle/sdk.min.js`
         static func resourceURL(fileName: String) -> URL {
             return baseURL.appendingPathComponent(fileName)
         }
 
-        func load(url: URL) -> WebResource? {
-            guard url.scheme == Self.scheme, url.host == Self.domain else {
+        /// Extracts the bundle file name from a custom-scheme URL. Inverse of `resourceURL(fileName:)`.
+        /// e.g., `hackle-resource://cache.hackle/sdk.min.js` → `"sdk.min.js"`
+        /// Returns `nil` if the URL doesn't match the expected scheme and domain.
+        static func fileName(from url: URL) -> String? {
+            guard url.scheme == scheme, url.host == domain else {
                 return nil
             }
 
-            let pathURL = URL(fileURLWithPath: url.lastPathComponent)
-            let name = pathURL.deletingPathExtension().lastPathComponent
-            let fileExtension = pathURL.pathExtension
+            let name = url.lastPathComponent
+            guard !name.isEmpty, name != "/" else {
+                return nil
+            }
+            return name
+        }
 
-            guard !name.isEmpty, !fileExtension.isEmpty else {
+        /// Resolves a custom-scheme URL to a bundled resource.
+        /// Extracts the file name via `fileName(from:)`, then loads it from the app bundle.
+        func load(url: URL) -> WebResource? {
+            guard let fileName = Self.fileName(from: url) else {
+                return nil
+            }
+            let fileURL = URL(fileURLWithPath: fileName)
+            let name = fileURL.deletingPathExtension().lastPathComponent
+            let ext = fileURL.pathExtension
+
+            guard !name.isEmpty, !ext.isEmpty else {
                 return nil
             }
 
             guard
-                let fileURL = HackleInternalResources.bundle.url(forResource: name, withExtension: fileExtension),
+                let fileURL = HackleInternalResources.bundle.url(forResource: name, withExtension: ext),
                 let data = try? Data(contentsOf: fileURL)
             else {
                 return nil
@@ -62,7 +81,7 @@ extension HackleInAppMessageUI {
 
             return WebResource(
                 data: data,
-                mimeType: mimeType(for: fileExtension),
+                mimeType: mimeType(for: ext),
                 encoding: "utf-8"
             )
         }

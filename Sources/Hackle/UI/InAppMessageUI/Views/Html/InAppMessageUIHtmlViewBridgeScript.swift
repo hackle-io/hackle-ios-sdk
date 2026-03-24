@@ -3,7 +3,8 @@ import Foundation
 extension HackleInAppMessageUI {
     class HtmlViewBridgeScript: WebViewUserScript {
         private static let javascriptSdkUrlKey = "$javascript_sdk_url"
-        private static let javascriptSdkResource = "hackle-javascript-sdk-11.55.0.min.js"
+
+        static let javascriptSdkResource = "hackle-javascript-sdk-11.55.0.min.js"
         private static let defaultJavascriptSdkUrl = WebViewResourceLoader.resourceURL(fileName: javascriptSdkResource)
 
         private let url: String
