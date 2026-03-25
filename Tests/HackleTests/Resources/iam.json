@@ -278,7 +278,12 @@
                   "vertical": "BOTTOM"
                 }
               }
-            ]
+            ],
+            "html": {
+              "resourceType": "PATH",
+              "text": null,
+              "path": "https://hackle.io"
+            }
           }
         ]
       }
@@ -855,6 +860,102 @@
             "buttons": [],
             "background": {
               "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "key": 11,
+      "timeUnit": "IMMEDIATE",
+      "startEpochTimeMillis": null,
+      "endEpochTimeMillis": null,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "html_trigger",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": ["IOS"],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": ["VERTICAL"],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "HTML",
+              "layoutType": "TEXT_ONLY",
+              "alignment": null
+            },
+            "images": [],
+            "text": null,
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": null,
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "key": 12,
+      "timeUnit": "IMMEDIATE",
+      "startEpochTimeMillis": null,
+      "endEpochTimeMillis": null,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "html_trigger",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": ["IOS"],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": ["VERTICAL"],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "HTML",
+              "layoutType": "TEXT_ONLY",
+              "alignment": null
+            },
+            "images": [],
+            "text": null,
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": null,
+            "html": {
+              "resourceType": "TEXT",
+              "text": "<h1>Hello</h1>"
             },
             "outerButtons": [],
             "innerButtons": []

@@ -25,6 +25,7 @@ let package = Package(
                 "HackleNotification.m"
             ],
             resources: [
+                .process("Resources/hackle-javascript-sdk-11.55.0.min.js"),
                 .process("Resources/HackleAbTestTableViewCell.xib"),
                 .process("Resources/HackleAbTestViewController.xib"),
                 .process("Resources/HackleFeatureFlagTableViewCell.xib"),

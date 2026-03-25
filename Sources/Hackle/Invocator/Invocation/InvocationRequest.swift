@@ -51,3 +51,10 @@ extension InvocationRequest: CustomStringConvertible {
         return "InvocationRequest(command: \(command), parameters=\(parameters), browserProperties: \(browserProperties))"
     }
 }
+
+extension InvocationRequest {
+    func parameters<T: Decodable>(_ type: T.Type = T.self) throws -> T {
+        let data = try JSONSerialization.data(withJSONObject: parameters.compactMapValues { $0 })
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+}

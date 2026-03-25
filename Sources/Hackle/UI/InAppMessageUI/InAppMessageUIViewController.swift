@@ -30,13 +30,14 @@ extension HackleInAppMessageUI {
             super.init(nibName: nil, bundle: nil)
         }
 
-        required public init?(coder: NSCoder) {
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
 
         // LifeCycle
         override func loadView() {
-            self.view = containerView
+            view = containerView
         }
 
         override func viewDidAppear(_ animated: Bool) {
@@ -53,7 +54,7 @@ extension HackleInAppMessageUI {
         // Orientation
         override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
-            coordinator.animate { context in
+            coordinator.animate { _ in
                 self.messageView.dismiss()
             }
         }

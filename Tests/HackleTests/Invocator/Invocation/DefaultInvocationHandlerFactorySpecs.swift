@@ -50,6 +50,12 @@ class DefaultInvocationHandlerFactorySpecs: QuickSpec {
                         expect(handler).to(beAnInstanceOf(RemoteConfigInvocationHandler.self))
                     case .track:
                         expect(handler).to(beAnInstanceOf(TrackInvocationHandler.self))
+                    case .getCurrentInAppMessageView:
+                        expect(handler).to(beAnInstanceOf(GetCurrentInAppMessageViewInvocationHandler.self))
+                    case .closeInAppMessageView:
+                        expect(handler).to(beAnInstanceOf(CloseInAppMessageViewInvocationHandler.self))
+                    case .handleInAppMessageView:
+                        expect(handler).to(beAnInstanceOf(HandleInAppMessageViewInvocationHandler.self))
                     case .setCurrentScreen:
                         expect(handler).to(beAnInstanceOf(SetCurrentScreenInvocationHandler.self))
                     case .setOptOutTracking:

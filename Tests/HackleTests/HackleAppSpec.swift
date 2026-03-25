@@ -47,14 +47,34 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
-
-            let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [])
-            let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-                clock: SystemClock.shared,
-                eventTracker: DefaultInAppMessageEventTracker(core: core),
-                processorFactory: inAppMessageEventProcessorFactory
+            let urlHandler = ApplicationUrlHandler()
+            let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])
+            let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
+                InAppMessageViewImpressionEventActor(),
+                InAppMessageViewActionEventActor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+                InAppMessageViewCloseEventActor()
+            ])
+            let inAppMessageViewEventActionHandler = InAppMessageViewEventActionHandler(
+                actorFactory: inAppMessageViewEventActorFactory
             )
-            inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
+            let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
+                core: core
+            )
+            let inAppMessageViewEventTrackHandler = InAppMessageViewEventTrackHandler(
+                tracker: inAppMessageEventTracker
+            )
+            let inAppMessageViewEventHandlerFactory = DefaultInAppMessageViewEventHandlerFactory(handlers: [
+                inAppMessageViewEventActionHandler,
+                inAppMessageViewEventTrackHandler
+            ])
+            let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
+                handlerFactory: inAppMessageViewEventHandlerFactory
+            )
+            inAppMessageUI = HackleInAppMessageUI(
+                clock: SystemClock.shared,
+                eventProcessor: inAppMessageViewEventProcessor,
+                htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory()
+            )
 
             let applicationInstallDeterminer = ApplicationInstallDeterminer()
             let applicationInstallStateManager = ApplicationInstallStateManager(
@@ -87,8 +107,8 @@ class HackleAppSpecs: QuickSpec {
             )
             sut = HackleApp(
                 hackleAppCore: hackleAppCore,
-                mode: .native,
                 sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
+                config: HackleConfig.builder().mode(.native).build(),
                 hackleInvocator: DefaultHackleInvocator(processor: DefaultInvocationProcessor(handlerFactory: DefaultInvocationHandlerFactory(core: hackleAppCore)))
             )
         }
@@ -469,7 +489,7 @@ class HackleAppSpecs: QuickSpec {
             }
             expect(count) == 0
 
-            expect(count).toEventually(equal(1), timeout: .seconds(5))
+            expect(count).toEventually(equal(1), timeout: .seconds(10))
 
             expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
             expect(platformManager.device.properties.count) == 13

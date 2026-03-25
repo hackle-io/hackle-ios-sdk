@@ -9,19 +9,19 @@ import WebKit
 /// Entry point of Hackle SDK.
 @objc public final class HackleApp: NSObject {
     private let hackleAppCore: HackleAppCore
-    private let sdk: Sdk
-    private let mode: HackleAppMode
-    private let hackleInvocator: HackleInvocator
+    let sdk: Sdk
+    let config: HackleConfig
+    let hackleInvocator: HackleInvocator
 
     init(
         hackleAppCore: HackleAppCore,
-        mode: HackleAppMode,
         sdk: Sdk,
+        config: HackleConfig,
         hackleInvocator: HackleInvocator
     ) {
         self.hackleAppCore = hackleAppCore
-        self.mode = mode
         self.sdk = sdk
+        self.config = config
         self.hackleInvocator = hackleInvocator
         super.init()
     }
@@ -58,6 +58,11 @@ import WebKit
     /// When true, all event tracking is blocked.
     @objc public var isOptOutTracking: Bool {
         hackleAppCore.isOptOutTracking
+    }
+
+    @MainActor
+    @objc public var displayedInAppMessageView: HackleInAppMessageView? {
+        hackleAppCore.currentInAppMessageView
     }
 
     /// Sets whether opt-out tracking is enabled.
@@ -305,7 +310,8 @@ import WebKit
     ///   - uiDelegate: Optional UI delegate for the WebView. If not provided, the WebView's existing delegate will be used
     ///   - webViewConfig: Configuration for WebView integration behavior. Defaults to ``HackleWebViewConfig/DEFAULT``
     @MainActor @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
-        webView.prepareForHackleWebBridge(invocator: invocator(), sdkKey: sdk.key, mode: mode, uiDelegate: uiDelegate, webViewConfig: webViewConfig)
+        let javascriptBridge = HackleJavascriptBridge(invocator: invocator(), sdkKey: sdk.key, mode: config.mode, webViewConfig: webViewConfig)
+        javascriptBridge.apply(to: webView, uiDelegate: uiDelegate)
     }
 
     /// Returns the HackleInvocator instance.
@@ -660,28 +666,42 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
-            core: core
-        )
         let urlHandler = ApplicationUrlHandler()
-        let inAppMessageActionHandlerFactory = InAppMessageActionHandlerFactory(handlers: [
+        let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
             InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
             InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
-        let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [
-            InAppMessageImpressionEventProcessor(),
-            InAppMessageActionEventProcessor(actionHandlerFactory: inAppMessageActionHandlerFactory),
-            InAppMessageCloseEventProcessor()
+        let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
+            InAppMessageViewImpressionEventActor(),
+            InAppMessageViewActionEventActor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+            InAppMessageViewCloseEventActor()
         ])
-        let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-            clock: clock,
-            eventTracker: inAppMessageEventTracker,
-            processorFactory: inAppMessageEventProcessorFactory
+        let inAppMessageViewEventActionHandler = InAppMessageViewEventActionHandler(
+            actorFactory: inAppMessageViewEventActorFactory
         )
+        let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
+            core: core
+        )
+        let inAppMessageViewEventTrackHandler = InAppMessageViewEventTrackHandler(
+            tracker: inAppMessageEventTracker
+        )
+        let inAppMessageViewEventHandlerFactory = DefaultInAppMessageViewEventHandlerFactory(handlers: [
+            inAppMessageViewEventActionHandler,
+            inAppMessageViewEventTrackHandler
+        ])
+        let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
+            handlerFactory: inAppMessageViewEventHandlerFactory
+        )
+        let inAppMessageHtmlContentResolverFactory = DefaultInAppMessageHtmlContentResolverFactory(resolvers: [
+            PathInAppMessageHtmlContentResolver(httpClient: httpClient),
+            TextInAppMessageHtmlContentResolver()
+        ])
         let inAppMessageUI = HackleInAppMessageUI(
-            eventHandler: inAppMessageEventHandler
+            clock: clock,
+            eventProcessor: inAppMessageViewEventProcessor,
+            htmlContentResolverFactory: inAppMessageHtmlContentResolverFactory
         )
 
         let inAppMessageRecorder = DefaultInAppMessageRecorder(
@@ -870,8 +890,8 @@ extension HackleApp {
 
         return HackleApp(
             hackleAppCore: hackleAppCore,
-            mode: config.mode,
             sdk: sdk,
+            config: config,
             hackleInvocator: hackleInvocator
         )
     }

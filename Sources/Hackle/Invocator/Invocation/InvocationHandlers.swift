@@ -385,6 +385,97 @@ class TrackInvocationHandler: InvocationHandler {
     }
 }
 
+// MARK: - InAppMessage
+
+class GetCurrentInAppMessageViewInvocationHandler: InvocationHandler, @unchecked Sendable {
+    typealias T = HackleInAppMessageViewDto
+
+    private let core: HackleAppCore
+    init(core: HackleAppCore) {
+        self.core = core
+    }
+
+    func invoke(request: InvocationRequest) throws -> InvocationResponse<HackleInAppMessageViewDto> {
+        guard let view = MainActor.assumeIsolated({ core.currentInAppMessageView }) else {
+            return .success()
+        }
+        let viewDto = view.toDto()
+        return .success(data: viewDto)
+    }
+}
+
+class CloseInAppMessageViewInvocationHandler: InvocationHandler, @unchecked Sendable {
+    typealias T = Void
+
+    private let core: HackleAppCore
+    init(core: HackleAppCore) {
+        self.core = core
+    }
+
+    func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
+        guard let viewId = request.parameters.viewId() else {
+            throw HackleError.error("parameters.viewId must be provided.")
+        }
+
+        MainActor.assumeIsolated {
+            guard let view = core.getInAppMessageView(viewId: viewId) else {
+                return
+            }
+            view.dismiss()
+        }
+        return .success()
+    }
+}
+
+class HandleInAppMessageViewInvocationHandler: InvocationHandler, @unchecked Sendable {
+    typealias T = Void
+
+    private let core: HackleAppCore
+    init(core: HackleAppCore) {
+        self.core = core
+    }
+
+    func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
+        let invocationDto: HandleInAppMessageViewInvocationDto = try request.parameters()
+        try MainActor.assumeIsolated {
+            guard let view = core.getInAppMessageView(viewId: invocationDto.viewId) else {
+                return
+            }
+            let event = try viewEvent(view: view, dto: invocationDto.event)
+            let handleTypes: [InAppMessageViewEventHandleType] = try Enums.parseAll(invocationDto.handleTypes)
+            view.handle(event: event, types: handleTypes)
+        }
+        return .success()
+    }
+
+    @MainActor
+    private func viewEvent(view: InAppMessageView, dto: InAppMessageViewEventDto) throws -> InAppMessageViewEvent {
+        let eventType: InAppMessageViewEventType = try Enums.parse(rawValue: dto.type)
+        switch eventType {
+        case .action:
+            return try actionEvent(view: view, dto: dto)
+        case .impression, .close, .imageImpression:
+            throw HackleError.error("Unsupported InAppMessageViewEventType [\(eventType)]")
+        }
+    }
+
+    @MainActor
+    private func actionEvent(view: InAppMessageView, dto: InAppMessageViewEventDto) throws -> InAppMessageViewActionEvent {
+        guard let action = dto.action else {
+            throw HackleError.error("action must be provided.")
+        }
+        guard let element = dto.element else {
+            throw HackleError.error("element must be provided.")
+        }
+        return try .action(
+            timestamp: view.clock.now(),
+            action: action.toAction(),
+            area: element.area.map { try Enums.parse(rawValue: $0) },
+            elementId: element.elementId
+        )
+    }
+}
+
 // MARK: - Screen
 
 class SetCurrentScreenInvocationHandler: InvocationHandler {
@@ -429,12 +520,12 @@ class SetOptOutTrackingInvocationHandler: InvocationHandler {
 
 class IsOptOutTrackingInvocationHandler: InvocationHandler {
     typealias T = Bool
-    
+
     private let core: HackleAppCore
     init(core: HackleAppCore) {
         self.core = core
     }
-    
+
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Bool> {
         return .success(data: core.isOptOutTracking)
     }
