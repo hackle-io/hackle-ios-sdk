@@ -12,7 +12,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
 
         describe("javascriptSdkResource") {
             it("check fileName") {
-                expect(BridgeScript.javascriptSdkResource).to(equal("hackle-javascript-sdk-11.55.0.min.js"))
+                expect(BridgeScript.javascriptSdkResource).to(equal("hackle-javascript-sdk-\(BridgeScript.javascriptSdkVersion).min.js"))
             }
 
             it("check file exists") {
@@ -32,7 +32,37 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
                 expect(FileManager.default.fileExists(atPath: filePath)).to(beTrue())
             }
 
-            it("check file registered in Package.swift") {
+            it("check script") {
+                var dir = URL(fileURLWithPath: thisFilePath).deletingLastPathComponent()
+                var resourcesDir: URL?
+                for _ in 0..<10 {
+                    let candidate = dir.appendingPathComponent("Sources/Hackle/Resources")
+                    if FileManager.default.fileExists(atPath: candidate.path) {
+                        resourcesDir = candidate
+                        break
+                    }
+                    dir = dir.deletingLastPathComponent()
+                }
+
+                expect(resourcesDir).toNot(beNil())
+                let filePath = resourcesDir!.appendingPathComponent(BridgeScript.javascriptSdkResource).path
+                let script = try! String(contentsOfFile: filePath, encoding: .utf8)
+
+                // Check Javascript SDK Version
+                expect(script).to(contain(BridgeScript.javascriptSdkVersion))
+
+                // Check bridge function
+                expect(script).to(contain(BridgeScript.bridgeFunctionName))
+
+                // Check InvocationCommand
+                InvocationCommand.allCases
+                    .filter { $0 != .setCurrentScreen } // Not supported yet
+                    .forEach {
+                        expect(script).to(contain($0.rawValue))
+                    }
+            }
+
+            it("check Package.swift") {
                 var dir = URL(fileURLWithPath: thisFilePath).deletingLastPathComponent()
                 var content: String?
                 for _ in 0..<10 {
@@ -48,7 +78,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
                 expect(content).to(contain(BridgeScript.javascriptSdkResource))
             }
 
-            it("check file loadable from bundle") {
+            it("check Bundle") {
                 let fileURL = URL(fileURLWithPath: BridgeScript.javascriptSdkResource)
                 let name = fileURL.deletingPathExtension().lastPathComponent
                 let ext = fileURL.pathExtension
@@ -61,29 +91,6 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
         describe("bridgeFunctionName") {
             it("check functionName") {
                 expect(BridgeScript.bridgeFunctionName).to(equal("setAppWebViewInAppMessageBridge"))
-            }
-
-            it("check js file") {
-                var dir = URL(fileURLWithPath: thisFilePath).deletingLastPathComponent()
-                var resourcesDir: URL?
-                for _ in 0..<10 {
-                    let candidate = dir.appendingPathComponent("Sources/Hackle/Resources")
-                    if FileManager.default.fileExists(atPath: candidate.path) {
-                        resourcesDir = candidate
-                        break
-                    }
-                    dir = dir.deletingLastPathComponent()
-                }
-
-                expect(resourcesDir).toNot(beNil())
-                let filePath = resourcesDir!.appendingPathComponent(BridgeScript.javascriptSdkResource).path
-                let jsContent = try! String(contentsOfFile: filePath, encoding: .utf8)
-                expect(jsContent).to(contain(BridgeScript.bridgeFunctionName))
-            }
-
-            it("check swift source") {
-                let sut = BridgeScript.create(config: .DEFAULT)
-                expect(sut.source).to(contain(BridgeScript.bridgeFunctionName))
             }
         }
 
@@ -108,7 +115,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
             }
         }
 
-        it("source contains script injection elements") {
+        it("check inject source") {
             let sut = BridgeScript.create(config: .DEFAULT)
             let source = sut.source
 
