@@ -23,6 +23,12 @@ extension HackleInAppMessageUI {
             return BannerImageView(context: context, alignment: alignment, attributes: .defaults)
         case (.bottomSheet, _):
             return BottomSheetView(context: context)
+        case (.html, _):
+            guard let app = Hackle.app() else {
+                return nil
+            }
+            let bridgeScript = HtmlViewBridgeScript.create(config: app.config)
+            return HtmlView(context: context, app: app, contentResolverFactory: htmlContentResolverFactory, bridgeScript: bridgeScript)
         default:
             Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType), \(context.message.layout.layoutType)]")
             return nil

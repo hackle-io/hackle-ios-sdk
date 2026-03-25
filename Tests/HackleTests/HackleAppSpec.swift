@@ -1,7 +1,7 @@
 import Foundation
+@testable import Hackle
 import Nimble
 import Quick
-@testable import Hackle
 
 class HackleAppSpecs: QuickSpec {
     override func spec() {
@@ -47,24 +47,44 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
-            
-            let inAppMessageEventProcessorFactory = InAppMessageEventProcessorFactory(processors: [])
-            let inAppMessageEventHandler = DefaultInAppMessageEventHandler(
-                clock: SystemClock.shared,
-                eventTracker: DefaultInAppMessageEventTracker(core: core),
-                processorFactory: inAppMessageEventProcessorFactory
+            let urlHandler = ApplicationUrlHandler()
+            let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])
+            let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
+                InAppMessageViewImpressionEventActor(),
+                InAppMessageViewActionEventActor(actionHandlerFactory: inAppMessageActionHandlerFactory),
+                InAppMessageViewCloseEventActor()
+            ])
+            let inAppMessageViewEventActionHandler = InAppMessageViewEventActionHandler(
+                actorFactory: inAppMessageViewEventActorFactory
             )
-            inAppMessageUI = HackleInAppMessageUI(eventHandler: inAppMessageEventHandler)
-            
+            let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
+                core: core
+            )
+            let inAppMessageViewEventTrackHandler = InAppMessageViewEventTrackHandler(
+                tracker: inAppMessageEventTracker
+            )
+            let inAppMessageViewEventHandlerFactory = DefaultInAppMessageViewEventHandlerFactory(handlers: [
+                inAppMessageViewEventActionHandler,
+                inAppMessageViewEventTrackHandler
+            ])
+            let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
+                handlerFactory: inAppMessageViewEventHandlerFactory
+            )
+            inAppMessageUI = HackleInAppMessageUI(
+                clock: SystemClock.shared,
+                eventProcessor: inAppMessageViewEventProcessor,
+                htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory()
+            )
+
             let applicationInstallDeterminer = ApplicationInstallDeterminer()
             let applicationInstallStateManager = ApplicationInstallStateManager(
                 platformManager: platformManager,
                 applicationInstallDeterminer: applicationInstallDeterminer,
                 clock: SystemClock.shared
             )
-            
+
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
-            
+
             let hackleAppCore = DefaultHackleAppCore(
                 core: core,
                 eventQueue: eventQueue,
@@ -87,9 +107,9 @@ class HackleAppSpecs: QuickSpec {
             )
             sut = HackleApp(
                 hackleAppCore: hackleAppCore,
-                mode: .native,
                 sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
-                hackleInvocator: DefaultHackleInvocator(hackleAppCore: hackleAppCore)
+                config: HackleConfig.builder().mode(.native).build(),
+                hackleInvocator: DefaultHackleInvocator(processor: DefaultInvocationProcessor(handlerFactory: DefaultInvocationHandlerFactory(core: hackleAppCore)))
             )
         }
 
@@ -260,14 +280,14 @@ class HackleAppSpecs: QuickSpec {
                 expect(count) == 1
             }
         }
-        
+
         describe("marketing property") {
             it("setPushToken") {
                 let deviceToken = "token".data(using: .utf8)!
                 sut.setPushToken(deviceToken)
                 expect(pushTokenRegistry.registeredToken()).notTo(beNil())
             }
-            
+
             it("setPhoneNumber") {
                 var count = 0
                 sut.setPhoneNumber(phoneNumber: "+821012345678") {
@@ -275,10 +295,10 @@ class HackleAppSpecs: QuickSpec {
                 }
                 expect(count) == 1
             }
-            
+
             it("unsetPhoneNumber") {
                 var count = 0
-                sut.unsetPhoneNumber() {
+                sut.unsetPhoneNumber {
                     count += 1
                 }
                 expect(count) == 1
@@ -286,7 +306,6 @@ class HackleAppSpecs: QuickSpec {
         }
 
         describe("experiment") {
-
             it("variation") {
                 // given
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
@@ -379,7 +398,6 @@ class HackleAppSpecs: QuickSpec {
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
                 every(userManager.resolveMock).returns(hackleUser)
 
-
                 let decision = FeatureFlagDecision.on(featureFlag: nil, reason: DecisionReason.DEFAULT_RULE)
                 every(core.featureFlagMock).returns(decision)
 
@@ -424,11 +442,9 @@ class HackleAppSpecs: QuickSpec {
                     expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
                 }
             }
-
         }
 
         describe("track") {
-
             it("eventKey") {
                 // given
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
@@ -473,7 +489,7 @@ class HackleAppSpecs: QuickSpec {
             }
             expect(count) == 0
 
-            expect(count).toEventually(equal(1), timeout: .seconds(5))
+            expect(count).toEventually(equal(1), timeout: .seconds(10))
 
             expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
             expect(platformManager.device.properties.count) == 13
@@ -488,7 +504,7 @@ class HackleAppSpecs: QuickSpec {
             let app = HackleApp.create(sdkKey: "sdk_key", config: config)
             expect(app.deviceId) == UserDefaults.standard.string(forKey: "hackle_device_id")
         }
-        
+
         describe("updateMarketingSubscriptionStatus") {
             it("set push subscribed") {
                 sut.updatePushSubscriptions(
@@ -499,7 +515,7 @@ class HackleAppSpecs: QuickSpec {
                         .custom("chat", status: .unknown)
                         .build()
                 )
-                
+
                 verify(exactly: 1) {
                     core.trackMock
                 }
@@ -511,7 +527,7 @@ class HackleAppSpecs: QuickSpec {
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
-            
+
             it("set sms subscribed") {
                 sut.updateSmsSubscriptions(
                     operations: HackleSubscriptionOperations
@@ -532,7 +548,7 @@ class HackleAppSpecs: QuickSpec {
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["$information"] as? String) == "SUBSCRIBED"
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
-            
+
             it("set kakaotalk subscribed") {
                 sut.updateKakaoSubscriptions(
                     operations: HackleSubscriptionOperations
@@ -554,7 +570,7 @@ class HackleAppSpecs: QuickSpec {
                 expect(core.trackMock.firstInvokation().arguments.0.properties?["chat"] as? String) == "UNKNOWN"
             }
         }
-        
+
         describe("setCurrentScreen") {
             it("set") {
                 let screen = Screen.builder(name: "currentScreen", className: "currentClass").build()
@@ -567,7 +583,6 @@ class HackleAppSpecs: QuickSpec {
         }
 
         describe("DEPRECATED") {
-
             describe("experiment") {
                 beforeEach {
                     every(core.experimentMock).returns(Decision.of(experiment: nil, variation: "B", reason: DecisionReason.TRAFFIC_ALLOCATED))

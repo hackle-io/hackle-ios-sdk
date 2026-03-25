@@ -3,13 +3,15 @@ import UIKit
 
 /// Base view protocol for InAppMessage
 @MainActor
-protocol InAppMessageView: UIView, HackleInAppMessageView {
+protocol InAppMessageView: UIView, InAppMessageViewAware, HackleInAppMessageView {
+    /// The unique identifier of this view.
+    nonisolated var id: String { get }
+
+    /// The context in which this InAppMessageView is presented.
+    nonisolated var context: InAppMessagePresentationContext { get }
 
     /// Indicates whether the InAppMessageView is currently presented.
     var presented: Bool { get }
-
-    /// The context in which this InAppMessageView is presented.
-    var context: InAppMessagePresentationContext { get }
 
     /// Presents the InAppMessageView on the screen.
     func present()
@@ -20,9 +22,12 @@ protocol InAppMessageView: UIView, HackleInAppMessageView {
 
 @MainActor
 extension InAppMessageView {
+    nonisolated var inAppMessage: InAppMessage {
+        return context.inAppMessage
+    }
 
     var controller: HackleInAppMessageUI.ViewController? {
-        responders
+        return responders
             .lazy
             .compactMap {
                 $0 as? HackleInAppMessageUI.ViewController
@@ -65,16 +70,53 @@ extension InAppMessageView {
         publish(lifecycle: .didDismiss)
         ui.delegate?.inAppMessageDidDisappear?(inAppMessage: context.inAppMessage)
 
+        cleanup()
+    }
+
+    func cleanup() {
+        guard let controller = controller, let ui = controller.ui else {
+            return
+        }
         removeFromSuperview()
         ui.window?.windowScene = nil
         ui.window = nil
     }
+}
 
-    func handle(event: InAppMessage.Event) {
-        guard let controller = controller, let ui = controller.ui else {
+@MainActor
+protocol InAppMessageViewAware: UIView {
+    var messageView: InAppMessageView? { get }
+}
+
+extension InAppMessageViewAware {
+    var messageView: InAppMessageView? {
+        var current: UIView? = self
+        while let view = current {
+            if let messageView = view as? InAppMessageView {
+                return messageView
+            }
+            current = view.superview
+        }
+        return nil
+    }
+
+    var clock: Clock {
+        return messageView?.controller?.ui?.clock ?? SystemClock.shared
+    }
+
+    func handle(event: InAppMessageViewEvent, types: [InAppMessageViewEventHandleType] = [.track, .action]) {
+        guard let messageView = messageView,
+              let controller = messageView.controller,
+              let ui = controller.ui
+        else {
             return
         }
-        ui.eventHandler.handle(view: self, event: event)
+
+        ui.eventProcessor.process(view: messageView, event: event, types: types)
+    }
+
+    func handle(event: InAppMessageViewEvent, type: InAppMessageViewEventHandleType) {
+        handle(event: event, types: [type])
     }
 }
 

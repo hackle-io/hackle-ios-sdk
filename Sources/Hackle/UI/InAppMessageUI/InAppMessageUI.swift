@@ -9,19 +9,34 @@ import Foundation
 import UIKit
 
 @objc(HackleInAppMessageUI)
-class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable {
-    let eventHandler: InAppMessageEventHandler
-    
-    init(eventHandler: InAppMessageEventHandler) {
-        self.eventHandler = eventHandler
+class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewProvider, @unchecked Sendable {
+    let clock: Clock
+    let eventProcessor: InAppMessageViewEventProcessor
+    let htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory
+
+    init(
+        clock: Clock,
+        eventProcessor: InAppMessageViewEventProcessor,
+        htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory
+    ) {
+        self.clock = clock
+        self.eventProcessor = eventProcessor
+        self.htmlContentResolverFactory = htmlContentResolverFactory
         super.init()
     }
-    
+
     @MainActor var window: Window?
     var delegate: HackleInAppMessageDelegate?
 
-    @MainActor var currentMessageView: InAppMessageView? {
+    @MainActor var currentView: InAppMessageView? {
         window?.messageViewController?.messageView
+    }
+
+    @MainActor func getView(viewId: String) -> InAppMessageView? {
+        guard let view = currentView, view.id == viewId else {
+            return nil
+        }
+        return view
     }
 
     func present(context: InAppMessagePresentationContext) {
@@ -33,7 +48,8 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable
     @MainActor private func presentNow(context: InAppMessagePresentationContext) {
         guard checkRootViewController(),
               noMessagePresented(),
-              orientationSupported(context: context) else {
+              orientationSupported(context: context)
+        else {
             return
         }
 
@@ -68,7 +84,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, @unchecked Sendable
     }
 
     @MainActor private func noMessagePresented() -> Bool {
-        currentMessageView == nil
+        currentView == nil
     }
 
     @MainActor private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {

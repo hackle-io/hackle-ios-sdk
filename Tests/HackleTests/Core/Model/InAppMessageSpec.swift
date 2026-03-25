@@ -169,6 +169,149 @@ class InAppMessageSpec: QuickSpec {
             }
         }
 
+        describe("InAppMessage.ActionType") {
+            describe("shouldClose") {
+                it("should return true for close types") {
+                    let closeTypes: [InAppMessage.ActionType] = [.close, .hidden, .linkAndClose, .linkNewTabAndClose, .linkNewWindowAndClose]
+                    for type in closeTypes {
+                        expect(type.shouldClose).to(beTrue(), description: "\(type) should close")
+                    }
+                }
+
+                it("should return false for non-close types") {
+                    let nonCloseTypes: [InAppMessage.ActionType] = [.webLink, .linkNewTab, .linkNewWindow]
+                    for type in nonCloseTypes {
+                        expect(type.shouldClose).to(beFalse(), description: "\(type) should not close")
+                    }
+                }
+            }
+
+            describe("shouldLink") {
+                it("should return true for link types") {
+                    let linkTypes: [InAppMessage.ActionType] = [.webLink, .linkAndClose, .linkNewTab, .linkNewTabAndClose, .linkNewWindow, .linkNewWindowAndClose]
+                    for type in linkTypes {
+                        expect(type.shouldLink).to(beTrue(), description: "\(type) should link")
+                    }
+                }
+
+                it("should return false for non-link types") {
+                    let nonLinkTypes: [InAppMessage.ActionType] = [.close, .hidden]
+                    for type in nonLinkTypes {
+                        expect(type.shouldLink).to(beFalse(), description: "\(type) should not link")
+                    }
+                }
+            }
+        }
+
+        describe("InAppMessage.Action") {
+            describe("type") {
+                it("should return .close for close and hidden") {
+                    let closeAction = InAppMessage.Action(behavior: .click, type: .close, value: nil)
+                    let hiddenAction = InAppMessage.Action(behavior: .click, type: .hidden, value: nil)
+
+                    expect(closeAction.type) == .close
+                    expect(hiddenAction.type) == .close
+                }
+
+                it("should return .link for all link types") {
+                    let linkTypes: [InAppMessage.ActionType] = [.webLink, .linkAndClose, .linkNewTab, .linkNewTabAndClose, .linkNewWindow, .linkNewWindowAndClose]
+                    for actionType in linkTypes {
+                        let action = InAppMessage.Action(behavior: .click, type: actionType, value: "https://example.com")
+                        expect(action.type).to(equal(.link), description: "\(actionType) should be .link")
+                    }
+                }
+            }
+
+            describe("close") {
+                it("should return CloseActionInfo when actionType shouldClose") {
+                    let action = InAppMessage.Action(behavior: .click, type: .close, value: nil)
+                    expect(action.close).toNot(beNil())
+                    expect(action.close?.hideDuration) == 0
+                }
+
+                it("should return CloseActionInfo with hideDuration for hidden type") {
+                    let action = InAppMessage.Action(behavior: .click, type: .hidden, value: "3600000")
+                    expect(action.close).toNot(beNil())
+                    expect(action.close?.hideDuration) == 3600 // 3600000ms = 3600s
+                }
+
+                it("should return CloseActionInfo for linkAndClose") {
+                    let action = InAppMessage.Action(behavior: .click, type: .linkAndClose, value: "https://example.com")
+                    expect(action.close).toNot(beNil())
+                    expect(action.close?.hideDuration) == 0
+                }
+
+                it("should return nil when actionType should not close") {
+                    let action = InAppMessage.Action(behavior: .click, type: .webLink, value: "https://example.com")
+                    expect(action.close).to(beNil())
+                }
+            }
+
+            describe("link") {
+                it("should return LinkActionInfo when actionType shouldLink") {
+                    let action = InAppMessage.Action(behavior: .click, type: .webLink, value: "https://example.com")
+                    expect(action.link).toNot(beNil())
+                    expect(action.link?.url) == "https://example.com"
+                    expect(action.link?.shouldCloseAfterLink) == false
+                }
+
+                it("should set shouldCloseAfterLink to true for linkAndClose") {
+                    let action = InAppMessage.Action(behavior: .click, type: .linkAndClose, value: "https://example.com")
+                    expect(action.link).toNot(beNil())
+                    expect(action.link?.url) == "https://example.com"
+                    expect(action.link?.shouldCloseAfterLink) == true
+                }
+
+                it("should set shouldCloseAfterLink correctly for new tab/window types") {
+                    let linkNewTab = InAppMessage.Action(behavior: .click, type: .linkNewTab, value: "https://example.com")
+                    expect(linkNewTab.link?.shouldCloseAfterLink) == false
+
+                    let linkNewTabAndClose = InAppMessage.Action(behavior: .click, type: .linkNewTabAndClose, value: "https://example.com")
+                    expect(linkNewTabAndClose.link?.shouldCloseAfterLink) == true
+
+                    let linkNewWindow = InAppMessage.Action(behavior: .click, type: .linkNewWindow, value: "https://example.com")
+                    expect(linkNewWindow.link?.shouldCloseAfterLink) == false
+
+                    let linkNewWindowAndClose = InAppMessage.Action(behavior: .click, type: .linkNewWindowAndClose, value: "https://example.com")
+                    expect(linkNewWindowAndClose.link?.shouldCloseAfterLink) == true
+                }
+
+                it("should use empty string when value is nil") {
+                    let action = InAppMessage.Action(behavior: .click, type: .webLink, value: nil)
+                    expect(action.link?.url) == ""
+                }
+
+                it("should return nil when actionType should not link") {
+                    let action = InAppMessage.Action(behavior: .click, type: .close, value: nil)
+                    expect(action.link).to(beNil())
+                }
+            }
+
+            describe("hiddenTimeInterval") {
+                it("should return 0 for non-hidden types") {
+                    for actionType in InAppMessage.ActionType.allCases where actionType != .hidden {
+                        let action = InAppMessage.Action(behavior: .click, type: actionType, value: nil)
+                        expect(action.hiddenTimeInterval).to(equal(0), description: "\(actionType) should have 0 interval")
+                    }
+                }
+
+                it("should return default 24h when value is nil") {
+                    let action = InAppMessage.Action(behavior: .click, type: .hidden, value: nil)
+                    expect(action.hiddenTimeInterval) == 86400 // 24 * 60 * 60
+                }
+
+                it("should convert milliseconds to seconds") {
+                    let action = InAppMessage.Action(behavior: .click, type: .hidden, value: "7200000") // 2h in ms
+                    expect(action.hiddenTimeInterval) == 7200 // 2h in seconds
+                }
+
+                it("should return default 24h when value is not a valid number") {
+                    let action = InAppMessage.Action(behavior: .click, type: .hidden, value: "invalid")
+                    expect(action.hiddenTimeInterval) == 86400
+                }
+            }
+        }
+
         describe("InAppMessage.TimetableSlot") {
             context("when testing basic slot matching") {
                 let slot = InAppMessage.TimetableSlot(
