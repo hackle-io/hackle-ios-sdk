@@ -2,18 +2,14 @@ import Foundation
 import UIKit
 
 extension HackleInAppMessageUI {
-
-    class ImageContainerView: UIView {
-
+    class ImageContainerView: UIView, InAppMessageViewAware {
         private let attributes: Attributes
 
         private let items: [ImageItem]
-        private let handleEvent: (InAppMessage.Event) -> ()
 
-        init(items: [ImageItem], attributes: Attributes, handleEvent: @escaping (InAppMessage.Event) -> ()) {
+        init(items: [ImageItem], attributes: Attributes) {
             self.attributes = attributes
             self.items = items
-            self.handleEvent = handleEvent
             super.init(frame: .zero)
 
             if let singleImageView = singleImageView {
@@ -27,7 +23,8 @@ extension HackleInAppMessageUI {
             }
         }
 
-        public required init?(coder: NSCoder) {
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
 
@@ -45,7 +42,7 @@ extension HackleInAppMessageUI {
                 return
             }
 
-            handleEvent(.imageAction(action: action, image: item.image, order: nil))
+            handle(event: .action(timestamp: clock.now(), action: action, image: item.image, order: nil))
         }
 
         // MARK: - View
@@ -68,10 +65,7 @@ extension HackleInAppMessageUI {
             }
 
             let attributes = ScrollImageView.Attributes(autoScrollInterval: attributes.autoScrollInterval)
-            let view = ScrollImageView(items: items, attributes: attributes) { [weak self] event in
-                self?.handleEvent(event)
-            }
-            return view
+            return ScrollImageView(items: items, attributes: attributes)
         }()
     }
 

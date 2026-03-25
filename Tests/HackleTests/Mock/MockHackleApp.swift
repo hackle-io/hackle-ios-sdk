@@ -1,15 +1,15 @@
 import Foundation
-import MockingKit
 @testable import Hackle
+import MockingKit
 
-class MockHackleAppCore : Mock, HackleAppCore {
-    
+class MockHackleAppCore: Mock, HackleAppCore {
     var sdk: Sdk
     var sessionId: String
     var deviceId: String
     var user: User
     var hackleAppContext: HackleAppContext?
-
+    var currentInAppMessageView: InAppMessageView?
+    
     init(
         sdkKey: String = "",
         sessonId: String = "",
@@ -20,6 +20,11 @@ class MockHackleAppCore : Mock, HackleAppCore {
         self.sessionId = sessonId
         self.deviceId = deviceId
         self.user = user
+    }
+
+    lazy var getInAppMessageViewRef = MockFunction(self, getInAppMessageView)
+    func getInAppMessageView(viewId: String) -> InAppMessageView? {
+        call(getInAppMessageViewRef, args: viewId)
     }
     
     lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
@@ -56,19 +61,19 @@ class MockHackleAppCore : Mock, HackleAppCore {
         call(updateUserPropertiesRef, args: (operations, hackleAppContext, completion))
     }
     
-    lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> Void)
+    lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> ())
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
         call(updatePushSubscriptionsRef, args: (operations, hackleAppContext))
     }
     
-    lazy var updateSmsSubscriptionsRef = MockFunction(self, updateSmsSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> Void)
+    lazy var updateSmsSubscriptionsRef = MockFunction(self, updateSmsSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> ())
     func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
         call(updateSmsSubscriptionsRef, args: (operations, hackleAppContext))
     }
     
-    lazy var updateKakaoSubscriptionsRef = MockFunction(self, updateKakaoSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> Void)
+    lazy var updateKakaoSubscriptionsRef = MockFunction(self, updateKakaoSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> ())
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
         call(updateKakaoSubscriptionsRef, args: (operations, hackleAppContext))
@@ -104,7 +109,7 @@ class MockHackleAppCore : Mock, HackleAppCore {
         return call(featureFlagDetailRef, args: (featureKey, user, hackleAppContext))
     }
     
-    lazy var trackRef = MockFunction(self, track as (Event, User?, HackleAppContext) -> Void)
+    lazy var trackRef = MockFunction(self, track as (Event, User?, HackleAppContext) -> ())
     func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
         call(trackRef, args: (event, user, hackleAppContext))
@@ -116,7 +121,7 @@ class MockHackleAppCore : Mock, HackleAppCore {
         return call(remoteConfigRef, args: (key, defaultValue, user, hackleAppContext))
     }
     
-    lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen, HackleAppContext) -> Void)
+    lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen, HackleAppContext) -> ())
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
         call(setCurrentScreenRef, args: (screen, hackleAppContext))
@@ -131,11 +136,11 @@ class MockHackleAppCore : Mock, HackleAppCore {
         fatalError("NOT IMPLEMENTED")
     }
     
-    func allVariationDetails(user: User?) -> [Int : Decision] {
+    func allVariationDetails(user: User?) -> [Int: Decision] {
         fatalError("NOT IMPLEMENTED")
     }
     
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int : Decision] {
+    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
         fatalError("NOT IMPLEMENTED")
     }
     

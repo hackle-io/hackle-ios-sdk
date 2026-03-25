@@ -5,6 +5,7 @@
 //  Created by sungwoo.yeo on 8/12/25.
 //
 
+typealias HackleBrowserProperties = [String: Any]
 typealias HackleInvokeParameters = [String: Any?]
 
 extension HackleInvokeParameters {
@@ -13,37 +14,21 @@ extension HackleInvokeParameters {
     func userAsDictionary() -> [String: Any]? {
         self["user"] as? [String: Any]
     }
-    
+
     /// id를 사용하는 User 객체를 반환합니다.
     /// - Returns: User 객체 또는 `nil`
     func user() -> User? {
         if let id = self["user"] as? String {
             return Hackle.user(id: id)
         }
-        
-        if let data = userAsDictionary(),
-           let user = User.from(dto: data) {
-            return user
+
+        guard let data = userAsDictionary() else {
+            return nil
         }
-        
-        return nil
+
+        return User.from(dto: data)
     }
-    
-    /// userId를 사용하는 User 객체를 반환합니다.
-    /// - Returns: User 객체 또는 `nil`
-    func userWithUserId() -> User? {
-        if let userId = self["user"] as? String {
-            return Hackle.user(userId: userId)
-        }
-        
-        if let data = userAsDictionary(),
-           let user = User.from(dto: data) {
-            return user
-        }
-        
-        return nil
-    }
-    
+
     /// 사용자 ID를 반환합니다.
     /// - Returns: 사용자 ID 또는 `nil`
     func userId() -> String?? {
@@ -110,12 +95,13 @@ extension HackleInvokeParameters {
         if let eventKey = self["event"] as? String {
             return HackleEventBuilder(key: eventKey).build()
         }
-        
+
         if let eventDto = self["event"] as? EventDto,
-           let event = Event.from(dto: eventDto) {
+           let event = Event.from(dto: eventDto)
+        {
             return event
         }
-        
+
         return nil
     }
 
@@ -130,14 +116,14 @@ extension HackleInvokeParameters {
     func defaultStringValue() -> String? {
         self["defaultValue"] as? String
     }
-    
-    // 원격 구성(Remote Config) 조회 시 사용할 double 기본값을 반환합니다.
+
+    /// 원격 구성(Remote Config) 조회 시 사용할 double 기본값을 반환합니다.
     /// - Returns: 기본값 (`Any?`)
     func defaultDoubleValue() -> Double? {
         self["defaultValue"] as? Double
     }
-    
-    // 원격 구성(Remote Config) 조회 시 사용할 bool 기본값을 반환합니다.
+
+    /// 원격 구성(Remote Config) 조회 시 사용할 bool 기본값을 반환합니다.
     /// - Returns: 기본값 (`Any?`)
     func defaultBoolValue() -> Bool? {
         self["defaultValue"] as? Bool
@@ -159,5 +145,11 @@ extension HackleInvokeParameters {
     /// - Returns: opt-out 여부 또는 `nil`
     func optOut() -> Bool? {
         self["optOut"] as? Bool
+    }
+
+    /// InAppMessageView의 id를 반환합니다
+    /// - Returns: `InAppMessageView.id` or `nil`
+    func viewId() -> String? {
+        self["viewId"] as? String
     }
 }

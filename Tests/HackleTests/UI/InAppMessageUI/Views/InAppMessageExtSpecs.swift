@@ -98,7 +98,8 @@ class InAppMessageExtSpecs: QuickSpec {
                     ),
                     action: nil,
                     outerButtons: [],
-                    innerButtons: []
+                    innerButtons: [],
+                    html: nil
                 )
                 expect(msg.image(orientation: .vertical)) === imgV
                 expect(msg.image(orientation: .horizontal)) === imgH
@@ -147,7 +148,8 @@ class InAppMessageExtSpecs: QuickSpec {
                     ),
                     action: nil,
                     outerButtons: [],
-                    innerButtons: [posBtn]
+                    innerButtons: [posBtn],
+                    html: nil
                 )
                 expect(msg.buttonOrNil(horizontal: .left, vertical: .top))
                     === posBtn
