@@ -7,6 +7,11 @@ extension HackleInAppMessageUI {
             guard let view = super.hitTest(point, with: event) else {
                 return nil
             }
+
+            if let htmlView = messageViewController?.messageView as? HtmlView {
+                return htmlView.presented ? view : nil
+            }
+
             let isInAppMessageView = view is InAppMessageView || view.responders.lazy.contains(where: { $0 is InAppMessageView })
             return isInAppMessageView ? view : nil
         }

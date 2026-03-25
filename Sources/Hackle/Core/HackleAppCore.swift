@@ -11,13 +11,16 @@ protocol HackleAppCore: AnyObject {
     var deviceId: String { get }
     var sessionId: String { get }
     var user: User { get }
+    @MainActor var currentInAppMessageView: InAppMessageView? { get }
 
     func initialize(user: User?, completion: @escaping () -> ())
 
+    @MainActor func getInAppMessageView(viewId: String) -> InAppMessageView?
+
     func showUserExplorer()
-    
+
     func hideUserExplorer()
-    
+
     func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
 
     func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
@@ -25,17 +28,17 @@ protocol HackleAppCore: AnyObject {
     func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
 
     func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
-    
+
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
-    
+
     func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
-    
+
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
 
     func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
 
     func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
-    
+
     func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
 
     func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
@@ -47,19 +50,18 @@ protocol HackleAppCore: AnyObject {
     func track(event: Event, user: User?, hackleAppContext: HackleAppContext)
 
     func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision
-    
+
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
 
     var isOptOutTracking: Bool { get }
     func setOptOutTracking(optOut: Bool)
 
     func fetch(completion: @escaping () -> ())
-    
+
     func setPushToken(deviceToken: Data)
-    
+
     func setInAppMessageDelegate(_ delegate: HackleInAppMessageDelegate?)
 }
-
 
 class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
@@ -83,29 +85,27 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let onInitializedRef = AtomicReference<(() -> ())?>(value: nil)
 
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
-    
+
     var deviceId: String {
-        get {
-            platformManager.device.id
-        }
+        platformManager.device.id
     }
-    
+
     var sessionId: String {
-        get {
-            sessionManager.requiredSession.id
-        }
+        sessionManager.requiredSession.id
     }
-    
+
     var user: User {
-        get {
-            userManager.currentUser
-        }
+        userManager.currentUser
     }
 
     var isOptOutTracking: Bool {
         optOutManager.isOptOutTracking
     }
-    
+
+    var currentInAppMessageView: InAppMessageView? {
+        return inAppMessageUI.currentView
+    }
+
     init(
         core: HackleCore,
         eventQueue: DispatchQueue,
@@ -145,7 +145,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         self.userExplorer = userExplorer
         self.optOutManager = optOutManager
     }
-    
+
     func initialize(user: User?, completion: @escaping () -> ()) {
         userManager.initialize(user: user)
         onInitializedRef.set(newValue: completion)
@@ -168,7 +168,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         sessionManager.initialize()
         eventProcessor.initialize()
         applicationInstallStateManager.initialize()
-        synchronizer.sync(completion: { [weak self] in
+        synchronizer.sync { [weak self] in
             guard let self = self else {
                 completion()
                 return
@@ -177,9 +177,13 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             self.notificationManager.flush()
             self.applicationInstallStateManager.checkApplicationInstall()
             completion()
-        })
+        }
     }
-    
+
+    func getInAppMessageView(viewId: String) -> InAppMessageView? {
+        return inAppMessageUI.getView(viewId: viewId)
+    }
+
     func showUserExplorer() {
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
@@ -222,18 +226,17 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         userManager.updateProperties(operations: operations)
         completion()
     }
-    
+
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
         track(event: operations.toEvent(key: "$push_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
-    
+
     func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
         track(event: operations.toEvent(key: "$sms_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
-    
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
         track(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
@@ -254,7 +257,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         eventProcessor.flush()
         completion()
     }
-    
+
     func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
         let event = PropertyOperationsBuilder()
             .unset(PIIProperty.phoneNumber.rawValue)
@@ -275,7 +278,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
                 user: hackleUser,
                 defaultVariationKey: defaultVariation
             )
-        } catch let error {
+        } catch {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
             decision = Decision.of(experiment: nil, variation: defaultVariation, reason: DecisionReason.EXCEPTION)
         }
@@ -289,7 +292,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             return try core.experiments(user: hackleUser).associate { experiment, decision in
                 (Int(experiment.key), decision)
             }
-        } catch let error {
+        } catch {
             Log.error("Unexpected error while deciding variations for experiments: \(String(describing: error))")
             return [:]
         }
@@ -316,21 +319,21 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
         core.track(event: event, user: hackleUser)
     }
-    
+
     func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
         let sample = TimerSample.start()
         let decision: RemoteConfigDecision
         do {
             let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
             decision = try core.remoteConfig(parameterKey: key, user: hackleUser, defaultValue: defaultValue)
-        } catch let error {
+        } catch {
             Log.error("Unexpected exception while deciding remote config parameter[\(key)]. Returning default value: \(String(describing: error))")
             decision = RemoteConfigDecision(value: defaultValue, reason: DecisionReason.EXCEPTION)
         }
         DecisionMetrics.remoteConfig(sample: sample, key: key, decision: decision)
         return decision
     }
-    
+
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext) {
         screenManager.setCurrentScreen(screen: screen, timestamp: SystemClock.shared.now())
     }
@@ -350,13 +353,12 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             }
         )
     }
-    
+
     func setPushToken(deviceToken: Data) {
         pushTokenRegistry.register(token: PushToken.of(value: deviceToken), timestamp: Date())
     }
-    
+
     func setInAppMessageDelegate(_ delegate: HackleInAppMessageDelegate?) {
         inAppMessageUI.delegate = delegate
     }
 }
-

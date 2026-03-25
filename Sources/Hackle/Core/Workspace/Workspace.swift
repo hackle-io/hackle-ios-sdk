@@ -273,7 +273,6 @@ class EventTypeDto: Codable {
 }
 
 class TargetDto: Codable {
-
     var conditions: [ConditionDto]
 
     class ConditionDto: Codable {
@@ -324,7 +323,6 @@ class TargetDto: Codable {
         var propertyFilter: ConditionDto
     }
 }
-
 
 class TargetActionDto: Codable {
     var type: String
@@ -406,12 +404,12 @@ class InAppMessageDto: Codable {
     var evaluateContext: EvaluateContextDto?
     var targetContext: TargetContextDto
     var messageContext: MessageContextDto
-    
+
     class TimetableDto: Codable {
         var type: String
         var slots: [TimetableSlotDto]
     }
-    
+
     class TimetableSlotDto: Codable {
         var dayOfWeek: String
         var startMillisInclusive: Int64
@@ -486,6 +484,7 @@ class InAppMessageDto: Codable {
             var action: ActionDto?
             var outerButtons: [PositionalButtonDto]
             var innerButtons: [PositionalButtonDto]
+            var html: HtmlDto?
 
             class LayoutDto: Codable {
                 var displayType: String
@@ -522,7 +521,6 @@ class InAppMessageDto: Codable {
                 var style: StyleDto
                 var action: ActionDto
 
-
                 class StyleDto: Codable {
                     var textColor: String
                     var bgColor: String
@@ -557,6 +555,12 @@ class InAppMessageDto: Codable {
                 var button: ButtonDto
                 var alignment: AlignmentDto
             }
+
+            class HtmlDto: Codable {
+                var resourceType: String
+                var text: String?
+                var path: String?
+            }
         }
 
         class ActionDto: Codable {
@@ -569,7 +573,6 @@ class InAppMessageDto: Codable {
 
 extension InAppMessageDto {
     func toInAppMessageOrNil() -> InAppMessage? {
-
         guard let status: InAppMessage.Status = Enums.parseOrNil(rawValue: status) else {
             return nil
         }
@@ -578,7 +581,6 @@ extension InAppMessageDto {
         switch timeUnit {
         case "IMMEDIATE":
             period = .always
-            break
         case "CUSTOM":
             guard let start = startEpochTimeMillis, let end = endEpochTimeMillis else {
                 return nil
@@ -587,7 +589,6 @@ extension InAppMessageDto {
                 startInclusive: Date(timeIntervalSince1970: TimeInterval(start / 1000)),
                 endExclusive: Date(timeIntervalSince1970: TimeInterval(end / 1000))
             )
-            break
         default:
             return nil
         }
@@ -595,9 +596,9 @@ extension InAppMessageDto {
         guard let messageContext = messageContext.toMessageContextOrNil() else {
             return nil
         }
-        
+
         let timetable = self.timetable?.toTimetableOrNil() ?? .all
-        let eventTriggerRules = eventTriggerRules.map({ $0.toTriggerRule() })
+        let eventTriggerRules = eventTriggerRules.map { $0.toTriggerRule() }
         let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
         let eventTriggerDelay = eventTriggerDelay?.toDelayOrNil() ?? InAppMessage.EventTrigger.Delay.default
 
@@ -643,8 +644,8 @@ extension InAppMessageDto.TimetableSlotDto {
         let timeUnit = TimeUnit.milliseconds
         return InAppMessage.TimetableSlot(
             dayOfWeek: dayOfWeek,
-            startSecondsInclusive: timeUnit.convert(Double(self.startMillisInclusive), to: .seconds),
-            endSecondsExclusive: timeUnit.convert(Double(self.endMillisExclusive), to: .seconds)
+            startSecondsInclusive: timeUnit.convert(Double(startMillisInclusive), to: .seconds),
+            endSecondsExclusive: timeUnit.convert(Double(endMillisExclusive), to: .seconds)
         )
     }
 }
@@ -660,7 +661,7 @@ extension InAppMessageDto.EventTriggerRuleDto {
 extension InAppMessageDto.EventFrequencyCapDto {
     func toFrequencyCap() -> InAppMessage.EventTrigger.FrequencyCap {
         InAppMessage.EventTrigger.FrequencyCap(
-            identifierCaps: identifiers.map({ $0.toIdentifierCap() }),
+            identifierCaps: identifiers.map { $0.toIdentifierCap() },
             durationCap: duration?.toDurationCapOrNil()
         )
     }
@@ -744,9 +745,7 @@ extension InAppMessageDto.TargetContextDto.UserOverrideDto {
 }
 
 extension InAppMessageDto.MessageContextDto {
-
     func toMessageContextOrNil() -> InAppMessage.MessageContext? {
-
         var experimentContext: InAppMessage.ExperimentContext? = nil
         if exposure.type == "AB_TEST", let experimentKey = exposure.key {
             experimentContext = InAppMessage.ExperimentContext(key: experimentKey)
@@ -776,7 +775,6 @@ extension InAppMessageDto.MessageContextDto {
 
 extension InAppMessageDto.MessageContextDto.MessageDto {
     func toMessageOrNil() -> InAppMessage.Message? {
-
         guard let layout = layout.toLayoutOrNil() else {
             return nil
         }
@@ -819,6 +817,18 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             return nil
         }
 
+        var messageHtml: InAppMessage.Message.Html? = nil
+        if html != nil {
+            guard let html = html?.toHtmlOrNil() else {
+                return nil
+            }
+            messageHtml = html
+        }
+
+        if layout.displayType == .html && messageHtml == nil {
+            return nil
+        }
+
         return InAppMessage.Message(
             variationKey: variationKey,
             lang: lang,
@@ -831,7 +841,8 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             background: InAppMessage.Message.Background(color: background.color),
             action: messageAction,
             outerButtons: outerButtons,
-            innerButtons: innerButtons
+            innerButtons: innerButtons,
+            html: messageHtml
         )
     }
 }
@@ -986,6 +997,26 @@ extension InAppMessageDto.MessageContextDto.MessageDto.CloseButtonDto {
     }
 }
 
+extension InAppMessageDto.MessageContextDto.MessageDto.HtmlDto {
+    func toHtmlOrNil() -> InAppMessage.Message.Html? {
+        guard let resourceType: InAppMessage.HtmlResourceType = Enums.parseOrNil(rawValue: resourceType) else {
+            return nil
+        }
+        switch resourceType {
+        case .text:
+            guard let text = text else {
+                return nil
+            }
+            return InAppMessage.Message.Html(resourceType: resourceType, text: text, path: nil)
+        case .path:
+            guard let path = path else {
+                return nil
+            }
+            return InAppMessage.Message.Html(resourceType: resourceType, text: nil, path: path)
+        }
+    }
+}
+
 extension SlotDto {
     func toSlot() -> Slot {
         SlotEntity(startInclusive: startInclusive, endExclusive: endExclusive, variationId: variationId)
@@ -1008,7 +1039,6 @@ extension VariationDto {
 
 extension ExperimentDto {
     func toExperimentOrNil(type: ExperimentType) -> Experiment? {
-
         guard let experimentStatus = ExperimentDto.experimentStatusOrNil(executionStatus: execution.status) else {
             return nil
         }
@@ -1255,4 +1285,3 @@ extension RemoteConfigParameterDto.ValueDto {
         RemoteConfigParameter.Value(id: id, rawValue: value)
     }
 }
-
