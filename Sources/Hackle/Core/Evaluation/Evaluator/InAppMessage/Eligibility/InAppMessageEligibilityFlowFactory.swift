@@ -9,9 +9,13 @@ class DefaultInAppMessageEligibilityFlowFactory: InAppMessageEligibilityFlowFact
 
     private let _triggerFlow: InAppMessageEligibilityFlow
     private let _deliverFlow: InAppMessageEligibilityFlow
-    private let _deliverReEvalutateFlow: InAppMessageEligibilityFlow
+    private let _deliverReEvaluateFlow: InAppMessageEligibilityFlow
 
     init(context: EvaluationContext, layoutEvaluator: Evaluator) {
+        let overrideFlow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.of(
+            OverrideInAppMessageEligibilityFlowEvaluator(userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!)
+        )
+
         let evaluateFlow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.of(
             PlatformInAppMessageEligibilityFlowEvaluator(),
             OverrideInAppMessageEligibilityFlowEvaluator(userOverrideMatcher: context.get(InAppMessageUserOverrideMatcher.self)!),
@@ -36,8 +40,8 @@ class DefaultInAppMessageEligibilityFlowFactory: InAppMessageEligibilityFlowFact
         )
 
         _triggerFlow = evaluateFlow + layoutFlow + dedupFlow + eligibleFlow
-        _deliverFlow = dedupFlow + eligibleFlow
-        _deliverReEvalutateFlow = evaluateFlow + dedupFlow + eligibleFlow
+        _deliverFlow = overrideFlow + dedupFlow + eligibleFlow
+        _deliverReEvaluateFlow = evaluateFlow + dedupFlow + eligibleFlow
     }
 
     func triggerFlow() -> InAppMessageEligibilityFlow {
@@ -46,7 +50,7 @@ class DefaultInAppMessageEligibilityFlowFactory: InAppMessageEligibilityFlowFact
 
     func deliverFlow(reEvaluate: Bool) -> InAppMessageEligibilityFlow {
         if reEvaluate {
-            return _deliverReEvalutateFlow
+            return _deliverReEvaluateFlow
         } else {
             return _deliverFlow
         }
