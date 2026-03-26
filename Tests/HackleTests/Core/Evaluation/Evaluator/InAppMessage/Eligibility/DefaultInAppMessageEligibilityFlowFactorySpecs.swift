@@ -37,6 +37,7 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
                 .isEnd()
 
             sut.deliverFlow(reEvaluate: false)
+                .isDecisionWith(OverrideInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(EligibleInAppMessageEligibilityFlowEvaluator.self)!
