@@ -1,0 +1,55 @@
+name: prepare dev branch
+
+on:
+  workflow_call:
+    inputs:
+      new_version:
+        description: 'New SDK version for dev branch (e.g. 2.67.0)'
+        required: true
+        type: string
+    outputs:
+      branch_name:
+        description: 'Dev branch name'
+        value: ${{ jobs.prepare.outputs.branch_name }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.branch.outputs.branch_name }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or checkout dev branch
+        id: branch
+        run: |
+          DEV_BRANCH="dev-${{ inputs.new_version }}"
+          echo "branch_name=$DEV_BRANCH" >> $GITHUB_OUTPUT
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --heads origin "$DEV_BRANCH" | grep -q "$DEV_BRANCH"; then
+            echo "Dev branch $DEV_BRANCH already exists, checking out"
+            git fetch origin "$DEV_BRANCH"
+            git checkout "$DEV_BRANCH"
+            echo "created=false" >> $GITHUB_OUTPUT
+          else
+            echo "Creating new dev branch $DEV_BRANCH"
+            git checkout -b "$DEV_BRANCH"
+            git push origin "$DEV_BRANCH"
+            echo "created=true" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger SDK version update
+        if: steps.branch.outputs.created == 'true'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: update-sdk-version
+          client-payload: '{"branch": "${{ steps.branch.outputs.branch_name }}"}'
