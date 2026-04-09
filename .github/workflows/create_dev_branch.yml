@@ -12,6 +12,7 @@ on:
         description: 'Dev branch name'
         value: ${{ jobs.prepare.outputs.branch_name }}
 
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -21,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          token: ${{ secrets.PAT }}
           fetch-depth: 0
 
       - name: Create or checkout dev branch
@@ -36,20 +38,8 @@ jobs:
             echo "Dev branch $DEV_BRANCH already exists, checking out"
             git fetch origin "$DEV_BRANCH"
             git checkout "$DEV_BRANCH"
-            echo "created=false" >> $GITHUB_OUTPUT
           else
             echo "Creating new dev branch $DEV_BRANCH"
             git checkout -b "$DEV_BRANCH"
             git push origin "$DEV_BRANCH"
-            echo "created=true" >> $GITHUB_OUTPUT
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Trigger SDK version update
-        if: steps.branch.outputs.created == 'true'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: update-sdk-version
-          client-payload: '{"branch": "${{ steps.branch.outputs.branch_name }}"}'

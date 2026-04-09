@@ -33,6 +33,7 @@ jobs:
     uses: ./.github/workflows/create_dev_branch.yml
     with:
       new_version: ${{ needs.calculate-version.outputs.new_version }}
+    secrets: inherit
 
   update-js-sdk:
     needs: [prepare-dev-branch]
@@ -70,7 +71,7 @@ jobs:
 
       - name: Update source references
         run: |
-          sed -i -E "s/(static let javascriptSdkVersion = \")[^\"]+(\"/\1${JS_SDK_VERSION}\2/" \
+          sed -i -E "s/(static let javascriptSdkVersion = \")[^\"]+\"/\1${JS_SDK_VERSION}\"/" \
             Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift
 
           sed -i -E "s/\.process\(\"Resources\/hackle-javascript-sdk-[^\"]+\.min\.js\"\)/.process(\"Resources\/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js\")/" \
