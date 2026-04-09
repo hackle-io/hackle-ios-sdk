@@ -98,7 +98,7 @@ jobs:
             Sources/Hackle/Resources/ \
             Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift \
             Package.swift
-          git commit -m "chore: update javascript sdk to $JS_SDK_VERSION"
+          git commit -m "chore: update @hackler/javascript-sdk@$JS_SDK_VERSION"
           git push origin "$FEATURE_BRANCH"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -110,13 +110,8 @@ jobs:
         run: |
           gh pr create \
             --base "$DEV_BRANCH" \
-            --title "chore: update javascript sdk to $JS_SDK_VERSION" \
-            --body "hackle-javascript-sdk \`$JS_SDK_VERSION\` 업데이트
-
-          ## Changes
-          - \`hackle-javascript-sdk-${JS_SDK_VERSION}.min.js\` 추가 (npm UMD build)
-          - 기존 JS SDK 파일 삭제
-          - \`javascriptSdkVersion\` 상수 업데이트
-          - \`Package.swift\` 리소스 참조 업데이트
+            --title "[Automation] Update @hackler/javascript-sdk@$JS_SDK_VERSION" \
+            --body "## Description
+          - Update @hackler/javascript-sdk@$JS_SDK_VERSION
 
           > **Note:** \`Hackle.xcodeproj\`는 수동으로 업데이트 필요"
