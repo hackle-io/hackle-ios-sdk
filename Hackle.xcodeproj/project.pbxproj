@@ -172,8 +172,6 @@
 		EE0B71E32A3AA4E9009D7AF4 /* Anchors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */; };
 		EE0B71E52A3BF237009D7AF4 /* InAppMessageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71E42A3BF237009D7AF4 /* InAppMessageExt.swift */; };
 		EE0B71EE2A42E84A009D7AF4 /* InAppMessageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */; };
-		EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */; };
-		EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */; };
 		EE0F33F22A665ECD009DE640 /* InAppMessageEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */; };
 		EE0F33FA2A66781E009DE640 /* InAppMessageViewEventActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F33F92A66781E009DE640 /* InAppMessageViewEventActor.swift */; };
 		EE0F34012A668F20009DE640 /* MockInAppMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */; };
@@ -416,6 +414,14 @@
 		EE29DAA629CD82C200B1FEAA /* HackleConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA3929CD82C200B1FEAA /* HackleConfigSpec.swift */; };
 		EE29DAA729CD82C200B1FEAA /* HackleAppSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DA3A29CD82C200B1FEAA /* HackleAppSpec.swift */; };
 		EE29DAB829CD842100B1FEAA /* HackleUserExplorerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */; };
+		AA000201111111111111AAAA /* HackleHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000101111111111111AAAA /* HackleHostingController.swift */; };
+		AA000202111111111111AAAA /* ExplorerRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000102111111111111AAAA /* ExplorerRootView.swift */; };
+		AA000203111111111111AAAA /* ExplorerButtonContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000103111111111111AAAA /* ExplorerButtonContent.swift */; };
+		AA000204111111111111AAAA /* UserInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000104111111111111AAAA /* UserInfoSectionView.swift */; };
+		AA000205111111111111AAAA /* AbTestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000105111111111111AAAA /* AbTestListView.swift */; };
+		AA000206111111111111AAAA /* FeatureFlagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000106111111111111AAAA /* FeatureFlagListView.swift */; };
+		AA000207111111111111AAAA /* ExperimentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000107111111111111AAAA /* ExperimentRowView.swift */; };
+		AA000208111111111111AAAA /* ExplorerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000108111111111111AAAA /* ExplorerViewModel.swift */; };
 		EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */; };
 		EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB329CD83E000B1FEAA /* hackle_banner.png */; };
 		EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAAF29CD83E000B1FEAA /* hackle_banner@2x.png */; };
@@ -426,15 +432,9 @@
 		EE29DAC329CD853C00B1FEAA /* hackle_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB029CD83E000B1FEAA /* hackle_logo.png */; };
 		EE29DAC429CD853C00B1FEAA /* hackle_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB129CD83E000B1FEAA /* hackle_logo@2x.png */; };
 		EE29DAC529CD853C00B1FEAA /* hackle_logo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB429CD83E000B1FEAA /* hackle_logo@3x.png */; };
-		EE29DAC629CD854000B1FEAA /* HackleUserExplorerButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB929CD843100B1FEAA /* HackleUserExplorerButton.xib */; };
 		EE29DAC829CD91A400B1FEAA /* ManualOverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAC729CD91A400B1FEAA /* ManualOverrideStorage.swift */; };
 		EE29DACA29CD988100B1FEAA /* HackleUserManualOverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */; };
 		EE29DACC29CD9E6A00B1FEAA /* HackleUserExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */; };
-		EE29DAD129CDA86200B1FEAA /* HackleUserExplorerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */; };
-		EE3C165829D43219008177F6 /* HackleFeatureFlagViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */; };
-		EE3C165B29D43234008177F6 /* HackleFeatureFlagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165929D43234008177F6 /* HackleFeatureFlagTableViewCell.swift */; };
-		EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */; };
-		EE3C165E29D43246008177F6 /* HackleFeatureFlagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */; };
 		EE3C166029D43253008177F6 /* HackleFeatureFlagItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */; };
 		EE3E36A52C74EF40002A6147 /* MockDevToolsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E36A42C74EF40002A6147 /* MockDevToolsAPI.swift */; };
 		EE42A53B2BBC42B30008B003 /* ThrottleLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE42A53A2BBC42B30008B003 /* ThrottleLimiter.swift */; };
@@ -646,8 +646,6 @@
 		EEA01CC72A3712CC00E0C021 /* InAppMessageUIWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CC62A3712CC00E0C021 /* InAppMessageUIWindow.swift */; };
 		EEA01CC92A37136900E0C021 /* InAppMessageUIExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CC82A37136900E0C021 /* InAppMessageUIExt.swift */; };
 		EEA01CCB2A37138300E0C021 /* UIKitExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA01CCA2A37138300E0C021 /* UIKitExt.swift */; };
-		EEA3BF5929D3F7B4008664BA /* OnOverrideSetListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */; };
-		EEA3BF5B29D3F7D4008664BA /* OnOverrideResetListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */; };
 		EEA7FCAD2C04AB330004F858 /* ScreenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCAC2C04AB330004F858 /* ScreenManager.swift */; };
 		EEA7FCAF2C04AB380004F858 /* ScreenListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCAE2C04AB380004F858 /* ScreenListener.swift */; };
 		EEA7FCB12C04AB3F0004F858 /* ScreenEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA7FCB02C04AB3F0004F858 /* ScreenEventTracker.swift */; };
@@ -679,13 +677,10 @@
 		EECDF3E12C11AFAF009B2F56 /* InAppMessageUIBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */; };
 		EECDF3E32C11B271009B2F56 /* InAppMessageUIBannerImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */; };
 		EECDF42E2C145E0E009B2F56 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDF42D2C145E0E009B2F56 /* Shadow.swift */; };
-		EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */; };
-		EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */; };
 		EED6A11F2A0D1BFF00A8875D /* PropertyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */; };
 		EED6A1222A0DFC7700A8875D /* PropertyOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A1212A0DFC7700A8875D /* PropertyOperator.swift */; };
 		EED6A1272A0E267D00A8875D /* PropertyOperatorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A1262A0E267D00A8875D /* PropertyOperatorSpecs.swift */; };
 		EED6A1292A0E2CD500A8875D /* PropertyOperationSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED6A1282A0E2CD500A8875D /* PropertyOperationSpecs.swift */; };
-		EEDA4BB229D15AE800B19482 /* HackleUserExplorerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */; };
 		EEDC58422AC97B90001E73DB /* HttpWorkspaceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */; };
 		EEDC58442AC97E5E001E73DB /* HttpHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58432AC97E5E001E73DB /* HttpHeader.swift */; };
 		EEDC58462AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */; };
@@ -902,8 +897,6 @@
 		EE0B71E22A3AA4E9009D7AF4 /* Anchors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchors.swift; sourceTree = "<group>"; };
 		EE0B71E42A3BF237009D7AF4 /* InAppMessageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageExt.swift; sourceTree = "<group>"; };
 		EE0B71ED2A42E84A009D7AF4 /* InAppMessageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageActionHandler.swift; sourceTree = "<group>"; };
-		EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestViewController.xib; sourceTree = "<group>"; };
-		EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestViewController.swift; sourceTree = "<group>"; };
 		EE0F33F12A665ECD009DE640 /* InAppMessageEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageEventTracker.swift; sourceTree = "<group>"; };
 		EE0F33F92A66781E009DE640 /* InAppMessageViewEventActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageViewEventActor.swift; sourceTree = "<group>"; };
 		EE0F34002A668F20009DE640 /* MockInAppMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInAppMessageView.swift; sourceTree = "<group>"; };
@@ -1155,16 +1148,18 @@
 		EE29DAB329CD83E000B1FEAA /* hackle_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hackle_banner.png; sourceTree = "<group>"; };
 		EE29DAB429CD83E000B1FEAA /* hackle_logo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hackle_logo@3x.png"; sourceTree = "<group>"; };
 		EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerButton.swift; sourceTree = "<group>"; };
-		EE29DAB929CD843100B1FEAA /* HackleUserExplorerButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleUserExplorerButton.xib; sourceTree = "<group>"; };
+		AA000101111111111111AAAA /* HackleHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleHostingController.swift; sourceTree = "<group>"; };
+		AA000102111111111111AAAA /* ExplorerRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerRootView.swift; sourceTree = "<group>"; };
+		AA000103111111111111AAAA /* ExplorerButtonContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerButtonContent.swift; sourceTree = "<group>"; };
+		AA000104111111111111AAAA /* UserInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoSectionView.swift; sourceTree = "<group>"; };
+		AA000105111111111111AAAA /* AbTestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestListView.swift; sourceTree = "<group>"; };
+		AA000106111111111111AAAA /* FeatureFlagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagListView.swift; sourceTree = "<group>"; };
+		AA000107111111111111AAAA /* ExperimentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRowView.swift; sourceTree = "<group>"; };
+		AA000108111111111111AAAA /* ExplorerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerViewModel.swift; sourceTree = "<group>"; };
 		EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerView.swift; sourceTree = "<group>"; };
 		EE29DAC729CD91A400B1FEAA /* ManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualOverrideStorage.swift; sourceTree = "<group>"; };
 		EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserManualOverrideStorage.swift; sourceTree = "<group>"; };
 		EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorer.swift; sourceTree = "<group>"; };
-		EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerViewController.swift; sourceTree = "<group>"; };
-		EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleFeatureFlagViewController.xib; sourceTree = "<group>"; };
-		EE3C165929D43234008177F6 /* HackleFeatureFlagTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagTableViewCell.swift; sourceTree = "<group>"; };
-		EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleFeatureFlagTableViewCell.xib; sourceTree = "<group>"; };
-		EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagViewController.swift; sourceTree = "<group>"; };
 		EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleFeatureFlagItem.swift; sourceTree = "<group>"; };
 		EE3E36A42C74EF40002A6147 /* MockDevToolsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDevToolsAPI.swift; sourceTree = "<group>"; };
 		EE42A53A2BBC42B30008B003 /* ThrottleLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleLimiter.swift; sourceTree = "<group>"; };
@@ -1376,8 +1371,6 @@
 		EEA01CC62A3712CC00E0C021 /* InAppMessageUIWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIWindow.swift; sourceTree = "<group>"; };
 		EEA01CC82A37136900E0C021 /* InAppMessageUIExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIExt.swift; sourceTree = "<group>"; };
 		EEA01CCA2A37138300E0C021 /* UIKitExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExt.swift; sourceTree = "<group>"; };
-		EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideSetListener.swift; sourceTree = "<group>"; };
-		EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnOverrideResetListener.swift; sourceTree = "<group>"; };
 		EEA7FCAC2C04AB330004F858 /* ScreenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenManager.swift; sourceTree = "<group>"; };
 		EEA7FCAE2C04AB380004F858 /* ScreenListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenListener.swift; sourceTree = "<group>"; };
 		EEA7FCB02C04AB3F0004F858 /* ScreenEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenEventTracker.swift; sourceTree = "<group>"; };
@@ -1406,13 +1399,10 @@
 		EECDF3E02C11AFAF009B2F56 /* InAppMessageUIBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBannerView.swift; sourceTree = "<group>"; };
 		EECDF3E22C11B271009B2F56 /* InAppMessageUIBannerImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIBannerImageView.swift; sourceTree = "<group>"; };
 		EECDF42D2C145E0E009B2F56 /* Shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
-		EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestTableViewCell.swift; sourceTree = "<group>"; };
-		EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleAbTestTableViewCell.xib; sourceTree = "<group>"; };
 		EED6A11E2A0D1BFF00A8875D /* PropertyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperation.swift; sourceTree = "<group>"; };
 		EED6A1212A0DFC7700A8875D /* PropertyOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperator.swift; sourceTree = "<group>"; };
 		EED6A1262A0E267D00A8875D /* PropertyOperatorSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperatorSpecs.swift; sourceTree = "<group>"; };
 		EED6A1282A0E2CD500A8875D /* PropertyOperationSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyOperationSpecs.swift; sourceTree = "<group>"; };
-		EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HackleUserExplorerViewController.xib; sourceTree = "<group>"; };
 		EEDC58412AC97B90001E73DB /* HttpWorkspaceFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpWorkspaceFetcher.swift; sourceTree = "<group>"; };
 		EEDC58432AC97E5E001E73DB /* HttpHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpHeader.swift; sourceTree = "<group>"; };
 		EEDC58452AC9C767001E73DB /* DefaultHttpWorkspaceFetcherSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHttpWorkspaceFetcherSpecs.swift; sourceTree = "<group>"; };
@@ -1835,8 +1825,6 @@
 		EE0E925829D2A195009C7F31 /* AbTest */ = {
 			isa = PBXGroup;
 			children = (
-				EED594E729D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift */,
-				EE0E925B29D2A1AD009C7F31 /* HackleAbTestViewController.swift */,
 				EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */,
 			);
 			path = AbTest;
@@ -2783,15 +2771,38 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		AA000001111111111111AAAA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				AA000101111111111111AAAA /* HackleHostingController.swift */,
+				AA000102111111111111AAAA /* ExplorerRootView.swift */,
+				AA000103111111111111AAAA /* ExplorerButtonContent.swift */,
+				AA000104111111111111AAAA /* UserInfoSectionView.swift */,
+				AA000105111111111111AAAA /* AbTestListView.swift */,
+				AA000106111111111111AAAA /* FeatureFlagListView.swift */,
+				AA000107111111111111AAAA /* ExperimentRowView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		AA000002111111111111AAAA /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				AA000108111111111111AAAA /* ExplorerViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		EE29DAA929CD83C400B1FEAA /* ExplorerUI */ = {
 			isa = PBXGroup;
 			children = (
+				AA000001111111111111AAAA /* View */,
+				AA000002111111111111AAAA /* ViewModel */,
 				EE0E925729D2A18F009C7F31 /* Experiment */,
 				EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */,
 				EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */,
 				EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */,
 				EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */,
-				EE29DACF29CDA86200B1FEAA /* HackleUserExplorerViewController.swift */,
 			);
 			path = ExplorerUI;
 			sourceTree = "<group>";
@@ -2800,12 +2811,6 @@
 			isa = PBXGroup;
 			children = (
 				EE29DAAB29CD83D000B1FEAA /* Images */,
-				EE29DAB929CD843100B1FEAA /* HackleUserExplorerButton.xib */,
-				EEDA4BB129D15AE800B19482 /* HackleUserExplorerViewController.xib */,
-				EED594E829D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib */,
-				EE0E925929D2A1A2009C7F31 /* HackleAbTestViewController.xib */,
-				EE3C165729D43219008177F6 /* HackleFeatureFlagViewController.xib */,
-				EE3C165A29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib */,
 				EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js */,
 			);
 			path = Resources;
@@ -3441,8 +3446,6 @@
 		EEA3BF5729D3F7A1008664BA /* Listener */ = {
 			isa = PBXGroup;
 			children = (
-				EEA3BF5829D3F7B4008664BA /* OnOverrideSetListener.swift */,
-				EEA3BF5A29D3F7D4008664BA /* OnOverrideResetListener.swift */,
 			);
 			path = Listener;
 			sourceTree = "<group>";
@@ -3450,8 +3453,6 @@
 		EEA3BF5D29D3F7FB008664BA /* FeatureFlag */ = {
 			isa = PBXGroup;
 			children = (
-				EE3C165D29D43246008177F6 /* HackleFeatureFlagViewController.swift */,
-				EE3C165929D43234008177F6 /* HackleFeatureFlagTableViewCell.swift */,
 				EE3C165F29D43253008177F6 /* HackleFeatureFlagItem.swift */,
 			);
 			path = FeatureFlag;
@@ -3738,21 +3739,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE29DAC629CD854000B1FEAA /* HackleUserExplorerButton.xib in Resources */,
-				EEDA4BB229D15AE800B19482 /* HackleUserExplorerViewController.xib in Resources */,
 				EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */,
 				EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */,
 				EE29DABF29CD853C00B1FEAA /* hackle_banner@3x.png in Resources */,
 				EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.55.0.min.js in Resources */,
-				EE3C165C29D43234008177F6 /* HackleFeatureFlagTableViewCell.xib in Resources */,
 				EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */,
 				EE29DAC029CD853C00B1FEAA /* hackle_cancel.png in Resources */,
-				EED594EA29D2A73600FFA3E5 /* HackleAbTestTableViewCell.xib in Resources */,
 				EE29DAC129CD853C00B1FEAA /* hackle_cancel@2x.png in Resources */,
 				EE29DAC229CD853C00B1FEAA /* hackle_cancel@3x.png in Resources */,
-				EE3C165829D43219008177F6 /* HackleFeatureFlagViewController.xib in Resources */,
 				EE29DAC329CD853C00B1FEAA /* hackle_logo.png in Resources */,
-				EE0E925A29D2A1A2009C7F31 /* HackleAbTestViewController.xib in Resources */,
 				EE29DAC429CD853C00B1FEAA /* hackle_logo@2x.png in Resources */,
 				EE29DAC529CD853C00B1FEAA /* hackle_logo@3x.png in Resources */,
 			);
@@ -3815,7 +3810,6 @@
 			files = (
 				EE55B4AA2F646ADC00A36359 /* InAppMessageViewEvent.swift in Sources */,
 				EEA7FCB92C04AB560004F858 /* EngagementEventTracker.swift in Sources */,
-				EED594E929D2A73600FFA3E5 /* HackleAbTestTableViewCell.swift in Sources */,
 				EEA7FCBD2C04AB710004F858 /* ViewLifecycle.swift in Sources */,
 				EEDC58802ACC0789001E73DB /* UserCohortFetcher.swift in Sources */,
 				EE29D96729CD825400B1FEAA /* HackleUser.swift in Sources */,
@@ -3866,8 +3860,6 @@
 				EE29D96229CD825400B1FEAA /* WorkspaceFetcher.swift in Sources */,
 				EE29D95B29CD825400B1FEAA /* EventRepository.swift in Sources */,
 				EE81ED932E6180FF0044B40E /* InAppMessageEvaluatorRequest.swift in Sources */,
-				EEA3BF5929D3F7B4008664BA /* OnOverrideSetListener.swift in Sources */,
-				EE29DAD129CDA86200B1FEAA /* HackleUserExplorerViewController.swift in Sources */,
 				EE0F33F22A665ECD009DE640 /* InAppMessageEventTracker.swift in Sources */,
 				EE29D9AD29CD825500B1FEAA /* Event.swift in Sources */,
 				B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */,
@@ -3965,6 +3957,14 @@
 				EE4D03902E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift in Sources */,
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
+				AA000201111111111111AAAA /* HackleHostingController.swift in Sources */,
+				AA000202111111111111AAAA /* ExplorerRootView.swift in Sources */,
+				AA000203111111111111AAAA /* ExplorerButtonContent.swift in Sources */,
+				AA000204111111111111AAAA /* UserInfoSectionView.swift in Sources */,
+				AA000205111111111111AAAA /* AbTestListView.swift in Sources */,
+				AA000206111111111111AAAA /* FeatureFlagListView.swift in Sources */,
+				AA000207111111111111AAAA /* ExperimentRowView.swift in Sources */,
+				AA000208111111111111AAAA /* ExplorerViewModel.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
@@ -4033,7 +4033,6 @@
 				B235D5772DB75D5100185581 /* UserEventDecorator.swift in Sources */,
 				EE29D9B129CD825500B1FEAA /* User.swift in Sources */,
 				EE29D98829CD825400B1FEAA /* Segment.swift in Sources */,
-				EE3C165E29D43246008177F6 /* HackleFeatureFlagViewController.swift in Sources */,
 				7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */,
 				EEA7FCAF2C04AB380004F858 /* ScreenListener.swift in Sources */,
 				EE29D95C29CD825400B1FEAA /* KeyValueRepository.swift in Sources */,
@@ -4047,7 +4046,6 @@
 				EE29DAB829CD842100B1FEAA /* HackleUserExplorerButton.swift in Sources */,
 				EE29D99829CD825500B1FEAA /* RemoteConfigTargetRuleDeterminer.swift in Sources */,
 				B28499702E8E18F100BEA926 /* ApplicationLifecyclePublisher.swift in Sources */,
-				EEA3BF5B29D3F7D4008664BA /* OnOverrideResetListener.swift in Sources */,
 				EE0F34162A6795E9009DE640 /* InAppMessageImpression.swift in Sources */,
 				EE29D95929CD825400B1FEAA /* SQLiteDatabase.swift in Sources */,
 				EE80E0132A2DA0CC00FB12CC /* InAppMessageManager.swift in Sources */,
@@ -4058,7 +4056,6 @@
 				B2623C422CBD19BF0051D2D6 /* DatabaseConstants.swift in Sources */,
 				EE4D04292E5D8A17007BE61A /* InAppMessageDelay.swift in Sources */,
 				EE29D96B29CD825400B1FEAA /* UserListener.swift in Sources */,
-				EE3C165B29D43234008177F6 /* HackleFeatureFlagTableViewCell.swift in Sources */,
 				EE14A3EC29D5B555000775C2 /* HackleInternalResources.swift in Sources */,
 				EE55B4882F62BAE900A36359 /* InvocationResponse.swift in Sources */,
 				EE86375F29ECD0AC000268DC /* ContextualEvaluator.swift in Sources */,
@@ -4119,7 +4116,6 @@
 				EE4D038E2E5C6299007BE61A /* InAppMessageLayoutSelector.swift in Sources */,
 				EE4D04652E5DC3DF007BE61A /* InAppMessageTriggerEventMatcher.swift in Sources */,
 				EED6A1222A0DFC7700A8875D /* PropertyOperator.swift in Sources */,
-				EE0E925C29D2A1AD009C7F31 /* HackleAbTestViewController.swift in Sources */,
 				EE4D039D2E5C93EC007BE61A /* InAppMessagePresentResponse.swift in Sources */,
 				EE29D94F29CD825400B1FEAA /* DelegatingCounter.swift in Sources */,
 				EE29D98629CD825400B1FEAA /* Container.swift in Sources */,

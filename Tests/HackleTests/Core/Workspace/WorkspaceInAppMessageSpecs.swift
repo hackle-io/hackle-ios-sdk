@@ -82,7 +82,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(iam.messageContext.messages[0].buttons[0].style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].buttons[0].style.borderColor) == "#FFFFFF"
             expect(iam.messageContext.messages[0].buttons[0].action.behavior) == .click
-            expect(iam.messageContext.messages[0].buttons[0].action.actionType) == .hidden
+            expect(iam.messageContext.messages[0].buttons[0].action.actionType) == InAppMessage.ActionType.hidden
             expect(iam.messageContext.messages[0].buttons[0].action.value) == ""
             expect(iam.messageContext.messages[0].buttons[1].text) == "apply"
             expect(iam.messageContext.messages[0].buttons[1].style.textColor) == "#ffffff"
