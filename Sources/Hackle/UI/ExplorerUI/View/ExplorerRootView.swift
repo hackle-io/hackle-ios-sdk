@@ -21,7 +21,7 @@ struct ExplorerRootView: View {
                 .opacity(viewModel.showCopiedToast ? 1 : 0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.showCopiedToast)
         }
-        .background(Color(red: 0.949, green: 0.949, blue: 0.949))
+        .background(Color.explorerBackground)
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
             viewModel.loadUser()
@@ -79,7 +79,7 @@ struct ExplorerRootView: View {
                 Spacer()
                 Text(title)
                     .font(.system(size: 15))
-                    .foregroundColor(viewModel.selectedTab == tab ? .black : Color(UIColor.lightGray))
+                    .foregroundColor(viewModel.selectedTab == tab ? .black : Color.explorerSecondaryText)
                 Spacer()
                 if viewModel.selectedTab == tab {
                     Rectangle()

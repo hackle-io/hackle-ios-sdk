@@ -24,7 +24,7 @@ struct UserInfoSectionView: View {
                     .foregroundColor(.black)
                 Text(value ?? "N/A")
                     .font(.system(size: 14))
-                    .foregroundColor(Color(red: 0.627, green: 0.627, blue: 0.627))
+                    .foregroundColor(Color.explorerSecondaryText)
                     .lineLimit(1)
                     .truncationMode(.tail)
             }

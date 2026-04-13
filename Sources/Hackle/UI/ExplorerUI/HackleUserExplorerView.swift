@@ -63,6 +63,7 @@ class HackleUserExplorerView {
     }
 
     @objc func onTouch(sender: UIPanGestureRecognizer) {
+        guard let button = button else { return }
         let translation = sender.translation(in: button)
 
         let barHeight = barHeight()
@@ -72,13 +73,13 @@ class HackleUserExplorerView {
         let width = rect.size.width
         let height = rect.size.height
 
-        var newY = min(button!.center.y + translation.y, height - bottomOffset)
-        newY = max(barHeight + (button!.bounds.height / 2), newY)
+        var newY = min(button.center.y + translation.y, height - bottomOffset)
+        newY = max(barHeight + (button.bounds.height / 2), newY)
 
-        var newX = min(button!.center.x + translation.x, width)
-        newX = max(button!.bounds.width / 2, newX)
+        var newX = min(button.center.x + translation.x, width)
+        newX = max(button.bounds.width / 2, newX)
 
-        button!.center = CGPoint(x: newX, y: newY)
+        button.center = CGPoint(x: newX, y: newY)
         sender.setTranslation(CGPoint(x: 0, y: 0), in: button)
     }
 

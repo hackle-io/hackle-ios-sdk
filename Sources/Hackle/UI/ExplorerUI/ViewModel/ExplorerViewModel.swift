@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class ExplorerViewModel: ObservableObject {
 
     private let explorer: HackleUserExplorer

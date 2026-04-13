@@ -23,7 +23,7 @@ struct ExperimentRowView: View {
                     .truncationMode(.tail)
                 Text(descLabel)
                     .font(.system(size: 12))
-                    .foregroundColor(Color(red: 0.627, green: 0.627, blue: 0.627))
+                    .foregroundColor(Color.explorerSecondaryText)
                     .lineLimit(1)
             }
             Spacer()
