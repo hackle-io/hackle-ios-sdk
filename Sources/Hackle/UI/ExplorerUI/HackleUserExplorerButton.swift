@@ -6,23 +6,34 @@
 //
 
 import UIKit
+import SwiftUI
 
 
 class HackleUserExplorerButton: UIView {
 
+    private var hostingController: UIHostingController<ExplorerButtonContent>?
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        loadViewFromNib()
+        setupView()
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        loadViewFromNib()
+        setupView()
     }
 
-    func loadViewFromNib() {
-        let view = HackleInternalResources.bundle.loadNibNamed("HackleUserExplorerButton", owner: nil)?.first as! UIView
-        view.frame = bounds
-        addSubview(view)
+    private func setupView() {
+        backgroundColor = .clear
+        let hosting = UIHostingController(rootView: ExplorerButtonContent())
+        hosting.view.frame = bounds
+        hosting.view.backgroundColor = .clear
+        addSubview(hosting.view)
+        hostingController = hosting
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        hostingController?.view.frame = bounds
     }
 }

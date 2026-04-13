@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 
 @MainActor
@@ -87,10 +88,11 @@ class HackleUserExplorerView {
         else {
             return
         }
-        let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
-        hackleUserExplorerViewController.setHackleUserExplorer(hackleUserExplorer)
-        hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
-        topViewController.present(hackleUserExplorerViewController, animated: true)
+        let viewModel = ExplorerViewModel(explorer: hackleUserExplorer)
+        let rootView = ExplorerRootView(viewModel: viewModel)
+        let hostingController = HackleHostingController(rootView: rootView)
+        hostingController.modalPresentationStyle = .fullScreen
+        topViewController.present(hostingController, animated: true)
     }
 
     private func barHeight() -> CGFloat {
@@ -103,8 +105,4 @@ class HackleUserExplorerView {
     private func offset() -> CGFloat {
         barHeight() > 24.0 ? 30.0 : 0.0
     }
-}
-
-protocol HackleUserExplorerContainer {
-    @MainActor func setHackleUserExplorer(_ hackleUserExplorer: HackleUserExplorer)
 }
