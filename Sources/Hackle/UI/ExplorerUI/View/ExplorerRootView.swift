@@ -23,19 +23,23 @@ struct ExplorerRootView: View {
 
     private var headerView: some View {
         ZStack {
-            Image("hackle_banner.png", bundle: HackleInternalResources.bundle)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 153, height: 20)
+            if let bannerImage = UIImage(named: "hackle_banner.png", in: HackleInternalResources.bundle, compatibleWith: nil) {
+                Image(uiImage: bannerImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 153, height: 20)
+            }
             HStack {
                 Spacer()
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image("hackle_cancel.png", bundle: HackleInternalResources.bundle)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 20, height: 20)
+                    if let cancelImage = UIImage(named: "hackle_cancel.png", in: HackleInternalResources.bundle, compatibleWith: nil) {
+                        Image(uiImage: cancelImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20, height: 20)
+                    }
                 }
                 .padding(.trailing, 16)
             }
