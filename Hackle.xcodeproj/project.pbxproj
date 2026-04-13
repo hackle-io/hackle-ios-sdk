@@ -416,7 +416,6 @@
 		EE29DAB829CD842100B1FEAA /* HackleUserExplorerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */; };
 		AA000201111111111111AAAA /* HackleHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000101111111111111AAAA /* HackleHostingController.swift */; };
 		AA000202111111111111AAAA /* ExplorerRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000102111111111111AAAA /* ExplorerRootView.swift */; };
-		AA000203111111111111AAAA /* ExplorerButtonContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000103111111111111AAAA /* ExplorerButtonContent.swift */; };
 		AA000204111111111111AAAA /* UserInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000104111111111111AAAA /* UserInfoSectionView.swift */; };
 		AA000205111111111111AAAA /* AbTestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000105111111111111AAAA /* AbTestListView.swift */; };
 		AA000206111111111111AAAA /* FeatureFlagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000106111111111111AAAA /* FeatureFlagListView.swift */; };
@@ -1150,7 +1149,6 @@
 		EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerButton.swift; sourceTree = "<group>"; };
 		AA000101111111111111AAAA /* HackleHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleHostingController.swift; sourceTree = "<group>"; };
 		AA000102111111111111AAAA /* ExplorerRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerRootView.swift; sourceTree = "<group>"; };
-		AA000103111111111111AAAA /* ExplorerButtonContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerButtonContent.swift; sourceTree = "<group>"; };
 		AA000104111111111111AAAA /* UserInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoSectionView.swift; sourceTree = "<group>"; };
 		AA000105111111111111AAAA /* AbTestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestListView.swift; sourceTree = "<group>"; };
 		AA000106111111111111AAAA /* FeatureFlagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagListView.swift; sourceTree = "<group>"; };
@@ -2776,7 +2774,6 @@
 			children = (
 				AA000101111111111111AAAA /* HackleHostingController.swift */,
 				AA000102111111111111AAAA /* ExplorerRootView.swift */,
-				AA000103111111111111AAAA /* ExplorerButtonContent.swift */,
 				AA000104111111111111AAAA /* UserInfoSectionView.swift */,
 				AA000105111111111111AAAA /* AbTestListView.swift */,
 				AA000106111111111111AAAA /* FeatureFlagListView.swift */,
@@ -3959,7 +3956,6 @@
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
 				AA000201111111111111AAAA /* HackleHostingController.swift in Sources */,
 				AA000202111111111111AAAA /* ExplorerRootView.swift in Sources */,
-				AA000203111111111111AAAA /* ExplorerButtonContent.swift in Sources */,
 				AA000204111111111111AAAA /* UserInfoSectionView.swift in Sources */,
 				AA000205111111111111AAAA /* AbTestListView.swift in Sources */,
 				AA000206111111111111AAAA /* FeatureFlagListView.swift in Sources */,

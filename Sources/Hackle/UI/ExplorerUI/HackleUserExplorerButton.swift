@@ -6,12 +6,16 @@
 //
 
 import UIKit
-import SwiftUI
 
 
 class HackleUserExplorerButton: UIView {
 
-    private var hostingController: UIHostingController<ExplorerButtonContent>?
+    private let imageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.image = UIImage(named: "hackle_logo.png", in: HackleInternalResources.bundle, compatibleWith: nil)
+        return iv
+    }()
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -25,15 +29,12 @@ class HackleUserExplorerButton: UIView {
 
     private func setupView() {
         backgroundColor = .clear
-        let hosting = UIHostingController(rootView: ExplorerButtonContent())
-        hosting.view.frame = bounds
-        hosting.view.backgroundColor = .clear
-        addSubview(hosting.view)
-        hostingController = hosting
+        imageView.frame = bounds
+        addSubview(imageView)
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        hostingController?.view.frame = bounds
+        imageView.frame = bounds
     }
 }
