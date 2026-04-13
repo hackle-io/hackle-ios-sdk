@@ -422,6 +422,8 @@
 		AA000207111111111111AAAA /* ExperimentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000107111111111111AAAA /* ExperimentRowView.swift */; };
 		AA000208111111111111AAAA /* ExplorerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000108111111111111AAAA /* ExplorerViewModel.swift */; };
 		AA000209111111111111AAAA /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000109111111111111AAAA /* ToastView.swift */; };
+		AA000210111111111111AAAA /* ExplorerColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000110111111111111AAAA /* ExplorerColors.swift */; };
+		AA000211111111111111AAAA /* ExplorerButtonContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000111111111111111AAAA /* ExplorerButtonContent.swift */; };
 		EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */; };
 		EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAB329CD83E000B1FEAA /* hackle_banner.png */; };
 		EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EE29DAAF29CD83E000B1FEAA /* hackle_banner@2x.png */; };
@@ -1156,6 +1158,8 @@
 		AA000107111111111111AAAA /* ExperimentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRowView.swift; sourceTree = "<group>"; };
 		AA000108111111111111AAAA /* ExplorerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerViewModel.swift; sourceTree = "<group>"; };
 		AA000109111111111111AAAA /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		AA000110111111111111AAAA /* ExplorerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerColors.swift; sourceTree = "<group>"; };
+		AA000111111111111111AAAA /* ExplorerButtonContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerButtonContent.swift; sourceTree = "<group>"; };
 		EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserExplorerView.swift; sourceTree = "<group>"; };
 		EE29DAC729CD91A400B1FEAA /* ManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualOverrideStorage.swift; sourceTree = "<group>"; };
 		EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUserManualOverrideStorage.swift; sourceTree = "<group>"; };
@@ -2781,6 +2785,8 @@
 				AA000106111111111111AAAA /* FeatureFlagListView.swift */,
 				AA000107111111111111AAAA /* ExperimentRowView.swift */,
 				AA000109111111111111AAAA /* ToastView.swift */,
+				AA000110111111111111AAAA /* ExplorerColors.swift */,
+				AA000111111111111111AAAA /* ExplorerButtonContent.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -3965,6 +3971,8 @@
 				AA000207111111111111AAAA /* ExperimentRowView.swift in Sources */,
 				AA000208111111111111AAAA /* ExplorerViewModel.swift in Sources */,
 				AA000209111111111111AAAA /* ToastView.swift in Sources */,
+				AA000210111111111111AAAA /* ExplorerColors.swift in Sources */,
+				AA000211111111111111AAAA /* ExplorerButtonContent.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,

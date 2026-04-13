@@ -79,9 +79,7 @@ private extension HackleAbTestItem {
         [
             "V\(experiment.version)",
             experiment.status.rawValue,
-            experiment.variations.map { it in
-                    it.key
-                }
+            experiment.variations.map(\.key)
                 .joined(separator: "/"),
             experiment.identifierType
         ]
