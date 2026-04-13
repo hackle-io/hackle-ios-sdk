@@ -13,7 +13,9 @@ class HackleUserExplorerButton: UIView {
     private let imageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
-        iv.image = UIImage(named: "hackle_logo.png", in: HackleInternalResources.bundle, compatibleWith: nil)
+        if let path = HackleInternalResources.bundle.path(forResource: "hackle_logo", ofType: "png") {
+            iv.image = UIImage(contentsOfFile: path)
+        }
         return iv
     }()
 
