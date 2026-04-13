@@ -5,24 +5,14 @@ struct UserInfoSectionView: View {
     @ObservedObject var viewModel: ExplorerViewModel
 
     var body: some View {
-        ZStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 8) {
-                infoRow(title: "ID", value: viewModel.defaultId)
-                infoRow(title: "DEVICE ID", value: viewModel.deviceId)
-                infoRow(title: "USER ID", value: viewModel.userId)
-                infoRow(title: "PUSH TOKEN", value: viewModel.pushToken)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-
-            if viewModel.showCopiedToast {
-                Text("Copied")
-                    .font(.system(size: 17))
-                    .foregroundColor(.black)
-                    .frame(width: 80, height: 25)
-                    .transition(.opacity)
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            infoRow(title: "ID", value: viewModel.defaultId)
+            infoRow(title: "DEVICE ID", value: viewModel.deviceId)
+            infoRow(title: "USER ID", value: viewModel.userId)
+            infoRow(title: "PUSH TOKEN", value: viewModel.pushToken)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         .background(Color.white)
     }
 

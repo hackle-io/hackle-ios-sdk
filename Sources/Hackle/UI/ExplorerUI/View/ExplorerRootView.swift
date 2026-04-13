@@ -6,13 +6,20 @@ struct ExplorerRootView: View {
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        VStack(spacing: 0) {
-            headerView
-            userInfoSection
-                .padding(.top, 12)
-            tabSelector
-                .padding(.top, 12)
-            tabContent
+        ZStack(alignment: .bottom) {
+            VStack(spacing: 0) {
+                headerView
+                userInfoSection
+                    .padding(.top, 12)
+                tabSelector
+                    .padding(.top, 12)
+                tabContent
+            }
+
+            ToastView(message: "Copied")
+                .padding(.bottom, 50)
+                .opacity(viewModel.showCopiedToast ? 1 : 0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.showCopiedToast)
         }
         .background(Color(red: 0.949, green: 0.949, blue: 0.949))
         .edgesIgnoringSafeArea(.bottom)

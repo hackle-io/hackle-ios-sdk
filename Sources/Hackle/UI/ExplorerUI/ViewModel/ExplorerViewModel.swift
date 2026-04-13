@@ -10,6 +10,7 @@ class ExplorerViewModel: ObservableObject {
     @Published var userId: String?
     @Published var pushToken: String?
     @Published var showCopiedToast: Bool = false
+    private var toastWorkItem: DispatchWorkItem?
 
     @Published var selectedTab: ExperimentType = .abTest
 
@@ -73,9 +74,12 @@ class ExplorerViewModel: ObservableObject {
     func copyToClipboard(_ text: String) {
         UIPasteboard.general.string = text
         Metrics.counter(name: "user.explorer.identifier.copy").increment()
+        toastWorkItem?.cancel()
         showCopiedToast = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+        let workItem = DispatchWorkItem { [weak self] in
             self?.showCopiedToast = false
         }
+        toastWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: workItem)
     }
 }
