@@ -59,6 +59,7 @@
 		7E9F7E892B6CCC3700A6B0B8 /* MockFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */; };
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
+		B203A5842F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */; };
 		B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeType.swift */; };
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
 		B21078412E90C21F00D26B60 /* BundleVersionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21078402E90C21500D26B60 /* BundleVersionInfo.swift */; };
@@ -789,6 +790,7 @@
 		7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileStorage.swift; sourceTree = "<group>"; };
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
+		B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegateSpecs.swift; sourceTree = "<group>"; };
 		B20B23132E56F0040019EAA7 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeSpecs.swift; sourceTree = "<group>"; };
 		B21078402E90C21500D26B60 /* BundleVersionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleVersionInfo.swift; sourceTree = "<group>"; };
@@ -1508,6 +1510,7 @@
 				EE55B4942F63C72100A36359 /* Invocation */,
 				B26AC2912E4C5AA300AAE56F /* InvocationDtoSpecs.swift */,
 				7E64779A2AD4F19D00971F20 /* HackleInvocationSpec.swift */,
+				B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */,
 				B2FCB8BF2EB1B069001C6B14 /* HackleJavascriptBridgeSpecs.swift */,
 			);
 			path = Invocator;
@@ -4289,6 +4292,7 @@
 				EE543CDD2C09AA8600F64BFA /* MockViewManager.swift in Sources */,
 				EE29DA6B29CD82C200B1FEAA /* ClockSpecs.swift in Sources */,
 				EE29DA9229CD82C200B1FEAA /* DefaultBucketerSpec.swift in Sources */,
+				B203A5842F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift in Sources */,
 				7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */,
 				7E9F7E892B6CCC3700A6B0B8 /* MockFileStorage.swift in Sources */,
 				EEF895912A4971DE00722CF6 /* InAppMessageMatcherStub.swift in Sources */,
