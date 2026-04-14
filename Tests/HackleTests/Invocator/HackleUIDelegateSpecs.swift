@@ -139,6 +139,69 @@ class HackleUIDelegateSpecs: QuickSpec {
             }
         }
 
+        describe("weak uiDelegate reference") {
+
+            it("should not retain uiDelegate") {
+                MainActor.assumeIsolated {
+                    var mockDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    weak var weakRef = mockDelegate
+
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockDelegate)
+                    _ = sut
+                    mockDelegate = nil
+
+                    expect(weakRef).to(beNil())
+                }
+            }
+
+            it("responds(to:) should return false after uiDelegate is deallocated") {
+                MainActor.assumeIsolated {
+                    var mockDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockDelegate)
+                    mockDelegate = nil
+
+                    let selector = #selector(MockWKUIDelegate.customMethod)
+                    expect(sut.responds(to: selector)) == false
+                }
+            }
+
+            it("forwardingTarget(for:) should return nil after uiDelegate is deallocated") {
+                MainActor.assumeIsolated {
+                    var mockDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockDelegate)
+                    mockDelegate = nil
+
+                    let selector = #selector(MockWKUIDelegate.customMethod)
+                    let target = sut.forwardingTarget(for: selector)
+                    expect(target).to(beNil())
+                }
+            }
+
+            it("should call completionHandler with nil after uiDelegate is deallocated") {
+                MainActor.assumeIsolated {
+                    var mockDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockDelegate)
+                    mockInvocator.invocable = false
+                    mockDelegate = nil
+
+                    let webView = WKWebView()
+                    let frame = WKFrameInfo()
+                    var callbackResult: String? = "not_called"
+
+                    sut.webView(
+                        webView,
+                        runJavaScriptTextInputPanelWithPrompt: "prompt",
+                        defaultText: nil,
+                        initiatedByFrame: frame
+                    ) { result in
+                        callbackResult = result
+                    }
+
+                    expect(callbackResult).to(beNil())
+                }
+            }
+        }
+
         describe("forwardingTarget(for:)") {
 
             it("should return self for selectors HackleUIDelegate handles") {
