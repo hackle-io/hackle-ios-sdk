@@ -12,7 +12,7 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         self.uiDelegate = uiDelegate
     }
 
-    @MainActor func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable (String?) -> Void) {
+    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable (String?) -> Void) {
         let processable = invocator.isInvocableString(string: prompt)
         if (processable) {
             let result = invocator.invoke(string: prompt)
