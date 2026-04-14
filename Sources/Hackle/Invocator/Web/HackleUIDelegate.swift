@@ -5,7 +5,7 @@ import WebKit
 class HackleUIDelegate: NSObject, WKUIDelegate {
 
     private let invocator: HackleInvocator
-    private weak var uiDelegate: WKUIDelegate?
+    private nonisolated(unsafe) weak var uiDelegate: WKUIDelegate?
 
     init(invocator: HackleInvocator, uiDelegate: WKUIDelegate? = nil) {
         self.invocator = invocator
