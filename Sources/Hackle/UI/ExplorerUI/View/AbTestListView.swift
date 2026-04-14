@@ -18,7 +18,7 @@ struct AbTestListView: View {
             .frame(height: 40)
             .background(Color.white)
 
-            experimentList {
+            ExplorerScrollList {
                 ForEach(viewModel.abTestItems, id: \.experiment.id) { item in
                     ExperimentRowView(
                         keyLabel: item.keyLabel,
@@ -50,23 +50,6 @@ struct AbTestListView: View {
 
     private func currentVariation(for item: HackleAbTestItem) -> Variation? {
         item.experiment.getVariationOrNil(variationKey: item.decision.variation)
-    }
-}
-
-@ViewBuilder
-private func experimentList<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-    if #available(iOS 14.0, *) {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                content()
-            }
-        }
-    } else {
-        List {
-            content()
-                .listRowInsets(EdgeInsets())
-        }
-        .listStyle(PlainListStyle())
     }
 }
 

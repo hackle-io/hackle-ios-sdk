@@ -18,7 +18,7 @@ struct FeatureFlagListView: View {
             .frame(height: 40)
             .background(Color.white)
 
-            featureFlagList {
+            ExplorerScrollList {
                 ForEach(viewModel.featureFlagItems, id: \.experiment.id) { item in
                     ExperimentRowView(
                         keyLabel: item.keyLabel,
@@ -51,23 +51,6 @@ struct FeatureFlagListView: View {
     private func currentVariation(for item: HackleFeatureFlagItem) -> Variation? {
         let isOn = item.decision.isOn
         return item.experiment.variations.first { $0.isOn == isOn }
-    }
-}
-
-@ViewBuilder
-private func featureFlagList<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-    if #available(iOS 14.0, *) {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                content()
-            }
-        }
-    } else {
-        List {
-            content()
-                .listRowInsets(EdgeInsets())
-        }
-        .listStyle(PlainListStyle())
     }
 }
 
