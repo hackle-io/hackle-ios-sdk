@@ -1,17 +1,18 @@
 import Foundation
 import WebKit
 
+@MainActor
 class HackleUIDelegate: NSObject, WKUIDelegate {
 
     private let invocator: HackleInvocator
-    private nonisolated let uiDelegate: WKUIDelegate?
+    private nonisolated(unsafe) weak var uiDelegate: WKUIDelegate?
 
     init(invocator: HackleInvocator, uiDelegate: WKUIDelegate? = nil) {
         self.invocator = invocator
         self.uiDelegate = uiDelegate
     }
 
-    @MainActor func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable (String?) -> Void) {
+    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable (String?) -> Void) {
         let processable = invocator.isInvocableString(string: prompt)
         if (processable) {
             let result = invocator.invoke(string: prompt)
