@@ -1,10 +1,11 @@
 import Foundation
 import WebKit
 
+@MainActor
 class HackleUIDelegate: NSObject, WKUIDelegate {
 
     private let invocator: HackleInvocator
-    private nonisolated(unsafe) weak var uiDelegate: WKUIDelegate?
+    private weak var uiDelegate: WKUIDelegate?
 
     init(invocator: HackleInvocator, uiDelegate: WKUIDelegate? = nil) {
         self.invocator = invocator
