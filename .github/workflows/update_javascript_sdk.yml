@@ -1,0 +1,117 @@
+name: update javascript sdk
+
+on:
+  repository_dispatch:
+    types: [update-javascript-sdk]
+
+jobs:
+  calculate-version:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Calculate next minor version
+        id: version
+        run: |
+          CURRENT=$(sed -n -E 's/.*static let CURRENT = "([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' Sources/Hackle/Core/Utilities/SdkVersion.swift)
+          if [[ -z "$CURRENT" ]]; then
+            echo "Error: Failed to parse current SDK version"
+            exit 1
+          fi
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          NEXT_MINOR=$((MINOR + 1))
+          NEW_VERSION="${MAJOR}.${NEXT_MINOR}.0"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+  prepare-dev-branch:
+    needs: calculate-version
+    uses: ./.github/workflows/create_dev_branch.yml
+    with:
+      new_version: ${{ needs.calculate-version.outputs.new_version }}
+    secrets: inherit
+
+  update-js-sdk:
+    needs: [calculate-version, prepare-dev-branch]
+    runs-on: ubuntu-latest
+    env:
+      JS_SDK_VERSION: ${{ github.event.client_payload.js_sdk_version }}
+
+    steps:
+      - name: Validate input
+        run: |
+          if [[ -z "$JS_SDK_VERSION" ]]; then
+            echo "Error: js_sdk_version is required"
+            exit 1
+          fi
+          if [[ ! "$JS_SDK_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: js_sdk_version must be in X.Y.Z format"
+            exit 1
+          fi
+          echo "JS SDK version: $JS_SDK_VERSION"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-dev-branch.outputs.branch_name }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download JS SDK from npm
+        run: |
+          npm pack "@hackler/javascript-sdk@$JS_SDK_VERSION" --pack-destination /tmp
+          cd /tmp
+          tar xzf hackler-javascript-sdk-*.tgz
+          if [[ ! -f /tmp/package/lib/index.browser.umd.min.js ]]; then
+            echo "Error: index.browser.umd.min.js not found in npm package"
+            exit 1
+          fi
+
+      - name: Replace JS SDK file
+        run: |
+          cp /tmp/package/lib/index.browser.umd.min.js \
+            "Sources/Hackle/Resources/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js"
+          ls "Sources/Hackle/Resources/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js" || \
+            { echo "Error: JS SDK file not found after copy"; exit 1; }
+          find Sources/Hackle/Resources -name "hackle-javascript-sdk-*.min.js" \
+            ! -name "hackle-javascript-sdk-${JS_SDK_VERSION}.min.js" -delete
+
+      - name: Update source references
+        run: |
+          sed -i -E "s/(static let javascriptSdkVersion = \")[^\"]+\"/\1${JS_SDK_VERSION}\"/" \
+            Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift
+
+          sed -i -E "s/\.process\(\"Resources\/hackle-javascript-sdk-[^\"]+\.min\.js\"\)/.process(\"Resources\/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js\")/" \
+            Package.swift
+
+      - name: Commit and push
+        run: |
+          FEATURE_BRANCH="update-javascript-sdk-$JS_SDK_VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$FEATURE_BRANCH"
+          git add \
+            Sources/Hackle/Resources/ \
+            Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift \
+            Package.swift
+          git commit -m "chore: update @hackler/javascript-sdk@$JS_SDK_VERSION"
+          git push origin "$FEATURE_BRANCH"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEV_BRANCH: ${{ needs.prepare-dev-branch.outputs.branch_name }}
+        run: |
+          gh pr create \
+            --base "$DEV_BRANCH" \
+            --title "[Automation] Update @hackler/javascript-sdk@$JS_SDK_VERSION" \
+            --body "## Description
+          - Update @hackler/javascript-sdk@$JS_SDK_VERSION
+
+          > **Note:** \`Hackle.xcodeproj\`는 수동으로 업데이트 필요"
