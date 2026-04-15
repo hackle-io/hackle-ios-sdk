@@ -5,7 +5,7 @@ import Nimble
 import Quick
 
 class HackleInvocationSpec: QuickSpec {
-    func createJsonString(command: String, parameters: [String: Any?]? = nil) -> String {
+    static func createJsonString(command: String, parameters: [String: Any?]? = nil) -> String {
         return [
             "_hackle": [
                 "command": command,
@@ -42,7 +42,7 @@ class HackleInvocationSpec: QuickSpec {
                 let sessionId = "1234567890.abcdefgh"
                 core.sessionId = sessionId
                 
-                let jsonString = self.createJsonString(command: "getSessionId")
+                let jsonString = createJsonString(command: "getSessionId")
                 let result = sut.invoke(string: jsonString)
                 let dict = result.jsonObject()!
                 expect(dict["success"] as? Bool) == true
@@ -59,7 +59,7 @@ class HackleInvocationSpec: QuickSpec {
                     .build()
                 core.user = user
                 
-                let jsonString = self.createJsonString(command: "getUser")
+                let jsonString = createJsonString(command: "getUser")
                 let result = sut.invoke(string: jsonString)
                 
                 let dict = result.jsonObject()!
@@ -99,7 +99,7 @@ class HackleInvocationSpec: QuickSpec {
                         ] as [String: Any]
                     ]
 
-                    let jsonString = self.createJsonString(command: "setUser", parameters: parameters)
+                    let jsonString = createJsonString(command: "setUser", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setUserRef.invokations().count) == 1
@@ -123,7 +123,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "setUser", parameters: [:])
+                    let jsonString = createJsonString(command: "setUser", parameters: [:])
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setUserRef.invokations().count) == 0
@@ -137,7 +137,7 @@ class HackleInvocationSpec: QuickSpec {
             context("set user id") {
                 it("happy case") {
                     let parameters = ["userId": "abcd1234"]
-                    let jsonString = self.createJsonString(command: "setUserId", parameters: parameters)
+                    let jsonString = createJsonString(command: "setUserId", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setUserIdRef.invokations().count) == 1
@@ -150,7 +150,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "setUserId", parameters: [:])
+                    let jsonString = createJsonString(command: "setUserId", parameters: [:])
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setUserIdRef.invokations().count) == 0
@@ -161,7 +161,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
                 it("nil case") {
-                    let jsonString = self.createJsonString(command: "setUserId", parameters: ["userId": nil])
+                    let jsonString = createJsonString(command: "setUserId", parameters: ["userId": nil])
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setUserIdRef.invokations().count) == 1
@@ -175,7 +175,7 @@ class HackleInvocationSpec: QuickSpec {
             context("set device id") {
                 it("happy case") {
                     let parameters = ["deviceId": "abcd1234"]
-                    let jsonString = self.createJsonString(command: "setDeviceId", parameters: parameters)
+                    let jsonString = createJsonString(command: "setDeviceId", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setDeviceIdRef.invokations().count) == 1
@@ -188,7 +188,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(dict["data"]).to(beNil())
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "setDeviceId", parameters: [:])
+                    let jsonString = createJsonString(command: "setDeviceId", parameters: [:])
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setDeviceIdRef.invokations().count) == 0
@@ -205,7 +205,7 @@ class HackleInvocationSpec: QuickSpec {
                         "key": "foo",
                         "value": "bar"
                     ]
-                    let jsonString = self.createJsonString(command: "setUserProperty", parameters: parameters)
+                    let jsonString = createJsonString(command: "setUserProperty", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.updateUserPropertiesRef.invokations().count) == 1
@@ -222,7 +222,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "setUserProperty", parameters: [:])
+                    let jsonString = createJsonString(command: "setUserProperty", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.updateUserPropertiesRef.invokations().count) == 0
@@ -249,7 +249,7 @@ class HackleInvocationSpec: QuickSpec {
                             ]
                         ]
                     ]
-                    let jsonString = self.createJsonString(command: "updateUserProperties", parameters: parameters)
+                    let jsonString = createJsonString(command: "updateUserProperties", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.updateUserPropertiesRef.invokations().count) == 1
@@ -276,7 +276,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "updateUserProperties", parameters: [:])
+                    let jsonString = createJsonString(command: "updateUserProperties", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.updateUserPropertiesRef.invokations().count) == 0
@@ -298,7 +298,7 @@ class HackleInvocationSpec: QuickSpec {
                 ]
                 
                 it("push") {
-                    let jsonString = self.createJsonString(command: "updatePushSubscriptions", parameters: parameters)
+                    let jsonString = createJsonString(command: "updatePushSubscriptions", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.updatePushSubscriptionsRef.invokations().count) == 1
@@ -322,7 +322,7 @@ class HackleInvocationSpec: QuickSpec {
                 }
                 
                 it("sms") {
-                    let jsonString = self.createJsonString(command: "updateSmsSubscriptions", parameters: parameters)
+                    let jsonString = createJsonString(command: "updateSmsSubscriptions", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.updateSmsSubscriptionsRef.invokations().count) == 1
@@ -346,7 +346,7 @@ class HackleInvocationSpec: QuickSpec {
                 }
                 
                 it("kakao") {
-                    let jsonString = self.createJsonString(command: "updateKakaoSubscriptions", parameters: parameters)
+                    let jsonString = createJsonString(command: "updateKakaoSubscriptions", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.updateKakaoSubscriptionsRef.invokations().count) == 1
@@ -370,7 +370,7 @@ class HackleInvocationSpec: QuickSpec {
                 }
             }
             it("reset user") {
-                let jsonString = self.createJsonString(command: "resetUser", parameters: [:])
+                let jsonString = createJsonString(command: "resetUser", parameters: [:])
                 let result = sut.invoke(string: jsonString)
                 
                 expect(core.resetUserRef.invokations().count) == 1
@@ -382,7 +382,7 @@ class HackleInvocationSpec: QuickSpec {
                 expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
             }
             it("setPhoneNumber") {
-                let jsonString = self.createJsonString(command: "setPhoneNumber", parameters: ["phoneNumber": "+821012345678"])
+                let jsonString = createJsonString(command: "setPhoneNumber", parameters: ["phoneNumber": "+821012345678"])
                 let result = sut.invoke(string: jsonString)
                 
                 expect(core.setPhoneNumberRef.invokations().count) == 1
@@ -394,7 +394,7 @@ class HackleInvocationSpec: QuickSpec {
                 expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
             }
             it("unsetPhoneNumber") {
-                let jsonString = self.createJsonString(command: "unsetPhoneNumber")
+                let jsonString = createJsonString(command: "unsetPhoneNumber")
                 let result = sut.invoke(string: jsonString)
                 
                 expect(core.unsetPhoneNumberRef.invokations().count) == 1
@@ -412,7 +412,7 @@ class HackleInvocationSpec: QuickSpec {
                             "experimentKey": 123,
                             "defaultVariation": "D"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
@@ -433,7 +433,7 @@ class HackleInvocationSpec: QuickSpec {
                     }
                     it("expect 'A' default variation parameter") {
                         let parameters = ["experimentKey": 123] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
@@ -459,7 +459,7 @@ class HackleInvocationSpec: QuickSpec {
                             "defaultVariation": "D",
                             "user": "abcd1234"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
@@ -483,7 +483,7 @@ class HackleInvocationSpec: QuickSpec {
                             "experimentKey": 123,
                             "user": "abcd1234"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
@@ -509,7 +509,7 @@ class HackleInvocationSpec: QuickSpec {
                             "defaultVariation": "D",
                             "user": ["id": "foo"]
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
@@ -533,7 +533,7 @@ class HackleInvocationSpec: QuickSpec {
                             "experimentKey": 123,
                             "user": ["id": "foo"]
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variation", parameters: parameters)
+                        let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
@@ -553,7 +553,7 @@ class HackleInvocationSpec: QuickSpec {
                     }
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "variation", parameters: [:])
+                    let jsonString = createJsonString(command: "variation", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.variationDetailRef.invokations().count) == 0
@@ -571,7 +571,7 @@ class HackleInvocationSpec: QuickSpec {
                             "experimentKey": 123,
                             "defaultVariation": "D"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
@@ -600,7 +600,7 @@ class HackleInvocationSpec: QuickSpec {
                         let parameters = [
                             "experimentKey": 123
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
@@ -633,7 +633,7 @@ class HackleInvocationSpec: QuickSpec {
                             "defaultVariation": "D",
                             "user": "abcd1234"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
@@ -664,7 +664,7 @@ class HackleInvocationSpec: QuickSpec {
                             "experimentKey": 123,
                             "user": "abcd1234"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
@@ -697,7 +697,7 @@ class HackleInvocationSpec: QuickSpec {
                             "defaultVariation": "D",
                             "user": ["id": "foo"]
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
                         
@@ -728,7 +728,7 @@ class HackleInvocationSpec: QuickSpec {
                             "experimentKey": 123,
                             "user": ["id": "foo"]
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "variationDetail", parameters: parameters)
+                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
                         
@@ -755,7 +755,7 @@ class HackleInvocationSpec: QuickSpec {
                     }
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "variationDetail", parameters: [:])
+                    let jsonString = createJsonString(command: "variationDetail", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.variationDetailRef.invokations().count) == 0
@@ -771,7 +771,7 @@ class HackleInvocationSpec: QuickSpec {
                     let parameters = [
                         "featureKey": 123
                     ] as [String: Any]
-                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
+                    let jsonString = createJsonString(command: "isFeatureOn", parameters: parameters)
                     every(core.featureFlagDetailRef)
                         .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
@@ -793,7 +793,7 @@ class HackleInvocationSpec: QuickSpec {
                         "featureKey": 123,
                         "user": "abcd1234"
                     ] as [String: Any]
-                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
+                    let jsonString = createJsonString(command: "isFeatureOn", parameters: parameters)
                     every(core.featureFlagDetailRef)
                         .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
@@ -816,7 +816,7 @@ class HackleInvocationSpec: QuickSpec {
                         "featureKey": 123,
                         "user": ["id": "foo"]
                     ] as [String: Any]
-                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: parameters)
+                    let jsonString = createJsonString(command: "isFeatureOn", parameters: parameters)
                     every(core.featureFlagDetailRef)
                         .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
@@ -835,7 +835,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "isFeatureOn", parameters: [:])
+                    let jsonString = createJsonString(command: "isFeatureOn", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.featureFlagDetailRef.invokations().count) == 0
@@ -851,7 +851,7 @@ class HackleInvocationSpec: QuickSpec {
                     let parameters = [
                         "featureKey": 123
                     ] as [String: Any]
-                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
+                    let jsonString = createJsonString(command: "featureFlagDetail", parameters: parameters)
                     every(core.featureFlagDetailRef)
                         .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
@@ -880,7 +880,7 @@ class HackleInvocationSpec: QuickSpec {
                         "featureKey": 123,
                         "user": "abcd1234"
                     ] as [String: Any]
-                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
+                    let jsonString = createJsonString(command: "featureFlagDetail", parameters: parameters)
                     every(core.featureFlagDetailRef)
                         .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
@@ -910,7 +910,7 @@ class HackleInvocationSpec: QuickSpec {
                         "featureKey": 123,
                         "user": ["id": "foo"]
                     ] as [String: Any]
-                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: parameters)
+                    let jsonString = createJsonString(command: "featureFlagDetail", parameters: parameters)
                     every(core.featureFlagDetailRef)
                         .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
                         
@@ -936,7 +936,7 @@ class HackleInvocationSpec: QuickSpec {
                     expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "featureFlagDetail", parameters: [:])
+                    let jsonString = createJsonString(command: "featureFlagDetail", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.featureFlagDetailRef.invokations().count) == 0
@@ -953,7 +953,7 @@ class HackleInvocationSpec: QuickSpec {
                         let parameters = [
                             "event": "abcd1234"
                         ]
-                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let jsonString = createJsonString(command: "track", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.trackRef.invokations().count) == 1
@@ -973,7 +973,7 @@ class HackleInvocationSpec: QuickSpec {
                             "event": "abcd1234",
                             "user": "foo"
                         ]
-                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let jsonString = createJsonString(command: "track", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.trackRef.invokations().count) == 1
@@ -994,7 +994,7 @@ class HackleInvocationSpec: QuickSpec {
                             "event": "abcd1234",
                             "user": ["id": "foo"]
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let jsonString = createJsonString(command: "track", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.trackRef.invokations().count) == 1
@@ -1026,7 +1026,7 @@ class HackleInvocationSpec: QuickSpec {
                                 ] as [String: Any?]
                             ] as [String: Any]
                         ]
-                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let jsonString = createJsonString(command: "track", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.trackRef.invokations().count) == 1
@@ -1066,7 +1066,7 @@ class HackleInvocationSpec: QuickSpec {
                             ] as [String: Any],
                             "user": "abcd1234"
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let jsonString = createJsonString(command: "track", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.trackRef.invokations().count) == 1
@@ -1107,7 +1107,7 @@ class HackleInvocationSpec: QuickSpec {
                             ] as [String: Any],
                             "user": ["id": "abcd1234"]
                         ] as [String: Any]
-                        let jsonString = self.createJsonString(command: "track", parameters: parameters)
+                        let jsonString = createJsonString(command: "track", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.trackRef.invokations().count) == 1
@@ -1135,7 +1135,7 @@ class HackleInvocationSpec: QuickSpec {
                     }
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "track", parameters: [:])
+                    let jsonString = createJsonString(command: "track", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.trackRef.invokations().count) == 0
@@ -1157,7 +1157,7 @@ class HackleInvocationSpec: QuickSpec {
                         
                         every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
                         
-                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.remoteConfigRef.invokations().count) == 1
@@ -1176,7 +1176,7 @@ class HackleInvocationSpec: QuickSpec {
                         ] as [String: Any]
                         every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "notnumber"), reason: ""))
                         
-                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.remoteConfigRef.invokations().count) == 1
@@ -1194,7 +1194,7 @@ class HackleInvocationSpec: QuickSpec {
                         ] as [String: Any]
                         every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                         
-                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.remoteConfigRef.invokations().count) == 1
@@ -1212,7 +1212,7 @@ class HackleInvocationSpec: QuickSpec {
                         ] as [String: Any]
                         every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
                         
-                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.remoteConfigRef.invokations().count) == 1
@@ -1230,7 +1230,7 @@ class HackleInvocationSpec: QuickSpec {
                         ] as [String: Any]
                         every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
                         
-                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.remoteConfigRef.invokations().count) == 1
@@ -1248,7 +1248,7 @@ class HackleInvocationSpec: QuickSpec {
                         ] as [String: Any]
                         every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234), reason: ""))
                         
-                        let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                        let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                         let result = sut.invoke(string: jsonString)
                         
                         expect(core.remoteConfigRef.invokations().count) == 1
@@ -1267,7 +1267,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": "abcd1234"
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1286,7 +1286,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": "abcd1234"
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "notnumber"), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1305,7 +1305,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": "abcd1234"
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1324,7 +1324,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": "abcd1234"
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1344,7 +1344,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": "abcd1234"
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1364,7 +1364,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": "abcd1234"
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1386,7 +1386,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": ["id": "abcd1234"]
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1407,7 +1407,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": ["id": "abcd1234"]
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1427,7 +1427,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": ["id": "abcd1234"]
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1447,7 +1447,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": ["id": "abcd1234"]
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1467,7 +1467,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": ["id": "abcd1234"]
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1487,7 +1487,7 @@ class HackleInvocationSpec: QuickSpec {
                                 "user": ["id": "abcd1234"]
                             ] as [String: Any]
                             every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234), reason: ""))
-                            let jsonString = self.createJsonString(command: "remoteConfig", parameters: parameters)
+                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
                             let result = sut.invoke(string: jsonString)
                             expect(core.remoteConfigRef.invokations().count) == 1
                             let firstInvokation = core.remoteConfigRef.firstInvokation()
@@ -1502,7 +1502,7 @@ class HackleInvocationSpec: QuickSpec {
                     }
                 }
                 it("invalid parameters case") {
-                    let jsonString = self.createJsonString(command: "remoteConfig", parameters: [:])
+                    let jsonString = createJsonString(command: "remoteConfig", parameters: [:])
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.remoteConfigRef.invokations().count) == 0
@@ -1519,7 +1519,7 @@ class HackleInvocationSpec: QuickSpec {
                         "screenName": "main",
                         "className": "UIViewController"
                     ]
-                    let jsonString = self.createJsonString(command: "setCurrentScreen", parameters: parameters)
+                    let jsonString = createJsonString(command: "setCurrentScreen", parameters: parameters)
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setCurrentScreenRef.invokations().count) == 1
@@ -1533,7 +1533,7 @@ class HackleInvocationSpec: QuickSpec {
             }
             describe("setOptOutTracking") {
                 it("optOut=true이면 setOptOutTracking(true) 호출") {
-                    let jsonString = self.createJsonString(command: "setOptOutTracking", parameters: ["optOut": true])
+                    let jsonString = createJsonString(command: "setOptOutTracking", parameters: ["optOut": true])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.setOptOutTrackingRef.invokations().count) == 1
@@ -1546,7 +1546,7 @@ class HackleInvocationSpec: QuickSpec {
                 }
 
                 it("optOut=false이면 setOptOutTracking(false) 호출") {
-                    let jsonString = self.createJsonString(command: "setOptOutTracking", parameters: ["optOut": false])
+                    let jsonString = createJsonString(command: "setOptOutTracking", parameters: ["optOut": false])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.setOptOutTrackingRef.invokations().count) == 1
@@ -1559,7 +1559,7 @@ class HackleInvocationSpec: QuickSpec {
                 }
 
                 it("optOut 파라미터 누락 시 에러 응답") {
-                    let jsonString = self.createJsonString(command: "setOptOutTracking", parameters: [:])
+                    let jsonString = createJsonString(command: "setOptOutTracking", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.setOptOutTrackingRef.invokations().count) == 0
@@ -1571,7 +1571,7 @@ class HackleInvocationSpec: QuickSpec {
             describe("isOptOutTracking") {
                 it("isOptOutTracking이 true이면 data=true 반환") {
                     core.isOptOutTracking = true
-                    let jsonString = self.createJsonString(command: "isOptOutTracking")
+                    let jsonString = createJsonString(command: "isOptOutTracking")
                     let result = sut.invoke(string: jsonString)
 
                     let dict = result.jsonObject()!
@@ -1582,7 +1582,7 @@ class HackleInvocationSpec: QuickSpec {
 
                 it("isOptOutTracking이 false이면 data=false 반환") {
                     core.isOptOutTracking = false
-                    let jsonString = self.createJsonString(command: "isOptOutTracking")
+                    let jsonString = createJsonString(command: "isOptOutTracking")
                     let result = sut.invoke(string: jsonString)
 
                     let dict = result.jsonObject()!
@@ -1593,7 +1593,7 @@ class HackleInvocationSpec: QuickSpec {
             }
             describe("user explorer") {
                 it("show") {
-                    let jsonString = self.createJsonString(command: "showUserExplorer", parameters: [:])
+                    let jsonString = createJsonString(command: "showUserExplorer", parameters: [:])
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.showUserExplorerRef.invokations().count) == 1
@@ -1605,7 +1605,7 @@ class HackleInvocationSpec: QuickSpec {
                 }
                 
                 it("hide") {
-                    let jsonString = self.createJsonString(command: "hideUserExplorer", parameters: [:])
+                    let jsonString = createJsonString(command: "hideUserExplorer", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
                     expect(core.hideUserExplorerRef.invokations().count) == 1

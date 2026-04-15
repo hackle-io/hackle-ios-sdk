@@ -26,7 +26,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let matcher = TargetMatcherStub.of(false, false, false, true, false)
             let sut = DefaultExperimentTargetDeterminer(targetMatcher: matcher)
 
-            let experiment = experiment(targetAudiences: self.audiences())
+            let experiment = experiment(targetAudiences: audiences())
             let request = experimentRequest(experiment: experiment)
 
             // when
@@ -42,7 +42,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
             let matcher = TargetMatcherStub.of(false, false, false, false, false)
             let sut = DefaultExperimentTargetDeterminer(targetMatcher: matcher)
 
-            let experiment = experiment(targetAudiences: self.audiences())
+            let experiment = experiment(targetAudiences: audiences())
             let request = experimentRequest(experiment: experiment)
 
             // when
@@ -54,7 +54,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
         }
     }
 
-    private func audiences() -> [Target] {
+    private static func audiences() -> [Target] {
         [
             Target(conditions: [condition()]),
             Target(conditions: [condition()]),
@@ -64,7 +64,7 @@ class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
         ]
     }
 
-    private func condition() -> Target.Condition {
+    private static func condition() -> Target.Condition {
         Target.Condition(key: Target.Key(type: .userProperty, name: "age"), match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 1)]))
     }
 }

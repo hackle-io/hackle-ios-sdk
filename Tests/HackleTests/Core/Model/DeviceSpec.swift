@@ -30,7 +30,7 @@ class DeviceSpec : QuickSpec {
             let device = DeviceImpl(deviceId: deviceId)
             MainActor.assumeIsolated { device.initialize() }
             expect(device.id) == deviceId
-            self.assertDevicePropertiesStructure(properties: device.properties)
+            assertDevicePropertiesStructure(properties: device.properties)
         }
 
         it("screenWidth and screenHeight should be positive values") {
@@ -87,7 +87,7 @@ class DeviceSpec : QuickSpec {
 
             MainActor.assumeIsolated { device.initialize() }
             expect(device.properties.count) == 13
-            self.assertDevicePropertiesStructure(properties: device.properties)
+            assertDevicePropertiesStructure(properties: device.properties)
         }
 
         it("multiple initialize calls should be safe") {
@@ -96,11 +96,11 @@ class DeviceSpec : QuickSpec {
                 device.initialize()
                 device.initialize()
             }
-            self.assertDevicePropertiesStructure(properties: device.properties)
+            assertDevicePropertiesStructure(properties: device.properties)
         }
     }
 
-    func assertDevicePropertiesStructure(properties: [String: Any]) {
+    static func assertDevicePropertiesStructure(properties: [String: Any]) {
         expect(properties["platform"] as? String) == "iOS"
         expect(properties["osName"]).notTo(beNil())
         expect(properties["osVersion"]).notTo(beNil())

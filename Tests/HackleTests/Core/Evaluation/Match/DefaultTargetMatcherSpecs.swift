@@ -9,11 +9,11 @@ class DefaultTargetMatcherSpecs: QuickSpec {
         it("타겟의 모든 조건이 일치하면 true") {
             // given
             let target = Target(conditions: [
-                self.condition(),
-                self.condition(),
-                self.condition(),
-                self.condition(),
-                self.condition()
+                condition(),
+                condition(),
+                condition(),
+                condition(),
+                condition()
             ])
 
             let matcher = MockConditionMatcher(true)
@@ -37,12 +37,12 @@ class DefaultTargetMatcherSpecs: QuickSpec {
         it("타겟의 조건중 하나라도 일치하지 않으면 false") {
             // given
             let target = Target(conditions: [
-                self.condition(),
-                self.condition(),
-                self.condition(),
-                self.condition(),
-                self.condition(),
-                self.condition()
+                condition(),
+                condition(),
+                condition(),
+                condition(),
+                condition(),
+                condition()
             ])
 
             let trueMatcher = MockConditionMatcher(true)
@@ -82,7 +82,7 @@ class DefaultTargetMatcherSpecs: QuickSpec {
 
             it("when any target matches then return true") {
                 // given
-                let target = Target(conditions: [self.condition()])
+                let target = Target(conditions: [condition()])
                 let targets = [target, target, target, target, target]
 
                 let trueMatcher = MockConditionMatcher(true)
@@ -107,7 +107,7 @@ class DefaultTargetMatcherSpecs: QuickSpec {
 
             it("when every targets do not match then return false") {
                 // given
-                let target = Target(conditions: [self.condition()])
+                let target = Target(conditions: [condition()])
                 let targets = [target, target, target]
 
                 let falseMatcher = MockConditionMatcher(false)
@@ -128,7 +128,7 @@ class DefaultTargetMatcherSpecs: QuickSpec {
         }
     }
 
-    private func condition() -> Target.Condition {
+    private static func condition() -> Target.Condition {
         Target.Condition(key: Target.Key(type: .userProperty, name: "age"), match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 1)]))
     }
 }

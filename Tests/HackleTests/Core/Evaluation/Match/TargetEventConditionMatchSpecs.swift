@@ -11,17 +11,17 @@ import Quick
 import Foundation
 
 class TargetEventConditionMatchSpecs: QuickSpec {
-    private let clock = TestClock()
-    let valueOperatorMatcher = DefaultValueOperatorMatcher(
-        valueMatcherFactory: ValueMatcherFactory(),
-        operatorMatcherFactory: OperatorMatcherFactory()
-    )
-
     override class func spec() {
+        let clock = TestClock()
+        let valueOperatorMatcher = DefaultValueOperatorMatcher(
+            valueMatcherFactory: ValueMatcherFactory(),
+            operatorMatcherFactory: OperatorMatcherFactory()
+        )
+
         beforeEach {
-            self.clock.setKstTime(9)
+            clock.setKstTime(9)
         }
-        
+
         let sut = TargetEventConditionMatcher(
             numberOfEventsInDaysMatcher: NumberOfEventsInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock),
             numberOfEventsWithPropertyInDaysMatcher: NumberOfEventsWithPropertyInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock)
@@ -43,7 +43,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
                     key: Target.Key(type: .hackleProperty, name: "purchase"),
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "1")])
                 )),
@@ -57,7 +57,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         it("when target event is empty in 30 days, fail") {
             verify(
                 targetEvents: [],
-                key: try self.getKeyString(eventKey: "purchase", days: 30),
+                key: try getKeyString(eventKey: "purchase", days: 30),
                 operator: .gte,
                 valueType: .number,
                 targetValue: 1,
@@ -67,11 +67,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when eventkey is not match, fail") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeSingleTargetEventStat(daysAgo: 1), property: nil)
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "view", days: 30),
+                key: try getKeyString(eventKey: "view", days: 30),
                 operator: .gte,
                 valueType: .number,
                 targetValue: 1,
@@ -81,11 +81,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when purchase event occur 1 every 30 days and match condition is purchase event in 30 days and target value is 1, success") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 30), property: nil)
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 30), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 30),
+                key: try getKeyString(eventKey: "purchase", days: 30),
                 operator: .gte,
                 valueType: .number,
                 targetValue: 1,
@@ -95,11 +95,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when login event occur 3 today and match condition is login event in 1 day and target value is 3, success") {
             let targetEvents = [
-                TargetEvent(eventKey: "login", stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 3), property: nil)
+                TargetEvent(eventKey: "login", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 0, count: 3), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "login", days: 1),
+                key: try getKeyString(eventKey: "login", days: 1),
                 operator: .gte,
                 valueType: .number,
                 targetValue: 3,
@@ -108,14 +108,14 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         }
         
         it("when login event occur 3 yesterday and match condition is login event in 1 day and target value is 3 at today 8:00, success") {
-            self.clock.setKstTime(8)
+            clock.setKstTime(8)
             let targetEvents = [
-                TargetEvent(eventKey: "login", stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 3), property: nil),
-                TargetEvent(eventKey: "prucase", stats: self.makeTargetEventStat(daysAgo: 0, count: 3), property: nil)
+                TargetEvent(eventKey: "login", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 0, count: 3), property: nil),
+                TargetEvent(eventKey: "prucase", stats: makeTargetEventStat(clock: clock, daysAgo: 0, count: 3), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "login", days: 1),
+                key: try getKeyString(eventKey: "login", days: 1),
                 operator: ._in,
                 valueType: .number,
                 targetValue: 3,
@@ -124,14 +124,14 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         }
         
         it("when login event occur 3 yesterday and match condition is login event in 1 day and target value is 3 at today 14:00, fail") {
-            self.clock.setKstTime(14)
+            clock.setKstTime(14)
             let targetEvents = [
-                TargetEvent(eventKey: "login", stats: self.makeSingleTargetEventStat(daysAgo: 1, count: 3), property: nil),
-                TargetEvent(eventKey: "prucase", stats: self.makeSingleTargetEventStat(daysAgo: 1, count: 3), property: nil)
+                TargetEvent(eventKey: "login", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1, count: 3), property: nil),
+                TargetEvent(eventKey: "prucase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1, count: 3), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "login", days: 1),
+                key: try getKeyString(eventKey: "login", days: 1),
                 operator: ._in,
                 valueType: .number,
                 targetValue: 3,
@@ -141,11 +141,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when purchase event occur 3 every 30 days and match condition is purchase 100, fail") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 30, count: 3), property: nil)
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 30, count: 3), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 30),
+                key: try getKeyString(eventKey: "purchase", days: 30),
                 operator: ._in,
                 valueType: .number,
                 targetValue: 100,
@@ -155,11 +155,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when purchase event with milk property occur 1 at 5 days ago and match condition is purchase event with milk property in 7 days and target value is 1, success") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeSingleTargetEventStat(daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
                     key: Target.Key(type: .eventProperty, name: "product"),
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk")])
                 )),
@@ -172,11 +172,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when purchase event with milk property occur 1 at 5 days ago and match condition is purchase event with milk property in 7 days and target value is grater then 1, fail") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeSingleTargetEventStat(daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
                     key: Target.Key(type: .eventProperty, name: "product"),
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk")])
                 )),
@@ -189,14 +189,14 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         
         it("when purchase events with milk(1/day) and cookie(2/day) occur within 5 days, and filter contains milk/cookie then success") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 1, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk"))),
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 2, count: 2), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "cookie"))),
-                TargetEvent(eventKey: "login", stats: self.makeTargetEventStat(daysAgo: 3, count: 3), property: nil),
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 3, count: 3), property: nil)
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 1, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk"))),
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 2, count: 2), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "cookie"))),
+                TargetEvent(eventKey: "login", stats: makeTargetEventStat(clock: clock, daysAgo: 3, count: 3), property: nil),
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 3, count: 3), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 5, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 5, filter: Target.Condition(
                     key: Target.Key(type: .eventProperty, name: "productName"),
                     match: Target.Match(type: .match, matchOperator: .contains, valueType: .string, values: [HackleValue(value: "cookie"), HackleValue(value: "milk")])
                 )),
@@ -209,12 +209,12 @@ class TargetEventConditionMatchSpecs: QuickSpec {
 
         it("when purchase events with milk(7 days ago) and cookie(2 days) occur within 8 days, and filter contains milk/cookie then success") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeSingleTargetEventStat(daysAgo: 7, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk"))),
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 2, count: 2), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "cookie")))
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 7, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk"))),
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 2, count: 2), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "cookie")))
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 8, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 8, filter: Target.Condition(
                     key: Target.Key(type: .eventProperty, name: "productName"),
                     match: Target.Match(type: .match, matchOperator: .contains, valueType: .string, values: [HackleValue(value: "cookie"), HackleValue(value: "milk")])
                 )),
@@ -227,11 +227,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
 
         it("when events have properties but filter is empty then fail") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeTargetEventStat(daysAgo: 30, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk")))
+                TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 30, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk")))
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 3),
+                key: try getKeyString(eventKey: "purchase", days: 3),
                 operator: .gte,
                 valueType: .number,
                 targetValue: 1,
@@ -243,7 +243,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             let targetEvents: [TargetEvent] = []
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 1),
+                key: try getKeyString(eventKey: "purchase", days: 1),
                 operator: .gte,
                 valueType: .number,
                 targetValue: 0,
@@ -252,7 +252,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 1, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 1, filter: Target.Condition(
                     key: Target.Key(type: .eventProperty, name: "productName"),
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk")])
                 )),
@@ -265,12 +265,12 @@ class TargetEventConditionMatchSpecs: QuickSpec {
 
         it("when partial matching events occurred and meet condition then success") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: self.makeSingleTargetEventStat(daysAgo: 1, count: 3), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "cookie"))),
-                TargetEvent(eventKey: "purchase", stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 1), property: nil)
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1, count: 3), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "cookie"))),
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 0, count: 1), property: nil)
             ]
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
                     key: Target.Key(type: .eventProperty, name: "productName"),
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk"), HackleValue(value: "cookie")])
                 )),
@@ -285,7 +285,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             let targetEvents = [
                 TargetEvent(
                     eventKey: "purchase",
-                    stats: self.makeSingleTargetEventStat(daysAgo: 1, count: 3),
+                    stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1, count: 3),
                     property: TargetEvent.Property(
                         key: "productName",
                         type: .eventProperty,
@@ -294,14 +294,14 @@ class TargetEventConditionMatchSpecs: QuickSpec {
                 ),
                 TargetEvent(
                     eventKey: "purchase",
-                    stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 1),
+                    stats: makeSingleTargetEventStat(clock: clock, daysAgo: 0, count: 1),
                     property: nil
                 )
             ]
             
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(
+                key: try getKeyString(
                     eventKey: "login",
                     days: 1
                 ),
@@ -313,7 +313,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(
+                key: try getKeyString(
                     eventKey: "purchase",
                     days: 1,
                     filter: Target.Condition(
@@ -337,7 +337,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             let targetEvents = [
                 TargetEvent(
                     eventKey: "purchase",
-                    stats: self.makeSingleTargetEventStat(daysAgo: 1, count: 3),
+                    stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1, count: 3),
                     property: TargetEvent.Property(
                         key: "productName",
                         type: .eventProperty,
@@ -346,7 +346,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
                 ),
                 TargetEvent(
                     eventKey: "purchase",
-                    stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 1),
+                    stats: makeSingleTargetEventStat(clock: clock, daysAgo: 0, count: 1),
                     property: TargetEvent.Property(
                         key: "productName",
                         type: .eventProperty,
@@ -355,14 +355,14 @@ class TargetEventConditionMatchSpecs: QuickSpec {
                 ),
                 TargetEvent(
                     eventKey: "purchase",
-                    stats: self.makeSingleTargetEventStat(daysAgo: 0, count: 1),
+                    stats: makeSingleTargetEventStat(clock: clock, daysAgo: 0, count: 1),
                     property: nil
                 )
             ]
             
             verify(
                 targetEvents: targetEvents,
-                key: try self.getKeyString(
+                key: try getKeyString(
                     eventKey: "purchase",
                     days: 7,
                     filter: Target.Condition(
@@ -416,7 +416,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
     ///   - eventKey: event key
     ///   - days: period
     /// - Returns: json string
-    private func getKeyString(eventKey: String, days: Int) throws -> String {
+    private static func getKeyString(eventKey: String, days: Int) throws -> String {
         let model = Target.NumberOfEventsInDays(eventKey: eventKey, days: days)
         guard let data = try? JSONEncoder().encode(model),
               let jsonString = String(data: data, encoding: .utf8) else {
@@ -424,14 +424,14 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         }
         return jsonString
     }
-    
+
     /// NumberOfEventsWithPropertyInDays Json String
     /// - Parameters:
     ///  - eventKey: event key
     ///  - days: period
     ///  - filter: property filter
     ///  - Returns: json string
-    private func getKeyString(eventKey: String, days: Int, filter: Target.Condition) throws -> String {
+    private static func getKeyString(eventKey: String, days: Int, filter: Target.Condition) throws -> String {
         let model = Target.NumberOfEventsWithPropertyInDays(eventKey: eventKey, days: days, propertyFilter: filter)
         guard let data = try? JSONEncoder().encode(model),
               let jsonString = String(data: data, encoding: .utf8) else {
@@ -439,37 +439,40 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         }
         return jsonString
     }
-    
+
     /// Create TargetEvent.Stat array
     /// - Parameters:
+    ///  - clock: clock
     ///  - days: period
     ///  - numOfEventsInDay: number of events in a day
     ///  - Returns: TargetEvent.Stat array
-    private func makeTargetEventStat(daysAgo: Int, count: Int = 1) -> [TargetEvent.Stat] {
+    private static func makeTargetEventStat(clock: TestClock, daysAgo: Int, count: Int = 1) -> [TargetEvent.Stat] {
         let stats = (0..<daysAgo).map { day in
-            TargetEvent.Stat(date: getTimeStamp(daysAgo: day), count: count)
+            TargetEvent.Stat(date: getTimeStamp(clock: clock, daysAgo: day), count: count)
         }
-        
+
         return stats
     }
-    
+
     /// Create TargetEvent.Stat for single day
     /// - Parameters:
+    /// - clock: clock
     /// - day: target ago day
     /// - numOfEventsInDay: number of events in a day
     /// - Returns: TargetEvent.Stat array
-    private func makeSingleTargetEventStat(daysAgo: Int, count: Int = 1) -> [TargetEvent.Stat] {
+    private static func makeSingleTargetEventStat(clock: TestClock, daysAgo: Int, count: Int = 1) -> [TargetEvent.Stat] {
         return [
-            TargetEvent.Stat(date: getTimeStamp(daysAgo: daysAgo), count: count)
+            TargetEvent.Stat(date: getTimeStamp(clock: clock, daysAgo: daysAgo), count: count)
         ]
     }
-    
+
     /// Get TimeStamp
     /// - Parameters:
+    /// - clock: clock
     /// - daysAgo: target ago day
     /// - Returns: timestamp
-    private func getTimeStamp(daysAgo: Int) -> Int64 {
-        let currentMills = self.clock.currentMillis()
+    private static func getTimeStamp(clock: TestClock, daysAgo: Int) -> Int64 {
+        let currentMills = clock.currentMillis()
         let daysAgoMillis = (try? daysAgo.getDaysToMilliseconds()) ?? 0
         let timeStamp = currentMills - (currentMills % (24 * 60 * 60 * 1000)) - daysAgoMillis
         return timeStamp
