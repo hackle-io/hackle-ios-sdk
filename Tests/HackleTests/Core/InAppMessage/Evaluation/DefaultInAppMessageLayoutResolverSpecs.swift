@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("resolve") {
             // given

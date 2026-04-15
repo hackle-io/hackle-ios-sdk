@@ -12,7 +12,7 @@ import MockingKit
 @testable import Hackle
 
 class NotificationClickActionSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("from valid string") {
             expect(NotificationClickAction.from(rawValue: "DEEP_LINK")).to(equal(NotificationClickAction.deepLink))
             expect(NotificationClickAction.from(rawValue: "APP_OPEN")).to(equal(NotificationClickAction.appOpen))

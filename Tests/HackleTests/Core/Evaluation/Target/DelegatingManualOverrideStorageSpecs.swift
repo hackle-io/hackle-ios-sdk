@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DelegatingManualOverrideStorageSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("empty storage") {
             let sut = DelegatingManualOverrideStorage(storages: [])

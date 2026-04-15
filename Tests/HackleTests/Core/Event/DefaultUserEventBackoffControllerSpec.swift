@@ -11,7 +11,7 @@ import Nimble
 import Foundation
 
 class DefaultUserEventBackoffControllerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var sut: DefaultUserEventBackoffController!
         var userEventRetryInterval: TimeInterval!
         var clock: FixedClock!

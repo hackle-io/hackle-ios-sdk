@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageSchedulerFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("get") {
             let scheduler1 = MockInAppMessageScheduler()

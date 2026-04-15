@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class WebViewResourceLoaderSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         typealias Loader = HackleInAppMessageUI.WebViewResourceLoader
 
         var sut: Loader!

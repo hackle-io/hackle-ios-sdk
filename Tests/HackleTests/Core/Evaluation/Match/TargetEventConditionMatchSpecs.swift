@@ -17,7 +17,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
         operatorMatcherFactory: OperatorMatcherFactory()
     )
 
-    override func spec() {
+    override class func spec() {
         beforeEach {
             self.clock.setKstTime(9)
         }

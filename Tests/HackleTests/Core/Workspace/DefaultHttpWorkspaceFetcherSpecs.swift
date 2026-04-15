@@ -12,7 +12,7 @@ import Nimble
 
 class DefaultHttpWorkspaceFetcherSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var httpClient: MockHttpClient!
 

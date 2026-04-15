@@ -12,7 +12,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultUserEventFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("create") {
             let sut = DefaultUserEventFactory(clock: ClockStub())

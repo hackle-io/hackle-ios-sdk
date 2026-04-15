@@ -6,7 +6,7 @@ import MockingKit
 
 
 class OperatorMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("InMatcher") {
 

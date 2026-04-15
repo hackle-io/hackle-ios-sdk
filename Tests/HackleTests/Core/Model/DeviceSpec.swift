@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DeviceSpec : QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("create device with required properties") {
             let deviceId = UUID().uuidString
             let device = DeviceImpl(deviceId: deviceId)

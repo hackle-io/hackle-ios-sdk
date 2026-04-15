@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class InAppMessageActionHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("InAppMessageCloseActionHandler") {
             var sut: InAppMessageCloseActionHandler!
 

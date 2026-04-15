@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var sut: TimetableInAppMessageEligibilityFlowEvaluator!
         var evaluatorContext: EvaluatorContext!

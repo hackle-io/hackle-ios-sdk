@@ -8,7 +8,7 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
         return try! String(contentsOfFile: Bundle(for: DefaultWorkspaceConfigRepositorySpecs.self).path(forResource: filename, ofType: "json")!)
     }
     
-    override func spec() {
+    override class func spec() {
         it("get") {
             let initialData = self.readTextFromRes(filename: "workspace_config")
             let mockFileStorage = MockFileStorage(

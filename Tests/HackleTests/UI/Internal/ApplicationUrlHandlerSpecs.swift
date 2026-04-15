@@ -12,7 +12,7 @@ import UIKit
 @testable import Hackle
 
 class ApplicationUrlHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("ApplicationUrlHandler") {
             var sut: ApplicationUrlHandler!
 

@@ -5,7 +5,7 @@ import UIKit
 @testable import Hackle
 
 class DefaultApplicationLifecycleManagerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var queue: DispatchQueue!
         var listener: MockApplicationLifecycleListener!
 

@@ -6,7 +6,7 @@ import MockingKit
 
 
 class VersionSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("parse") {
 

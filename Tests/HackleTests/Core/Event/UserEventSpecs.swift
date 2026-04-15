@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class UserEventSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("ExposureEvent") {
             it("copy") {
                 let parameterConfiguration = ParameterConfigurationEntity(id: 42, parameters: [:])

@@ -12,7 +12,7 @@ import WebKit
 @testable import Hackle
 
 class HackleWebBridgeSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("WKWebView+HackleJavascriptBridge") {
 
             var webView: WKWebView!

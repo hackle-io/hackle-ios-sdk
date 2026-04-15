@@ -13,7 +13,7 @@ class PropertiesBuilderSpecs: QuickSpec {
         }
     }
 
-    override func spec() {
+    override class func spec() {
         it("valid raw value") {
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", 1).build()).isEqual(to: ["key": 1])).to(beTrue())
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", "1").build()).isEqual(to: ["key": "1"])).to(beTrue())

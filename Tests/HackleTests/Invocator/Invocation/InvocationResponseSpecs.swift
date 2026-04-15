@@ -5,7 +5,7 @@ import Nimble
 import Quick
 
 class InvocationResponseSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("toJsonString") {
             expect(InvocationResponse<Any>.success().toJsonString())
                 .to(contain("\"success\":true"))

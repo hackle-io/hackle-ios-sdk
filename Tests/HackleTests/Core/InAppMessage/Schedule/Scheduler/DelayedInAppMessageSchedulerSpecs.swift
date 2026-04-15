@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DelayedInAppMessageSchedulerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var deliverProcessor: MockInAppMessageDeliverProcessor!
         var delayManager: MockInAppMessageDelayManager!

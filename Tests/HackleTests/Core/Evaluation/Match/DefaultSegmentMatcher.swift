@@ -6,7 +6,7 @@ import Nimble
 
 class DefaultSegmentMatcherSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var userConditionMatcher: ConditionMatcherStub!
         var sut: DefaultSegmentMatcher!

@@ -5,7 +5,7 @@ import Nimble
 
 
 class ExperimentFlowEvaluatorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var nextFlow: ExperimentFlow!
         var context: EvaluatorContext!

@@ -6,7 +6,7 @@ import MockingKit
 
 class DefaultUserEventProcessorSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         let user = HackleUser.of(userId: "test_id")
 

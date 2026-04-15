@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("delay trigger") {
             // given

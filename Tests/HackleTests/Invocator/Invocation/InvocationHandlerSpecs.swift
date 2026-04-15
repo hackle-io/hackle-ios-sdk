@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class InvocationHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var core: MockHackleAppCore!
         
         beforeEach {

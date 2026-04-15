@@ -5,7 +5,7 @@ import WebKit
 @testable import Hackle
 
 class HackleUIDelegateSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var mockInvocator: MockInvocator!
 

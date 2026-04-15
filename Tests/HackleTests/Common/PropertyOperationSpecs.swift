@@ -12,7 +12,7 @@ class PropertyOperationSpecs: QuickSpec {
         }
     }
 
-    override func spec() {
+    override class func spec() {
 
         describe("PropertyOperation") {
             it("key") {

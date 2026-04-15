@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class ValueMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("StringMatcher") {
             let sut = StringMatcher()

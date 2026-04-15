@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultTargetMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("타겟의 모든 조건이 일치하면 true") {
             // given
             let target = Target(conditions: [

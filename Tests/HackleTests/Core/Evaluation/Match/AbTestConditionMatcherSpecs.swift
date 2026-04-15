@@ -13,7 +13,7 @@ import MockingKit
 
 
 class AbTestConditionMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var evaluator: MockEvaluator!
         var valueOperatorMatcher: MockValueOperatorMatcher!
         var sut: AbTestConditionMatcher!

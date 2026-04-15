@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class OptOutManagerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("init") {
             it("configOptOutTracking=false이면 opt-in") {

@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class InAppMessageScheduleRequestSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("delay") {
             let startedAt = Date(timeIntervalSince1970: 10)
             let deliverAt = Date(timeIntervalSince1970: 50)

@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultExperimentTargetDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
 
         it("Audience가 비어 있으면 true") {

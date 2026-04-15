@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultOverrideResolverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var manualOverrideStorage: ManualOverrideStorageStub!
         var targetMatcher: TargetMatcherStub!

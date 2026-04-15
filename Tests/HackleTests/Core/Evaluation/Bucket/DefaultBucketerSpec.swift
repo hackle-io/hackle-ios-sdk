@@ -8,7 +8,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultBucketerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var slotNumberCalculator: MockSlotNumberCalculator!
         var sut: DefaultBucketer!

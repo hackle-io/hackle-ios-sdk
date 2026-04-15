@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultPushEventTrackerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var userManager: MockUserManager!
         var core: MockHackleCore!
         var sut: DefaultPushEventTracker!

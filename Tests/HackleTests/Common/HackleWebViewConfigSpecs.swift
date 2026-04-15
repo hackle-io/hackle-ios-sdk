@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class HackleWebViewConfigSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("HackleWebViewConfig") {
 
             describe("builder") {

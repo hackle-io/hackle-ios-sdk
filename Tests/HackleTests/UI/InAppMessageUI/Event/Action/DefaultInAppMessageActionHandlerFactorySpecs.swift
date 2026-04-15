@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class DefaultInAppMessageActionHandlerFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("get") {
             let handler1 = MockInAppMessageActionHandler()
             every(handler1.supportsMock).returns(false)

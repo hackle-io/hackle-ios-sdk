@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class PollingSynchronizerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("sync") {
             it("delegate") {

@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class HackleValueSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("stringValue") {
             expect(HackleValue.string("42").stringOrNil) == "42"

@@ -5,7 +5,7 @@ import Quick
 
 
 class UserCohortSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("UserCohorts") {
             expect(UserCohorts.empty().rawCohorts.count) == 0
 

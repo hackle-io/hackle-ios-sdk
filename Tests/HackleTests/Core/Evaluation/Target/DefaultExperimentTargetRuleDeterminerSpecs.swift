@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultTargetRuleDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("첫 번째로 일치하는 타겟룰을 리턴한다") {
             // given

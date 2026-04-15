@@ -12,7 +12,7 @@ import Nimble
 
 
 class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var sut: InAppMessageUserOverrideMatcher!
 
@@ -71,7 +71,7 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
 }
 
 class InAppMessageTargetMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("when targets is empty when returns true") {
             // given
@@ -135,7 +135,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
 
 
 class InAppMessageHiddenMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var storage: InAppMessageHiddenStorage!
         var sut: InAppMessageHiddenMatcher!
 
@@ -174,7 +174,7 @@ class InAppMessageHiddenMatcherSpecs: QuickSpec {
 
 
 class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var storage: InAppMessageImpressionStorage!
         var sut: InAppMessageFrequencyCapMatcher!
         var user: HackleUser!

@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var evaluator: MockEvaluator!
         var eventRecorder: MockEvaluationEventRecorder!

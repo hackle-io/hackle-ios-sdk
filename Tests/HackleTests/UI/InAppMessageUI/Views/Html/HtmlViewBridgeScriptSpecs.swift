@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class HtmlViewBridgeScriptSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         typealias BridgeScript = HackleInAppMessageUI.HtmlViewBridgeScript
         typealias Loader = HackleInAppMessageUI.WebViewResourceLoader
 

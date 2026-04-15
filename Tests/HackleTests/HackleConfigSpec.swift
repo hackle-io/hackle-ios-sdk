@@ -12,7 +12,7 @@ import Nimble
 
 
 class HackleConfigSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("exposureEventDedupInterval") {
             expect(HackleConfigBuilder().build().exposureEventDedupInterval) == 60

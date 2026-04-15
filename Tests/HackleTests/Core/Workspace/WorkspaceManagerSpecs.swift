@@ -10,7 +10,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         return try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
     }
     
-    override func spec() {
+    override class func spec() {
         it("nil workspace data returns if not sync called and no saved data") {
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository()

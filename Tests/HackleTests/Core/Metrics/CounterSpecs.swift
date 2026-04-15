@@ -6,7 +6,7 @@ import MockingKit
 
 
 class CounterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("CounterBuilder") {
             let counter = CounterBuilder(name: "counter")
                 .tags(["a": "1", "b": "2"])

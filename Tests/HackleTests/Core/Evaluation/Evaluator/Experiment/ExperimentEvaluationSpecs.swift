@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class ExperimentEvaluationSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("create by Variation") {
             let experiment = experiment(id: 42, key: 50,
                 variations: [

@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class EvaluatorContextSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("stack") {
             let context = Evaluators.context()

@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class SynchronizerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("SynchronizerExtensions") {
             describe("Synchronizer.sync(() -> ())") {
                 it("success") {

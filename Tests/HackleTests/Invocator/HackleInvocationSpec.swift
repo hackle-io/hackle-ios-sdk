@@ -17,7 +17,7 @@ class HackleInvocationSpec: QuickSpec {
         ].toJson() ?? ""
     }
     
-    override func spec() {
+    override class func spec() {
         var core: MockHackleAppCore!
         var processor: InvocationProcessor!
         var sut: DefaultHackleInvocator!

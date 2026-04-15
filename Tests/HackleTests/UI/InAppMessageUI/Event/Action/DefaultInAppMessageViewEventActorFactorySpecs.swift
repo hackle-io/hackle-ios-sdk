@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class DefaultInAppMessageViewEventActorFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("get") {
             let actor1 = MockInAppMessageViewEventActor()
             every(actor1.supportsMock).returns(false)
