@@ -55,7 +55,7 @@ class EvaluatorContextSpecs: QuickSpec {
             let targetEvaluations2 = context.targetEvaluations
             expect(targetEvaluations1.count).to(equal(1))
             expect(targetEvaluations2.count).to(equal(2))
-            expect(context.get(experiment) as AnyObject).to(beIdenticalTo(evaluation2 as AnyObject))
+            expect(context.get(experiment) as! ExperimentEvaluation).to(beIdenticalTo(evaluation2))
         }
 
         it("properties") {

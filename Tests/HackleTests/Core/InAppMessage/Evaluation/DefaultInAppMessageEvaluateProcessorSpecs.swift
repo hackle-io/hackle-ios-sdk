@@ -39,15 +39,15 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
             let actual = try sut.process(type: .trigger, request: request)
 
             // then
-            expect(actual as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+            expect(actual as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             verify(exactly: 1) {
                 flowFactory.triggerFlowMock
             }
             verify(exactly: 1) {
                 eventRecorder.recordMock
             }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as AnyObject).to(beIdenticalTo(request as AnyObject))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as! InAppMessageEligibilityRequest).to(beIdenticalTo(request))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
         }
 
         it("deliver evaluate") {
@@ -61,15 +61,15 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
             let actual = try sut.process(type: .deliver, request: request)
 
             // then
-            expect(actual as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+            expect(actual as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             verify(exactly: 1) {
                 flowFactory.deliverFlowMock
             }
             verify(exactly: 1) {
                 eventRecorder.recordMock
             }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as AnyObject).to(beIdenticalTo(request as AnyObject))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as! InAppMessageEligibilityRequest).to(beIdenticalTo(request))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
         }
     }
 }

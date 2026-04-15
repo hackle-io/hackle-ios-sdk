@@ -91,7 +91,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 verify(exactly: 1) {
                     eventRecorder.recordMock
                 }
-                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             }
 
             it("when eligible then do not record layout evaluation") {
@@ -110,7 +110,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 verify(exactly: 1) {
                     eventRecorder.recordMock
                 }
-                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             }
 
             it("when ineligible without layout then do not record layout") {
@@ -128,7 +128,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 verify(exactly: 1) {
                     eventRecorder.recordMock
                 }
-                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
+                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             }
 
             it("when ineligible with layout then record layout evaluation") {
@@ -147,8 +147,8 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 verify(exactly: 2) {
                     eventRecorder.recordMock
                 }
-                expect(eventRecorder.recordMock.invokations()[0].arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
-                expect(eventRecorder.recordMock.invokations()[1].arguments.1 as AnyObject).to(beIdenticalTo(layoutEvaluation as AnyObject))
+                expect(eventRecorder.recordMock.invokations()[0].arguments.1 as! InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
+                expect(eventRecorder.recordMock.invokations()[1].arguments.1 as! InAppMessageLayoutEvaluation).to(beIdenticalTo(layoutEvaluation))
             }
         }
     }

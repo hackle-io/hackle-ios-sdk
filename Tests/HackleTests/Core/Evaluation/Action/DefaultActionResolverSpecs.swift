@@ -31,7 +31,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
-                    expect(actual as AnyObject).to(beIdenticalTo(variation as AnyObject))
+                    expect(actual as! MockVariation).to(beIdenticalTo(variation))
                 }
 
 
@@ -172,7 +172,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
-                    expect(actual as AnyObject).to(beIdenticalTo(variation as AnyObject))
+                    expect(actual as! MockVariation).to(beIdenticalTo(variation))
                 }
             }
         }

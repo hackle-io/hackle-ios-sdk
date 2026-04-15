@@ -22,12 +22,12 @@ extension EvaluationFlow {
         return nextFlow
     }
 
-    func isDecisionWith<T: FlowEvaluator>(_ expectedFlowEvaluator: T) -> EvaluationFlow? {
+    func isDecisionWith<T: FlowEvaluator & AnyObject>(_ expectedFlowEvaluator: T) -> EvaluationFlow? {
         guard let evaluator = evaluator, let nextFlow = nextFlow else {
             fail("Expected: \(expectedFlowEvaluator)\nActual: EvaluationFlow.end")
             return nil
         }
-        expect(evaluator as AnyObject).to(beIdenticalTo(expectedFlowEvaluator as AnyObject))
+        expect(evaluator as! T).to(beIdenticalTo(expectedFlowEvaluator))
         return nextFlow
     }
 
