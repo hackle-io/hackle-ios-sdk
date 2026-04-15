@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class InAppMessageSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("InAppMessage.Period") {
             context("when period is ALWAYS") {

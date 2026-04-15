@@ -12,7 +12,7 @@ import UIKit
 @testable import Hackle
 
 class ButtonViewSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("ButtonView") {
             var button: InAppMessage.Message.Button!
             var sut: HackleInAppMessageUI.ButtonView!
@@ -62,7 +62,7 @@ class ButtonViewSpecs: QuickSpec {
 }
 
 class PositionalButtonViewSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("PositionalButtonView") {
             var button: InAppMessage.Message.Button!
             var alignment: InAppMessage.Message.Alignment!

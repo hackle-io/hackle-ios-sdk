@@ -5,7 +5,7 @@ import Nimble
 import Quick
 
 class DefaultInvocationProcessorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var handler: MockInvocationHandler!
         var handlerFactory: MockInvocationHandlerFactory!
         var sut: DefaultInvocationProcessor!

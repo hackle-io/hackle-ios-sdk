@@ -11,7 +11,7 @@ import Quick
 import Foundation
 
 class DefaultUserTargetFetcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var httpClient: MockHttpClient!
         var sut: DefaultUserTargetEventsFetcher!
 

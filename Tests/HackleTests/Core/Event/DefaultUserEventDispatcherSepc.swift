@@ -8,7 +8,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultUserEventDispatcherSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var eventQueue: DispatchQueue!
         var eventRepository: MockSQLiteEventRepository!

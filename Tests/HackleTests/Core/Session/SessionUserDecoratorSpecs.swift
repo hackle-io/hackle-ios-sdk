@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class SessionUserDecoratorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var sessionManager: MockSessionManager!
         var sut: SessionUserDecorator!
 

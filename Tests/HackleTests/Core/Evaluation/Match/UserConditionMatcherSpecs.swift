@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class UserConditionMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var userValueResolver: MockUserValueResolver!
         var valueOperatorMatcher: MockValueOperatorMatcher!

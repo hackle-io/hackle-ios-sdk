@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class InAppMessageViewEventActionHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var actor: MockInAppMessageViewEventActor!
         var actorFactory: MockInAppMessageViewEventActorFactory!
         var sut: InAppMessageViewEventActionHandler!

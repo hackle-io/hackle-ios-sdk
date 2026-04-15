@@ -5,7 +5,7 @@ import UIKit
 @testable import Hackle
 
 class EngagementManagerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let user = User.builder().build()
         var userManager: MockUserManager!
         var screenManager: MockScreeManager!

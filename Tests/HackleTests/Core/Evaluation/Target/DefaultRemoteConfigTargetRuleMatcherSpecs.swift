@@ -6,7 +6,7 @@ import MockingKit
 
 
 class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var targetMatcher: MockTargetMatcher!
         var bucketer: MockBucketer!

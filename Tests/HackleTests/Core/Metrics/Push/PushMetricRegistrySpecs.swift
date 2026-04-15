@@ -6,7 +6,7 @@ import MockingKit
 
 
 class PushMetricRegistrySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         class SchedulerStub: Scheduler {
 

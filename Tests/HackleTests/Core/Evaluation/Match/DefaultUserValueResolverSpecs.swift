@@ -6,7 +6,7 @@ import MockingKit
 
 class DefaultUserValueResolverSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var sut: DefaultUserValueResolver!
         let user = HackleUser.of(

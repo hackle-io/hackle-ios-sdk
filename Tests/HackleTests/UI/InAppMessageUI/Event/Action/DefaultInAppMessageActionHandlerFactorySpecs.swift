@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class DefaultInAppMessageActionHandlerFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("get") {
             let handler1 = MockInAppMessageActionHandler()
             every(handler1.supportsMock).returns(false)
@@ -12,7 +12,7 @@ class DefaultInAppMessageActionHandlerFactorySpecs: QuickSpec {
             let handler2 = MockInAppMessageActionHandler()
             every(handler2.supportsMock).returns(true)
             
-            expect(DefaultInAppMessageActionHandlerFactory(handlers: [handler1, handler2]).get(action: InAppMessage.action())).to(beIdenticalTo(handler2))
+            expect(DefaultInAppMessageActionHandlerFactory(handlers: [handler1, handler2]).get(action: InAppMessage.action()) as? MockInAppMessageActionHandler).to(beIdenticalTo(handler2))
             
             expect(DefaultInAppMessageActionHandlerFactory(handlers: [handler1]).get(action: InAppMessage.action())).to(beNil())
         }

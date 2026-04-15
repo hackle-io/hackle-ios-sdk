@@ -6,7 +6,7 @@ import MockingKit
 
 
 class VersionSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("parse") {
 
@@ -28,31 +28,31 @@ class VersionSpecs: QuickSpec {
             }
 
             it("semantic core version") {
-                self.verify("1.0.0", 1, 0, 0)
-                self.verify("14.165.14", 14, 165, 14)
+                verify("1.0.0", 1, 0, 0)
+                verify("14.165.14", 14, 165, 14)
             }
 
             it("semantic version with prerelease") {
-                self.verify("1.0.0-beta1", 1, 0, 0, prerelease: ["beta1"])
-                self.verify("1.0.0-beta.1", 1, 0, 0, prerelease: ["beta", "1"])
-                self.verify("1.0.0-x.y.z", 1, 0, 0, prerelease: ["x", "y", "z"])
+                verify("1.0.0-beta1", 1, 0, 0, prerelease: ["beta1"])
+                verify("1.0.0-beta.1", 1, 0, 0, prerelease: ["beta", "1"])
+                verify("1.0.0-x.y.z", 1, 0, 0, prerelease: ["x", "y", "z"])
             }
 
             it("semantic version with build") {
-                self.verify("1.0.0+beta1", 1, 0, 0, build: ["beta1"])
-                self.verify("1.0.0+beta.1", 1, 0, 0, build: ["beta1", "1"])
-                self.verify("1.0.0+x.y.z", 1, 0, 0, build: ["x", "y", "z"])
+                verify("1.0.0+beta1", 1, 0, 0, build: ["beta1"])
+                verify("1.0.0+beta.1", 1, 0, 0, build: ["beta1", "1"])
+                verify("1.0.0+x.y.z", 1, 0, 0, build: ["x", "y", "z"])
             }
 
             it("semantic version with prerelease and build") {
-                self.verify("1.0.0-beta.1+build.2", 1, 0, 0, prerelease: ["beta", "1"], build: ["build", "2"])
+                verify("1.0.0-beta.1+build.2", 1, 0, 0, prerelease: ["beta", "1"], build: ["build", "2"])
             }
 
             it("minor, patch 가 없는 경우 0 으로 채워준다") {
-                self.verify("15", 15, 0, 0)
-                self.verify("15.143", 15, 143, 0)
-                self.verify("15-x.y.z", 15, 0, 0, prerelease: ["x", "y", "z"])
-                self.verify("15-x.y.z+a.b.c", 15, 0, 0, prerelease: ["x", "y", "z"], build: ["a", "b", "c"])
+                verify("15", 15, 0, 0)
+                verify("15.143", 15, 143, 0)
+                verify("15-x.y.z", 15, 0, 0, prerelease: ["x", "y", "z"])
+                verify("15-x.y.z+a.b.c", 15, 0, 0, prerelease: ["x", "y", "z"], build: ["a", "b", "c"])
             }
         }
 
@@ -118,7 +118,7 @@ class VersionSpecs: QuickSpec {
         }
     }
 
-    private func verify(_ version: String, _ major: Int, _ minor: Int, _ patch: Int, prerelease: [String] = [], build: [String] = []) {
+    private static func verify(_ version: String, _ major: Int, _ minor: Int, _ patch: Int, prerelease: [String] = [], build: [String] = []) {
         expect(Version.tryParse(value: version))
             .to(equal(Version(
                 coreVersion: CoreVersion(major: major, minor: minor, patch: patch),

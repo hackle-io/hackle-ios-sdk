@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultOverrideResolverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var manualOverrideStorage: ManualOverrideStorageStub!
         var targetMatcher: TargetMatcherStub!
@@ -29,7 +29,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
 
             let actual = try sut.resolveOrNil(request: request, context: context)
 
-            expect(actual).to(beIdenticalTo(variation))
+            expect(actual as? MockVariation).to(beIdenticalTo(variation))
         }
 
         it("identifierType에 해당하는 식별자가 없으면 segmentOverride를 평가한다") {
@@ -56,7 +56,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
             let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
-            expect(actual).to(beIdenticalTo(variationBySegmentOverride))
+            expect(actual as? MockVariation).to(beIdenticalTo(variationBySegmentOverride))
         }
 
         it("identifierType에 해당하는 식별자가 override되어 있지않으면 segmentOverride를 평가한다") {
@@ -83,7 +83,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
             let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
-            expect(actual).to(beIdenticalTo(variationBySegmentOverride))
+            expect(actual as? MockVariation).to(beIdenticalTo(variationBySegmentOverride))
         }
 
         it("identifierType에 해당하는 식별자로 override되어있는 variation을 리턴한다") {
@@ -110,7 +110,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
             let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
-            expect(actual).to(beIdenticalTo(variationByUserOverride))
+            expect(actual as? MockVariation).to(beIdenticalTo(variationByUserOverride))
         }
 
         it("userOverride도 되어있지않고 segmentOverride도 되어있지 않으면 nil 리턴") {
@@ -165,7 +165,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
             let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
-            expect(actual).to(beIdenticalTo(variationBySegmentOverride))
+            expect(actual as? MockVariation).to(beIdenticalTo(variationBySegmentOverride))
         }
 
         it("userOverride 는 첫번째로 매칭된 rule 로 평가한다") {
@@ -191,7 +191,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
             let actual = try sut.resolveOrNil(request: request, context: context)
 
             // then
-            expect(actual).to(beIdenticalTo(variation))
+            expect(actual as? MockVariation).to(beIdenticalTo(variation))
             expect(targetMatcher.callCount) == 4
         }
 

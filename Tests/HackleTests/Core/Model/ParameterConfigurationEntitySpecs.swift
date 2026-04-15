@@ -12,7 +12,7 @@ import Nimble
 
 class ParameterConfigurationEntitySpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         it("ParameterConfiguration") {
 

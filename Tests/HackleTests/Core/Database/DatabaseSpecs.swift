@@ -11,7 +11,7 @@ import Nimble
 import Foundation
 
 class DatabaseSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("Database") {
             var mockDB: MockDatabase!
             let testLabel = "TestDatabase"

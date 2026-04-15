@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DelegatingManualOverrideStorageSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("empty storage") {
             let sut = DelegatingManualOverrideStorage(storages: [])
@@ -26,7 +26,7 @@ class DelegatingManualOverrideStorageSpecs: QuickSpec {
 
             let actual = sut.get(experiment: MockExperiment(), user: HackleUser.builder().build())
 
-            expect(actual).to(beIdenticalTo(variation))
+            expect(actual as? MockVariation).to(beIdenticalTo(variation))
             expect(storage.count) == 4
         }
 

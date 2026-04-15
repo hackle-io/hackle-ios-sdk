@@ -6,7 +6,7 @@ import MockingKit
 
 
 class NoopTimerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("always zero") {
             let timer = NoopTimer(id: MetricId(name: "timer", tags: [:], type: .timer))
             expect(timer.count()) == 0

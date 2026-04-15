@@ -6,7 +6,7 @@ import MockingKit
 
 
 class CumulativeMetricRegistrySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("Counter") {
             let counter = CumulativeMetricRegistry().counter(name: "counter")
             expect(counter).to(beAnInstanceOf(CumulativeCounter.self))

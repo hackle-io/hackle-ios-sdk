@@ -5,7 +5,7 @@ import Quick
 
 
 class DefaultUserCohortFetcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var httpClient: MockHttpClient!
         var sut: DefaultUserCohortFetcher!
 

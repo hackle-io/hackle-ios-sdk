@@ -12,8 +12,8 @@ let package = Package(
         .library(name: "Hackle", targets: ["Hackle"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "3.0.0")),
-        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMinor(from: "9.0.0")),
+        .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "7.6.0")),
+        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMinor(from: "13.8.0")),
         .package(url: "https://github.com/danielsaidi/MockingKit.git", from: "1.5.0"),
     ],
     targets: [

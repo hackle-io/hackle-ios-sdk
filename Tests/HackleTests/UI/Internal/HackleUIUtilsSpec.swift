@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class HackleUIUtilsSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("UIUtils") {
             describe("currentScreen") {
                 it("should return a valid UIScreen") {

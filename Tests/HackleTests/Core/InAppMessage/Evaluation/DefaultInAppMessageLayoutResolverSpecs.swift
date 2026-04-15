@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("resolve") {
             // given
@@ -33,8 +33,8 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
             let actual = try sut.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
 
             // then
-            expect(actual).to(beIdenticalTo(evaluation))
-            expect(core.inAppMessageMock.firstInvokation().arguments.2).to(beIdenticalTo(layoutEvalautor))
+            expect(actual as? InAppMessageLayoutEvaluation).to(beIdenticalTo(evaluation))
+            expect(core.inAppMessageMock.firstInvokation().arguments.2 as? InAppMessageLayoutEvaluator).to(beIdenticalTo(layoutEvalautor))
         }
     }
 }

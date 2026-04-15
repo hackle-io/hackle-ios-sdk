@@ -5,7 +5,7 @@ import UIKit
 @testable import Hackle
 
 class LifecycleManagerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var viewManager: MockViewManager!
         var listener: MockLifecycleListener!

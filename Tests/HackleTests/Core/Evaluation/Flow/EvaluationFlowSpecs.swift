@@ -5,7 +5,7 @@ import Nimble
 
 
 class EvaluationFlowSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("evaluate") {
 

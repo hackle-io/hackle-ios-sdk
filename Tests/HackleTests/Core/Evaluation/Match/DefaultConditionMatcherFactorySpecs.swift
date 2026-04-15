@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultConditionMatcherFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let sut = DefaultConditionMatcherFactory(evaluator: MockEvaluator(), clock: SystemClock.shared)
         it("getMatcher") {
             expect(sut.getMatcher(.userId)).to(beAnInstanceOf(UserConditionMatcher.self))

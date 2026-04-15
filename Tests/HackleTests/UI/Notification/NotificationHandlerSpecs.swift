@@ -23,7 +23,7 @@ class MockNotificationDataReceiver: NotificationDataReceiver {
 
 // NotificationHandler 테스트
 class NotificationHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("NotificationHandler") {
             var handler: NotificationHandler!
             var mockReceiver: MockNotificationDataReceiver!
