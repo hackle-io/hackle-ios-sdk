@@ -69,7 +69,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let exposure1 = events[1] as! UserEvents.Exposure
             expect(exposure1.timestamp) == Date(timeIntervalSince1970: 42)
             expect(exposure1.user).to(beIdenticalTo(request.user))
-            expect(exposure1.experiment as! ExperimentEntity).to(beIdenticalTo(evaluation1.experiment as! ExperimentEntity))
+            expect(exposure1.experiment as? ExperimentEntity).to(beIdenticalTo(evaluation1.experiment as? ExperimentEntity))
             expect(exposure1.variationId) == 42
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
@@ -84,7 +84,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let exposure2 = events[2] as! UserEvents.Exposure
             expect(exposure2.timestamp) == Date(timeIntervalSince1970: 42)
             expect(exposure2.user).to(beIdenticalTo(request.user))
-            expect(exposure2.experiment as! ExperimentEntity).to(beIdenticalTo(evaluation2.experiment as! ExperimentEntity))
+            expect(exposure2.experiment as? ExperimentEntity).to(beIdenticalTo(evaluation2.experiment as? ExperimentEntity))
             expect(exposure2.variationId) == 320
             expect(exposure2.variationKey) == "A"
             expect(exposure2.decisionReason) == DecisionReason.DEFAULT_RULE
@@ -118,7 +118,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let exposure1 = events[0] as! UserEvents.Exposure
             expect(exposure1.timestamp) == Date(timeIntervalSince1970: 42)
             expect(exposure1.user).to(beIdenticalTo(request.user))
-            expect(exposure1.experiment as! ExperimentEntity).to(beIdenticalTo(evaluation1.experiment as! ExperimentEntity))
+            expect(exposure1.experiment as? ExperimentEntity).to(beIdenticalTo(evaluation1.experiment as? ExperimentEntity))
             expect(exposure1.variationId) == 42
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED

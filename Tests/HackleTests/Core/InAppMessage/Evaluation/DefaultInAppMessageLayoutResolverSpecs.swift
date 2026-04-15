@@ -33,8 +33,8 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
             let actual = try sut.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
 
             // then
-            expect(actual as! InAppMessageLayoutEvaluation).to(beIdenticalTo(evaluation))
-            expect(core.inAppMessageMock.firstInvokation().arguments.2 as! InAppMessageLayoutEvaluator).to(beIdenticalTo(layoutEvalautor))
+            expect(actual as? InAppMessageLayoutEvaluation).to(beIdenticalTo(evaluation))
+            expect(core.inAppMessageMock.firstInvokation().arguments.2 as? InAppMessageLayoutEvaluator).to(beIdenticalTo(layoutEvalautor))
         }
     }
 }

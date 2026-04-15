@@ -26,7 +26,7 @@ class DelegatingManualOverrideStorageSpecs: QuickSpec {
 
             let actual = sut.get(experiment: MockExperiment(), user: HackleUser.builder().build())
 
-            expect(actual as! MockVariation).to(beIdenticalTo(variation))
+            expect(actual as? MockVariation).to(beIdenticalTo(variation))
             expect(storage.count) == 4
         }
 

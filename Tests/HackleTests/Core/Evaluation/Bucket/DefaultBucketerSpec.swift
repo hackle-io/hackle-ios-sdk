@@ -31,7 +31,7 @@ class DefaultBucketerSpec: QuickSpec {
                 let actual = sut.bucketing(bucket: bucket, identifier: "test_id")
 
                 // then
-                expect(actual as! MockSlot).to(beIdenticalTo(slot))
+                expect(actual as? MockSlot).to(beIdenticalTo(slot))
                 expect(bucket.mockGetSlotOrNil.invokations().count) == 1
                 expect(bucket.mockGetSlotOrNil.invokations()[0].arguments) == 320
             }
