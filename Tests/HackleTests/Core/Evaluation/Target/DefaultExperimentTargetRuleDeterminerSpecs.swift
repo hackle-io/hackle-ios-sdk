@@ -27,7 +27,7 @@ class DefaultTargetRuleDeterminerSpecs: QuickSpec {
             let actual = try sut.determineTargetRuleOrNil(request: request, context: Evaluators.context())
 
             // then
-            expect(actual).to(beIdenticalTo(matchedTargetRule))
+            expect(actual as AnyObject).to(beIdenticalTo(matchedTargetRule as AnyObject))
             expect(matcher.callCount).to(equal(4))
         }
 

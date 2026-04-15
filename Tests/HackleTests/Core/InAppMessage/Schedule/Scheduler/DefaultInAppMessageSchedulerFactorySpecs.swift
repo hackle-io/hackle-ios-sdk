@@ -20,7 +20,7 @@ class DefaultInAppMessageSchedulerFactorySpecs: QuickSpec {
 
             let actual = try sut.get(scheduleType: .triggered)
 
-            expect(actual).to(beIdenticalTo(scheduler2))
+            expect(actual as AnyObject).to(beIdenticalTo(scheduler2 as AnyObject))
         }
 
         it("exception") {

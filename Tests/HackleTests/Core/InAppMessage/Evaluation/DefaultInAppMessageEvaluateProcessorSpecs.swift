@@ -39,15 +39,15 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
             let actual = try sut.process(type: .trigger, request: request)
 
             // then
-            expect(actual).to(beIdenticalTo(evaluation))
+            expect(actual as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
             verify(exactly: 1) {
                 flowFactory.triggerFlowMock
             }
             verify(exactly: 1) {
                 eventRecorder.recordMock
             }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0).to(beIdenticalTo(request))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1).to(beIdenticalTo(evaluation))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as AnyObject).to(beIdenticalTo(request as AnyObject))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
         }
 
         it("deliver evaluate") {
@@ -61,15 +61,15 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
             let actual = try sut.process(type: .deliver, request: request)
 
             // then
-            expect(actual).to(beIdenticalTo(evaluation))
+            expect(actual as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
             verify(exactly: 1) {
                 flowFactory.deliverFlowMock
             }
             verify(exactly: 1) {
                 eventRecorder.recordMock
             }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0).to(beIdenticalTo(request))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1).to(beIdenticalTo(evaluation))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as AnyObject).to(beIdenticalTo(request as AnyObject))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
         }
     }
 }

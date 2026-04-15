@@ -12,7 +12,7 @@ class DefaultInAppMessageActionHandlerFactorySpecs: QuickSpec {
             let handler2 = MockInAppMessageActionHandler()
             every(handler2.supportsMock).returns(true)
             
-            expect(DefaultInAppMessageActionHandlerFactory(handlers: [handler1, handler2]).get(action: InAppMessage.action())).to(beIdenticalTo(handler2))
+            expect(DefaultInAppMessageActionHandlerFactory(handlers: [handler1, handler2]).get(action: InAppMessage.action()) as AnyObject).to(beIdenticalTo(handler2 as AnyObject))
             
             expect(DefaultInAppMessageActionHandlerFactory(handlers: [handler1]).get(action: InAppMessage.action())).to(beNil())
         }

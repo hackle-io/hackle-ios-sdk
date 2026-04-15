@@ -24,7 +24,7 @@ class UserCohortSpecs: QuickSpec {
                 .build()
 
             // rawCohorts
-            expect(userCohorts.rawCohorts.count) === 3
+            expect(userCohorts.rawCohorts.count) == 3
 
             // get
             expect(userCohorts[Identifier(type: "$id", value: "id")]) == UserCohort(identifier: Identifier(type: "$id", value: "id"), cohorts: [Cohort(id: 1), Cohort(id: 2)])

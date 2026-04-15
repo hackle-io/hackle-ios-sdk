@@ -27,7 +27,7 @@ extension EvaluationFlow {
             fail("Expected: \(expectedFlowEvaluator)\nActual: EvaluationFlow.end")
             return nil
         }
-        expect(evaluator).to(beIdenticalTo(expectedFlowEvaluator))
+        expect(evaluator as AnyObject).to(beIdenticalTo(expectedFlowEvaluator as AnyObject))
         return nextFlow
     }
 

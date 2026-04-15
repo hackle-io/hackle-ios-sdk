@@ -158,7 +158,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(context.get(request.experiment)).to(beIdenticalTo(evaluation))
+            expect(context.get(request.experiment) as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
         }
 
         it("ExperimentRequest 가 아니면 evaluation 그대로 사용") {
@@ -176,7 +176,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(context.get(experimentRequest.experiment)).to(beIdenticalTo(evaluation))
+            expect(context.get(experimentRequest.experiment) as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
         }
     }
 }

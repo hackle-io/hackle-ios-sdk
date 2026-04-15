@@ -55,18 +55,18 @@ class EvaluatorContextSpecs: QuickSpec {
             let targetEvaluations2 = context.targetEvaluations
             expect(targetEvaluations1.count).to(equal(1))
             expect(targetEvaluations2.count).to(equal(2))
-            expect(context.get(experiment)).to(beIdenticalTo(evaluation2))
+            expect(context.get(experiment) as AnyObject).to(beIdenticalTo(evaluation2 as AnyObject))
         }
 
         it("properties") {
             let context = Evaluators.context()
             let p1 = context.properties
-            expect(p1).to(be([:]))
+            expect(p1.isEmpty) == true
 
             context.setProperty("a", 1)
             let p2 = context.properties
 
-            expect(p1).to(be([:]))
+            expect(p1.isEmpty) == true
             expect(p2["a"] as? Int).to(equal(1))
         }
     }

@@ -54,7 +54,7 @@ class UserTargetEventsSpecs: QuickSpec {
                 .build()
 
             // raw
-            expect(userTargetEvents.count) === 2
+            expect(userTargetEvents.count) == 2
 
 
             // toBuilder

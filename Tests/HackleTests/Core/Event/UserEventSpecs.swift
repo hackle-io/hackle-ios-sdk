@@ -22,7 +22,7 @@ class UserEventSpecs: QuickSpec {
                 expect(exposureEvent.variationKey) == event.variationKey
                 expect(exposureEvent.timestamp) == event.timestamp
                 expect(exposureEvent.decisionReason) == event.decisionReason
-                expect(exposureEvent.properties["a"]).to(be("1"))
+                expect(exposureEvent.properties["a"] as? String) == "1"
             }
         }
 

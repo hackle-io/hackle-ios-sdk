@@ -15,7 +15,7 @@ class DefaultInAppMessageViewEventActorFactorySpecs: QuickSpec {
             let sut = DefaultInAppMessageViewEventActorFactory(actors: [actor1, actor2])
             
             let actual = sut.get(type: .action)
-            expect(actual).to(beIdenticalTo(actor2))
+            expect(actual as AnyObject).to(beIdenticalTo(actor2 as AnyObject))
             
             expect(DefaultInAppMessageViewEventActorFactory(actors: [actor1]).get(type: .action)).to(beNil())
          }
