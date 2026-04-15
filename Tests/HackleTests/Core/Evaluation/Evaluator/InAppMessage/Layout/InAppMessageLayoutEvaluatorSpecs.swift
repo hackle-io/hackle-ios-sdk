@@ -70,9 +70,9 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 expect(actual.message).to(be(message))
                 expect(actual.reason) == "IN_APP_MESSAGE_TARGET"
                 expect(actual.targetEvaluations[0] as AnyObject).to(beIdenticalTo(evaluation as AnyObject))
-                expect(actual.properties["experiment_id"] as? Int) == 5
-                expect(actual.properties["experiment_key"] as? Int) == 42
-                expect(actual.properties["variation_id"] as? Int) == 320
+                expect(actual.properties["experiment_id"] as? Int64) == 5
+                expect(actual.properties["experiment_key"] as? Int64) == 42
+                expect(actual.properties["variation_id"] as? Int64) == 320
                 expect(actual.properties["variation_key"] as? String) == "B"
                 expect(actual.properties["experiment_decision_reason"] as? String).to(equal("TRAFFIC_ALLOCATED"))
             }
