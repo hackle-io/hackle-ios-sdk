@@ -12,7 +12,7 @@ import Nimble
 
 
 class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var sut: InAppMessageUserOverrideMatcher!
 
@@ -71,7 +71,7 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
 }
 
 class InAppMessageTargetMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("when targets is empty when returns true") {
             // given
@@ -91,7 +91,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
             let sut = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
             let request = InAppMessage.eligibilityRequest(
                 inAppMessage: InAppMessage.create(
-                    targetContext: InAppMessage.targetContext(targets: self.targets()))
+                    targetContext: InAppMessage.targetContext(targets: targets()))
             )
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -107,7 +107,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
             let sut = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
             let request = InAppMessage.eligibilityRequest(
                 inAppMessage: InAppMessage.create(
-                    targetContext: InAppMessage.targetContext(targets: self.targets()))
+                    targetContext: InAppMessage.targetContext(targets: targets()))
             )
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -118,7 +118,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
         }
     }
 
-    private func targets() -> [Target] {
+    private static func targets() -> [Target] {
         [
             Target(conditions: [condition()]),
             Target(conditions: [condition()]),
@@ -128,14 +128,14 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
         ]
     }
 
-    private func condition() -> Target.Condition {
+    private static func condition() -> Target.Condition {
         Target.Condition(key: Target.Key(type: .userProperty, name: "age"), match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 1)]))
     }
 }
 
 
 class InAppMessageHiddenMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var storage: InAppMessageHiddenStorage!
         var sut: InAppMessageHiddenMatcher!
 
@@ -174,7 +174,7 @@ class InAppMessageHiddenMatcherSpecs: QuickSpec {
 
 
 class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var storage: InAppMessageImpressionStorage!
         var sut: InAppMessageFrequencyCapMatcher!
         var user: HackleUser!

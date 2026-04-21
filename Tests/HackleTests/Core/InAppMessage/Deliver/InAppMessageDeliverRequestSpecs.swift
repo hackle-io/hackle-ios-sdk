@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class InAppMessageDeliverRequestSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("create") {
             let schedule = InAppMessage.schedule(
                 dispatchId: "111",

@@ -13,7 +13,7 @@ import Foundation
 // MARK: - Test Spec
 
 class InvokeDtoSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         // MARK: - User
         describe("User extension") {

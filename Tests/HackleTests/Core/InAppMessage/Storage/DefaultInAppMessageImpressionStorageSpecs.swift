@@ -5,7 +5,7 @@ import Nimble
 
 
 class DefaultInAppMessageImpressionStorageSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var repository: KeyValueRepository!
         var sut: DefaultInAppMessageImpressionStorage!
 

@@ -5,7 +5,7 @@ import Nimble
 
 class DefaultThrottlerSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         it("when cannot acquire then execute reject") {
             // given
             let limiter = ThrottleLimiterStub(acquired: false)

@@ -12,7 +12,7 @@
 //
 //
 //class PollingWorkspaceFetcherSpecs: QuickSpec {
-//    override func spec() {
+//    override class func spec() {
 //
 //        var httpWorkspaceFetcher: HttpWorkspaceFetcherStub!
 //        var pollingScheduler: MockScheduler!

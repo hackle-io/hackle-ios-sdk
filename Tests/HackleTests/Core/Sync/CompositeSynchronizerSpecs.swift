@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class CompositeSynchronizerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var workspaceSynchronizer: MockSynchronizer!
         var cohortSynchronizer: MockSynchronizer!

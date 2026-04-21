@@ -5,12 +5,12 @@ import MockingKit
 @testable import Hackle
 
 class WorkspaceManagerSpecs: QuickSpec {
-    func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfig {
+    static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfig {
         let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self).path(forResource: filename, ofType: "json")!)
         return try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
     }
     
-    override func spec() {
+    override class func spec() {
         it("nil workspace data returns if not sync called and no saved data") {
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository()
@@ -22,7 +22,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("workspace data returns and write to repository") {
-            let data = self.loadWorkspaceConfigFromRes()
+            let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
             let repository = MockWorkspaceConfigRepository()
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
@@ -39,7 +39,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("workspace data returns from repository") {
-            let data = self.loadWorkspaceConfigFromRes()
+            let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository(value: data)
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
@@ -51,7 +51,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("workspace data returns from repository after initialize") {
-            let data = self.loadWorkspaceConfigFromRes()
+            let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository(value: data)
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
@@ -66,7 +66,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("write repository workspace value") {
-            let data = self.loadWorkspaceConfigFromRes()
+            let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
             let repository = MockWorkspaceConfigRepository()
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
@@ -83,8 +83,8 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("change last modified value after sync call") {
-            let first = self.loadWorkspaceConfigFromRes()
-            let second = self.loadWorkspaceConfigFromRes(filename: "workspace_config_modified")
+            let first = loadWorkspaceConfigFromRes()
+            let second = loadWorkspaceConfigFromRes(filename: "workspace_config_modified")
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [first, second])
             let repository = MockWorkspaceConfigRepository()
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
@@ -102,7 +102,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("do nothing if http request returns nil") {
-            let data = self.loadWorkspaceConfigFromRes()
+            let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [nil])
             let repository = MockWorkspaceConfigRepository(value: data)
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
@@ -129,7 +129,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         }
         
         it("do not overwrite workspace value even http request occours error") {
-            let data = self.loadWorkspaceConfigFromRes()
+            let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository(value: data)
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)

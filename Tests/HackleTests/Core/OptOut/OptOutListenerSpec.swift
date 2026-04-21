@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class OptOutListenerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("setOptOutTracking(true) 시 리스너에 onOptOutChanged(current: true) 호출") {
             let sut = OptOutManager(configOptOutTracking: false)

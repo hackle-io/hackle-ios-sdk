@@ -5,7 +5,7 @@ import Nimble
 
 class DefaultActionResolverSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var bucketer: MockBucketer!
         var sut: DefaultActionResolver!
@@ -31,7 +31,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
-                    expect(actual).to(beIdenticalTo(variation))
+                    expect(actual as? MockVariation).to(beIdenticalTo(variation))
                 }
 
 
@@ -172,7 +172,7 @@ class DefaultActionResolverSpecs: QuickSpec {
                     let actual = try sut.resolveOrNil(request: request, action: action)
 
                     // then
-                    expect(actual).to(beIdenticalTo(variation))
+                    expect(actual as? MockVariation).to(beIdenticalTo(variation))
                 }
             }
         }

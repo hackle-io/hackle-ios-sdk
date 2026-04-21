@@ -5,7 +5,7 @@ import Quick
 
 
 class HackleUserSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("HackleUser") {
             let user = HackleUser.builder()

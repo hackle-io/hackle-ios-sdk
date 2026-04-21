@@ -6,7 +6,7 @@ import MockingKit
 
 
 class TimeUnitSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         func expectEquals<T: Equatable>(_ expected: T, _ actual: T) {
             expect(actual).to(equal(expected))

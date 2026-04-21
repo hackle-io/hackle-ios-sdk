@@ -12,7 +12,7 @@ import Nimble
 
 
 class HackleConfigSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("exposureEventDedupInterval") {
             expect(HackleConfigBuilder().build().exposureEventDedupInterval) == 60
@@ -65,8 +65,8 @@ class HackleConfigSpec: QuickSpec {
         }
 
         it("mode") {
-            expect(HackleConfig.builder().mode(.native).build().sessionTracking).to(be(true))
-            expect(HackleConfig.builder().mode(.web_view_wrapper).build().sessionTracking).to(be(false))
+            expect(HackleConfig.builder().mode(.native).build().sessionTracking) == true
+            expect(HackleConfig.builder().mode(.web_view_wrapper).build().sessionTracking) == false
         }
 
         context("HackleAppMode") {

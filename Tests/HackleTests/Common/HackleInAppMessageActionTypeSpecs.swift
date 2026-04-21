@@ -10,7 +10,7 @@ import Nimble
 @testable import Hackle
 
 class HackleInAppMessageActionTypeSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("HackleInAppMessageActionType") {
             it("rawValue로 초기화가 정상 동작한다") {
                 expect(HackleInAppMessageActionType(rawValue: "CLOSE")) == .close

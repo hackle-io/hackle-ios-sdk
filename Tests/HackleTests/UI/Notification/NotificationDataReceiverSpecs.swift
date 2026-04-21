@@ -11,7 +11,7 @@ import Nimble
 import Foundation
 
 class DefaultNotificationDataReceiverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var mockRepository: MockNotificationRepository!
         var dispatchQueue: DispatchQueue!
         var receiver: DefaultNotificationDataReceiver!

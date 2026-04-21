@@ -12,7 +12,7 @@ import Nimble
 
 
 class WorkspaceInAppMessageSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("valid") {
             let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
 

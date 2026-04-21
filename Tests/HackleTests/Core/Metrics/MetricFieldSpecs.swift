@@ -6,7 +6,7 @@ import MockingKit
 
 
 class MetricFieldSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("tagKey") {
             expect(MetricField.count.rawValue) == "count"
             expect(MetricField.total.rawValue) == "total"

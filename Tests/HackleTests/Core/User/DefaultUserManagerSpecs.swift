@@ -5,7 +5,7 @@ import Nimble
 
 
 class DefaultUserManagerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var repository: KeyValueRepository!
         var cohortFetcher: MockUserCohortFetcher!
         var targetFetcher: MockUserTargetFetcher!

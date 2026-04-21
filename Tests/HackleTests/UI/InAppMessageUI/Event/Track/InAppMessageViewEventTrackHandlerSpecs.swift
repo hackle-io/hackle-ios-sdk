@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class InAppMessageViewEventTrackHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var tracker: MockInAppMessageEventTracker!
         var sut: InAppMessageViewEventTrackHandler!
 

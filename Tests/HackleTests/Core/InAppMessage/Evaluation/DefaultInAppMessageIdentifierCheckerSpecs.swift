@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessageIdentifierCheckerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var sut: DefaultInAppMessageIdentifierChecker!
         beforeEach {

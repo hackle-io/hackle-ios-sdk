@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class DefaultFileStorageSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let sdkKey = "abcd1234"
         let libPath = try! FileManager.default
             .url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: false)

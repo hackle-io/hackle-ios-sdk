@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class ExperimentEvaluationSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("create by Variation") {
             let experiment = experiment(id: 42, key: 50,
                 variations: [
@@ -35,7 +35,7 @@ class ExperimentEvaluationSpecs: QuickSpec {
 
             expect(evaluation.reason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(evaluation.targetEvaluations.count) == 1
-            expect(evaluation.experiment).to(beIdenticalTo(experiment))
+            expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
             expect(evaluation.variationId) == variation.id
             expect(evaluation.variationKey) == "B"
             expect(evaluation.config).to(beIdenticalTo(config))
@@ -63,7 +63,7 @@ class ExperimentEvaluationSpecs: QuickSpec {
 
             expect(evaluation.reason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(evaluation.targetEvaluations.count) == 1
-            expect(evaluation.experiment).to(beIdenticalTo(experiment))
+            expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
             expect(evaluation.variationId) == variation.id
             expect(evaluation.variationKey) == "B"
             expect(evaluation.config).to(beNil())
@@ -109,7 +109,7 @@ class ExperimentEvaluationSpecs: QuickSpec {
 
             expect(evaluation.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
             expect(evaluation.targetEvaluations.count) == 0
-            expect(evaluation.experiment).to(beIdenticalTo(experiment))
+            expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
             expect(evaluation.variationId) == 320
             expect(evaluation.variationKey) == "A"
             expect(evaluation.config).to(beNil())
@@ -133,7 +133,7 @@ class ExperimentEvaluationSpecs: QuickSpec {
 
             expect(evaluation.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
             expect(evaluation.targetEvaluations.count) == 0
-            expect(evaluation.experiment).to(beIdenticalTo(experiment))
+            expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
             expect(evaluation.variationId).to(beNil())
             expect(evaluation.variationKey) == "C"
             expect(evaluation.config).to(beNil())

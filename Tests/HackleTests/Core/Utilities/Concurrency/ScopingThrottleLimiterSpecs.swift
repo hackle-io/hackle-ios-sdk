@@ -5,7 +5,7 @@ import Nimble
 
 
 class ScopingThrottleLimiterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("throttle 1") {
             let sut = ScopingThrottleLimiter(interval: 1, limit: 1, clock: SystemClock.shared)
             expect(sut.tryAcquire()).to(equal(true))

@@ -5,7 +5,7 @@ import Nimble
 import Quick
 
 class DefaultInvocationHandlerFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("get") {
             let sut = DefaultInvocationHandlerFactory(core: MockHackleAppCore())
 

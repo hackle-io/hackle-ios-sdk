@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class UserDefaultsKeyValueRepositorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("UserDefaultsKeyValueRepository") {
             var repository: UserDefaultsKeyValueRepository!
             let testSuiteName = "com.test.userDefaultsRepositorySpec"

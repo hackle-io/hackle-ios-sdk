@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var evaluationContext: EvaluationContext!
         var sut: DefaultInAppMessageEligibilityFlowFactory!

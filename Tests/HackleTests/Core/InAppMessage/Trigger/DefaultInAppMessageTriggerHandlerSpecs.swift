@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageTriggerHandlerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var scheduleProcessor: MockInAppMessageScheduleProcessor!
         var sut: DefaultInAppMessageTriggerHandler!

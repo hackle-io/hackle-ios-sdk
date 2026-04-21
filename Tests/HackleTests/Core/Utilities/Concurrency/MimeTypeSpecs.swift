@@ -10,7 +10,7 @@ import Nimble
 @testable import Hackle
 
 class MimeTypeResolverSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("MimeType") {
             describe("preferredFileExtension(mimeType:)") {
                 context("when given a valid MIME type") {

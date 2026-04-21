@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultEvaluationEventRecorderSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!

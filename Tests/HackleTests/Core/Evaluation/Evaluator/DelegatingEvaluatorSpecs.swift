@@ -12,7 +12,7 @@ import MockingKit
 @testable import Hackle
 
 class DelegatingEvaluatorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("evaluate") {
             let sut = DelegatingEvaluator()
