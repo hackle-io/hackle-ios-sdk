@@ -30,8 +30,7 @@ struct ExplorerRootView: View {
 
     private var headerView: some View {
         ZStack {
-            if let path = HackleInternalResources.bundle.path(forResource: "hackle_banner", ofType: "png"),
-               let bannerImage = UIImage(contentsOfFile: path) {
+            if let bannerImage = UIImage(named: "hackle_banner", in: HackleInternalResources.bundle, compatibleWith: nil) {
                 Image(uiImage: bannerImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -42,8 +41,7 @@ struct ExplorerRootView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    if let path = HackleInternalResources.bundle.path(forResource: "hackle_cancel", ofType: "png"),
-                       let cancelImage = UIImage(contentsOfFile: path) {
+                    if let cancelImage = UIImage(named: "hackle_cancel", in: HackleInternalResources.bundle, compatibleWith: nil) {
                         Image(uiImage: cancelImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
