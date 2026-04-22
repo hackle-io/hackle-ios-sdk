@@ -26,12 +26,6 @@ let package = Package(
             ],
             resources: [
                 .process("Resources/hackle-javascript-sdk-11.55.0.min.js"),
-                .process("Resources/HackleAbTestTableViewCell.xib"),
-                .process("Resources/HackleAbTestViewController.xib"),
-                .process("Resources/HackleFeatureFlagTableViewCell.xib"),
-                .process("Resources/HackleFeatureFlagViewController.xib"),
-                .process("Resources/HackleUserExplorerButton.xib"),
-                .process("Resources/HackleUserExplorerViewController.xib"),
                 .process("Resources/Images/hackle_banner.png"),
                 .process("Resources/Images/hackle_banner@2x.png"),
                 .process("Resources/Images/hackle_banner@3x.png"),

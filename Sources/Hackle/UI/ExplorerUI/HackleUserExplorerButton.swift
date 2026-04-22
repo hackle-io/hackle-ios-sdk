@@ -10,19 +10,31 @@ import UIKit
 
 class HackleUserExplorerButton: UIView {
 
+    private let imageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.image = .hackle(named: "hackle_logo")
+        return iv
+    }()
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        loadViewFromNib()
+        setupView()
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        loadViewFromNib()
+        setupView()
     }
 
-    func loadViewFromNib() {
-        let view = HackleInternalResources.bundle.loadNibNamed("HackleUserExplorerButton", owner: nil)?.first as! UIView
-        view.frame = bounds
-        addSubview(view)
+    private func setupView() {
+        backgroundColor = .clear
+        imageView.frame = bounds
+        addSubview(imageView)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageView.frame = bounds
     }
 }
