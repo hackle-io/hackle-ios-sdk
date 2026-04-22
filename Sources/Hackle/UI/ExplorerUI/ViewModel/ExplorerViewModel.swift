@@ -81,10 +81,10 @@ class ExplorerViewModel: ObservableObject {
         Metrics.counter(name: "user.explorer.identifier.copy").increment()
         toastTask?.cancel()
         showCopiedToast = true
-        toastTask = Task {
+        toastTask = Task { [weak self] in
             do {
                 try await Task.sleep(nanoseconds: 1_000_000_000)
-                showCopiedToast = false
+                self?.showCopiedToast = false
             } catch {
                 // cancelled — no-op
             }
