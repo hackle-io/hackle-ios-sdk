@@ -1,6 +1,12 @@
+//
+//  HackleHostingController.swift
+//  Hackle
+//
+
 import SwiftUI
 
-class HackleHostingController<Content: View>: UIHostingController<Content>, HackleViewController {
+@MainActor
+final class HackleHostingController<Content: View>: UIHostingController<Content>, HackleViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         overrideUserInterfaceStyle = .light

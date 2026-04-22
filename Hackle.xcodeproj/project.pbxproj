@@ -736,6 +736,7 @@
 		EEFA31EA2BC1942000E133F8 /* RemoteConfigEventDedupDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFA31E92BC1942000E133F8 /* RemoteConfigEventDedupDeterminerSpecs.swift */; };
 		EEFA31EC2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFA31EB2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift */; };
 		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
+		F0DB00715AF8EE936A8C631C /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC412DFB0C2D0D297974E0B /* UIImageExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1465,6 +1466,7 @@
 		EEFA31EB2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingUserEventDedupDeterminerSpecs.swift; sourceTree = "<group>"; };
 		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEC412DFB0C2D0D297974E0B /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1649,6 +1651,7 @@
 				7F8907AA42715F33F426C206 /* ToastView.swift */,
 				8007EA972A906BFA5E1A9DB8 /* ExplorerColors.swift */,
 				949DEAE029633DAA02AE963A /* ExplorerListLayout.swift */,
+				FEC412DFB0C2D0D297974E0B /* UIImageExtension.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -4207,6 +4210,7 @@
 				EE4D042B2E5D8A1F007BE61A /* InAppMessageDelayTask.swift in Sources */,
 				EEAC3F332B9D54ED00DC498E /* PushTokenListener.swift in Sources */,
 				EE29D97C29CD825400B1FEAA /* HttpRequest.swift in Sources */,
+				F0DB00715AF8EE936A8C631C /* UIImageExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
