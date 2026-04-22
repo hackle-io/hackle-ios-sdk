@@ -59,16 +59,16 @@
 		7E9F7E892B6CCC3700A6B0B8 /* MockFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */; };
 		7EE320D82B56707800105A6C /* workspace_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D72B56707800105A6C /* workspace_config.json */; };
 		7EE320DA2B5692D900105A6C /* workspace_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 7EE320D92B5692D900105A6C /* workspace_response.json */; };
-		AA000201111111111111AAAA /* HackleHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000101111111111111AAAA /* HackleHostingController.swift */; };
-		AA000202111111111111AAAA /* ExplorerRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000102111111111111AAAA /* ExplorerRootView.swift */; };
-		AA000204111111111111AAAA /* UserInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000104111111111111AAAA /* UserInfoSectionView.swift */; };
-		AA000205111111111111AAAA /* AbTestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000105111111111111AAAA /* AbTestListView.swift */; };
-		AA000206111111111111AAAA /* FeatureFlagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000106111111111111AAAA /* FeatureFlagListView.swift */; };
-		AA000207111111111111AAAA /* ExperimentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000107111111111111AAAA /* ExperimentRowView.swift */; };
-		AA000208111111111111AAAA /* ExplorerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000108111111111111AAAA /* ExplorerViewModel.swift */; };
-		AA000209111111111111AAAA /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000109111111111111AAAA /* ToastView.swift */; };
-		AA000210111111111111AAAA /* ExplorerColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000110111111111111AAAA /* ExplorerColors.swift */; };
-		AA000212111111111111AAAA /* ExplorerListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000112111111111111AAAA /* ExplorerListLayout.swift */; };
+		D31962349B4532F0ECF333FA /* HackleHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6195ED6D96F452A75F509FA6 /* HackleHostingController.swift */; };
+		F49ECCCEE9BB75A6CA576C46 /* ExplorerRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B481338F3C07B5B7D8762FD8 /* ExplorerRootView.swift */; };
+		0A7893D8E2AB66A2E340D8C3 /* UserInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933F105F82764448558AE2B /* UserInfoSectionView.swift */; };
+		52667C9099D965A3C611D5AC /* AbTestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D138C0A0F36FF3A3CEE9E9A /* AbTestListView.swift */; };
+		4CC1D087764AF18B9BFCA76D /* FeatureFlagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61999A83013137BA1EDD851 /* FeatureFlagListView.swift */; };
+		CB082D93222B8E127E090395 /* ExperimentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87717123329FBFE77C021AFF /* ExperimentRowView.swift */; };
+		D625A0C044A01FD2886C2C81 /* ExplorerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCE4897E17E845FF8012191 /* ExplorerViewModel.swift */; };
+		50F8E294C1E4B2851F20A359 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8907AA42715F33F426C206 /* ToastView.swift */; };
+		9579538A4F80A3243411D31B /* ExplorerColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8007EA972A906BFA5E1A9DB8 /* ExplorerColors.swift */; };
+		56E32E0C528A5FA22CCF491B /* ExplorerListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949DEAE029633DAA02AE963A /* ExplorerListLayout.swift */; };
 		B203A5842F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */; };
 		B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeType.swift */; };
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
@@ -787,16 +787,16 @@
 		7E9F7E882B6CCC3700A6B0B8 /* MockFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileStorage.swift; sourceTree = "<group>"; };
 		7EE320D72B56707800105A6C /* workspace_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_config.json; sourceTree = "<group>"; };
 		7EE320D92B5692D900105A6C /* workspace_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = workspace_response.json; sourceTree = "<group>"; };
-		AA000101111111111111AAAA /* HackleHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleHostingController.swift; sourceTree = "<group>"; };
-		AA000102111111111111AAAA /* ExplorerRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerRootView.swift; sourceTree = "<group>"; };
-		AA000104111111111111AAAA /* UserInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoSectionView.swift; sourceTree = "<group>"; };
-		AA000105111111111111AAAA /* AbTestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestListView.swift; sourceTree = "<group>"; };
-		AA000106111111111111AAAA /* FeatureFlagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagListView.swift; sourceTree = "<group>"; };
-		AA000107111111111111AAAA /* ExperimentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRowView.swift; sourceTree = "<group>"; };
-		AA000108111111111111AAAA /* ExplorerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerViewModel.swift; sourceTree = "<group>"; };
-		AA000109111111111111AAAA /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
-		AA000110111111111111AAAA /* ExplorerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerColors.swift; sourceTree = "<group>"; };
-		AA000112111111111111AAAA /* ExplorerListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerListLayout.swift; sourceTree = "<group>"; };
+		6195ED6D96F452A75F509FA6 /* HackleHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleHostingController.swift; sourceTree = "<group>"; };
+		B481338F3C07B5B7D8762FD8 /* ExplorerRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerRootView.swift; sourceTree = "<group>"; };
+		A933F105F82764448558AE2B /* UserInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoSectionView.swift; sourceTree = "<group>"; };
+		3D138C0A0F36FF3A3CEE9E9A /* AbTestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestListView.swift; sourceTree = "<group>"; };
+		D61999A83013137BA1EDD851 /* FeatureFlagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagListView.swift; sourceTree = "<group>"; };
+		87717123329FBFE77C021AFF /* ExperimentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRowView.swift; sourceTree = "<group>"; };
+		BCCE4897E17E845FF8012191 /* ExplorerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerViewModel.swift; sourceTree = "<group>"; };
+		7F8907AA42715F33F426C206 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		8007EA972A906BFA5E1A9DB8 /* ExplorerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerColors.swift; sourceTree = "<group>"; };
+		949DEAE029633DAA02AE963A /* ExplorerListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerListLayout.swift; sourceTree = "<group>"; };
 		B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegateSpecs.swift; sourceTree = "<group>"; };
 		B20B23132E56F0040019EAA7 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeSpecs.swift; sourceTree = "<group>"; };
@@ -1623,50 +1623,50 @@
 			path = Storage;
 			sourceTree = "<group>";
 		};
-		AA000001111111111111AAAA /* View */ = {
+		1C8A327D23EF894A087C8F28 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				AA000101111111111111AAAA /* HackleHostingController.swift */,
-				AA000102111111111111AAAA /* ExplorerRootView.swift */,
-				AAVIEWUSER00000000000001 /* UserInfo */,
-				AAVIEWEXPR00000000000001 /* Experiment */,
-				AAVIEWCOMN00000000000001 /* Common */,
+				6195ED6D96F452A75F509FA6 /* HackleHostingController.swift */,
+				B481338F3C07B5B7D8762FD8 /* ExplorerRootView.swift */,
+				101791CDF033B6AD5C9C8442 /* UserInfo */,
+				63FF6C005CCE629072BEDC47 /* Experiment */,
+				CCFAC86CA3F34B53F6A0A0E7 /* Common */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		AA000002111111111111AAAA /* ViewModel */ = {
+		15361DCD3CED4398FC541931 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				AA000108111111111111AAAA /* ExplorerViewModel.swift */,
+				BCCE4897E17E845FF8012191 /* ExplorerViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		AAVIEWCOMN00000000000001 /* Common */ = {
+		CCFAC86CA3F34B53F6A0A0E7 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				AA000109111111111111AAAA /* ToastView.swift */,
-				AA000110111111111111AAAA /* ExplorerColors.swift */,
-				AA000112111111111111AAAA /* ExplorerListLayout.swift */,
+				7F8907AA42715F33F426C206 /* ToastView.swift */,
+				8007EA972A906BFA5E1A9DB8 /* ExplorerColors.swift */,
+				949DEAE029633DAA02AE963A /* ExplorerListLayout.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
 		};
-		AAVIEWEXPR00000000000001 /* Experiment */ = {
+		63FF6C005CCE629072BEDC47 /* Experiment */ = {
 			isa = PBXGroup;
 			children = (
-				AA000105111111111111AAAA /* AbTestListView.swift */,
-				AA000106111111111111AAAA /* FeatureFlagListView.swift */,
-				AA000107111111111111AAAA /* ExperimentRowView.swift */,
+				3D138C0A0F36FF3A3CEE9E9A /* AbTestListView.swift */,
+				D61999A83013137BA1EDD851 /* FeatureFlagListView.swift */,
+				87717123329FBFE77C021AFF /* ExperimentRowView.swift */,
 			);
 			path = Experiment;
 			sourceTree = "<group>";
 		};
-		AAVIEWUSER00000000000001 /* UserInfo */ = {
+		101791CDF033B6AD5C9C8442 /* UserInfo */ = {
 			isa = PBXGroup;
 			children = (
-				AA000104111111111111AAAA /* UserInfoSectionView.swift */,
+				A933F105F82764448558AE2B /* UserInfoSectionView.swift */,
 			);
 			path = UserInfo;
 			sourceTree = "<group>";
@@ -2828,8 +2828,8 @@
 		EE29DAA929CD83C400B1FEAA /* ExplorerUI */ = {
 			isa = PBXGroup;
 			children = (
-				AA000001111111111111AAAA /* View */,
-				AA000002111111111111AAAA /* ViewModel */,
+				1C8A327D23EF894A087C8F28 /* View */,
+				15361DCD3CED4398FC541931 /* ViewModel */,
 				EE0E925729D2A18F009C7F31 /* Experiment */,
 				EE29DAB729CD842100B1FEAA /* HackleUserExplorerButton.swift */,
 				EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */,
@@ -3982,16 +3982,16 @@
 				EE4D03902E5C62A0007BE61A /* InAppMessageExperimentEvaluator.swift in Sources */,
 				EE29D9B229CD825500B1FEAA /* ParameterConfig.swift in Sources */,
 				B290E6572D55C1C400F68D35 /* UserTargetEventFetcher.swift in Sources */,
-				AA000201111111111111AAAA /* HackleHostingController.swift in Sources */,
-				AA000202111111111111AAAA /* ExplorerRootView.swift in Sources */,
-				AA000204111111111111AAAA /* UserInfoSectionView.swift in Sources */,
-				AA000205111111111111AAAA /* AbTestListView.swift in Sources */,
-				AA000206111111111111AAAA /* FeatureFlagListView.swift in Sources */,
-				AA000207111111111111AAAA /* ExperimentRowView.swift in Sources */,
-				AA000208111111111111AAAA /* ExplorerViewModel.swift in Sources */,
-				AA000209111111111111AAAA /* ToastView.swift in Sources */,
-				AA000210111111111111AAAA /* ExplorerColors.swift in Sources */,
-				AA000212111111111111AAAA /* ExplorerListLayout.swift in Sources */,
+				D31962349B4532F0ECF333FA /* HackleHostingController.swift in Sources */,
+				F49ECCCEE9BB75A6CA576C46 /* ExplorerRootView.swift in Sources */,
+				0A7893D8E2AB66A2E340D8C3 /* UserInfoSectionView.swift in Sources */,
+				52667C9099D965A3C611D5AC /* AbTestListView.swift in Sources */,
+				4CC1D087764AF18B9BFCA76D /* FeatureFlagListView.swift in Sources */,
+				CB082D93222B8E127E090395 /* ExperimentRowView.swift in Sources */,
+				D625A0C044A01FD2886C2C81 /* ExplorerViewModel.swift in Sources */,
+				50F8E294C1E4B2851F20A359 /* ToastView.swift in Sources */,
+				9579538A4F80A3243411D31B /* ExplorerColors.swift in Sources */,
+				56E32E0C528A5FA22CCF491B /* ExplorerListLayout.swift in Sources */,
 				EE29DABB29CD849900B1FEAA /* HackleUserExplorerView.swift in Sources */,
 				EE29D95129CD825400B1FEAA /* PushMetricRegistry.swift in Sources */,
 				EE29D94929CD825400B1FEAA /* FlushMetricRegistry.swift in Sources */,
