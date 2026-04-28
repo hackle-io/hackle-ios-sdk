@@ -11,7 +11,8 @@ struct InAppMessageListView: View {
                     InAppMessageRowView(
                         keyLabel: item.keyLabel,
                         descLabel: item.descLabel,
-                        reasonLabel: item.reasonLabel
+                        reasonLabel: item.reasonLabel,
+                        isEligible: item.isEligible
                     )
                     Divider()
                 }

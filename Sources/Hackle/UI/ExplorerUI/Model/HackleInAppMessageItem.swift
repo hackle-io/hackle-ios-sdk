@@ -10,11 +10,16 @@ struct HackleInAppMessageItem {
     }
 
     var descLabel: String {
-        inAppMessage.status.rawValue
+        let eventKey = inAppMessage.eventTrigger.rules.first?.eventKey ?? ""
+        return "\(inAppMessage.status.rawValue) | \(eventKey)"
     }
 
     var reasonLabel: String {
         evaluation.reason
+    }
+
+    var isEligible: Bool {
+        evaluation.isEligible
     }
 
     static func of(decisions: [(InAppMessage, InAppMessageEligibilityEvaluation)]) -> [HackleInAppMessageItem] {

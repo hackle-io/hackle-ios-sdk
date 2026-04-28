@@ -5,6 +5,7 @@ struct InAppMessageRowView: View {
     let keyLabel: String
     let descLabel: String
     let reasonLabel: String
+    let isEligible: Bool
 
     var body: some View {
         HStack {
@@ -22,7 +23,7 @@ struct InAppMessageRowView: View {
             Spacer()
             Text(reasonLabel)
                 .font(.system(size: 12))
-                .foregroundColor(Color.explorerSecondaryText)
+                .foregroundColor(isEligible ? .blue : Color.explorerSecondaryText)
                 .lineLimit(1)
                 .truncationMode(.tail)
         }
