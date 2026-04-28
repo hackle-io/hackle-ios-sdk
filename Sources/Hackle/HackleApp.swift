@@ -589,11 +589,6 @@ extension HackleApp {
             clock: clock
         )
 
-        let evaluationEventRecorder = DefaultEvaluationEventRecorder(
-            eventFactory: eventFactory,
-            eventProcessor: eventProcessor
-        )
-
         // - Core
 
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
@@ -712,28 +707,15 @@ extension HackleApp {
             recorder: inAppMessageRecorder
         )
 
-        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
-            evaluator: EvaluationContext.shared.get(Evaluator.self)!
-        )
-        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
-            experimentEvaluator: inAppMessageExperimentEvaluator,
-            selector: InAppMessageLayoutSelector(),
-            eventRecorder: evaluationEventRecorder
-        )
-        let inAppMessageEligibilityFlowFactory = DefaultInAppMessageEligibilityFlowFactory(
-            context: EvaluationContext.shared,
-            layoutEvaluator: inAppMessageLayoutEvaluator
-        )
-
         let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
             core: core,
-            flowFactory: inAppMessageEligibilityFlowFactory,
-            eventRecorder: evaluationEventRecorder
+            flowFactory: EvaluationContext.shared.get(InAppMessageEligibilityFlowFactory.self)!,
+            eventRecorder: EvaluationContext.shared.get(EvaluationEventRecorder.self)!
         )
         let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
         let inAppMessageLayoutResolver = DefaultInAppMessageLayoutResolver(
             core: core,
-            layoutEvaluator: inAppMessageLayoutEvaluator
+            layoutEvaluator: EvaluationContext.shared.get(InAppMessageLayoutEvaluator.self)!
         )
 
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(

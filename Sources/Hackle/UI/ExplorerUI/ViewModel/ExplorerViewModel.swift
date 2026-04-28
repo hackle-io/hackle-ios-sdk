@@ -13,10 +13,11 @@ class ExplorerViewModel: ObservableObject {
     @Published var showCopiedToast: Bool = false
     private var toastTask: Task<Void, Never>?
 
-    @Published var selectedTab: ExperimentType = .abTest
+    @Published var selectedTab: ExplorerTab = .abTest
 
     @Published var abTestItems: [HackleAbTestItem] = []
     @Published var featureFlagItems: [HackleFeatureFlagItem] = []
+    @Published var inAppMessageItems: [HackleInAppMessageItem] = []
 
     init(explorer: HackleUserExplorer) {
         self.explorer = explorer
@@ -44,6 +45,11 @@ class ExplorerViewModel: ObservableObject {
         let decisions = explorer.getFeatureFlagDecisions()
         let overrides = explorer.getFeatureFlagOverrides()
         featureFlagItems = HackleFeatureFlagItem.of(decisions: decisions, overrides: overrides)
+    }
+
+    func loadInAppMessages() {
+        let decisions = explorer.getInAppMessageDecisions()
+        inAppMessageItems = HackleInAppMessageItem.of(decisions: decisions)
     }
 
     func setAbTestOverride(experiment: Experiment, variation: Variation) {
