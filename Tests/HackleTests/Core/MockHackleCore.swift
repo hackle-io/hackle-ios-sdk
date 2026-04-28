@@ -28,6 +28,12 @@ class MockHackleCore: Mock, HackleCore {
         try call(featureFlagsMock, args: user)
     }
 
+    lazy var inAppMessagesMock = MockFunction.throwable(self, inAppMessages)
+
+    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
+        try call(inAppMessagesMock, args: user)
+    }
+
     func track(event: Event, user: HackleUser) {
         track(event: event, user: user, timestamp: Date())
     }
