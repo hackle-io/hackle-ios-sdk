@@ -14,11 +14,11 @@ protocol HackleCore {
 
     func track(event: Event, user: HackleUser, timestamp: Date)
 
-    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)]
-
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
     func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: any InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation
+
+    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)]
 }
 
 class DefaultHackleCore: HackleCore {
@@ -29,7 +29,6 @@ class DefaultHackleCore: HackleCore {
     private let eventFactory: UserEventFactory
     private let eventProcessor: UserEventProcessor
     private let inAppMessageEligibilityFlowFactory: InAppMessageEligibilityFlowFactory
-    private let evaluationEventRecorder: EvaluationEventRecorder
     private let clock: Clock
 
     init(
@@ -39,7 +38,6 @@ class DefaultHackleCore: HackleCore {
         eventFactory: UserEventFactory,
         eventProcessor: UserEventProcessor,
         inAppMessageEligibilityFlowFactory: InAppMessageEligibilityFlowFactory,
-        evaluationEventRecorder: EvaluationEventRecorder,
         clock: Clock
     ) {
         self.experimentEvaluator = experimentEvaluator
@@ -48,7 +46,6 @@ class DefaultHackleCore: HackleCore {
         self.eventFactory = eventFactory
         self.eventProcessor = eventProcessor
         self.inAppMessageEligibilityFlowFactory = inAppMessageEligibilityFlowFactory
-        self.evaluationEventRecorder = evaluationEventRecorder
         self.clock = clock
     }
 
@@ -85,7 +82,6 @@ class DefaultHackleCore: HackleCore {
         )
 
         context.register(evaluationEventRecorder)
-        context.register(inAppMessageExperimentEvaluator)
         context.register(inAppMessageLayoutEvaluator)
         context.register(inAppMessageEligibilityFlowFactory)
 
@@ -96,7 +92,6 @@ class DefaultHackleCore: HackleCore {
             eventFactory: eventFactory,
             eventProcessor: eventProcessor,
             inAppMessageEligibilityFlowFactory: inAppMessageEligibilityFlowFactory,
-            evaluationEventRecorder: evaluationEventRecorder,
             clock: SystemClock.shared
         )
     }
@@ -182,30 +177,6 @@ class DefaultHackleCore: HackleCore {
         return (evaluation, decision)
     }
 
-    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
-        var results = [(InAppMessage, InAppMessageEligibilityEvaluation)]()
-        guard let workspace = workspaceFetcher.fetch() else {
-            return results
-        }
-        let timestamp = clock.now()
-        let flow = inAppMessageEligibilityFlowFactory.triggerFlow()
-        let evaluator = InAppMessageEligibilityEvaluator(flow: flow, eventRecorder: evaluationEventRecorder)
-        for inAppMessage in workspace.inAppMessages {
-            let request = InAppMessageEligibilityRequest(
-                workspace: workspace,
-                user: user,
-                inAppMessage: inAppMessage,
-                timestamp: timestamp
-            )
-            let evaluation: InAppMessageEligibilityEvaluation = try evaluator.evaluate(
-                request: request,
-                context: Evaluators.context()
-            )
-            results.append((inAppMessage, evaluation))
-        }
-        return results
-    }
-
     func track(event: Event, user: HackleUser) {
         self.track(event: event, user: user, timestamp: clock.now())
     }
@@ -241,5 +212,31 @@ class DefaultHackleCore: HackleCore {
         let evaluation: Evaluation = try evaluator.evaluate(request: request, context: context)
         evaluator.record(request: request, evaluation: evaluation)
         return evaluation
+    }
+
+    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
+        var results = [(InAppMessage, InAppMessageEligibilityEvaluation)]()
+        guard let workspace = workspaceFetcher.fetch() else {
+            return results
+        }
+        let timestamp = clock.now()
+        let flow = inAppMessageEligibilityFlowFactory.triggerFlow()
+        for inAppMessage in workspace.inAppMessages {
+            let request = InAppMessageEligibilityRequest(
+                workspace: workspace,
+                user: user,
+                inAppMessage: inAppMessage,
+                timestamp: timestamp
+            )
+            let context = Evaluators.context()
+            let evaluation = try flow.evaluate(request: request, context: context)
+                ?? InAppMessageEligibilityEvaluation.ineligible(
+                    request: request,
+                    context: context,
+                    reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
+                )
+            results.append((inAppMessage, evaluation))
+        }
+        return results
     }
 }
