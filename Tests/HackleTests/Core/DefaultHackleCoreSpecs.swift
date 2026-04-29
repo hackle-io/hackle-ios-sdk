@@ -15,7 +15,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
         var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!
         var flowFactory: MockInAppMessageEligibilityFlowFactory!
-        var eventRecorder: MockEvaluationEventRecorder!
         var sut: DefaultHackleCore!
 
         beforeEach {
@@ -25,7 +24,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
             eventFactory = MockUserEventFactory()
             eventProcessor = MockUserEventProcessor()
             flowFactory = MockInAppMessageEligibilityFlowFactory()
-            eventRecorder = MockEvaluationEventRecorder()
             sut = DefaultHackleCore(
                 experimentEvaluator: experimentEvaluator,
                 remoteConfigEvaluator: remoteConfigEvaluator,
@@ -33,7 +31,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 eventFactory: eventFactory,
                 eventProcessor: eventProcessor,
                 inAppMessageEligibilityFlowFactory: flowFactory,
-                evaluationEventRecorder: eventRecorder,
                 clock: FixedClock(date: Date(timeIntervalSince1970: 42))
             )
         }
@@ -150,7 +147,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     eventFactory: eventFactory,
                     eventProcessor: eventProcessor,
                     inAppMessageEligibilityFlowFactory: MockInAppMessageEligibilityFlowFactory(),
-                    evaluationEventRecorder: MockEvaluationEventRecorder(),
                     clock: FixedClock(date: Date(timeIntervalSince1970: 42))
                 )
 
@@ -355,7 +351,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                     eventFactory: eventFactory,
                     eventProcessor: eventProcessor,
                     inAppMessageEligibilityFlowFactory: MockInAppMessageEligibilityFlowFactory(),
-                    evaluationEventRecorder: MockEvaluationEventRecorder(),
                     clock: FixedClock(date: Date(timeIntervalSince1970: 42))
                 )
 
@@ -428,7 +423,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 expect(actual[2].0.key) == 3
             }
 
-            it("evaluator.record 가 호출되지 않아 EventRecorder 가 호출되지 않는다") {
+            it("분석 이벤트를 dispatch 하지 않는다") {
                 // given
                 let inAppMessage1 = InAppMessage.create(id: 100, key: 1)
                 let inAppMessage2 = InAppMessage.create(id: 200, key: 2)
@@ -443,9 +438,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 _ = try sut.inAppMessages(user: user)
 
                 // then
-                verify(exactly: 0) {
-                    eventRecorder.recordMock
-                }
                 verify(exactly: 0) {
                     eventProcessor.processMock
                 }
