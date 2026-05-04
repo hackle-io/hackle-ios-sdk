@@ -33,6 +33,10 @@ class HackleCoreStub: HackleCore {
         fatalError("featureFlags(user:) has not been implemented")
     }
 
+    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
+        fatalError("inAppMessages(user:) has not been implemented")
+    }
+
     func track(event: Event, user: HackleUser) {
         tracked.append((event, user, Date()))
     }

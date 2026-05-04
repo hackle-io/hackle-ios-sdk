@@ -1,9 +1,17 @@
 import Foundation
 import Quick
 import Nimble
+import MockingKit
 @testable import Hackle
 
 class DefaultHackleCoreSpecs: QuickSpec {
+
+    static let sharedFlowFactory: MockInAppMessageEligibilityFlowFactory = {
+        let factory = MockInAppMessageEligibilityFlowFactory()
+        EvaluationContext.shared.register(factory)
+        return factory
+    }()
+
     override class func spec() {
 
         let user = HackleUser.of(userId: "test")
@@ -13,6 +21,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
         var workspaceFetcher: MockWorkspaceFetcher!
         var eventFactory: MockUserEventFactory!
         var eventProcessor: MockUserEventProcessor!
+        var flowFactory: MockInAppMessageEligibilityFlowFactory!
         var sut: DefaultHackleCore!
 
         beforeEach {
@@ -21,6 +30,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
             workspaceFetcher = MockWorkspaceFetcher()
             eventFactory = MockUserEventFactory()
             eventProcessor = MockUserEventProcessor()
+            flowFactory = sharedFlowFactory
             sut = DefaultHackleCore(
                 experimentEvaluator: experimentEvaluator,
                 remoteConfigEvaluator: remoteConfigEvaluator,
@@ -374,6 +384,64 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 expect(actual[3].1.reason) == DecisionReason.DEFAULT_RULE
                 expect(actual[3].1.config) === EmptyParameterConfig.instance
 
+                verify(exactly: 0) {
+                    eventProcessor.processMock
+                }
+            }
+        }
+
+        describe("inAppMessages") {
+
+            context("Workspace 를 가져올 수 없으면") {
+                it("비어있는 list 를 리턴한다") {
+                    // given
+                    every(workspaceFetcher.fetchMock).returns(nil)
+
+                    // when
+                    let actual = try sut.inAppMessages(user: user)
+
+                    // then
+                    expect(actual.count) == 0
+                }
+            }
+
+            it("workspace.inAppMessages 의 모든 메시지에 대한 평가 결과를 리턴한다") {
+                // given
+                let inAppMessage1 = InAppMessage.create(id: 100, key: 1)
+                let inAppMessage2 = InAppMessage.create(id: 200, key: 2)
+                let inAppMessage3 = InAppMessage.create(id: 300, key: 3)
+                let workspace = MockWorkspace(inAppMessages: [inAppMessage1, inAppMessage2, inAppMessage3])
+                every(workspaceFetcher.fetchMock).returns(workspace)
+
+                let evaluation = InAppMessage.eligibilityEvaluation(reason: DecisionReason.IN_APP_MESSAGE_TARGET, isEligible: true)
+                let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
+                every(flowFactory.triggerFlowMock).returns(flow)
+
+                // when
+                let actual = try sut.inAppMessages(user: user)
+
+                // then
+                expect(actual.count) == 3
+                expect(actual[0].0.key) == 1
+                expect(actual[1].0.key) == 2
+                expect(actual[2].0.key) == 3
+            }
+
+            it("분석 이벤트를 dispatch 하지 않는다") {
+                // given
+                let inAppMessage1 = InAppMessage.create(id: 100, key: 1)
+                let inAppMessage2 = InAppMessage.create(id: 200, key: 2)
+                let workspace = MockWorkspace(inAppMessages: [inAppMessage1, inAppMessage2])
+                every(workspaceFetcher.fetchMock).returns(workspace)
+
+                let evaluation = InAppMessage.eligibilityEvaluation()
+                let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
+                every(flowFactory.triggerFlowMock).returns(flow)
+
+                // when
+                _ = try sut.inAppMessages(user: user)
+
+                // then
                 verify(exactly: 0) {
                     eventProcessor.processMock
                 }
