@@ -17,6 +17,8 @@ protocol HackleCore {
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision
 
     func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: any InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation
+
+    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)]
 }
 
 class DefaultHackleCore: HackleCore {
@@ -187,5 +189,32 @@ class DefaultHackleCore: HackleCore {
         let evaluation: Evaluation = try evaluator.evaluate(request: request, context: context)
         evaluator.record(request: request, evaluation: evaluation)
         return evaluation
+    }
+
+    func inAppMessages(user: HackleUser) throws -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
+        var results = [(InAppMessage, InAppMessageEligibilityEvaluation)]()
+        guard let workspace = workspaceFetcher.fetch() else {
+            return results
+        }
+        let timestamp = clock.now()
+        let factory = EvaluationContext.shared.get(InAppMessageEligibilityFlowFactory.self)!
+        let flow = factory.triggerFlow()
+        for inAppMessage in workspace.inAppMessages {
+            let request = InAppMessageEligibilityRequest(
+                workspace: workspace,
+                user: user,
+                inAppMessage: inAppMessage,
+                timestamp: timestamp
+            )
+            let context = Evaluators.context()
+            let evaluation = try flow.evaluate(request: request, context: context)
+                ?? InAppMessageEligibilityEvaluation.ineligible(
+                    request: request,
+                    context: context,
+                    reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
+                )
+            results.append((inAppMessage, evaluation))
+        }
+        return results
     }
 }

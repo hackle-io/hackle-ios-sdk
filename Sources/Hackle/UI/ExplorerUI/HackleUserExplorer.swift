@@ -26,6 +26,8 @@ protocol HackleUserExplorer {
 
     func getFeatureFlagDecisions() -> [(Experiment, FeatureFlagDecision)]
 
+    func getInAppMessageDecisions() -> [(InAppMessage, InAppMessageEligibilityEvaluation)]
+
     func getFeatureFlagOverrides() -> [Int64: Int64]
 
     func setFeatureFlagOverride(experiment: Experiment, variation: Variation)
@@ -104,6 +106,14 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     func getFeatureFlagDecisions() -> [(Experiment, FeatureFlagDecision)] {
         do {
             return try core.featureFlags(user: currentUser())
+        } catch {
+            return []
+        }
+    }
+
+    func getInAppMessageDecisions() -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
+        do {
+            return try core.inAppMessages(user: currentUser())
         } catch {
             return []
         }

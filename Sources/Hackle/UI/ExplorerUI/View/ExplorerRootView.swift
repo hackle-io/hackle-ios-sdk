@@ -63,13 +63,14 @@ struct ExplorerRootView: View {
         HStack(spacing: 0) {
             tabButton(title: "A/B Test", tab: .abTest)
             tabButton(title: "Feature Flag", tab: .featureFlag)
+            tabButton(title: "In-App Message", tab: .inAppMessage)
             Spacer()
         }
         .frame(height: 48)
         .background(Color.white)
     }
 
-    private func tabButton(title: String, tab: ExperimentType) -> some View {
+    private func tabButton(title: String, tab: ExplorerTab) -> some View {
         Button(action: {
             viewModel.selectedTab = tab
         }) {
@@ -95,10 +96,13 @@ struct ExplorerRootView: View {
 
     private var tabContent: some View {
         Group {
-            if viewModel.selectedTab == .abTest {
+            switch viewModel.selectedTab {
+            case .abTest:
                 AbTestListView(viewModel: viewModel)
-            } else {
+            case .featureFlag:
                 FeatureFlagListView(viewModel: viewModel)
+            case .inAppMessage:
+                InAppMessageListView(viewModel: viewModel)
             }
         }
     }

@@ -724,6 +724,7 @@ extension HackleApp {
             context: EvaluationContext.shared,
             layoutEvaluator: inAppMessageLayoutEvaluator
         )
+        EvaluationContext.shared.register(inAppMessageEligibilityFlowFactory)
 
         let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
             core: core,
