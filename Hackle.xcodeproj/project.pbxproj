@@ -125,6 +125,8 @@
 		B2931DEA2DFFBEA500E5931E /* DefaultUserDtoSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2931DE92DFFBE9A00E5931E /* DefaultUserDtoSpecs.swift */; };
 		B2931DEC2DFFF15200E5931E /* HackleSubscriptionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2931DEB2DFFF14200E5931E /* HackleSubscriptionStatus.swift */; };
 		B29C53562DCB1FA9001724B2 /* ConcurrentArraySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */; };
+		B2C0FFEE00000000DEADBEE2 /* ConcurrentArrayConcurrencySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0FFEE00000000DEADBEE3 /* ConcurrentArrayConcurrencySpecs.swift */; };
+		B2C0FFEE00000000DEADBEE4 /* AtomicReferenceConcurrencySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0FFEE00000000DEADBEE5 /* AtomicReferenceConcurrencySpecs.swift */; };
 		B29C53582DCB23C8001724B2 /* NotificationDataReceiverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53572DCB23BB001724B2 /* NotificationDataReceiverSpecs.swift */; };
 		B29C535A2DCB2621001724B2 /* NotificationHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53592DCB2613001724B2 /* NotificationHandlerSpecs.swift */; };
 		B29C535C2DCB2A4E001724B2 /* InAppMessageButtonViewSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C535B2DCB2A44001724B2 /* InAppMessageButtonViewSpecs.swift */; };
@@ -347,6 +349,7 @@
 		EE29DA5A29CD82C200B1FEAA /* DelegatingTimerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9DA29CD82C100B1FEAA /* DelegatingTimerSpecs.swift */; };
 		EE29DA5B29CD82C200B1FEAA /* CounterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9DB29CD82C100B1FEAA /* CounterSpecs.swift */; };
 		EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9DC29CD82C100B1FEAA /* MetricsSpecs.swift */; };
+		B2C0FFEE00000000DEADBEE0 /* MetricRegistryConcurrencySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C0FFEE00000000DEADBEE1 /* MetricRegistryConcurrencySpecs.swift */; };
 		EE29DA5D29CD82C200B1FEAA /* PushMetricRegistrySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9DE29CD82C100B1FEAA /* PushMetricRegistrySpecs.swift */; };
 		EE29DA5E29CD82C200B1FEAA /* CumulativeMetricRegistrySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E029CD82C100B1FEAA /* CumulativeMetricRegistrySpecs.swift */; };
 		EE29DA5F29CD82C200B1FEAA /* CumulativeCounterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9E129CD82C100B1FEAA /* CumulativeCounterSpecs.swift */; };
@@ -856,6 +859,8 @@
 		B2931DE92DFFBE9A00E5931E /* DefaultUserDtoSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultUserDtoSpecs.swift; sourceTree = "<group>"; };
 		B2931DEB2DFFF14200E5931E /* HackleSubscriptionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleSubscriptionStatus.swift; sourceTree = "<group>"; };
 		B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentArraySpecs.swift; sourceTree = "<group>"; };
+		B2C0FFEE00000000DEADBEE3 /* ConcurrentArrayConcurrencySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentArrayConcurrencySpecs.swift; sourceTree = "<group>"; };
+		B2C0FFEE00000000DEADBEE5 /* AtomicReferenceConcurrencySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicReferenceConcurrencySpecs.swift; sourceTree = "<group>"; };
 		B29C53572DCB23BB001724B2 /* NotificationDataReceiverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiverSpecs.swift; sourceTree = "<group>"; };
 		B29C53592DCB2613001724B2 /* NotificationHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandlerSpecs.swift; sourceTree = "<group>"; };
 		B29C535B2DCB2A44001724B2 /* InAppMessageButtonViewSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageButtonViewSpecs.swift; sourceTree = "<group>"; };
@@ -1078,6 +1083,7 @@
 		EE29D9DA29CD82C100B1FEAA /* DelegatingTimerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelegatingTimerSpecs.swift; sourceTree = "<group>"; };
 		EE29D9DB29CD82C100B1FEAA /* CounterSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CounterSpecs.swift; sourceTree = "<group>"; };
 		EE29D9DC29CD82C100B1FEAA /* MetricsSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetricsSpecs.swift; sourceTree = "<group>"; };
+		B2C0FFEE00000000DEADBEE1 /* MetricRegistryConcurrencySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetricRegistryConcurrencySpecs.swift; sourceTree = "<group>"; };
 		EE29D9DE29CD82C100B1FEAA /* PushMetricRegistrySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushMetricRegistrySpecs.swift; sourceTree = "<group>"; };
 		EE29D9E029CD82C100B1FEAA /* CumulativeMetricRegistrySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CumulativeMetricRegistrySpecs.swift; sourceTree = "<group>"; };
 		EE29D9E129CD82C100B1FEAA /* CumulativeCounterSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CumulativeCounterSpecs.swift; sourceTree = "<group>"; };
@@ -2491,6 +2497,7 @@
 				EE29D9D629CD82C100B1FEAA /* HackleTimer.swift */,
 				EE29D9E329CD82C100B1FEAA /* MetricSpecs.swift */,
 				EE29D9DC29CD82C100B1FEAA /* MetricsSpecs.swift */,
+				B2C0FFEE00000000DEADBEE1 /* MetricRegistryConcurrencySpecs.swift */,
 			);
 			path = Metrics;
 			sourceTree = "<group>";
@@ -2614,6 +2621,8 @@
 			isa = PBXGroup;
 			children = (
 				B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */,
+				B2C0FFEE00000000DEADBEE3 /* ConcurrentArrayConcurrencySpecs.swift */,
+				B2C0FFEE00000000DEADBEE5 /* AtomicReferenceConcurrencySpecs.swift */,
 				7E9065B52B59466C00FE6E52 /* DefaultThrottlerSpecs.swift */,
 				EE29D9F429CD82C100B1FEAA /* DispatchQueueExtensions.swift */,
 				EEFA31DB2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift */,
@@ -4237,6 +4246,8 @@
 				EE29DAA429CD82C200B1FEAA /* PropertiesBuilderSpecs.swift in Sources */,
 				EE1ABAC52F66FBEB00D10076 /* DefaultInAppMessageActionHandlerFactorySpecs.swift in Sources */,
 				B29C53562DCB1FA9001724B2 /* ConcurrentArraySpecs.swift in Sources */,
+				B2C0FFEE00000000DEADBEE2 /* ConcurrentArrayConcurrencySpecs.swift in Sources */,
+				B2C0FFEE00000000DEADBEE4 /* AtomicReferenceConcurrencySpecs.swift in Sources */,
 				EE1ABAC12F66CF2500D10076 /* InAppMessageViewEventActorSpecs.swift in Sources */,
 				EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */,
 				EE4D041B2E5D7C1B007BE61A /* DefaultInAppMessageScheduleActionDeterminerSpecs.swift in Sources */,
@@ -4440,6 +4451,7 @@
 				B26F8C3D2E98AB7200CE544C /* ApplicationEventTrackerSpec.swift in Sources */,
 				B26F8C3E2E98AB7200CE544C /* ApplicationInstallDeterminerSpec.swift in Sources */,
 				EE29DA5C29CD82C200B1FEAA /* MetricsSpecs.swift in Sources */,
+				B2C0FFEE00000000DEADBEE0 /* MetricRegistryConcurrencySpecs.swift in Sources */,
 				EE29DAA529CD82C200B1FEAA /* UserSpecs.swift in Sources */,
 				EE29DA8429CD82C200B1FEAA /* MockRemoteConfigTargetRuleMatcher.swift in Sources */,
 				EEDC587E2ACBDA88001E73DB /* WorkspaceManagerSpecs.swift in Sources */,
