@@ -16,14 +16,14 @@ class MetricRegistry: @unchecked Sendable {
 
     private let _lock = ReadWriteLock(label: "io.hackle.MetricRegistry.Lock")
 
-    func lock(block: () -> ()) {
+    @discardableResult
+    func lock<T>(block: () -> T) -> T {
         _lock.write(block: block)
     }
 
     private var _metrics = [MetricId: Metric]()
     final var metrics: [Metric] {
-        let metrics = Array(_metrics.values)
-        return metrics
+        _lock.read { Array(_metrics.values) }
     }
 
     final func counter(name: String, tags: [String: String] = [:]) -> Counter {
