@@ -4,9 +4,9 @@ import Nimble
 @testable import Hackle
 
 
-/// `AtomicReference` 의 동시 접근 race 회귀용 stress 스펙.
-/// Thread Sanitizer 환경에서 실행해 access race 가 보고되지 않는지 검증한다.
-class AtomicReferenceConcurrencySpecs: QuickSpec {
+/// Stress spec for `AtomicReference` concurrent access race regression.
+/// Run under Thread Sanitizer to verify no access race is reported.
+class AtomicReferenceRaceSpecs: QuickSpec {
     override func spec() {
 
         it("concurrent get / set / getAndSet") {
@@ -20,7 +20,7 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
             let group = DispatchGroup()
 
             for _ in 0..<readerCount {
-                DispatchQueue.global().async(group: group) {
+                DispatchQueue.global(qos: .utility).async(group: group) {
                     for _ in 0..<iterations {
                         _ = ref.get()
                     }
@@ -28,7 +28,7 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
             }
 
             for w in 0..<writerCount {
-                DispatchQueue.global().async(group: group) {
+                DispatchQueue.global(qos: .utility).async(group: group) {
                     for i in 0..<iterations {
                         ref.set(newValue: w * iterations + i)
                     }
@@ -36,7 +36,7 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
             }
 
             for _ in 0..<swapperCount {
-                DispatchQueue.global().async(group: group) {
+                DispatchQueue.global(qos: .utility).async(group: group) {
                     for i in 0..<iterations {
                         _ = ref.getAndSet(newValue: i)
                     }
@@ -44,17 +44,30 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
             }
 
             group.wait()
+
+            // Final value must be one of the values pushed by writers or swappers.
+            var validValues = Set<Int>()
+            validValues.insert(0) // initial value
+            for w in 0..<writerCount {
+                for i in 0..<iterations {
+                    validValues.insert(w * iterations + i)
+                }
+            }
+            for i in 0..<iterations {
+                validValues.insert(i)
+            }
+            expect(validValues.contains(ref.get())) == true
         }
 
-        it("compareAndSet 으로 monotonic 카운터 동작") {
-            // race-free 보장: N 개 스레드가 각자 increment 를 시도하고 최종 합이 정확히 일치하면 OK
+        it("compareAndSet provides monotonic counter behavior") {
+            // Race-free guarantee: N threads each attempt increments and the final sum matches exactly.
             let ref = AtomicReference<Int>(value: 0)
             let workerCount = 8
             let perWorker = 5_000
 
             let group = DispatchGroup()
             for _ in 0..<workerCount {
-                DispatchQueue.global().async(group: group) {
+                DispatchQueue.global(qos: .utility).async(group: group) {
                     for _ in 0..<perWorker {
                         while true {
                             let current = ref.get()
@@ -70,9 +83,10 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
             expect(ref.get()) == workerCount * perWorker
         }
 
-        it("getAndSet 호출 횟수 합산 정합성") {
-            // 각 스레드가 자신만 알 수 있는 값을 set 하고 직전 값을 받아 누적.
-            // 모든 스레드의 누적 + 마지막 잔존값 = 모든 입력의 총합 이어야 한다.
+        it("getAndSet call total matches across writers") {
+            // Each thread sets a value only it knows, accumulating the previous value it received.
+            // The sum of all accumulated previous values plus the final residual value must equal
+            // the total of all inputs.
             let ref = AtomicReference<Int>(value: 0)
             let workerCount = 4
             let perWorker = 5_000
@@ -82,7 +96,7 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
             var accumulated = 0
 
             for w in 0..<workerCount {
-                DispatchQueue.global().async(group: group) {
+                DispatchQueue.global(qos: .utility).async(group: group) {
                     var localSum = 0
                     for i in 1...perWorker {
                         let value = w * perWorker + i
@@ -102,7 +116,7 @@ class AtomicReferenceConcurrencySpecs: QuickSpec {
                 sum + (1...perWorker).reduce(0) { $0 + (w * perWorker + $1) }
             }
 
-            // 초기값(0) + 모든 push 한 값들의 합 = (모든 worker 가 받아간 직전값들의 합) + 최종 잔존값
+            // initial value (0) + all pushed values = sum of all previous values received + final residual
             expect(accumulated + finalValue) == totalInput
         }
     }
