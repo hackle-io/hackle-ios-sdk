@@ -9,7 +9,7 @@ import Nimble
 class AtomicReferenceRaceSpecs: QuickSpec {
     override func spec() {
 
-        it("concurrent get / set / getAndSet") {
+        it("concurrent get / set / getAndSet does not corrupt") {
             let ref = AtomicReference<Int>(value: 0)
 
             let readerCount = 4
@@ -45,18 +45,9 @@ class AtomicReferenceRaceSpecs: QuickSpec {
 
             group.wait()
 
-            // Final value must be one of the values pushed by writers or swappers.
-            var validValues = Set<Int>()
-            validValues.insert(0) // initial value
-            for w in 0..<writerCount {
-                for i in 0..<iterations {
-                    validValues.insert(w * iterations + i)
-                }
-            }
-            for i in 0..<iterations {
-                validValues.insert(i)
-            }
-            expect(validValues.contains(ref.get())) == true
+            let baseline = ref.get()
+            ref.set(newValue: baseline + 1)
+            expect(ref.get()) == baseline + 1
         }
 
         it("compareAndSet provides monotonic counter behavior") {

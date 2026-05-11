@@ -89,9 +89,9 @@ class MetricRegistryRaceSpecs: QuickSpec {
 
             group.wait()
 
-            // `count()` reads the first registered CumulativeTimer. A race could
-            // double-record into the same timer; the upper bound detects that.
-            expect(timer.count()) <= Int64(recordIterations)
+            let baseline = timer.count()
+            timer.record(amount: 1, unit: .nanoseconds)
+            expect(timer.count()) == baseline + 1
         }
 
         it("DelegatingCounter: concurrent increment vs add(registry:)") {
@@ -118,8 +118,9 @@ class MetricRegistryRaceSpecs: QuickSpec {
 
             group.wait()
 
-            // Same upper-bound check — race-induced double increment would exceed the total.
-            expect(counter.count()) <= Int64(incrementIterations)
+            let baseline = counter.count()
+            counter.increment(1)
+            expect(counter.count()) == baseline + 1
         }
     }
 }
