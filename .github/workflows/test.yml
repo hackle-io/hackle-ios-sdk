@@ -101,8 +101,9 @@ jobs:
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 -enableThreadSanitizer YES \
-                -only-testing:HackleTests/MetricRegistryConcurrencySpecs \
-                -only-testing:HackleTests/ConcurrentArrayConcurrencySpecs \
-                -only-testing:HackleTests/AtomicReferenceConcurrencySpecs \
+                -only-testing:HackleTests/MetricRegistryRaceSpecs \
+                -only-testing:HackleTests/ConcurrentArrayRaceSpecs \
+                -only-testing:HackleTests/AtomicReferenceRaceSpecs \
+                -only-testing:HackleTests/DelegatingMetricRegistrySpecs/concurrency \
                 -parallel-testing-enabled NO \
                 | xcbeautify --renderer github-actions --quiet

@@ -16,9 +16,11 @@ class MetricRegistry: @unchecked Sendable {
 
     private let _lock = ReadWriteLock(label: "io.hackle.MetricRegistry.Lock")
 
+    /// Acquires the registry's write barrier. Use for any mutation of `_metrics`
+    /// or subclass-owned state. For read-only access, use `metrics` (already read-locked).
     @discardableResult
-    func lock<T>(block: () -> T) -> T {
-        _lock.write(block: block)
+    func lock<T>(block: () throws -> T) rethrows -> T {
+        try _lock.write(block: block)
     }
 
     private var _metrics = [MetricId: Metric]()
