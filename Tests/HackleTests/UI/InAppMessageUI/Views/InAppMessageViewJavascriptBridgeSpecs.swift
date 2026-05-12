@@ -84,6 +84,38 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
                 let event = Event(key: "hello", value: nil, properties: ["badDate": Date()])
                 let sut = bridge(event: event)
                 expect(sut.source).to(contain("getInAppMessageTriggerEvent: function() { return '' }"))
+                expect(sut.source).toNot(contain("getInAppMessageTriggerEvent: function() { return '{"))
+            }
+
+            it("preserves Unicode characters in property value") {
+                let event = Event.builder("hello").property("name", "안녕😀").build()
+                let sut = bridge(event: event)
+                expect(sut.source).to(contain("\"name\":\"안녕😀\""))
+            }
+
+            it("emits empty event key as JSON string") {
+                let event = Event.builder("").build()
+                let sut = bridge(event: event)
+                expect(sut.source).to(contain("getInAppMessageTriggerEvent: function() { return '{\"key\":\"\"}' }"))
+            }
+
+            it("escapes single quote in property key") {
+                let event = Event.builder("hello").property("it's", "x").build()
+                let sut = bridge(event: event)
+                expect(sut.source).to(contain("\"it\\'s\""))
+            }
+
+            it("escapes backslash in property key") {
+                let event = Event.builder("hello").property("a\\b", "x").build()
+                let sut = bridge(event: event)
+                expect(sut.source).to(contain("\"a\\\\\\\\b\""))
+            }
+
+            it("emits integer-valued Double without decimal point") {
+                let event = Event.builder("count").value(1.0).build()
+                let sut = bridge(event: event)
+                expect(sut.source).toNot(contain("\"value\":1.0"))
+                expect(sut.source).to(contain("\"value\":1"))
             }
         }
     }
