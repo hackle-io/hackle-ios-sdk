@@ -28,9 +28,13 @@ struct Version: Comparable, CustomStringConvertible {
             return nil
         }
 
-        let major = Int(match[0]!)!
-        let minor = Int(match[1] ?? "0")!
-        let patch = Int(match[2] ?? "0")!
+        guard let majorText = match[0],
+              let major = Int(majorText),
+              let minor = Int(match[1] ?? "0"),
+              let patch = Int(match[2] ?? "0")
+        else {
+            return nil
+        }
 
         let coreVersion = CoreVersion(major: major, minor: minor, patch: patch)
         let prerelease = MetadataVersion.parse(match[3])
