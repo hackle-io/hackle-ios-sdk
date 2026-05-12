@@ -7,6 +7,7 @@ class InAppMessageDeliverRequest {
     let requestedAt: Date
     let reason: String
     let properties: [String: Any]
+    let triggerEvent: Event
 
     init(
         dispatchId: String,
@@ -14,7 +15,8 @@ class InAppMessageDeliverRequest {
         identifiers: Identifiers,
         requestedAt: Date,
         reason: String,
-        properties: [String: Any]
+        properties: [String: Any],
+        triggerEvent: Event
     ) {
         self.dispatchId = dispatchId
         self.inAppMessageKey = inAppMessageKey
@@ -22,6 +24,7 @@ class InAppMessageDeliverRequest {
         self.requestedAt = requestedAt
         self.reason = reason
         self.properties = properties
+        self.triggerEvent = triggerEvent
     }
 }
 
@@ -39,7 +42,8 @@ extension InAppMessageDeliverRequest: CustomStringConvertible {
             reason: request.schedule.reason,
             properties: PropertiesBuilder()
                 .add("$trigger_event_insert_id", request.schedule.eventBasedContext.insertId)
-                .build()
+                .build(),
+            triggerEvent: request.schedule.eventBasedContext.event
         )
     }
 }

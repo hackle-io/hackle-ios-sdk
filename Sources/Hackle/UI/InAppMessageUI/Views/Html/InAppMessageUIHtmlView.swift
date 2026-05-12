@@ -157,7 +157,7 @@ extension HackleInAppMessageUI {
             let webView = WebView(configuration: configuration)
             webView.navigationDelegate = self
 
-            let javascriptBridge = InAppMessageViewJavascriptBridge(invocator: app.invocator(), sdkKey: app.sdk.key, viewId: id)
+            let javascriptBridge = InAppMessageViewJavascriptBridge(invocator: app.invocator(), sdkKey: app.sdk.key, viewId: id, triggerEvent: context.triggerEvent)
             javascriptBridge.apply(to: webView)
 
             return webView

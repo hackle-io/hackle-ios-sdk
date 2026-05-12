@@ -9,6 +9,7 @@ class InAppMessagePresentRequest {
     let requestedAt: Date
     let reason: String
     let properties: [String: Any]
+    let triggerEvent: Event
 
     init(
         dispatchId: String,
@@ -17,7 +18,8 @@ class InAppMessagePresentRequest {
         user: HackleUser,
         requestedAt: Date,
         reason: String,
-        properties: [String: Any]
+        properties: [String: Any],
+        triggerEvent: Event
     ) {
         self.dispatchId = dispatchId
         self.inAppMessage = inAppMessage
@@ -26,6 +28,7 @@ class InAppMessagePresentRequest {
         self.requestedAt = requestedAt
         self.reason = reason
         self.properties = properties
+        self.triggerEvent = triggerEvent
     }
 }
 
@@ -48,7 +51,8 @@ extension InAppMessagePresentRequest: CustomStringConvertible {
             user: user,
             requestedAt: request.requestedAt,
             reason: eligibilityEvaluation.reason,
-            properties: PropertiesBuilder().add(request.properties).add(layoutEvaluation.properties).build()
+            properties: PropertiesBuilder().add(request.properties).add(layoutEvaluation.properties).build(),
+            triggerEvent: request.triggerEvent
         )
     }
 }
