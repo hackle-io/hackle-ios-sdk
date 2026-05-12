@@ -13,8 +13,16 @@ class InAppMessageViewJavascriptBridge: HackleJavascriptBridge {
     override var additionalProperties: [HackleJavascriptBridge.Property] {
         return [
             Property(name: "getInAppMessageViewId", value: viewId),
-            Property(name: "getInAppMessageTriggerEvent", value: triggerEvent.toTriggerEventJsonString()),
+            Property(name: "getInAppMessageTriggerEvent", value: triggerEventJsonString),
         ]
+    }
+
+    private var triggerEventJsonString: String {
+        guard let json = triggerEvent.toDictionary().toJson() else {
+            Log.error("Failed to serialize trigger event for HTML IAM bridge")
+            return ""
+        }
+        return json.escapedForJsSingleQuotedLiteral()
     }
 
     private static let webViewConfig = HackleWebViewConfig.builder()
@@ -24,19 +32,9 @@ class InAppMessageViewJavascriptBridge: HackleJavascriptBridge {
         .build()
 }
 
-private extension Event {
-    func toTriggerEventJsonString() -> String {
-        var dict: [String: Any] = ["key": key]
-        if let value = value, value.isFinite {
-            dict["value"] = value
-        }
-        if let properties = properties, !properties.isEmpty {
-            dict["properties"] = properties
-        }
-        guard let json = dict.toJson() else {
-            return ""
-        }
-        return json
+fileprivate extension String {
+    func escapedForJsSingleQuotedLiteral() -> String {
+        self
             .replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: "'", with: "\\'")
     }
