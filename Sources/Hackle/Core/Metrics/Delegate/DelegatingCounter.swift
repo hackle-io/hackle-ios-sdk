@@ -16,8 +16,7 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
     private var _counters: [MetricRegistry: Counter]
 
     private var counters: [Counter] {
-        let counters: [Counter] = Array(_counters.values)
-        return counters
+        lock.read { Array(_counters.values) }
     }
 
     private var first: Counter {
@@ -33,9 +32,9 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
     func add(registry: MetricRegistry) {
         let newCounter = registry.counter(id: id)
         lock.write {
-            var newCounters = _counters
-            newCounters[registry] = newCounter
-            _counters = newCounters
+            if _counters[registry] == nil {
+                _counters[registry] = newCounter
+            }
         }
     }
 
