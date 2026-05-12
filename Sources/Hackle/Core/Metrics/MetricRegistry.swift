@@ -57,7 +57,7 @@ class MetricRegistry: @unchecked Sendable {
         if let metric = metric as? T {
             return metric
         }
-        assert(false, "Metric '\(id.name)' is already registered as a different metric type.")
+        assertionFailure("Metric '\(id.name)' is already registered as a different metric type.")
         Log.error("Metric '\(id.name)' is already registered as a different metric type. Returning a transient \(metricType) instance.")
         let necessaryMetric = create(id)
         return necessaryMetric as! T
