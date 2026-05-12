@@ -17,8 +17,7 @@ class DelegatingTimer: DelegatingMetric, Timer {
     private var _timers: [MetricRegistry: Timer]
 
     private var timers: [Timer] {
-        let timers: [Timer] = Array(_timers.values)
-        return timers
+        lock.read { Array(_timers.values) }
     }
 
     init(id: MetricId) {
@@ -30,9 +29,9 @@ class DelegatingTimer: DelegatingMetric, Timer {
     func add(registry: MetricRegistry) {
         let newTimer = registry.timer(id: id)
         lock.write {
-            var newTimers = _timers
-            newTimers[registry] = newTimer
-            _timers = newTimers
+            if _timers[registry] == nil {
+                _timers[registry] = newTimer
+            }
         }
     }
 
