@@ -16,14 +16,16 @@ class MetricRegistry: @unchecked Sendable {
 
     private let _lock = ReadWriteLock(label: "io.hackle.MetricRegistry.Lock")
 
-    func lock(block: () -> ()) {
-        _lock.write(block: block)
+    /// Acquires the registry's write barrier. Use for any mutation of `_metrics`
+    /// or subclass-owned state. For read-only access, use `metrics` (already read-locked).
+    @discardableResult
+    func lock<T>(block: () throws -> T) rethrows -> T {
+        try _lock.write(block: block)
     }
 
     private var _metrics = [MetricId: Metric]()
     final var metrics: [Metric] {
-        let metrics = Array(_metrics.values)
-        return metrics
+        _lock.read { Array(_metrics.values) }
     }
 
     final func counter(name: String, tags: [String: String] = [:]) -> Counter {
@@ -35,11 +37,11 @@ class MetricRegistry: @unchecked Sendable {
     }
 
     final func counter(id: MetricId) -> Counter {
-        registerMetricIfNecessary(metricType: Counter.self, id: id, create: createCounter)
+        registerMetricIfNecessary(metricType: Counter.self, id: id) { self.createCounter(id: $0) }
     }
 
     final func timer(id: MetricId) -> Timer {
-        registerMetricIfNecessary(metricType: Timer.self, id: id, create: createTimer)
+        registerMetricIfNecessary(metricType: Timer.self, id: id) { self.createTimer(id: $0) }
     }
 
     func createCounter(id: MetricId) -> Counter {
@@ -52,7 +54,13 @@ class MetricRegistry: @unchecked Sendable {
 
     private func registerMetricIfNecessary<T>(metricType: T.Type, id: MetricId, create: (MetricId) -> Metric) -> T {
         let metric = getOrCreateMetric(id: id, create: create)
-        return metric as! T
+        if let metric = metric as? T {
+            return metric
+        }
+        assertionFailure("Metric '\(id.name)' is already registered as a different metric type.")
+        Log.error("Metric '\(id.name)' is already registered as a different metric type. Returning a transient \(metricType) instance.")
+        let necessaryMetric = create(id)
+        return necessaryMetric as! T
     }
 
     private func getOrCreateMetric(id: MetricId, create: (MetricId) -> Metric) -> Metric {
