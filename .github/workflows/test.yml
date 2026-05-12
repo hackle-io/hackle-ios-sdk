@@ -72,3 +72,38 @@ jobs:
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 SWIFT_VERSION=6 \
                 | xcbeautify --renderer github-actions --quiet
+
+  thread-sanitizer-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.1.1'
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Prebuild with Thread Sanitizer
+        run: |
+            set -o pipefail && xcodebuild build-for-testing \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -enableThreadSanitizer YES \
+                | xcbeautify --renderer github-actions --quiet
+
+      - name: Run Concurrency Specs under TSan
+        run: |
+            set -o pipefail && xcodebuild test-without-building \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -enableThreadSanitizer YES \
+                -only-testing:HackleTests/MetricRegistryRaceSpecs \
+                -only-testing:HackleTests/ConcurrentArrayRaceSpecs \
+                -only-testing:HackleTests/AtomicReferenceRaceSpecs \
+                -only-testing:HackleTests/DelegatingMetricRegistrySpecs/concurrency \
+                -parallel-testing-enabled NO \
+                | xcbeautify --renderer github-actions --quiet

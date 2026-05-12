@@ -27,6 +27,12 @@ class VersionSpecs: QuickSpec {
                 expect(Version.tryParse(value: "1.0.0-beta_4")).to(beNil())
             }
 
+            it("numeric overflow returns nil instead of crashing") {
+                expect(Version.tryParse(value: "99999999999999999999.0.0")).to(beNil())
+                expect(Version.tryParse(value: "1.99999999999999999999.0")).to(beNil())
+                expect(Version.tryParse(value: "1.0.99999999999999999999")).to(beNil())
+            }
+
             it("semantic core version") {
                 self.verify("1.0.0", 1, 0, 0)
                 self.verify("14.165.14", 14, 165, 14)

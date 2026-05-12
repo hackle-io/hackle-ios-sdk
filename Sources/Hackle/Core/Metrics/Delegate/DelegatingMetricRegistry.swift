@@ -35,14 +35,12 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
             return
         }
 
-        lock {
-            let (inserted, _) = registries.insert(registry)
-            if inserted {
-                for metric in metrics {
-                    if let delegatingMetric = metric as? DelegatingMetric {
-                        delegatingMetric.add(registry: registry)
-                    }
-                }
+        let inserted = lock { registries.insert(registry).inserted }
+        guard inserted else { return }
+
+        for metric in metrics {
+            if let delegatingMetric = metric as? DelegatingMetric {
+                delegatingMetric.add(registry: registry)
             }
         }
     }
