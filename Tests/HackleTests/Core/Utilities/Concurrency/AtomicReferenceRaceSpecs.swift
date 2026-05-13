@@ -7,7 +7,7 @@ import Nimble
 /// Stress spec for `AtomicReference` concurrent access race regression.
 /// Run under Thread Sanitizer to verify no access race is reported.
 class AtomicReferenceRaceSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("concurrent get / set / getAndSet does not corrupt") {
             let ref = AtomicReference<Int>(value: 0)
