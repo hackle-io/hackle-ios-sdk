@@ -98,6 +98,17 @@ jobs:
             echo "Error: stale JS SDK references remain in project.pbxproj"
             exit 1
           fi
+          if grep -E "hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+\.min\.js" \
+               Package.swift | grep -v "hackle-javascript-sdk-${JS_SDK_VERSION}.min.js"; then
+            echo "Error: stale JS SDK references remain in Package.swift"
+            exit 1
+          fi
+          if grep -E "javascriptSdkVersion = \"[0-9]+\.[0-9]+\.[0-9]+\"" \
+               Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift \
+               | grep -v "javascriptSdkVersion = \"${JS_SDK_VERSION}\""; then
+            echo "Error: stale javascriptSdkVersion remains in InAppMessageUIHtmlViewBridgeScript.swift"
+            exit 1
+          fi
 
       - name: Commit and push
         run: |
