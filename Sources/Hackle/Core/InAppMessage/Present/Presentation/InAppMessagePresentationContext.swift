@@ -30,7 +30,7 @@ final class InAppMessagePresentationContext: @unchecked Sendable {
 
 extension InAppMessagePresentationContext: CustomStringConvertible {
     var description: String {
-        "InAppMessagePresentationContext(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), layout: \(message.layout.displayType))"
+        "InAppMessagePresentationContext(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), layout: \(message.layout.displayType), triggerEventKey: \(triggerEvent.key))"
     }
 
     static func of(request: InAppMessagePresentRequest) -> InAppMessagePresentationContext {

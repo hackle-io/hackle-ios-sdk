@@ -30,7 +30,7 @@ class InAppMessageDeliverRequest {
 
 extension InAppMessageDeliverRequest: CustomStringConvertible {
     var description: String {
-        "InAppMessageDeliverRequest(dispatchId: \(dispatchId), inAppMessageKey: \(inAppMessageKey), identifiers: \(identifiers), requestedAt: \(requestedAt), reason: \(reason), properties: \(properties))"
+        "InAppMessageDeliverRequest(dispatchId: \(dispatchId), inAppMessageKey: \(inAppMessageKey), identifiers: \(identifiers), requestedAt: \(requestedAt), reason: \(reason), triggerEventKey: \(triggerEvent.key), properties: \(properties))"
     }
 
     static func of(request: InAppMessageScheduleRequest) -> InAppMessageDeliverRequest {

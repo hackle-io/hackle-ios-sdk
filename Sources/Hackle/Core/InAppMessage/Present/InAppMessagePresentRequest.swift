@@ -34,7 +34,7 @@ class InAppMessagePresentRequest {
 
 extension InAppMessagePresentRequest: CustomStringConvertible {
     var description: String {
-        "InAppMessagePresentRequest(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), message: \(message.layout.displayType), user: \(user.identifiers), requestedAt: \(requestedAt), reason: \(reason), properties: \(properties))"
+        "InAppMessagePresentRequest(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), message: \(message.layout.displayType), user: \(user.identifiers), requestedAt: \(requestedAt), reason: \(reason), triggerEventKey: \(triggerEvent.key), properties: \(properties))"
     }
 
     static func of(

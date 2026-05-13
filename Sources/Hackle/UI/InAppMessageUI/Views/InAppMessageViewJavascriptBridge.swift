@@ -32,7 +32,7 @@ class InAppMessageViewJavascriptBridge: HackleJavascriptBridge {
         .build()
 }
 
-fileprivate extension String {
+private extension String {
     func escapedForJsSingleQuotedLiteral() -> String {
         self
             .replacingOccurrences(of: "\\", with: "\\\\")
