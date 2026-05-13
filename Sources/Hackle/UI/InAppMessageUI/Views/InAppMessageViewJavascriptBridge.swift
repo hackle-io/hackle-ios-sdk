@@ -18,7 +18,7 @@ class InAppMessageViewJavascriptBridge: HackleJavascriptBridge {
     }
 
     private var triggerEventJsonString: String {
-        guard let json = triggerEvent.toDictionary().toJson() else {
+        guard let json = triggerEvent.toDto().toJson() else {
             Log.error("Failed to serialize trigger event for HTML IAM bridge")
             return ""
         }

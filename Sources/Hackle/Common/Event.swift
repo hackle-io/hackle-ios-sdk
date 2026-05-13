@@ -27,19 +27,6 @@ public final class Event: NSObject, @unchecked Sendable {
     }
 }
 
-extension Event {
-    func toDictionary() -> [String: Any] {
-        var dict: [String: Any] = ["key": key]
-        if let value = value, value.isFinite {
-            dict["value"] = value
-        }
-        if let properties = properties, !properties.isEmpty {
-            dict["properties"] = properties
-        }
-        return dict
-    }
-}
-
 /// Builder for creating ``Event`` instances.
 ///
 /// Use this builder to construct events with specific values and properties for analytics tracking.
