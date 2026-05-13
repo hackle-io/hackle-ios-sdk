@@ -91,6 +91,8 @@ jobs:
           sed -i -E "s/hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+\.min\.js/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js/g" \
             Hackle.xcodeproj/project.pbxproj
 
+      - name: Verify no stale JS SDK references
+        run: |
           if grep -E "hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+\.min\.js" \
                Hackle.xcodeproj/project.pbxproj | grep -v "hackle-javascript-sdk-${JS_SDK_VERSION}.min.js"; then
             echo "Error: stale JS SDK references remain in project.pbxproj"
