@@ -106,6 +106,10 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
             }
 
             it("escapes backslash in property key") {
+                // Swift literal "a\\b" (1 backslash)
+                //   → JSONSerialization → JSON text "a\\b" (2 backslash chars)
+                //   → escapedForJsSingleQuotedLiteral → JS source "a\\\\b" (4 backslash chars)
+                //   → Swift assertion literal "\\\\\\\\" (8 chars representing 4 backslashes)
                 let event = Event.builder("hello").property("a\\b", "x").build()
                 let sut = bridge(event: event)
                 expect(sut.source).to(contain("\"a\\\\\\\\b\""))
@@ -115,7 +119,7 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
                 let event = Event.builder("count").value(1.0).build()
                 let sut = bridge(event: event)
                 expect(sut.source).toNot(contain("\"value\":1.0"))
-                expect(sut.source).to(contain("\"value\":1"))
+                expect(sut.source).to(satisfyAnyOf(contain("\"value\":1}"), contain("\"value\":1,")))
             }
         }
     }
