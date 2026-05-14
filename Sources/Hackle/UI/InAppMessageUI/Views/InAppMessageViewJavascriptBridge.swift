@@ -4,10 +4,10 @@ class InAppMessageViewJavascriptBridge: HackleJavascriptBridge {
     private let viewId: String
     private let triggerEvent: Event
 
-    init(invocator: HackleInvocator, sdkKey: String, viewId: String, triggerEvent: Event) {
-        self.viewId = viewId
-        self.triggerEvent = triggerEvent
-        super.init(invocator: invocator, sdkKey: sdkKey, mode: .native, webViewConfig: Self.webViewConfig)
+    init(app: HackleApp, view: InAppMessageView) {
+        self.viewId = view.id
+        self.triggerEvent = view.context.triggerEvent
+        super.init(invocator: app.invocator(), sdkKey: app.sdk.key, mode: .native, webViewConfig: Self.webViewConfig)
     }
 
     override var additionalProperties: [HackleJavascriptBridge.Property] {

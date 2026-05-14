@@ -9,13 +9,19 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
         let viewId = "view-id-1"
 
         func bridge(event: Event) -> InAppMessageViewJavascriptBridge {
-            let invocator = DefaultHackleInvocator(processor: MockInvocationProcessor())
-            return InAppMessageViewJavascriptBridge(
-                invocator: invocator,
-                sdkKey: sdkKey,
-                viewId: viewId,
-                triggerEvent: event
+            let app = HackleApp(
+                hackleAppCore: MockHackleAppCore(sdkKey: sdkKey),
+                sdk: Sdk.of(sdkKey: sdkKey, config: HackleConfig.DEFAULT),
+                config: HackleConfig.DEFAULT,
+                hackleInvocator: DefaultHackleInvocator(processor: MockInvocationProcessor())
             )
+            let view = MainActor.assumeIsolated {
+                MockInAppMessageView(
+                    id: viewId,
+                    context: InAppMessage.context(triggerEvent: event)
+                )
+            }
+            return InAppMessageViewJavascriptBridge(app: app, view: view)
         }
 
         describe("getInAppMessageTriggerEvent property in source") {
