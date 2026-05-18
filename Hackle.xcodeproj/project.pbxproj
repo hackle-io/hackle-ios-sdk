@@ -597,7 +597,7 @@
 		EE7BC01C2F71787F0017BE4E /* WebViewSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC01B2F71787F0017BE4E /* WebViewSchemeHandler.swift */; };
 		EE7BC01E2F71794E0017BE4E /* WebResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC01D2F71794E0017BE4E /* WebResourceLoader.swift */; };
 		EE7BC0202F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC01F2F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift */; };
-		EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.56.0-alpha.min.js in Resources */ = {isa = PBXBuildFile; fileRef = EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.56.0-alpha.min.js */; };
+		EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.56.0.min.js in Resources */ = {isa = PBXBuildFile; fileRef = EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.56.0.min.js */; };
 		EE7BC0242F7226370017BE4E /* WebViewResourceLoaderSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC0232F7226370017BE4E /* WebViewResourceLoaderSpecs.swift */; };
 		EE7BC0262F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7BC0252F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift */; };
 		EE80378829D3DB04000DC77E /* HackleAbTestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */; };
@@ -1332,7 +1332,7 @@
 		EE7BC01B2F71787F0017BE4E /* WebViewSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSchemeHandler.swift; sourceTree = "<group>"; };
 		EE7BC01D2F71794E0017BE4E /* WebResourceLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebResourceLoader.swift; sourceTree = "<group>"; };
 		EE7BC01F2F717FBD0017BE4E /* InAppMessageUIHtmlViewBridgeScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageUIHtmlViewBridgeScript.swift; sourceTree = "<group>"; };
-		EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.56.0-alpha.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "hackle-javascript-sdk-11.56.0-alpha.min.js"; sourceTree = "<group>"; };
+		EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.56.0.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "hackle-javascript-sdk-11.56.0.min.js"; sourceTree = "<group>"; };
 		EE7BC0232F7226370017BE4E /* WebViewResourceLoaderSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewResourceLoaderSpecs.swift; sourceTree = "<group>"; };
 		EE7BC0252F7228A20017BE4E /* HtmlViewBridgeScriptSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlViewBridgeScriptSpecs.swift; sourceTree = "<group>"; };
 		EE80378729D3DB04000DC77E /* HackleAbTestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleAbTestItem.swift; sourceTree = "<group>"; };
@@ -2862,7 +2862,7 @@
 			isa = PBXGroup;
 			children = (
 				EE29DAAB29CD83D000B1FEAA /* Images */,
-				EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.56.0-alpha.min.js */,
+				EE7BC0212F71812E0017BE4E /* hackle-javascript-sdk-11.56.0.min.js */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3788,7 +3788,7 @@
 				EE29DABD29CD853C00B1FEAA /* hackle_banner.png in Resources */,
 				EE29DABE29CD853C00B1FEAA /* hackle_banner@2x.png in Resources */,
 				EE29DABF29CD853C00B1FEAA /* hackle_banner@3x.png in Resources */,
-				EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.56.0-alpha.min.js in Resources */,
+				EE7BC0222F71812E0017BE4E /* hackle-javascript-sdk-11.56.0.min.js in Resources */,
 				EE668AEA2BC3E042003D3E15 /* PrivacyInfo.xcprivacy in Resources */,
 				EE29DAC029CD853C00B1FEAA /* hackle_cancel.png in Resources */,
 				EE29DAC129CD853C00B1FEAA /* hackle_cancel@2x.png in Resources */,
