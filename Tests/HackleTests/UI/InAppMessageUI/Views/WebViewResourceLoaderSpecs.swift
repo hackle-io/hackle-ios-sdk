@@ -52,7 +52,7 @@ class WebViewResourceLoaderSpecs: QuickSpec {
 
         describe("load(url:)") {
             it("loads a bundled JS file and returns a WebResource") {
-                let url = Loader.resourceURL(fileName: "hackle-javascript-sdk-11.56.0-alpha.min.js")
+                let url = Loader.resourceURL(fileName: "hackle-javascript-sdk-11.56.0.min.js")
                 let resource = sut.load(url: url)
                 expect(resource).toNot(beNil())
                 expect(resource?.mimeType).to(equal("application/javascript"))
