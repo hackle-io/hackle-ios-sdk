@@ -26,7 +26,7 @@ class Log {
     }
 
     static func increment(_ level: LogLevel) {
-        Metrics.counter(name: "log", tags: tags[level] ?? [:]) { $0.increment() }
+        Metrics.counter(name: "log", tags: tags[level] ?? ["level": level.rawValue]) { $0.increment() }
     }
 }
 
