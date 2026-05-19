@@ -150,6 +150,6 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
             "experiment.type": experimentType.rawValue,
             "operation": operation
         ]
-        Metrics.counter(name: "experiment.manual.override", tags: tags).increment()
+        Metrics.counter(name: "experiment.manual.override", tags: tags) { $0.increment() }
     }
 }

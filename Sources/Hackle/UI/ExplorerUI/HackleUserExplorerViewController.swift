@@ -103,7 +103,7 @@ class HackleUserExplorerViewController: UIViewController, UIPageViewControllerDa
         UIView.animate(withDuration: 1, delay: 0, options: .transitionCrossDissolve) {
             self.copiedLabel.alpha = 0
         }
-        Metrics.counter(name: "user.explorer.identifier.copy").increment()
+        Metrics.counter(name: "user.explorer.identifier.copy") { $0.increment() }
     }
 
     private func initPageView() {

@@ -11,8 +11,7 @@ import UIKit
 
 class PushMetricRegistry: MetricRegistry, @unchecked Sendable {
 
-    private let lock = ReadWriteLock(label: "io.hackle.PushMetricRegistry.Lock")
-
+    private let queue = DispatchQueue(label: "io.hackle.metric.push", qos: .utility)
     private var publishingJob: ScheduledJob? = nil
 
     private let scheduler: Scheduler
@@ -28,29 +27,25 @@ class PushMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     final func start() {
-        lock.write { [weak self] in
+        queue.async { [weak self] in
             guard let self = self else { return }
-
-            if self.publishingJob != nil {
-                return
-            }
+            guard self.publishingJob == nil else { return }
 
             let delay = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: self.pushInterval) + 0.001
             self.publishingJob = self.scheduler.schedulePeriodically(delay: delay, period: self.pushInterval) { [weak self] in
                 self?.publish()
             }
-
             Log.info("\(self.name) started. Publish metrics every \(self.pushInterval.format())")
         }
-
     }
 
     final func stop() {
-        lock.write { [weak self] in
-            self?.publishingJob?.cancel()
-            self?.publishingJob = nil
-            self?.publish()
-            Log.info("\(self?.name ?? "PushMetricRegistry") stopped.")
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            self.publishingJob?.cancel()
+            self.publishingJob = nil
+            self.publish()
+            Log.info("\(self.name) stopped.")
         }
     }
 }
@@ -60,7 +55,7 @@ extension PushMetricRegistry: ApplicationLifecycleListener {
         Log.debug("PushMetricRegistry.onForeground")
         start()
     }
-    
+
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("PushMetricRegistry.onBackground")
         stop()

@@ -12,27 +12,26 @@ class DelegatingTimer: DelegatingMetric, Timer {
 
     let id: MetricId
 
-    private let lock = ReadWriteLock(label: "io.hackle.DelegatingTimer.Lock")
     private let noopTimer: Timer
-    private var _timers: [MetricRegistry: Timer]
+    private let _timers: AtomicReference<[MetricRegistry: Timer]>
 
     private var timers: [Timer] {
-        lock.read { Array(_timers.values) }
+        Array(_timers.get().values)
     }
 
     init(id: MetricId) {
         self.id = id
-        noopTimer = NoopTimer(id: id)
-        _timers = [:]
+        self.noopTimer = NoopTimer(id: id)
+        self._timers = AtomicReference<[MetricRegistry: Timer]>(value: [:])
     }
 
     func add(registry: MetricRegistry) {
         let newTimer = registry.timer(id: id)
-        lock.write {
-            if _timers[registry] == nil {
-                _timers[registry] = newTimer
-            }
-        }
+        let snapshot = _timers.get()
+        if snapshot[registry] != nil { return }
+        var updated = snapshot
+        updated[registry] = newTimer
+        _timers.set(newValue: updated)
     }
 
     private func first() -> Timer {
@@ -52,8 +51,11 @@ class DelegatingTimer: DelegatingMetric, Timer {
     }
 
     func record(amount: Double, unit: TimeUnit) {
-        for metric in timers {
-            metric.record(amount: amount, unit: unit)
+        Metrics.queue.async { [weak self] in
+            guard let self = self else { return }
+            for t in self._timers.get().values {
+                t.record(amount: amount, unit: unit)
+            }
         }
     }
 }

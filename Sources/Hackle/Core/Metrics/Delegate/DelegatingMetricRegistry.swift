@@ -10,7 +10,7 @@ import Foundation
 
 class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
 
-    private var registries = Set<MetricRegistry>()
+    private let registries = AtomicReference<Set<MetricRegistry>>(value: [])
 
     override func createCounter(id: MetricId) -> Counter {
         let counter = DelegatingCounter(id: id)
@@ -25,7 +25,7 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     private func addRegistries(metric: DelegatingMetric) {
-        for registry in registries {
+        for registry in registries.get() {
             metric.add(registry: registry)
         }
     }
@@ -35,8 +35,11 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
             return
         }
 
-        let inserted = lock { registries.insert(registry).inserted }
-        guard inserted else { return }
+        let snapshot = registries.get()
+        guard !snapshot.contains(registry) else { return }
+        var updated = snapshot
+        updated.insert(registry)
+        registries.set(newValue: updated)
 
         for metric in metrics {
             if let delegatingMetric = metric as? DelegatingMetric {
@@ -46,8 +49,6 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     func clear() {
-        lock {
-            registries.removeAll()
-        }
+        registries.set(newValue: [])
     }
 }

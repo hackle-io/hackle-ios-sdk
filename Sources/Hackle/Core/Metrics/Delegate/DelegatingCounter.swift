@@ -11,12 +11,11 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
 
     let id: MetricId
 
-    private let lock = ReadWriteLock(label: "io.hackle.DelegatingCounter.Lock")
     private let noopCounter: Counter
-    private var _counters: [MetricRegistry: Counter]
+    private let _counters: AtomicReference<[MetricRegistry: Counter]>
 
     private var counters: [Counter] {
-        lock.read { Array(_counters.values) }
+        Array(_counters.get().values)
     }
 
     private var first: Counter {
@@ -25,17 +24,17 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
 
     init(id: MetricId) {
         self.id = id
-        noopCounter = NoopCounter(id: id)
-        _counters = [:]
+        self.noopCounter = NoopCounter(id: id)
+        self._counters = AtomicReference<[MetricRegistry: Counter]>(value: [:])
     }
 
     func add(registry: MetricRegistry) {
         let newCounter = registry.counter(id: id)
-        lock.write {
-            if _counters[registry] == nil {
-                _counters[registry] = newCounter
-            }
-        }
+        let snapshot = _counters.get()
+        if snapshot[registry] != nil { return }
+        var updated = snapshot
+        updated[registry] = newCounter
+        _counters.set(newValue: updated)
     }
 
     func count() -> Int64 {
@@ -43,8 +42,11 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
     }
 
     func increment(_ delta: Int64) {
-        for metric in counters {
-            metric.increment(delta)
+        Metrics.queue.async { [weak self] in
+            guard let self = self else { return }
+            for c in self._counters.get().values {
+                c.increment(delta)
+            }
         }
     }
 }

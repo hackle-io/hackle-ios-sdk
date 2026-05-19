@@ -117,8 +117,9 @@ enum DecisionMetrics {
             "variation": decision.variation,
             "reason": decision.reason
         ]
-        let timer = Metrics.timer(name: "experiment.decision", tags: tags)
-        sample.stop(timer: timer)
+        Metrics.timer(name: "experiment.decision", tags: tags) { timer in
+            sample.stop(timer: timer)
+        }
     }
 
     static func featureFlag(sample: TimerSample, key: Int, decision: FeatureFlagDecision) {
@@ -127,8 +128,9 @@ enum DecisionMetrics {
             "on": decision.isOn ? "true" : "false",
             "reason": decision.reason
         ]
-        let timer = Metrics.timer(name: "feature.flag.decision", tags: tags)
-        sample.stop(timer: timer)
+        Metrics.timer(name: "feature.flag.decision", tags: tags) { timer in
+            sample.stop(timer: timer)
+        }
     }
 
     static func remoteConfig(sample: TimerSample, key: String, decision: RemoteConfigDecision) {
@@ -136,8 +138,9 @@ enum DecisionMetrics {
             "key": key,
             "reason": decision.reason
         ]
-        let timer = Metrics.timer(name: "remote.config.decision", tags: tags)
-        sample.stop(timer: timer)
+        Metrics.timer(name: "remote.config.decision", tags: tags) { timer in
+            sample.stop(timer: timer)
+        }
     }
 
     static func inAppMessage(sample: TimerSample, key: Int64, decision: InAppMessageDecision) {
@@ -146,8 +149,9 @@ enum DecisionMetrics {
             "show": decision.isShow ? "true" : "false",
             "reason": decision.reason
         ]
-        let timer = Metrics.timer(name: "iam.decision", tags: tags)
-        sample.stop(timer: timer)
+        Metrics.timer(name: "iam.decision", tags: tags) { timer in
+            sample.stop(timer: timer)
+        }
     }
 }
 
@@ -161,8 +165,9 @@ enum ApiCallMetrics {
             "status": status(response: response),
             "exception": exception(error: response.error)
         ]
-        let timer = Metrics.timer(name: "api.call", tags: tags)
-        sample.stop(timer: timer)
+        Metrics.timer(name: "api.call", tags: tags) { timer in
+            sample.stop(timer: timer)
+        }
     }
 
     private static func success(response: HttpResponse) -> String {

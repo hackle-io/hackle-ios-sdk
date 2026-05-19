@@ -30,7 +30,7 @@ class DefaultUserEventBackoffController: UserEventBackoffController {
                 failureCount = 0
             } else {
                 failureCount += 1
-                Metrics.counter(name: "user.event.backoff", tags: ["count": "\(failureCount)"]).increment()
+                Metrics.counter(name: "user.event.backoff", tags: ["count": "\(failureCount)"]) { $0.increment() }
             }
             calculateNextFlushDate()
         }

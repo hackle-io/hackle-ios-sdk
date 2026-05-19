@@ -10,22 +10,31 @@ import Foundation
 
 class Metrics {
 
+    static let queue = DispatchQueue(label: "io.hackle.metrics", qos: .utility)
     static let globalRegistry = DelegatingMetricRegistry()
 
     static func clear() {
-        globalRegistry.clear()
+        queue.async {
+            globalRegistry.clear()
+        }
     }
 
     static func addRegistry(registry: MetricRegistry) {
-        globalRegistry.add(registry: registry)
-        Log.info("MetricRegistry added [\(registry)]")
+        queue.async {
+            globalRegistry.add(registry: registry)
+            Log.info("MetricRegistry added [\(registry)]")
+        }
     }
 
-    static func counter(name: String, tags: [String: String] = [:]) -> Counter {
-        globalRegistry.counter(name: name, tags: tags)
+    static func counter(name: String, tags: [String: String] = [:], _ block: @escaping (Counter) -> Void) {
+        queue.async {
+            block(globalRegistry.counter(name: name, tags: tags))
+        }
     }
 
-    static func timer(name: String, tags: [String: String] = [:]) -> Timer {
-        globalRegistry.timer(name: name, tags: tags)
+    static func timer(name: String, tags: [String: String] = [:], _ block: @escaping (Timer) -> Void) {
+        queue.async {
+            block(globalRegistry.timer(name: name, tags: tags))
+        }
     }
 }

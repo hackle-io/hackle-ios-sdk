@@ -14,18 +14,9 @@ class MetricRegistry: @unchecked Sendable {
         "\(self)"
     }
 
-    private let _lock = ReadWriteLock(label: "io.hackle.MetricRegistry.Lock")
-
-    /// Acquires the registry's write barrier. Use for any mutation of `_metrics`
-    /// or subclass-owned state. For read-only access, use `metrics` (already read-locked).
-    @discardableResult
-    func lock<T>(block: () throws -> T) rethrows -> T {
-        try _lock.write(block: block)
-    }
-
-    private var _metrics = [MetricId: Metric]()
+    private let _metrics = AtomicReference<[MetricId: Metric]>(value: [:])
     final var metrics: [Metric] {
-        _lock.read { Array(_metrics.values) }
+        Array(_metrics.get().values)
     }
 
     final func counter(name: String, tags: [String: String] = [:]) -> Counter {
@@ -64,17 +55,15 @@ class MetricRegistry: @unchecked Sendable {
     }
 
     private func getOrCreateMetric(id: MetricId, create: (MetricId) -> Metric) -> Metric {
-        var metric: Metric!
-        lock {
-            if let registeredMetric = _metrics[id] {
-                metric = registeredMetric
-            } else {
-                let newMetric = create(id)
-                _metrics[id] = newMetric
-                metric = newMetric
-            }
+        let snapshot = _metrics.get()
+        if let registeredMetric = snapshot[id] {
+            return registeredMetric
         }
-        return metric
+        let newMetric = create(id)
+        var updated = snapshot
+        updated[id] = newMetric
+        _metrics.set(newValue: updated)
+        return newMetric
     }
 }
 

@@ -195,7 +195,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             }
             self.userExplorerView?.attach()
         }
-        Metrics.counter(name: "user.explorer.show").increment()
+        Metrics.counter(name: "user.explorer.show") { $0.increment() }
     }
 
     func hideUserExplorer() {
