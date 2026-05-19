@@ -8,11 +8,11 @@ class RecursiveLockSpecs: QuickSpec {
     override class func spec() {
 
         it("같은 스레드에서 재진입해도 deadlock 없이 통과한다") {
-            let lock = RecursiveLock(label: "io.hackle.test.RecursiveLock")
+            let recursiveLock = RecursiveLock(label: "io.hackle.test.RecursiveLock")
 
-            let result: Int = lock.locked {
-                return lock.locked {
-                    return lock.locked {
+            let result: Int = recursiveLock.lock {
+                return recursiveLock.lock {
+                    return recursiveLock.lock {
                         return 42
                     }
                 }
@@ -26,11 +26,11 @@ class RecursiveLockSpecs: QuickSpec {
 
             struct E: Error {}
             expect {
-                try lock.locked { throw E() }
+                try lock.lock { throw E() }
             }.to(throwError())
 
             // 같은 lock을 다시 사용해도 정상 동작 (unlock 보장)
-            let value: Int = lock.locked { 1 }
+            let value: Int = lock.lock { 1 }
             expect(value) == 1
         }
 
@@ -43,7 +43,7 @@ class RecursiveLockSpecs: QuickSpec {
             for _ in 0..<4 {
                 DispatchQueue.global(qos: .utility).async(group: group) {
                     for _ in 0..<iterations {
-                        lock.locked {
+                        lock.lock {
                             counter += 1
                         }
                     }

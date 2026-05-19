@@ -17,11 +17,11 @@ class MetricRegistry: @unchecked Sendable {
     /// Domain lock for `_metrics` and subclass-owned state.
     /// `RecursiveLock` so subclass overrides (e.g. `DelegatingMetricRegistry.createTimer`)
     /// can re-enter the same lock without deadlock.
-    let lock = RecursiveLock(label: "io.hackle.MetricRegistry.Lock")
+    let recursiveLock = RecursiveLock(label: "io.hackle.MetricRegistry.Lock")
 
     private var _metrics = [MetricId: Metric]()
     final var metrics: [Metric] {
-        lock.locked { Array(_metrics.values) }
+        recursiveLock.lock { Array(_metrics.values) }
     }
 
     final func counter(name: String, tags: [String: String] = [:]) -> Counter {
@@ -60,7 +60,7 @@ class MetricRegistry: @unchecked Sendable {
     }
 
     private func getOrCreateMetric(id: MetricId, create: (MetricId) -> Metric) -> Metric {
-        lock.locked {
+        recursiveLock.lock {
             if let registeredMetric = _metrics[id] {
                 return registeredMetric
             }

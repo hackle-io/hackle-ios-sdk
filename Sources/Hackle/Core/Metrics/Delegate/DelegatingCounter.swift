@@ -11,12 +11,12 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
 
     let id: MetricId
 
-    private let lock = RecursiveLock(label: "io.hackle.DelegatingCounter.Lock")
+    private let recursiveLock = RecursiveLock(label: "io.hackle.DelegatingCounter.Lock")
     private let noopCounter: Counter
     private var _counters: [MetricRegistry: Counter]
 
     private var counters: [Counter] {
-        lock.locked { Array(_counters.values) }
+        recursiveLock.lock { Array(_counters.values) }
     }
 
     private var first: Counter {
@@ -31,7 +31,7 @@ class DelegatingCounter: DelegatingMetric, Counter, @unchecked Sendable {
 
     func add(registry: MetricRegistry) {
         let newCounter = registry.counter(id: id)
-        lock.locked {
+        recursiveLock.lock {
             if _counters[registry] == nil {
                 _counters[registry] = newCounter
             }

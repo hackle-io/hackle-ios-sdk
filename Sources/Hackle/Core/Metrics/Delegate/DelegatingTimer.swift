@@ -12,12 +12,12 @@ class DelegatingTimer: DelegatingMetric, Timer {
 
     let id: MetricId
 
-    private let lock = RecursiveLock(label: "io.hackle.DelegatingTimer.Lock")
+    private let recursiveLock = RecursiveLock(label: "io.hackle.DelegatingTimer.Lock")
     private let noopTimer: Timer
     private var _timers: [MetricRegistry: Timer]
 
     private var timers: [Timer] {
-        lock.locked { Array(_timers.values) }
+        recursiveLock.lock { Array(_timers.values) }
     }
 
     init(id: MetricId) {
@@ -28,7 +28,7 @@ class DelegatingTimer: DelegatingMetric, Timer {
 
     func add(registry: MetricRegistry) {
         let newTimer = registry.timer(id: id)
-        lock.locked {
+        recursiveLock.lock {
             if _timers[registry] == nil {
                 _timers[registry] = newTimer
             }

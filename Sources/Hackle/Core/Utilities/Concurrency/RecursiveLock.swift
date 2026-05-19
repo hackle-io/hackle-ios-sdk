@@ -7,16 +7,16 @@ import Foundation
 
 final class RecursiveLock: @unchecked Sendable {
 
-    private let lock = NSRecursiveLock()
+    private let recursiveLock = NSRecursiveLock()
 
     init(label: String) {
-        lock.name = label
+        recursiveLock.name = label
     }
 
     @discardableResult
-    func locked<T>(_ block: () throws -> T) rethrows -> T {
-        lock.lock()
-        defer { lock.unlock() }
+    func lock<T>(_ block: () throws -> T) rethrows -> T {
+        recursiveLock.lock()
+        defer { recursiveLock.unlock() }
         return try block()
     }
 }
