@@ -31,7 +31,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
 
                 let counter = registry.counter(name: "counter")
                 counter.increment()
-                Metrics.queue.sync {}
+                Metrics.sync()
 
                 expect(counter.count()) == 0
             }
@@ -43,7 +43,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                 delegating.add(registry: cumulative)
 
                 delegating.counter(name: "counter").increment(42)
-                Metrics.queue.sync {}
+                Metrics.sync()
                 expect(cumulative.counter(name: "counter").count()) == 42
 
                 delegating.add(registry: cumulative)
@@ -54,7 +54,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                 let delegating = DelegatingMetricRegistry()
                 let delegatingCounter = delegating.counter(name: "counter")
                 delegatingCounter.increment()
-                Metrics.queue.sync {}
+                Metrics.sync()
 
                 expect(delegatingCounter.count()) == 0
 
@@ -62,7 +62,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                 delegating.add(registry: cumulative)
 
                 delegatingCounter.increment()
-                Metrics.queue.sync {}
+                Metrics.sync()
 
                 expect(delegatingCounter.count()) == 1
                 expect(cumulative.counter(name: "counter").count()) == 1
@@ -74,7 +74,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                 delegating.add(registry: cumulative)
 
                 delegating.counter(name: "counter").increment()
-                Metrics.queue.sync {}
+                Metrics.sync()
 
                 expect(cumulative.counter(name: "counter").count()) == 1
             }
@@ -85,11 +85,11 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
             // 모든 mutation은 `Metrics.queue`에서 직렬화된다. 이전 테스트가
             // 로컬 registry를 raw concurrent로 두드리던 패턴은 contract 밖이라 제거함.
             Metrics.clear()
-            Metrics.queue.sync {}
+            Metrics.sync()
 
             let cumulative = CumulativeMetricRegistry()
             Metrics.addRegistry(registry: cumulative)
-            Metrics.queue.sync {}
+            Metrics.sync()
 
             let q = DispatchQueue.concurrent()
             for it in 0..<1000 {
@@ -102,10 +102,8 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                 }
             }
             q.await()
-            // Two syncs drain the outer callback dispatch and the nested
-            // `DelegatingCounter.increment` re-enqueue onto `Metrics.queue`.
-            Metrics.queue.sync {}
-            Metrics.queue.sync {}
+            Metrics.sync()
+            Metrics.sync()
 
             // 500개의 짝수 i에 대해 counter("concurrency.{i}")가 등록됐고,
             // 동일 i에 대해 홀수 it = i+1에서 한 번씩 increment된다.
@@ -115,7 +113,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
 
             // cleanup global state
             Metrics.clear()
-            Metrics.queue.sync {}
+            Metrics.sync()
         }
     }
 }

@@ -31,26 +31,18 @@ class MetricRegistryRaceSpecs: QuickSpec {
 
         beforeEach {
             Metrics.clear()
-            Metrics.queue.sync {}
+            Metrics.sync()
         }
 
         afterEach {
             Metrics.clear()
-            Metrics.queue.sync {}
-        }
-
-        // Two queue syncs are required to flush both the outer callback dispatch
-        // (`Metrics.counter/timer`) and the nested write dispatch (`Counter.increment`
-        // / `Timer.record` re-enqueue onto `Metrics.queue`).
-        func drainMetricsQueue() {
-            Metrics.queue.sync {}
-            Metrics.queue.sync {}
+            Metrics.sync()
         }
 
         it("Metrics.timer callback contract: concurrent writers + reader do not crash and do not lose registrations") {
             let cumulative = CumulativeMetricRegistry()
             Metrics.addRegistry(registry: cumulative)
-            Metrics.queue.sync {}
+            Metrics.sync()
 
             // Unique name keeps the metric count assertion isolated from any
             // leftover metric IDs registered by other specs in the same run.
@@ -79,7 +71,8 @@ class MetricRegistryRaceSpecs: QuickSpec {
             }
 
             group.wait()
-            drainMetricsQueue()
+            Metrics.sync()
+            Metrics.sync()
 
             // Through the queued contract no registration is lost.
             let registered = Metrics.globalRegistry.metrics.filter { $0.id.name == metricName }
@@ -89,7 +82,7 @@ class MetricRegistryRaceSpecs: QuickSpec {
         it("DelegatingTimer.record concurrent dispatch: no crash, all amounts recorded") {
             let cumulative = CumulativeMetricRegistry()
             Metrics.addRegistry(registry: cumulative)
-            Metrics.queue.sync {}
+            Metrics.sync()
 
             let timerName = "stress.timer.\(UUID().uuidString)"
             let recordIterations = 50_000
@@ -106,7 +99,8 @@ class MetricRegistryRaceSpecs: QuickSpec {
                 }
             }
             group.wait()
-            drainMetricsQueue()
+            Metrics.sync()
+            Metrics.sync()
 
             expect(cumulative.timer(name: timerName).count()) == Int64(recordIterations * 2)
         }
@@ -114,7 +108,7 @@ class MetricRegistryRaceSpecs: QuickSpec {
         it("DelegatingCounter.increment concurrent dispatch: no crash, sum preserved") {
             let cumulative = CumulativeMetricRegistry()
             Metrics.addRegistry(registry: cumulative)
-            Metrics.queue.sync {}
+            Metrics.sync()
 
             let counterName = "stress.counter.\(UUID().uuidString)"
             let incrementIterations = 50_000
@@ -131,7 +125,8 @@ class MetricRegistryRaceSpecs: QuickSpec {
                 }
             }
             group.wait()
-            drainMetricsQueue()
+            Metrics.sync()
+            Metrics.sync()
 
             expect(cumulative.counter(name: counterName).count()) == Int64(incrementIterations * 2)
         }

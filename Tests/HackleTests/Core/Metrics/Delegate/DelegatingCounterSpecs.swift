@@ -11,7 +11,7 @@ class DelegatingCounterSpecs: QuickSpec {
         it("등록된 Counter 가 없으면 0") {
             let counter = DelegatingMetricRegistry().counter(name: "counter")
             counter.increment(42)
-            Metrics.queue.sync {}
+            Metrics.sync()
             expect(counter.count()) == 0
         }
 
@@ -25,7 +25,7 @@ class DelegatingCounterSpecs: QuickSpec {
 
 
             delegating.counter(name: "counter").increment(42)
-            Metrics.queue.sync {}
+            Metrics.sync()
             expect(delegating.counter(name: "counter").count()) == 42
             expect(cumulative1.counter(name: "counter").count()) == 42
             expect(cumulative2.counter(name: "counter").count()) == 42
@@ -41,12 +41,12 @@ class DelegatingCounterSpecs: QuickSpec {
             expect(measurements[0].value) == 0.0
 
             counter.increment(42)
-            Metrics.queue.sync {}
+            Metrics.sync()
             expect(measurements[0].value) == 0.0
 
             delegating.add(registry: CumulativeMetricRegistry())
             counter.increment(42)
-            Metrics.queue.sync {}
+            Metrics.sync()
             expect(measurements[0].value) == 42.0
         }
     }
