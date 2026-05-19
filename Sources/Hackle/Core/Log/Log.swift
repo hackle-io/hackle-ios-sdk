@@ -7,6 +7,9 @@ import os.log
 
 class Log {
 
+    private static let tags: [LogLevel: [String: String]] =
+        LogLevel.allCases.associateWith { ["level": $0.rawValue] }
+
     static func debug(_ msg: @autoclosure () -> String) {
         os_log("%@", log: .hackle, type: .debug, msg())
         increment(.debug)
@@ -23,7 +26,7 @@ class Log {
     }
 
     static func increment(_ level: LogLevel) {
-        Metrics.counter(name: "log", tags: ["level": level.rawValue]) { $0.increment() }
+        Metrics.counter(name: "log", tags: tags[level] ?? [:]) { $0.increment() }
     }
 }
 
