@@ -11,7 +11,7 @@ import UIKit
 
 class PushMetricRegistry: MetricRegistry, @unchecked Sendable {
 
-    private let lock = ReadWriteLock(label: "io.hackle.PushMetricRegistry.Lock")
+    private let publishingLock = ReadWriteLock(label: "io.hackle.PushMetricRegistry.Lock")
 
     private var publishingJob: ScheduledJob? = nil
 
@@ -28,7 +28,7 @@ class PushMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     final func start() {
-        lock.write { [weak self] in
+        publishingLock.write { [weak self] in
             guard let self = self else { return }
 
             if self.publishingJob != nil {
@@ -46,7 +46,7 @@ class PushMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     final func stop() {
-        lock.write { [weak self] in
+        publishingLock.write { [weak self] in
             self?.publishingJob?.cancel()
             self?.publishingJob = nil
             self?.publish()

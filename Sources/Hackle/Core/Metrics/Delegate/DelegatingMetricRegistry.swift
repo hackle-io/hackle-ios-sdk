@@ -25,8 +25,13 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     private func addRegistries(metric: DelegatingMetric) {
-        for registry in registries {
-            metric.add(registry: registry)
+        // Holds `lock` (re-entered if called from createTimer/createCounter under
+        // getOrCreateMetric). Without this, `registries` Set is iterated lock-free
+        // while another thread mutates it via add(registry:) — the production race.
+        lock.locked {
+            for registry in registries {
+                metric.add(registry: registry)
+            }
         }
     }
 
@@ -35,7 +40,7 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
             return
         }
 
-        let inserted = lock { registries.insert(registry).inserted }
+        let inserted = lock.locked { registries.insert(registry).inserted }
         guard inserted else { return }
 
         for metric in metrics {
@@ -46,7 +51,7 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     func clear() {
-        lock {
+        lock.locked {
             registries.removeAll()
         }
     }

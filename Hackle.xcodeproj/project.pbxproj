@@ -137,6 +137,7 @@
 		B29C53562DCB1FA9001724B2 /* ConcurrentArraySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */; };
 		DC902D6EC27FC62B366CE337 /* ConcurrentArrayRaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9CC1E0FB4A5ADA9E2DF7EA /* ConcurrentArrayRaceSpecs.swift */; };
 		9B441640DC8CAA8104E04335 /* AtomicReferenceRaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88B14D9B2CE4E3AE6750A75 /* AtomicReferenceRaceSpecs.swift */; };
+		A1B2C3D4E5F60718293A4B5F /* RecursiveLockSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5E /* RecursiveLockSpecs.swift */; };
 		B29C53582DCB23C8001724B2 /* NotificationDataReceiverSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53572DCB23BB001724B2 /* NotificationDataReceiverSpecs.swift */; };
 		B29C535A2DCB2621001724B2 /* NotificationHandlerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C53592DCB2613001724B2 /* NotificationHandlerSpecs.swift */; };
 		B29C535C2DCB2A4E001724B2 /* InAppMessageButtonViewSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C535B2DCB2A44001724B2 /* InAppMessageButtonViewSpecs.swift */; };
@@ -264,6 +265,7 @@
 		EE29D97429CD825400B1FEAA /* TimeUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8EF29CD825300B1FEAA /* TimeUnit.swift */; };
 		EE29D97529CD825400B1FEAA /* AtomicDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8F129CD825300B1FEAA /* AtomicDouble.swift */; };
 		EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8F229CD825300B1FEAA /* ReadWriteLock.swift */; };
+		A1B2C3D4E5F60718293A4B5D /* RecursiveLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* RecursiveLock.swift */; };
 		EE29D97729CD825400B1FEAA /* AtomicInt64.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8F329CD825300B1FEAA /* AtomicInt64.swift */; };
 		EE29D97829CD825400B1FEAA /* AtomicReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8F429CD825300B1FEAA /* AtomicReference.swift */; };
 		EE29D97929CD825400B1FEAA /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D8F529CD825300B1FEAA /* UserDefaults.swift */; };
@@ -872,6 +874,7 @@
 		B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentArraySpecs.swift; sourceTree = "<group>"; };
 		5F9CC1E0FB4A5ADA9E2DF7EA /* ConcurrentArrayRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentArrayRaceSpecs.swift; sourceTree = "<group>"; };
 		C88B14D9B2CE4E3AE6750A75 /* AtomicReferenceRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicReferenceRaceSpecs.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5E /* RecursiveLockSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveLockSpecs.swift; sourceTree = "<group>"; };
 		B29C53572DCB23BB001724B2 /* NotificationDataReceiverSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataReceiverSpecs.swift; sourceTree = "<group>"; };
 		B29C53592DCB2613001724B2 /* NotificationHandlerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandlerSpecs.swift; sourceTree = "<group>"; };
 		B29C535B2DCB2A44001724B2 /* InAppMessageButtonViewSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageButtonViewSpecs.swift; sourceTree = "<group>"; };
@@ -999,6 +1002,7 @@
 		EE29D8EF29CD825300B1FEAA /* TimeUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeUnit.swift; sourceTree = "<group>"; };
 		EE29D8F129CD825300B1FEAA /* AtomicDouble.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicDouble.swift; sourceTree = "<group>"; };
 		EE29D8F229CD825300B1FEAA /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* RecursiveLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveLock.swift; sourceTree = "<group>"; };
 		EE29D8F329CD825300B1FEAA /* AtomicInt64.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicInt64.swift; sourceTree = "<group>"; };
 		EE29D8F429CD825300B1FEAA /* AtomicReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicReference.swift; sourceTree = "<group>"; };
 		EE29D8F529CD825300B1FEAA /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
@@ -2220,6 +2224,7 @@
 			children = (
 				EE29D8F129CD825300B1FEAA /* AtomicDouble.swift */,
 				EE29D8F229CD825300B1FEAA /* ReadWriteLock.swift */,
+				A1B2C3D4E5F60718293A4B5C /* RecursiveLock.swift */,
 				EE29D8F329CD825300B1FEAA /* AtomicInt64.swift */,
 				EE29D8F429CD825300B1FEAA /* AtomicReference.swift */,
 				EE42A53A2BBC42B30008B003 /* ThrottleLimiter.swift */,
@@ -2672,6 +2677,7 @@
 				B29C53552DCB1F9F001724B2 /* ConcurrentArraySpecs.swift */,
 				5F9CC1E0FB4A5ADA9E2DF7EA /* ConcurrentArrayRaceSpecs.swift */,
 				C88B14D9B2CE4E3AE6750A75 /* AtomicReferenceRaceSpecs.swift */,
+				A1B2C3D4E5F60718293A4B5E /* RecursiveLockSpecs.swift */,
 				7E9065B52B59466C00FE6E52 /* DefaultThrottlerSpecs.swift */,
 				EE29D9F429CD82C100B1FEAA /* DispatchQueueExtensions.swift */,
 				EEFA31DB2BC1831700E133F8 /* ScopingThrottleLimiterSpecs.swift */,
@@ -4043,6 +4049,7 @@
 				EE29D94E29CD825400B1FEAA /* DelegatingMetric.swift in Sources */,
 				EECDF3E32C11B271009B2F56 /* InAppMessageUIBannerImageView.swift in Sources */,
 				EE29D97629CD825400B1FEAA /* ReadWriteLock.swift in Sources */,
+				A1B2C3D4E5F60718293A4B5D /* RecursiveLock.swift in Sources */,
 				EE29D97D29CD825400B1FEAA /* HttpResponse.swift in Sources */,
 				EE29D97A29CD825400B1FEAA /* Scheduler.swift in Sources */,
 				EE4D037E2E5C3597007BE61A /* InAppMessageEligibilityEvaluator.swift in Sources */,
@@ -4281,6 +4288,7 @@
 				B29C53562DCB1FA9001724B2 /* ConcurrentArraySpecs.swift in Sources */,
 				DC902D6EC27FC62B366CE337 /* ConcurrentArrayRaceSpecs.swift in Sources */,
 				9B441640DC8CAA8104E04335 /* AtomicReferenceRaceSpecs.swift in Sources */,
+				A1B2C3D4E5F60718293A4B5F /* RecursiveLockSpecs.swift in Sources */,
 				EE1ABAC12F66CF2500D10076 /* InAppMessageViewEventActorSpecs.swift in Sources */,
 				EEF895A02A49BCAF00722CF6 /* HackleCoreStub.swift in Sources */,
 				EE4D041B2E5D7C1B007BE61A /* DefaultInAppMessageScheduleActionDeterminerSpecs.swift in Sources */,
