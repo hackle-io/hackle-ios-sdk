@@ -10,6 +10,7 @@ class DelegatingTimerSpecs: QuickSpec {
         it("등록된 Timer 가 없으면 0") {
             let timer = DelegatingMetricRegistry().timer(name: "timer")
             timer.record(amount: 42, unit: .milliseconds)
+            Metrics.queue.sync {}
             expect(timer.count()) == 0
             expect(timer.totalTime(unit: .nanoseconds)) == 0.0
         }
@@ -25,6 +26,7 @@ class DelegatingTimerSpecs: QuickSpec {
 
 
             delegating.timer(name: "timer").record(amount: 42, unit: .nanoseconds)
+            Metrics.queue.sync {}
             expect(delegating.timer(name: "timer").totalTime(unit: .nanoseconds)) == 42.0
             expect(cumulative1.timer(name: "timer").totalTime(unit: .nanoseconds)) == 42.0
             expect(cumulative2.timer(name: "timer").totalTime(unit: .nanoseconds)) == 42.0
@@ -42,6 +44,7 @@ class DelegatingTimerSpecs: QuickSpec {
             expect(measurements[3].field) == .mean
 
             timer.record(amount: 42, unit: .milliseconds)
+            Metrics.queue.sync {}
             expect(measurements[0].value) == 0.0
             expect(measurements[1].value) == 0.0
             expect(measurements[2].value) == 0.0
@@ -49,6 +52,7 @@ class DelegatingTimerSpecs: QuickSpec {
 
             delegating.add(registry: CumulativeMetricRegistry())
             timer.record(amount: 42, unit: .milliseconds)
+            Metrics.queue.sync {}
             expect(measurements[0].value) == 1.0
             expect(measurements[1].value) == 42.0
             expect(measurements[2].value) == 42.0

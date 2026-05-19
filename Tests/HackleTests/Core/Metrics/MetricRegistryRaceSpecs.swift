@@ -4,18 +4,20 @@ import Nimble
 @testable import Hackle
 
 
-/// Stress spec reproducing the production race in metric registry concurrent access.
+/// Regression specs for the metric registry concurrent-access bug fixed by the
+/// "metric lock removal" design (2026-05-18).
 ///
-/// Production crash context:
+/// Production crash context (pre-fix):
 ///  - `MonitoringMetricRegistry.doFlush()` calls `metrics` getter on `httpQueue` (read)
 ///  - URLSession delegate queue dispatches HTTP response → `ApiCallMetrics.record` →
 ///    `Metrics.timer(name:tags:)` → `_metrics[id] = newMetric` (write)
 ///
-/// Concurrent access to the Swift `Dictionary` triggers a buffer-rehash / ARC race
-/// that crashes in production. This spec forces the same pattern so Thread Sanitizer
-/// reports the race.
+/// Post-fix design:
+///  - All mutation goes through `Metrics.queue` (serial). Direct concurrent access
+///    to internal sync APIs is "out of contract" but must still not crash thanks
+///    to `AtomicReference` + value-typed `Dictionary`.
 ///
-/// Run:
+/// Run (optionally with TSan):
 /// ```
 /// xcodebuild test \
 ///     -scheme Hackle \
@@ -27,14 +29,32 @@ import Nimble
 class MetricRegistryRaceSpecs: QuickSpec {
     override func spec() {
 
-        it("MetricRegistry: concurrent timer creation vs metrics iteration") {
-            // Mirrors production doFlush vs record pattern on a local registry —
-            // production race (`_metrics` reader vs writer) is reproduced without
-            // touching `Metrics.globalRegistry`.
-            let delegating = DelegatingMetricRegistry()
-            let cumulative = CumulativeMetricRegistry()
-            delegating.add(registry: cumulative)
+        beforeEach {
+            Metrics.clear()
+            Metrics.queue.sync {}
+        }
 
+        afterEach {
+            Metrics.clear()
+            Metrics.queue.sync {}
+        }
+
+        // Two queue syncs are required to flush both the outer callback dispatch
+        // (`Metrics.counter/timer`) and the nested write dispatch (`Counter.increment`
+        // / `Timer.record` re-enqueue onto `Metrics.queue`).
+        func drainMetricsQueue() {
+            Metrics.queue.sync {}
+            Metrics.queue.sync {}
+        }
+
+        it("Metrics.timer callback contract: concurrent writers + reader do not crash and do not lose registrations") {
+            let cumulative = CumulativeMetricRegistry()
+            Metrics.addRegistry(registry: cumulative)
+            Metrics.queue.sync {}
+
+            // Unique name keeps the metric count assertion isolated from any
+            // leftover metric IDs registered by other specs in the same run.
+            let metricName = "stress.api.\(UUID().uuidString)"
             let writerCount = 8
             let writerIterations = 400
             let readerIterations = 20_000
@@ -45,82 +65,75 @@ class MetricRegistryRaceSpecs: QuickSpec {
                 DispatchQueue.global(qos: .utility).async(group: group) {
                     for i in 0..<writerIterations {
                         let tags = ["w": "\(w)", "i": "\(i)"]
-                        let timer = delegating.timer(name: "stress.api", tags: tags)
-                        timer.record(amount: Double(i), unit: .nanoseconds)
+                        Metrics.timer(name: metricName, tags: tags) { timer in
+                            timer.record(amount: Double(i), unit: .nanoseconds)
+                        }
                     }
                 }
             }
 
             DispatchQueue.global(qos: .utility).async(group: group) {
                 for _ in 0..<readerIterations {
-                    let snapshot = delegating.metrics
-                    _ = snapshot.count
+                    _ = Metrics.globalRegistry.metrics.count
                 }
             }
 
             group.wait()
+            drainMetricsQueue()
 
-            expect(delegating.metrics.count) == writerCount * writerIterations
+            // Through the queued contract no registration is lost.
+            let registered = Metrics.globalRegistry.metrics.filter { $0.id.name == metricName }
+            expect(registered.count) == writerCount * writerIterations
         }
 
-        it("DelegatingTimer: concurrent record vs add(registry:)") {
-            // Reproduces DelegatingTimer._timers race.
-            // - writer: add(registry:) writes to _timers
-            // - reader: record(amount:unit:) reads _timers via the timers getter
-            let delegating = DelegatingMetricRegistry()
-            let timer = delegating.timer(name: "stress.timer")
+        it("DelegatingTimer.record concurrent dispatch: no crash, all amounts recorded") {
+            let cumulative = CumulativeMetricRegistry()
+            Metrics.addRegistry(registry: cumulative)
+            Metrics.queue.sync {}
 
+            let timerName = "stress.timer.\(UUID().uuidString)"
             let recordIterations = 50_000
-            let addIterations = 500
 
             let group = DispatchGroup()
-
             DispatchQueue.global(qos: .utility).async(group: group) {
                 for _ in 0..<recordIterations {
-                    timer.record(amount: 1, unit: .nanoseconds)
+                    Metrics.timer(name: timerName) { $0.record(amount: 1, unit: .nanoseconds) }
                 }
             }
-
             DispatchQueue.global(qos: .utility).async(group: group) {
-                for _ in 0..<addIterations {
-                    delegating.add(registry: CumulativeMetricRegistry())
+                for _ in 0..<recordIterations {
+                    Metrics.timer(name: timerName) { $0.record(amount: 1, unit: .nanoseconds) }
                 }
             }
-
             group.wait()
+            drainMetricsQueue()
 
-            let baseline = timer.count()
-            timer.record(amount: 1, unit: .nanoseconds)
-            expect(timer.count()) == baseline + 1
+            expect(cumulative.timer(name: timerName).count()) == Int64(recordIterations * 2)
         }
 
-        it("DelegatingCounter: concurrent increment vs add(registry:)") {
-            // Same pattern as DelegatingTimer — reproduces DelegatingCounter._counters race.
-            let delegating = DelegatingMetricRegistry()
-            let counter = delegating.counter(name: "stress.counter")
+        it("DelegatingCounter.increment concurrent dispatch: no crash, sum preserved") {
+            let cumulative = CumulativeMetricRegistry()
+            Metrics.addRegistry(registry: cumulative)
+            Metrics.queue.sync {}
 
+            let counterName = "stress.counter.\(UUID().uuidString)"
             let incrementIterations = 50_000
-            let addIterations = 500
 
             let group = DispatchGroup()
-
             DispatchQueue.global(qos: .utility).async(group: group) {
                 for _ in 0..<incrementIterations {
-                    counter.increment(1)
+                    Metrics.counter(name: counterName) { $0.increment(1) }
                 }
             }
-
             DispatchQueue.global(qos: .utility).async(group: group) {
-                for _ in 0..<addIterations {
-                    delegating.add(registry: CumulativeMetricRegistry())
+                for _ in 0..<incrementIterations {
+                    Metrics.counter(name: counterName) { $0.increment(1) }
                 }
             }
-
             group.wait()
+            drainMetricsQueue()
 
-            let baseline = counter.count()
-            counter.increment(1)
-            expect(counter.count()) == baseline + 1
+            expect(cumulative.counter(name: counterName).count()) == Int64(incrementIterations * 2)
         }
     }
 }

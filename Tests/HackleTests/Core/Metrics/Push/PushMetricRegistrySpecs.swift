@@ -44,7 +44,7 @@ class PushMetricRegistrySpecs: QuickSpec {
 
                 registry.start()
 
-                expect(scheduler.scheduledCount) == 1
+                expect(scheduler.scheduledCount).toEventually(equal(1))
             }
 
             it("schedule only once") {
@@ -56,7 +56,9 @@ class PushMetricRegistrySpecs: QuickSpec {
                 registry.start()
                 registry.start()
 
-                expect(scheduler.scheduledCount) == 1
+                expect(scheduler.scheduledCount).toEventually(equal(1))
+                // 추가로 N번 더 dispatch했어도 1로 유지되는지 잠깐 더 본다.
+                expect(scheduler.scheduledCount).toNotEventually(beGreaterThan(1))
             }
         }
 
@@ -68,7 +70,7 @@ class PushMetricRegistrySpecs: QuickSpec {
                 registry.start()
                 registry.stop()
 
-                expect(scheduler.jobs[0].isCanceled) == true
+                expect(scheduler.jobs.first?.isCanceled).toEventually(equal(true))
             }
 
             it("publish") {
@@ -86,7 +88,7 @@ class PushMetricRegistrySpecs: QuickSpec {
                 registry.start()
                 registry.stop()
 
-                expect(registry.publishCount) == 1
+                expect(registry.publishCount).toEventually(equal(1))
             }
         }
     }

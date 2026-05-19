@@ -23,6 +23,7 @@ class HackleAppSpecs: QuickSpec {
 
         beforeEach {
             Metrics.clear()
+            Metrics.queue.sync {}
             core = MockHackleCore()
             eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
             synchronizer = MockSynchronizer()
