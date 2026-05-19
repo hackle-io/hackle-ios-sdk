@@ -5,7 +5,7 @@ import UIKit
 @testable import Hackle
 
 class DefaultScreenManagerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var userManager: MockUserManager!
         var listener: MockScreenListener!
         var sut: DefaultScreenManager!

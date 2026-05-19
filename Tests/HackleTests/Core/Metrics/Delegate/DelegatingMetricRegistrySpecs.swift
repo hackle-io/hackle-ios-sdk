@@ -6,7 +6,7 @@ import MockingKit
 
 
 class DelegatingMetricRegistrySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("create") {
             it("DelegationCounter") {
                 let registry = DelegatingMetricRegistry()

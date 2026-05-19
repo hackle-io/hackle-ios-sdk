@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultPushEventTrackerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var userManager: MockUserManager!
         var core: MockHackleCore!
         var sut: DefaultPushEventTracker!
@@ -37,9 +37,9 @@ class DefaultPushEventTrackerSpecs: QuickSpec {
 
         context("PushEventKey") {
             it("isPushEvent") {
-                expect(PushEventKey.isPushEvent(event: UserEvents.track("test"))).to(be(false))
-                expect(PushEventKey.isPushEvent(event: UserEvents.track("$push_click"))).to(be(true))
-                expect(PushEventKey.isPushEvent(event: UserEvents.track("$push_token"))).to(be(true))
+                expect(PushEventKey.isPushEvent(event: UserEvents.track("test"))) == false
+                expect(PushEventKey.isPushEvent(event: UserEvents.track("$push_click"))) == true
+                expect(PushEventKey.isPushEvent(event: UserEvents.track("$push_token"))) == true
             }
         }
     }

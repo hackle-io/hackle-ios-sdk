@@ -5,14 +5,14 @@ import Nimble
 
 class PropertyOperationSpecs: QuickSpec {
 
-    func equals(_ p1: [String: Any], _ p2: [String: Any]) {
+    static func equals(_ p1: [String: Any], _ p2: [String: Any]) {
         expect(p1.count) == p2.count
         for (key, value) in p1 {
             expect(PropertyOperators.equals(value, p2[key] as Any)) == true
         }
     }
 
-    override func spec() {
+    override class func spec() {
 
         describe("PropertyOperation") {
             it("key") {
@@ -99,16 +99,16 @@ class PropertyOperationSpecs: QuickSpec {
 
                 expect(event.key) == "$properties"
 
-                self.equals(event.properties!["$set"] as! [String: Any], ["set1": 42, "set2": ["a", "b"]])
-                self.equals(event.properties!["$setOnce"] as! [String: Any], ["setOnce": 43])
-                self.equals(event.properties!["$unset"] as! [String: Any], ["unset": "-"])
-                self.equals(event.properties!["$increment"] as! [String: Any], ["increment": 44])
-                self.equals(event.properties!["$append"] as! [String: Any], ["append": 45])
-                self.equals(event.properties!["$appendOnce"] as! [String: Any], ["appendOnce": 46])
-                self.equals(event.properties!["$prepend"] as! [String: Any], ["prepend": 47])
-                self.equals(event.properties!["$prependOnce"] as! [String: Any], ["prependOnce": 48])
-                self.equals(event.properties!["$remove"] as! [String: Any], ["remove": 49])
-                self.equals(event.properties!["$clearAll"] as! [String: Any], ["clearAll": "-"])
+                equals(event.properties!["$set"] as! [String: Any], ["set1": 42, "set2": ["a", "b"]])
+                equals(event.properties!["$setOnce"] as! [String: Any], ["setOnce": 43])
+                equals(event.properties!["$unset"] as! [String: Any], ["unset": "-"])
+                equals(event.properties!["$increment"] as! [String: Any], ["increment": 44])
+                equals(event.properties!["$append"] as! [String: Any], ["append": 45])
+                equals(event.properties!["$appendOnce"] as! [String: Any], ["appendOnce": 46])
+                equals(event.properties!["$prepend"] as! [String: Any], ["prepend": 47])
+                equals(event.properties!["$prependOnce"] as! [String: Any], ["prependOnce": 48])
+                equals(event.properties!["$remove"] as! [String: Any], ["remove": 49])
+                equals(event.properties!["$clearAll"] as! [String: Any], ["clearAll": "-"])
             }
         }
     }

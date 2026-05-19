@@ -5,7 +5,7 @@ import Nimble
 
 
 class SegmentConditionMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var segmentMatcher: MockSegmentMatcher!
         var sut: SegmentConditionMatcher!

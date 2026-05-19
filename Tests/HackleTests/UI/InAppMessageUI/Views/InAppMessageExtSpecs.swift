@@ -12,7 +12,7 @@ import UIKit
 @testable import Hackle
 
 class InAppMessageExtSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("InAppMessage supports(orientation:)") {
             it("포함된 orientation이면 true 반환") {
                 let msgContext = InAppMessage.MessageContext(

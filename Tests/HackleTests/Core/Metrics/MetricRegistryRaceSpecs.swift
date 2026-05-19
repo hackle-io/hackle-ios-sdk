@@ -27,7 +27,7 @@ import Nimble
 ///     CODE_SIGNING_ALLOWED=NO
 /// ```
 class MetricRegistryRaceSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         beforeEach {
             Metrics.clear()

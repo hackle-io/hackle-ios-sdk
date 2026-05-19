@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class DefaultInAppMessageViewEventProcessorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("process") {
             let trackHandler = MockInAppMessageViewEventHandler(handleType: .track)
             let actionHandler = MockInAppMessageViewEventHandler(handleType: .action)

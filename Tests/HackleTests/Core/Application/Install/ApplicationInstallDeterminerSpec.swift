@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class ApplicationInstallDeterminerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var sut: ApplicationInstallDeterminer!
 
         describe("determine") {

@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class TimeUtilSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         describe("TimeUtil") {
             describe("dayOfWeek") {

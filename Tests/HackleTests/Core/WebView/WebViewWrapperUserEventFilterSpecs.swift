@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class WebViewWrapperUserEventFilterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("when not push event then block") {
             let sut = WebViewWrapperUserEventFilter()
             let actual = sut.check(event: UserEvents.track("test"))

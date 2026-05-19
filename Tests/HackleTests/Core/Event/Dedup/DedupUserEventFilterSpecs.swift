@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DedupUserEventFilterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var eventDedupDeterminer: MockUserEventDedupDeterminer!
         var sut: DedupUserEventFilter!

@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var matcher: RemoteConfigTargetRuleMatcherStub!
         var sut: DefaultRemoteConfigTargetRuleDeterminer!

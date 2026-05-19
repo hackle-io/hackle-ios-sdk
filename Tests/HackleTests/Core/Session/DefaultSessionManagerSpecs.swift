@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class DefaultSessionManagerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         func manager(
             persistCondition: HackleSessionPersistCondition = .alwaysNewSession,

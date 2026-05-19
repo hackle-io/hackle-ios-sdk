@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessageRecorderSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var storage: InAppMessageImpressionStorage!
         var sut: DefaultInAppMessageRecorder!

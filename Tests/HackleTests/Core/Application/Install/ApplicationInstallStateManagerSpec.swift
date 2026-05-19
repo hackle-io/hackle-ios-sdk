@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class ApplicationInstallStateManagerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var clock: Clock!
         var repository: KeyValueRepository!
         var determiner: ApplicationInstallDeterminer!

@@ -6,7 +6,7 @@ import MockingKit
 
 
 class FlushMetricRegistrySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("Counter") {
             let counter = FlushMetricRegistry(scheduler: Schedulers.dispatch(), pushInterval: 60).counter(name: "counter")

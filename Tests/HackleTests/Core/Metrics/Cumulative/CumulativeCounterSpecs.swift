@@ -6,7 +6,7 @@ import MockingKit
 
 
 class CumulativeCounterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("concurrency") {
             let counter = CumulativeMetricRegistry().counter(name: "counter")
 

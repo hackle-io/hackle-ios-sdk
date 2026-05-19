@@ -6,7 +6,7 @@ import MockingKit
 
 
 class DelegatingTimerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("등록된 Timer 가 없으면 0") {
             let timer = DelegatingMetricRegistry().timer(name: "timer")
             timer.record(amount: 42, unit: .milliseconds)

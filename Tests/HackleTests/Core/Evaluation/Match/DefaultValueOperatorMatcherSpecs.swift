@@ -6,7 +6,7 @@ import MockingKit
 
 class DefaultValueOperatorMatcherSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         let sut = DefaultValueOperatorMatcher(valueMatcherFactory: ValueMatcherFactory(), operatorMatcherFactory: OperatorMatcherFactory())
 

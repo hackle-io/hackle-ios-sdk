@@ -6,14 +6,14 @@ import MockingKit
 
 class PropertiesBuilderSpecs: QuickSpec {
 
-    func equals(_ p1: [String: Any], _ p2: [String: Any]) {
+    static func equals(_ p1: [String: Any], _ p2: [String: Any]) {
         expect(p1.count) == p2.count
         for (key, value) in p1 {
             expect(PropertyOperators.equals(value, p2[key] as Any)) == true
         }
     }
 
-    override func spec() {
+    override class func spec() {
         it("valid raw value") {
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", 1).build()).isEqual(to: ["key": 1])).to(beTrue())
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", "1").build()).isEqual(to: ["key": "1"])).to(beTrue())
@@ -80,15 +80,15 @@ class PropertiesBuilderSpecs: QuickSpec {
                 .add("b", 4, setOnce: true)
                 .build()
 
-            self.equals(properties, ["a": 2, "b": 3])
+            equals(properties, ["a": 2, "b": 3])
         }
 
         it("setOnce2") {
             let p1 = ["k1": 1, "k2": 1]
             let p2 = ["k1": 2, "k2": 2]
 
-            self.equals(PropertiesBuilder().add(p1).add(p2).build(), ["k1": 2, "k2": 2])
-            self.equals(PropertiesBuilder().add(p1).add(p2, setOnce: true).build(), ["k1": 1, "k2": 1])
+            equals(PropertiesBuilder().add(p1).add(p2).build(), ["k1": 2, "k2": 2])
+            equals(PropertiesBuilder().add(p1).add(p2, setOnce: true).build(), ["k1": 1, "k2": 1])
         }
 
         it("add system properties") {
@@ -97,7 +97,7 @@ class PropertiesBuilderSpecs: QuickSpec {
                 .add("set", ["age": 32])
                 .build()
             expect(properties.count) == 1
-            self.equals(properties["$set"] as! [String: Any], ["age": 30])
+            equals(properties["$set"] as! [String: Any], ["age": 30])
         }
 
         it("remove") {
@@ -137,7 +137,7 @@ class PropertiesBuilderSpecs: QuickSpec {
                 }
                 .build()
 
-            self.equals(properties, ["age": 84, "location": "Seoul"])
+            equals(properties, ["age": 84, "location": "Seoul"])
         }
     }
 }

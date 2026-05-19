@@ -7,7 +7,7 @@ import Nimble
 /// Stress spec for `ConcurrentArray` concurrent access race regression.
 /// Run under Thread Sanitizer to verify no access race is reported.
 class ConcurrentArrayRaceSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("concurrent add / take / size") {
             let array = ConcurrentArray<Int>()

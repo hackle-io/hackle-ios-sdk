@@ -13,7 +13,7 @@ import MockingKit
 
 class RemoteConfigEvaluatorSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var remoteConfigTargetRuleDeterminer: MockRemoteConfigTargetRuleDeterminer!
         var sut: RemoteConfigEvaluator!

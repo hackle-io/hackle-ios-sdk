@@ -11,7 +11,7 @@ import Quick
 @testable import Hackle
 
 class UserTargetEventsSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var decoder: JSONDecoder!
 
         beforeEach {
@@ -54,7 +54,7 @@ class UserTargetEventsSpecs: QuickSpec {
                 .build()
 
             // raw
-            expect(userTargetEvents.count) === 2
+            expect(userTargetEvents.count) == 2
 
 
             // toBuilder
