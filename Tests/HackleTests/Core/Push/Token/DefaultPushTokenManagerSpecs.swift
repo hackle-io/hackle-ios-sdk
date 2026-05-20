@@ -6,7 +6,7 @@ import Nimble
 
 class DefaultPushTokenManagerSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         var repository: MemoryKeyValueRepository!
         var userManager: MockUserManager!
         var eventTracker: MockPushEventTracker!

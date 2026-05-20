@@ -6,7 +6,7 @@ import MockingKit
 
 
 class DefaultContainerResolverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var bucketer: MockBucketer!
         var sut: DefaultContainerResolver!

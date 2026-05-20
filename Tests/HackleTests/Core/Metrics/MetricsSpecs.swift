@@ -6,7 +6,7 @@ import MockingKit
 
 
 class MetricsSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         beforeEach {
             Metrics.clear()

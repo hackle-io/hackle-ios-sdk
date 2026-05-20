@@ -14,18 +14,14 @@ class MetricRegistry: @unchecked Sendable {
         "\(self)"
     }
 
-    private let _lock = ReadWriteLock(label: "io.hackle.MetricRegistry.Lock")
-
-    /// Acquires the registry's write barrier. Use for any mutation of `_metrics`
-    /// or subclass-owned state. For read-only access, use `metrics` (already read-locked).
-    @discardableResult
-    func lock<T>(block: () throws -> T) rethrows -> T {
-        try _lock.write(block: block)
-    }
+    /// Domain lock for `_metrics` and subclass-owned state.
+    /// `RecursiveLock` so subclass overrides (e.g. `DelegatingMetricRegistry.createTimer`)
+    /// can re-enter the same lock without deadlock.
+    let recursiveLock = RecursiveLock(label: "io.hackle.MetricRegistry.Lock")
 
     private var _metrics = [MetricId: Metric]()
     final var metrics: [Metric] {
-        _lock.read { Array(_metrics.values) }
+        recursiveLock.lock { Array(_metrics.values) }
     }
 
     final func counter(name: String, tags: [String: String] = [:]) -> Counter {
@@ -64,17 +60,14 @@ class MetricRegistry: @unchecked Sendable {
     }
 
     private func getOrCreateMetric(id: MetricId, create: (MetricId) -> Metric) -> Metric {
-        var metric: Metric!
-        lock {
+        recursiveLock.lock {
             if let registeredMetric = _metrics[id] {
-                metric = registeredMetric
-            } else {
-                let newMetric = create(id)
-                _metrics[id] = newMetric
-                metric = newMetric
+                return registeredMetric
             }
+            let newMetric = create(id)
+            _metrics[id] = newMetric
+            return newMetric
         }
-        return metric
     }
 }
 

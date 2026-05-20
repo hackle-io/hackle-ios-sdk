@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultHackleCoreSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         let user = HackleUser.of(userId: "test")
 

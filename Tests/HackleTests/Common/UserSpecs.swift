@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class UserSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("builder") {
             let user = HackleUserBuilder()
                 .id("id")

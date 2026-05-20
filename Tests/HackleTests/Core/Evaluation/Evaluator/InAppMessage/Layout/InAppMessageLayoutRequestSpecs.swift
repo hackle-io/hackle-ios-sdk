@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class InAppMessageLayoutRequestSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("==") {
             let workspace = WorkspaceEntity.create()
             let user = HackleUser.builder().identifier(.id, "user").build()

@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class NotificationEventSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("register push token event") {
             let event = RegisterPushTokenEvent(token: "abcd1234")
                 .toTrackEvent()

@@ -11,7 +11,7 @@ import Nimble
 
 @available(*, deprecated, message: "")
 class HacklePushSubscriptionStatusSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("HacklePushSubscriptionStatus") {
             it("rawValue로 초기화가 정상 동작한다") {
                 expect(HacklePushSubscriptionStatus(rawValue: "SUBSCRIBED")) == .subscribed

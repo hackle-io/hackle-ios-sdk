@@ -7,6 +7,7 @@ final class InAppMessagePresentationContext: @unchecked Sendable {
     let user: HackleUser
     let decisionReason: String
     let properties: [String: Any]
+    let triggerEvent: Event
 
     init(
         dispatchId: String,
@@ -14,7 +15,8 @@ final class InAppMessagePresentationContext: @unchecked Sendable {
         message: InAppMessage.Message,
         user: HackleUser,
         decisionReason: String,
-        properties: [String: Any]
+        properties: [String: Any],
+        triggerEvent: Event
     ) {
         self.dispatchId = dispatchId
         self.inAppMessage = inAppMessage
@@ -22,12 +24,13 @@ final class InAppMessagePresentationContext: @unchecked Sendable {
         self.user = user
         self.decisionReason = decisionReason
         self.properties = properties
+        self.triggerEvent = triggerEvent
     }
 }
 
 extension InAppMessagePresentationContext: CustomStringConvertible {
     var description: String {
-        "InAppMessagePresentationContext(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), layout: \(message.layout.displayType))"
+        "InAppMessagePresentationContext(dispatchId: \(dispatchId), inAppMessage: \(inAppMessage), layout: \(message.layout.displayType), triggerEventKey: \(triggerEvent.key))"
     }
 
     static func of(request: InAppMessagePresentRequest) -> InAppMessagePresentationContext {
@@ -37,7 +40,8 @@ extension InAppMessagePresentationContext: CustomStringConvertible {
             message: request.message,
             user: request.user,
             decisionReason: request.reason,
-            properties: request.properties
+            properties: request.properties,
+            triggerEvent: request.triggerEvent
         )
     }
 }

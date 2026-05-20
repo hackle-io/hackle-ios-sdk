@@ -6,7 +6,7 @@ import MockingKit
 
 
 class NoopCounterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("always zero") {
             let counter = NoopCounter(id: MetricId(name: "counter", tags: [:], type: .counter))
             expect(counter.count()) == 0

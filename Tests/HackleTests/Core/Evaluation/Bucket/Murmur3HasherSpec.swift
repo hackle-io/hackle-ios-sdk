@@ -8,7 +8,7 @@ import Nimble
 @testable import Hackle
 
 class Murmur3HasherSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         let sut = Murmur3Hasher()
 

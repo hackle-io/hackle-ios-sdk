@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class PropertyOperatorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("PropertySetOperator") {
             let sut = PropertySetOperator()
 

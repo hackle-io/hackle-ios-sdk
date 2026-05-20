@@ -6,7 +6,7 @@ import MockingKit
 
 
 class DelegatingMetricRegistrySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("create") {
             it("DelegationCounter") {
                 let registry = DelegatingMetricRegistry()
@@ -72,6 +72,25 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                 delegating.counter(name: "counter").increment()
 
                 expect(cumulative.counter(name: "counter").count()) == 1
+            }
+
+            it("재진입 — sub-registry add 후 timer 생성이 hang 없이 완료") {
+                // addRegistries는 getOrCreateMetric의 lock 보유 상태에서 호출된다.
+                // RecursiveLock이 아닌 mutex/RW lock으로 회귀하면 이 호출은 deadlock된다.
+                // DispatchSemaphore로 hang을 명시적으로 감지한다.
+                let delegating = DelegatingMetricRegistry()
+                delegating.add(registry: CumulativeMetricRegistry())
+                delegating.add(registry: CumulativeMetricRegistry())
+
+                let done = DispatchSemaphore(value: 0)
+                DispatchQueue.global(qos: .utility).async {
+                    _ = delegating.timer(name: "reentrant.timer")
+                    _ = delegating.counter(name: "reentrant.counter")
+                    done.signal()
+                }
+
+                let result = done.wait(timeout: .now() + 10.0)
+                expect(result) == .success
             }
         }
         

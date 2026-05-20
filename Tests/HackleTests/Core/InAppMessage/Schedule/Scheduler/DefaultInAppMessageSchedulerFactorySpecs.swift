@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageSchedulerFactorySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("get") {
             let scheduler1 = MockInAppMessageScheduler()
@@ -20,7 +20,7 @@ class DefaultInAppMessageSchedulerFactorySpecs: QuickSpec {
 
             let actual = try sut.get(scheduleType: .triggered)
 
-            expect(actual).to(beIdenticalTo(scheduler2))
+            expect(actual as? MockInAppMessageScheduler).to(beIdenticalTo(scheduler2))
         }
 
         it("exception") {

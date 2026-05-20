@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class CohortConditionMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         let valueOperatorMatcher = DefaultValueOperatorMatcher(
             valueMatcherFactory: ValueMatcherFactory(),

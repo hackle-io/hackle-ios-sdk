@@ -11,7 +11,7 @@ import Nimble
 import Quick
 
 class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var core: HackleCoreStub!
         var sut: DefaultInAppMessageEventTracker!
 

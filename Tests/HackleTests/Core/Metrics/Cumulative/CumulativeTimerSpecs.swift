@@ -6,7 +6,7 @@ import MockingKit
 
 
 class CumulativeTimerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("negative records should ignored") {
             let timer = CumulativeMetricRegistry().timer(name: "timer")

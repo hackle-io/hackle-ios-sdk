@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var core: HackleCore!
         var flowFactory: MockInAppMessageEligibilityFlowFactory!
@@ -39,15 +39,15 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
             let actual = try sut.process(type: .trigger, request: request)
 
             // then
-            expect(actual).to(beIdenticalTo(evaluation))
+            expect(actual as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             verify(exactly: 1) {
                 flowFactory.triggerFlowMock
             }
             verify(exactly: 1) {
                 eventRecorder.recordMock
             }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0).to(beIdenticalTo(request))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1).to(beIdenticalTo(evaluation))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as? InAppMessageEligibilityRequest).to(beIdenticalTo(request))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
         }
 
         it("deliver evaluate") {
@@ -61,15 +61,15 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
             let actual = try sut.process(type: .deliver, request: request)
 
             // then
-            expect(actual).to(beIdenticalTo(evaluation))
+            expect(actual as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
             verify(exactly: 1) {
                 flowFactory.deliverFlowMock
             }
             verify(exactly: 1) {
                 eventRecorder.recordMock
             }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0).to(beIdenticalTo(request))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1).to(beIdenticalTo(evaluation))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as? InAppMessageEligibilityRequest).to(beIdenticalTo(request))
+            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
         }
     }
 }
