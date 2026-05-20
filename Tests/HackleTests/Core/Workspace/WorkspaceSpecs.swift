@@ -4,7 +4,7 @@ import Quick
 @testable import Hackle
 
 class WorkspaceSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("parse") {
             let file = Bundle(for: WorkspaceSpecs.self).path(forResource: "workspace_response", ofType: "json")!

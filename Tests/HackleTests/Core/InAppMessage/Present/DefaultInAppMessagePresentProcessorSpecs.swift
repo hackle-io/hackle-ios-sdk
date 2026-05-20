@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessagePresentProcessorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var presenter: MockInAppMessagePresenter!
         var recorder: MockInAppMessageRecorder!

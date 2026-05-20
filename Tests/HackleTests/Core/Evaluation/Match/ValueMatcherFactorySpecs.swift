@@ -7,7 +7,7 @@ import MockingKit
 class ValueMatcherFactorySpecs: QuickSpec {
 
 
-    override func spec() {
+    override class func spec() {
 
         let sut = ValueMatcherFactory()
 

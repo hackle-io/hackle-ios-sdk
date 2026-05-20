@@ -11,7 +11,7 @@ import Quick
 @testable import Hackle
 
 class DefaultUserDtoSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var decoder: JSONDecoder!
 
         beforeEach {

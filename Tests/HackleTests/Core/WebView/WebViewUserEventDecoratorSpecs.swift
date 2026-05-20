@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class WebViewUserEventDecoratorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("WebViewWrapperUserEventDecorator") {
             var sut: WebViewWrapperUserEventDecorator!
             var originalUser: HackleUser!

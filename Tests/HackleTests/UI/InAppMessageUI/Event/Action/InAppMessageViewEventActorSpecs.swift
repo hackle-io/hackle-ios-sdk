@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class InAppMessageViewEventActorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("InAppMessageViewImpressionEventActor") {
             var sut: InAppMessageViewImpressionEventActor!
             

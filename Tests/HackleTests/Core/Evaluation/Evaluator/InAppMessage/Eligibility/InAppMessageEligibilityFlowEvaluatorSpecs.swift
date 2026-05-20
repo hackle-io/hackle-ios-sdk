@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var nextFlow: InAppMessageEligibilityFlow!
         var evaluation: InAppMessageEligibilityEvaluation!

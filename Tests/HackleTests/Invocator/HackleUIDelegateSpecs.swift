@@ -5,7 +5,7 @@ import WebKit
 @testable import Hackle
 
 class HackleUIDelegateSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var mockInvocator: MockInvocator!
 
@@ -87,7 +87,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     let sut = HackleUIDelegate(invocator: mockInvocator)
                     let selector = #selector(WKUIDelegate.webView(_:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:))
                     let target = sut.forwardingTarget(for: selector)
-                    expect(target).to(beIdenticalTo(sut))
+                    expect(target as? HackleUIDelegate).to(beIdenticalTo(sut))
                 }
             }
 
@@ -97,7 +97,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
                     let selector = #selector(MockWKUIDelegate.customMethod)
                     let target = sut.forwardingTarget(for: selector)
-                    expect(target).to(beIdenticalTo(mockUIDelegate))
+                    expect(target as? MockWKUIDelegate).to(beIdenticalTo(mockUIDelegate))
                 }
             }
 

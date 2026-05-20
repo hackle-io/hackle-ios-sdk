@@ -6,7 +6,7 @@ import MockingKit
 
 class DefaultUserEventProcessorSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         let user = HackleUser.of(userId: "test_id")
 
@@ -522,7 +522,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 sut.initialize()
 
                 // then
-                expect(eventRepository.updateMock.invokations()[0].arguments.0).to(beIdenticalTo(events))
+                expect(eventRepository.updateMock.invokations()[0].arguments.0.first).to(beIdenticalTo(events.first))
                 expect(eventRepository.updateMock.invokations()[0].arguments.1) == EventEntityStatus.pending
                 verify(exactly: 1) {
                     eventRepository.deleteExpiredEventsMock

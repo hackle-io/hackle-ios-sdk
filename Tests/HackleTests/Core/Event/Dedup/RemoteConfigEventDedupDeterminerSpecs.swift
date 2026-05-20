@@ -5,7 +5,7 @@ import Nimble
 
 
 class RemoteConfigEventDedupDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("cacheKey") {
             let repository = UserDefaultsKeyValueRepository.of(suiteName: "unittest_rc_repo_abcd1234")
             let sut = RemoteConfigEventDedupDeterminer(repository: repository, dedupInterval: -1)

@@ -6,7 +6,7 @@ import MockingKit
 
 
 class FlushCounterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("increment") {
             let counter = FlushCounter(id: MetricId(name: "counter", tags: [:], type: .counter))

@@ -6,7 +6,7 @@ import MockingKit
 
 
 class MetricSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("Equatable") {
             let counter1 = MetricId(name: "counter_1", tags: [:], type: .counter)

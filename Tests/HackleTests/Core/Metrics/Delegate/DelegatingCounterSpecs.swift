@@ -6,7 +6,7 @@ import MockingKit
 
 
 class DelegatingCounterSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("등록된 Counter 가 없으면 0") {
             let counter = DelegatingMetricRegistry().counter(name: "counter")

@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class FlushTimerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("record, flush") {
             let flushTimer = FlushTimer(id: MetricId(name: UUID().uuidString, tags: [:], type: .timer))

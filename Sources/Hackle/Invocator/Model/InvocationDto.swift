@@ -48,6 +48,17 @@ extension User {
 }
 
 extension Event {
+    func toDto() -> EventDto {
+        var dto: EventDto = ["key": key]
+        if let value = value, value.isFinite {
+            dto["value"] = value
+        }
+        if let properties = properties, !properties.isEmpty {
+            dto["properties"] = properties
+        }
+        return dto
+    }
+
     static func from(dto: EventDto) -> Event? {
         guard let key = dto["key"] as? String else {
             return nil

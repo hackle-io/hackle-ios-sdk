@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class ApplicationEventTrackerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var userManager: MockUserManager!
         var core: MockHackleCore!
         var sut: ApplicationEventTracker!

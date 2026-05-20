@@ -6,7 +6,7 @@ import MockingKit
 
 
 class ClockSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("SystemClock") {
             expect(SystemClock.shared.currentMillis()) > 0
             expect(SystemClock.shared.tick()) > 0

@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var workspaceFetcher: MockWorkspaceFetcher!
         var eventMatcher: InAppMessageTriggerEventMatcherStub!
