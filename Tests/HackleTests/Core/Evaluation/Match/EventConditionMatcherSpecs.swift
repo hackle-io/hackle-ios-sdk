@@ -11,7 +11,7 @@ import Nimble
 @testable import Hackle
 
 class EventConditionMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var eventValueResolver: EventValueResolver!
         var valueOperatorMatcher: MockValueOperatorMatcher!
@@ -81,7 +81,7 @@ class EventConditionMatcherSpecs: QuickSpec {
 
 
 class DefaultEventValueResolverSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let sut = DefaultEventValueResolver()
 
         it("TRACK") {

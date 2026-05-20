@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var determiner: MockInAppMessageTriggerDeterminer!
         var handler: MockInAppMessageTriggerHandler!

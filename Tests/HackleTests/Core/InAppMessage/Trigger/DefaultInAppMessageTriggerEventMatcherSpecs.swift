@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var targetMatcher: TargetMatcherStub!
         var sut: DefaultInAppMessageTriggerEventMatcher!

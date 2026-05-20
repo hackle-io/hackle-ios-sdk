@@ -25,7 +25,7 @@ import Nimble
 ///     CODE_SIGNING_ALLOWED=NO
 /// ```
 class MetricRegistryRaceSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("MetricRegistry: concurrent timer creation vs metrics iteration") {
             // Mirrors production doFlush vs record pattern on a local registry —

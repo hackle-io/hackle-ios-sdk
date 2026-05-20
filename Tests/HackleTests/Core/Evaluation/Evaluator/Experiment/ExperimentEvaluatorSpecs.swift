@@ -13,7 +13,7 @@ import MockingKit
 
 class ExperimentEvaluatorSpecs: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var flowFactory: MockExperimentFlowFactory!
         var sut: ExperimentEvaluator!

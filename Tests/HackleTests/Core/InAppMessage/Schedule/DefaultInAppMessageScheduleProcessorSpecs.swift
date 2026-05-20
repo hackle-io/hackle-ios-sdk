@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var actionDeterminer: MockInAppMessageScheduleActionDeterminer!
         var schedulerFactory: MockInAppMessageSchedulerFactory!

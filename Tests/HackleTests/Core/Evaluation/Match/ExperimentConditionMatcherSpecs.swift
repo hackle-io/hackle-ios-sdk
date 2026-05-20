@@ -12,7 +12,7 @@ import MockingKit
 @testable import Hackle
 
 class ExperimentConditionMatcherSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var abTestMatcher: MockExperimentMatcher!
         var featureFlagMatcher: MockExperimentMatcher!

@@ -5,7 +5,7 @@ import Nimble
 
 
 class DefaultPushTokenRegistrySpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("register") {
             let sut = DefaultPushTokenRegistry()
             let listener = MockPushTokenListener()

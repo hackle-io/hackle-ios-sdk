@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class NotificationManagerSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let dispatchQueue = DispatchQueue(label: "test")
         var core: HackleCoreStub!
         var workspaceFetcher: MockWorkspaceFetcher!

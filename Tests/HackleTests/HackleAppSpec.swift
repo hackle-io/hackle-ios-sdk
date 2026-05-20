@@ -4,7 +4,7 @@ import Nimble
 import Quick
 
 class HackleAppSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var core: MockHackleCore!
         var eventQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!

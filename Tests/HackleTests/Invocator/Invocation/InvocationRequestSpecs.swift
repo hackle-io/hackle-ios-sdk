@@ -5,7 +5,7 @@ import Nimble
 import Quick
 
 class InvocationRequestSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("isInvocable") {
             expect(InvocationRequest.isInvocable(string: "{\"_hackle\":{\"command\":\"foo\"}}")) == true
             expect(InvocationRequest.isInvocable(string: "{\"_hackle\":{\"command\":\"\"}}")) == false

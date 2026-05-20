@@ -6,7 +6,7 @@ import MockingKit
 
 
 class TimerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("TimerBuilder") {
             let timer = TimerBuilder(name: "timer")

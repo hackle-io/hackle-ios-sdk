@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 class DelegatingUserEventDedupDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("determiner") {
             // given
             let sut = DelegatingUserEventDedupDeterminer(determiners: [

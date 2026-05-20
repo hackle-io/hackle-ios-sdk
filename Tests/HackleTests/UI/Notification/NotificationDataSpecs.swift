@@ -5,7 +5,7 @@ import MockingKit
 @testable import Hackle
 
 class NotificationDataSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         it("from dictionary") {
             let data = ["hackle": [
                 "workspaceId": 123,

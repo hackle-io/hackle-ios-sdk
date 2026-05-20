@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 
 @MainActor
@@ -30,7 +31,7 @@ class HackleUserExplorerView {
         }
 
         if self.button == nil {
-            self.button = self.createButton()
+            self.button = self.createButton(in: window)
         }
         let button = self.button!
         window.addSubview(button)
@@ -45,10 +46,9 @@ class HackleUserExplorerView {
         self.button = nil
     }
 
-    private func createButton() -> HackleUserExplorerButton {
-        let rect = UIUtils.currentScreen.bounds
-        let width = rect.size.width
-        let height = rect.size.height
+    private func createButton(in window: UIWindow) -> HackleUserExplorerButton {
+        let width = window.bounds.width
+        let height = window.bounds.height
         let offset = offset()
         let button = HackleUserExplorerButton(frame: CGRect(
             x: width - 50,
@@ -62,22 +62,26 @@ class HackleUserExplorerView {
     }
 
     @objc func onTouch(sender: UIPanGestureRecognizer) {
+        guard let button = self.button,
+              let superview = button.superview else {
+            Log.debug("FloatingButton: button or superview is nil during drag")
+            return
+        }
         let translation = sender.translation(in: button)
 
         let barHeight = barHeight()
         let bottomOffset = offset()
 
-        let rect = UIUtils.currentScreen.bounds
-        let width = rect.size.width
-        let height = rect.size.height
+        let width = superview.bounds.width
+        let height = superview.bounds.height
 
-        var newY = min(button!.center.y + translation.y, height - bottomOffset)
-        newY = max(barHeight + (button!.bounds.height / 2), newY)
+        var newY = min(button.center.y + translation.y, height - bottomOffset)
+        newY = max(barHeight + (button.bounds.height / 2), newY)
 
-        var newX = min(button!.center.x + translation.x, width)
-        newX = max(button!.bounds.width / 2, newX)
+        var newX = min(button.center.x + translation.x, width)
+        newX = max(button.bounds.width / 2, newX)
 
-        button!.center = CGPoint(x: newX, y: newY)
+        button.center = CGPoint(x: newX, y: newY)
         sender.setTranslation(CGPoint(x: 0, y: 0), in: button)
     }
 
@@ -87,10 +91,11 @@ class HackleUserExplorerView {
         else {
             return
         }
-        let hackleUserExplorerViewController = HackleUserExplorerViewController(nibName: "HackleUserExplorerViewController", bundle: HackleInternalResources.bundle)
-        hackleUserExplorerViewController.setHackleUserExplorer(hackleUserExplorer)
-        hackleUserExplorerViewController.modalPresentationStyle = .fullScreen
-        topViewController.present(hackleUserExplorerViewController, animated: true)
+        let viewModel = ExplorerViewModel(explorer: hackleUserExplorer)
+        let rootView = ExplorerRootView(viewModel: viewModel)
+        let hostingController = HackleHostingController(rootView: rootView)
+        hostingController.modalPresentationStyle = .fullScreen
+        topViewController.present(hostingController, animated: true)
     }
 
     private func barHeight() -> CGFloat {
@@ -103,8 +108,4 @@ class HackleUserExplorerView {
     private func offset() -> CGFloat {
         barHeight() > 24.0 ? 30.0 : 0.0
     }
-}
-
-protocol HackleUserExplorerContainer {
-    @MainActor func setHackleUserExplorer(_ hackleUserExplorer: HackleUserExplorer)
 }

@@ -12,7 +12,7 @@ import Nimble
 
 
 class DefaultInAppMessageHiddenStorageSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         var keyValueRepository: KeyValueRepository!
         var sut: DefaultInAppMessageHiddenStorage!

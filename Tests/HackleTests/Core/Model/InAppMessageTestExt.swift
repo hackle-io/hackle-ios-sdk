@@ -269,7 +269,8 @@ extension InAppMessage {
         message: InAppMessage.Message = InAppMessage.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         decisionReason: String = DecisionReason.DEFAULT_RULE,
-        properties: [String: Any] = [:]
+        properties: [String: Any] = [:],
+        triggerEvent: Event = Event.builder("test").build()
     ) -> InAppMessagePresentationContext {
         return InAppMessagePresentationContext(
             dispatchId: dispatchId,
@@ -277,7 +278,8 @@ extension InAppMessage {
             message: message,
             user: user,
             decisionReason: decisionReason,
-            properties: properties
+            properties: properties,
+            triggerEvent: triggerEvent
         )
     }
 
@@ -288,7 +290,8 @@ extension InAppMessage {
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         requestedAt: Date = Date(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        properties: [String: Any] = [:]
+        properties: [String: Any] = [:],
+        triggerEvent: Event = Event.builder("test").build()
     ) -> InAppMessagePresentRequest {
         return InAppMessagePresentRequest(
             dispatchId: dispatchId,
@@ -297,7 +300,8 @@ extension InAppMessage {
             user: user,
             requestedAt: requestedAt,
             reason: reason,
-            properties: properties
+            properties: properties,
+            triggerEvent: triggerEvent
         )
     }
 
@@ -319,7 +323,8 @@ extension InAppMessage {
         ],
         requestedAt: Date = Date(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        properties: [String: Any] = [:]
+        properties: [String: Any] = [:],
+        triggerEvent: Event = Event.builder("test").build()
     ) -> InAppMessageDeliverRequest {
         return InAppMessageDeliverRequest(
             dispatchId: dispatchId,
@@ -327,7 +332,8 @@ extension InAppMessage {
             identifiers: identifiers,
             requestedAt: requestedAt,
             reason: reason,
-            properties: properties
+            properties: properties,
+            triggerEvent: triggerEvent
         )
     }
 

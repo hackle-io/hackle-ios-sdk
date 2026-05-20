@@ -12,8 +12,8 @@ let package = Package(
         .library(name: "Hackle", targets: ["Hackle"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "3.0.0")),
-        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMinor(from: "9.0.0")),
+        .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "7.6.0")),
+        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMinor(from: "13.8.0")),
         .package(url: "https://github.com/danielsaidi/MockingKit.git", from: "1.5.0"),
     ],
     targets: [
@@ -25,13 +25,7 @@ let package = Package(
                 "HackleNotification.m"
             ],
             resources: [
-                .process("Resources/hackle-javascript-sdk-11.55.0.min.js"),
-                .process("Resources/HackleAbTestTableViewCell.xib"),
-                .process("Resources/HackleAbTestViewController.xib"),
-                .process("Resources/HackleFeatureFlagTableViewCell.xib"),
-                .process("Resources/HackleFeatureFlagViewController.xib"),
-                .process("Resources/HackleUserExplorerButton.xib"),
-                .process("Resources/HackleUserExplorerViewController.xib"),
+                .process("Resources/hackle-javascript-sdk-11.56.0.min.js"),
                 .process("Resources/Images/hackle_banner.png"),
                 .process("Resources/Images/hackle_banner@2x.png"),
                 .process("Resources/Images/hackle_banner@3x.png"),

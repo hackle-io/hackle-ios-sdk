@@ -5,7 +5,7 @@ import Quick
 @testable import Hackle
 
 class DefaultInAppMessageScheduleActionDeterminerSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         var sut: DefaultInAppMessageScheduleActionDeterminer!
 
         beforeEach {

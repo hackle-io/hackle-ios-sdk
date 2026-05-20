@@ -5,7 +5,7 @@ import UIKit
 @testable import Hackle
 
 class ScreenSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
 
         it("create") {
             let vc = TestViewController()

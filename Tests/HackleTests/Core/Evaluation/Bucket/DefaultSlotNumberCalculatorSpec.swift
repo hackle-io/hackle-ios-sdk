@@ -8,7 +8,7 @@ import Nimble
 @testable import Hackle
 
 class DefaultSlotNumberCalculatorSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let sut = DefaultSlotNumberCalculator(hasher: Murmur3Hasher())
 
         it("calculate") {

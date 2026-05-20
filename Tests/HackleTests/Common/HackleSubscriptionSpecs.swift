@@ -10,7 +10,7 @@ import Nimble
 @testable import Hackle
 
 class HackleSubscriptionSpecs: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("HackleSubscriptionStatus") {
             it("should initialize with raw value") {
                 expect(HackleSubscriptionStatus(rawValue: "SUBSCRIBED")).to(equal(.subscribed))
