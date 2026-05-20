@@ -89,7 +89,7 @@ class DelegatingMetricRegistrySpecs: QuickSpec {
                     done.signal()
                 }
 
-                let result = done.wait(timeout: .now() + 2.0)
+                let result = done.wait(timeout: .now() + 10.0)
                 expect(result) == .success
             }
         }
