@@ -105,5 +105,6 @@ jobs:
                 -only-testing:HackleTests/ConcurrentArrayRaceSpecs \
                 -only-testing:HackleTests/AtomicReferenceRaceSpecs \
                 -only-testing:HackleTests/DelegatingMetricRegistrySpecs/concurrency \
+                -only-testing:HackleTests/MetricsRaceSpecs \
                 -parallel-testing-enabled NO \
                 | xcbeautify --renderer github-actions --quiet
