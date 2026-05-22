@@ -98,6 +98,75 @@ class InvokeDtoSpecs: QuickSpec {
 
         // MARK: - Event
         describe("Event extension") {
+            context("when converting from Event to Dto") {
+                it("should create a Dto with all properties") {
+                    // given
+                    let event = Event.builder("purchase")
+                        .value(9.99)
+                        .property("item", "sword")
+                        .property("quantity", 1)
+                        .build()
+
+                    // when
+                    let dto = event.toDto()
+
+                    // then
+                    expect(dto["key"] as? String).to(equal("purchase"))
+                    expect(dto["value"] as? Double).to(equal(9.99))
+                    let properties = dto["properties"] as? [String: Any]
+                    expect(properties?["item"] as? String).to(equal("sword"))
+                    expect(properties?["quantity"] as? Int).to(equal(1))
+                }
+
+                it("should not include value when value is nil") {
+                    // given
+                    let event = Event.builder("purchase").build()
+
+                    // when
+                    let dto = event.toDto()
+
+                    // then
+                    expect(dto["key"] as? String).to(equal("purchase"))
+                    expect(dto["value"]).to(beNil())
+                }
+
+                it("should not include value when value is NaN") {
+                    // given
+                    let event = Event.builder("purchase").value(.nan).build()
+
+                    // when
+                    let dto = event.toDto()
+
+                    // then
+                    expect(dto["key"] as? String).to(equal("purchase"))
+                    expect(dto["value"]).to(beNil())
+                }
+
+                it("should not include value when value is Infinity") {
+                    // given
+                    let event = Event.builder("purchase").value(.infinity).build()
+
+                    // when
+                    let dto = event.toDto()
+
+                    // then
+                    expect(dto["key"] as? String).to(equal("purchase"))
+                    expect(dto["value"]).to(beNil())
+                }
+
+                it("should not include properties when properties dictionary is empty") {
+                    // given
+                    let event = Event.builder("purchase").build()
+
+                    // when
+                    let dto = event.toDto()
+
+                    // then
+                    expect(dto["key"] as? String).to(equal("purchase"))
+                    expect(dto["properties"]).to(beNil())
+                }
+            }
+
             context("when converting from Dto to Event") {
                 it("should create an Event with all properties") {
                     // given

@@ -25,8 +25,10 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
     }
 
     private func addRegistries(metric: DelegatingMetric) {
-        for registry in registries {
-            metric.add(registry: registry)
+        recursiveLock.lock {
+            for registry in registries {
+                metric.add(registry: registry)
+            }
         }
     }
 
@@ -34,21 +36,22 @@ class DelegatingMetricRegistry: MetricRegistry, @unchecked Sendable {
         if registry is DelegatingMetricRegistry {
             return
         }
-
-        lock {
-            let (inserted, _) = registries.insert(registry)
-            if inserted {
-                for metric in metrics {
-                    if let delegatingMetric = metric as? DelegatingMetric {
-                        delegatingMetric.add(registry: registry)
-                    }
+        
+        recursiveLock.lock {
+            guard registries.insert(registry).inserted else {
+                return
+            }
+            
+            for metric in metrics {
+                if let delegatingMetric = metric as? DelegatingMetric {
+                    delegatingMetric.add(registry: registry)
                 }
             }
         }
     }
 
     func clear() {
-        lock {
+        recursiveLock.lock {
             registries.removeAll()
         }
     }

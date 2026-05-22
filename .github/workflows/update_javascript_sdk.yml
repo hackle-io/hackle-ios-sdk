@@ -88,6 +88,37 @@ jobs:
           sed -i -E "s/\.process\(\"Resources\/hackle-javascript-sdk-[^\"]+\.min\.js\"\)/.process(\"Resources\/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js\")/" \
             Package.swift
 
+          sed -i -E "s/hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\.min\.js/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js/g" \
+            Hackle.xcodeproj/project.pbxproj
+
+          sed -i -E "s/hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\.min\.js/hackle-javascript-sdk-${JS_SDK_VERSION}.min.js/g" \
+            Tests/HackleTests/UI/InAppMessageUI/Views/WebViewResourceLoaderSpecs.swift
+
+      - name: Verify no stale JS SDK references
+        run: |
+          if grep -E "hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\.min\.js" \
+               Hackle.xcodeproj/project.pbxproj | grep -v "hackle-javascript-sdk-${JS_SDK_VERSION}.min.js"; then
+            echo "Error: stale JS SDK references remain in project.pbxproj"
+            exit 1
+          fi
+          if grep -E "hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\.min\.js" \
+               Package.swift | grep -v "hackle-javascript-sdk-${JS_SDK_VERSION}.min.js"; then
+            echo "Error: stale JS SDK references remain in Package.swift"
+            exit 1
+          fi
+          if grep -E "hackle-javascript-sdk-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\.min\.js" \
+               Tests/HackleTests/UI/InAppMessageUI/Views/WebViewResourceLoaderSpecs.swift \
+               | grep -v "hackle-javascript-sdk-${JS_SDK_VERSION}.min.js"; then
+            echo "Error: stale JS SDK references remain in WebViewResourceLoaderSpecs.swift"
+            exit 1
+          fi
+          if grep -E "javascriptSdkVersion = \"[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?\"" \
+               Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift \
+               | grep -v "javascriptSdkVersion = \"${JS_SDK_VERSION}\""; then
+            echo "Error: stale javascriptSdkVersion remains in InAppMessageUIHtmlViewBridgeScript.swift"
+            exit 1
+          fi
+
       - name: Commit and push
         run: |
           FEATURE_BRANCH="update-javascript-sdk-$JS_SDK_VERSION"
@@ -97,7 +128,9 @@ jobs:
           git add \
             Sources/Hackle/Resources/ \
             Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift \
-            Package.swift
+            Package.swift \
+            Hackle.xcodeproj/project.pbxproj \
+            Tests/HackleTests/UI/InAppMessageUI/Views/WebViewResourceLoaderSpecs.swift
           git commit -m "chore: update @hackler/javascript-sdk@$JS_SDK_VERSION"
           git push origin "$FEATURE_BRANCH"
         env:
@@ -112,6 +145,4 @@ jobs:
             --base "$DEV_BRANCH" \
             --title "[Automation] Update @hackler/javascript-sdk@$JS_SDK_VERSION" \
             --body "## Description
-          - Update @hackler/javascript-sdk@$JS_SDK_VERSION
-
-          > **Note:** \`Hackle.xcodeproj\`는 수동으로 업데이트 필요"
+          - Update @hackler/javascript-sdk@$JS_SDK_VERSION"

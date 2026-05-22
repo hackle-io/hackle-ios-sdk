@@ -6,3 +6,6 @@ bug:
 
 maintenance:
   - head-branch: ['.*maintenance.*', '.*migration.*', '.*refactor.*']
+
+version-bump:
+  - head-branch: ['^dev-', '^release-', '^[0-9]+\.[0-9]+\.x$']
