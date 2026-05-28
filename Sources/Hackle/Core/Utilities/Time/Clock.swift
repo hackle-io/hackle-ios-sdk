@@ -30,6 +30,6 @@ final class SystemClock: Clock, Sendable {
     }
 
     func tick() -> UInt64 {
-        UInt64(Date().timeIntervalSince1970 * 1000 * 1000 * 1000)
+        DispatchTime.now().uptimeNanoseconds
     }
 }
