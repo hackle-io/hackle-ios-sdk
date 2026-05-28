@@ -79,7 +79,11 @@ class TimerSample {
     }
 
     func stop(timer: Timer) {
-        let durationNanos = Double(clock.tick() - startTick)
+        let endTick = clock.tick()
+        // Defensive guard for non-monotonic Clock implementations:
+        // UInt64 subtraction would otherwise trap on underflow.
+        guard endTick >= startTick else { return }
+        let durationNanos = Double(endTick - startTick)
         timer.record(amount: durationNanos, unit: .nanoseconds)
     }
 }
