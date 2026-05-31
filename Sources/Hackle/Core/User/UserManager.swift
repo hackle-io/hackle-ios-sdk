@@ -33,7 +33,7 @@ protocol UserManager: Synchronizer {
 class DefaultUserManager: UserManager {
 
     private static let USER_KEY = "user"
-    private let lock = ReadWriteLock(label: "io.hackle.DefaultUserManager")
+    private let lock = RecursiveLock(label: "io.hackle.DefaultUserManager")
     private let dispatchQueue: DispatchQueue = DispatchQueue(label: "io.hackle.DefaultUserManager.dispatchQueue")
 
     private var userListeners: [UserListener]
@@ -48,7 +48,7 @@ class DefaultUserManager: UserManager {
     private var context: UserContext
 
     private var currentContext: UserContext {
-        lock.read {
+        lock.lock {
             context
         }
     }
@@ -69,12 +69,14 @@ class DefaultUserManager: UserManager {
     }
 
     func addListener(listener: UserListener) {
-        userListeners.append(listener)
+        lock.lock {
+            userListeners.append(listener)
+        }
         Log.debug("UserListener added [\(listener)]")
     }
 
     func initialize(user: User?) {
-        lock.write { [weak self] in
+        lock.lock { [weak self] in
             guard let self = self else {
                 Log.debug("UserManager instance deallocated")
                 return
@@ -92,14 +94,16 @@ class DefaultUserManager: UserManager {
             return toHackleUser(context: currentContext, hackleAppContext: hackleAppContext)
         }
 
-        let context = lock.write {
+        let context = lock.lock {
             updateUser(user: user)
         }
         return toHackleUser(context: context.current, hackleAppContext: hackleAppContext)
     }
 
     func toHackleUser(user: User) -> HackleUser {
-        let context = context.with(user: user)
+        let context = lock.lock {
+            self.context.with(user: user)
+        }
         return toHackleUser(context: context, hackleAppContext: .default)
     }
 
@@ -220,7 +224,7 @@ class DefaultUserManager: UserManager {
     private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let cohorts):
-            lock.write {
+            lock.lock {
                 context = context.update(cohorts: cohorts)
             }
             completion(.success(()))
@@ -234,7 +238,7 @@ class DefaultUserManager: UserManager {
     private func handle(result: Result<UserTargetEvents, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let target):
-            lock.write {
+            lock.lock {
                 context = context.update(targetEvents: target)
             }
             completion(.success(()))
@@ -248,7 +252,7 @@ class DefaultUserManager: UserManager {
     // User update
 
     func setUser(user: User) -> Updated<User> {
-        lock.write {
+        lock.lock {
             updateUser(user: user).map { it in
                 it.user
             }
@@ -256,7 +260,7 @@ class DefaultUserManager: UserManager {
     }
 
     func setUserId(userId: String?) -> Updated<User> {
-        lock.write {
+        lock.lock {
             updateUser(user: context.user.toBuilder().userId(userId).build()).map { it in
                 it.user
             }
@@ -264,7 +268,7 @@ class DefaultUserManager: UserManager {
     }
 
     func setDeviceId(deviceId: String) -> Updated<User> {
-        lock.write {
+        lock.lock {
             updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).map { it in
                 it.user
             }
@@ -272,7 +276,7 @@ class DefaultUserManager: UserManager {
     }
 
     func resetUser() -> Updated<User> {
-        lock.write {
+        lock.lock {
             let context = updateContext { _ in
                 defaultUser
             }
@@ -283,7 +287,7 @@ class DefaultUserManager: UserManager {
     }
 
     func updateProperties(operations: PropertyOperations) -> Updated<User> {
-        lock.write {
+        lock.lock {
             operateProperties(operations: operations).map { it in
                 it.user
             }
