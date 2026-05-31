@@ -18,12 +18,18 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
     private let httpClient: HttpClient
 
     init(config: HackleConfig, sdk: Sdk, httpClient: HttpClient) {
-        self.url = URL(string: DefaultHttpWorkspaceFetcher.url(config: config, sdk: sdk))!
+        let urlString = DefaultHttpWorkspaceFetcher.url(config: config, sdk: sdk)
+        guard let url = URL(string: urlString) else {
+            fatalError("Invalid Hackle workspace url: \(urlString)")
+        }
+        self.url = url
         self.httpClient = httpClient
     }
 
     private static func url(config: HackleConfig, sdk: Sdk) -> String {
-        "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
+        let key = sdk.key.trimmingCharacters(in: .whitespacesAndNewlines)
+        let encodedKey = key.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? key
+        return "\(config.sdkUrl)/api/v2/workspaces/\(encodedKey)/config"
     }
 
     func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {

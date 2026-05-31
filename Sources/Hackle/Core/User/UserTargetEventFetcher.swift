@@ -18,7 +18,11 @@ class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
     private let timeout: TimeInterval = 10 // watchdog mainthread crash 회피를 위해 10초 설정
 
     init(config: HackleConfig, httpClient: HttpClient) {
-        self.url = URL(string: DefaultUserTargetEventsFetcher.url(config: config))!
+        let urlString = DefaultUserTargetEventsFetcher.url(config: config)
+        guard let url = URL(string: urlString) else {
+            fatalError("Invalid Hackle user-targets url: \(urlString)")
+        }
+        self.url = url
         self.httpClient = httpClient
     }
 
