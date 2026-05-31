@@ -36,6 +36,6 @@ class DefaultSlotNumberCalculator: SlotNumberCalculator {
 
     func calculate(seed: Int32, slotSize: Int32, value: String) -> Int {
         let hashValue = hasher.hash(data: value, seed: seed)
-        return Int(abs(hashValue) % slotSize)
+        return Int(abs(Int(hashValue)) % Int(slotSize))
     }
 }

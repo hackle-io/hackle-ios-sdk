@@ -36,5 +36,14 @@ class DefaultBucketerSpec: QuickSpec {
                 expect(bucket.mockGetSlotOrNil.invokations()[0].arguments) == 320
             }
         }
+
+        describe("DefaultSlotNumberCalculator") {
+            it("does not trap on the Int32.min boundary hash (abs overflow)") {
+                let calculator = DefaultSlotNumberCalculator()
+                let slotNumber = calculator.calculate(seed: 0, slotSize: 10000, value: "user_6601597700")
+                expect(slotNumber) >= 0
+                expect(slotNumber) < 10000
+            }
+        }
     }
 }

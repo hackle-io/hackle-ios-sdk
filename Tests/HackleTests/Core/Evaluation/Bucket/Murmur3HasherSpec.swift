@@ -46,5 +46,17 @@ class Murmur3HasherSpec: QuickSpec {
                 check(csv: csv)
             }
         }
+
+        it("does not crash on the boundary hash value 0x80000000") {
+            let actual = sut.hash(data: "user_6601597700", seed: 0)
+            expect(actual) == Int32.min
+        }
+
+        it("maps the full UInt32 hash range without trapping") {
+            let identifiers = (0..<100_000).map { "id_\($0)" }
+            for identifier in identifiers {
+                _ = sut.hash(data: identifier, seed: 0)
+            }
+        }
     }
 }
