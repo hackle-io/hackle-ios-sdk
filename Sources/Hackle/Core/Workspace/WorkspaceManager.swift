@@ -12,8 +12,8 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
     private let repository: WorkspaceConfigRepository
 
-    private var lastModified: String? = nil
-    private var workspace: Workspace? = nil
+    private let lastModified: AtomicReference<String?> = AtomicReference(value: nil)
+    private let workspace: AtomicReference<Workspace?> = AtomicReference(value: nil)
 
     init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {
         self.httpWorkspaceFetcher = httpWorkspaceFetcher
@@ -25,11 +25,11 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     }
 
     func fetch() -> Workspace? {
-        workspace
+        workspace.get()
     }
 
     func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified) { [weak self] result in
+        httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified.get()) { [weak self] result in
             guard let self = self else {
                 completion(.failure(HackleError.error("Failed to workspace sync: instance deallocated")))
                 return
@@ -39,8 +39,9 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
     }
 
     private func setWorkspaceConfig(_ config: WorkspaceConfig) {
-        lastModified = config.lastModified
-        workspace = WorkspaceEntity.from(dto: config.config)
+        let workspace = WorkspaceEntity.from(dto: config.config)
+        lastModified.set(newValue: config.lastModified)
+        self.workspace.set(newValue: workspace)
     }
 
     private func readWorkspaceConfigFromLocal() {
