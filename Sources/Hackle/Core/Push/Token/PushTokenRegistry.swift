@@ -13,29 +13,23 @@ class DefaultPushTokenRegistry: PushTokenRegistry, @unchecked Sendable {
 
     static let shared = DefaultPushTokenRegistry()
 
-    private let lock = ReadWriteLock(label: "io.hackle.GlobalPushTokenRegistry")
-    private var listeners: [PushTokenListener] = []
-    private var token: PushToken? = nil
+    private let listeners: AtomicReference<[PushTokenListener]> = AtomicReference(value: [])
+    private let token: AtomicReference<PushToken?> = AtomicReference(value: nil)
 
     func addListener(listener: PushTokenListener) {
-        listeners.append(listener)
+        listeners.set(newValue: listeners.get() + [listener])
     }
 
     func registeredToken() -> PushToken? {
-        lock.read { () -> PushToken? in
-            token
-        }
+        token.get()
     }
 
     func register(token: PushToken, timestamp: Date) {
-        lock.write { () -> () in
-            let currentToken = self.token
-            self.token = token
-            if token == currentToken {
-                return
-            }
-            publishTokenRegistered(token: token, timestamp: timestamp)
+        let currentToken = self.token.getAndSet(newValue: token)
+        if token == currentToken {
+            return
         }
+        publishTokenRegistered(token: token, timestamp: timestamp)
     }
 
     func flush() {
@@ -46,7 +40,7 @@ class DefaultPushTokenRegistry: PushTokenRegistry, @unchecked Sendable {
     }
 
     private func publishTokenRegistered(token: PushToken, timestamp: Date) {
-        for listener in listeners {
+        for listener in listeners.get() {
             listener.onTokenRegistered(token: token, timestamp: timestamp)
         }
     }
