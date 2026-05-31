@@ -439,5 +439,27 @@ class InAppMessageSpec: QuickSpec {
                 }
             }
         }
+
+        describe("InAppMessage.EventTrigger.Delay.deliverAt") {
+            let startedAt = Date(timeIntervalSince1970: 100)
+
+            it("should return startedAt for an immediate delay") {
+                let delay = InAppMessage.EventTrigger.Delay(type: .immediate, afterCondition: nil)
+                expect(delay.deliverAt(startedAt: startedAt)) == startedAt
+            }
+
+            it("should add the afterCondition duration for an after delay") {
+                let delay = InAppMessage.EventTrigger.Delay(
+                    type: .after,
+                    afterCondition: InAppMessage.EventTrigger.Delay.AfterCondition(duration: 42.0)
+                )
+                expect(delay.deliverAt(startedAt: startedAt)) == startedAt.addingTimeInterval(42.0)
+            }
+
+            it("should not crash on an after delay with a nil afterCondition") {
+                let delay = InAppMessage.EventTrigger.Delay(type: .after, afterCondition: nil)
+                expect(delay.deliverAt(startedAt: startedAt)) == startedAt
+            }
+        }
     }
 }

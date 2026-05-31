@@ -712,6 +712,9 @@ extension InAppMessageDto.EventTriggerDelayDto {
         } else {
             condition = nil
         }
+        if type == .after && condition == nil {
+            return nil
+        }
         return InAppMessage.EventTrigger.Delay(
             type: type,
             afterCondition: condition

@@ -177,7 +177,10 @@ extension InAppMessage {
                 case .immediate:
                     return startedAt
                 case .after:
-                    return startedAt.addingTimeInterval(afterCondition!.duration)
+                    guard let afterCondition = afterCondition else {
+                        return startedAt
+                    }
+                    return startedAt.addingTimeInterval(afterCondition.duration)
                 }
             }
 
