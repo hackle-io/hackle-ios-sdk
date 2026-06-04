@@ -33,7 +33,7 @@ protocol UserManager: Synchronizer {
 class DefaultUserManager: UserManager {
 
     private static let USER_KEY = "user"
-    private let lock = RecursiveLock(label: "io.hackle.DefaultUserManager")
+    private let recursiveLock = RecursiveLock(label: "io.hackle.DefaultUserManager")
     private let dispatchQueue: DispatchQueue = DispatchQueue(label: "io.hackle.DefaultUserManager.dispatchQueue")
 
     private var userListeners: [UserListener]
@@ -48,7 +48,7 @@ class DefaultUserManager: UserManager {
     private var context: UserContext
 
     private var currentContext: UserContext {
-        lock.lock {
+        recursiveLock.lock {
             context
         }
     }
@@ -69,14 +69,14 @@ class DefaultUserManager: UserManager {
     }
 
     func addListener(listener: UserListener) {
-        lock.lock {
+        recursiveLock.lock {
             userListeners.append(listener)
         }
         Log.debug("UserListener added [\(listener)]")
     }
 
     func initialize(user: User?) {
-        lock.lock { [weak self] in
+        recursiveLock.lock { [weak self] in
             guard let self = self else {
                 Log.debug("UserManager instance deallocated")
                 return
@@ -94,14 +94,14 @@ class DefaultUserManager: UserManager {
             return toHackleUser(context: currentContext, hackleAppContext: hackleAppContext)
         }
 
-        let context = lock.lock {
+        let context = recursiveLock.lock {
             updateUser(user: user)
         }
         return toHackleUser(context: context.current, hackleAppContext: hackleAppContext)
     }
 
     func toHackleUser(user: User) -> HackleUser {
-        let context = lock.lock {
+        let context = recursiveLock.lock {
             self.context.with(user: user)
         }
         return toHackleUser(context: context, hackleAppContext: .default)
@@ -224,7 +224,7 @@ class DefaultUserManager: UserManager {
     private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let cohorts):
-            lock.lock {
+            recursiveLock.lock {
                 context = context.update(cohorts: cohorts)
             }
             completion(.success(()))
@@ -238,7 +238,7 @@ class DefaultUserManager: UserManager {
     private func handle(result: Result<UserTargetEvents, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let target):
-            lock.lock {
+            recursiveLock.lock {
                 context = context.update(targetEvents: target)
             }
             completion(.success(()))
@@ -252,7 +252,7 @@ class DefaultUserManager: UserManager {
     // User update
 
     func setUser(user: User) -> Updated<User> {
-        lock.lock {
+        recursiveLock.lock {
             updateUser(user: user).map { it in
                 it.user
             }
@@ -260,7 +260,7 @@ class DefaultUserManager: UserManager {
     }
 
     func setUserId(userId: String?) -> Updated<User> {
-        lock.lock {
+        recursiveLock.lock {
             updateUser(user: context.user.toBuilder().userId(userId).build()).map { it in
                 it.user
             }
@@ -268,7 +268,7 @@ class DefaultUserManager: UserManager {
     }
 
     func setDeviceId(deviceId: String) -> Updated<User> {
-        lock.lock {
+        recursiveLock.lock {
             updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).map { it in
                 it.user
             }
@@ -276,7 +276,7 @@ class DefaultUserManager: UserManager {
     }
 
     func resetUser() -> Updated<User> {
-        lock.lock {
+        recursiveLock.lock {
             let context = updateContext { _ in
                 defaultUser
             }
@@ -287,7 +287,7 @@ class DefaultUserManager: UserManager {
     }
 
     func updateProperties(operations: PropertyOperations) -> Updated<User> {
-        lock.lock {
+        recursiveLock.lock {
             operateProperties(operations: operations).map { it in
                 it.user
             }
