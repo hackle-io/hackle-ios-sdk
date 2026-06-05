@@ -73,11 +73,11 @@ extension UIImageView {
                 }
 
                 DispatchQueue.main.async {
-                    guard let self = self else {
-                        return
-                    }
                     if let data = data, let image = UIImage(data: data) {
                         ImageCacheManager.shared.setObject(image, forKey: cacheKey)
+                        guard let self = self else {
+                            return
+                        }
                         self.image = image
                         completion?()
                     }
