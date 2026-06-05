@@ -69,9 +69,7 @@ class DefaultUserManager: UserManager {
     }
 
     func addListener(listener: UserListener) {
-        recursiveLock.lock {
-            userListeners.append(listener)
-        }
+        userListeners.append(listener)
         Log.debug("UserListener added [\(listener)]")
     }
 
