@@ -208,8 +208,8 @@ extension HackleInAppMessageUI {
             }
 
             func configure(image: InAppMessage.Message.Image) {
-                imageView.loadImage(url: image.imagePath) {
-                    self.layout()
+                imageView.loadImage(url: image.imagePath) { [weak self] in
+                    self?.layout()
                 }
             }
 
