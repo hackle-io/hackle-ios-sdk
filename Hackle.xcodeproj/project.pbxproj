@@ -354,6 +354,7 @@
 		EE29DA4E29CD82C200B1FEAA /* murmur_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C929CD82C100B1FEAA /* murmur_numeric.csv */; };
 		EE29DA4F29CD82C200B1FEAA /* bucketing_alphanumeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9CA29CD82C100B1FEAA /* bucketing_alphanumeric.csv */; };
 		EE29DA5029CD82C200B1FEAA /* TimerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9CD29CD82C100B1FEAA /* TimerSpecs.swift */; };
+		3C9570AE1B46AD3387FD3CF5 /* TimerSampleClockUnderflowSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */; };
 		EE29DA5129CD82C200B1FEAA /* NoopTimerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9CF29CD82C100B1FEAA /* NoopTimerSpecs.swift */; };
 		EE29DA5229CD82C200B1FEAA /* NoopCounterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9D029CD82C100B1FEAA /* NoopCounterSpecs.swift */; };
 		EE29DA5329CD82C200B1FEAA /* FlushCounterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9D229CD82C100B1FEAA /* FlushCounterSpecs.swift */; };
@@ -1099,6 +1100,7 @@
 		EE29D9C929CD82C100B1FEAA /* murmur_numeric.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = murmur_numeric.csv; sourceTree = "<group>"; };
 		EE29D9CA29CD82C100B1FEAA /* bucketing_alphanumeric.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bucketing_alphanumeric.csv; sourceTree = "<group>"; };
 		EE29D9CD29CD82C100B1FEAA /* TimerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerSpecs.swift; sourceTree = "<group>"; };
+		22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerSampleClockUnderflowSpecs.swift; sourceTree = "<group>"; };
 		EE29D9CF29CD82C100B1FEAA /* NoopTimerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoopTimerSpecs.swift; sourceTree = "<group>"; };
 		EE29D9D029CD82C100B1FEAA /* NoopCounterSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoopCounterSpecs.swift; sourceTree = "<group>"; };
 		EE29D9D229CD82C100B1FEAA /* FlushCounterSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlushCounterSpecs.swift; sourceTree = "<group>"; };
@@ -2590,6 +2592,7 @@
 				EE29D9DF29CD82C100B1FEAA /* Cumulative */,
 				EE29D9DB29CD82C100B1FEAA /* CounterSpecs.swift */,
 				EE29D9CD29CD82C100B1FEAA /* TimerSpecs.swift */,
+				22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */,
 				EE29D9D529CD82C100B1FEAA /* MetricFieldSpecs.swift */,
 				EE29D9D629CD82C100B1FEAA /* HackleTimer.swift */,
 				EE29D9E329CD82C100B1FEAA /* MetricSpecs.swift */,
@@ -4507,6 +4510,7 @@
 				EE4D044E2E5DAB05007BE61A /* MockInAppMessageScheduler.swift in Sources */,
 				B29C536B2DCB3820001724B2 /* HacklePushSubscriptionStatusSpecs.swift in Sources */,
 				EE29DA5029CD82C200B1FEAA /* TimerSpecs.swift in Sources */,
+				3C9570AE1B46AD3387FD3CF5 /* TimerSampleClockUnderflowSpecs.swift in Sources */,
 				EE29DA3D29CD82C200B1FEAA /* MockWorkspace.swift in Sources */,
 				B21A14952E9E24E80088EBEC /* SessionUserDecoratorSpecs.swift in Sources */,
 				EEFA31E82BC18E0F00E133F8 /* MockUserEventDedupDeterminer.swift in Sources */,
