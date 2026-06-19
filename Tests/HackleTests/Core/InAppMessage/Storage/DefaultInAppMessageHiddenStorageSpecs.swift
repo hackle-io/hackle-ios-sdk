@@ -47,5 +47,25 @@ class DefaultInAppMessageHiddenStorageSpecs: QuickSpec {
             expect(actual) == true
             expect(keyValueRepository.getDouble(key: "1")) == 42
         }
+
+        it("expireAt - 저장된 만료 시각을 반환한다") {
+            let storage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
+            let inAppMessage = InAppMessage.create(id: 42)
+            let expireAt = Date(timeIntervalSince1970: 1_000_000)
+            storage.put(inAppMessage: inAppMessage, expireAt: expireAt)
+
+            let actual = storage.expireAt(inAppMessage: inAppMessage)
+
+            expect(actual?.timeIntervalSince1970) == 1_000_000
+        }
+
+        it("expireAt - 저장된 값이 없으면 nil을 반환한다") {
+            let storage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
+            let inAppMessage = InAppMessage.create(id: 99)
+
+            let actual = storage.expireAt(inAppMessage: inAppMessage)
+
+            expect(actual).to(beNil())
+        }
     }
 }

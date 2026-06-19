@@ -11,6 +11,7 @@ import Foundation
 protocol InAppMessageHiddenStorage {
     func exist(inAppMessage: InAppMessage, now: Date) -> Bool
     func put(inAppMessage: InAppMessage, expireAt: Date)
+    func expireAt(inAppMessage: InAppMessage) -> Date?
 }
 
 
@@ -46,6 +47,14 @@ class DefaultInAppMessageHiddenStorage: InAppMessageHiddenStorage {
 
     func put(inAppMessage: InAppMessage, expireAt: Date) {
         keyValueRepository.putDouble(key: key(inAppMessage), value: expireAt.timeIntervalSince1970)
+    }
+
+    func expireAt(inAppMessage: InAppMessage) -> Date? {
+        let expireTime = keyValueRepository.getDouble(key: key(inAppMessage))
+        guard expireTime > 0 else {
+            return nil
+        }
+        return Date(timeIntervalSince1970: expireTime)
     }
 
     private func key(_ inAppMessage: InAppMessage) -> String {
