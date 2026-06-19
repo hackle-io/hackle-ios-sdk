@@ -28,6 +28,8 @@ protocol HackleUserExplorer {
 
     func getInAppMessageDecisions() -> [(InAppMessage, InAppMessageEligibilityEvaluation)]
 
+    func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail?
+
     func getFeatureFlagOverrides() -> [Int64: Int64]
 
     func setFeatureFlagOverride(experiment: Experiment, variation: Variation)
@@ -45,6 +47,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
     private let devToolsAPI: DevToolsAPI
+    private let inAppMessageDebugInspector: InAppMessageDebugInspector
 
     init(
         core: HackleCore,
@@ -52,7 +55,8 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         pushTokenManager: PushTokenManager,
         abTestOverrideStorage: HackleUserManualOverrideStorage,
         featureFlagOverrideStorage: HackleUserManualOverrideStorage,
-        devToolsAPI: DevToolsAPI
+        devToolsAPI: DevToolsAPI,
+        inAppMessageDebugInspector: InAppMessageDebugInspector
     ) {
         self.core = core
         self.userManager = userManager
@@ -60,6 +64,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         self.abTestOverrideStorage = abTestOverrideStorage
         self.featureFlagOverrideStorage = featureFlagOverrideStorage
         self.devToolsAPI = devToolsAPI
+        self.inAppMessageDebugInspector = inAppMessageDebugInspector
     }
 
     func currentUser() -> HackleUser {
@@ -117,6 +122,15 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         } catch {
             return []
         }
+    }
+
+    func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail? {
+        inAppMessageDebugInspector.inspect(
+            inAppMessage: inAppMessage,
+            reason: reason,
+            user: currentUser(),
+            now: Date()
+        )
     }
 
     func getFeatureFlagOverrides() -> [Int64: Int64] {
