@@ -40,15 +40,12 @@ struct ExperimentRowView: View {
                         .default(Text(variation.title)) {
                             onOverrideSet(variation)
                         }
-                    } + [.cancel(Text("Cancel"))]
+                    } + [
+                        .destructive(Text("Reset")) { onOverrideReset() },
+                        .cancel(Text("Cancel"))
+                    ]
                 )
             }
-            Button("Reset") {
-                onOverrideReset()
-            }
-            .font(.system(size: 13))
-            .disabled(!isResetEnabled)
-            .frame(width: 60, height: 25)
         }
         .padding(.horizontal, 12)
         .frame(height: 56)
