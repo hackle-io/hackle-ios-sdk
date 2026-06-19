@@ -22,6 +22,18 @@ struct HackleInAppMessageItem {
         evaluation.isEligible
     }
 
+    var isTappable: Bool {
+        switch evaluation.reason {
+        case DecisionReason.IN_APP_MESSAGE_TARGET,
+             DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET,
+             DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED,
+             DecisionReason.IN_APP_MESSAGE_HIDDEN:
+            return true
+        default:
+            return false
+        }
+    }
+
     static func of(decisions: [(InAppMessage, InAppMessageEligibilityEvaluation)]) -> [HackleInAppMessageItem] {
         decisions
             .map { HackleInAppMessageItem(inAppMessage: $0.0, evaluation: $0.1) }
