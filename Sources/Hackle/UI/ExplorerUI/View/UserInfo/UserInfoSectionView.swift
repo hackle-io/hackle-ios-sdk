@@ -58,6 +58,7 @@ struct UserInfoSectionView: View {
                     viewModel.copyToClipboard(value)
                 }
             }
+            .padding(.horizontal, 12)
         }
         .frame(height: 56)
     }
@@ -78,6 +79,7 @@ struct UserInfoSectionView: View {
             ExplorerCopyButton {
                 viewModel.copyToClipboard(property.stringValue())
             }
+            .padding(.horizontal, 12)
         }
     }
 }
