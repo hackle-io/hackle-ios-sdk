@@ -22,11 +22,15 @@
 
 /* Begin PBXBuildFile section */
 		0A7893D8E2AB66A2E340D8C3 /* UserInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933F105F82764448558AE2B /* UserInfoSectionView.swift */; };
+		1978C08FAB5C56349F38A5D3 /* InAppMessageDebugInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC295A97DEB3B37EC71B817A /* InAppMessageDebugInspector.swift */; };
 		1CD2C17ACB50BF925CCF6150 /* MetricRegistryRaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29181C5D4B1E6C512C027033 /* MetricRegistryRaceSpecs.swift */; };
+		1F693CA0C81F14513462E1E4 /* InAppMessageDebugInspectorSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1514CDEBA97916AB8B270A3 /* InAppMessageDebugInspectorSpecs.swift */; };
+		3C9570AE1B46AD3387FD3CF5 /* TimerSampleClockUnderflowSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */; };
 		4CC1D087764AF18B9BFCA76D /* FeatureFlagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61999A83013137BA1EDD851 /* FeatureFlagListView.swift */; };
 		50F8E294C1E4B2851F20A359 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8907AA42715F33F426C206 /* ToastView.swift */; };
 		52667C9099D965A3C611D5AC /* AbTestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D138C0A0F36FF3A3CEE9E9A /* AbTestListView.swift */; };
 		56E32E0C528A5FA22CCF491B /* ExplorerListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949DEAE029633DAA02AE963A /* ExplorerListLayout.swift */; };
+		64647535A57B1ECD9624B1BF /* InAppMessageDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ED5AF57AE84CEAA3FCC09A /* InAppMessageDetail.swift */; };
 		7E0F05472AD7BA6800631B42 /* MockRemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */; };
 		7E2B7EF42B35276300D0CF4B /* NotificationProviderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2B7EF32B35276300D0CF4B /* NotificationProviderType.swift */; };
 		7E3F4FC72AA6FC52004E0EB0 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F4FC62AA6FC52004E0EB0 /* BundleInfo.swift */; };
@@ -69,6 +73,11 @@
 		9B441640DC8CAA8104E04335 /* AtomicReferenceRaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88B14D9B2CE4E3AE6750A75 /* AtomicReferenceRaceSpecs.swift */; };
 		A1B2C3D4E5F60718293A4B5D /* RecursiveLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* RecursiveLock.swift */; };
 		A1B2C3D4E5F60718293A4B5F /* RecursiveLockSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5E /* RecursiveLockSpecs.swift */; };
+		AA01EXPTAB01000000000001 /* ExplorerTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01EXPTAB02000000000001 /* ExplorerTab.swift */; };
+		AA01IAMITM01000000000001 /* HackleInAppMessageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMITM02000000000001 /* HackleInAppMessageItem.swift */; };
+		AA01IAMITM03000000000001 /* HackleInAppMessageItemSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMITM04000000000001 /* HackleInAppMessageItemSpecs.swift */; };
+		AA01IAMLST01000000000001 /* InAppMessageListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMLST02000000000001 /* InAppMessageListView.swift */; };
+		AA01IAMROW01000000000001 /* InAppMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMROW02000000000001 /* InAppMessageRowView.swift */; };
 		B203A5842F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */; };
 		B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeType.swift */; };
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
@@ -174,11 +183,6 @@
 		D31962349B4532F0ECF333FA /* HackleHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6195ED6D96F452A75F509FA6 /* HackleHostingController.swift */; };
 		D625A0C044A01FD2886C2C81 /* ExplorerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCE4897E17E845FF8012191 /* ExplorerViewModel.swift */; };
 		DC902D6EC27FC62B366CE337 /* ConcurrentArrayRaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9CC1E0FB4A5ADA9E2DF7EA /* ConcurrentArrayRaceSpecs.swift */; };
-		AA01EXPTAB01000000000001 /* ExplorerTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01EXPTAB02000000000001 /* ExplorerTab.swift */; };
-		AA01IAMITM01000000000001 /* HackleInAppMessageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMITM02000000000001 /* HackleInAppMessageItem.swift */; };
-		AA01IAMITM03000000000001 /* HackleInAppMessageItemSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMITM04000000000001 /* HackleInAppMessageItemSpecs.swift */; };
-		AA01IAMROW01000000000001 /* InAppMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMROW02000000000001 /* InAppMessageRowView.swift */; };
-		AA01IAMLST01000000000001 /* InAppMessageListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMLST02000000000001 /* InAppMessageListView.swift */; };
 		EE0202262F67EE52002A8D4F /* WebViewUserScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202252F67EE52002A8D4F /* WebViewUserScript.swift */; };
 		EE0202282F67F408002A8D4F /* HackleJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0202272F67F408002A8D4F /* HackleJavascriptBridge.swift */; };
 		EE02022B2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02022A2F680F3C002A8D4F /* InAppMessageHtmlContentResolver.swift */; };
@@ -354,7 +358,6 @@
 		EE29DA4E29CD82C200B1FEAA /* murmur_numeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9C929CD82C100B1FEAA /* murmur_numeric.csv */; };
 		EE29DA4F29CD82C200B1FEAA /* bucketing_alphanumeric.csv in Resources */ = {isa = PBXBuildFile; fileRef = EE29D9CA29CD82C100B1FEAA /* bucketing_alphanumeric.csv */; };
 		EE29DA5029CD82C200B1FEAA /* TimerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9CD29CD82C100B1FEAA /* TimerSpecs.swift */; };
-		3C9570AE1B46AD3387FD3CF5 /* TimerSampleClockUnderflowSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */; };
 		EE29DA5129CD82C200B1FEAA /* NoopTimerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9CF29CD82C100B1FEAA /* NoopTimerSpecs.swift */; };
 		EE29DA5229CD82C200B1FEAA /* NoopCounterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9D029CD82C100B1FEAA /* NoopCounterSpecs.swift */; };
 		EE29DA5329CD82C200B1FEAA /* FlushCounterSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29D9D229CD82C100B1FEAA /* FlushCounterSpecs.swift */; };
@@ -752,7 +755,7 @@
 		EEFA31EC2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFA31EB2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift */; };
 		F0DB00715AF8EE936A8C631C /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC412DFB0C2D0D297974E0B /* UIImageExtension.swift */; };
 		F49ECCCEE9BB75A6CA576C46 /* ExplorerRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B481338F3C07B5B7D8762FD8 /* ExplorerRootView.swift */; };
-		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Hackle::Hackle::Product" /* Hackle.framework */; };
+		OBJ_43 /* Hackle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = Hackle::Hackle::Product /* Hackle.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -766,6 +769,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerSampleClockUnderflowSpecs.swift; sourceTree = "<group>"; };
+		26ED5AF57AE84CEAA3FCC09A /* InAppMessageDetail.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InAppMessageDetail.swift; sourceTree = "<group>"; };
 		29181C5D4B1E6C512C027033 /* MetricRegistryRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetricRegistryRaceSpecs.swift; sourceTree = "<group>"; };
 		3D138C0A0F36FF3A3CEE9E9A /* AbTestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestListView.swift; sourceTree = "<group>"; };
 		5F9CC1E0FB4A5ADA9E2DF7EA /* ConcurrentArrayRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentArrayRaceSpecs.swift; sourceTree = "<group>"; };
@@ -812,9 +817,15 @@
 		8007EA972A906BFA5E1A9DB8 /* ExplorerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerColors.swift; sourceTree = "<group>"; };
 		87717123329FBFE77C021AFF /* ExperimentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentRowView.swift; sourceTree = "<group>"; };
 		949DEAE029633DAA02AE963A /* ExplorerListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerListLayout.swift; sourceTree = "<group>"; };
+		A1514CDEBA97916AB8B270A3 /* InAppMessageDebugInspectorSpecs.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InAppMessageDebugInspectorSpecs.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5C /* RecursiveLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveLock.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5E /* RecursiveLockSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveLockSpecs.swift; sourceTree = "<group>"; };
 		A933F105F82764448558AE2B /* UserInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoSectionView.swift; sourceTree = "<group>"; };
+		AA01EXPTAB02000000000001 /* ExplorerTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerTab.swift; sourceTree = "<group>"; };
+		AA01IAMITM02000000000001 /* HackleInAppMessageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageItem.swift; sourceTree = "<group>"; };
+		AA01IAMITM04000000000001 /* HackleInAppMessageItemSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageItemSpecs.swift; sourceTree = "<group>"; };
+		AA01IAMLST02000000000001 /* InAppMessageListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageListView.swift; sourceTree = "<group>"; };
+		AA01IAMROW02000000000001 /* InAppMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageRowView.swift; sourceTree = "<group>"; };
 		B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleUIDelegateSpecs.swift; sourceTree = "<group>"; };
 		B20B23132E56F0040019EAA7 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeTypeSpecs.swift; sourceTree = "<group>"; };
@@ -917,13 +928,9 @@
 		B2FCB8BC2EB1AAAD001C6B14 /* HackleWebViewConfigSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleWebViewConfigSpecs.swift; sourceTree = "<group>"; };
 		B2FCB8BF2EB1B069001C6B14 /* HackleJavascriptBridgeSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleJavascriptBridgeSpecs.swift; sourceTree = "<group>"; };
 		B481338F3C07B5B7D8762FD8 /* ExplorerRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerRootView.swift; sourceTree = "<group>"; };
+		BC295A97DEB3B37EC71B817A /* InAppMessageDebugInspector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InAppMessageDebugInspector.swift; sourceTree = "<group>"; };
 		BCCE4897E17E845FF8012191 /* ExplorerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerViewModel.swift; sourceTree = "<group>"; };
 		C88B14D9B2CE4E3AE6750A75 /* AtomicReferenceRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicReferenceRaceSpecs.swift; sourceTree = "<group>"; };
-		AA01EXPTAB02000000000001 /* ExplorerTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerTab.swift; sourceTree = "<group>"; };
-		AA01IAMITM02000000000001 /* HackleInAppMessageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageItem.swift; sourceTree = "<group>"; };
-		AA01IAMITM04000000000001 /* HackleInAppMessageItemSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleInAppMessageItemSpecs.swift; sourceTree = "<group>"; };
-		AA01IAMROW02000000000001 /* InAppMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageRowView.swift; sourceTree = "<group>"; };
-		AA01IAMLST02000000000001 /* InAppMessageListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageListView.swift; sourceTree = "<group>"; };
 		D61999A83013137BA1EDD851 /* FeatureFlagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagListView.swift; sourceTree = "<group>"; };
 		EE0202252F67EE52002A8D4F /* WebViewUserScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewUserScript.swift; sourceTree = "<group>"; };
 		EE0202272F67F408002A8D4F /* HackleJavascriptBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleJavascriptBridge.swift; sourceTree = "<group>"; };
@@ -1100,7 +1107,6 @@
 		EE29D9C929CD82C100B1FEAA /* murmur_numeric.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = murmur_numeric.csv; sourceTree = "<group>"; };
 		EE29D9CA29CD82C100B1FEAA /* bucketing_alphanumeric.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bucketing_alphanumeric.csv; sourceTree = "<group>"; };
 		EE29D9CD29CD82C100B1FEAA /* TimerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerSpecs.swift; sourceTree = "<group>"; };
-		22EB8D35DFE5D41D9C99D864 /* TimerSampleClockUnderflowSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerSampleClockUnderflowSpecs.swift; sourceTree = "<group>"; };
 		EE29D9CF29CD82C100B1FEAA /* NoopTimerSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoopTimerSpecs.swift; sourceTree = "<group>"; };
 		EE29D9D029CD82C100B1FEAA /* NoopCounterSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoopCounterSpecs.swift; sourceTree = "<group>"; };
 		EE29D9D229CD82C100B1FEAA /* FlushCounterSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlushCounterSpecs.swift; sourceTree = "<group>"; };
@@ -1497,8 +1503,8 @@
 		EEFA31E92BC1942000E133F8 /* RemoteConfigEventDedupDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigEventDedupDeterminerSpecs.swift; sourceTree = "<group>"; };
 		EEFA31EB2BC1942700E133F8 /* DelegatingUserEventDedupDeterminerSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatingUserEventDedupDeterminerSpecs.swift; sourceTree = "<group>"; };
 		FEC412DFB0C2D0D297974E0B /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
-		"Hackle::Hackle::Product" /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"Hackle::HackleTests::Product" /* HackleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		Hackle::Hackle::Product /* Hackle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hackle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		Hackle::HackleTests::Product /* HackleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = HackleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1539,15 +1545,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		AA01EXPTAB03000000000001 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				AA01EXPTAB02000000000001 /* ExplorerTab.swift */,
-				AA01IAMITM02000000000001 /* HackleInAppMessageItem.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		1C8A327D23EF894A087C8F28 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -1569,15 +1566,6 @@
 				87717123329FBFE77C021AFF /* ExperimentRowView.swift */,
 			);
 			path = Experiment;
-			sourceTree = "<group>";
-		};
-		AA01IAMROW03000000000001 /* InAppMessage */ = {
-			isa = PBXGroup;
-			children = (
-				AA01IAMROW02000000000001 /* InAppMessageRowView.swift */,
-				AA01IAMLST02000000000001 /* InAppMessageListView.swift */,
-			);
-			path = InAppMessage;
 			sourceTree = "<group>";
 		};
 		7E0E2D7E2AD8D8D100578C74 /* Web */ = {
@@ -1712,6 +1700,34 @@
 				7E9F7E802B6B96ED00A6B0B8 /* FileStorage.swift */,
 			);
 			path = Storage;
+			sourceTree = "<group>";
+		};
+		7EAC66596CB7ED0ABACC693E /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				BC295A97DEB3B37EC71B817A /* InAppMessageDebugInspector.swift */,
+			);
+			name = Debug;
+			path = Debug;
+			sourceTree = "<group>";
+		};
+		AA01EXPTAB03000000000001 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AA01EXPTAB02000000000001 /* ExplorerTab.swift */,
+				AA01IAMITM02000000000001 /* HackleInAppMessageItem.swift */,
+				26ED5AF57AE84CEAA3FCC09A /* InAppMessageDetail.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		AA01IAMROW03000000000001 /* InAppMessage */ = {
+			isa = PBXGroup;
+			children = (
+				AA01IAMROW02000000000001 /* InAppMessageRowView.swift */,
+				AA01IAMLST02000000000001 /* InAppMessageListView.swift */,
+			);
+			path = InAppMessage;
 			sourceTree = "<group>";
 		};
 		B21078422E90C28500D26B60 /* Bundle */ = {
@@ -1870,6 +1886,7 @@
 			children = (
 				B2C9CEB72FA08EBB00076E1F /* DefaultHackleUserExplorerInAppMessageSpecs.swift */,
 				AA01IAMITM04000000000001 /* HackleInAppMessageItemSpecs.swift */,
+				A1514CDEBA97916AB8B270A3 /* InAppMessageDebugInspectorSpecs.swift */,
 			);
 			path = ExplorerUI;
 			sourceTree = "<group>";
@@ -2908,6 +2925,7 @@
 				EE29DABA29CD849900B1FEAA /* HackleUserExplorerView.swift */,
 				EE29DAC929CD988100B1FEAA /* HackleUserManualOverrideStorage.swift */,
 				EE29DACB29CD9E6A00B1FEAA /* HackleUserExplorer.swift */,
+				7EAC66596CB7ED0ABACC693E /* Debug */,
 			);
 			path = ExplorerUI;
 			sourceTree = "<group>";
@@ -3735,8 +3753,8 @@
 		OBJ_14 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				"Hackle::HackleTests::Product" /* HackleTests.xctest */,
-				"Hackle::Hackle::Product" /* Hackle.framework */,
+				Hackle::HackleTests::Product /* HackleTests.xctest */,
+				Hackle::Hackle::Product /* Hackle.framework */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3753,7 +3771,7 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		"Hackle::Hackle" /* Hackle */ = {
+		Hackle::Hackle /* Hackle */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_18 /* Build configuration list for PBXNativeTarget "Hackle" */;
 			buildPhases = (
@@ -3767,10 +3785,10 @@
 			);
 			name = Hackle;
 			productName = Hackle;
-			productReference = "Hackle::Hackle::Product" /* Hackle.framework */;
+			productReference = Hackle::Hackle::Product /* Hackle.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		"Hackle::HackleTests" /* HackleTests */ = {
+		Hackle::HackleTests /* HackleTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_36 /* Build configuration list for PBXNativeTarget "HackleTests" */;
 			buildPhases = (
@@ -3790,7 +3808,7 @@
 				EE67F87225828DFF006CD00A /* MockingKit */,
 			);
 			productName = HackleTests;
-			productReference = "Hackle::HackleTests::Product" /* HackleTests.xctest */;
+			productReference = Hackle::HackleTests::Product /* HackleTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -3827,8 +3845,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				"Hackle::Hackle" /* Hackle */,
-				"Hackle::HackleTests" /* HackleTests */,
+				Hackle::Hackle /* Hackle */,
+				Hackle::HackleTests /* HackleTests */,
 				B29A19432CD1C55200E97550 /* Hackle-Aggregate */,
 			);
 		};
@@ -4288,6 +4306,8 @@
 				EEAC3F332B9D54ED00DC498E /* PushTokenListener.swift in Sources */,
 				EE29D97C29CD825400B1FEAA /* HttpRequest.swift in Sources */,
 				F0DB00715AF8EE936A8C631C /* UIImageExtension.swift in Sources */,
+				64647535A57B1ECD9624B1BF /* InAppMessageDetail.swift in Sources */,
+				1978C08FAB5C56349F38A5D3 /* InAppMessageDebugInspector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4611,6 +4631,7 @@
 				EE543CD52C099D8700F64BFA /* MockAppStateListener.swift in Sources */,
 				EEF895B72A4ADD3000722CF6 /* UserEventPublisherStub.swift in Sources */,
 				EE29DA4429CD82C200B1FEAA /* MockScheduler.swift in Sources */,
+				1F693CA0C81F14513462E1E4 /* InAppMessageDebugInspectorSpecs.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4619,7 +4640,7 @@
 /* Begin PBXTargetDependency section */
 		OBJ_44 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = "Hackle::Hackle" /* Hackle */;
+			target = Hackle::Hackle /* Hackle */;
 			targetProxy = EE67F8012582821B006CD00A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
