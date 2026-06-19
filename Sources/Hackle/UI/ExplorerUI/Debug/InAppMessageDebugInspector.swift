@@ -102,6 +102,27 @@ class InAppMessageDebugInspector {
         return FrequencyDetail(caps: caps, impressions: impressionDetails)
     }
 
+    // MARK: - Hidden
+
+    func hiddenDetail(inAppMessage: InAppMessage) -> HiddenDetail {
+        HiddenDetail(expireAt: hiddenStorage.expireAt(inAppMessage: inAppMessage))
+    }
+
+    // MARK: - Dispatch
+
+    func inspect(inAppMessage: InAppMessage, reason: String, user: HackleUser, now: Date) -> InAppMessageDetail? {
+        switch reason {
+        case DecisionReason.IN_APP_MESSAGE_TARGET, DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET:
+            return .target(targetDetails(inAppMessage: inAppMessage, user: user))
+        case DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED:
+            return .frequency(frequencyDetail(inAppMessage: inAppMessage, user: user, now: now))
+        case DecisionReason.IN_APP_MESSAGE_HIDDEN:
+            return .hidden(hiddenDetail(inAppMessage: inAppMessage))
+        default:
+            return nil
+        }
+    }
+
     private func durationLabel(_ duration: TimeInterval) -> String {
         let seconds = Int(duration)
         let day = 86_400, hour = 3_600, minute = 60

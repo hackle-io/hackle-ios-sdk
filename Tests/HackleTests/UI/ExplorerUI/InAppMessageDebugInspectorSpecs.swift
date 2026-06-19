@@ -177,5 +177,43 @@ class InAppMessageDebugInspectorSpecs: QuickSpec {
                 expect(detail.impressions.count) == 1
             }
         }
+
+        describe("inspect") {
+            it("TARGET reason이면 .target을 반환") {
+                let inAppMessage = InAppMessage.create()
+                let detail = inspector().inspect(inAppMessage: inAppMessage, reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET, user: HackleUser.builder().build(), now: Date())
+                guard case .target = detail else { fail("expected .target"); return }
+            }
+
+            it("FREQUENCY_CAPPED reason이면 .frequency를 반환") {
+                let inAppMessage = InAppMessage.create(eventTrigger: InAppMessage.eventTrigger())
+                let detail = inspector().inspect(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED, user: HackleUser.builder().build(), now: Date())
+                guard case .frequency = detail else { fail("expected .frequency"); return }
+            }
+
+            it("HIDDEN reason이면 .hidden + expireAt") {
+                let hiddenStorage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
+                let inAppMessage = InAppMessage.create(id: 42)
+                let expireAt = Date(timeIntervalSince1970: 2_000_000)
+                hiddenStorage.put(inAppMessage: inAppMessage, expireAt: expireAt)
+                let sut = InAppMessageDebugInspector(
+                    impressionStorage: DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()),
+                    hiddenStorage: hiddenStorage,
+                    valueOperatorMatcher: DefaultValueOperatorMatcher(valueMatcherFactory: ValueMatcherFactory(), operatorMatcherFactory: OperatorMatcherFactory()),
+                    userValueResolver: DefaultUserValueResolver()
+                )
+
+                let detail = sut.inspect(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_HIDDEN, user: HackleUser.builder().build(), now: Date())
+
+                guard case .hidden(let hidden) = detail else { fail("expected .hidden"); return }
+                expect(hidden.expireAt?.timeIntervalSince1970) == 2_000_000
+            }
+
+            it("그 외 reason이면 nil") {
+                let inAppMessage = InAppMessage.create()
+                let detail = inspector().inspect(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_PAUSED, user: HackleUser.builder().build(), now: Date())
+                expect(detail).to(beNil())
+            }
+        }
     }
 }
