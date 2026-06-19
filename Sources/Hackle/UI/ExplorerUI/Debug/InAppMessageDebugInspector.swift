@@ -60,4 +60,54 @@ class InAppMessageDebugInspector {
             isUserProperty: true
         )
     }
+
+    // MARK: - Frequency
+
+    func frequencyDetail(inAppMessage: InAppMessage, user: HackleUser, now: Date) -> FrequencyDetail {
+        let impressions = (try? impressionStorage.get(inAppMessage: inAppMessage)) ?? []
+        var caps: [CapStatus] = []
+
+        if let frequencyCap = inAppMessage.eventTrigger.frequencyCap {
+            for identifierCap in frequencyCap.identifierCaps {
+                let count = impressions.filter { identifierCap.matches(user: user, timestamp: now, impression: $0) }.count
+                caps.append(CapStatus(
+                    label: "\(identifierCap.identifierType) 기준",
+                    threshold: identifierCap.count,
+                    currentCount: count,
+                    isExceeded: count >= identifierCap.count
+                ))
+            }
+            if let durationCap = frequencyCap.durationCap {
+                let count = impressions.filter { durationCap.matches(user: user, timestamp: now, impression: $0) }.count
+                caps.append(CapStatus(
+                    label: durationLabel(durationCap.duration),
+                    threshold: durationCap.count,
+                    currentCount: count,
+                    isExceeded: count >= durationCap.count
+                ))
+            }
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let impressionDetails = impressions
+            .sorted { $0.timestamp > $1.timestamp }
+            .map { impression in
+                ImpressionDetail(
+                    identifiers: impression.identifiers.map { "\($0.key)=\($0.value)" }.sorted().joined(separator: ", "),
+                    timestamp: formatter.string(from: Date(timeIntervalSince1970: impression.timestamp))
+                )
+            }
+
+        return FrequencyDetail(caps: caps, impressions: impressionDetails)
+    }
+
+    private func durationLabel(_ duration: TimeInterval) -> String {
+        let seconds = Int(duration)
+        let day = 86_400, hour = 3_600, minute = 60
+        if seconds % day == 0 { return "\(seconds / day)일 내" }
+        if seconds % hour == 0 { return "\(seconds / hour)시간 내" }
+        if seconds % minute == 0 { return "\(seconds / minute)분 내" }
+        return "\(seconds)초 내"
+    }
 }

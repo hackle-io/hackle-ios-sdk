@@ -18,6 +18,18 @@ class InAppMessageDebugInspectorSpecs: QuickSpec {
             )
         }
 
+        func inspector(impressionStorage: InAppMessageImpressionStorage) -> InAppMessageDebugInspector {
+            InAppMessageDebugInspector(
+                impressionStorage: impressionStorage,
+                hiddenStorage: DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()),
+                valueOperatorMatcher: DefaultValueOperatorMatcher(
+                    valueMatcherFactory: ValueMatcherFactory(),
+                    operatorMatcherFactory: OperatorMatcherFactory()
+                ),
+                userValueResolver: DefaultUserValueResolver()
+            )
+        }
+
         describe("targetDetails") {
             it("user property 조건 - 매칭되면 isMatched=true, 유저 값 노출") {
                 let user = HackleUser.builder().property("age", 25).build()
@@ -106,6 +118,63 @@ class InAppMessageDebugInspectorSpecs: QuickSpec {
                 let groups = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build())
 
                 expect(groups.map { $0.index }) == [1, 2]
+            }
+        }
+
+        describe("frequencyDetail") {
+            it("identifierCap - 한도와 현재 카운트를 계산한다") {
+                let storage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
+                let user = HackleUser.builder().identifier(.id, "user1").build()
+                let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 3)
+                let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
+                let now = Date()
+                try storage.set(inAppMessage: inAppMessage, impressions: [
+                    InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970),
+                    InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
+                ])
+
+                let detail = inspector(impressionStorage: storage).frequencyDetail(inAppMessage: inAppMessage, user: user, now: now)
+
+                expect(detail.caps.count) == 1
+                expect(detail.caps[0].threshold) == 3
+                expect(detail.caps[0].currentCount) == 2
+                expect(detail.caps[0].isExceeded) == false
+                expect(detail.impressions.count) == 2
+            }
+
+            it("durationCap - 기간 내 노출만 카운트하고 초과 여부를 표시한다") {
+                let storage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
+                let user = HackleUser.builder().identifier(.id, "user1").build()
+                let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
+                let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
+                let now = Date()
+                try storage.set(inAppMessage: inAppMessage, impressions: [
+                    InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 30),  // 기간 내
+                    InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 120)  // 기간 밖
+                ])
+
+                let detail = inspector(impressionStorage: storage).frequencyDetail(inAppMessage: inAppMessage, user: user, now: now)
+
+                expect(detail.caps.count) == 1
+                expect(detail.caps[0].currentCount) == 1
+                expect(detail.caps[0].isExceeded) == true
+            }
+
+            it("frequencyCap이 nil이면 caps는 비어있고 impressions만 노출") {
+                let storage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
+                let user = HackleUser.builder().identifier(.id, "user1").build()
+                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger())
+                let now = Date()
+                try storage.set(inAppMessage: inAppMessage, impressions: [
+                    InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
+                ])
+
+                let detail = inspector(impressionStorage: storage).frequencyDetail(inAppMessage: inAppMessage, user: user, now: now)
+
+                expect(detail.caps.count) == 0
+                expect(detail.impressions.count) == 1
             }
         }
     }
