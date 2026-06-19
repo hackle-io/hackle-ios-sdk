@@ -27,23 +27,37 @@ struct ExperimentRowView: View {
                     .lineLimit(1)
             }
             Spacer()
-            Button(variationTitle) {
+            Button(action: {
                 showActionSheet = true
+            }) {
+                if isResetEnabled {
+                    Text(variationTitle)
+                    + Text("*")
+                        .font(.system(size: 12))
+                        .baselineOffset(4)
+                } else {
+                    Text(variationTitle)
+                }
             }
-            .font(.system(size: 13))
+            .font(.system(size: 14, weight: isResetEnabled ? .bold : .regular))
             .disabled(!isOverridable)
             .frame(width: 60, height: 25)
             .actionSheet(isPresented: $showActionSheet) {
-                ActionSheet(
+                var actionButtons: [ActionSheet.Button] = variations.map { variation in
+                    .default(Text(variation.title)) {
+                        onOverrideSet(variation)
+                    }
+                }
+
+                if isResetEnabled {
+                    actionButtons.append(.destructive(Text("Reset")) { onOverrideReset() })
+                }
+
+                actionButtons.append(.cancel(Text("Cancel")))
+                
+                return ActionSheet(
                     title: Text(""),
-                    buttons: variations.map { variation in
-                        .default(Text(variation.title)) {
-                            onOverrideSet(variation)
-                        }
-                    } + [
-                        .destructive(Text("Reset")) { onOverrideReset() },
-                        .cancel(Text("Cancel"))
-                    ]
+                    buttons: actionButtons
                 )
             }
         }
