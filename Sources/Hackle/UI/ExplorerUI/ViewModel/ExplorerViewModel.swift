@@ -11,8 +11,6 @@ class ExplorerViewModel: ObservableObject {
     @Published var userId: String?
     @Published var pushToken: String?
     @Published var properties: [ExplorerUserProperty] = []
-    @Published var showCopiedToast: Bool = false
-    private var toastTask: Task<Void, Never>?
 
     @Published var selectedTab: ExplorerTab = .user
 
@@ -23,10 +21,6 @@ class ExplorerViewModel: ObservableObject {
 
     init(explorer: HackleUserExplorer) {
         self.explorer = explorer
-    }
-
-    deinit {
-        toastTask?.cancel()
     }
 
     func loadUser() {
@@ -109,16 +103,6 @@ class ExplorerViewModel: ObservableObject {
     func copyToClipboard(_ text: String) {
         UIPasteboard.general.string = text
         Metrics.counter(name: "user.explorer.identifier.copy").increment()
-        toastTask?.cancel()
-        showCopiedToast = true
-        toastTask = Task { [weak self] in
-            do {
-                try await Task.sleep(nanoseconds: 1_000_000_000)
-                self?.showCopiedToast = false
-            } catch {
-                // cancelled — no-op
-            }
-        }
     }
 }
 

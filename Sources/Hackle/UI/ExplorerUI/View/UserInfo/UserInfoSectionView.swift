@@ -6,33 +6,28 @@ struct UserInfoSectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("Identifiers")
-                Spacer()
-            }
-            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
-            VStack(alignment: .leading, spacing: 8) {
+            sectionHeader("IDENTIFIERS")
+            Divider()
+            VStack(alignment: .leading, spacing: 0) {
                 identifierRow(title: "ID", value: viewModel.defaultId)
+                Divider()
                 identifierRow(title: "DEVICE ID", value: viewModel.deviceId)
+                Divider()
                 identifierRow(title: "USER ID", value: viewModel.userId)
+                Divider()
                 identifierRow(title: "PUSH TOKEN", value: viewModel.pushToken)
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 8)
             .background(Color.white)
             Spacer()
                 .frame(height: 12)
-            HStack {
-                Text("Properties")
-                Spacer()
-            }
-            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
-                .frame(alignment: .leading)
+            sectionHeader("PROPERTIES")
+            Divider()
             ExplorerScrollList {
                 ForEach(viewModel.properties, id: \.id) {
                     propertiesRow(property: $0)
                         .padding(.horizontal, 12)
-                        .frame(height: 65)
+                        .frame(height: 56)
                         .background(Color.white)
                     Divider()
                 }
@@ -41,48 +36,55 @@ struct UserInfoSectionView: View {
         .background(Color.white)
     }
 
+    private func sectionHeader(_ title: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(Color.explorerSecondaryText)
+            Spacer()
+        }
+        .frame(height: 36)
+        .padding(.horizontal, 12)
+    }
+
     private func identifierRow(title: String, value: String?) -> some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(Color.black.opacity(0.88))
                 Text(value ?? "N/A")
-                    .font(.system(size: 14))
+                    .font(.system(size: 13))
                     .foregroundColor(Color.explorerSecondaryText)
                     .lineLimit(1)
                     .truncationMode(.tail)
             }
             Spacer()
-            Button("Copy") {
+            ExplorerCopyButton(isEnabled: value != nil) {
                 if let value = value {
                     viewModel.copyToClipboard(value)
                 }
             }
-            .font(.system(size: 15))
-            .disabled(value == nil)
-            .frame(width: 60, height: 25)
         }
+        .frame(height: 56)
     }
     
     private func propertiesRow(property: ExplorerUserProperty) -> some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(property.key)
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(Color.black.opacity(0.88))
                 Text(property.stringValue())
-                    .font(.system(size: 14))
+                    .font(.system(size: 13))
                     .foregroundColor(Color.explorerSecondaryText)
                     .lineLimit(1)
                     .truncationMode(.tail)
             }
             Spacer()
-            Button("Copy") {
+            ExplorerCopyButton {
                 viewModel.copyToClipboard(property.stringValue())
             }
-            .font(.system(size: 15))
-            .frame(width: 60, height: 25)
         }
     }
 }
@@ -97,4 +99,8 @@ fileprivate extension ExplorerUserProperty {
             "\(String(describing: self.value))"
         }
     }
+}
+
+#Preview {
+    UserInfoSectionView(viewModel: ExplorerViewModel(explorer: MockUserExplorer()))
 }

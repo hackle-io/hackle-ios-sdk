@@ -176,6 +176,7 @@
 		B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */; };
 		B2F175A72E1E0708003F2BF4 /* UserEventConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F175A62E1E0700003F2BF4 /* UserEventConstants.swift */; };
 		B2F736C32FE5135D002542BD /* AdaptiveBottomInset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F736C22FE51357002542BD /* AdaptiveBottomInset.swift */; };
+		B2F736C52FE52D18002542BD /* ExplorerCopyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F736C42FE52D18002542BD /* ExplorerCopyButton.swift */; };
 		B2F9D5BF2D4C912700F0C0E0 /* TargetEventConditionMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */; };
 		B2FCA5782FBD42BC001C344C /* MetricsRaceSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCA5772FBD42B3001C344C /* MetricsRaceSpecs.swift */; };
 		B2FCB8BA2EB0CAFD001C6B14 /* HackleWebViewConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8B92EB0CAF6001C6B14 /* HackleWebViewConfig.swift */; };
@@ -926,6 +927,7 @@
 		B2E7B4B02C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HacklePushSubscriptionOperations.swift; sourceTree = "<group>"; };
 		B2F175A62E1E0700003F2BF4 /* UserEventConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventConstants.swift; sourceTree = "<group>"; };
 		B2F736C22FE51357002542BD /* AdaptiveBottomInset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveBottomInset.swift; sourceTree = "<group>"; };
+		B2F736C42FE52D18002542BD /* ExplorerCopyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerCopyButton.swift; sourceTree = "<group>"; };
 		B2F9D5BE2D4C911F00F0C0E0 /* TargetEventConditionMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetEventConditionMatcher.swift; sourceTree = "<group>"; };
 		B2FCA5772FBD42B3001C344C /* MetricsRaceSpecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsRaceSpecs.swift; sourceTree = "<group>"; };
 		B2FCB8B92EB0CAF6001C6B14 /* HackleWebViewConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleWebViewConfig.swift; sourceTree = "<group>"; };
@@ -1898,6 +1900,7 @@
 		CCFAC86CA3F34B53F6A0A0E7 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B2F736C42FE52D18002542BD /* ExplorerCopyButton.swift */,
 				B2F736C22FE51357002542BD /* AdaptiveBottomInset.swift */,
 				7F8907AA42715F33F426C206 /* ToastView.swift */,
 				8007EA972A906BFA5E1A9DB8 /* ExplorerColors.swift */,
@@ -4294,6 +4297,7 @@
 				B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */,
 				B2E7B4B12C9C0A60005FB7A9 /* HacklePushSubscriptionOperations.swift in Sources */,
 				EE29D94429CD825400B1FEAA /* NoopTimer.swift in Sources */,
+				B2F736C52FE52D18002542BD /* ExplorerCopyButton.swift in Sources */,
 				7E46662B2B2C419500B3CDCF /* NotificationRepository.swift in Sources */,
 				EE29D98D29CD825400B1FEAA /* TargetRule.swift in Sources */,
 				B2F175A72E1E0708003F2BF4 /* UserEventConstants.swift in Sources */,

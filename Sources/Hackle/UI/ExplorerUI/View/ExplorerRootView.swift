@@ -6,17 +6,10 @@ struct ExplorerRootView: View {
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(spacing: 0) {
-                headerView
-                tabContent
-                Spacer()
-            }
-
-            ToastView(message: "Copied")
-                .padding(.bottom, 50)
-                .opacity(viewModel.showCopiedToast ? 1 : 0)
-                .animation(.easeInOut(duration: 0.3), value: viewModel.showCopiedToast)
+        VStack(spacing: 0) {
+            headerView
+            tabContent
+            Spacer()
         }
         .background(Color.explorerBackground)
         .onAppear {
