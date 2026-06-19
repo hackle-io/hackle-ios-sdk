@@ -78,6 +78,7 @@
 		AA01IAMITM03000000000001 /* HackleInAppMessageItemSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMITM04000000000001 /* HackleInAppMessageItemSpecs.swift */; };
 		AA01IAMLST01000000000001 /* InAppMessageListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMLST02000000000001 /* InAppMessageListView.swift */; };
 		AA01IAMROW01000000000001 /* InAppMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01IAMROW02000000000001 /* InAppMessageRowView.swift */; };
+		B108CAB39C615A69E4C93690 /* InAppMessageDetailSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42444D6C194813CEB4E65BF2 /* InAppMessageDetailSheetView.swift */; };
 		B203A5842F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203A5832F8E17BD00BDAD31 /* HackleUIDelegateSpecs.swift */; };
 		B20B23142E56F0100019EAA7 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B23132E56F0040019EAA7 /* MimeType.swift */; };
 		B20B234E2E56FB980019EAA7 /* MimeTypeSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20B234D2E56FB910019EAA7 /* MimeTypeSpecs.swift */; };
@@ -773,6 +774,7 @@
 		26ED5AF57AE84CEAA3FCC09A /* InAppMessageDetail.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InAppMessageDetail.swift; sourceTree = "<group>"; };
 		29181C5D4B1E6C512C027033 /* MetricRegistryRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetricRegistryRaceSpecs.swift; sourceTree = "<group>"; };
 		3D138C0A0F36FF3A3CEE9E9A /* AbTestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbTestListView.swift; sourceTree = "<group>"; };
+		42444D6C194813CEB4E65BF2 /* InAppMessageDetailSheetView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InAppMessageDetailSheetView.swift; sourceTree = "<group>"; };
 		5F9CC1E0FB4A5ADA9E2DF7EA /* ConcurrentArrayRaceSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentArrayRaceSpecs.swift; sourceTree = "<group>"; };
 		6195ED6D96F452A75F509FA6 /* HackleHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackleHostingController.swift; sourceTree = "<group>"; };
 		7E0F05462AD7BA6800631B42 /* MockRemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteConfig.swift; sourceTree = "<group>"; };
@@ -1726,6 +1728,7 @@
 			children = (
 				AA01IAMROW02000000000001 /* InAppMessageRowView.swift */,
 				AA01IAMLST02000000000001 /* InAppMessageListView.swift */,
+				42444D6C194813CEB4E65BF2 /* InAppMessageDetailSheetView.swift */,
 			);
 			path = InAppMessage;
 			sourceTree = "<group>";
@@ -4308,6 +4311,7 @@
 				F0DB00715AF8EE936A8C631C /* UIImageExtension.swift in Sources */,
 				64647535A57B1ECD9624B1BF /* InAppMessageDetail.swift in Sources */,
 				1978C08FAB5C56349F38A5D3 /* InAppMessageDebugInspector.swift in Sources */,
+				B108CAB39C615A69E4C93690 /* InAppMessageDetailSheetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
