@@ -18,6 +18,7 @@ class ExplorerViewModel: ObservableObject {
     @Published var abTestItems: [HackleAbTestItem] = []
     @Published var featureFlagItems: [HackleFeatureFlagItem] = []
     @Published var inAppMessageItems: [HackleInAppMessageItem] = []
+    @Published var detailPresentation: InAppMessageDetailPresentation?
 
     init(explorer: HackleUserExplorer) {
         self.explorer = explorer
@@ -50,6 +51,20 @@ class ExplorerViewModel: ObservableObject {
     func loadInAppMessages() {
         let decisions = explorer.getInAppMessageDecisions()
         inAppMessageItems = HackleInAppMessageItem.of(decisions: decisions)
+    }
+
+    func loadInAppMessageDetail(item: HackleInAppMessageItem) {
+        guard item.isTappable,
+              let detail = explorer.getInAppMessageDebugInfo(inAppMessage: item.inAppMessage, reason: item.evaluation.reason)
+        else {
+            return
+        }
+        detailPresentation = InAppMessageDetailPresentation(
+            id: item.inAppMessage.id,
+            keyLabel: item.keyLabel,
+            reason: item.reasonLabel,
+            detail: detail
+        )
     }
 
     func setAbTestOverride(experiment: Experiment, variation: Variation) {
@@ -96,4 +111,11 @@ class ExplorerViewModel: ObservableObject {
             }
         }
     }
+}
+
+struct InAppMessageDetailPresentation: Identifiable {
+    let id: Int64
+    let keyLabel: String
+    let reason: String
+    let detail: InAppMessageDetail
 }
