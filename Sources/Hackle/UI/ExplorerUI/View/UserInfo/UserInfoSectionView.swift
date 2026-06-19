@@ -37,14 +37,7 @@ struct UserInfoSectionView: View {
     }
 
     private func sectionHeader(_ title: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundColor(Color.explorerSecondaryText)
-            Spacer()
-        }
-        .frame(height: 36)
-        .padding(.horizontal, 12)
+        ExplorerSectionHeader(title)
     }
 
     private func identifierRow(title: String, value: String?) -> some View {

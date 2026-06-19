@@ -11,21 +11,21 @@ struct InAppMessageRowView: View {
 
     var body: some View {
         Button(action: { if isTappable { onTap() } }) {
-            HStack {
+            HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(keyLabel)
-                        .font(.system(size: 14))
-                        .foregroundColor(.black)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(Color.black.opacity(0.88))
                         .lineLimit(1)
                         .truncationMode(.tail)
                     Text(descLabel)
-                        .font(.system(size: 12))
+                        .font(.system(size: 13))
                         .foregroundColor(Color.explorerSecondaryText)
                         .lineLimit(1)
                 }
                 Spacer()
                 Text(reasonLabel)
-                    .font(.system(size: 12))
+                    .font(.system(size: 13))
                     .foregroundColor(isEligible ? .blue : Color.explorerSecondaryText)
                     .lineLimit(1)
                     .truncationMode(.tail)
@@ -37,7 +37,7 @@ struct InAppMessageRowView: View {
                 }
             }
             .padding(.horizontal, 12)
-            .frame(height: 65)
+            .frame(height: 56)
             .background(Color.white)
         }
         .buttonStyle(PlainButtonStyle())

@@ -14,15 +14,15 @@ struct ExperimentRowView: View {
     @State private var showActionSheet = false
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(keyLabel)
-                    .font(.system(size: 14))
-                    .foregroundColor(.black)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(Color.black.opacity(0.88))
                     .lineLimit(1)
                     .truncationMode(.tail)
                 Text(descLabel)
-                    .font(.system(size: 12))
+                    .font(.system(size: 13))
                     .foregroundColor(Color.explorerSecondaryText)
                     .lineLimit(1)
             }
@@ -30,7 +30,7 @@ struct ExperimentRowView: View {
             Button(variationTitle) {
                 showActionSheet = true
             }
-            .font(.system(size: 15))
+            .font(.system(size: 13))
             .disabled(!isOverridable)
             .frame(width: 60, height: 25)
             .actionSheet(isPresented: $showActionSheet) {
@@ -46,12 +46,12 @@ struct ExperimentRowView: View {
             Button("Reset") {
                 onOverrideReset()
             }
-            .font(.system(size: 15))
+            .font(.system(size: 13))
             .disabled(!isResetEnabled)
             .frame(width: 60, height: 25)
         }
         .padding(.horizontal, 12)
-        .frame(height: 65)
+        .frame(height: 56)
         .background(Color.white)
     }
 }

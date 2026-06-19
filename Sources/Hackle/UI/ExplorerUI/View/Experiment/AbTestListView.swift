@@ -6,18 +6,13 @@ struct AbTestListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("ABText")
-                Spacer()
+            ExplorerSectionHeader("AB-TEST") {
                 Button("Reset all") {
                     viewModel.resetAllAbTestOverrides()
                 }
-                .font(.system(size: 15))
+                .font(.system(size: 13))
                 .frame(width: 60, height: 25)
             }
-            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
-            .frame(height: 40)
-            .background(Color.white)
 
             ExplorerScrollList {
                 ForEach(viewModel.abTestItems, id: \.experiment.id) { item in

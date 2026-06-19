@@ -6,18 +6,13 @@ struct FeatureFlagListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("FeatureFlag")
-                Spacer()
+            ExplorerSectionHeader("FEATURE-FLAG") {
                 Button("Reset all") {
                     viewModel.resetAllFeatureFlagOverrides()
                 }
-                .font(.system(size: 15))
+                .font(.system(size: 13))
                 .frame(width: 60, height: 25)
             }
-            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
-            .frame(height: 40)
-            .background(Color.white)
 
             ExplorerScrollList {
                 ForEach(viewModel.featureFlagItems, id: \.experiment.id) { item in
