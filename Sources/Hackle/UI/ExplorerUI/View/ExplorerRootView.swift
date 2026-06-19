@@ -9,11 +9,8 @@ struct ExplorerRootView: View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
                 headerView
-                userInfoSection
-                    .padding(.top, 12)
-                tabSelector
-                    .padding(.top, 12)
                 tabContent
+                Spacer()
             }
 
             ToastView(message: "Copied")
@@ -22,9 +19,12 @@ struct ExplorerRootView: View {
                 .animation(.easeInOut(duration: 0.3), value: viewModel.showCopiedToast)
         }
         .background(Color.explorerBackground)
-        .edgesIgnoringSafeArea(.bottom)
         .onAppear {
             viewModel.loadUser()
+        }
+        .adaptiveBottomInset {
+            tabSelector
+                .padding(.top, 1)
         }
     }
 
@@ -55,19 +55,23 @@ struct ExplorerRootView: View {
         .background(Color.white)
     }
 
-    private var userInfoSection: some View {
-        UserInfoSectionView(viewModel: viewModel)
-    }
-
     private var tabSelector: some View {
         HStack(spacing: 0) {
-            tabButton(title: "A/B Test", tab: .abTest)
-            tabButton(title: "Feature Flag", tab: .featureFlag)
-            tabButton(title: "In-App Message", tab: .inAppMessage)
+            tabButton(title: "person", tab: .user)
             Spacer()
+            tabButton(title: "person.2", tab: .abTest)
+            Spacer()
+            tabButton(title: "flag", tab: .featureFlag)
+            Spacer()
+            tabButton(title: "arrow.up.doc", tab: .inAppMessage)
         }
-        .frame(height: 48)
-        .background(Color.white)
+        .frame(height: 24)
+        .padding(EdgeInsets(top: 0, leading: 48, bottom: 0, trailing: 48))
+        .background(
+                Color.white
+                    .edgesIgnoringSafeArea(.bottom)
+            )
+        
     }
 
     private func tabButton(title: String, tab: ExplorerTab) -> some View {
@@ -75,28 +79,22 @@ struct ExplorerRootView: View {
             viewModel.selectedTab = tab
         }) {
             VStack(spacing: 0) {
-                Spacer()
-                Text(title)
-                    .font(.system(size: 15))
-                    .foregroundColor(viewModel.selectedTab == tab ? .black : Color.explorerSecondaryText)
-                Spacer()
                 if viewModel.selectedTab == tab {
-                    Rectangle()
-                        .fill(Color.black)
-                        .frame(height: 2)
+                    Image(systemName: "\(title).fill")
                 } else {
-                    Rectangle()
-                        .fill(Color.clear)
-                        .frame(height: 2)
+                    Image(systemName: title)
                 }
+                
+                
             }
         }
-        .frame(width: 120, height: 48)
     }
 
     private var tabContent: some View {
         Group {
             switch viewModel.selectedTab {
+            case .user:
+                UserInfoSectionView(viewModel: viewModel)
             case .abTest:
                 AbTestListView(viewModel: viewModel)
             case .featureFlag:
@@ -107,3 +105,80 @@ struct ExplorerRootView: View {
         }
     }
 }
+
+#if DEBUG
+class MockUserExplorer: HackleUserExplorer {
+    func currentUser() -> HackleUser {
+        HackleUser.builder()
+            .identifier(.id, "hackle-id")
+            .identifier(.device, "hevice-id")
+            .identifier(.user, "user-id")
+            .properties([
+                "string":"string",
+                "int":0619,
+                "double":123.123,
+                "bool": false,
+                "array": [1, 2, 3],
+                "dict": ["key": "value"],
+                "json":"{key:value}"
+            ])
+            .build()
+    }
+    
+    func registeredPushToken() -> String? {
+        "push-token"
+    }
+    
+    func getAbTestDecisions() -> [(any Experiment, Decision)] {
+        []
+    }
+    
+    func getAbTestOverrides() -> [Int64 : Int64] {
+        [:]
+    }
+    
+    func setAbTestOverride(experiment: any Experiment, variation: any Variation) {
+        
+    }
+    
+    func resetAbTestOverride(experiment: any Experiment, variation: any Variation) {
+        
+    }
+    
+    func resetAllAbTestOverride() {
+        
+    }
+    
+    func getFeatureFlagDecisions() -> [(any Experiment, FeatureFlagDecision)] {
+        []
+    }
+    
+    func getInAppMessageDecisions() -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
+        []
+    }
+    
+    func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail? {
+        nil
+    }
+    
+    func getFeatureFlagOverrides() -> [Int64 : Int64] {
+        [:]
+    }
+    
+    func setFeatureFlagOverride(experiment: any Experiment, variation: any Variation) {
+        
+    }
+    
+    func resetFeatureFlagOverride(experiment: any Experiment, variation: any Variation) {
+        
+    }
+    
+    func resetAllFeatureFlagOverride() {
+        
+    }
+}
+
+#Preview {
+    ExplorerRootView(viewModel: ExplorerViewModel(explorer: MockUserExplorer()))
+}
+#endif

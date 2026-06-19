@@ -10,10 +10,11 @@ class ExplorerViewModel: ObservableObject {
     @Published var deviceId: String?
     @Published var userId: String?
     @Published var pushToken: String?
+    @Published var properties: [ExplorerUserProperty] = []
     @Published var showCopiedToast: Bool = false
     private var toastTask: Task<Void, Never>?
 
-    @Published var selectedTab: ExplorerTab = .abTest
+    @Published var selectedTab: ExplorerTab = .user
 
     @Published var abTestItems: [HackleAbTestItem] = []
     @Published var featureFlagItems: [HackleFeatureFlagItem] = []
@@ -33,6 +34,14 @@ class ExplorerViewModel: ObservableObject {
         defaultId = user.id
         deviceId = user.deviceId
         userId = user.userId
+        properties = user.properties.enumerated()
+            .map { index, element in
+                ExplorerUserProperty(
+                    id: Int64(index),
+                    key: element.key,
+                    value: element.value
+                )
+            }
         pushToken = explorer.registeredPushToken()
     }
 
@@ -118,4 +127,10 @@ struct InAppMessageDetailPresentation: Identifiable {
     let keyLabel: String
     let reason: String
     let detail: InAppMessageDetail
+}
+
+struct ExplorerUserProperty: Identifiable {
+    let id: Int64
+    let key: String
+    let value: Any
 }

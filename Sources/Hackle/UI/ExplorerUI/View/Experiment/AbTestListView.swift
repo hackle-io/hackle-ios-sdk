@@ -7,14 +7,15 @@ struct AbTestListView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
+                Text("ABText")
                 Spacer()
                 Button("Reset all") {
                     viewModel.resetAllAbTestOverrides()
                 }
                 .font(.system(size: 15))
                 .frame(width: 60, height: 25)
-                .padding(.trailing, 12)
             }
+            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
             .frame(height: 40)
             .background(Color.white)
 

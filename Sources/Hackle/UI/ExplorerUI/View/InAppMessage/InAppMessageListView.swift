@@ -6,6 +6,11 @@ struct InAppMessageListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            HStack {
+                Text("InAppMessage")
+                Spacer()
+            }
+            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
             ExplorerScrollList {
                 ForEach(viewModel.inAppMessageItems, id: \.inAppMessage.id) { item in
                     InAppMessageRowView(

@@ -54,7 +54,7 @@ struct InAppMessageDetailSheetView: View {
         } else {
             ForEach(groups, id: \.index) { group in
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Target \(group.index)  (모두 만족 필요)")
+                    Text("Target \(group.index)")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.black)
                     ForEach(Array(group.conditions.enumerated()), id: \.offset) { _, condition in
