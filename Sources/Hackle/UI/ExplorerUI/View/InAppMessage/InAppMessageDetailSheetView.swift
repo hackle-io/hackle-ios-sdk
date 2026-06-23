@@ -66,12 +66,12 @@ struct InAppMessageDetailSheetView: View {
     private func conditionRow(_ c: ConditionDetail) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
+                Text("\(c.keyType)")
+                    .font(.system(size: 13))
+                    .foregroundColor(.black)
                 Text("\(c.keyName)")
                     .font(.system(size: 13))
                     .foregroundColor(.black)
-                Text("타겟팅 조건: \(c.requirement)")
-                    .font(.system(size: 12))
-                    .foregroundColor(Color.explorerSecondaryText)
                 Spacer()
                 if let isMatched = c.isMatched {
                     Text(isMatched ? "✓" : "✕")
@@ -83,6 +83,9 @@ struct InAppMessageDetailSheetView: View {
                         .foregroundColor(Color.explorerSecondaryText)
                 }
             }
+            Text("타겟팅 조건: \(c.requirement)")
+                .font(.system(size: 12))
+                .foregroundColor(Color.explorerSecondaryText)
             if c.isUserProperty {
                 Text("현재 값: \(c.userValue ?? "(nil)")")
                     .font(.system(size: 12))

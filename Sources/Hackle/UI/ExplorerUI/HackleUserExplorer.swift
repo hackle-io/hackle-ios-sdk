@@ -125,11 +125,19 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     }
 
     func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail? {
-        inAppMessageDebugInspector.inspect(
+        var abTestDecisions: [Experiment.Key: Decision] = [:]
+        var featureFlagDecisions: [Experiment.Key: FeatureFlagDecision] = [:]
+        if reason == DecisionReason.IN_APP_MESSAGE_TARGET || reason == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET {
+            abTestDecisions = Dictionary(getAbTestDecisions().map { ($0.0.key, $0.1) }, uniquingKeysWith: { first, _ in first })
+            featureFlagDecisions = Dictionary(getFeatureFlagDecisions().map { ($0.0.key, $0.1) }, uniquingKeysWith: { first, _ in first })
+        }
+        return inAppMessageDebugInspector.inspect(
             inAppMessage: inAppMessage,
             reason: reason,
             user: currentUser(),
-            now: Date()
+            now: Date(),
+            abTestDecisions: abTestDecisions,
+            featureFlagDecisions: featureFlagDecisions
         )
     }
 

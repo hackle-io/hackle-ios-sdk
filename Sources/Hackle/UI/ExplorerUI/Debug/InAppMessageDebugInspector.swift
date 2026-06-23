@@ -22,21 +22,69 @@ class InAppMessageDebugInspector {
 
     // MARK: - Target
 
-    func targetDetails(inAppMessage: InAppMessage, user: HackleUser) -> [TargetGroupDetail] {
+    func targetDetails(
+        inAppMessage: InAppMessage,
+        user: HackleUser,
+        abTestDecisions: [Experiment.Key: Decision] = [:],
+        featureFlagDecisions: [Experiment.Key: FeatureFlagDecision] = [:]
+    ) -> [TargetGroupDetail] {
         inAppMessage.targetContext.targets.enumerated().map { index, target in
             TargetGroupDetail(
                 index: index + 1,
-                conditions: target.conditions.map { conditionDetail(condition: $0, user: user) }
+                conditions: target.conditions.map {
+                    conditionDetail(
+                        condition: $0,
+                        user: user,
+                        abTestDecisions: abTestDecisions,
+                        featureFlagDecisions: featureFlagDecisions
+                    )
+                }
             )
         }
     }
 
-    private func conditionDetail(condition: Target.Condition, user: HackleUser) -> ConditionDetail {
+    private func conditionDetail(
+        condition: Target.Condition,
+        user: HackleUser,
+        abTestDecisions: [Experiment.Key: Decision],
+        featureFlagDecisions: [Experiment.Key: FeatureFlagDecision]
+    ) -> ConditionDetail {
         let keyType = condition.key.type
-        let isUserProperty = (keyType == .userId || keyType == .userProperty || keyType == .hackleProperty)
-        let requirement = "\(condition.match.matchOperator.rawValue) [\(condition.match.values.map { $0.asString() ?? "" }.joined(separator: ", "))]"
+        let requirement = requirementString(condition.match)
 
-        guard isUserProperty else {
+        switch keyType {
+        case .userId, .userProperty, .hackleProperty:
+            let resolved = try? userValueResolver.resolveOrNil(user: user, key: condition.key)
+            let userValue: Any? = resolved ?? nil
+            let isMatched = valueOperatorMatcher.matches(userValue: userValue, match: condition.match)
+            return ConditionDetail(
+                keyType: keyType.rawValue,
+                keyName: condition.key.name,
+                requirement: requirement,
+                userValue: userValue.map { "\($0)" },
+                isMatched: isMatched,
+                isUserProperty: true
+            )
+        case .abTest:
+            return ConditionDetail(
+                keyType: keyType.rawValue,
+                keyName: condition.key.name,
+                requirement: requirement,
+                userValue: nil,
+                isMatched: abTestMatched(condition: condition, decisions: abTestDecisions),
+                isUserProperty: false
+            )
+        case .featureFlag:
+            return ConditionDetail(
+                keyType: keyType.rawValue,
+                keyName: condition.key.name,
+                requirement: requirement,
+                userValue: nil,
+                isMatched: featureFlagMatched(condition: condition, decisions: featureFlagDecisions),
+                isUserProperty: false
+            )
+        case .eventProperty, .segment, .cohort, .numberOfEventsInDays, .numberOfEventsWithPropertyInDays:
+            // 트리거 이벤트나 추가 평가 컨텍스트가 필요해 디버그 화면에서는 평가하지 않는다.
             return ConditionDetail(
                 keyType: keyType.rawValue,
                 keyName: condition.key.name,
@@ -46,19 +94,32 @@ class InAppMessageDebugInspector {
                 isUserProperty: false
             )
         }
+    }
 
-        let resolved = try? userValueResolver.resolveOrNil(user: user, key: condition.key)
-        let userValue: Any? = resolved ?? nil
-        let isMatched = valueOperatorMatcher.matches(userValue: userValue, match: condition.match)
-        let userValueString: String? = userValue.map { "\($0)" }
-        return ConditionDetail(
-            keyType: keyType.rawValue,
-            keyName: condition.key.name,
-            requirement: requirement,
-            userValue: userValueString,
-            isMatched: isMatched,
-            isUserProperty: true
-        )
+    /// 조건 표현식 문자열. NOT_MATCH 조건은 "NOT" 접두사를 붙인다.
+    private func requirementString(_ match: Target.Match) -> String {
+        let prefix = match.type == .notMatch ? "NOT " : ""
+        let values = match.values.map { $0.asString() ?? "" }.joined(separator: ", ")
+        return "\(prefix)\(match.matchOperator.rawValue) [\(values)]"
+    }
+
+    /// 이미 평가된 AB 테스트 결정을 재사용해 조건 매칭 여부를 재현한다. (`AbTestConditionMatcher`와 동일 규칙)
+    private func abTestMatched(condition: Target.Condition, decisions: [Experiment.Key: Decision]) -> Bool? {
+        guard let key = Experiment.Key(condition.key.name), let decision = decisions[key] else {
+            return nil
+        }
+        guard AbTestConditionMatcher.AB_TEST_MATCHED_REASONS.contains(decision.reason) else {
+            return false
+        }
+        return valueOperatorMatcher.matches(userValue: decision.variation, match: condition.match)
+    }
+
+    /// 이미 평가된 기능 플래그 결정을 재사용해 조건 매칭 여부를 재현한다. (`FeatureFlagConditionMatcher`와 동일 규칙)
+    private func featureFlagMatched(condition: Target.Condition, decisions: [Experiment.Key: FeatureFlagDecision]) -> Bool? {
+        guard let key = Experiment.Key(condition.key.name), let decision = decisions[key] else {
+            return nil
+        }
+        return valueOperatorMatcher.matches(userValue: decision.isOn, match: condition.match)
     }
 
     // MARK: - Frequency
@@ -110,10 +171,22 @@ class InAppMessageDebugInspector {
 
     // MARK: - Dispatch
 
-    func inspect(inAppMessage: InAppMessage, reason: String, user: HackleUser, now: Date) -> InAppMessageDetail? {
+    func inspect(
+        inAppMessage: InAppMessage,
+        reason: String,
+        user: HackleUser,
+        now: Date,
+        abTestDecisions: [Experiment.Key: Decision] = [:],
+        featureFlagDecisions: [Experiment.Key: FeatureFlagDecision] = [:]
+    ) -> InAppMessageDetail? {
         switch reason {
         case DecisionReason.IN_APP_MESSAGE_TARGET, DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET:
-            return .target(targetDetails(inAppMessage: inAppMessage, user: user))
+            return .target(targetDetails(
+                inAppMessage: inAppMessage,
+                user: user,
+                abTestDecisions: abTestDecisions,
+                featureFlagDecisions: featureFlagDecisions
+            ))
         case DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED:
             return .frequency(frequencyDetail(inAppMessage: inAppMessage, user: user, now: now))
         case DecisionReason.IN_APP_MESSAGE_HIDDEN:

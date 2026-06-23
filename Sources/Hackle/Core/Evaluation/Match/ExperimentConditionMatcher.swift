@@ -59,7 +59,7 @@ extension ExperimentEvaluatorMatcher {
 
 class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
 
-    private static let AB_TEST_MATCHED_REASONS = [
+    static let AB_TEST_MATCHED_REASONS = [
         DecisionReason.OVERRIDDEN,
         DecisionReason.TRAFFIC_ALLOCATED,
         DecisionReason.EXPERIMENT_COMPLETED,

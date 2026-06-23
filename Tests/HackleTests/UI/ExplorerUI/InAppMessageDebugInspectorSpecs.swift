@@ -119,6 +119,149 @@ class InAppMessageDebugInspectorSpecs: QuickSpec {
 
                 expect(groups.map { $0.index }) == [1, 2]
             }
+
+            it("ab test 조건 - 매칭 reason이고 variation이 일치하면 isMatched=true") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .abTest, name: "5"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "B")])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+                let decisions: [Experiment.Key: Decision] = [
+                    5: Decision.of(experiment: nil, variation: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                ]
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build(), abTestDecisions: decisions)[0].conditions[0]
+
+                expect(c.keyType) == "AB_TEST"
+                expect(c.isUserProperty) == false
+                expect(c.isMatched) == true
+            }
+
+            it("ab test 조건 - variation이 다르면 isMatched=false") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .abTest, name: "5"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "B")])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+                let decisions: [Experiment.Key: Decision] = [
+                    5: Decision.of(experiment: nil, variation: "A", reason: DecisionReason.TRAFFIC_ALLOCATED)
+                ]
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build(), abTestDecisions: decisions)[0].conditions[0]
+
+                expect(c.isMatched) == false
+            }
+
+            it("ab test 조건 - 매칭 reason이 아니면 isMatched=false") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .abTest, name: "5"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "B")])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+                let decisions: [Experiment.Key: Decision] = [
+                    5: Decision.of(experiment: nil, variation: "B", reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+                ]
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build(), abTestDecisions: decisions)[0].conditions[0]
+
+                expect(c.isMatched) == false
+            }
+
+            it("ab test 조건 - decision이 없으면 isMatched=nil") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .abTest, name: "5"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "B")])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build())[0].conditions[0]
+
+                expect(c.isMatched).to(beNil())
+            }
+
+            it("feature flag 조건 - isOn이 match와 일치하면 isMatched=true") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .featureFlag, name: "10"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .bool, values: [HackleValue(value: true)])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+                let decisions: [Experiment.Key: FeatureFlagDecision] = [
+                    10: FeatureFlagDecision.on(featureFlag: nil, reason: DecisionReason.DEFAULT_RULE)
+                ]
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build(), featureFlagDecisions: decisions)[0].conditions[0]
+
+                expect(c.keyType) == "FEATURE_FLAG"
+                expect(c.isUserProperty) == false
+                expect(c.isMatched) == true
+            }
+
+            it("feature flag 조건 - decision이 없으면 isMatched=nil") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .featureFlag, name: "10"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .bool, values: [HackleValue(value: true)])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build())[0].conditions[0]
+
+                expect(c.isMatched).to(beNil())
+            }
+
+            it("cohort 조건은 평가하지 않고 isMatched=nil") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .cohort, name: "1"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 1)])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().build())[0].conditions[0]
+
+                expect(c.keyType) == "COHORT"
+                expect(c.isMatched).to(beNil())
+            }
+
+            it("NOT_MATCH 조건은 requirement에 NOT 접두사가 붙는다") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .userProperty, name: "age"),
+                    match: Target.Match(type: .notMatch, matchOperator: .gte, valueType: .number, values: [HackleValue(value: 20)])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().property("age", 25).build())[0].conditions[0]
+
+                expect(c.requirement) == "NOT GTE [20]"
+            }
+
+            it("MATCH 조건은 requirement에 NOT 접두사가 없다") {
+                let condition = Target.Condition(
+                    key: Target.Key(type: .userProperty, name: "age"),
+                    match: Target.Match(type: .match, matchOperator: .gte, valueType: .number, values: [HackleValue(value: 20)])
+                )
+                let inAppMessage = InAppMessage.create(
+                    targetContext: InAppMessage.targetContext(targets: [Target(conditions: [condition])])
+                )
+
+                let c = inspector().targetDetails(inAppMessage: inAppMessage, user: HackleUser.builder().property("age", 25).build())[0].conditions[0]
+
+                expect(c.requirement) == "GTE [20]"
+            }
         }
 
         describe("frequencyDetail") {
