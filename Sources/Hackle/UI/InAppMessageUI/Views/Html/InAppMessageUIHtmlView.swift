@@ -129,13 +129,16 @@ extension HackleInAppMessageUI {
                 let resolver = try contentResolverFactory.get(resourceType: html.resourceType)
                 resolver.resolve(html: html) { [weak self] result in
                     Task { @MainActor in
+                        guard let self, !self.isDismissed else {
+                            return
+                        }
                         switch result {
                         case .success(let content):
-                            self?.scheduleLoadTimeout()
-                            self?.webView.load(html: content)
+                            self.scheduleLoadTimeout()
+                            self.webView.load(html: content)
                         case .failure(let error):
                             Log.error("Failed to resolve Html content: \(error)")
-                            self?.dismiss()
+                            self.dismiss()
                         }
                     }
                 }
