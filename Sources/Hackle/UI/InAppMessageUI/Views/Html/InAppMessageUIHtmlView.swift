@@ -164,6 +164,7 @@ extension HackleInAppMessageUI {
         }
 
         func scheduleLoadTimeout() {
+            cancelLoadTimeout()
             loadTimeoutJob = scheduler.schedule(delay: Self.loadTimeout) { [weak self] in
                 Task { @MainActor in
                     self?.onLoadTimeout()
