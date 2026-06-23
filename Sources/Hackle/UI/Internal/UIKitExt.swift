@@ -66,7 +66,7 @@ extension UIImageView {
             return
         }
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
                 if let error = error {
                     Log.error("Failed to load image [\(url)]: \(error)")
                     return
@@ -75,6 +75,9 @@ extension UIImageView {
                 DispatchQueue.main.async {
                     if let data = data, let image = UIImage(data: data) {
                         ImageCacheManager.shared.setObject(image, forKey: cacheKey)
+                        guard let self = self else {
+                            return
+                        }
                         self.image = image
                         completion?()
                     }
