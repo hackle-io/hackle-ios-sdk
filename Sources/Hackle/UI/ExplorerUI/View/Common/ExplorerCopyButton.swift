@@ -21,7 +21,7 @@ struct ExplorerCopyButton: View {
                     .scaleEffect(isCopied ? 0.82 : 1)
                     .foregroundColor(isEnabled ? .blue : Color.explorerSecondaryText)
 
-                Image(systemName: "checkmark")
+                Text("✓")
                     .opacity(isCopied ? 1 : 0)
                     .scaleEffect(isCopied ? 1 : 0.82)
                     .foregroundColor(.green)

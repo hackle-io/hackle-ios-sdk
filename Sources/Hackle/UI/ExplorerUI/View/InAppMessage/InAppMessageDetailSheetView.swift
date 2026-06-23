@@ -25,7 +25,7 @@ struct InAppMessageDetailSheetView: View {
                 .foregroundColor(.black)
             Text(presentation.reason)
                 .font(.system(size: 12))
-                .foregroundColor(Color.explorerSecondaryText)
+                .foregroundColor(presentation.isEligible ? Color.blue : Color.explorerSecondaryText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
@@ -48,15 +48,12 @@ struct InAppMessageDetailSheetView: View {
     @ViewBuilder
     private func targetContent(_ groups: [TargetGroupDetail]) -> some View {
         if groups.isEmpty {
-            Text("타겟 조건이 없습니다 (전체 노출 대상)")
+            Text("전체 노출 대상입니다.")
                 .font(.system(size: 13))
                 .foregroundColor(Color.explorerSecondaryText)
         } else {
             ForEach(groups, id: \.index) { group in
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Target \(group.index)")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.black)
                     ForEach(Array(group.conditions.enumerated()), id: \.offset) { _, condition in
                         conditionRow(condition)
                     }
@@ -72,8 +69,8 @@ struct InAppMessageDetailSheetView: View {
                 Text("\(c.keyName)")
                     .font(.system(size: 13))
                     .foregroundColor(.black)
-                Text("(\(c.keyType))")
-                    .font(.system(size: 11))
+                Text("타겟팅 조건: \(c.requirement)")
+                    .font(.system(size: 12))
                     .foregroundColor(Color.explorerSecondaryText)
                 Spacer()
                 if let isMatched = c.isMatched {
@@ -86,11 +83,8 @@ struct InAppMessageDetailSheetView: View {
                         .foregroundColor(Color.explorerSecondaryText)
                 }
             }
-            Text("요구: \(c.requirement)")
-                .font(.system(size: 12))
-                .foregroundColor(Color.explorerSecondaryText)
             if c.isUserProperty {
-                Text("유저 값: \(c.userValue ?? "(없음)")")
+                Text("현재 값: \(c.userValue ?? "(nil)")")
                     .font(.system(size: 12))
                     .foregroundColor(Color.explorerSecondaryText)
             }
@@ -175,4 +169,27 @@ private struct SheetDetentsIfAvailable: ViewModifier {
             content
         }
     }
+}
+
+#Preview {
+    InAppMessageDetailSheetView(
+        presentation: InAppMessageDetailPresentation(
+            id: 0,
+            keyLabel: "key",
+            reason: "reason",
+            isEligible: true,
+            detail: InAppMessageDetail.target([
+                TargetGroupDetail(index: 1, conditions: [
+                    ConditionDetail(
+                        keyType: "USER_PROPERTY",
+                        keyName: "test",
+                        requirement: "IN [VIP, GOLD]",
+                        userValue: "VIP",
+                        isMatched: true,
+                        isUserProperty: true
+                    )
+                ])
+            ])
+        )
+    )
 }

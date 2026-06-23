@@ -66,6 +66,7 @@ class ExplorerViewModel: ObservableObject {
             id: item.inAppMessage.id,
             keyLabel: item.keyLabel,
             reason: item.reasonLabel,
+            isEligible: item.isEligible,
             detail: detail
         )
     }
@@ -110,6 +111,7 @@ struct InAppMessageDetailPresentation: Identifiable {
     let id: Int64
     let keyLabel: String
     let reason: String
+    let isEligible: Bool
     let detail: InAppMessageDetail
 }
 
