@@ -131,6 +131,7 @@ extension HackleInAppMessageUI {
                     Task { @MainActor in
                         switch result {
                         case .success(let content):
+                            self?.scheduleLoadTimeout()
                             self?.webView.load(html: content)
                         case .failure(let error):
                             Log.error("Failed to resolve Html content: \(error)")
@@ -228,6 +229,7 @@ extension HackleInAppMessageUI.HtmlView: WKNavigationDelegate {
         webView.disableDragAndDrop()
         webView.evaluate(script: DisableSelectionScript())
         webView.evaluate(script: bridgeScript) { [weak self] _, _ in
+            self?.cancelLoadTimeout()
             self?.showContent()
         }
     }
