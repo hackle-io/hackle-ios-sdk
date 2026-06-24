@@ -9,17 +9,24 @@ extension HackleInAppMessageUI {
         private let app: HackleApp
         private let contentResolverFactory: InAppMessageHtmlContentResolverFactory
         private let bridgeScript: HtmlViewBridgeScript
+        private let scheduler: Scheduler
+
+        static let loadTimeout: TimeInterval = 30
+        private var loadTimeoutJob: ScheduledJob?
+        private(set) var isDismissed = false
 
         init(
             context: InAppMessagePresentationContext,
             app: HackleApp,
             contentResolverFactory: InAppMessageHtmlContentResolverFactory,
-            bridgeScript: HtmlViewBridgeScript
+            bridgeScript: HtmlViewBridgeScript,
+            scheduler: Scheduler
         ) {
             self.context = context
             self.app = app
             self.contentResolverFactory = contentResolverFactory
             self.bridgeScript = bridgeScript
+            self.scheduler = scheduler
             super.init(frame: .zero)
 
             alpha = 0
@@ -82,6 +89,12 @@ extension HackleInAppMessageUI {
         }
 
         func dismiss() {
+            guard !isDismissed else {
+                return
+            }
+            isDismissed = true
+            cancelLoadTimeout()
+
             webView.stopLoading()
             webView.navigationDelegate = nil
 
@@ -116,12 +129,16 @@ extension HackleInAppMessageUI {
                 let resolver = try contentResolverFactory.get(resourceType: html.resourceType)
                 resolver.resolve(html: html) { [weak self] result in
                     Task { @MainActor in
+                        guard let self, !self.isDismissed else {
+                            return
+                        }
                         switch result {
                         case .success(let content):
-                            self?.webView.load(html: content)
+                            self.scheduleLoadTimeout()
+                            self.webView.load(html: content)
                         case .failure(let error):
                             Log.error("Failed to resolve Html content: \(error)")
-                            self?.dismiss()
+                            self.dismiss()
                         }
                     }
                 }
@@ -131,7 +148,10 @@ extension HackleInAppMessageUI {
             }
         }
 
-        private func showContent() {
+        func showContent() {
+            guard !isDismissed else {
+                return
+            }
             window?.makeKey()
             UIView.animate(
                 withDuration: 0.1,
@@ -144,6 +164,28 @@ extension HackleInAppMessageUI {
                     self.didPresent()
                 }
             )
+        }
+
+        func scheduleLoadTimeout() {
+            cancelLoadTimeout()
+            loadTimeoutJob = scheduler.schedule(delay: Self.loadTimeout) { [weak self] in
+                Task { @MainActor in
+                    self?.onLoadTimeout()
+                }
+            }
+        }
+
+        private func cancelLoadTimeout() {
+            loadTimeoutJob?.cancel()
+            loadTimeoutJob = nil
+        }
+
+        func onLoadTimeout() {
+            guard !isDismissed, !presented else {
+                return
+            }
+            Log.error("InAppMessage HTML did not become ready within \(Self.loadTimeout)s; closing [\(inAppMessage.id)]")
+            dismiss()
         }
 
         // MARK: - Views
@@ -191,6 +233,7 @@ extension HackleInAppMessageUI.HtmlView: WKNavigationDelegate {
         webView.disableDragAndDrop()
         webView.evaluate(script: DisableSelectionScript())
         webView.evaluate(script: bridgeScript) { [weak self] _, _ in
+            self?.cancelLoadTimeout()
             self?.showContent()
         }
     }
