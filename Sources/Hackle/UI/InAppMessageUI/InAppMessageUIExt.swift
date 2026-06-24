@@ -28,7 +28,8 @@ extension HackleInAppMessageUI {
                 return nil
             }
             let bridgeScript = HtmlViewBridgeScript.create(config: app.config)
-            return HtmlView(context: context, app: app, contentResolverFactory: htmlContentResolverFactory, bridgeScript: bridgeScript)
+            let scheduler = Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.InAppMessageHtmlView"))
+            return HtmlView(context: context, app: app, contentResolverFactory: htmlContentResolverFactory, bridgeScript: bridgeScript, scheduler: scheduler)
         default:
             Log.error("Failed to create InAppMessageView [\(context.message.layout.displayType), \(context.message.layout.layoutType)]")
             return nil

@@ -984,5 +984,38 @@ class DefaultUserManagerSpecs: QuickSpec {
                 expect(repository.getData(key: "user")).notTo(beNil())
             }
         }
+
+        // setUser -> changeUser -> SessionManager -> SessionEventTracker -> toHackleUser(user:) 재진입 체인.
+        // 비재진입 lock이면 deadlock한다.
+        describe("re-entrant lock") {
+            it("listener가 onUserUpdated에서 toHackleUser를 재호출해도 deadlock 없이 완료된다") {
+                let reentrant = ReentrantUserListener(userManager: sut)
+                sut.addListener(listener: reentrant)
+                sut.initialize(user: nil)
+
+                let done = DispatchSemaphore(value: 0)
+                DispatchQueue.global().async {
+                    _ = sut.setUser(user: User.builder().userId("user_id").build())
+                    done.signal()
+                }
+
+                expect(done.wait(timeout: .now() + 3)) == DispatchTimeoutResult.success
+                expect(reentrant.reentrantUser?.identifiers["$userId"]) == "user_id"
+            }
+        }
+    }
+}
+
+// onUserUpdated 시점에 toHackleUser(user:)를 재호출해 lock 재진입을 유발하는 테스트 전용 listener.
+fileprivate class ReentrantUserListener: UserListener {
+    private weak var userManager: DefaultUserManager?
+    private(set) var reentrantUser: HackleUser?
+
+    init(userManager: DefaultUserManager) {
+        self.userManager = userManager
+    }
+
+    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+        reentrantUser = userManager?.toHackleUser(user: newUser)
     }
 }

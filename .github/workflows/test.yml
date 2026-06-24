@@ -106,5 +106,6 @@ jobs:
                 -only-testing:HackleTests/AtomicReferenceRaceSpecs \
                 -only-testing:HackleTests/DelegatingMetricRegistrySpecs/concurrency \
                 -only-testing:HackleTests/MetricsRaceSpecs \
+                -only-testing:HackleTests/UserManagerRaceSpecs \
                 -parallel-testing-enabled NO \
                 | xcbeautify --renderer github-actions --quiet
