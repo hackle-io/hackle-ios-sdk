@@ -52,8 +52,8 @@ extension HackleInAppMessageUI {
             guard let imageView = imageView, let image = context.message.image(orientation: attributes.orientation) else {
                 return
             }
-            imageView.loadImage(url: image.imagePath) {
-                self.layoutContent()
+            imageView.loadImage(url: image.imagePath) { [weak self] in
+                self?.layoutContent()
             }
         }
 
