@@ -15,8 +15,9 @@ struct ConditionDetail {
     let keyType: String      // USER_PROPERTY / HACKLE_PROPERTY / SEGMENT ...
     let keyName: String
     let requirement: String  // "GTE [20]", "IN [VIP, GOLD]"
-    let userValue: String?   // user property 계열만. 그 외 nil
-    let isMatched: Bool?     // user property 계열만. 그 외 nil
+    let userValue: String?
+    let isMatched: Bool?
+    let matchType: Target.MatchType
     let isUserProperty: Bool
 }
 

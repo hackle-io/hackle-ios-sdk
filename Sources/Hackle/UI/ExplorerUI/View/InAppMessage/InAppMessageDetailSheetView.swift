@@ -83,9 +83,19 @@ struct InAppMessageDetailSheetView: View {
                         .foregroundColor(Color.explorerSecondaryText)
                 }
             }
-            Text("타겟팅 조건: \(c.requirement)")
-                .font(.system(size: 12))
-                .foregroundColor(Color.explorerSecondaryText)
+            HStack {
+                Text("타겟팅 조건: ")
+                    .font(.system(size: 12))
+                    .foregroundColor(Color.explorerSecondaryText)
+                if c.matchType == .notMatch {
+                    Text("NOT")
+                        .font(.system(size: 12))
+                        .foregroundColor(Color.red)
+                }
+                Text("\(c.requirement)")
+                    .font(.system(size: 12))
+                    .foregroundColor(Color.explorerSecondaryText)
+            }
             if c.isUserProperty {
                 Text("현재 값: \(c.userValue ?? "(nil)")")
                     .font(.system(size: 12))
@@ -189,6 +199,7 @@ private struct SheetDetentsIfAvailable: ViewModifier {
                         requirement: "IN [VIP, GOLD]",
                         userValue: "VIP",
                         isMatched: true,
+                        matchType: .notMatch,
                         isUserProperty: true
                     )
                 ])

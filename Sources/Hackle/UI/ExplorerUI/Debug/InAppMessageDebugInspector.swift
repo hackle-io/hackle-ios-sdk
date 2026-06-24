@@ -63,6 +63,7 @@ class InAppMessageDebugInspector {
                 requirement: requirement,
                 userValue: userValue.map { "\($0)" },
                 isMatched: isMatched,
+                matchType: condition.match.type,
                 isUserProperty: true
             )
         case .abTest:
@@ -72,6 +73,7 @@ class InAppMessageDebugInspector {
                 requirement: requirement,
                 userValue: nil,
                 isMatched: abTestMatched(condition: condition, decisions: abTestDecisions),
+                matchType: condition.match.type,
                 isUserProperty: false
             )
         case .featureFlag:
@@ -81,6 +83,7 @@ class InAppMessageDebugInspector {
                 requirement: requirement,
                 userValue: nil,
                 isMatched: featureFlagMatched(condition: condition, decisions: featureFlagDecisions),
+                matchType: condition.match.type,
                 isUserProperty: false
             )
         case .eventProperty, .segment, .cohort, .numberOfEventsInDays, .numberOfEventsWithPropertyInDays:
@@ -91,6 +94,7 @@ class InAppMessageDebugInspector {
                 requirement: requirement,
                 userValue: nil,
                 isMatched: nil,
+                matchType: condition.match.type,
                 isUserProperty: false
             )
         }
@@ -98,9 +102,8 @@ class InAppMessageDebugInspector {
 
     /// 조건 표현식 문자열. NOT_MATCH 조건은 "NOT" 접두사를 붙인다.
     private func requirementString(_ match: Target.Match) -> String {
-        let prefix = match.type == .notMatch ? "NOT " : ""
         let values = match.values.map { $0.asString() ?? "" }.joined(separator: ", ")
-        return "\(prefix)\(match.matchOperator.rawValue) [\(values)]"
+        return "\(match.matchOperator.rawValue) [\(values)]"
     }
 
     /// 이미 평가된 AB 테스트 결정을 재사용해 조건 매칭 여부를 재현한다. (`AbTestConditionMatcher`와 동일 규칙)
