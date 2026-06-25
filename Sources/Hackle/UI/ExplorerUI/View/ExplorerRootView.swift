@@ -149,11 +149,7 @@ class MockUserExplorer: HackleUserExplorer {
     func getInAppMessageDecisions() -> [(InAppMessage, InAppMessageEligibilityEvaluation)] {
         []
     }
-    
-    func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail? {
-        nil
-    }
-    
+
     func getFeatureFlagOverrides() -> [Int64 : Int64] {
         [:]
     }

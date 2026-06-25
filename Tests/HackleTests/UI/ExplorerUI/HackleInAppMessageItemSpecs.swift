@@ -85,28 +85,5 @@ class HackleInAppMessageItemSpecs: QuickSpec {
                 expect(item.isEligible) == false
             }
         }
-
-        describe("isTappable") {
-
-            it("TARGET / FREQUENCY_CAPPED / HIDDEN reason은 탭 가능") {
-                let m = InAppMessage.create(id: 1, key: 42)
-
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.IN_APP_MESSAGE_TARGET)).isTappable) == true
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET)).isTappable) == true
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED)).isTappable) == true
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.IN_APP_MESSAGE_HIDDEN)).isTappable) == true
-            }
-
-            it("그 외 reason은 탭 불가") {
-                let m = InAppMessage.create(id: 1, key: 42)
-
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.OVERRIDDEN)).isTappable) == false
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.IN_APP_MESSAGE_PAUSED)).isTappable) == false
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.IN_APP_MESSAGE_DRAFT)).isTappable) == false
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_PERIOD)).isTappable) == false
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE)).isTappable) == false
-                expect(HackleInAppMessageItem(inAppMessage: m, evaluation: InAppMessage.eligibilityEvaluation(reason: DecisionReason.UNSUPPORTED_PLATFORM)).isTappable) == false
-            }
-        }
     }
 }

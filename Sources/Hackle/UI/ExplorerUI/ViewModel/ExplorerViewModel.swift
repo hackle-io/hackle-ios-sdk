@@ -17,7 +17,6 @@ class ExplorerViewModel: ObservableObject {
     @Published var abTestItems: [HackleAbTestItem] = []
     @Published var featureFlagItems: [HackleFeatureFlagItem] = []
     @Published var inAppMessageItems: [HackleInAppMessageItem] = []
-    @Published var detailPresentation: InAppMessageDetailPresentation?
 
     init(explorer: HackleUserExplorer) {
         self.explorer = explorer
@@ -56,21 +55,6 @@ class ExplorerViewModel: ObservableObject {
         inAppMessageItems = HackleInAppMessageItem.of(decisions: decisions)
     }
 
-    func loadInAppMessageDetail(item: HackleInAppMessageItem) {
-        guard item.isTappable,
-              let detail = explorer.getInAppMessageDebugInfo(inAppMessage: item.inAppMessage, reason: item.evaluation.reason)
-        else {
-            return
-        }
-        detailPresentation = InAppMessageDetailPresentation(
-            id: item.inAppMessage.id,
-            keyLabel: item.keyLabel,
-            reason: item.reasonLabel,
-            isEligible: item.isEligible,
-            detail: detail
-        )
-    }
-
     func setAbTestOverride(experiment: Experiment, variation: Variation) {
         explorer.setAbTestOverride(experiment: experiment, variation: variation)
         loadAbTests()
@@ -105,14 +89,6 @@ class ExplorerViewModel: ObservableObject {
         UIPasteboard.general.string = text
         Metrics.counter(name: "user.explorer.identifier.copy").increment()
     }
-}
-
-struct InAppMessageDetailPresentation: Identifiable {
-    let id: Int64
-    let keyLabel: String
-    let reason: String
-    let isEligible: Bool
-    let detail: InAppMessageDetail
 }
 
 struct ExplorerUserProperty: Identifiable {

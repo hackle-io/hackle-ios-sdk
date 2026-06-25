@@ -28,16 +28,7 @@ class DefaultHackleUserExplorerInAppMessageSpecs: QuickSpec {
                 pushTokenManager: pushTokenManager,
                 abTestOverrideStorage: abTestOverrideStorage,
                 featureFlagOverrideStorage: featureFlagOverrideStorage,
-                devToolsAPI: devToolsAPI,
-                inAppMessageDebugInspector: InAppMessageDebugInspector(
-                    impressionStorage: DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()),
-                    hiddenStorage: DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()),
-                    valueOperatorMatcher: DefaultValueOperatorMatcher(
-                        valueMatcherFactory: ValueMatcherFactory(),
-                        operatorMatcherFactory: OperatorMatcherFactory()
-                    ),
-                    userValueResolver: DefaultUserValueResolver()
-                )
+                devToolsAPI: devToolsAPI
             )
         }
 

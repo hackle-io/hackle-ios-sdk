@@ -45,16 +45,7 @@ class HackleAppSpecs: QuickSpec {
                 pushTokenManager: MockPushTokenManager(),
                 abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                devToolsAPI: MockDevToolsAPI(),
-                inAppMessageDebugInspector: InAppMessageDebugInspector(
-                    impressionStorage: DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()),
-                    hiddenStorage: DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()),
-                    valueOperatorMatcher: DefaultValueOperatorMatcher(
-                        valueMatcherFactory: ValueMatcherFactory(),
-                        operatorMatcherFactory: OperatorMatcherFactory()
-                    ),
-                    userValueResolver: DefaultUserValueResolver()
-                )
+                devToolsAPI: MockDevToolsAPI()
             )
             let urlHandler = ApplicationUrlHandler()
             let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])

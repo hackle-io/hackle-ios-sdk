@@ -28,8 +28,6 @@ protocol HackleUserExplorer {
 
     func getInAppMessageDecisions() -> [(InAppMessage, InAppMessageEligibilityEvaluation)]
 
-    func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail?
-
     func getFeatureFlagOverrides() -> [Int64: Int64]
 
     func setFeatureFlagOverride(experiment: Experiment, variation: Variation)
@@ -47,7 +45,6 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     private let abTestOverrideStorage: HackleUserManualOverrideStorage
     private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
     private let devToolsAPI: DevToolsAPI
-    private let inAppMessageDebugInspector: InAppMessageDebugInspector
 
     init(
         core: HackleCore,
@@ -55,8 +52,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         pushTokenManager: PushTokenManager,
         abTestOverrideStorage: HackleUserManualOverrideStorage,
         featureFlagOverrideStorage: HackleUserManualOverrideStorage,
-        devToolsAPI: DevToolsAPI,
-        inAppMessageDebugInspector: InAppMessageDebugInspector
+        devToolsAPI: DevToolsAPI
     ) {
         self.core = core
         self.userManager = userManager
@@ -64,7 +60,6 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         self.abTestOverrideStorage = abTestOverrideStorage
         self.featureFlagOverrideStorage = featureFlagOverrideStorage
         self.devToolsAPI = devToolsAPI
-        self.inAppMessageDebugInspector = inAppMessageDebugInspector
     }
 
     func currentUser() -> HackleUser {
@@ -122,23 +117,6 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
         } catch {
             return []
         }
-    }
-
-    func getInAppMessageDebugInfo(inAppMessage: InAppMessage, reason: String) -> InAppMessageDetail? {
-        var abTestDecisions: [Experiment.Key: Decision] = [:]
-        var featureFlagDecisions: [Experiment.Key: FeatureFlagDecision] = [:]
-        if reason == DecisionReason.IN_APP_MESSAGE_TARGET || reason == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET {
-            abTestDecisions = Dictionary(getAbTestDecisions().map { ($0.0.key, $0.1) }, uniquingKeysWith: { first, _ in first })
-            featureFlagDecisions = Dictionary(getFeatureFlagDecisions().map { ($0.0.key, $0.1) }, uniquingKeysWith: { first, _ in first })
-        }
-        return inAppMessageDebugInspector.inspect(
-            inAppMessage: inAppMessage,
-            reason: reason,
-            user: currentUser(),
-            now: Date(),
-            abTestDecisions: abTestDecisions,
-            featureFlagDecisions: featureFlagDecisions
-        )
     }
 
     func getFeatureFlagOverrides() -> [Int64: Int64] {

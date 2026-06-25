@@ -13,9 +13,7 @@ struct InAppMessageListView: View {
                         keyLabel: item.keyLabel,
                         descLabel: item.descLabel,
                         reasonLabel: item.reasonLabel,
-                        isEligible: item.isEligible,
-                        isTappable: item.isTappable,
-                        onTap: { viewModel.loadInAppMessageDetail(item: item) }
+                        isEligible: item.isEligible
                     )
                     Divider()
                 }
@@ -24,9 +22,6 @@ struct InAppMessageListView: View {
         .background(Color.white)
         .onAppear {
             viewModel.loadInAppMessages()
-        }
-        .sheet(item: $viewModel.detailPresentation) { presentation in
-            InAppMessageDetailSheetView(presentation: presentation)
         }
     }
 }

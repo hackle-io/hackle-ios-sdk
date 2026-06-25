@@ -835,16 +835,7 @@ extension HackleApp {
             pushTokenManager: pushTokenManager,
             abTestOverrideStorage: abOverrideStorage,
             featureFlagOverrideStorage: ffOverrideStorage,
-            devToolsAPI: devToolsAPI,
-            inAppMessageDebugInspector: InAppMessageDebugInspector(
-                impressionStorage: inAppMessageImpressionStorage,
-                hiddenStorage: inAppMessageHiddenStorage,
-                valueOperatorMatcher: DefaultValueOperatorMatcher(
-                    valueMatcherFactory: ValueMatcherFactory(),
-                    operatorMatcherFactory: OperatorMatcherFactory()
-                ),
-                userValueResolver: DefaultUserValueResolver()
-            )
+            devToolsAPI: devToolsAPI
         )
 
         // - Metrics
