@@ -24,7 +24,7 @@ jobs:
       - name: Prebuild before test # 테스트 전에 빌드
         run: |
             set -o pipefail && xcodebuild build-for-testing \
-                -project Examples/TesterApp/TesterApp.xcodeproj \
+                -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 SWIFT_STRICT_CONCURRENCY=complete \
@@ -33,7 +33,7 @@ jobs:
       - name: Test
         run: |
             set -o pipefail && xcodebuild test-without-building \
-                -project Examples/TesterApp/TesterApp.xcodeproj \
+                -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 -retry-tests-on-failure \
@@ -67,7 +67,7 @@ jobs:
         id: swift6
         run: |
             set -o pipefail && xcodebuild build \
-                -project Examples/TesterApp/TesterApp.xcodeproj \
+                -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 SWIFT_VERSION=6 \
@@ -88,7 +88,7 @@ jobs:
       - name: Prebuild with Thread Sanitizer
         run: |
             set -o pipefail && xcodebuild build-for-testing \
-                -project Examples/TesterApp/TesterApp.xcodeproj \
+                -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 -enableThreadSanitizer YES \
@@ -97,7 +97,7 @@ jobs:
       - name: Run Concurrency Specs under TSan
         run: |
             set -o pipefail && xcodebuild test-without-building \
-                -project Examples/TesterApp/TesterApp.xcodeproj \
+                -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
                 -enableThreadSanitizer YES \

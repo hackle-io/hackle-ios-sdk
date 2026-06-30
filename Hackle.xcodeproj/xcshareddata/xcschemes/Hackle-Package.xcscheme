@@ -18,7 +18,7 @@
                BlueprintIdentifier = "Hackle::Hackle"
                BuildableName = "Hackle.framework"
                BlueprintName = "Hackle"
-               ReferencedContainer = "container:TesterApp.xcodeproj">
+               ReferencedContainer = "container:Hackle.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,7 +36,7 @@
             BlueprintIdentifier = "Hackle::Hackle"
             BuildableName = "Hackle.framework"
             BlueprintName = "Hackle"
-            ReferencedContainer = "container:TesterApp.xcodeproj">
+            ReferencedContainer = "container:Hackle.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
@@ -48,7 +48,7 @@
                BlueprintIdentifier = "Hackle::HackleTests"
                BuildableName = "HackleTests.xctest"
                BlueprintName = "HackleTests"
-               ReferencedContainer = "container:TesterApp.xcodeproj">
+               ReferencedContainer = "container:Hackle.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

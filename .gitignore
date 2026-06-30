@@ -7,7 +7,7 @@ xcuserdata
 /Release
 /.idea
 .github/workflows/.idea
-Examples/TesterApp/TesterApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+Hackle.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 .index-build
 .cache
 cmake-build-debug

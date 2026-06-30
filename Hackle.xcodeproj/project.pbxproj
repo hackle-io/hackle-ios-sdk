@@ -50,7 +50,7 @@
 			};
 			explicitFolders = (
 			);
-			path = ../../Sources/Hackle;
+			path = Sources/Hackle;
 			sourceTree = "<group>";
 		};
 		EE0000000000000000000003 /* Tests */ = {
@@ -59,7 +59,7 @@
 			};
 			explicitFolders = (
 			);
-			path = ../../Tests/HackleTests;
+			path = Tests/HackleTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -168,7 +168,7 @@
 					};
 				};
 			};
-			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "TesterApp" */;
+			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "Hackle" */;
 			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -368,8 +368,8 @@
 					"$(inherited)",
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
-				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Hackle.xcodeproj/HackleTests_Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -395,8 +395,8 @@
 					"$(inherited)",
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
-				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Hackle.xcodeproj/HackleTests_Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -425,7 +425,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_2 /* Build configuration list for PBXProject "TesterApp" */ = {
+		OBJ_2 /* Build configuration list for PBXProject "Hackle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				OBJ_3 /* Debug */,

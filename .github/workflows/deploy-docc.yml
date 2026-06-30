@@ -31,7 +31,7 @@ jobs:
       
       - name: Build DocC Documentation
         run: |
-          xcodebuild docbuild -project Examples/TesterApp/TesterApp.xcodeproj \
+          xcodebuild docbuild -project Hackle.xcodeproj \
             -scheme Hackle-Package -configuration "Release" \
             -derivedDataPath /tmp/docbuild \
             -destination 'generic/platform=iOS'
