@@ -27,8 +27,28 @@ jobs:
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 SWIFT_STRICT_CONCURRENCY=complete \
                 | xcbeautify --renderer github-actions --quiet 
+
+      - name: Verify framework resources
+        run: |
+            FRAMEWORK_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/Hackle.framework"
+            if [[ ! -d "$FRAMEWORK_PATH" ]]; then
+                echo "::error::Hackle.framework not found at $FRAMEWORK_PATH"
+                exit 1
+            fi
+
+            missing=0
+            while IFS= read -r resource; do
+                file_name="$(basename "$resource")"
+                if [[ ! -f "$FRAMEWORK_PATH/$file_name" ]]; then
+                    echo "::error file=$resource::Missing framework resource: $file_name"
+                    missing=1
+                fi
+            done < <(find Sources/Hackle/Resources -type f | sort)
+
+            exit "$missing"
 
       - name: Test
         run: |
@@ -36,6 +56,7 @@ jobs:
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
                 -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 -retry-tests-on-failure \
                 -test-iterations 3 \
                 -parallel-testing-enabled NO \
