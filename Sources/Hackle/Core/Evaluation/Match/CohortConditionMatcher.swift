@@ -16,7 +16,7 @@ class CohortConditionMatcher: ConditionMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
         guard condition.key.type == .cohort else {
             throw HackleError.error("Unsupported TargetKeyType [\(condition.key.type)]")
         }

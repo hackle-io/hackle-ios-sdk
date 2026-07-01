@@ -1,11 +1,11 @@
 import Foundation
 
 protocol TargetMatcher {
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool
+    func matches(request: EvaluateRequest, context: EvaluatorContext, target: Target) throws -> Bool
 }
 
 extension TargetMatcher {
-    func anyMatches(request: EvaluatorRequest, context: EvaluatorContext, targets: [Target]) throws -> Bool {
+    func anyMatches(request: EvaluateRequest, context: EvaluatorContext, targets: [Target]) throws -> Bool {
         if targets.isEmpty {
             return true
         }
@@ -24,13 +24,13 @@ class DefaultTargetMatcher: TargetMatcher {
         self.conditionMatcherFactory = conditionMatcherFactory
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, target: Target) throws -> Bool {
         try target.conditions.allSatisfy { it in
             try matches(request: request, context: context, condition: it)
         }
     }
 
-    private func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    private func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
         let conditionMatcher = conditionMatcherFactory.getMatcher(condition.key.type)
         return try conditionMatcher.matches(request: request, context: context, condition: condition)
     }

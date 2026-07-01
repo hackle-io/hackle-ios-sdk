@@ -15,7 +15,10 @@ class SegmentConditionMatcher: ConditionMatcher {
         self.segmentMatcher = segmentMatcher
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+        guard let request = request as? LocalEvaluateRequest else {
+            return false
+        }
         guard condition.key.type == .segment else {
             throw HackleError.error("Unsupported TargetKeyType [\(condition.key.type)]")
         }
@@ -25,7 +28,7 @@ class SegmentConditionMatcher: ConditionMatcher {
         return condition.match.type.matches(isMatched)
     }
 
-    private func matches(request: EvaluatorRequest, context: EvaluatorContext, value: HackleValue) throws -> Bool {
+    private func matches(request: LocalEvaluateRequest, context: EvaluatorContext, value: HackleValue) throws -> Bool {
         guard let segmentKey = value.stringOrNil else {
             throw HackleError.error("SegmentKey[\(value)]")
         }
@@ -37,7 +40,7 @@ class SegmentConditionMatcher: ConditionMatcher {
 }
 
 protocol SegmentMatcher {
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, segment: Segment) throws -> Bool
+    func matches(request: LocalEvaluateRequest, context: EvaluatorContext, segment: Segment) throws -> Bool
 }
 
 class DefaultSegmentMatcher: SegmentMatcher {
@@ -48,13 +51,13 @@ class DefaultSegmentMatcher: SegmentMatcher {
         self.userConditionMatcher = userConditionMatcher
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, segment: Segment) throws -> Bool {
+    func matches(request: LocalEvaluateRequest, context: EvaluatorContext, segment: Segment) throws -> Bool {
         try segment.targets.contains { it in
             try matches(request: request, context: context, target: it)
         }
     }
 
-    private func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
+    private func matches(request: LocalEvaluateRequest, context: EvaluatorContext, target: Target) throws -> Bool {
         try target.conditions.allSatisfy { it in
             try userConditionMatcher.matches(request: request, context: context, condition: it)
         }

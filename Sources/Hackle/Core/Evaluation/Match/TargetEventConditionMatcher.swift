@@ -18,7 +18,7 @@ class TargetEventConditionMatcher: ConditionMatcher {
         self.numberOfEventsWithPropertyInDaysMatcher = numberOfEventsWithPropertyInDaysMatcher
     }
     
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
         switch condition.key.type {
         case .numberOfEventsInDays:
             return try numberOfEventsInDaysMatcher.match(targetEvents: request.user.targetEvents, condition: condition)

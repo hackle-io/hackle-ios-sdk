@@ -18,13 +18,17 @@ class EventConditionMatcher: ConditionMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
-        guard let eventRequest = request as? EvaluatorEventRequest else {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+        guard let eventRequest = request as? EventEvaluateRequest else {
             return false
         }
         let eventValue = try eventValueResolver.resolveOrNil(event: eventRequest.event, key: condition.key)
         return valueOperatorMatcher.matches(userValue: eventValue, match: condition.match)
     }
+}
+
+protocol EventEvaluateRequest: EvaluateRequest {
+    var event: UserEvent { get }
 }
 
 protocol EventValueResolver {

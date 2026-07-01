@@ -23,7 +23,7 @@ class EventConditionMatcherSpecs: QuickSpec {
             sut = EventConditionMatcher(eventValueResolver: eventValueResolver, valueOperatorMatcher: valueOperatorMatcher)
         }
 
-        it("when request is not of EvaluatorEventRequest type then returns false") {
+        it("when request is not of EventEvaluateRequest type then returns false") {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .eventProperty, name: "os_name"),
@@ -64,17 +64,19 @@ class EventConditionMatcherSpecs: QuickSpec {
         }
     }
 
-    private class EventRequest: EvaluatorEventRequest {
-        let key: EvaluatorKey
+    private class EventRequest: EventEvaluateRequest {
         let workspace: Workspace
         let user: HackleUser
         let event: UserEvent
+        let entity: Entity
+        let record: Bool
 
         init(workspace: Workspace, user: HackleUser, event: UserEvent) {
-            self.key = EvaluatorKey(type: .inAppMessage, id: event.timestamp.epochMillis)
             self.workspace = workspace
             self.user = user
             self.event = event
+            self.entity = DefaultEntity(serviceType: .inAppMessage, id: event.timestamp.epochMillis)
+            self.record = true
         }
     }
 }

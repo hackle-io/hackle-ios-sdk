@@ -6,7 +6,7 @@ import MockingKit
 
 class DefaultConditionMatcherFactorySpecs: QuickSpec {
     override class func spec() {
-        let sut = DefaultConditionMatcherFactory(evaluator: MockEvaluator(), clock: SystemClock.shared)
+        let sut = DefaultConditionMatcherFactory(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory()), clock: SystemClock.shared)
         it("getMatcher") {
             expect(sut.getMatcher(.userId)).to(beAnInstanceOf(UserConditionMatcher.self))
             expect(sut.getMatcher(.userProperty)).to(beAnInstanceOf(UserConditionMatcher.self))

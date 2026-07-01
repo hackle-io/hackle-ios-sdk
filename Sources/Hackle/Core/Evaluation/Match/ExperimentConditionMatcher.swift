@@ -18,7 +18,10 @@ class ExperimentConditionMatcher: ConditionMatcher {
         self.featureFlagMatcher = featureFlagMatcher
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+        guard let request = request as? LocalEvaluateRequest else {
+            return false
+        }
         switch condition.key.type {
         case .abTest:
             return try abTestMatcher.matches(request: request, context: context, condition: condition)
@@ -31,18 +34,18 @@ class ExperimentConditionMatcher: ConditionMatcher {
 }
 
 protocol ExperimentMatcher {
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
+    func matches(request: LocalEvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
 }
 
 protocol ExperimentEvaluatorMatcher: ExperimentMatcher, ExperimentContextualEvaluator {
     var valueOperatorMatcher: ValueOperatorMatcher { get }
 
-    func experiment(request: EvaluatorRequest, key: Int64) -> Experiment?
+    func experiment(request: LocalEvaluateRequest, key: Int64) -> Experiment?
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool
 }
 
 extension ExperimentEvaluatorMatcher {
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: LocalEvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
 
         guard let key = Int64(condition.key.name) else {
             throw HackleError.error("Invalid key [\(condition.key.type.rawValue), \(condition.key.name)]")
@@ -74,7 +77,7 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func experiment(request: EvaluatorRequest, key: Int64) -> Experiment? {
+    func experiment(request: LocalEvaluateRequest, key: Int64) -> Experiment? {
         request.workspace.getExperimentOrNil(experimentKey: key)
     }
 
@@ -104,7 +107,7 @@ class FeatureFlagConditionMatcher: ExperimentEvaluatorMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func experiment(request: EvaluatorRequest, key: Int64) -> Experiment? {
+    func experiment(request: LocalEvaluateRequest, key: Int64) -> Experiment? {
         request.workspace.getFeatureFlagOrNil(featureKey: key)
     }
 
