@@ -40,7 +40,7 @@ class MockSlot: Mock, Slot {
     }
 }
 
-final class MockExperiment: Mock, Experiment, @unchecked Sendable {
+final class MockExperiment: Mock, ExperimentConfig, @unchecked Sendable {
     let id: Id
     let key: Key
     let name: String?

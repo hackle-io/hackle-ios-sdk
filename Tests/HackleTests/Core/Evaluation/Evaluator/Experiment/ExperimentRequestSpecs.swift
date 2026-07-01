@@ -10,10 +10,16 @@ import Foundation
 
 
 func experimentRequest(
-    workspace: Workspace = MockWorkspace(),
+    workspace: WorkspaceConfig = MockWorkspace(),
     user: HackleUser = HackleUser.builder().identifier(IdentifierType.id, "user").build(),
-    experiment: Experiment = MockExperiment(),
+    experiment: ExperimentConfig = MockExperiment(),
     defaultVariation: String = "A"
-) -> ExperimentRequest {
-    ExperimentRequest.of(workspace: workspace, user: user, experiment: experiment, defaultVariationKey: defaultVariation)
+) -> ExperimentLocalEvaluateRequest {
+    ExperimentLocalEvaluateRequest(
+        workspace: workspace,
+        entity: experiment,
+        user: user,
+        record: true,
+        defaultVariationKey: defaultVariation
+    )
 }
