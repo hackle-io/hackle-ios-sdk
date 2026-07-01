@@ -5,6 +5,10 @@ class EvaluationEventFactory {
     private static let ROOT_TYPE = "$targetingRootType"
     private static let ROOT_ID = "$targetingRootId"
 
+    private static let CONFIG_ID_PROPERTY_KEY = "$parameterConfigurationId"
+    private static let EXPERIMENT_VERSION_KEY = "$experiment_version"
+    private static let EXECUTION_VERSION_KEY = "$execution_version"
+
     private let clock: Clock
 
     init(clock: Clock) {
@@ -28,9 +32,21 @@ class EvaluationEventFactory {
         return events
     }
 
-    // step 3: ExperimentEvaluation → UserEvents.exposure ($parameterConfigurationId / $experiment_version / $execution_version / evaluation.properties 키는 기존 DefaultUserEventFactory에서 그대로 이관)
     // step 4: RemoteConfigEvaluation → UserEvents.remoteConfig
     private func create(user: HackleUser, evaluation: Evaluation, timestamp: Date, properties: PropertiesBuilder) -> UserEvent? {
-        return nil
+        switch evaluation {
+        case let evaluation as ExperimentEvaluation:
+            properties.add(EvaluationEventFactory.CONFIG_ID_PROPERTY_KEY, evaluation.experimentResult.config?.id)
+            properties.add(EvaluationEventFactory.EXPERIMENT_VERSION_KEY, evaluation.experiment.version)
+            properties.add(EvaluationEventFactory.EXECUTION_VERSION_KEY, evaluation.experiment.executionVersion)
+            return UserEvents.exposure(
+                user: user,
+                evaluation: evaluation,
+                properties: properties.build(),
+                timestamp: timestamp
+            )
+        default:
+            return nil
+        }
     }
 }

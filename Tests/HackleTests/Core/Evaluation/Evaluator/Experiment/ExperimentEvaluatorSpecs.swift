@@ -16,16 +16,18 @@ class ExperimentEvaluatorSpecs: QuickSpec {
     override class func spec() {
 
         var flowFactory: MockExperimentFlowFactory!
-        var sut: ExperimentEvaluator!
+        var eventRecorder: MockEvaluationEventRecorder!
+        var sut: ExperimentLocalEvaluator!
 
         beforeEach {
             flowFactory = MockExperimentFlowFactory()
-            sut = ExperimentEvaluator(flowFactory: flowFactory)
+            eventRecorder = MockEvaluationEventRecorder()
+            sut = ExperimentLocalEvaluator(evaluationFlowFactory: flowFactory, eventRecorder: eventRecorder)
         }
 
         it("supports") {
-            expect(sut.support(request: experimentRequest())) == true
-            expect(sut.support(request: remoteConfigRequest())) == false
+            expect(sut.supports(request: experimentRequest())) == true
+            expect(sut.supports(request: remoteConfigRequest())) == false
         }
 
         describe("evaluate") {
@@ -35,7 +37,7 @@ class ExperimentEvaluatorSpecs: QuickSpec {
                 context.add(request)
 
                 expect {
-                    let _: ExperimentEvaluation = try sut.evaluate(request: request, context: context)
+                    let _: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: context)
                 }
                     .to(throwError())
             }
@@ -43,27 +45,27 @@ class ExperimentEvaluatorSpecs: QuickSpec {
             context("flow") {
                 it("evaluation") {
                     let evaluation = experimentEvaluation()
-                    let flow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.create(evaluation)
+                    let flow: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.create(evaluation)
                     every(flowFactory.getMock).returns(flow)
 
                     let request = experimentRequest()
                     let context = Evaluators.context()
 
-                    let actual: ExperimentEvaluation = try sut.evaluate(request: request, context: context)
+                    let actual: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: context)
 
-                    expect(actual).to(beIdenticalTo(evaluation))
+                    expect(actual.experimentEvaluation).to(beIdenticalTo(evaluation))
                 }
 
                 it("default") {
-                    let flow: EvaluationFlow<ExperimentRequest, ExperimentEvaluation> = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>.end()
+                    let flow: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.end()
                     every(flowFactory.getMock).returns(flow)
-                    
+
                     let request = experimentRequest()
                     let context = Evaluators.context()
 
-                    let actual: ExperimentEvaluation = try sut.evaluate(request: request, context: context)
+                    let actual: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: context)
 
-                    expect(actual.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
+                    expect(actual.experimentEvaluation.experimentResult.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
                 }
             }
         }

@@ -15,3 +15,12 @@ class EvaluatorFactory {
         return evaluator
     }
 }
+
+extension EvaluatorFactory {
+    func experiment(_ request: ExperimentEvaluateRequest) throws -> any ExperimentEvaluator {
+        guard let evaluator = try get(request: request) as? any ExperimentEvaluator else {
+            throw HackleError.error("Unsupported experiment evaluator")
+        }
+        return evaluator
+    }
+}

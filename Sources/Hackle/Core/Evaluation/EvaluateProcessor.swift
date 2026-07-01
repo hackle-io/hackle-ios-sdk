@@ -19,3 +19,9 @@ class EvaluateProcessor {
         return response
     }
 }
+
+extension EvaluateProcessor {
+    func experiment(_ request: ExperimentEvaluateRequest) throws -> ExperimentEvaluateResponse {
+        try evaluate(evaluator: try evaluatorFactory.experiment(request), request: request)
+    }
+}
