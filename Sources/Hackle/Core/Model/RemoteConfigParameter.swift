@@ -8,9 +8,13 @@
 import Foundation
 
 
-final class RemoteConfigParameter: Sendable {
+final class RemoteConfigParameter: RemoteConfigParameterConfig, Sendable {
     typealias Id = Int64
     typealias Key = String
+
+    var serviceType: ServiceType {
+        .remoteConfig
+    }
 
     let id: Id
     let key: Key

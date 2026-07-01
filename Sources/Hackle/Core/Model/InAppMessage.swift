@@ -7,9 +7,13 @@
 
 import Foundation
 
-final class InAppMessage: HackleInAppMessage, Sendable {
+final class InAppMessage: HackleInAppMessage, InAppMessageConfig, Sendable {
     typealias Id = Int64
     typealias Key = Int64
+
+    var serviceType: ServiceType {
+        .inAppMessage
+    }
 
     let id: Id
     let key: Key
