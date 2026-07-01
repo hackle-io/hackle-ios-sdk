@@ -1,8 +1,8 @@
 import Foundation
 
 protocol WorkspaceConfigRepository {
-    func get() -> WorkspaceConfig?
-    func set(value: WorkspaceConfig)
+    func get() -> WorkspaceConfigResponse?
+    func set(value: WorkspaceConfigResponse)
 }
 
 class DefaultWorkspaceConfigRepository: WorkspaceConfigRepository {
@@ -12,9 +12,9 @@ class DefaultWorkspaceConfigRepository: WorkspaceConfigRepository {
         self.fileStorage = fileStorage
     }
     
-    func get() -> WorkspaceConfig? {
+    func get() -> WorkspaceConfigResponse? {
         if let data = try? fileStorage?.read(filename: DefaultWorkspaceConfigRepository.FILE_NAME),
-           let config = try? JSONDecoder().decode(WorkspaceConfig.self, from: data) {
+           let config = try? JSONDecoder().decode(WorkspaceConfigResponse.self, from: data) {
             return config
         } else {
             try? fileStorage?.delete(filename: DefaultWorkspaceConfigRepository.FILE_NAME)
@@ -22,7 +22,7 @@ class DefaultWorkspaceConfigRepository: WorkspaceConfigRepository {
         }
     }
     
-    func set(value: WorkspaceConfig) {
+    func set(value: WorkspaceConfigResponse) {
         if let data = try? JSONEncoder().encode(value) {
             try? fileStorage?.write(filename: DefaultWorkspaceConfigRepository.FILE_NAME, data: data)
         }

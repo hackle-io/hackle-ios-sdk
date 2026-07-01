@@ -12,14 +12,14 @@ class MockHttpWorkspaceFetcher: Mock, HttpWorkspaceFetcher {
     }
     
     lazy var fetchIfModifiedRef = MockFunction(self, fetchIfModified)
-    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
+    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ()) {
         call(fetchIfModifiedRef, args: (lastModified, completion))
         
         let value = returns[count]
         count += 1
 
         switch value {
-        case let config as WorkspaceConfig:
+        case let config as WorkspaceConfigResponse:
             completion(.success(config))
             break
         case let error as Error:

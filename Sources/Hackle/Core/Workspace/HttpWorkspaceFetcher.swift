@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol HttpWorkspaceFetcher {
-    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ())
+    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ())
 }
 
 class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
@@ -26,7 +26,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
     }
 
-    func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
+    func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ()) {
         let request = createRequest(lastModified: lastModified)
         execute(request: request, completion: completion)
     }
@@ -39,7 +39,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfig?, Error>) -> ()) {
+    private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ()) {
         let sample = TimerSample.start()
         httpClient.execute(request: request) { [weak self] response in
             guard let self = self else {
@@ -56,7 +56,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfig? {
+    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfigResponse? {
         if let error = response.error {
             throw error
         }
@@ -85,6 +85,6 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
 
         Log.debug("Workspace fetched")
 
-        return WorkspaceConfig(lastModified: lastModified, config: workspaceDto)
+        return WorkspaceConfigResponse(lastModified: lastModified, config: workspaceDto)
     }
 }

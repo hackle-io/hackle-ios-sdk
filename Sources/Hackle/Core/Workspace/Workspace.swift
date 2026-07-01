@@ -191,7 +191,7 @@ class WorkspaceEntity: Workspace {
     }
 }
 
-struct WorkspaceConfig: Codable {
+struct WorkspaceConfigResponse: Codable {
     var lastModified: String?
     var config: WorkspaceConfigDto
 }

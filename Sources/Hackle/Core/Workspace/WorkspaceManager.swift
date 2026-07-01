@@ -38,7 +38,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
         }
     }
 
-    private func setWorkspaceConfig(_ config: WorkspaceConfig) {
+    private func setWorkspaceConfig(_ config: WorkspaceConfigResponse) {
         lastModified = config.lastModified
         workspace = WorkspaceEntity.from(dto: config.config)
     }
@@ -50,7 +50,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
         }
     }
 
-    private func handle(result: Result<WorkspaceConfig?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
+    private func handle(result: Result<WorkspaceConfigResponse?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
         switch result {
         case .success(let config):
             if let config {

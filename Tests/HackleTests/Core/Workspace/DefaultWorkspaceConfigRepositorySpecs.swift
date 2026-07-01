@@ -35,9 +35,9 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
             expect(repository.get()).to(beNil())
             
             let json = readTextFromRes(filename: "workspace_config")
-            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let data = try! JSONDecoder().decode(WorkspaceConfigResponse.self, from: json.data(using: .utf8)!)
             repository.set(value: data)
-            
+
             expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
         }
         
@@ -51,7 +51,7 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
             expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
             
             let modifiedData = readTextFromRes(filename: "workspace_config_modified")
-            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: modifiedData.data(using: .utf8)!)
+            let data = try! JSONDecoder().decode(WorkspaceConfigResponse.self, from: modifiedData.data(using: .utf8)!)
             repository.set(value: data)
             
             expect(repository.get()?.lastModified) == "Mon, 22 Jan 2024 08:37:33 GMT"

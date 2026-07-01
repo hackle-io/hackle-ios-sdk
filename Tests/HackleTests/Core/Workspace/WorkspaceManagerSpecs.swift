@@ -5,9 +5,9 @@ import MockingKit
 @testable import Hackle
 
 class WorkspaceManagerSpecs: QuickSpec {
-    static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfig {
+    static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfigResponse {
         let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self).path(forResource: filename, ofType: "json")!)
-        return try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+        return try! JSONDecoder().decode(WorkspaceConfigResponse.self, from: json.data(using: .utf8)!)
     }
     
     override class func spec() {
