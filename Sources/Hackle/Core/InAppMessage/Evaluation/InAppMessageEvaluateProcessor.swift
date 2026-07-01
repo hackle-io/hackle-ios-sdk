@@ -1,7 +1,7 @@
 import Foundation
 
 protocol InAppMessageEvaluateProcessor {
-    func process(type: InAppMessageEvaluateType, request: InAppMessageEligibilityRequest) throws -> InAppMessageEligibilityEvaluation
+    func process(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityRequest) throws -> InAppMessageEligibilityEvaluation
 }
 
 class DefaultInAppMessageEvaluateProcessor: InAppMessageEvaluateProcessor {
@@ -16,7 +16,7 @@ class DefaultInAppMessageEvaluateProcessor: InAppMessageEvaluateProcessor {
     }
 
     func process(
-        type: InAppMessageEvaluateType,
+        type: InAppMessageEvaluateScope,
         request: InAppMessageEligibilityRequest
     ) throws -> InAppMessageEligibilityEvaluation {
         let flow = resolveFlow(type: type, request: request)
@@ -24,7 +24,7 @@ class DefaultInAppMessageEvaluateProcessor: InAppMessageEvaluateProcessor {
         return try core.inAppMessage(request: request, context: Evaluators.context(), evaluator: evaluator)
     }
 
-    private func resolveFlow(type: InAppMessageEvaluateType, request: InAppMessageEligibilityRequest) -> InAppMessageEligibilityFlow {
+    private func resolveFlow(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityRequest) -> InAppMessageEligibilityFlow {
         switch type {
         case .trigger:
             return flowFactory.triggerFlow()

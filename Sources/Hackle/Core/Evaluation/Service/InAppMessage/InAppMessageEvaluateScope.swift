@@ -1,6 +1,6 @@
 import Foundation
 
-enum InAppMessageEvaluateType {
+enum InAppMessageEvaluateScope {
     case trigger
     case deliver
 }
