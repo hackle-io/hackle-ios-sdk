@@ -30,4 +30,18 @@ extension EvaluatorFactory {
         }
         return evaluator
     }
+
+    func inAppMessage(_ request: InAppMessageEligibilityEvaluateRequest) throws -> any InAppMessageEligibilityEvaluator {
+        guard let e = try get(request: request) as? any InAppMessageEligibilityEvaluator else {
+            throw HackleError.error("Unsupported IAM eligibility evaluator")
+        }
+        return e
+    }
+
+    func inAppMessage(_ request: InAppMessageLayoutEvaluateRequest) throws -> any InAppMessageLayoutEvaluator {
+        guard let e = try get(request: request) as? any InAppMessageLayoutEvaluator else {
+            throw HackleError.error("Unsupported IAM layout evaluator")
+        }
+        return e
+    }
 }

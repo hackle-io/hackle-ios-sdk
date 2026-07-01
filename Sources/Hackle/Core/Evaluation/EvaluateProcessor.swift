@@ -28,4 +28,12 @@ extension EvaluateProcessor {
     func remoteConfig(_ request: RemoteConfigEvaluateRequest) throws -> RemoteConfigEvaluateResponse {
         try evaluate(evaluator: try evaluatorFactory.remoteConfig(request), request: request)
     }
+
+    func inAppMessage(_ request: InAppMessageEligibilityEvaluateRequest) throws -> InAppMessageEligibilityEvaluateResponse {
+        try evaluate(evaluator: try evaluatorFactory.inAppMessage(request), request: request)
+    }
+
+    func inAppMessage(_ request: InAppMessageLayoutEvaluateRequest) throws -> InAppMessageLayoutEvaluateResponse {
+        try evaluate(evaluator: try evaluatorFactory.inAppMessage(request), request: request)
+    }
 }
