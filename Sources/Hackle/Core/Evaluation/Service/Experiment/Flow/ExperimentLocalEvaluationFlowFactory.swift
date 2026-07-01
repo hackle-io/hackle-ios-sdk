@@ -1,6 +1,10 @@
 import Foundation
 
-class ExperimentLocalEvaluationFlowFactory {
+protocol ExperimentLocalEvaluationFlowFactory {
+    func flow(experimentType: ExperimentType) -> ExperimentLocalEvaluationFlow
+}
+
+class DefaultExperimentLocalEvaluationFlowFactory: ExperimentLocalEvaluationFlowFactory {
 
     private let abTestFlow: ExperimentLocalEvaluationFlow
     private let featureFlagFlow: ExperimentLocalEvaluationFlow
