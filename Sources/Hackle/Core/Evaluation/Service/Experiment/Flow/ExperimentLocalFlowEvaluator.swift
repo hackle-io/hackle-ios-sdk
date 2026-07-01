@@ -1,44 +1,68 @@
 import Foundation
 
-typealias ExperimentFlow = EvaluationFlow<ExperimentRequest, ExperimentEvaluation>
+typealias ExperimentLocalEvaluationFlow = EvaluationFlow<ExperimentLocalEvaluateRequest, ExperimentEvaluation>
 
-protocol ExperimentFlowEvaluator: FlowEvaluator {
-    func evaluateExperiment(
-        request: ExperimentRequest,
+protocol ExperimentLocalFlowEvaluator: FlowEvaluator {
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation?
 }
 
-extension ExperimentFlowEvaluator {
-    func evaluate<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+extension ExperimentLocalFlowEvaluator {
+
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
         request: Request,
         context: EvaluatorContext,
-        nextFlow: EvaluationFlow<Request, Evaluation>
-    ) throws -> Evaluation? {
-        guard let experimentRequest = request as? ExperimentRequest else {
-            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: ExperimentRequest)")
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let experimentRequest = request as? ExperimentLocalEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: ExperimentLocalEvaluateRequest)")
         }
 
-        guard let experimentNextFlow = nextFlow as? ExperimentFlow else {
-            throw HackleError.error("Unsupported flow: \(type(of: nextFlow)) (expected: ExperimentFlow)")
+        guard let experimentNextFlow = nextFlow as? ExperimentLocalEvaluationFlow else {
+            throw HackleError.error("Unsupported flow: \(type(of: nextFlow)) (expected: ExperimentLocalEvaluationFlow)")
         }
 
-        let experimentEvaluation = try evaluateExperiment(request: experimentRequest, context: context, nextFlow: experimentNextFlow)
+        let experimentEvaluation = try evaluate(request: experimentRequest, context: context, nextFlow: experimentNextFlow)
 
         if experimentEvaluation == nil {
             return nil
         }
 
-        guard let evaluation = experimentEvaluation as? Evaluation else {
-            throw HackleError.error("Unsupported evaluation: \(type(of: experimentEvaluation)) (expected: \(Evaluation.self))")
+        guard let evaluation = experimentEvaluation as? E else {
+            throw HackleError.error("Unsupported evaluation: \(type(of: experimentEvaluation)) (expected: \(E.self))")
         }
 
         return evaluation
     }
+
+    func of(request: ExperimentLocalEvaluateRequest, reason: String, variation: Variation) throws -> ExperimentEvaluation {
+        let config = try Self.config(workspace: request.workspace, variation: variation)
+        let result = ExperimentEvaluateResult.of(reason: reason, variation: variation, config: config)
+        return ExperimentEvaluation(entity: request.experiment, result: result)
+    }
+
+    func ofDefault(request: ExperimentLocalEvaluateRequest, reason: String) throws -> ExperimentEvaluation {
+        let result = try ExperimentEvaluateResult.ofDefault(reason: reason, request: request)
+        return ExperimentEvaluation(entity: request.experiment, result: result)
+    }
+
+    private static func config(workspace: Workspace, variation: Variation) throws -> ParameterConfiguration? {
+        guard let parameterConfigurationId = variation.parameterConfigurationId else {
+            return nil
+        }
+
+        guard let parameterConfiguration = workspace.getParameterConfigurationOrNil(parameterConfigurationId: parameterConfigurationId) else {
+            throw HackleError.error("ParameterConfiguration[\(parameterConfigurationId)]")
+        }
+
+        return parameterConfiguration
+    }
 }
 
-class OverrideEvaluator: ExperimentFlowEvaluator {
+class OverrideExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
 
     private let overrideResolver: OverrideResolver
 
@@ -46,17 +70,17 @@ class OverrideEvaluator: ExperimentFlowEvaluator {
         self.overrideResolver = overrideResolver
     }
 
-    func evaluateExperiment(
-        request: ExperimentRequest,
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if let overriddenVariation = try overrideResolver.resolveOrNil(request: request, context: context) {
             switch request.experiment.type {
             case .abTest:
-                return try ExperimentEvaluation.of(request: request, context: context, variation: overriddenVariation, reason: DecisionReason.OVERRIDDEN)
+                return try of(request: request, reason: DecisionReason.OVERRIDDEN, variation: overriddenVariation)
             case .featureFlag:
-                return try ExperimentEvaluation.of(request: request, context: context, variation: overriddenVariation, reason: DecisionReason.INDIVIDUAL_TARGET_MATCH)
+                return try of(request: request, reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, variation: overriddenVariation)
             }
         } else {
             return try nextFlow.evaluate(request: request, context: context)
@@ -64,32 +88,32 @@ class OverrideEvaluator: ExperimentFlowEvaluator {
     }
 }
 
-class DraftExperimentEvaluator: ExperimentFlowEvaluator {
-    func evaluateExperiment(
-        request: ExperimentRequest,
+class DraftExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if request.experiment.status == .draft {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.EXPERIMENT_DRAFT)
+            return try ofDefault(request: request, reason: DecisionReason.EXPERIMENT_DRAFT)
         } else {
             return try nextFlow.evaluate(request: request, context: context)
         }
     }
 }
 
-class PausedExperimentEvaluator: ExperimentFlowEvaluator {
-    func evaluateExperiment(
-        request: ExperimentRequest,
+class PausedExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if request.experiment.status == .paused {
             switch request.experiment.type {
             case .abTest:
-                return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.EXPERIMENT_PAUSED)
+                return try ofDefault(request: request, reason: DecisionReason.EXPERIMENT_PAUSED)
             case .featureFlag:
-                return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.FEATURE_FLAG_INACTIVE)
+                return try ofDefault(request: request, reason: DecisionReason.FEATURE_FLAG_INACTIVE)
             }
         } else {
             return try nextFlow.evaluate(request: request, context: context)
@@ -97,34 +121,34 @@ class PausedExperimentEvaluator: ExperimentFlowEvaluator {
     }
 }
 
-class CompletedExperimentEvaluator: ExperimentFlowEvaluator {
-    func evaluateExperiment(
-        request: ExperimentRequest,
+class CompletedExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if request.experiment.status == .completed {
             guard let winnerVariation = request.experiment.winnerVariation else {
                 throw HackleError.error("winner variation [\(request.experiment.id)]")
             }
-            return try ExperimentEvaluation.of(request: request, context: context, variation: winnerVariation, reason: DecisionReason.EXPERIMENT_COMPLETED)
+            return try of(request: request, reason: DecisionReason.EXPERIMENT_COMPLETED, variation: winnerVariation)
         } else {
             return try nextFlow.evaluate(request: request, context: context)
         }
     }
 }
 
-class ExperimentTargetEvaluator: ExperimentFlowEvaluator {
+class TargetExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
     private let experimentTargetDeterminer: ExperimentTargetDeterminer
 
     init(experimentTargetDeterminer: ExperimentTargetDeterminer) {
         self.experimentTargetDeterminer = experimentTargetDeterminer
     }
 
-    func evaluateExperiment(
-        request: ExperimentRequest,
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         guard request.experiment.type == .abTest else {
             throw HackleError.error("Experiment type must be abTest [\(request.experiment.id)]")
@@ -134,12 +158,12 @@ class ExperimentTargetEvaluator: ExperimentFlowEvaluator {
         if isUserInExperimentTarget {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
+            return try ofDefault(request: request, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
         }
     }
 }
 
-class TrafficAllocateEvaluator: ExperimentFlowEvaluator {
+class TrafficAllocateExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
 
     private let actionResolver: ActionResolver
 
@@ -147,10 +171,10 @@ class TrafficAllocateEvaluator: ExperimentFlowEvaluator {
         self.actionResolver = actionResolver
     }
 
-    func evaluateExperiment(
-        request: ExperimentRequest,
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         guard request.experiment.status == .running else {
             throw HackleError.error("Experiment status must be running [\(request.experiment.id)]")
@@ -161,18 +185,18 @@ class TrafficAllocateEvaluator: ExperimentFlowEvaluator {
         }
 
         guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experiment.defaultRule) else {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+            return try ofDefault(request: request, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
         }
 
         if variation.isDropped {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.VARIATION_DROPPED)
+            return try ofDefault(request: request, reason: DecisionReason.VARIATION_DROPPED)
         }
 
-        return try ExperimentEvaluation.of(request: request, context: context, variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED)
+        return try of(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED, variation: variation)
     }
 }
 
-class TargetRuleEvaluator: ExperimentFlowEvaluator {
+class TargetRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
     private let targetRuleDeterminer: ExperimentTargetRuleDeterminer
     private let actionResolver: ActionResolver
 
@@ -181,10 +205,10 @@ class TargetRuleEvaluator: ExperimentFlowEvaluator {
         self.actionResolver = actionResolver
     }
 
-    func evaluateExperiment(
-        request: ExperimentRequest,
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         guard request.experiment.status == .running else {
             throw HackleError.error("Experiment status must be running [\(request.experiment.id)]")
@@ -206,21 +230,21 @@ class TargetRuleEvaluator: ExperimentFlowEvaluator {
             throw HackleError.error("FeatureFlag must decide the Variation [\(request.experiment.id)]")
         }
 
-        return try ExperimentEvaluation.of(request: request, context: context, variation: variation, reason: DecisionReason.TARGET_RULE_MATCH)
+        return try of(request: request, reason: DecisionReason.TARGET_RULE_MATCH, variation: variation)
     }
 }
 
-class DefaultRuleEvaluator: ExperimentFlowEvaluator {
+class DefaultRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
     private let actionResolver: ActionResolver
 
     init(actionResolver: ActionResolver) {
         self.actionResolver = actionResolver
     }
 
-    func evaluateExperiment(
-        request: ExperimentRequest,
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         guard request.experiment.status == .running else {
             throw HackleError.error("Experiment status must be running [\(request.experiment.id)]")
@@ -231,18 +255,18 @@ class DefaultRuleEvaluator: ExperimentFlowEvaluator {
         }
 
         if request.user.identifiers[request.experiment.identifierType] == nil {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.DEFAULT_RULE)
+            return try ofDefault(request: request, reason: DecisionReason.DEFAULT_RULE)
         }
 
         guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experiment.defaultRule) else {
             throw HackleError.error("FeatureFlag must decide the Variation [\(request.experiment.id)]")
         }
 
-        return try ExperimentEvaluation.of(request: request, context: context, variation: variation, reason: DecisionReason.DEFAULT_RULE)
+        return try of(request: request, reason: DecisionReason.DEFAULT_RULE, variation: variation)
     }
 }
 
-class ContainerEvaluator: ExperimentFlowEvaluator {
+class ContainerExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
 
     private let containerResolver: ContainerResolver
 
@@ -250,10 +274,10 @@ class ContainerEvaluator: ExperimentFlowEvaluator {
         self.containerResolver = containerResolver
     }
 
-    func evaluateExperiment(
-        request: ExperimentRequest,
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         guard let containerId = request.experiment.containerId else {
             return try nextFlow.evaluate(request: request, context: context)
@@ -267,21 +291,21 @@ class ContainerEvaluator: ExperimentFlowEvaluator {
         if isUserInContainerGroup {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
+            return try ofDefault(request: request, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
         }
     }
 }
 
-class IdentifierEvaluator: ExperimentFlowEvaluator {
-    func evaluateExperiment(
-        request: ExperimentRequest,
+class IdentifierExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
+    func evaluate(
+        request: ExperimentLocalEvaluateRequest,
         context: EvaluatorContext,
-        nextFlow: ExperimentFlow
+        nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if request.user.identifiers[request.experiment.identifierType] != nil {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
-            return try ExperimentEvaluation.ofDefault(request: request, context: context, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
+            return try ofDefault(request: request, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
         }
     }
 }
