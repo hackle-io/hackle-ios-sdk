@@ -1,6 +1,4 @@
 //
-// Created by yong on 2020/12/16.
-//
 
 import Foundation
 import MockingKit

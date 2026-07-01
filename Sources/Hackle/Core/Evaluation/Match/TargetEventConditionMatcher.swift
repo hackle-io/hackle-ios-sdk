@@ -2,8 +2,6 @@
 //  TargetEventConditionMatcher.swift
 //  Hackle
 //
-//  Created by sungwoo.yeo on 1/31/25.
-//
 
 import Foundation
 

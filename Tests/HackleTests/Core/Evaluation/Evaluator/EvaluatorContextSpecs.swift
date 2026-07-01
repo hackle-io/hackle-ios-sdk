@@ -2,8 +2,6 @@
 //  EvaluatorContextSpecs.swift
 //  HackleTests
 //
-//  Created by Yong on 2024/02/01.
-//
 
 import Foundation
 import Quick

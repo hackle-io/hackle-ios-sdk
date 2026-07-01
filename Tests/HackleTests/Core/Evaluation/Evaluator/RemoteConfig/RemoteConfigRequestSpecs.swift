@@ -2,8 +2,6 @@
 //  RemoteConfigRequestSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/04/20.
-//
 
 import Foundation
 @testable import Hackle

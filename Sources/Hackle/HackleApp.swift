@@ -1,6 +1,4 @@
 //
-// Created by yong on 2020/12/11.
-//
 
 import Foundation
 import UIKit

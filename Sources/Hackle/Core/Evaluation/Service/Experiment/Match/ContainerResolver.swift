@@ -2,8 +2,6 @@
 //  ContainerResolver.swift
 //  Hackle
 //
-//  Created by yong on 2022/07/21.
-//
 
 import Foundation
 

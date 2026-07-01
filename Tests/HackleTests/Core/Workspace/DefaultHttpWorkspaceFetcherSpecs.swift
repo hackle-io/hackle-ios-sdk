@@ -2,8 +2,6 @@
 //  DefaultHttpWorkspaceFetcherSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/10/02.
-//
 
 import Foundation
 import Quick

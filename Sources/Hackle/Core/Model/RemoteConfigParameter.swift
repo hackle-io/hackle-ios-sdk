@@ -2,8 +2,6 @@
 //  RemoteConfigParameter.swift
 //  Hackle
 //
-//  Created by yong on 2022/11/17.
-//
 
 import Foundation
 

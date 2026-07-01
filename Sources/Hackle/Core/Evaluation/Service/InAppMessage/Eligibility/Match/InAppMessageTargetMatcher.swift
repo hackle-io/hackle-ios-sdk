@@ -2,8 +2,6 @@
 //  InAppMessageTargetMatcher.swift
 //  Hackle
 //
-//  Created by sungwoo.yeo on 5/2/25.
-//
 
 import Foundation
 

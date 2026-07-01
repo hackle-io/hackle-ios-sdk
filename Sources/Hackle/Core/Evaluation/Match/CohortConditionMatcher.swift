@@ -2,8 +2,6 @@
 //  CohortConditionMatcher.swift
 //  Hackle
 //
-//  Created by yong on 2023/10/03.
-//
 
 import Foundation
 

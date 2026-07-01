@@ -2,8 +2,6 @@
 //  OverrideResolver.swift
 //  Hackle
 //
-//  Created by yong on 2022/01/28.
-//
 
 import Foundation
 

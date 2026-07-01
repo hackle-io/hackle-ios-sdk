@@ -2,8 +2,6 @@
 //  EvaluationContext.swift
 //  Hackle
 //
-//  Created by yong on 2023/06/01.
-//
 
 import Foundation
 

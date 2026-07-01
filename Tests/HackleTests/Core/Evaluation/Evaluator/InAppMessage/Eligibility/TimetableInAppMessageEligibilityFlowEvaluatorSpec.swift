@@ -2,8 +2,6 @@
 //  TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift
 //  HackleTests
 //
-//  Created by sungwoo.yeo on 11/18/25.
-//
 
 import Foundation
 import Quick

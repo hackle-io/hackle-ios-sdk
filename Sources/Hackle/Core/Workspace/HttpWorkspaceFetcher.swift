@@ -2,8 +2,6 @@
 //  HttpWorkspaceFetcher.swift
 //  Hackle
 //
-//  Created by yong on 2023/10/01.
-//
 
 import Foundation
 

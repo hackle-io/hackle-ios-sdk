@@ -2,8 +2,6 @@
 //  MockHackleCore.swift
 //  HackleTests
 //
-//  Created by yong on 2023/06/26.
-//
 
 import Foundation
 import MockingKit

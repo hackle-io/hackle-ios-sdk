@@ -2,8 +2,6 @@
 //  HackleCoreSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/04/19.
-//
 
 import Foundation
 import Quick

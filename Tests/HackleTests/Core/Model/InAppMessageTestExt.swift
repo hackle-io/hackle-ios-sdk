@@ -2,8 +2,6 @@
 //  InAppMessageTestExt.swift
 //  HackleTests
 //
-//  Created by yong on 2023/06/25.
-//
 
 import Foundation
 
