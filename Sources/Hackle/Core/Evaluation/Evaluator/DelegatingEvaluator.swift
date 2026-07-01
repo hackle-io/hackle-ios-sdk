@@ -1,25 +1,18 @@
-//
-//  DelegatingEvaluator.swift
-//  Hackle
-//
-//  Created by yong on 2023/04/17.
-//
-
 import Foundation
-
 
 class DelegatingEvaluator: Evaluator {
 
-    private var evaluators: [any ContextualEvaluator] = []
+    private let evaluatorFactory: EvaluatorFactory
 
-    func add(_ evaluator: any ContextualEvaluator) {
-        evaluators.append(evaluator)
+    init(evaluatorFactory: EvaluatorFactory) {
+        self.evaluatorFactory = evaluatorFactory
     }
 
-    func evaluate<Evaluation>(request: EvaluatorRequest, context: EvaluatorContext) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
-        guard let evaluator = evaluators.first(where: { it in it.support(request: request) }) else {
-            throw HackleError.error("Unsupported EvaluatorRequest [\(request)]")
-        }
-        return try evaluator.evaluate(request: request, context: context)
+    func evaluate<R: EvaluateResponse>(request: EvaluateRequest, context: EvaluatorContext) throws -> R {
+        try evaluatorFactory.get(request: request).evaluate(request: request, context: context)
+    }
+
+    func record(request: EvaluateRequest, response: EvaluateResponse) {
+        try? evaluatorFactory.get(request: request).record(request: request, response: response)
     }
 }
