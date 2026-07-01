@@ -34,7 +34,7 @@ protocol Workspace {
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage?
 }
 
-class WorkspaceEntity: Workspace {
+class WorkspaceEntity: WorkspaceConfig {
     let id: Int64
     let environmentId: Int64
     let experiments: [Experiment]
@@ -133,6 +133,22 @@ class WorkspaceEntity: Workspace {
 
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
         _inAppMessages[inAppMessageKey]
+    }
+
+    func getExperimentConfigOrNil(experimentKey: Experiment.Key) -> ExperimentConfig? {
+        getExperimentOrNil(experimentKey: experimentKey) as? ExperimentConfig
+    }
+
+    func getFeatureFlagConfigOrNil(featureKey: Experiment.Key) -> ExperimentConfig? {
+        getFeatureFlagOrNil(featureKey: featureKey) as? ExperimentConfig
+    }
+
+    func getRemoteConfigParameterConfigOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameterConfig? {
+        getRemoteConfigParameterOrNil(parameterKey: parameterKey) as? RemoteConfigParameterConfig
+    }
+
+    func getInAppMessageConfigOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessageConfig? {
+        getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) as? InAppMessageConfig
     }
 
     static func from(dto: WorkspaceConfigDto) -> Workspace {

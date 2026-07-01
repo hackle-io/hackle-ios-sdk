@@ -8,12 +8,12 @@
 import Foundation
 
 
-class WorkspaceManager: WorkspaceFetcher, Synchronizer {
+class WorkspaceManager: WorkspaceConfigFetcher, Synchronizer {
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
     private let repository: WorkspaceConfigRepository
 
     private var lastModified: String? = nil
-    private var workspace: Workspace? = nil
+    private var workspace: WorkspaceConfig? = nil
 
     init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {
         self.httpWorkspaceFetcher = httpWorkspaceFetcher
@@ -24,7 +24,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
         readWorkspaceConfigFromLocal()
     }
 
-    func fetch() -> Workspace? {
+    func fetch() -> WorkspaceConfig? {
         workspace
     }
 
@@ -40,7 +40,7 @@ class WorkspaceManager: WorkspaceFetcher, Synchronizer {
 
     private func setWorkspaceConfig(_ config: WorkspaceConfigResponse) {
         lastModified = config.lastModified
-        workspace = WorkspaceEntity.from(dto: config.config)
+        workspace = WorkspaceEntity.from(dto: config.config) as? WorkspaceConfig
     }
 
     private func readWorkspaceConfigFromLocal() {
