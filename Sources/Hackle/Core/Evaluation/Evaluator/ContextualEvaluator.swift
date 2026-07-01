@@ -7,33 +7,33 @@
 
 import Foundation
 
-
 protocol ContextualEvaluator: Evaluator {
 
-    associatedtype Request: EvaluatorRequest
-    associatedtype Evaluation: EvaluatorEvaluation
+    associatedtype Request: EvaluateRequest
+    associatedtype Response: EvaluateResponse
 
-    func evaluateInternal(request: Request, context: EvaluatorContext) throws -> Evaluation
+    var eventRecorder: EvaluationEventRecorder { get }
+
+    func evaluateInternal(request: Request, context: EvaluatorContext) throws -> Response
 }
-
 
 extension ContextualEvaluator {
 
-    func support(request: EvaluatorRequest) -> Bool {
+    func supports(request: EvaluateRequest) -> Bool {
         request is Request
     }
 
-    func evaluate<Evaluation>(
-        request: EvaluatorRequest,
-        context: EvaluatorContext
-    ) throws -> Evaluation where Evaluation: EvaluatorEvaluation {
+    func evaluate<R: EvaluateResponse>(request: EvaluateRequest, context: EvaluatorContext) throws -> R {
         if context.contains(request) {
             throw HackleError.error("Circular evaluation has occurred \(context.stack) - \(request)")
         }
         context.add(request)
+        defer { context.remove(request) }
+        let response = try evaluateInternal(request: request as! Self.Request, context: context)
+        return response as! R
+    }
 
-        let evaluation = try evaluateInternal(request: request as! Self.Request, context: context)
-        context.remove(request)
-        return evaluation as! Evaluation
+    func record(request: EvaluateRequest, response: EvaluateResponse) {
+        eventRecorder.record(response: response)
     }
 }
