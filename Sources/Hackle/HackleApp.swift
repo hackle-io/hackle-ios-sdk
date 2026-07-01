@@ -583,17 +583,6 @@ extension HackleApp {
         )
         optOutManager.addListener(listener: eventProcessor)
 
-        // - Evaluation Event
-
-        let eventFactory = DefaultUserEventFactory(
-            clock: clock
-        )
-
-        let evaluationEventRecorder = DefaultEvaluationEventRecorder(
-            eventFactory: eventFactory,
-            eventProcessor: eventProcessor
-        )
-
         // - Core
 
         let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
@@ -603,11 +592,29 @@ extension HackleApp {
         EvaluationContext.shared.register(inAppMessageHiddenStorage)
         EvaluationContext.shared.register(inAppMessageImpressionStorage)
 
-        let core = DefaultHackleCore.create(
-            workspaceFetcher: workspaceManager,
-            eventFactory: eventFactory,
+        let evaluateProcessor = EvaluateProcessor.create(
+            context: EvaluationContext.shared,
+            clock: clock,
             eventProcessor: eventProcessor,
-            manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
+            overrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage]),
+            impressionStorage: inAppMessageImpressionStorage,
+            hiddenStorage: inAppMessageHiddenStorage
+        )
+
+        let decisionProcessor = LocalDecisionProcessor(
+            workspaceFetcher: workspaceManager,
+            evaluateProcessor: evaluateProcessor
+        )
+
+        let core = DefaultHackleCore(
+            workspaceFetcher: workspaceManager,
+            decisionProcessor: decisionProcessor,
+            eventProcessor: eventProcessor,
+            clock: clock
+        )
+
+        let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
+            evaluateProcessor: evaluateProcessor
         )
 
         // - ApplicationLifecycleListener
@@ -712,28 +719,9 @@ extension HackleApp {
             recorder: inAppMessageRecorder
         )
 
-        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
-            evaluator: EvaluationContext.shared.get(Evaluator.self)!
-        )
-        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
-            experimentEvaluator: inAppMessageExperimentEvaluator,
-            selector: InAppMessageLayoutSelector(),
-            eventRecorder: evaluationEventRecorder
-        )
-        let inAppMessageEligibilityFlowFactory = DefaultInAppMessageEligibilityFlowFactory(
-            context: EvaluationContext.shared,
-            layoutEvaluator: inAppMessageLayoutEvaluator
-        )
-
-        let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
-            core: core,
-            flowFactory: inAppMessageEligibilityFlowFactory,
-            eventRecorder: evaluationEventRecorder
-        )
         let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
         let inAppMessageLayoutResolver = DefaultInAppMessageLayoutResolver(
-            core: core,
-            layoutEvaluator: inAppMessageLayoutEvaluator
+            evaluateProcessor: evaluateProcessor
         )
 
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
