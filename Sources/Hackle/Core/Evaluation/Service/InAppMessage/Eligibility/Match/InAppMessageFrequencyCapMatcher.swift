@@ -15,7 +15,7 @@ class InAppMessageFrequencyCapMatcher: InAppMessageMatcher {
         self.storage = storage
     }
 
-    func matches(request: EvaluateRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
         return try isFrequencyCapped(inAppMessage: request.inAppMessage, user: request.user, timestamp: request.timestamp)
     }
 

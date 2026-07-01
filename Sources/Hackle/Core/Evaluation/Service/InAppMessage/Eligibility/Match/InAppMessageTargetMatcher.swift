@@ -15,7 +15,7 @@ class InAppMessageTargetMatcher: InAppMessageMatcher {
         self.targetMatcher = targetMatcher
     }
 
-    func matches(request: EvaluateRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
         let targets = request.inAppMessage.targetContext.targets
         return try targetMatcher.anyMatches(request: request, context: context, targets: targets)
     }
