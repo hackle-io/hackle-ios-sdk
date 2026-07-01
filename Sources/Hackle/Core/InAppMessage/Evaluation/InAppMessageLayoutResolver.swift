@@ -1,21 +1,25 @@
 import Foundation
 
 protocol InAppMessageLayoutResolver {
-    func resolve(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation
+    func resolve(workspace: WorkspaceConfig, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation
 }
 
 class DefaultInAppMessageLayoutResolver: InAppMessageLayoutResolver {
 
-    private let core: HackleCore
-    private let layoutEvaluator: any InAppMessageEvaluator
+    private let evaluateProcessor: EvaluateProcessor
 
-    init(core: HackleCore, layoutEvaluator: any InAppMessageEvaluator) {
-        self.core = core
-        self.layoutEvaluator = layoutEvaluator
+    init(evaluateProcessor: EvaluateProcessor) {
+        self.evaluateProcessor = evaluateProcessor
     }
 
-    func resolve(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation {
-        let request = InAppMessageLayoutRequest(workspace: workspace, user: user, inAppMessage: inAppMessage)
-        return try core.inAppMessage(request: request, context: Evaluators.context(), evaluator: layoutEvaluator)
+    func resolve(workspace: WorkspaceConfig, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation {
+        let layoutRequest = InAppMessageLayoutLocalEvaluateRequest.of(
+            workspace: workspace,
+            inAppMessage: inAppMessage,
+            user: user,
+            scope: .deliver
+        )
+        let response = try evaluateProcessor.inAppMessage(layoutRequest)
+        return response.layoutEvaluation
     }
 }

@@ -1,35 +1,29 @@
 import Foundation
 
 protocol InAppMessageEvaluateProcessor {
-    func process(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityRequest) throws -> InAppMessageEligibilityEvaluation
+    func process(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityLocalEvaluateRequest) throws -> InAppMessageEligibilityEvaluation
 }
 
 class DefaultInAppMessageEvaluateProcessor: InAppMessageEvaluateProcessor {
-    private let core: HackleCore
-    private let flowFactory: InAppMessageEligibilityFlowFactory
-    private let eventRecorder: EvaluationEventRecorder
 
-    init(core: HackleCore, flowFactory: InAppMessageEligibilityFlowFactory, eventRecorder: EvaluationEventRecorder) {
-        self.core = core
-        self.flowFactory = flowFactory
-        self.eventRecorder = eventRecorder
+    private let evaluateProcessor: EvaluateProcessor
+
+    init(evaluateProcessor: EvaluateProcessor) {
+        self.evaluateProcessor = evaluateProcessor
     }
 
     func process(
         type: InAppMessageEvaluateScope,
-        request: InAppMessageEligibilityRequest
+        request: InAppMessageEligibilityLocalEvaluateRequest
     ) throws -> InAppMessageEligibilityEvaluation {
-        let flow = resolveFlow(type: type, request: request)
-        let evaluator = InAppMessageEligibilityEvaluator(flow: flow, eventRecorder: eventRecorder)
-        return try core.inAppMessage(request: request, context: Evaluators.context(), evaluator: evaluator)
-    }
-
-    private func resolveFlow(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityRequest) -> InAppMessageEligibilityFlow {
-        switch type {
-        case .trigger:
-            return flowFactory.triggerFlow()
-        case .deliver:
-            return flowFactory.deliverFlow(reEvaluate: request.inAppMessage.evaluateContext.atDeliverTime)
-        }
+        let eligibilityRequest = InAppMessageEligibilityLocalEvaluateRequest.of(
+            workspace: request.workspace,
+            inAppMessage: request.inAppMessage,
+            user: request.user,
+            scope: type,
+            timestamp: request.timestamp
+        )
+        let response = try evaluateProcessor.inAppMessage(eligibilityRequest)
+        return response.eligibilityEvaluation
     }
 }
