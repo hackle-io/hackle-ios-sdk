@@ -6,17 +6,23 @@ import Nimble
 class InAppMessageEligibilityRequestSpecs: QuickSpec {
     override class func spec() {
 
-        it("==") {
-
+        it("of") {
             let workspace = MockWorkspace()
             let user = HackleUser.builder().identifier(.id, "user").build()
+            let timestamp = Date(timeIntervalSince1970: 42)
 
-            let request1 = InAppMessageEligibilityRequest(workspace: workspace, user: user, inAppMessage: InAppMessage.create(id: 1), timestamp: Date())
-            let request1_ = InAppMessageEligibilityRequest(workspace: workspace, user: user, inAppMessage: InAppMessage.create(id: 1), timestamp: Date())
-            let request2 = InAppMessageEligibilityRequest(workspace: workspace, user: user, inAppMessage: InAppMessage.create(id: 2), timestamp: Date())
+            let request = InAppMessageEligibilityLocalEvaluateRequest.of(
+                workspace: workspace,
+                inAppMessage: InAppMessage.create(id: 1),
+                user: user,
+                scope: .trigger,
+                timestamp: timestamp
+            )
 
-            expect(request1) == request1_
-            expect(request1) != request2
+            expect(request.inAppMessage.id) == 1
+            if case .trigger = request.scope {} else { fail("expected .trigger") }
+            expect(request.timestamp) == timestamp
+            expect(request.record) == true
         }
     }
 }

@@ -7,7 +7,7 @@ class MockExperimentTargetDeterminer: Mock, ExperimentTargetDeterminer {
 
     lazy var isUserInExperimentTargetMock = MockFunction(self, isUserInExperimentTarget)
 
-    func isUserInExperimentTarget(request: ExperimentRequest, context: EvaluatorContext) throws -> Bool {
+    func isUserInExperimentTarget(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
         call(isUserInExperimentTargetMock, args: (request, context))
     }
 }

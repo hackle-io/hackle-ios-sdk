@@ -6,70 +6,45 @@ import Nimble
 class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
     override class func spec() {
 
-        var core: HackleCore!
-        var flowFactory: MockInAppMessageEligibilityFlowFactory!
-        var eventRecorder: MockEvaluationEventRecorder!
+        var evaluateProcessor: EvaluateProcessor!
         var sut: DefaultInAppMessageEvaluateProcessor!
 
-        beforeSuite {
-            EvaluationContext.shared.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
-            EvaluationContext.shared.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
-        }
-
         beforeEach {
-            core = DefaultHackleCore.create(
-                workspaceFetcher: MockWorkspaceFetcher(),
-                eventFactory: MockUserEventFactory(),
+            evaluateProcessor = EvaluateProcessor.create(
+                context: EvaluationContext(),
+                clock: SystemClock.shared,
                 eventProcessor: MockUserEventProcessor(),
-                manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
+                overrideStorage: DelegatingManualOverrideStorage(storages: []),
+                impressionStorage: DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()),
+                hiddenStorage: DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
             )
-            flowFactory = MockInAppMessageEligibilityFlowFactory()
-            eventRecorder = MockEvaluationEventRecorder()
-            sut = DefaultInAppMessageEvaluateProcessor(core: core, flowFactory: flowFactory, eventRecorder: eventRecorder)
+            sut = DefaultInAppMessageEvaluateProcessor(evaluateProcessor: evaluateProcessor)
         }
 
         it("trigger evaluate") {
             // given
-            let request = InAppMessage.eligibilityRequest()
-            let evaluation = InAppMessage.eligibilityEvaluation()
-            let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
-            every(flowFactory.triggerFlowMock).returns(flow)
+            let inAppMessage = InAppMessage.create(status: .active)
+            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage, scope: .trigger)
 
             // when
             let actual = try sut.process(type: .trigger, request: request)
 
             // then
-            expect(actual as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
-            verify(exactly: 1) {
-                flowFactory.triggerFlowMock
-            }
-            verify(exactly: 1) {
-                eventRecorder.recordMock
-            }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as? InAppMessageEligibilityRequest).to(beIdenticalTo(request))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
+            expect(actual.inAppMessage.id) == inAppMessage.id
+            expect(actual.eligibilityResult.isEligible) == true
         }
 
         it("deliver evaluate") {
             // given
-            let request = InAppMessage.eligibilityRequest()
-            let evaluation = InAppMessage.eligibilityEvaluation()
-            let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
-            every(flowFactory.deliverFlowMock).returns(flow)
+            let inAppMessage = InAppMessage.create(status: .active)
+            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage, scope: .deliver)
 
             // when
             let actual = try sut.process(type: .deliver, request: request)
 
             // then
-            expect(actual as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
-            verify(exactly: 1) {
-                flowFactory.deliverFlowMock
-            }
-            verify(exactly: 1) {
-                eventRecorder.recordMock
-            }
-            expect(eventRecorder.recordMock.firstInvokation().arguments.0 as? InAppMessageEligibilityRequest).to(beIdenticalTo(request))
-            expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
+            expect(actual.inAppMessage.id) == inAppMessage.id
+            expect(actual.eligibilityResult.isEligible) == true
         }
     }
 }

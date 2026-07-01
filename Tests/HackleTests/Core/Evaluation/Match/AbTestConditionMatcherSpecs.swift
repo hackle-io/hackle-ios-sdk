@@ -27,6 +27,23 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             context = Evaluators.context()
         }
 
+        func evaluation(request: ExperimentLocalEvaluateRequest, reason: String) -> ExperimentEvaluation {
+            ExperimentEvaluation(
+                entity: request.experiment,
+                result: ExperimentEvaluateResult.of(reason: reason, variation: request.experiment.variations.first!, config: nil)
+            )
+        }
+
+        func response(request: ExperimentLocalEvaluateRequest, evaluation: ExperimentEvaluation) -> ExperimentEvaluateResponse {
+            ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: [])
+        }
+
+        func request(experiment: ExperimentConfig) -> ExperimentLocalEvaluateRequest {
+            let workspace = MockWorkspace()
+            every(workspace.getExperimentOrNilMock).returns(experiment)
+            return experimentRequest(workspace: workspace, experiment: experiment)
+        }
+
         it("key 가 number 가 아닌경우") {
             let request = experimentRequest(experiment: experiment(type: .abTest))
             let condition = Target.Condition(
@@ -51,16 +68,6 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             expect(actual) == false
         }
 
-        func request(experiment: Experiment) -> ExperimentRequest {
-            let workspace = MockWorkspace()
-            every(workspace.getExperimentOrNilMock).returns(experiment)
-            return experimentRequest(workspace: workspace, experiment: experiment)
-        }
-
-        func evaluation(request: ExperimentRequest, reason: String) throws -> ExperimentEvaluation {
-            try ExperimentEvaluation.of(request: request, context: context, variation: request.experiment.variations.first!, reason: reason)
-        }
-
         it("매칭 대상 분배사유가 아니면 false") {
 
             func check(reason: String) throws {
@@ -70,10 +77,10 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
                 )
 
-                let evaluation = try evaluation(request: request, reason: reason)
-                evaluator.returns = evaluation
+                let evaluation = evaluation(request: request, reason: reason)
+                evaluator.returns = response(request: request, evaluation: evaluation)
 
-                let actual = try sut.matches(request: request, context: context, condition: condition)
+                let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
                 expect(actual) == false
             }
 
@@ -93,11 +100,11 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                     match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
                 )
 
-                let evaluation = try evaluation(request: request, reason: reason)
-                evaluator.returns = evaluation
+                let evaluation = evaluation(request: request, reason: reason)
+                evaluator.returns = response(request: request, evaluation: evaluation)
                 every(valueOperatorMatcher.matchesMock).returns(true)
 
-                let actual = try sut.matches(request: request, context: context, condition: condition)
+                let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
                 expect(actual) == true
             }
 
@@ -114,8 +121,8 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
             )
 
-            let evaluation = try evaluation(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED)
-            evaluator.returns = evaluation
+            let evaluation = evaluation(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED)
+            evaluator.returns = response(request: request, evaluation: evaluation)
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             context.add(evaluation)
@@ -123,7 +130,8 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(context.targetEvaluations.count) == 1
+            expect(evaluator.call) == 0
+            expect(context.references.count) == 1
         }
 
         it("ExperimentRequest + TRAFFIC_ALLOCATED 인경우 분배 사유를 변경한다") {
@@ -133,15 +141,15 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
             )
 
-            let evaluation = try evaluation(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED)
-            evaluator.returns = evaluation
+            let evaluation = evaluation(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED)
+            evaluator.returns = response(request: request, evaluation: evaluation)
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
             expect(context.get(request.experiment)).toNot(beNil())
-            expect(context.get(request.experiment)?.reason) == DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
+            expect((context.get(request.experiment) as? ExperimentEvaluation)?.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
         }
 
         it("ExperimentRequest + TRAFFIC_ALLOCATED 분배 사유가 아니면 evaluation 그대로 사용") {
@@ -151,8 +159,8 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
             )
 
-            let evaluation = try evaluation(request: request, reason: DecisionReason.OVERRIDDEN)
-            evaluator.returns = evaluation
+            let evaluation = evaluation(request: request, reason: DecisionReason.OVERRIDDEN)
+            evaluator.returns = response(request: request, evaluation: evaluation)
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
@@ -169,8 +177,8 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
             )
 
-            let evaluation = try evaluation(request: experimentRequest, reason: DecisionReason.OVERRIDDEN)
-            evaluator.returns = evaluation
+            let evaluation = evaluation(request: experimentRequest, reason: DecisionReason.OVERRIDDEN)
+            evaluator.returns = response(request: experimentRequest, evaluation: evaluation)
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)

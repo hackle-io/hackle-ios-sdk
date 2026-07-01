@@ -47,26 +47,3 @@ class EvaluateSkeletonSpecs: QuickSpec {
         }
     }
 }
-
-private struct StubEvaluateResult: EvaluateResult {
-    let reason: String
-}
-
-private struct StubEvaluation: Evaluation {
-    let entity: Entity
-    let result: EvaluateResult
-}
-
-private struct StubEvaluateRequest: EvaluateRequest {
-    let user: HackleUser
-    let workspace: Workspace
-    let entity: Entity
-    let record: Bool
-}
-
-private struct StubEvaluateResponse: EvaluateResponse {
-    let user: HackleUser
-    let workspace: Workspace
-    let evaluation: Evaluation
-    let references: [Evaluation]
-}

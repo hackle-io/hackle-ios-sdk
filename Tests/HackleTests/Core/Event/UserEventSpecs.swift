@@ -8,7 +8,10 @@ class UserEventSpecs: QuickSpec {
         describe("ExposureEvent") {
             it("copy") {
                 let parameterConfiguration = ParameterConfigurationEntity(id: 42, parameters: [:])
-                let evaluation = ExperimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, targetEvaluations: [], experiment: experiment(), variationId: 42, variationKey: "A", config: parameterConfiguration)
+                let evaluation = ExperimentEvaluation(
+                    entity: experiment(),
+                    result: ExperimentEvaluateResult(reason: DecisionReason.TRAFFIC_ALLOCATED, variationId: 42, variationKey: "A", config: parameterConfiguration)
+                )
                 let user = HackleUser.of(userId: "test_id")
                 let event = UserEvents.exposure(user: user, evaluation: evaluation, properties: ["a": "1"], timestamp: Date(timeIntervalSince1970: 42))
                 let newUser = HackleUser.of(userId: "new")
@@ -30,7 +33,11 @@ class UserEventSpecs: QuickSpec {
             it("copy") {
                 let parameter = RemoteConfigParameter(id: 42, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("dv")))
                 let user = HackleUser.of(userId: "id")
-                let evaluation = RemoteConfigEvaluation(reason: DecisionReason.DEFAULT_RULE, targetEvaluations: [], parameter: parameter, valueId: 42, value: .string("42"), properties: ["1": "2"])
+                let evaluation = RemoteConfigEvaluation(
+                    entity: parameter,
+                    result: RemoteConfigEvaluateResult(reason: DecisionReason.DEFAULT_RULE, value: .string("42"), valueId: 42),
+                    properties: ["1": "2"]
+                )
                 let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["1": "2"], timestamp: Date(timeIntervalSince1970: 42))
                 let newUser = HackleUser.of(userId: "new")
                 let actual = event.with(user: newUser)

@@ -2,11 +2,11 @@ import Foundation
 import MockingKit
 @testable import Hackle
 
-class MockExperimentFlowFactory: Mock, ExperimentFlowFactory {
+class MockExperimentFlowFactory: Mock, ExperimentLocalEvaluationFlowFactory {
 
-    lazy var getMock = MockFunction(self, get)
+    lazy var getMock = MockFunction(self, flow)
 
-    func get(experimentType: ExperimentType) -> ExperimentFlow {
+    func flow(experimentType: ExperimentType) -> ExperimentLocalEvaluationFlow {
         return call(getMock, args: experimentType)
     }
 }

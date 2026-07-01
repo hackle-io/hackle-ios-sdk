@@ -17,7 +17,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).to(beNil())
         }
         
@@ -30,7 +30,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             
             sut.sync { }
             
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == data.config.workspace.id
             expect(actual?.environmentId) == data.config.workspace.environment.id
             expect(repository.value).toNot(beNil())
@@ -45,7 +45,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
         
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == repository.value?.config.workspace.id
             expect(actual?.environmentId) == repository.value?.config.workspace.environment.id
         }
@@ -56,11 +56,11 @@ class WorkspaceManagerSpecs: QuickSpec {
             let repository = MockWorkspaceConfigRepository(value: data)
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             
-            expect(sut.fetch()).to(beNil())
+            expect(sut.fetch() as WorkspaceConfig?).to(beNil())
             
             sut.initialize()
         
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == repository.value?.config.workspace.id
             expect(actual?.environmentId) == repository.value?.config.workspace.environment.id
         }
@@ -74,7 +74,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             
             sut.sync { }
             
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == data.config.workspace.id
             expect(actual?.environmentId) == data.config.workspace.environment.id
             expect(repository.value).toNot(beNil())
@@ -110,7 +110,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             
             sut.sync { }
             
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == data.config.workspace.id
             expect(actual?.environmentId) == data.config.workspace.environment.id
         }
@@ -123,7 +123,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             
             sut.sync { }
             
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).to(beNil())
             expect(repository.value).to(beNil())
         }
@@ -137,7 +137,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             
             sut.sync { }
             
-            let actual = sut.fetch()
+            let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).toNot(beNil())
             expect(repository.value).toNot(beNil())
             expect(repository.value?.lastModified) == data.lastModified

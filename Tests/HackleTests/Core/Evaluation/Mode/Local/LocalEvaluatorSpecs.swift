@@ -66,6 +66,10 @@ class LocalEvaluatorSpecs: QuickSpec {
 
         private(set) var doEvaluateCount = 0
 
+        func cachedEvaluation(context: EvaluatorContext, reference: DefaultEntity) -> StubEvaluation? {
+            context.get(reference) as? StubEvaluation
+        }
+
         func doEvaluate(sourceRequest: LocalEvaluateRequest, context: EvaluatorContext, reference: DefaultEntity) throws -> StubEvaluation {
             doEvaluateCount += 1
             return StubEvaluation(entity: reference)

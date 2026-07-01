@@ -6,7 +6,7 @@ class MockActionResolver: Mock, ActionResolver {
 
     lazy var resolveOrNilMock = MockFunction(self, resolveOrNil)
 
-    func resolveOrNil(request: ExperimentRequest, action: Action) throws -> Variation? {
+    func resolveOrNil(request: ExperimentLocalEvaluateRequest, action: Action) throws -> Variation? {
         call(resolveOrNilMock, args: (request, action))
     }
 }

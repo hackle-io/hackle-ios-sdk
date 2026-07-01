@@ -5,16 +5,20 @@ import Quick
 
 class InAppMessageLayoutRequestSpecs: QuickSpec {
     override class func spec() {
-        it("==") {
+        it("of") {
             let workspace = WorkspaceEntity.create()
             let user = HackleUser.builder().identifier(.id, "user").build()
 
-            let r1 = InAppMessageLayoutRequest(workspace: workspace, user: user, inAppMessage: InAppMessage.create(id: 1))
-            let r1_ = InAppMessageLayoutRequest(workspace: workspace, user: user, inAppMessage: InAppMessage.create(id: 1))
-            let r2 = InAppMessageLayoutRequest(workspace: workspace, user: user, inAppMessage: InAppMessage.create(id: 3))
+            let request = InAppMessageLayoutLocalEvaluateRequest.of(
+                workspace: workspace,
+                inAppMessage: InAppMessage.create(id: 1),
+                user: user,
+                scope: .trigger
+            )
 
-            expect(r1) == r1_
-            expect(r1) != r2
+            expect(request.inAppMessage.id) == 1
+            if case .trigger = request.scope {} else { fail("expected .trigger") }
+            expect(request.record) == true
         }
     }
 }

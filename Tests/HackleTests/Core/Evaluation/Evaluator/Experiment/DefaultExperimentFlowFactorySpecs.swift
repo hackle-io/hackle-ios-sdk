@@ -5,45 +5,40 @@ import Nimble
 
 class DefaultExperimentFlowFactorySpecs: QuickSpec {
     override class func spec() {
-        var evaluationContext: EvaluationContext!
-        var sut: DefaultExperimentFlowFactory!
+        var sut: DefaultExperimentLocalEvaluationFlowFactory!
 
         beforeEach {
-            evaluationContext = EvaluationContext()
-            evaluationContext.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
-            evaluationContext.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
-            evaluationContext.initialize(
-                evaluator: MockEvaluator(),
-                manualOverrideStorage: DelegatingManualOverrideStorage(storages: []),
-                clock: SystemClock.shared
+            sut = DefaultExperimentLocalEvaluationFlowFactory(
+                targetMatcher: DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory()), clock: SystemClock.shared)),
+                bucketer: DefaultBucketer(),
+                overrideStorage: DelegatingManualOverrideStorage(storages: [])
             )
-            sut = DefaultExperimentFlowFactory(context: evaluationContext)
         }
 
         describe("flow") {
 
             it("AB_TEST") {
-                sut.get(experimentType: .abTest)
-                    .isDecisionWith(OverrideEvaluator.self)!
-                    .isDecisionWith(IdentifierEvaluator.self)!
-                    .isDecisionWith(ContainerEvaluator.self)!
-                    .isDecisionWith(ExperimentTargetEvaluator.self)!
-                    .isDecisionWith(DraftExperimentEvaluator.self)!
-                    .isDecisionWith(PausedExperimentEvaluator.self)!
-                    .isDecisionWith(CompletedExperimentEvaluator.self)!
-                    .isDecisionWith(TrafficAllocateEvaluator.self)!
+                sut.flow(experimentType: .abTest)
+                    .isDecisionWith(OverrideExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(IdentifierExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(ContainerExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(TargetExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(DraftExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(PausedExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(CompletedExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(TrafficAllocateExperimentLocalFlowEvaluator.self)!
                     .isEnd()
             }
 
             it("FEATURE_FLAG") {
-                sut.get(experimentType: .featureFlag)
-                    .isDecisionWith(DraftExperimentEvaluator.self)!
-                    .isDecisionWith(PausedExperimentEvaluator.self)!
-                    .isDecisionWith(CompletedExperimentEvaluator.self)!
-                    .isDecisionWith(OverrideEvaluator.self)!
-                    .isDecisionWith(IdentifierEvaluator.self)!
-                    .isDecisionWith(TargetRuleEvaluator.self)!
-                    .isDecisionWith(DefaultRuleEvaluator.self)!
+                sut.flow(experimentType: .featureFlag)
+                    .isDecisionWith(DraftExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(PausedExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(CompletedExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(OverrideExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(IdentifierExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(TargetRuleExperimentLocalFlowEvaluator.self)!
+                    .isDecisionWith(DefaultRuleExperimentLocalFlowEvaluator.self)!
                     .isEnd()
             }
         }

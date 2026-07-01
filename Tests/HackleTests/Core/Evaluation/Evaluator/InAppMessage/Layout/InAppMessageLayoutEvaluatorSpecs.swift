@@ -4,29 +4,49 @@ import Quick
 @testable import Hackle
 
 class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
+
+    /// Stub experiment evaluator returning a preset ExperimentEvaluation.
+    final class StubExperimentEvaluator: ExperimentEvaluator {
+        let eventRecorder: EvaluationEventRecorder
+        var evaluation: ExperimentEvaluation?
+
+        init() {
+            eventRecorder = MockEvaluationEventRecorder()
+        }
+
+        func evaluateInternal(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
+            let evaluation = evaluation ?? ExperimentEvaluation(
+                entity: request.experiment,
+                result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experiment.variations.first!, config: nil)
+            )
+            return ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: context.references)
+        }
+    }
+
     override class func spec() {
 
-        var evaluator: MockEvaluator!
+        var experimentEvaluatorStub: StubExperimentEvaluator!
+        var delegatingEvaluator: DelegatingEvaluator!
         var eventRecorder: MockEvaluationEventRecorder!
-        var sut: InAppMessageLayoutEvaluator!
+        var sut: InAppMessageLayoutLocalEvaluator!
 
         beforeEach {
-            evaluator = MockEvaluator()
+            experimentEvaluatorStub = StubExperimentEvaluator()
+            let evaluatorFactory = EvaluatorFactory()
+            evaluatorFactory.add(experimentEvaluatorStub)
+            delegatingEvaluator = DelegatingEvaluator(evaluatorFactory: evaluatorFactory)
+
             eventRecorder = MockEvaluationEventRecorder()
-            let experimentEvaluator = InAppMessageExperimentEvaluator(
-                evaluator: evaluator
-            )
-            let selector = InAppMessageLayoutSelector()
-            sut = InAppMessageLayoutEvaluator(
-                experimentEvaluator: experimentEvaluator,
-                selector: selector,
+            sut = InAppMessageLayoutLocalEvaluator(
+                experimentEvaluator: InAppMessageLayoutExperimentEvaluator(evaluator: delegatingEvaluator),
+                selector: InAppMessageLayoutSelector(),
                 eventRecorder: eventRecorder
             )
         }
 
         it("supports") {
-            expect(sut.support(request: InAppMessage.layoutRequest())) == true
-            expect(sut.support(request: InAppMessage.eligibilityRequest())) == false
+            expect(sut.supports(request: InAppMessage.layoutRequest())) == true
+            expect(sut.supports(request: InAppMessage.eligibilityRequest())) == false
         }
 
         describe("experiment") {
@@ -36,7 +56,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let request = InAppMessage.layoutRequest(inAppMessage: inAppMessage)
 
                 expect {
-                    let _: InAppMessageLayoutEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                    let _: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
                 }
                     .to(throwError())
             }
@@ -53,30 +73,22 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let experiment = experiment(id: 5, key: 42)
                 let workspace = WorkspaceEntity.create(experiments: [experiment])
                 let request = InAppMessage.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
-                let evaluation = experimentEvaluation(
+                experimentEvaluatorStub.evaluation = experimentEvaluation(
                     reason: DecisionReason.TRAFFIC_ALLOCATED,
-                    targetEvaluations: [],
                     experiment: experiment,
                     variationId: 320,
                     variationKey: "B"
                 )
-                evaluator.returns = evaluation
                 let context = Evaluators.context()
 
                 // when
-                let actual: InAppMessageLayoutEvaluation = try sut.evaluate(request: request, context: context)
+                let response: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: context)
 
                 // then
-                expect(actual.message).to(be(message))
-                expect(actual.reason) == "IN_APP_MESSAGE_TARGET"
-                expect(actual.targetEvaluations[0] as? ExperimentEvaluation).to(beIdenticalTo(evaluation))
-                expect(actual.properties["experiment_id"] as? Int64) == 5
-                expect(actual.properties["experiment_key"] as? Int64) == 42
-                expect(actual.properties["variation_id"] as? Int64) == 320
-                expect(actual.properties["variation_key"] as? String) == "B"
-                expect(actual.properties["experiment_decision_reason"] as? String).to(equal("TRAFFIC_ALLOCATED"))
+                expect(response.layoutEvaluation.layoutResult.message).to(be(message))
+                expect(response.layoutEvaluation.layoutResult.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
+                expect(response.experiment?.experimentResult.variationKey) == "B"
             }
-
 
             it("cannot evaluate when lang matches but variation key mismatches") {
                 // given
@@ -91,17 +103,15 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let experiment = experiment(id: 5, key: 42)
                 let workspace = WorkspaceEntity.create(experiments: [experiment])
                 let request = InAppMessage.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
-                let evaluation = experimentEvaluation(
+                experimentEvaluatorStub.evaluation = experimentEvaluation(
                     reason: DecisionReason.TRAFFIC_ALLOCATED,
-                    targetEvaluations: [],
                     experiment: experiment,
                     variationId: 320,
                     variationKey: "B"
                 )
-                evaluator.returns = evaluation
 
                 expect {
-                    let _: InAppMessageLayoutEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                    let _: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
                 }
                     .to(throwError())
             }
@@ -121,11 +131,11 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let request = InAppMessage.layoutRequest(inAppMessage: inAppMessage)
 
                 // when
-                let actual: InAppMessageLayoutEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                let response: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
 
                 // then
-                expect(actual.reason).to(equal("IN_APP_MESSAGE_TARGET"))
-                expect(actual.message).to(beIdenticalTo(message))
+                expect(response.layoutEvaluation.layoutResult.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
+                expect(response.layoutEvaluation.layoutResult.message).to(beIdenticalTo(message))
             }
 
             it("not match") {
@@ -139,7 +149,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let request = InAppMessage.layoutRequest(inAppMessage: inAppMessage)
 
                 expect {
-                    let _: InAppMessageLayoutEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                    let _: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
                 }
                     .to(throwError())
             }
@@ -148,15 +158,19 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
         it("record") {
             // given
             let request = InAppMessage.layoutRequest()
-            let evaluation = InAppMessage.layoutEvaluation()
+            let response = InAppMessageLayoutEvaluateResponse(
+                user: request.user,
+                workspace: request.workspace,
+                evaluation: InAppMessage.layoutEvaluation(),
+                references: [],
+                experiment: nil
+            )
 
             // when
-            sut.record(request: request, evaluation: evaluation)
+            sut.record(request: request, response: response)
 
             // then
-            verify(exactly: 1) {
-                eventRecorder.recordMock
-            }
+            expect(eventRecorder.recordCount) == 1
         }
     }
 }

@@ -8,7 +8,7 @@ class MockOverrideResolver: Mock, OverrideResolver {
 
     lazy var resolveOrNilMock = MockFunction(self, resolveOrNil)
 
-    func resolveOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation? {
+    func resolveOrNil(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Variation? {
         call(resolveOrNilMock, args: (request, context))
     }
 }

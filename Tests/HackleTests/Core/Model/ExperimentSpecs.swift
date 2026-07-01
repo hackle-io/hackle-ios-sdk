@@ -24,7 +24,7 @@ func experiment(
         VariationEntity(id: 2, key: "B", isDropped: false, parameterConfigurationId: nil)
     ],
     targetAudiences: [Target] = []
-) -> Experiment {
+) -> ExperimentConfig {
     ExperimentEntity(
         id: id,
         key: key,

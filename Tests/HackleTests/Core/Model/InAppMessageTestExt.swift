@@ -209,12 +209,14 @@ extension InAppMessage {
         workspace: Workspace = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessage = create(),
+        scope: InAppMessageEvaluateScope = .trigger,
         timestamp: Date = Date()
-    ) -> InAppMessageEligibilityRequest {
-        InAppMessageEligibilityRequest(
+    ) -> InAppMessageEligibilityLocalEvaluateRequest {
+        InAppMessageEligibilityLocalEvaluateRequest.of(
             workspace: workspace,
-            user: user,
             inAppMessage: inAppMessage,
+            user: user,
+            scope: scope,
             timestamp: timestamp
         )
     }
@@ -222,44 +224,40 @@ extension InAppMessage {
     static func layoutRequest(
         workspace: Workspace = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        inAppMessage: InAppMessage = create()
-    ) -> InAppMessageLayoutRequest {
-        return InAppMessageLayoutRequest(
+        inAppMessage: InAppMessage = create(),
+        scope: InAppMessageEvaluateScope = .trigger,
+        record: Bool = true
+    ) -> InAppMessageLayoutLocalEvaluateRequest {
+        return InAppMessageLayoutLocalEvaluateRequest.of(
             workspace: workspace,
+            inAppMessage: inAppMessage,
             user: user,
-            inAppMessage: inAppMessage
+            scope: scope,
+            record: record
         )
     }
 
     static func layoutEvaluation(
-        request: InAppMessageLayoutRequest = layoutRequest(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        targetEvaluations: [EvaluatorEvaluation] = [],
+        inAppMessage: InAppMessage = create(),
         message: InAppMessage.Message = message(),
         properties: [String: Any] = [:]
     ) -> InAppMessageLayoutEvaluation {
         return InAppMessageLayoutEvaluation(
-            request: request,
-            reason: reason,
-            targetEvaluations: targetEvaluations,
-            message: message,
+            entity: inAppMessage,
+            result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message),
             properties: properties
         )
     }
 
     static func eligibilityEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        isEligible: Bool = true,
-        layoutEvaluation: InAppMessageLayoutEvaluation? = nil
+        isEligible: Bool = true
     ) -> InAppMessageEligibilityEvaluation {
         InAppMessageEligibilityEvaluation(
-            reason: reason,
-            targetEvaluations: targetEvaluations,
-            inAppMessage: inAppMessage,
-            isEligible: isEligible,
-            layoutEvaluation: layoutEvaluation
+            entity: inAppMessage,
+            result: InAppMessageEligibilityEvaluateResult(reason: reason, isEligible: isEligible)
         )
     }
 

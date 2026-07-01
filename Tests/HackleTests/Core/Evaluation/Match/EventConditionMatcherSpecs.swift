@@ -113,13 +113,10 @@ class DefaultEventValueResolverSpecs: QuickSpec {
             let user = HackleUser.builder().identifier(.id, "user").build()
 
             let request = remoteConfigRequest()
-            let evaluation = RemoteConfigEvaluation.of(
-                request: request,
-                context: Evaluators.context(),
-                valueId: 999,
-                value: .string("RC"),
-                reason: DecisionReason.TARGET_RULE_MATCH,
-                properties: PropertiesBuilder()
+            let evaluation = RemoteConfigEvaluation(
+                entity: request.parameter,
+                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: .string("RC"), valueId: 999),
+                properties: [:]
             )
             let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["a": "b"], timestamp: Date())
 

@@ -6,51 +6,64 @@ import Nimble
 class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
     override class func spec() {
 
-        var evaluationContext: EvaluationContext!
-        var sut: DefaultInAppMessageEligibilityFlowFactory!
+        var sut: DefaultInAppMessageEligibilityLocalEvaluationFlowFactory!
 
         beforeEach {
-            evaluationContext = EvaluationContext()
-            evaluationContext.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
-            evaluationContext.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
-            evaluationContext.initialize(
-                evaluator: MockEvaluator(),
-                manualOverrideStorage: DelegatingManualOverrideStorage(storages: []),
-                clock: SystemClock.shared
+            let targetMatcher = DefaultTargetMatcher(
+                conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory()), clock: SystemClock.shared)
             )
-            sut = DefaultInAppMessageEligibilityFlowFactory(context: evaluationContext, layoutEvaluator: MockEvaluator())
+            let layoutEvaluator = InAppMessageLayoutLocalEvaluator(
+                experimentEvaluator: InAppMessageLayoutExperimentEvaluator(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory())),
+                selector: InAppMessageLayoutSelector(),
+                eventRecorder: MockEvaluationEventRecorder()
+            )
+            sut = DefaultInAppMessageEligibilityLocalEvaluationFlowFactory(
+                targetMatcher: targetMatcher,
+                impressionStorage: DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()),
+                hiddenStorage: DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()),
+                layoutEvaluator: layoutEvaluator
+            )
         }
 
-        it("flow") {
-            sut.triggerFlow()
-                .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(OverrideInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(DraftInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(PausedInAppMessageEligibilityFlowEvaluator.self)!
+        func request(scope: InAppMessageEvaluateScope, atDeliverTime: Bool = false) -> InAppMessageEligibilityLocalEvaluateRequest {
+            let inAppMessage = InAppMessage.create(evaluateContext: InAppMessage.evaluateContext(atDeliverTime: atDeliverTime))
+            return InAppMessage.eligibilityRequest(inAppMessage: inAppMessage, scope: scope)
+        }
+
+        it("trigger flow") {
+            sut.get(request: request(scope: .trigger))
+                .isDecisionWith(PlatformInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(OverrideInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(DraftInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(PauseInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(TimetableInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(TargetInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(LayoutResolveInAppMessageEligibilityFlowEvaluator.self)!
+                .isDecisionWith(TargetInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(LayoutResolveInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(EligibleInAppMessageEligibilityFlowEvaluator.self)!
                 .isEnd()
+        }
 
-            sut.deliverFlow(reEvaluate: false)
-                .isDecisionWith(OverrideInAppMessageEligibilityFlowEvaluator.self)!
+        it("deliver flow (not re-evaluate)") {
+            sut.get(request: request(scope: .deliver, atDeliverTime: false))
+                .isDecisionWith(OverrideInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(EligibleInAppMessageEligibilityFlowEvaluator.self)!
                 .isEnd()
+        }
 
-            sut.deliverFlow(reEvaluate: true)
-                .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(OverrideInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(DraftInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(PausedInAppMessageEligibilityFlowEvaluator.self)!
+        it("deliver flow (re-evaluate)") {
+            sut.get(request: request(scope: .deliver, atDeliverTime: true))
+                .isDecisionWith(PlatformInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(OverrideInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(DraftInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(PauseInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(TimetableInAppMessageEligibilityFlowEvaluator.self)!
-                .isDecisionWith(TargetInAppMessageEligibilityFlowEvaluator.self)!
+                .isDecisionWith(TargetInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(FrequencyCapInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(HiddenInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(EligibleInAppMessageEligibilityFlowEvaluator.self)!

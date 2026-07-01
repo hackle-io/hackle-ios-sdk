@@ -10,7 +10,7 @@ class EvaluationFlowSpecs: QuickSpec {
         describe("evaluate") {
 
             it("when end of flow then returns nil") {
-                let flow: ExperimentFlow = ExperimentFlow.end()
+                let flow: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.end()
                 let actual = try flow.evaluate(request: experimentRequest(), context: Evaluators.context())
                 expect(actual).to(beNil())
             }
@@ -18,7 +18,7 @@ class EvaluationFlowSpecs: QuickSpec {
             it("when flow need decision then evaluate flow") {
                 // given
                 let evaluation = experimentEvaluation()
-                let flow: ExperimentFlow = ExperimentFlow.decision(evaluator: FlowEvaluatorStub(evaluation: evaluation), nextFlow: .end())
+                let flow: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.decision(evaluator: FlowEvaluatorStub(evaluation: evaluation), nextFlow: .end())
                 let actual = try flow.evaluate(request: experimentRequest(), context: Evaluators.context())
                 expect(actual).to(beIdenticalTo(evaluation))
             }
@@ -29,7 +29,7 @@ class EvaluationFlowSpecs: QuickSpec {
             let f2 = NextFlowEvaluator()
             let f3 = NextFlowEvaluator()
 
-            let flow: ExperimentFlow = ExperimentFlow.of(f1, f2, f3)
+            let flow: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.of(f1, f2, f3)
 
             flow
                 .isDecisionWith(f1)!
@@ -44,10 +44,10 @@ class EvaluationFlowSpecs: QuickSpec {
             let fe3 = NextFlowEvaluator()
             let fe4 = NextFlowEvaluator()
 
-            let f1: ExperimentFlow = ExperimentFlow.of(fe1, fe2)
-            let f2: ExperimentFlow = ExperimentFlow.of(fe3, fe4)
+            let f1: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.of(fe1, fe2)
+            let f2: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.of(fe3, fe4)
 
-            let f: ExperimentFlow = f1 + f2
+            let f: ExperimentLocalEvaluationFlow = f1 + f2
 
             f
                 .isDecisionWith(fe1)!

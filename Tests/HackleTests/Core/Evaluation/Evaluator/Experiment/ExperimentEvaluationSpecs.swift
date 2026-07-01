@@ -22,23 +22,15 @@ class ExperimentEvaluationSpecs: QuickSpec {
             let variation = experiment.getVariationOrNil(variationKey: "B")!
 
             let config = ParameterConfigurationEntity(id: 100, parameters: [:])
-            let workspace = MockWorkspace()
-            every(workspace.getParameterConfigurationOrNilMock).returns(config)
 
-            let user = HackleUser.builder().build()
-            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment, defaultVariation: "H")
+            let result = ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: variation, config: config)
+            let evaluation = ExperimentEvaluation(entity: experiment, result: result)
 
-            let context = Evaluators.context()
-            context.add(experimentEvaluation())
-
-            let evaluation = try ExperimentEvaluation.of(request: request, context: context, variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED)
-
-            expect(evaluation.reason) == DecisionReason.TRAFFIC_ALLOCATED
-            expect(evaluation.targetEvaluations.count) == 1
+            expect(evaluation.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
-            expect(evaluation.variationId) == variation.id
-            expect(evaluation.variationKey) == "B"
-            expect(evaluation.config).to(beIdenticalTo(config))
+            expect(evaluation.experimentResult.variationId) == variation.id
+            expect(evaluation.experimentResult.variationKey) == "B"
+            expect(evaluation.experimentResult.config).to(beIdenticalTo(config))
         }
 
         it("create by Variation - config nil") {
@@ -50,45 +42,14 @@ class ExperimentEvaluationSpecs: QuickSpec {
             )
             let variation = experiment.getVariationOrNil(variationKey: "B")!
 
-            let workspace = MockWorkspace()
-            every(workspace.getParameterConfigurationOrNilMock).returns(nil)
+            let result = ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: variation, config: nil)
+            let evaluation = ExperimentEvaluation(entity: experiment, result: result)
 
-            let user = HackleUser.builder().build()
-            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment, defaultVariation: "H")
-
-            let context = Evaluators.context()
-            context.add(experimentEvaluation())
-
-            let evaluation = try ExperimentEvaluation.of(request: request, context: context, variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED)
-
-            expect(evaluation.reason) == DecisionReason.TRAFFIC_ALLOCATED
-            expect(evaluation.targetEvaluations.count) == 1
+            expect(evaluation.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
-            expect(evaluation.variationId) == variation.id
-            expect(evaluation.variationKey) == "B"
-            expect(evaluation.config).to(beNil())
-        }
-
-        it("create by Variation - config not found") {
-            let experiment = experiment(id: 42, key: 50,
-                variations: [
-                    VariationEntity(id: 320, key: "A", isDropped: false, parameterConfigurationId: 99),
-                    VariationEntity(id: 321, key: "B", isDropped: false, parameterConfigurationId: 100)
-                ]
-            )
-            let variation = experiment.getVariationOrNil(variationKey: "B")!
-
-            let workspace = MockWorkspace()
-            every(workspace.getParameterConfigurationOrNilMock).returns(nil)
-
-            let user = HackleUser.builder().build()
-            let request = experimentRequest(workspace: workspace, user: user, experiment: experiment, defaultVariation: "H")
-
-            let context = Evaluators.context()
-            context.add(experimentEvaluation())
-
-            expect(try ExperimentEvaluation.of(request: request, context: context, variation: variation, reason: DecisionReason.TRAFFIC_ALLOCATED))
-                .to(throwError(HackleError.error("ParameterConfiguration[100]")))
+            expect(evaluation.experimentResult.variationId) == variation.id
+            expect(evaluation.experimentResult.variationKey) == "B"
+            expect(evaluation.experimentResult.config).to(beNil())
         }
 
         it("create by default") {
@@ -100,19 +61,17 @@ class ExperimentEvaluationSpecs: QuickSpec {
             )
 
             let workspace = MockWorkspace()
-
             let user = HackleUser.builder().build()
             let request = experimentRequest(workspace: workspace, user: user, experiment: experiment, defaultVariation: "A")
 
+            let result = try ExperimentEvaluateResult.ofDefault(reason: DecisionReason.TRAFFIC_NOT_ALLOCATED, request: request)
+            let evaluation = ExperimentEvaluation(entity: experiment, result: result)
 
-            let evaluation = try ExperimentEvaluation.ofDefault(request: request, context: Evaluators.context(), reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
-
-            expect(evaluation.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
-            expect(evaluation.targetEvaluations.count) == 0
+            expect(evaluation.experimentResult.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
             expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
-            expect(evaluation.variationId) == 320
-            expect(evaluation.variationKey) == "A"
-            expect(evaluation.config).to(beNil())
+            expect(evaluation.experimentResult.variationId) == 320
+            expect(evaluation.experimentResult.variationKey) == "A"
+            expect(evaluation.experimentResult.config).to(beNil())
         }
 
         it("create by default - variation null") {
@@ -124,37 +83,35 @@ class ExperimentEvaluationSpecs: QuickSpec {
             )
 
             let workspace = MockWorkspace()
-
             let user = HackleUser.builder().build()
             let request = experimentRequest(workspace: workspace, user: user, experiment: experiment, defaultVariation: "C")
 
+            let result = try ExperimentEvaluateResult.ofDefault(reason: DecisionReason.TRAFFIC_NOT_ALLOCATED, request: request)
+            let evaluation = ExperimentEvaluation(entity: experiment, result: result)
 
-            let evaluation = try ExperimentEvaluation.ofDefault(request: request, context: Evaluators.context(), reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
-
-            expect(evaluation.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
-            expect(evaluation.targetEvaluations.count) == 0
+            expect(evaluation.experimentResult.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
             expect(evaluation.experiment as? ExperimentEntity).to(beIdenticalTo(experiment as? ExperimentEntity))
-            expect(evaluation.variationId).to(beNil())
-            expect(evaluation.variationKey) == "C"
-            expect(evaluation.config).to(beNil())
+            expect(evaluation.experimentResult.variationId).to(beNil())
+            expect(evaluation.experimentResult.variationKey) == "C"
+            expect(evaluation.experimentResult.config).to(beNil())
         }
     }
 }
 
 func experimentEvaluation(
     reason: String = DecisionReason.TRAFFIC_ALLOCATED,
-    targetEvaluations: [EvaluatorEvaluation] = [],
-    experiment: Experiment = experiment(),
+    experiment: ExperimentConfig = experiment(),
     variationId: Variation.Id? = 1,
     variationKey: Variation.Key = "A",
     config: ParameterConfiguration? = nil
 ) -> ExperimentEvaluation {
     ExperimentEvaluation(
-        reason: reason,
-        targetEvaluations: targetEvaluations,
-        experiment: experiment,
-        variationId: variationId,
-        variationKey: variationKey,
-        config: config
+        entity: experiment,
+        result: ExperimentEvaluateResult(
+            reason: reason,
+            variationId: variationId,
+            variationKey: variationKey,
+            config: config
+        )
     )
 }

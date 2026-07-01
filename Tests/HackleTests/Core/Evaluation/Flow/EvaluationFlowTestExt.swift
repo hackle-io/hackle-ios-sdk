@@ -7,7 +7,7 @@ import MockingKit
 
 extension EvaluationFlow {
 
-    static func create<R: EvaluatorRequest, E: EvaluatorEvaluation>(
+    static func create<R: EvaluateRequest, E: Evaluation>(
         _ evaluation: Evaluation
     ) -> EvaluationFlow<R, E> {
         of(FlowEvaluatorStub(evaluation: evaluation))

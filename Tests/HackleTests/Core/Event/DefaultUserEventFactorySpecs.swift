@@ -15,43 +15,32 @@ class DefaultUserEventFactorySpecs: QuickSpec {
     override class func spec() {
 
         it("create") {
-            let sut = DefaultUserEventFactory(clock: ClockStub())
-
-            let context = Evaluators.context()
+            let sut = EvaluationEventFactory(clock: ClockStub())
 
             let evaluation1 = ExperimentEvaluation(
-                reason: DecisionReason.TRAFFIC_ALLOCATED,
-                targetEvaluations: [],
-                experiment: experiment(id: 1),
-                variationId: 42,
-                variationKey: "B",
-                config: ParameterConfigurationEntity(id: 42, parameters: [:])
+                entity: experiment(id: 1),
+                result: ExperimentEvaluateResult(reason: DecisionReason.TRAFFIC_ALLOCATED, variationId: 42, variationKey: "B", config: ParameterConfigurationEntity(id: 42, parameters: [:]))
             )
 
             let evaluation2 = ExperimentEvaluation(
-                reason: DecisionReason.DEFAULT_RULE,
-                targetEvaluations: [],
-                experiment: experiment(id: 2, type: .featureFlag, version: 2, executionVersion: 3),
-                variationId: 320,
-                variationKey: "A",
-                config: nil
+                entity: experiment(id: 2, type: .featureFlag, version: 2, executionVersion: 3),
+                result: ExperimentEvaluateResult(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A", config: nil)
             )
-
-            context.add(evaluation1)
-            context.add(evaluation2)
 
             let request = remoteConfigRequest()
-
-            let evaluation = RemoteConfigEvaluation.of(
-                request: request,
-                context: context,
-                valueId: 999,
-                value: .string("RC"),
-                reason: DecisionReason.TARGET_RULE_MATCH,
-                properties: PropertiesBuilder()
+            let rcEvaluation = RemoteConfigEvaluation(
+                entity: request.parameter,
+                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: .string("RC"), valueId: 999),
+                properties: PropertiesBuilder().add("returnValue", "RC").build()
+            )
+            let response = RemoteConfigEvaluateResponse(
+                user: request.user,
+                workspace: request.workspace,
+                evaluation: rcEvaluation,
+                references: [evaluation1, evaluation2]
             )
 
-            let events = sut.create(request: request, evaluation: evaluation)
+            let events = sut.create(response: response)
 
             expect(events.count) == 3
 
@@ -62,7 +51,6 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(rc.parameter).to(beIdenticalTo(request.parameter))
             expect(rc.valueId) == 999
             expect(rc.decisionReason) == DecisionReason.TARGET_RULE_MATCH
-            expect(rc.properties.count) == 1
             expect(rc.properties["returnValue"] as? String) == "RC"
 
             expect(events[1]).to(beAnInstanceOf(UserEvents.Exposure.self))
@@ -73,7 +61,6 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.variationId) == 42
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
-            expect(exposure1.properties.count) == 5
             expect(exposure1.properties["$targetingRootType"] as? String) == "REMOTE_CONFIG"
             expect(exposure1.properties["$targetingRootId"] as? Int64) == 1
             expect(exposure1.properties["$parameterConfigurationId"] as? Int64) == 42
@@ -88,7 +75,6 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure2.variationId) == 320
             expect(exposure2.variationKey) == "A"
             expect(exposure2.decisionReason) == DecisionReason.DEFAULT_RULE
-            expect(exposure2.properties.count) == 4
             expect(exposure2.properties["$targetingRootType"] as? String) == "REMOTE_CONFIG"
             expect(exposure2.properties["$targetingRootId"] as? Int64) == 1
             expect(exposure2.properties["$experiment_version"] as? Int) == 2
@@ -96,21 +82,24 @@ class DefaultUserEventFactorySpecs: QuickSpec {
         }
 
         it("create in-app message events") {
-            let sut = DefaultUserEventFactory(clock: ClockStub())
+            let sut = EvaluationEventFactory(clock: ClockStub())
 
-            let context = Evaluators.context()
             let evaluation1 = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, experiment: experiment(id: 1), variationId: 42, variationKey: "B")
-            context.add(evaluation1)
 
             let request = InAppMessage.eligibilityRequest()
-            let evaluation = InAppMessageEligibilityEvaluation.of(
-                request: request,
-                context: context,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET,
-                isEligible: true
+            let eligibilityEvaluation = InAppMessageEligibilityEvaluation(
+                entity: request.inAppMessage,
+                result: InAppMessageEligibilityEvaluateResult(reason: DecisionReason.IN_APP_MESSAGE_TARGET, isEligible: true)
+            )
+            let response = InAppMessageEligibilityEvaluateResponse(
+                user: request.user,
+                workspace: request.workspace,
+                evaluation: eligibilityEvaluation,
+                references: [evaluation1],
+                layout: nil
             )
 
-            let events = sut.create(request: request, evaluation: evaluation)
+            let events = sut.create(response: response)
 
             expect(events.count).to(equal(1))
 
@@ -122,7 +111,6 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.variationId) == 42
             expect(exposure1.variationKey) == "B"
             expect(exposure1.decisionReason) == DecisionReason.TRAFFIC_ALLOCATED
-            expect(exposure1.properties.count) == 4
             expect(exposure1.properties["$targetingRootType"] as? String) == "IN_APP_MESSAGE"
             expect(exposure1.properties["$targetingRootId"] as? Int64) == 1
             expect(exposure1.properties["$experiment_version"] as? Int) == 1

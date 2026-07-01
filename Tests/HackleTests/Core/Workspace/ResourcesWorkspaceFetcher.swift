@@ -11,20 +11,31 @@ import Foundation
 
 class ResourcesWorkspaceFetcher: WorkspaceFetcher {
 
-    private let workspace: Workspace
+    let workspaceConfig: WorkspaceConfig
 
     init(fileName: String) {
         let path = Bundle(for: ResourcesWorkspaceFetcher.self).path(forResource: fileName, ofType: "json")!
         let json = try! String(contentsOfFile: path)
 
         let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-        workspace = WorkspaceEntity.from(dto: dto)
+        workspaceConfig = WorkspaceEntity.from(dto: dto) as! WorkspaceConfig
     }
 
     func fetch() -> Workspace? {
-        workspace
+        workspaceConfig
     }
 
     func initialize(completion: @escaping () -> ()) {
+    }
+}
+
+/// Adapts a ResourcesWorkspaceFetcher into a WorkspaceConfigFetcher for local decision processing tests.
+class ResourcesWorkspaceConfigFetcher: WorkspaceConfigFetcher {
+    private let workspaceConfig: WorkspaceConfig
+    init(_ fetcher: ResourcesWorkspaceFetcher) {
+        self.workspaceConfig = fetcher.workspaceConfig
+    }
+    func fetch() -> WorkspaceConfig? {
+        workspaceConfig
     }
 }
