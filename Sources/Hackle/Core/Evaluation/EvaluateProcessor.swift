@@ -8,8 +8,78 @@ class EvaluateProcessor {
         self.evaluatorFactory = evaluatorFactory
     }
 
+    static func create(
+        context: EvaluationContext,
+        clock: Clock,
+        eventProcessor: UserEventProcessor,
+        overrideStorage: ManualOverrideStorage,
+        impressionStorage: InAppMessageImpressionStorage,
+        hiddenStorage: InAppMessageHiddenStorage
+    ) -> EvaluateProcessor {
+        let evaluatorFactory = EvaluatorFactory()
+        let delegatingEvaluator = DelegatingEvaluator(evaluatorFactory: evaluatorFactory)
+
+        let eventFactory = EvaluationEventFactory(clock: clock)
+        let eventRecorder = EvaluationEventRecorder(
+            eventFactory: eventFactory,
+            eventProcessor: eventProcessor
+        )
+
+        let targetMatcher = DefaultTargetMatcher(
+            conditionMatcherFactory: DefaultConditionMatcherFactory(
+                evaluator: delegatingEvaluator,
+                clock: clock
+            )
+        )
+        context.register(targetMatcher)
+
+        let bucketer = DefaultBucketer()
+
+        // ===== Local =====
+
+        let experimentLocalEvaluator = ExperimentLocalEvaluator(
+            evaluationFlowFactory: DefaultExperimentLocalEvaluationFlowFactory(
+                targetMatcher: targetMatcher,
+                bucketer: bucketer,
+                overrideStorage: overrideStorage
+            ),
+            eventRecorder: eventRecorder
+        )
+        let remoteConfigLocalEvaluator = RemoteConfigLocalEvaluator(
+            targetRuleDeterminer: RemoteConfigParameterTargetRuleDeterminer(
+                matcher: RemoteConfigParameterTargetRuleMatcher(
+                    targetMatcher: targetMatcher,
+                    bucketer: bucketer
+                )
+            ),
+            eventRecorder: eventRecorder
+        )
+        let inAppMessageLayoutLocalEvaluator = InAppMessageLayoutLocalEvaluator(
+            experimentEvaluator: InAppMessageLayoutExperimentEvaluator(
+                evaluator: delegatingEvaluator
+            ),
+            selector: InAppMessageLayoutSelector(),
+            eventRecorder: eventRecorder
+        )
+        let inAppMessageEligibilityLocalEvaluator = InAppMessageEligibilityLocalEvaluator(
+            evaluationFlowFactory: DefaultInAppMessageEligibilityLocalEvaluationFlowFactory(
+                targetMatcher: targetMatcher,
+                impressionStorage: impressionStorage,
+                hiddenStorage: hiddenStorage,
+                layoutEvaluator: inAppMessageLayoutLocalEvaluator
+            ),
+            eventRecorder: eventRecorder
+        )
+
+        evaluatorFactory.add(experimentLocalEvaluator)
+        evaluatorFactory.add(remoteConfigLocalEvaluator)
+        evaluatorFactory.add(inAppMessageLayoutLocalEvaluator)
+        evaluatorFactory.add(inAppMessageEligibilityLocalEvaluator)
+
+        return EvaluateProcessor(evaluatorFactory: evaluatorFactory)
+    }
+
     // 타입드 진입점(experiment/remoteConfig/inAppMessage x2)은 step 3/4/5에서 추가.
-    // static create(...)는 step 6에서 추가.
 
     fileprivate func evaluate<Res: EvaluateResponse>(evaluator: any Evaluator, request: EvaluateRequest) throws -> Res {
         let response: Res = try evaluator.evaluate(request: request, context: Evaluators.context())
