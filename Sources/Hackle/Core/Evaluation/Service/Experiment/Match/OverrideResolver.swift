@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol OverrideResolver {
-    func resolveOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation?
+    func resolveOrNil(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Variation?
 }
 
 class DefaultOverrideResolver: OverrideResolver {
@@ -24,7 +24,7 @@ class DefaultOverrideResolver: OverrideResolver {
         self.actionResolver = actionResolver
     }
 
-    func resolveOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation? {
+    func resolveOrNil(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Variation? {
 
         if let overriddenVariation = resolveManualOverrideOrNil(request: request) {
             return overriddenVariation
@@ -36,11 +36,11 @@ class DefaultOverrideResolver: OverrideResolver {
         return try resolveSegmentOverrideOrNil(request: request, context: context)
     }
 
-    private func resolveManualOverrideOrNil(request: ExperimentRequest) -> Variation? {
-        manualOverrideStorage.get(experiment: request.experiment, user: request.user)
+    private func resolveManualOverrideOrNil(request: ExperimentLocalEvaluateRequest) -> Variation? {
+        manualOverrideStorage.get(experiment: request.experimentConfig, user: request.user)
     }
 
-    private func resolveUserOverrideOrNil(request: ExperimentRequest) -> Variation? {
+    private func resolveUserOverrideOrNil(request: ExperimentLocalEvaluateRequest) -> Variation? {
         let experiment = request.experiment
         guard let identifier = request.user.identifiers[experiment.identifierType] else {
             return nil
@@ -51,7 +51,7 @@ class DefaultOverrideResolver: OverrideResolver {
         return experiment.getVariationOrNil(variationId: overriddenVariationId)
     }
 
-    private func resolveSegmentOverrideOrNil(request: ExperimentRequest, context: EvaluatorContext) throws -> Variation? {
+    private func resolveSegmentOverrideOrNil(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Variation? {
         guard let overriddenRule = try request.experiment.segmentOverrides.first(where: { it in try targetMatcher.matches(request: request, context: context, target: it.target) }) else {
             return nil
         }

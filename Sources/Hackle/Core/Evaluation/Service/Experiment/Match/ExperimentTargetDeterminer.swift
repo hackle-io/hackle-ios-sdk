@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ExperimentTargetDeterminer {
-    func isUserInExperimentTarget(request: ExperimentRequest, context: EvaluatorContext) throws -> Bool
+    func isUserInExperimentTarget(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool
 }
 
 class DefaultExperimentTargetDeterminer: ExperimentTargetDeterminer {
@@ -12,7 +12,7 @@ class DefaultExperimentTargetDeterminer: ExperimentTargetDeterminer {
         self.targetMatcher = targetMatcher
     }
 
-    func isUserInExperimentTarget(request: ExperimentRequest, context: EvaluatorContext) throws -> Bool {
+    func isUserInExperimentTarget(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
         if request.experiment.targetAudiences.isEmpty {
             return true
         }

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ContainerResolver {
-    func isUserInContainerGroup(request: ExperimentRequest, container: Container) throws -> Bool
+    func isUserInContainerGroup(request: ExperimentLocalEvaluateRequest, container: Container) throws -> Bool
 }
 
 class DefaultContainerResolver: ContainerResolver {
@@ -18,7 +18,7 @@ class DefaultContainerResolver: ContainerResolver {
         self.bucketer = bucketer
     }
 
-    func isUserInContainerGroup(request: ExperimentRequest, container: Container) throws -> Bool {
+    func isUserInContainerGroup(request: ExperimentLocalEvaluateRequest, container: Container) throws -> Bool {
         guard let identifier = request.user.identifiers[request.experiment.identifierType] else {
             return false
         }

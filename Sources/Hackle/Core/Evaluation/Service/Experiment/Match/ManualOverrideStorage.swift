@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol ManualOverrideStorage {
-    func get(experiment: Experiment, user: HackleUser) -> Variation?
+    func get(experiment: ExperimentConfig, user: HackleUser) -> Variation?
 }
 
 
@@ -21,7 +21,7 @@ class DelegatingManualOverrideStorage: ManualOverrideStorage {
         self.storages = storages
     }
 
-    func get(experiment: Experiment, user: HackleUser) -> Variation? {
+    func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
         for storage in storages {
             if let variation = storage.get(experiment: experiment, user: user) {
                 return variation
