@@ -1,68 +1,11 @@
 //
-//  InAppMessageMatcher.swift
+//  InAppMessageFrequencyCapMatcher.swift
 //  Hackle
 //
 //  Created by sungwoo.yeo on 5/2/25.
 //
 
 import Foundation
-
-protocol InAppMessageMatcher {
-    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool
-}
-
-class InAppMessageUserOverrideMatcher: InAppMessageMatcher {
-    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
-        let userOverrides = request.inAppMessage.targetContext.overrides
-        if userOverrides.isEmpty {
-            return false
-        }
-        return userOverrides.contains { it in
-            isUserOverridden(request: request, userOverride: it)
-        }
-    }
-
-    private func isUserOverridden(request: InAppMessageEligibilityRequest, userOverride: InAppMessage.UserOverride) -> Bool {
-        guard let identifier = request.user.identifiers[userOverride.identifierType] else {
-            return false
-        }
-        return userOverride.identifiers.contains(identifier)
-    }
-}
-
-class InAppMessageTargetMatcher: InAppMessageMatcher {
-
-    private let targetMatcher: TargetMatcher
-
-    init(targetMatcher: TargetMatcher) {
-        self.targetMatcher = targetMatcher
-    }
-
-    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
-        let targets = request.inAppMessage.targetContext.targets
-        if targets.isEmpty {
-            return true
-        }
-
-        return try targets.contains { it in
-            try targetMatcher.matches(request: request, context: context, target: it)
-        }
-    }
-}
-
-
-class InAppMessageHiddenMatcher: InAppMessageMatcher {
-
-    private let storage: InAppMessageHiddenStorage
-
-    init(storage: InAppMessageHiddenStorage) {
-        self.storage = storage
-    }
-
-    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
-        storage.exist(inAppMessage: request.inAppMessage, now: request.timestamp)
-    }
-}
 
 class InAppMessageFrequencyCapMatcher: InAppMessageMatcher {
 
@@ -72,7 +15,7 @@ class InAppMessageFrequencyCapMatcher: InAppMessageMatcher {
         self.storage = storage
     }
 
-    func matches(request: InAppMessageEligibilityRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext) throws -> Bool {
         return try isFrequencyCapped(inAppMessage: request.inAppMessage, user: request.user, timestamp: request.timestamp)
     }
 
@@ -130,7 +73,7 @@ extension InAppMessageFrequencyCapMatcher {
             return matchCount >= predicate.thresholdCount
         }
     }
-    
+
     protocol FrequencyCapPredicate {
         var thresholdCount: Int64 { get }
         func matches(user: HackleUser, timestamp: Date, impression: InAppMessageImpression) -> Bool
