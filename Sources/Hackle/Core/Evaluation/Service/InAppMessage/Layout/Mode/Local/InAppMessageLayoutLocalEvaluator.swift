@@ -39,7 +39,7 @@ final class InAppMessageLayoutLocalEvaluator: InAppMessageLayoutEvaluator {
         context: EvaluatorContext,
         experimentContext: InAppMessage.ExperimentContext
     ) throws -> InAppMessage.Message {
-        guard let experiment = request.workspace.getExperimentConfigOrNil(experimentKey: experimentContext.key) else {
+        guard let experiment = request.workspace.getExperimentOrNil(experimentKey: experimentContext.key) as? ExperimentConfig else {
             throw HackleError.error("Experiment[key=\(experimentContext.key)]")
         }
         let experimentEvaluation = try experimentEvaluator.evaluate(sourceRequest: request, context: context, reference: experiment)

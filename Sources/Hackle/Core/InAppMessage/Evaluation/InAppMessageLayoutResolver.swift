@@ -1,7 +1,7 @@
 import Foundation
 
 protocol InAppMessageLayoutResolver {
-    func resolve(workspace: WorkspaceConfig, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation
+    func resolve(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation
 }
 
 class DefaultInAppMessageLayoutResolver: InAppMessageLayoutResolver {
@@ -12,7 +12,7 @@ class DefaultInAppMessageLayoutResolver: InAppMessageLayoutResolver {
         self.evaluateProcessor = evaluateProcessor
     }
 
-    func resolve(workspace: WorkspaceConfig, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation {
+    func resolve(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluation {
         let layoutRequest = InAppMessageLayoutLocalEvaluateRequest.of(
             workspace: workspace,
             inAppMessage: inAppMessage,

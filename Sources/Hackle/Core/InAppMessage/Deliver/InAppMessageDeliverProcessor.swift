@@ -70,10 +70,10 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         let layoutEvaluation = try layoutResolver.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
 
         // check Evaluation (re-evaluate + dedup)
-        let eligibilityRequest = InAppMessageEligibilityRequest(workspace: workspace, user: user, inAppMessage: inAppMessage, timestamp: request.requestedAt)
+        let eligibilityRequest = InAppMessageEligibilityLocalEvaluateRequest.of(workspace: workspace, inAppMessage: inAppMessage, user: user, scope: .deliver, timestamp: request.requestedAt)
         let eligibilityEvaluation = try evaluateProcessor.process(type: .deliver, request: eligibilityRequest)
-        if !eligibilityEvaluation.isEligible {
-            Log.debug("InAppMessage Deliver Ineligible. dispatchId: \(request.dispatchId), reason: \(eligibilityEvaluation.reason)")
+        if !eligibilityEvaluation.eligibilityResult.isEligible {
+            Log.debug("InAppMessage Deliver Ineligible. dispatchId: \(request.dispatchId), reason: \(eligibilityEvaluation.eligibilityResult.reason)")
             return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
         }
 

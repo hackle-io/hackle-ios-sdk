@@ -47,10 +47,10 @@ extension InAppMessagePresentRequest: CustomStringConvertible {
         return InAppMessagePresentRequest(
             dispatchId: request.dispatchId,
             inAppMessage: inAppMessage,
-            message: layoutEvaluation.message,
+            message: layoutEvaluation.layoutResult.message,
             user: user,
             requestedAt: request.requestedAt,
-            reason: eligibilityEvaluation.reason,
+            reason: eligibilityEvaluation.eligibilityResult.reason,
             properties: PropertiesBuilder().add(request.properties).add(layoutEvaluation.properties).build(),
             triggerEvent: request.triggerEvent
         )

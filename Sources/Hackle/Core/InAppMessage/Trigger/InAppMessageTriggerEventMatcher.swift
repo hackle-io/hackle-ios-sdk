@@ -36,34 +36,22 @@ class DefaultInAppMessageTriggerEventMatcher: InAppMessageTriggerEventMatcher {
             return false
         }
 
-        let request = EvaluatorRequest.of(workspace: workspace, event: event, inAppMessage: inAppMessage)
+        let request = Request(workspace: workspace, user: event.user, event: event, inAppMessage: inAppMessage)
         return try targetMatcher.anyMatches(request: request, context: Evaluators.context(), targets: rule.targets)
     }
 
-    private class EvaluatorRequest: EvaluatorEventRequest {
-        let key: EvaluatorKey
+    private class Request: EvaluateRequest, EventEvaluateRequest {
         let workspace: Workspace
         let user: HackleUser
         let event: UserEvent
+        let entity: Entity
+        var record: Bool { false }
 
-        init(key: EvaluatorKey, workspace: Workspace, user: HackleUser, event: UserEvent) {
-            self.key = key
+        init(workspace: Workspace, user: HackleUser, event: UserEvent, inAppMessage: InAppMessage) {
             self.workspace = workspace
             self.user = user
             self.event = event
-        }
-
-        static func of(
-            workspace: Workspace,
-            event: UserEvent,
-            inAppMessage: InAppMessage
-        ) -> EvaluatorRequest {
-            EvaluatorRequest(
-                key: EvaluatorKey(type: .inAppMessage, id: inAppMessage.id),
-                workspace: workspace,
-                user: event.user,
-                event: event
-            )
+            self.entity = inAppMessage
         }
     }
 }

@@ -9,16 +9,16 @@ import Foundation
 
 final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEvaluateRequest, CustomStringConvertible {
 
-    let workspace: WorkspaceConfig
+    let workspace: Workspace
     let experimentConfig: ExperimentConfig
     let user: HackleUser
     let record: Bool
     let defaultVariationKey: String
 
-    var entity: ConfigEntity { experimentConfig }
+    var entity: Entity { experimentConfig }
     var experiment: Experiment { experimentConfig }
 
-    init(workspace: WorkspaceConfig, entity: ExperimentConfig, user: HackleUser, record: Bool, defaultVariationKey: String) {
+    init(workspace: Workspace, entity: ExperimentConfig, user: HackleUser, record: Bool, defaultVariationKey: String) {
         self.workspace = workspace
         self.experimentConfig = entity
         self.user = user

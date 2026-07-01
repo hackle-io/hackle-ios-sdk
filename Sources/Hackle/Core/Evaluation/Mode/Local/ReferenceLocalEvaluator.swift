@@ -2,7 +2,7 @@ import Foundation
 
 protocol ReferenceLocalEvaluator {
 
-    associatedtype Reference: Entity
+    associatedtype Reference
     associatedtype ReferenceEvaluation: Evaluation
 
     func cachedEvaluation(context: EvaluatorContext, reference: Reference) -> ReferenceEvaluation?
@@ -11,10 +11,6 @@ protocol ReferenceLocalEvaluator {
 }
 
 extension ReferenceLocalEvaluator {
-
-    func cachedEvaluation(context: EvaluatorContext, reference: Reference) -> ReferenceEvaluation? {
-        context.get(reference) as? ReferenceEvaluation
-    }
 
     func evaluate(sourceRequest: LocalEvaluateRequest, context: EvaluatorContext, reference: Reference) throws -> ReferenceEvaluation {
         if let evaluation = cachedEvaluation(context: context, reference: reference) {

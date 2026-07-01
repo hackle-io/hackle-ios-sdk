@@ -2,16 +2,16 @@ import Foundation
 
 final class InAppMessageLayoutLocalEvaluateRequest: LocalEvaluateRequest, InAppMessageLayoutEvaluateRequest, CustomStringConvertible {
 
-    let workspace: WorkspaceConfig
+    let workspace: Workspace
     let inAppMessage: InAppMessage
     let user: HackleUser
     let record: Bool
     let scope: InAppMessageEvaluateScope
 
-    var entity: ConfigEntity { inAppMessage }
+    var entity: Entity { inAppMessage }
 
     private init(
-        workspace: WorkspaceConfig,
+        workspace: Workspace,
         inAppMessage: InAppMessage,
         user: HackleUser,
         record: Bool,
@@ -29,7 +29,7 @@ final class InAppMessageLayoutLocalEvaluateRequest: LocalEvaluateRequest, InAppM
     }
 
     static func of(
-        workspace: WorkspaceConfig,
+        workspace: Workspace,
         inAppMessage: InAppMessage,
         user: HackleUser,
         scope: InAppMessageEvaluateScope,

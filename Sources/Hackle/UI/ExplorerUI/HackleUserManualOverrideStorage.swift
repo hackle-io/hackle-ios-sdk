@@ -20,7 +20,7 @@ class HackleUserManualOverrideStorage: ManualOverrideStorage {
         HackleUserManualOverrideStorage(keyValueRepository: UserDefaultsKeyValueRepository.of(suiteName: suiteName))
     }
 
-    func get(experiment: Experiment, user: HackleUser) -> Variation? {
+    func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
         guard let variationId = get(experiment: experiment) else {
             return nil
         }

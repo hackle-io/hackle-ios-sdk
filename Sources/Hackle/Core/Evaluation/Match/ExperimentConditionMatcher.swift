@@ -37,10 +37,10 @@ protocol ExperimentMatcher {
     func matches(request: LocalEvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
 }
 
-protocol ExperimentEvaluatorMatcher: ExperimentMatcher, ExperimentContextualEvaluator {
+protocol ExperimentEvaluatorMatcher: ExperimentMatcher, ExperimentReferenceLocalEvaluator {
     var valueOperatorMatcher: ValueOperatorMatcher { get }
 
-    func experiment(request: LocalEvaluateRequest, key: Int64) -> Experiment?
+    func experiment(request: LocalEvaluateRequest, key: Int64) -> ExperimentConfig?
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool
 }
 
@@ -55,7 +55,7 @@ extension ExperimentEvaluatorMatcher {
             return false
         }
 
-        let evaluation = try evaluate(request: request, context: context, experiment: experiment)
+        let evaluation = try evaluate(sourceRequest: request, context: context, reference: experiment)
         return matches(evaluation: evaluation, condition: condition)
     }
 }
@@ -77,23 +77,24 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func experiment(request: LocalEvaluateRequest, key: Int64) -> Experiment? {
-        request.workspace.getExperimentOrNil(experimentKey: key)
+    func experiment(request: LocalEvaluateRequest, key: Int64) -> ExperimentConfig? {
+        request.workspace.getExperimentOrNil(experimentKey: key) as? ExperimentConfig
     }
 
-    func resolve(request: EvaluatorRequest, context: EvaluatorContext, evaluation: ExperimentEvaluation) throws -> ExperimentEvaluation {
-        if request is ExperimentRequest && evaluation.reason == DecisionReason.TRAFFIC_ALLOCATED {
-            return evaluation.with(reason: DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING)
+    func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation {
+        let evaluation = experimentResponse.experimentEvaluation
+        if sourceRequest is ExperimentEvaluateRequest && evaluation.experimentResult.reason == DecisionReason.TRAFFIC_ALLOCATED {
+            return ExperimentEvaluation(entity: evaluation.experiment, result: evaluation.experimentResult.with(reason: DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING))
         }
         return evaluation
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
-        if !AbTestConditionMatcher.AB_TEST_MATCHED_REASONS.contains(evaluation.reason) {
+        if !AbTestConditionMatcher.AB_TEST_MATCHED_REASONS.contains(evaluation.experimentResult.reason) {
             return false
         }
 
-        return valueOperatorMatcher.matches(userValue: evaluation.variationKey, match: condition.match)
+        return valueOperatorMatcher.matches(userValue: evaluation.experimentResult.variationKey, match: condition.match)
     }
 }
 
@@ -107,16 +108,16 @@ class FeatureFlagConditionMatcher: ExperimentEvaluatorMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func experiment(request: LocalEvaluateRequest, key: Int64) -> Experiment? {
-        request.workspace.getFeatureFlagOrNil(featureKey: key)
+    func experiment(request: LocalEvaluateRequest, key: Int64) -> ExperimentConfig? {
+        request.workspace.getFeatureFlagOrNil(featureKey: key) as? ExperimentConfig
     }
 
-    func resolve(request: EvaluatorRequest, context: EvaluatorContext, evaluation: ExperimentEvaluation) throws -> ExperimentEvaluation {
-        return evaluation
+    func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation {
+        experimentResponse.experimentEvaluation
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
-        let on = evaluation.variationKey != "A"
+        let on = evaluation.experimentResult.variationKey != "A"
         return valueOperatorMatcher.matches(userValue: on, match: condition.match)
     }
 }

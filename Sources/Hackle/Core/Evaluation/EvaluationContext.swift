@@ -23,34 +23,4 @@ class EvaluationContext: @unchecked Sendable {
     func register(_ instance: Any) {
         instances.append(instance)
     }
-
-    func initialize(evaluator: Evaluator, manualOverrideStorage: ManualOverrideStorage, clock: Clock) {
-
-        let bucketer = DefaultBucketer()
-        let targetMatcher = DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: evaluator, clock: clock))
-        let actionResolver = DefaultActionResolver(bucketer: bucketer)
-        let overrideResolver = DefaultOverrideResolver(manualOverrideStorage: manualOverrideStorage, targetMatcher: targetMatcher, actionResolver: actionResolver)
-        let containerResolver = DefaultContainerResolver(bucketer: bucketer)
-        let experimentTargetDeterminer = DefaultExperimentTargetDeterminer(targetMatcher: targetMatcher)
-        let experimentTargetRuleDeterminer = DefaultExperimentTargetRuleDeterminer(targetMatcher: targetMatcher)
-        let remoteConfigTargetRuleDeterminer = DefaultRemoteConfigTargetRuleDeterminer(matcher: DefaultRemoteConfigTargetRuleMatcher(targetMatcher: targetMatcher, buckter: bucketer))
-        let inAppMessageUserOverrideMatcher = InAppMessageUserOverrideMatcher()
-        let inAppMessageDoNotOpenMatcher = InAppMessageHiddenMatcher(storage: get(InAppMessageHiddenStorage.self)!)
-        let inAppMessageTargetMatcher = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
-        let inAppMessageFrequencyCapMatcher = InAppMessageFrequencyCapMatcher(storage: get(DefaultInAppMessageImpressionStorage.self)!)
-
-        register(evaluator)
-        register(bucketer)
-        register(targetMatcher)
-        register(actionResolver)
-        register(overrideResolver)
-        register(containerResolver)
-        register(experimentTargetDeterminer)
-        register(experimentTargetRuleDeterminer)
-        register(remoteConfigTargetRuleDeterminer)
-        register(inAppMessageUserOverrideMatcher)
-        register(inAppMessageDoNotOpenMatcher)
-        register(inAppMessageTargetMatcher)
-        register(inAppMessageFrequencyCapMatcher)
-    }
 }

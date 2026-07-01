@@ -9,15 +9,15 @@ import Foundation
 
 final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfigEvaluateRequest, Equatable, CustomStringConvertible {
 
-    let workspace: WorkspaceConfig
+    let workspace: Workspace
     let parameter: RemoteConfigParameter
     let user: HackleUser
     let record: Bool
     let defaultValue: HackleValue
 
-    var entity: ConfigEntity { parameter }
+    var entity: Entity { parameter }
 
-    private init(workspace: WorkspaceConfig, parameter: RemoteConfigParameter, user: HackleUser, record: Bool, defaultValue: HackleValue) {
+    private init(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, record: Bool, defaultValue: HackleValue) {
         self.workspace = workspace
         self.parameter = parameter
         self.user = user
@@ -34,7 +34,7 @@ final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfig
     }
 
     static func of(
-        workspace: WorkspaceConfig,
+        workspace: Workspace,
         parameter: RemoteConfigParameter,
         user: HackleUser,
         defaultValue: HackleValue,

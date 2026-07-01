@@ -28,13 +28,17 @@ final class InAppMessageLayoutEvaluateResponse: EvaluateResponse {
         context: EvaluatorContext,
         result: InAppMessageLayoutEvaluateResult
     ) -> InAppMessageLayoutEvaluateResponse {
-        let experimentEvaluation = request.inAppMessage.messageContext.experimentContext?.key
-            .flatMap { request.workspace.getExperimentOrNil(experimentKey: $0) }
-            .flatMap { context.get($0) as? ExperimentEvaluation }
+        let experimentEvaluation: ExperimentEvaluation?
+        if let experimentContext = request.inAppMessage.messageContext.experimentContext,
+           let experiment = request.workspace.getExperimentOrNil(experimentKey: experimentContext.key) {
+            experimentEvaluation = context.get(experiment) as? ExperimentEvaluation
+        } else {
+            experimentEvaluation = nil
+        }
         return InAppMessageLayoutEvaluateResponse(
             user: request.user,
             workspace: request.workspace,
-            evaluation: InAppMessageLayoutEvaluation(entity: request.inAppMessage, result: result),
+            evaluation: InAppMessageLayoutEvaluation(entity: request.inAppMessage, result: result, properties: context.properties),
             references: context.references,
             experiment: experimentEvaluation
         )
