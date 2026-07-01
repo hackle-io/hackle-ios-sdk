@@ -1,5 +1,5 @@
 import Foundation
 
-protocol WorkspaceConfigFetcher: WorkspaceFetcher {
+protocol WorkspaceConfigFetcher {
     func fetch() -> WorkspaceConfig?
 }

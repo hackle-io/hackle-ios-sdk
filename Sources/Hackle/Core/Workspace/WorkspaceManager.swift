@@ -8,7 +8,7 @@
 import Foundation
 
 
-class WorkspaceManager: WorkspaceConfigFetcher, Synchronizer {
+class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
     private let repository: WorkspaceConfigRepository
 
@@ -22,6 +22,10 @@ class WorkspaceManager: WorkspaceConfigFetcher, Synchronizer {
 
     func initialize() {
         readWorkspaceConfigFromLocal()
+    }
+
+    func fetch() -> Workspace? {
+        workspace
     }
 
     func fetch() -> WorkspaceConfig? {
