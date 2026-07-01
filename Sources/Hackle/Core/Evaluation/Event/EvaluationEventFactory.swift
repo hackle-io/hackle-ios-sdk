@@ -32,7 +32,6 @@ class EvaluationEventFactory {
         return events
     }
 
-    // step 4: RemoteConfigEvaluation → UserEvents.remoteConfig
     private func create(user: HackleUser, evaluation: Evaluation, timestamp: Date, properties: PropertiesBuilder) -> UserEvent? {
         switch evaluation {
         case let evaluation as ExperimentEvaluation:
@@ -40,6 +39,14 @@ class EvaluationEventFactory {
             properties.add(EvaluationEventFactory.EXPERIMENT_VERSION_KEY, evaluation.experiment.version)
             properties.add(EvaluationEventFactory.EXECUTION_VERSION_KEY, evaluation.experiment.executionVersion)
             return UserEvents.exposure(
+                user: user,
+                evaluation: evaluation,
+                properties: properties.build(),
+                timestamp: timestamp
+            )
+        case let evaluation as RemoteConfigEvaluation:
+            properties.add(evaluation.properties)
+            return UserEvents.remoteConfig(
                 user: user,
                 evaluation: evaluation,
                 properties: properties.build(),

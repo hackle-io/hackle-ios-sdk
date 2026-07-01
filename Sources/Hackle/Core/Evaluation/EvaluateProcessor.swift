@@ -24,4 +24,8 @@ extension EvaluateProcessor {
     func experiment(_ request: ExperimentEvaluateRequest) throws -> ExperimentEvaluateResponse {
         try evaluate(evaluator: try evaluatorFactory.experiment(request), request: request)
     }
+
+    func remoteConfig(_ request: RemoteConfigEvaluateRequest) throws -> RemoteConfigEvaluateResponse {
+        try evaluate(evaluator: try evaluatorFactory.remoteConfig(request), request: request)
+    }
 }

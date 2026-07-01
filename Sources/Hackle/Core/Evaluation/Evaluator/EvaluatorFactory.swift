@@ -23,4 +23,11 @@ extension EvaluatorFactory {
         }
         return evaluator
     }
+
+    func remoteConfig(_ request: RemoteConfigEvaluateRequest) throws -> any RemoteConfigEvaluator {
+        guard let evaluator = try get(request: request) as? any RemoteConfigEvaluator else {
+            throw HackleError.error("Unsupported remoteConfig evaluator")
+        }
+        return evaluator
+    }
 }
