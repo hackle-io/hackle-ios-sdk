@@ -32,9 +32,9 @@ enum UserEvents {
             timestamp: timestamp,
             user: user,
             experiment: evaluation.experiment,
-            variationId: evaluation.variationId,
-            variationKey: evaluation.variationKey,
-            decisionReason: evaluation.reason,
+            variationId: evaluation.experimentResult.variationId,
+            variationKey: evaluation.experimentResult.variationKey,
+            decisionReason: evaluation.experimentResult.reason,
             properties: properties
         )
     }
@@ -65,8 +65,8 @@ enum UserEvents {
             timestamp: timestamp,
             user: user,
             parameter: evaluation.parameter,
-            valueId: evaluation.valueId,
-            decisionReason: evaluation.reason,
+            valueId: evaluation.remoteConfigResult.valueId,
+            decisionReason: evaluation.remoteConfigResult.reason,
             properties: properties
         )
     }
