@@ -17,7 +17,7 @@ final class RemoteConfigLocalEvaluator: RemoteConfigEvaluator {
         self.eventRecorder = eventRecorder
     }
 
-    func evaluateInternal(request: RemoteConfigLocalEvaluateRequest, context: EvaluatorContext) throws -> RemoteConfigEvaluateResponse {
+    func doEvaluate(request: RemoteConfigLocalEvaluateRequest, context: EvaluatorContext) throws -> RemoteConfigEvaluateResponse {
         if request.user.identifiers[request.parameter.identifierType] == nil {
             let result = RemoteConfigEvaluateResult.of(reason: DecisionReason.IDENTIFIER_NOT_FOUND, value: request.defaultValue, valueId: nil)
             return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)

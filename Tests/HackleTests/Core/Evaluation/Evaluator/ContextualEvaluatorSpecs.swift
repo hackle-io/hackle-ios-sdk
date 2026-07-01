@@ -30,7 +30,7 @@ class ContextualEvaluatorSpecs: QuickSpec {
             expect(context.stack.count).to(equal(0))
         }
 
-        it("cleans up stack when evaluateInternal throws") {
+        it("cleans up stack when doEvaluate throws") {
             let sut = ContextualEvaluatorStub(result: .failure, eventRecorder: eventRecorder)
             let context = Evaluators.context()
 
@@ -71,12 +71,12 @@ class ContextualEvaluatorSpecs: QuickSpec {
             self.eventRecorder = eventRecorder
         }
 
-        func evaluateInternal(request: StubEvaluateRequest, context: EvaluatorContext) throws -> StubEvaluateResponse {
+        func doEvaluate(request: StubEvaluateRequest, context: EvaluatorContext) throws -> StubEvaluateResponse {
             switch result {
             case .success(let response):
                 return response
             case .failure:
-                throw HackleError.error("evaluateInternal failed")
+                throw HackleError.error("doEvaluate failed")
             }
         }
     }

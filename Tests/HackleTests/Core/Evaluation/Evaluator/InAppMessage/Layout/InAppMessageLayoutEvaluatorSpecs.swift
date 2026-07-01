@@ -14,7 +14,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
             eventRecorder = MockEvaluationEventRecorder()
         }
 
-        func evaluateInternal(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
+        func doEvaluate(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
             let evaluation = evaluation ?? ExperimentEvaluation(
                 entity: request.experiment,
                 result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experiment.variations.first!, config: nil)

@@ -17,7 +17,7 @@ final class ExperimentLocalEvaluator: ExperimentEvaluator {
         self.eventRecorder = eventRecorder
     }
 
-    func evaluateInternal(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
+    func doEvaluate(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
         let flow = evaluationFlowFactory.flow(experimentType: request.experiment.type)
         let evaluation: ExperimentEvaluation
         if let flowEvaluation = try flow.evaluate(request: request, context: context) {

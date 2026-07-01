@@ -105,7 +105,7 @@ class DelegatingEvaluatorSpecs: QuickSpec {
             self.eventRecorder = eventRecorder
         }
 
-        func evaluateInternal(request: R, context: EvaluatorContext) throws -> StubEvaluateResponse {
+        func doEvaluate(request: R, context: EvaluatorContext) throws -> StubEvaluateResponse {
             response
         }
     }

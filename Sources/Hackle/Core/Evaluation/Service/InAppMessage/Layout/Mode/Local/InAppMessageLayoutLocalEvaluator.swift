@@ -18,7 +18,7 @@ final class InAppMessageLayoutLocalEvaluator: InAppMessageLayoutEvaluator {
         self.eventRecorder = eventRecorder
     }
 
-    func evaluateInternal(request: InAppMessageLayoutLocalEvaluateRequest, context: EvaluatorContext) throws -> InAppMessageLayoutEvaluateResponse {
+    func doEvaluate(request: InAppMessageLayoutLocalEvaluateRequest, context: EvaluatorContext) throws -> InAppMessageLayoutEvaluateResponse {
         let message: InAppMessage.Message
         if let experimentContext = request.inAppMessage.messageContext.experimentContext {
             message = try evaluateExperiment(request: request, context: context, experimentContext: experimentContext)

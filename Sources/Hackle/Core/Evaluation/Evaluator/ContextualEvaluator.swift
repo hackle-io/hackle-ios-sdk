@@ -14,7 +14,7 @@ protocol ContextualEvaluator: Evaluator {
 
     var eventRecorder: EvaluationEventRecorder { get }
 
-    func evaluateInternal(request: Request, context: EvaluatorContext) throws -> Response
+    func doEvaluate(request: Request, context: EvaluatorContext) throws -> Response
 }
 
 extension ContextualEvaluator {
@@ -29,7 +29,7 @@ extension ContextualEvaluator {
         }
         context.add(request)
         defer { context.remove(request) }
-        let response = try evaluateInternal(request: request as! Self.Request, context: context)
+        let response = try doEvaluate(request: request as! Self.Request, context: context)
         return response as! R
     }
 
