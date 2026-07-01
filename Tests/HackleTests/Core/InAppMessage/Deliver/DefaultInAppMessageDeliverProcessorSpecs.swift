@@ -87,8 +87,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+            let layoutResponse = InAppMessage.layoutEvaluateResponse()
+            every(layoutResolver.resolveMock).returns(layoutResponse)
 
             let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: false)
             every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
@@ -115,8 +115,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+            let layoutResponse = InAppMessage.layoutEvaluateResponse()
+            every(layoutResolver.resolveMock).returns(layoutResponse)
 
             let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
             every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
@@ -149,8 +149,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+            let layoutResponse = InAppMessage.layoutEvaluateResponse()
+            every(layoutResolver.resolveMock).returns(layoutResponse)
 
             let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
             every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
@@ -181,8 +181,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+            let layoutResponse = InAppMessage.layoutEvaluateResponse()
+            every(layoutResolver.resolveMock).returns(layoutResponse)
 
             let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
             every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
@@ -201,6 +201,81 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             expect(capturedRequest).toNot(beNil())
             let user = capturedRequest?.user
             expect(user?.identifiers.keys.contains(IdentifierType.session.rawValue)).to(beTrue())
+        }
+
+        it("present_request_carries_experiment_properties_when_experiment_backed") {
+            // given
+            let inAppMessage = InAppMessage.create(
+                key: 77,
+                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
+            )
+            let request = InAppMessage.deliverRequest(
+                dispatchId: "exp-1",
+                inAppMessageKey: 77,
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
+            )
+            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            every(workspaceFetcher.fetchMock).returns(workspace)
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+
+            let experiment = experimentEvaluation(variationId: 320, variationKey: "B")
+            let layoutResponse = InAppMessage.layoutEvaluateResponse(experiment: experiment)
+            every(layoutResolver.resolveMock).returns(layoutResponse)
+
+            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
+            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
+
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessage.presentResponse()
+            }
+
+            // when
+            _ = sut.process(request: request)
+
+            // then
+            let props = capturedRequest?.properties
+            expect(props?["experiment_key"] as? Int64).toNot(beNil())
+            expect(props?["variation_id"] as? Int64) == 320
+            expect(props?["variation_key"] as? String) == "B"
+            expect(props?["experiment_decision_reason"] as? String) == DecisionReason.TRAFFIC_ALLOCATED
+        }
+
+        it("present_request_has_no_experiment_properties_when_not_experiment_backed") {
+            // given
+            let inAppMessage = InAppMessage.create(
+                key: 78,
+                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
+            )
+            let request = InAppMessage.deliverRequest(
+                dispatchId: "exp-0",
+                inAppMessageKey: 78,
+                reason: DecisionReason.IN_APP_MESSAGE_TARGET
+            )
+            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            every(workspaceFetcher.fetchMock).returns(workspace)
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+
+            let layoutResponse = InAppMessage.layoutEvaluateResponse(experiment: nil)
+            every(layoutResolver.resolveMock).returns(layoutResponse)
+
+            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
+            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
+
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessage.presentResponse()
+            }
+
+            // when
+            _ = sut.process(request: request)
+
+            // then
+            let props = capturedRequest?.properties
+            expect(props?["experiment_key"]).to(beNil())
+            expect(props?["variation_key"]).to(beNil())
         }
     }
 }

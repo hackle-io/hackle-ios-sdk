@@ -41,17 +41,16 @@ extension InAppMessagePresentRequest: CustomStringConvertible {
         request: InAppMessageDeliverRequest,
         inAppMessage: InAppMessage,
         user: HackleUser,
-        eligibilityEvaluation: InAppMessageEligibilityEvaluation,
-        layoutEvaluation: InAppMessageLayoutEvaluation
+        deliverEvaluation: InAppMessageDeliverEvaluation
     ) -> InAppMessagePresentRequest {
         return InAppMessagePresentRequest(
             dispatchId: request.dispatchId,
             inAppMessage: inAppMessage,
-            message: layoutEvaluation.layoutResult.message,
+            message: deliverEvaluation.layout.layoutEvaluation.layoutResult.message,
             user: user,
             requestedAt: request.requestedAt,
-            reason: eligibilityEvaluation.eligibilityResult.reason,
-            properties: PropertiesBuilder().add(request.properties).add(layoutEvaluation.properties).build(),
+            reason: deliverEvaluation.eligibility.eligibilityResult.reason,
+            properties: PropertiesBuilder().add(request.properties).add(deliverEvaluation.toProperties()).build(),
             triggerEvent: request.triggerEvent
         )
     }

@@ -240,13 +240,31 @@ extension InAppMessage {
     static func layoutEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         inAppMessage: InAppMessage = create(),
-        message: InAppMessage.Message = message(),
-        properties: [String: Any] = [:]
+        message: InAppMessage.Message = message()
     ) -> InAppMessageLayoutEvaluation {
         return InAppMessageLayoutEvaluation(
             entity: inAppMessage,
-            result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message),
-            properties: properties
+            result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message)
+        )
+    }
+
+    static func layoutEvaluateResponse(
+        inAppMessage: InAppMessage = create(),
+        user: HackleUser = HackleUser.of(userId: "test"),
+        workspace: Workspace = WorkspaceEntity.create(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        message: InAppMessage.Message = message(),
+        experiment: ExperimentEvaluation? = nil
+    ) -> InAppMessageLayoutEvaluateResponse {
+        return InAppMessageLayoutEvaluateResponse(
+            user: user,
+            workspace: workspace,
+            evaluation: InAppMessageLayoutEvaluation(
+                entity: inAppMessage,
+                result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message)
+            ),
+            references: [],
+            experiment: experiment
         )
     }
 

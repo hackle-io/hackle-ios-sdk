@@ -67,7 +67,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         }
 
         // resolve layout
-        let layoutEvaluation = try layoutResolver.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
+        let layoutResponse = try layoutResolver.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
 
         // check Evaluation (re-evaluate + dedup)
         let eligibilityRequest = InAppMessageEligibilityLocalEvaluateRequest.of(workspace: workspace, inAppMessage: inAppMessage, user: user, scope: .deliver, timestamp: request.requestedAt)
@@ -78,7 +78,8 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         }
 
         // present
-        let presentRequest = InAppMessagePresentRequest.of(request: request, inAppMessage: inAppMessage, user: user, eligibilityEvaluation: eligibilityEvaluation, layoutEvaluation: layoutEvaluation)
+        let deliverEvaluation = InAppMessageDeliverEvaluation(eligibility: eligibilityEvaluation, layout: layoutResponse)
+        let presentRequest = InAppMessagePresentRequest.of(request: request, inAppMessage: inAppMessage, user: user, deliverEvaluation: deliverEvaluation)
         let presentResponse = try presentProcessor.process(request: presentRequest)
 
         return InAppMessageDeliverResponse.of(request: request, code: .present, presentResponse: presentResponse)

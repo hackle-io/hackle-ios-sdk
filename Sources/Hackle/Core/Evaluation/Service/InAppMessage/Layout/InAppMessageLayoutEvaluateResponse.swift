@@ -38,7 +38,7 @@ final class InAppMessageLayoutEvaluateResponse: EvaluateResponse {
         return InAppMessageLayoutEvaluateResponse(
             user: request.user,
             workspace: request.workspace,
-            evaluation: InAppMessageLayoutEvaluation(entity: request.inAppMessage, result: result, properties: context.properties),
+            evaluation: InAppMessageLayoutEvaluation(entity: request.inAppMessage, result: result),
             references: context.references,
             experiment: experimentEvaluation
         )

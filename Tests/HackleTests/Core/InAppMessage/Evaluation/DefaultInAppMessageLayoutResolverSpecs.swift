@@ -27,8 +27,8 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
             let actual = try sut.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
 
             // then
-            expect(actual.inAppMessage.id) == inAppMessage.id
-            expect(actual.layoutResult.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
+            expect(actual.layoutEvaluation.inAppMessage.id) == inAppMessage.id
+            expect(actual.layoutEvaluation.layoutResult.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
         }
     }
 }
