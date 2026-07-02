@@ -23,8 +23,16 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
 
             // when
             var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let cohorts = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(cohorts)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             // then
@@ -39,8 +47,16 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
 
             // when
             var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let cohorts = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(cohorts)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             // then
@@ -55,8 +71,16 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
 
             // when
             var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let cohorts = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(cohorts)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             // then
@@ -71,8 +95,16 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
 
             // when
             var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let cohorts = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(cohorts)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             // then
@@ -87,8 +119,16 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
 
             // when
             var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let cohorts = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(cohorts)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             // then
@@ -104,8 +144,16 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
 
             // when
             var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let cohorts = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(cohorts)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             // then
@@ -124,7 +172,11 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            sut.fetch(user: User.builder().id("42").build()) { result in
+            waitUntil { done in
+                Task {
+                    _ = try? await sut.fetch(user: User.builder().id("42").build())
+                    done()
+                }
             }
 
             // then

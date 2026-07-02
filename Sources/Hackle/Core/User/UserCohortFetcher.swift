@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UserCohortFetcher {
-    func fetch(user: User, completion: @escaping (Result<UserCohorts, Error>) -> ())
+    func fetch(user: User) async throws -> UserCohorts
 }
 
 class DefaultUserCohortFetcher: UserCohortFetcher {
@@ -26,25 +26,23 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
         "\(config.sdkUrl)/api/v1/cohorts"
     }
 
-    func fetch(user: User, completion: @escaping (Result<UserCohorts, Error>) -> ()) {
-        do {
-            let request = try createRequest(user: user)
-            let sample = TimerSample.start()
+    func fetch(user: User) async throws -> UserCohorts {
+        let request = try createRequest(user: user)
+        let sample = TimerSample.start()
+        return try await withCheckedThrowingContinuation { continuation in
             httpClient.execute(request: request, timeout: timeout) { [weak self] response in
                 guard let self = self else {
-                    completion(.failure(HackleError.error("Failed to fetch cohorts: instance deallocated")))
+                    continuation.resume(throwing: HackleError.error("Failed to fetch cohorts: instance deallocated"))
                     return
                 }
                 ApiCallMetrics.record(operation: "get.cohorts", sample: sample, response: response)
                 do {
                     let userCohorts = try self.handleResponse(response: response)
-                    completion(.success(userCohorts))
+                    continuation.resume(returning: userCohorts)
                 } catch let error {
-                    completion(.failure(error))
+                    continuation.resume(throwing: error)
                 }
             }
-        } catch let error {
-            completion(.failure(error))
         }
     }
 

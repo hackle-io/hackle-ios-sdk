@@ -26,12 +26,8 @@ class DefaultUserManagerSpecs: QuickSpec {
             device = deviceImpl
             bundleInfo = BundleInfoImpl()
             sut = DefaultUserManager(device: device, bundleInfo: bundleInfo, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
-            every(cohortFetcher.fetchMock).answers({ _, completion in
-                completion(.success(UserCohorts()))
-            })
-            every(targetFetcher.fetchMock).answers { _, completion in
-                completion(.success(UserTargetEvents()))
-            }
+            every(cohortFetcher.fetchMock).answers { _ in UserCohorts() }
+            every(targetFetcher.fetchMock).answers { _ in UserTargetEvents() }
             listener = MockUserListener()
             sut.addListener(listener: listener)
         }
@@ -121,12 +117,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                         )
                     ))
                     .build()
-                every(cohortFetcher.fetchMock).answers { _, completion in
-                    completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
-                }
-                every(targetFetcher.fetchMock).answers { _, completion in
-                    completion(.success(UserTargetEvents.Builder(targetEvents: userTargetEvents).build()))
-                }
+                every(cohortFetcher.fetchMock).answers { _ in UserCohorts.Builder(cohorts: userCohorts).build() }
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
 
                 // when
                 sut.initialize(user: User.builder().id("id").property("a", "a").build())
@@ -244,12 +236,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                         )
                     ))
                     .build()
-                every(cohortFetcher.fetchMock).answers { _, completion in
-                    completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
-                }
-                every(targetFetcher.fetchMock).answers { _, completion in
-                    completion(.success(UserTargetEvents.Builder(targetEvents: userTargetEvents).build()))
-                }
+                every(cohortFetcher.fetchMock).answers { _ in UserCohorts.Builder(cohorts: userCohorts).build() }
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
 
                 sut.initialize(user: nil)
                 expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == []
@@ -291,9 +279,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                 
                 
                 // given
-                every(targetFetcher.fetchMock).answers { _, completion in
-                    completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build()))
-                }
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build() }
                 sut.initialize(user: nil)
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
                     Task {
@@ -305,9 +291,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
                 
                 let newTargetEvents = [targetEvent]
-                every(targetFetcher.fetchMock).answers { _, completion in
-                    completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build()))
-                }
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build() }
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
                     Task {
                         try? await sut.sync()
@@ -714,9 +698,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                     .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "hackle_device_id"), cohorts: [Cohort(id: 42)]))
                     .put(cohort: UserCohort(identifier: Identifier(type: "$deviceId", value: "hackle_device_id"), cohorts: [Cohort(id: 43)]))
                     .build()
-                every(cohortFetcher.fetchMock).answers { user, completion in
-                    completion(.success(UserCohorts.Builder(cohorts: userCohorts).build()))
-                }
+                every(cohortFetcher.fetchMock).answers { user in UserCohorts.Builder(cohorts: userCohorts).build() }
 
                 sut.initialize(user: User.builder().deviceId("device_id").build())
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
@@ -748,9 +730,7 @@ class DefaultUserManagerSpecs: QuickSpec {
                         )
                     ))
                     .build()
-                every(targetFetcher.fetchMock).answers { user, completion in
-                    completion(.success(UserTargetEvents.Builder(targetEvents: userTargetEvents).build()))
-                }
+                every(targetFetcher.fetchMock).answers { user in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
 
                 sut.initialize(user: nil)
                 Nimble.waitUntil(timeout: .seconds(2)) { done in

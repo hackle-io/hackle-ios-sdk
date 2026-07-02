@@ -26,8 +26,16 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
             }
 
             var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let target = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(target)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             expect(try actual.get()).to(throwError(HackleError.error("fail")))
@@ -39,8 +47,16 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
             }
 
             var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let target = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(target)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             expect(try actual.get()).to(throwError(HackleError.error("Response is empty")))
@@ -52,8 +68,16 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
             }
 
             var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let target = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(target)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             expect(try actual.get()).to(throwError(HackleError.error("Http status code: 500")))
@@ -65,8 +89,16 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
             }
 
             var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let target = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(target)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             expect(try actual.get()).to(throwError(HackleError.error("Response body is empty")))
@@ -78,8 +110,16 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
             }
 
             var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let target = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(target)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             expect(try actual.get()).to(throwError(HackleError.error("Invalid format")))
@@ -92,8 +132,16 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
             }
 
             var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
+            waitUntil { done in
+                Task {
+                    do {
+                        let target = try await sut.fetch(user: User.builder().id("42").build())
+                        actual = .success(target)
+                    } catch {
+                        actual = .failure(error)
+                    }
+                    done()
+                }
             }
 
             let target = try actual.get()
@@ -106,7 +154,12 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200, data: json.data(using: .utf8)))
             }
 
-            sut.fetch(user: User.builder().id("42").build()) { _ in }
+            waitUntil { done in
+                Task {
+                    _ = try? await sut.fetch(user: User.builder().id("42").build())
+                    done()
+                }
+            }
 
             let request = httpClient.executeMock.firstInvokation().arguments.0
             expect(request.headers?["X-HACKLE-USER"]).toNot(beNil())
