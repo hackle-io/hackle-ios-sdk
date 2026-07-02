@@ -107,7 +107,7 @@ class WorkspaceManagerSpecs: QuickSpec {
                 }
             }
             
-            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments.0).to(beNil())
+            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments).to(beNil())
             expect(repository.value?.lastModified) == first.lastModified
             
             waitUntil { done in
@@ -117,7 +117,7 @@ class WorkspaceManagerSpecs: QuickSpec {
                 }
             }
             
-            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments.0) == first.lastModified
+            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments) == first.lastModified
             expect(repository.value?.lastModified) == second.lastModified
         }
         

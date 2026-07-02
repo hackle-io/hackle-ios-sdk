@@ -10,23 +10,22 @@ class MockHttpWorkspaceFetcher: Mock, HttpWorkspaceFetcher {
     init(returns: [Any?]) {
         self.returns = returns
     }
-    
-    lazy var fetchIfModifiedRef = MockFunction(self, fetchIfModified)
-    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ()) {
-        call(fetchIfModifiedRef, args: (lastModified, completion))
-        
+
+    lazy var fetchIfModifiedRef = MockFunction<String?, Void>(self) { _ in }
+
+    func fetchIfModified(lastModified: String?) async throws -> WorkspaceConfigResponse? {
+        call(fetchIfModifiedRef, args: lastModified)
+
         let value = returns[count]
         count += 1
 
         switch value {
         case let config as WorkspaceConfigResponse:
-            completion(.success(config))
-            break
+            return config
         case let error as Error:
-            completion(.failure(error))
-            break
+            throw error
         default:
-            completion(.success(nil))
+            return nil
         }
     }
 }

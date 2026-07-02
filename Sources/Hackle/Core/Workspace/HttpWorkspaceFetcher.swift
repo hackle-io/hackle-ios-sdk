@@ -7,7 +7,7 @@ import Foundation
 
 
 protocol HttpWorkspaceFetcher {
-    func fetchIfModified(lastModified: String?, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ())
+    func fetchIfModified(lastModified: String?) async throws -> WorkspaceConfigResponse?
 }
 
 class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
@@ -24,9 +24,9 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
     }
 
-    func fetchIfModified(lastModified: String? = nil, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ()) {
+    func fetchIfModified(lastModified: String? = nil) async throws -> WorkspaceConfigResponse? {
         let request = createRequest(lastModified: lastModified)
-        execute(request: request, completion: completion)
+        return try await execute(request: request)
     }
 
     private func createRequest(lastModified: String?) -> HttpRequest {
@@ -37,19 +37,21 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func execute(request: HttpRequest, completion: @escaping (Result<WorkspaceConfigResponse?, Error>) -> ()) {
+    private func execute(request: HttpRequest) async throws -> WorkspaceConfigResponse? {
         let sample = TimerSample.start()
-        httpClient.execute(request: request) { [weak self] response in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to fetch workspace: instance deallocated")))
-                return
-            }
-            ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
-            do {
-                let workspace = try self.handleResponse(response: response)
-                completion(.success(workspace))
-            } catch let error {
-                completion(.failure(error))
+        return try await withCheckedThrowingContinuation { continuation in
+            httpClient.execute(request: request) { [weak self] response in
+                guard let self = self else {
+                    continuation.resume(throwing: HackleError.error("Failed to fetch workspace: instance deallocated"))
+                    return
+                }
+                ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
+                do {
+                    let workspace = try self.handleResponse(response: response)
+                    continuation.resume(returning: workspace)
+                } catch let error {
+                    continuation.resume(throwing: error)
+                }
             }
         }
     }

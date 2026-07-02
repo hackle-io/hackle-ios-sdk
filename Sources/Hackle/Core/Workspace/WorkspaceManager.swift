@@ -31,21 +31,14 @@ class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
     }
 
     func sync() async throws {
-        // NOTE(Task 3에서 제거): 임시 브리지
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            syncInternal { result in
-                continuation.resume(with: result)
-            }
-        }
+        let response = try await httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified)
+        handle(response: response)
     }
 
-    private func syncInternal(completion: @escaping (Result<(), Error>) -> ()) {
-        httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified) { [weak self] result in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to workspace sync: instance deallocated")))
-                return
-            }
-            self.handle(result: result, completion: completion)
+    private func handle(response: WorkspaceConfigResponse?) {
+        if let response {
+            setWorkspaceConfig(response)
+            repository.set(value: response)
         }
     }
 
@@ -61,18 +54,4 @@ class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
         }
     }
 
-    private func handle(result: Result<WorkspaceConfigResponse?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
-        switch result {
-        case .success(let config):
-            if let config {
-                setWorkspaceConfig(config)
-                repository.set(value: config)
-            }
-            completion(.success(()))
-            return
-        case .failure(let error):
-            completion(.failure(error))
-            return
-        }
-    }
 }
