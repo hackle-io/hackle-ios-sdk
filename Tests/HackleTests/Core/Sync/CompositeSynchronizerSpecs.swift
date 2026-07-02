@@ -49,11 +49,14 @@ class CompositeSynchronizerSpecs: QuickSpec {
                 Thread.sleep(forTimeInterval: 0.1)
             }
             var count = 0
+            var elapsed: TimeInterval = 0
 
             // when
-            waitUntil(timeout: .milliseconds(150)) { done in
+            waitUntil(timeout: .seconds(1)) { done in
                 Task {
+                    let start = Date()
                     try? await sut.sync()
+                    elapsed = Date().timeIntervalSince(start)
                     count += 1
                     done()
                 }
@@ -61,6 +64,7 @@ class CompositeSynchronizerSpecs: QuickSpec {
 
             // then
             expect(count) == 1
+            expect(elapsed) < 0.19
         }
 
         it("safe") {

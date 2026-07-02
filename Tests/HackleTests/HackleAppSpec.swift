@@ -47,7 +47,6 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
-            let urlHandler = ApplicationUrlHandler()
             let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])
             let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
                 InAppMessageViewImpressionEventActor(),
