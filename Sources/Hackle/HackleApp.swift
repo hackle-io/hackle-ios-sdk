@@ -245,6 +245,55 @@ import WebKit
         completion()
     }
 
+    /// Sets or replaces the current user.
+    /// 반환 시점에 유저 갱신과 서버 동기화가 모두 완료된다.
+    public func setUser(user: User) async {
+        await hackleAppCore.setUser(user: user, hackleAppContext: .default).value
+    }
+
+    /// Sets the userId for the current user.
+    public func setUserId(userId: String?) async {
+        await hackleAppCore.setUserId(userId: userId, hackleAppContext: .default).value
+    }
+
+    /// Sets a custom device ID.
+    public func setDeviceId(deviceId: String) async {
+        await hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default).value
+    }
+
+    /// Sets a single user property.
+    public func setUserProperty(key: String, value: Any?) async {
+        let operations = PropertyOperations.builder()
+            .set(key, value)
+            .build()
+        await updateUserProperties(operations: operations)
+    }
+
+    /// Updates user properties with a set of operations.
+    public func updateUserProperties(operations: PropertyOperations) async {
+        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default)
+    }
+
+    /// Resets the current user.
+    public func resetUser() async {
+        await hackleAppCore.resetUser(hackleAppContext: .default).value
+    }
+
+    /// Sets the phone number for the current user.
+    public func setPhoneNumber(phoneNumber: String) async {
+        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
+    }
+
+    /// Removes the phone number from the current user.
+    public func unsetPhoneNumber() async {
+        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default)
+    }
+
+    /// Fetches the latest configuration from the Hackle servers.
+    public func fetch() async {
+        await hackleAppCore.fetch().value
+    }
+
     /// Decide the variation to expose to the user for experiment.
     ///
     /// - Parameters:

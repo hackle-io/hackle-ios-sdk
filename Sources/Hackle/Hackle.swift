@@ -76,6 +76,20 @@ import UserNotifications
         }
     }
 
+    /// Initializes the Hackle SDK and suspends until initialization completes.
+    ///
+    /// - Parameters:
+    ///   - sdkKey: Your Hackle SDK key
+    ///   - user: Initial user to set for the SDK. Can be nil
+    ///   - config: SDK configuration options. Defaults to ``HackleConfig/DEFAULT``
+    public static func initialize(sdkKey: String, user: User? = nil, config: HackleConfig = HackleConfig.DEFAULT) async {
+        await withCheckedContinuation { continuation in
+            initialize(sdkKey: sdkKey, user: user, config: config) {
+                continuation.resume()
+            }
+        }
+    }
+
     /// Returns a singleton instance of ``HackleApp``.
     ///
     /// - Returns: The HackleApp instance or `nil` if not initialized
