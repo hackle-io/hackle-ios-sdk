@@ -168,11 +168,12 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         sessionManager.initialize()
         eventProcessor.initialize()
         applicationInstallStateManager.initialize()
-        synchronizer.sync { [weak self] in
+        Task { [weak self] in
             guard let self = self else {
                 completion()
                 return
             }
+            await self.synchronizer.safeSync()
             self.pushTokenRegistry.flush()
             self.notificationManager.flush()
             self.applicationInstallStateManager.checkApplicationInstall()
@@ -345,7 +346,10 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     func fetch(completion: @escaping () -> ()) {
         fetchThrottler.execute(
             accept: {
-                self.synchronizer.sync(completion: completion)
+                Task {
+                    await self.synchronizer.safeSync()
+                    completion()
+                }
             },
             reject: {
                 Log.debug("Too many quick fetch requests")

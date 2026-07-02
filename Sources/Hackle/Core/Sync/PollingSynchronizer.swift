@@ -17,12 +17,13 @@ class PollingSynchronizer: Synchronizer, @unchecked Sendable {
         self.interval = interval
     }
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        delegate.sync(completion: completion)
+    func sync() async throws {
+        try await delegate.sync()
     }
 
     private func poll() {
-        sync {
+        Task {
+            await self.safeSync()
             Log.debug("PollingSynchronizer.poll")
         }
     }

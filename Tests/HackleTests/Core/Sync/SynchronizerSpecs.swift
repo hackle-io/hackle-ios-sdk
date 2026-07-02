@@ -5,25 +5,31 @@ import Quick
 
 class SynchronizerSpecs: QuickSpec {
     override class func spec() {
-        describe("SynchronizerExtensions") {
-            describe("Synchronizer.sync(() -> ())") {
-                it("success") {
-                    let counter = CumulativeMetricRegistry().counter(name: "counter")
-                    let sut = SynchronizerStub(.success(()))
-                    sut.sync {
+        describe("Synchronizer.safeSync") {
+            it("success") {
+                let counter = CumulativeMetricRegistry().counter(name: "counter")
+                let sut = SynchronizerStub(.success(()))
+                waitUntil { done in
+                    Task {
+                        await sut.safeSync()
                         counter.increment()
+                        done()
                     }
-                    expect(counter.count()) == 1
                 }
+                expect(counter.count()) == 1
+            }
 
-                it("failure") {
-                    let counter = CumulativeMetricRegistry().counter(name: "counter")
-                    let sut = SynchronizerStub(.failure(HackleError.error("fail")))
-                    sut.sync {
+            it("failure - 에러를 삼키고 완료된다") {
+                let counter = CumulativeMetricRegistry().counter(name: "counter")
+                let sut = SynchronizerStub(.failure(HackleError.error("fail")))
+                waitUntil { done in
+                    Task {
+                        await sut.safeSync()
                         counter.increment()
+                        done()
                     }
-                    expect(counter.count()) == 1
                 }
+                expect(counter.count()) == 1
             }
         }
     }
@@ -37,7 +43,7 @@ class SynchronizerStub: Synchronizer {
         self.result = result
     }
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        completion(result)
+    func sync() async throws {
+        try result.get()
     }
 }

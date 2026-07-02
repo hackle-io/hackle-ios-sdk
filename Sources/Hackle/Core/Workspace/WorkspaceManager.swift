@@ -30,7 +30,16 @@ class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
         workspace
     }
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
+    func sync() async throws {
+        // NOTE(Task 3에서 제거): 임시 브리지
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            syncInternal { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
+    private func syncInternal(completion: @escaping (Result<(), Error>) -> ()) {
         httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified) { [weak self] result in
             guard let self = self else {
                 completion(.failure(HackleError.error("Failed to workspace sync: instance deallocated")))

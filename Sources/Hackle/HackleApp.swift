@@ -435,9 +435,7 @@ extension HackleApp {
 
         // - Synchronizer
 
-        let compositeSynchronizer = CompositeSynchronizer(
-            dispatchQueue: DispatchQueue(label: "io.hackle.DelegatingSynchronizer", attributes: .concurrent)
-        )
+        let compositeSynchronizer = CompositeSynchronizer()
         let pollingSynchronizer = PollingSynchronizer(
             delegate: compositeSynchronizer,
             scheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.PollingSynchronizer")),

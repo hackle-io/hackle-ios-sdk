@@ -131,7 +131,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                 // when
                 sut.initialize(user: User.builder().id("id").property("a", "a").build())
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.sync {
+                    Task {
+                        try? await sut.sync()
                         let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
                         
                         // then
@@ -253,7 +254,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                 sut.initialize(user: nil)
                 expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == []
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.sync {
+                    Task {
+                        try? await sut.sync()
                         expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
                         done()
                     }
@@ -294,7 +296,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                 }
                 sut.initialize(user: nil)
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.sync {
+                    Task {
+                        try? await sut.sync()
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == targetEvents
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 2
                         done()
@@ -306,7 +309,8 @@ class DefaultUserManagerSpecs: QuickSpec {
                     completion(.success(UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build()))
                 }
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.sync {
+                    Task {
+                        try? await sut.sync()
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == newTargetEvents
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
                         done()
@@ -716,7 +720,8 @@ class DefaultUserManagerSpecs: QuickSpec {
 
                 sut.initialize(user: User.builder().deviceId("device_id").build())
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.sync {
+                    Task {
+                        try? await sut.sync()
                         expect(sut.currentUser.resolvedIdentifiers) == [
                             "$id": "hackle_device_id",
                             "$deviceId": "device_id",
@@ -749,7 +754,8 @@ class DefaultUserManagerSpecs: QuickSpec {
 
                 sut.initialize(user: nil)
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.sync {
+                    Task {
+                        try? await sut.sync()
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].eventKey) == "purchase"
                         expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].property?.key) == "product_name"

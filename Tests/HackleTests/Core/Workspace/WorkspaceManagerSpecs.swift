@@ -28,7 +28,12 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == data.config.workspace.id
@@ -72,7 +77,12 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == data.config.workspace.id
@@ -90,12 +100,22 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments.0).to(beNil())
             expect(repository.value?.lastModified) == first.lastModified
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments.0) == first.lastModified
             expect(repository.value?.lastModified) == second.lastModified
@@ -108,7 +128,12 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual?.id) == data.config.workspace.id
@@ -121,7 +146,12 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).to(beNil())
@@ -135,7 +165,12 @@ class WorkspaceManagerSpecs: QuickSpec {
             let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
-            sut.sync { }
+            waitUntil { done in
+                Task {
+                    try? await sut.sync()
+                    done()
+                }
+            }
             
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).toNot(beNil())

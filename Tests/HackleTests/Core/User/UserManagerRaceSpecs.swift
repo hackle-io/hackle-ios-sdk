@@ -42,7 +42,10 @@ class UserManagerRaceSpecs: QuickSpec {
             DispatchQueue.global(qos: .utility).async(group: group) {
                 for _ in 0..<writerIterations {
                     let sem = DispatchSemaphore(value: 0)
-                    sut.sync { sem.signal() }
+                    Task {
+                        try? await sut.sync()
+                        sem.signal()
+                    }
                     sem.wait()
                 }
             }

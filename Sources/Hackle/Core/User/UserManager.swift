@@ -133,17 +133,15 @@ class DefaultUserManager: UserManager {
 
     // Sync
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        sync(
-            user: currentUser,
-            shouldSyncCohort: true,
-            shouldSyncTargetEvent: true,
-            completion: {
-                completion(.success(()))
+    func sync() async throws {
+        // NOTE(Task 4에서 제거): 기존 콜백 머시너리를 continuation으로 감싼 임시 브리지
+        await withCheckedContinuation { continuation in
+            sync(user: currentUser, shouldSyncCohort: true, shouldSyncTargetEvent: true) {
+                continuation.resume()
             }
-        )
+        }
     }
-    
+
     func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
         sync(
             user: updated.current,

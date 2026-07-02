@@ -55,6 +55,7 @@ class MockUserManager: Mock, UserManager {
         every(syncIfNeededMock).answers { updated, completion in
             completion()
         }
+        every(syncMock).answers { _ in }
     }
 
     lazy var initializeMock = MockFunction(self, initialize)
@@ -107,10 +108,10 @@ class MockUserManager: Mock, UserManager {
         call(resetUserMock, args: ())
     }
 
-    lazy var syncMock = MockFunction(self, sync)
+    lazy var syncMock = MockFunction<Void, Result<Void, Error>>(self) { _ in .success(()) }
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        call(syncMock, args: completion)
+    func sync() async throws {
+        try call(syncMock, args: ())
     }
 
     lazy var syncIfNeededMock = MockFunction(self, syncIfNeeded)

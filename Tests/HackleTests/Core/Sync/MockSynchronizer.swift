@@ -2,8 +2,6 @@
 //  MockSynchronizer.swift
 //  HackleTests
 //
-//  Created by yong on 2023/10/02.
-//
 
 import Foundation
 import MockingKit
@@ -12,14 +10,12 @@ import MockingKit
 class MockSynchronizer: Mock, Synchronizer {
     override init() {
         super.init()
-        every(syncMock).answers { completion in
-            completion(.success(()))
-        }
+        every(syncMock).answers { _ in }
     }
 
-    lazy var syncMock = MockFunction(self, sync)
+    lazy var syncMock = MockFunction<Void, Result<Void, Error>>(self) { _ in .success(()) }
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        call(syncMock, args: completion)
+    func sync() async throws {
+        try call(syncMock, args: ())
     }
 }
