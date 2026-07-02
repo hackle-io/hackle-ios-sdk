@@ -52,9 +52,7 @@ class MockUserManager: Mock, UserManager {
                 .build()
         }
 
-        every(syncIfNeededMock).answers { updated, completion in
-            completion()
-        }
+        every(syncIfNeededMock).answers { _ in }
         every(syncMock).answers { _ in }
     }
 
@@ -114,9 +112,9 @@ class MockUserManager: Mock, UserManager {
         try call(syncMock, args: ())
     }
 
-    lazy var syncIfNeededMock = MockFunction(self, syncIfNeeded)
+    lazy var syncIfNeededMock = MockFunction<Updated<User>, Void>(self) { _ in }
 
-    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
-        call(syncIfNeededMock, args: (updated, completion))
+    func syncIfNeeded(updated: Updated<User>) async {
+        call(syncIfNeededMock, args: updated)
     }
 }

@@ -27,7 +27,7 @@ protocol UserManager: Synchronizer {
     @discardableResult
     func resetUser() -> Updated<User>
 
-    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ())
+    func syncIfNeeded(updated: Updated<User>) async
 }
 
 class DefaultUserManager: UserManager {
@@ -136,16 +136,12 @@ class DefaultUserManager: UserManager {
         await sync(user: currentUser, shouldSyncCohort: true, shouldSyncTargetEvent: true)
     }
 
-    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
-        // NOTE(Task 5에서 async 시그니처로 교체): 임시 브리지
-        Task {
-            await sync(
-                user: updated.current,
-                shouldSyncCohort: hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current),
-                shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current)
-            )
-            completion()
-        }
+    func syncIfNeeded(updated: Updated<User>) async {
+        await sync(
+            user: updated.current,
+            shouldSyncCohort: hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current),
+            shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current)
+        )
     }
 
     private func sync(user: User, shouldSyncCohort: Bool, shouldSyncTargetEvent: Bool) async {

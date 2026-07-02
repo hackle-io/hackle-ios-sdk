@@ -10,6 +10,7 @@ import WebKit
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
+    private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
 
     init(
         hackleAppCore: HackleAppCore,
@@ -100,7 +101,8 @@ import WebKit
     ///   - user: the ``User`` to set
     ///   - completion: callback to be executed when the operation is complete
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
-        hackleAppCore.setUser(user: user, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setUser(user: user, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets the userId for the current user.
@@ -116,7 +118,8 @@ import WebKit
     ///   - userId: the userId to set for the user. Can be null to identify an anonymous user
     ///   - completion: callback to be executed when the operation is complete
     @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
-        hackleAppCore.setUserId(userId: userId, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setUserId(userId: userId, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets a custom device ID.
@@ -132,7 +135,8 @@ import WebKit
     ///   - deviceId: the custom device ID to set
     ///   - completion: callback to be executed when the operation is complete
     @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
-        hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets a single user property.
@@ -173,7 +177,8 @@ import WebKit
     ///   - operations: a set of ``PropertyOperations`` to apply to user properties
     ///   - completion: callback to be executed when the operation is complete
     @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
-        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default, completion: completion)
+        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default)
+        completion()
     }
 
     /// Updates push notification subscription status.
@@ -206,7 +211,8 @@ import WebKit
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
     @objc public func resetUser(completion: @escaping () -> ()) {
-        hackleAppCore.resetUser(hackleAppContext: .default, completion: completion)
+        hackleAppCore.resetUser(hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets the phone number for the current user.
@@ -222,7 +228,8 @@ import WebKit
     ///   - phoneNumber: the phone number to set
     ///   - completion: callback to be executed when the operation is complete
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
-        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default, completion: completion)
+        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
+        completion()
     }
 
     /// Removes the phone number from the current user.
@@ -234,7 +241,8 @@ import WebKit
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
     @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
-        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default, completion: completion)
+        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default)
+        completion()
     }
 
     /// Decide the variation to expose to the user for experiment.
@@ -330,7 +338,8 @@ import WebKit
     ///
     /// - Parameter completion: callback to be executed when the fetch is complete
     @objc public func fetch(_ completion: @escaping () -> ()) {
-        hackleAppCore.fetch(completion: completion)
+        hackleAppCore.fetch()
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets the current screen for screen tracking.

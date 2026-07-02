@@ -21,13 +21,16 @@ protocol HackleAppCore: AnyObject {
 
     func hideUserExplorer()
 
-    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext)
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
 
@@ -35,11 +38,12 @@ protocol HackleAppCore: AnyObject {
 
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
 
-    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext)
 
-    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext)
 
     func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
 
@@ -56,7 +60,8 @@ protocol HackleAppCore: AnyObject {
     var isOptOutTracking: Bool { get }
     func setOptOutTracking(optOut: Bool)
 
-    func fetch(completion: @escaping () -> ())
+    @discardableResult
+    func fetch() -> Task<Void, Never>
 
     func setPushToken(deviceToken: Data)
 
@@ -206,26 +211,28 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
-    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    @discardableResult
+    func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         let updated = userManager.setUser(user: user)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+        return Task { await self.userManager.syncIfNeeded(updated: updated) }
     }
 
-    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    @discardableResult
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         let updated = userManager.setUserId(userId: userId)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+        return Task { await self.userManager.syncIfNeeded(updated: updated) }
     }
 
-    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    @discardableResult
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         let updated = userManager.setDeviceId(deviceId: deviceId)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+        return Task { await self.userManager.syncIfNeeded(updated: updated) }
     }
 
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) {
         track(event: operations.toEvent(), user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
         userManager.updateProperties(operations: operations)
-        completion()
     }
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
@@ -243,30 +250,29 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         eventProcessor.flush()
     }
 
-    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    @discardableResult
+    func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         let updated = userManager.resetUser()
         track(event: PropertyOperations.clearAll().toEvent(), user: nil, hackleAppContext: hackleAppContext)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+        return Task { await self.userManager.syncIfNeeded(updated: updated) }
     }
 
-    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext) {
         let event = PropertyOperationsBuilder()
             .set(PIIProperty.phoneNumber.rawValue, phoneNumber)
             .build()
             .toSecuredEvent()
         track(event: event, user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
-        completion()
     }
 
-    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext) {
         let event = PropertyOperationsBuilder()
             .unset(PIIProperty.phoneNumber.rawValue)
             .build()
             .toSecuredEvent()
         track(event: event, user: nil, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
-        completion()
     }
 
     func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
@@ -343,19 +349,19 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         optOutManager.setOptOutTracking(optOut: optOut)
     }
 
-    func fetch(completion: @escaping () -> ()) {
+    @discardableResult
+    func fetch() -> Task<Void, Never> {
+        var task: Task<Void, Never>! = nil
         fetchThrottler.execute(
             accept: {
-                Task {
-                    await self.synchronizer.safeSync()
-                    completion()
-                }
+                task = Task { await self.synchronizer.safeSync() }
             },
             reject: {
                 Log.debug("Too many quick fetch requests")
-                completion()
+                task = Task {}
             }
         )
+        return task
     }
 
     func setPushToken(deviceToken: Data) {

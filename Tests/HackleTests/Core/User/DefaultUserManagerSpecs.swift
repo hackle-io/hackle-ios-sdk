@@ -307,68 +307,80 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("no new identifiers") {
                 // cohort not sync and target event not sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().build()
-                        ),
-                        completion: { done() }
-                    )
-                }
-                
-                // cohort not sync and target event not sync
-                Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().id("id").build()
-                        ),
-                        completion: { done() }
-                    )
-                }
-               
-                // cohort not sync and target event sync
-                Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").build()
-                        ),
-                        completion: { done() }
-                    )
-                }
-                
-                // cohort not sync and target event not sync
-                Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").build()
-                        ),
-                        completion: { done() }
-                    )
-                }
-                
-                // cohort not sync and target event not sync
-                Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").build(),
+                                current: User.builder().build()
+                            )
+                        )
+                        done()
+                    }
                 }
 
                 // cohort not sync and target event not sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").build(),
+                                current: User.builder().id("id").build()
+                            )
+                        )
+                        done()
+                    }
+                }
+
+                // cohort not sync and target event sync
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").build(),
+                                current: User.builder().id("id").build()
+                            )
+                        )
+                        done()
+                    }
+                }
+
+                // cohort not sync and target event not sync
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").build(),
+                                current: User.builder().id("id").deviceId("device_id").build()
+                            )
+                        )
+                        done()
+                    }
+                }
+
+                // cohort not sync and target event not sync
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                                current: User.builder().id("id").deviceId("device_id").build()
+                            )
+                        )
+                        done()
+                    }
+                }
+
+                // cohort not sync and target event not sync
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                                current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
@@ -380,63 +392,75 @@ class DefaultUserManagerSpecs: QuickSpec {
             it("new identifiers") {
                 // cohort sync and target event not sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().build(),
-                            current: User.builder().id("new_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().build(),
+                                current: User.builder().id("new_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 // cohort sync and target event not sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().id("new_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").build(),
+                                current: User.builder().id("new_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 // cohort sync and target event sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().id("id").deviceId("new_device_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").build(),
+                                current: User.builder().id("id").deviceId("new_device_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 // cohort sync and target event sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").deviceId("new_device_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").build(),
+                                current: User.builder().id("id").deviceId("new_device_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 // cohort sync and target event not sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").build(),
+                                current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 // cohort sync and target event not sync
                 Nimble.waitUntil(timeout: .seconds(2)) { done in
-                    sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
-                        ),
-                        completion: { done() }
-                    )
+                    Task {
+                        await sut.syncIfNeeded(
+                            updated: Updated(
+                                previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                                current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                            )
+                        )
+                        done()
+                    }
                 }
                 verify(exactly: 6) {
                     cohortFetcher.fetchMock
