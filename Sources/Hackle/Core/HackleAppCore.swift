@@ -351,6 +351,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     @discardableResult
     func fetch() -> Task<Void, Never> {
+        // Throttler.execute는 accept/reject를 동기 호출하므로 반환 전에 task가 반드시 할당된다
         var task: Task<Void, Never>! = nil
         fetchThrottler.execute(
             accept: {
