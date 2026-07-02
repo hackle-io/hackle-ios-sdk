@@ -131,6 +131,9 @@ class HackleAppAsyncApiSpecs: QuickSpec {
             waitUntil { done in
                 Task {
                     await sut.updateUserProperties(operations: PropertyOperations.builder().set("k", "v").build())
+                    verify(exactly: 1) {
+                        userManager.updatePropertiesMock
+                    }
                     done()
                 }
             }
@@ -140,6 +143,9 @@ class HackleAppAsyncApiSpecs: QuickSpec {
             waitUntil { done in
                 Task {
                     await sut.fetch()
+                    verify(exactly: 1) {
+                        synchronizer.syncMock
+                    }
                     done()
                 }
             }
