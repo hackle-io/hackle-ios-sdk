@@ -27,9 +27,12 @@ class DecisionReasons {
         DecisionReason.IN_APP_MESSAGE_HIDDEN,
         DecisionReason.IN_APP_MESSAGE_TARGET,
         DecisionReason.NOT_IN_IN_APP_MESSAGE_PERIOD,
+        DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE,
         DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET,
         DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED,
-        DecisionReason.EXPERIMENT_CONTROL_GROUP
+        DecisionReason.EXPERIMENT_CONTROL_GROUP,
+        DecisionReason.OPT_OUT,
+        DecisionReason.UNKNOWN
     ]
 
 
