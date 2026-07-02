@@ -16,11 +16,13 @@ class InAppMessageEligibilityRequestSpecs: QuickSpec {
                 inAppMessage: InAppMessage.create(id: 1),
                 user: user,
                 scope: .trigger,
+                platformType: .ios,
                 timestamp: timestamp
             )
 
             expect(request.inAppMessage.id) == 1
             if case .trigger = request.scope {} else { fail("expected .trigger") }
+            expect(request.platformType) == .ios
             expect(request.timestamp) == timestamp
             expect(request.record) == true
         }

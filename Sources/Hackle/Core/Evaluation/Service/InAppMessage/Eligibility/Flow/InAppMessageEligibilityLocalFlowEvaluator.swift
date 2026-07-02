@@ -19,7 +19,7 @@ class PlatformInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibility
         context: EvaluatorContext,
         nextFlow: InAppMessageEligibilityLocalEvaluationFlow
     ) throws -> InAppMessageEligibilityEvaluation? {
-        guard request.inAppMessage.supports(platform: .ios) else {
+        guard request.inAppMessage.supports(platform: request.platformType) else {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.UNSUPPORTED_PLATFORM)
             return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
         }

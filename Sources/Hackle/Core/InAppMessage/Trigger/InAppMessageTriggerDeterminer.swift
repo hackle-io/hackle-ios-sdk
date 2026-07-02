@@ -40,7 +40,7 @@ class DefaultInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
     }
 
     private func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
-        let request = InAppMessageEligibilityLocalEvaluateRequest.of(workspace: workspace, inAppMessage: inAppMessage, user: event.user, scope: .trigger, timestamp: event.timestamp)
+        let request = InAppMessageEligibilityLocalEvaluateRequest.of(workspace: workspace, inAppMessage: inAppMessage, user: event.user, scope: .trigger, platformType: .ios, timestamp: event.timestamp)
         return try evaluateProcessor.process(type: .trigger, request: request)
     }
 }

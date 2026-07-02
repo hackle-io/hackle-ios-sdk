@@ -21,6 +21,7 @@ class DefaultInAppMessageEvaluateProcessor: InAppMessageEvaluateProcessor {
             inAppMessage: request.inAppMessage,
             user: request.user,
             scope: type,
+            platformType: request.platformType,
             timestamp: request.timestamp
         )
         let response = try evaluateProcessor.inAppMessage(eligibilityRequest)
