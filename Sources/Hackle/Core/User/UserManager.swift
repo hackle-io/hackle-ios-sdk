@@ -30,7 +30,7 @@ protocol UserManager: Synchronizer {
     func syncIfNeeded(updated: Updated<User>) async
 }
 
-class DefaultUserManager: UserManager {
+class DefaultUserManager: UserManager, @unchecked Sendable {
 
     private static let USER_KEY = "user"
     private let recursiveLock = RecursiveLock(label: "io.hackle.DefaultUserManager")

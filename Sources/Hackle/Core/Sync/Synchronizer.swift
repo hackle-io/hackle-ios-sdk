@@ -6,7 +6,7 @@
 import Foundation
 
 
-protocol Synchronizer {
+protocol Synchronizer: Sendable {
     func sync() async throws
 }
 

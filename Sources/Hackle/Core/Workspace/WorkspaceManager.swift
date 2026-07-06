@@ -6,7 +6,7 @@
 import Foundation
 
 
-class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
+class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer, @unchecked Sendable {
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
     private let repository: WorkspaceConfigRepository
 

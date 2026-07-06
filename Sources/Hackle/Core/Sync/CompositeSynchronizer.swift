@@ -1,6 +1,6 @@
 import Foundation
 
-class CompositeSynchronizer: Synchronizer {
+class CompositeSynchronizer: Synchronizer, @unchecked Sendable {
 
     private var synchronizers: [Synchronizer] = []
 
