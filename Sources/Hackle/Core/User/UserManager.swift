@@ -27,14 +27,13 @@ protocol UserManager: Synchronizer {
     @discardableResult
     func resetUser() -> Updated<User>
 
-    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ())
+    func syncIfNeeded(updated: Updated<User>) async
 }
 
 class DefaultUserManager: UserManager {
 
     private static let USER_KEY = "user"
     private let recursiveLock = RecursiveLock(label: "io.hackle.DefaultUserManager")
-    private let dispatchQueue: DispatchQueue = DispatchQueue(label: "io.hackle.DefaultUserManager.dispatchQueue")
 
     private var userListeners: [UserListener]
     private let repository: KeyValueRepository
@@ -133,117 +132,57 @@ class DefaultUserManager: UserManager {
 
     // Sync
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        sync(
-            user: currentUser,
-            shouldSyncCohort: true,
-            shouldSyncTargetEvent: true,
-            completion: {
-                completion(.success(()))
-            }
-        )
+    func sync() async throws {
+        await sync(user: currentUser, shouldSyncCohort: true, shouldSyncTargetEvent: true)
     }
-    
-    func syncIfNeeded(updated: Updated<User>, completion: @escaping () -> ()) {
-        sync(
+
+    func syncIfNeeded(updated: Updated<User>) async {
+        await sync(
             user: updated.current,
             shouldSyncCohort: hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current),
-            shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current),
-            completion: completion
+            shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current)
         )
     }
 
-    private func sync(
-        user: User,
-        shouldSyncCohort: Bool,
-        shouldSyncTargetEvent: Bool,
-        completion: @escaping () -> Void
-    ) {
-        let dispatchGroup = DispatchGroup()
-        
-        if shouldSyncCohort {
-            dispatchGroup.enter()
-            dispatchQueue.async { [weak self] in
-                self?.syncCohort(user: user) { result in
-                    defer { dispatchGroup.leave() }
-                    if case .failure(let error) = result {
-                        Log.error("Cohort sync failed: \(error)")
-                    }
-                }
+    private func sync(user: User, shouldSyncCohort: Bool, shouldSyncTargetEvent: Bool) async {
+        await withTaskGroup(of: Void.self) { group in
+            if shouldSyncCohort {
+                group.addTask { await self.syncCohort(user: user) }
             }
-        }
-        
-        if shouldSyncTargetEvent {
-            dispatchGroup.enter()
-            dispatchQueue.async { [weak self] in
-                self?.syncTargetEvent(user: user) { result in
-                    defer { dispatchGroup.leave() }
-                    if case .failure(let error) = result {
-                        Log.error("Target event sync failed: \(error)")
-                    }
-                }
+            if shouldSyncTargetEvent {
+                group.addTask { await self.syncTargetEvent(user: user) }
             }
-        }
-        
-        dispatchGroup.notify(queue: dispatchQueue) {
-            completion()
         }
     }
-    
-    private func syncCohort(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        cohortFetcher.fetch(user: user) { [weak self] result in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to user cohort sync: instance deallocated")))
-                return
+
+    private func syncCohort(user: User) async {
+        do {
+            let cohorts = try await cohortFetcher.fetch(user: user)
+            recursiveLock.lock {
+                context = context.update(cohorts: cohorts)
             }
-            self.handle(result: result, completion: completion)
+        } catch {
+            Log.error("Cohort sync failed: \(error)")
         }
     }
-    
-    private func syncTargetEvent(user: User, completion: @escaping (Result<(), Error>) -> ()) {
-        targetFetcher.fetch(user: user) { [weak self] result in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to user target event sync: instance deallocated")))
-                return
+
+    private func syncTargetEvent(user: User) async {
+        do {
+            let targetEvents = try await targetFetcher.fetch(user: user)
+            recursiveLock.lock {
+                context = context.update(targetEvents: targetEvents)
             }
-            self.handle(result: result, completion: completion)
+        } catch {
+            Log.error("Target event sync failed: \(error)")
         }
     }
-    
+
     private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
         let previousIdentifiers = previousUser.resolvedIdentifiers
         let currentIdentifiers = currentUser.resolvedIdentifiers
 
         return currentIdentifiers.contains { type, value in
             !previousIdentifiers.contains(type: type, value: value)
-        }
-    }
-    
-    private func handle(result: Result<UserCohorts, Error>, completion: @escaping (Result<(), Error>) -> ()) {
-        switch result {
-        case .success(let cohorts):
-            recursiveLock.lock {
-                context = context.update(cohorts: cohorts)
-            }
-            completion(.success(()))
-            return
-        case .failure(let error):
-            completion(.failure(error))
-            return
-        }
-    }
-
-    private func handle(result: Result<UserTargetEvents, Error>, completion: @escaping (Result<(), Error>) -> ()) {
-        switch result {
-        case .success(let target):
-            recursiveLock.lock {
-                context = context.update(targetEvents: target)
-            }
-            completion(.success(()))
-            return
-        case .failure(let error):
-            completion(.failure(error))
-            return
         }
     }
 

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UserTargetEventsFetcher {
-    func fetch(user: User, completion: @escaping (Result<UserTargetEvents, Error>) -> ())
+    func fetch(user: User) async throws -> UserTargetEvents
 }
 
 class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
@@ -26,26 +26,12 @@ class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
         "\(config.sdkUrl)/api/v1/user-targets"
     }
 
-    func fetch(user: User, completion: @escaping (Result<UserTargetEvents, Error>) -> ()) {
-        do {
-            let request = try createRequest(user: user)
-            let sample = TimerSample.start()
-            httpClient.execute(request: request, timeout: timeout) { [weak self] response in
-                guard let self = self else {
-                    completion(.failure(HackleError.error("Failed to fetch user target: instance deallocated")))
-                    return
-                }
-                ApiCallMetrics.record(operation: "get.user-targets", sample: sample, response: response)
-                do {
-                    let userTargets = try self.handleResponse(response: response)
-                    completion(.success(userTargets))
-                } catch let error {
-                    completion(.failure(error))
-                }
-            }
-        } catch let error {
-            completion(.failure(error))
-        }
+    func fetch(user: User) async throws -> UserTargetEvents {
+        let request = try createRequest(user: user)
+        let sample = TimerSample.start()
+        let response = await httpClient.execute(request: request, timeout: timeout)
+        ApiCallMetrics.record(operation: "get.user-targets", sample: sample, response: response)
+        return try handleResponse(response: response)
     }
 
     private func createRequest(user: User) throws -> HttpRequest {
