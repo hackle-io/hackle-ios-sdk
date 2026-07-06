@@ -88,14 +88,6 @@ import WebKit
         hackleAppCore.hideUserExplorer()
     }
 
-    /// Sets or replaces the current user.
-    ///
-    /// - Parameter user: the ``User`` to set
-    @available(*, deprecated, message: "Use async setUser(user:) or setUser(user:completion:) instead.")
-    @objc public func setUser(user: User) {
-        setUser(user: user, completion: {})
-    }
-
     /// Sets or replaces the current user with completion.
     ///
     /// - Parameters:
@@ -104,14 +96,6 @@ import WebKit
     @objc public func setUser(user: User, completion: @escaping () -> ()) {
         hackleAppCore.setUser(user: user, hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
-    }
-
-    /// Sets the userId for the current user.
-    ///
-    /// - Parameter userId: the userId to set for the user. Can be null to identify an anonymous user
-    @available(*, deprecated, message: "Use async setUserId(userId:) or setUserId(userId:completion:) instead.")
-    @objc public func setUserId(userId: String?) {
-        setUserId(userId: userId, completion: {})
     }
 
     /// Sets the userId for the current user with completion.
@@ -124,14 +108,6 @@ import WebKit
             .onComplete(queue: completionQueue, completion)
     }
 
-    /// Sets a custom device ID.
-    ///
-    /// - Parameter deviceId: the custom device ID to set
-    @available(*, deprecated, message: "Use async setDeviceId(deviceId:) or setDeviceId(deviceId:completion:) instead.")
-    @objc public func setDeviceId(deviceId: String) {
-        setDeviceId(deviceId: deviceId, completion: {})
-    }
-
     /// Sets a custom device ID with completion.
     ///
     /// - Parameters:
@@ -140,19 +116,6 @@ import WebKit
     @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
         hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
-    }
-
-    /// Sets a single user property.
-    ///
-    /// - Parameters:
-    ///   - key: the key of the property
-    ///   - value: the value of the property
-    @available(*, deprecated, message: "Use async setUserProperty(key:value:) or setUserProperty(key:value:completion:) instead.")
-    @objc public func setUserProperty(key: String, value: Any?) {
-        let operations = PropertyOperations.builder()
-            .set(key, value)
-            .build()
-        updateUserProperties(operations: operations, completion: {})
     }
 
     /// Sets a single user property with completion.
@@ -166,14 +129,6 @@ import WebKit
             .set(key, value)
             .build()
         updateUserProperties(operations: operations, completion: completion)
-    }
-
-    /// Updates user properties with a set of operations.
-    ///
-    /// - Parameter operations: a set of ``PropertyOperations`` to apply to user properties
-    @available(*, deprecated, message: "Use async updateUserProperties(operations:) or updateUserProperties(operations:completion:) instead.")
-    @objc public func updateUserProperties(operations: PropertyOperations) {
-        updateUserProperties(operations: operations, completion: {})
     }
 
     /// Updates user properties with a set of operations with completion.
@@ -207,26 +162,12 @@ import WebKit
         hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
-    /// Resets the current user.
-    @available(*, deprecated, message: "Use async resetUser() or resetUser(completion:) instead.")
-    @objc public func resetUser() {
-        resetUser(completion: {})
-    }
-
     /// Resets the current user with completion.
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
     @objc public func resetUser(completion: @escaping () -> ()) {
         hackleAppCore.resetUser(hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
-    }
-
-    /// Sets the phone number for the current user.
-    ///
-    /// - Parameter phoneNumber: the phone number to set
-    @available(*, deprecated, message: "Use async setPhoneNumber(phoneNumber:) or setPhoneNumber(phoneNumber:completion:) instead.")
-    @objc public func setPhoneNumber(phoneNumber: String) {
-        setPhoneNumber(phoneNumber: phoneNumber, completion: {})
     }
 
     /// Sets the phone number for the current user with completion.
@@ -237,12 +178,6 @@ import WebKit
     @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
         completion()
-    }
-
-    /// Removes the phone number from the current user.
-    @available(*, deprecated, message: "Use async unsetPhoneNumber() or unsetPhoneNumber(completion:) instead.")
-    @objc public func unsetPhoneNumber() {
-        unsetPhoneNumber(completion: {})
     }
 
     /// Removes the phone number from the current user with completion.
