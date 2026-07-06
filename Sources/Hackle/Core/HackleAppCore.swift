@@ -13,7 +13,7 @@ protocol HackleAppCore: AnyObject {
     var user: User { get }
     @MainActor var currentInAppMessageView: InAppMessageView? { get }
 
-    func initialize(user: User?, completion: @escaping () -> ())
+    func initialize(user: User?, completion: @escaping @Sendable () -> ())
 
     @MainActor func getInAppMessageView(viewId: String) -> InAppMessageView?
 
@@ -87,7 +87,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
     private let optOutManager: OptOutManager
-    private let onInitializedRef = AtomicReference<(() -> ())?>(value: nil)
+    private let onInitializedRef = AtomicReference<(@Sendable () -> ())?>(value: nil)
 
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
 
@@ -151,7 +151,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         self.optOutManager = optOutManager
     }
 
-    func initialize(user: User?, completion: @escaping () -> ()) {
+    func initialize(user: User?, completion: @escaping @Sendable () -> ()) {
         userManager.initialize(user: user)
         onInitializedRef.set(newValue: completion)
         Task {
@@ -168,7 +168,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
-    private func initialize(completion: @escaping () -> ()) {
+    private func initialize(completion: @escaping @Sendable () -> ()) {
         workspaceManager.initialize()
         sessionManager.initialize()
         eventProcessor.initialize()

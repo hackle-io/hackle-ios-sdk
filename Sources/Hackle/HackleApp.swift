@@ -93,7 +93,7 @@ import WebKit
     /// - Parameters:
     ///   - user: the ``User`` to set
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setUser(user: User, completion: @escaping () -> ()) {
+    @preconcurrency @objc public func setUser(user: User, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.setUser(user: user, hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
     }
@@ -103,7 +103,7 @@ import WebKit
     /// - Parameters:
     ///   - userId: the userId to set for the user. Can be null to identify an anonymous user
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
+    @preconcurrency @objc public func setUserId(userId: String?, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.setUserId(userId: userId, hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
     }
@@ -113,7 +113,7 @@ import WebKit
     /// - Parameters:
     ///   - deviceId: the custom device ID to set
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
+    @preconcurrency @objc public func setDeviceId(deviceId: String, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
     }
@@ -124,7 +124,7 @@ import WebKit
     ///   - key: the key of the property
     ///   - value: the value of the property
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setUserProperty(key: String, value: Any?, completion: @escaping () -> ()) {
+    @preconcurrency @objc public func setUserProperty(key: String, value: Any?, completion: @escaping @Sendable () -> ()) {
         let operations = PropertyOperations.builder()
             .set(key, value)
             .build()
@@ -136,7 +136,7 @@ import WebKit
     /// - Parameters:
     ///   - operations: a set of ``PropertyOperations`` to apply to user properties
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
+    @preconcurrency @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default)
         completion()
     }
@@ -165,7 +165,7 @@ import WebKit
     /// Resets the current user with completion.
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
-    @objc public func resetUser(completion: @escaping () -> ()) {
+    @preconcurrency @objc public func resetUser(completion: @escaping @Sendable () -> ()) {
         hackleAppCore.resetUser(hackleAppContext: .default)
             .onComplete(queue: completionQueue, completion)
     }
@@ -175,7 +175,7 @@ import WebKit
     /// - Parameters:
     ///   - phoneNumber: the phone number to set
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
+    @preconcurrency @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
         completion()
     }
@@ -183,7 +183,7 @@ import WebKit
     /// Removes the phone number from the current user with completion.
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
-    @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
+    @preconcurrency @objc public func unsetPhoneNumber(completion: @escaping @Sendable () -> ()) {
         hackleAppCore.unsetPhoneNumber(hackleAppContext: .default)
         completion()
     }
@@ -278,7 +278,7 @@ import WebKit
     /// Fetches the latest configuration from the Hackle servers with completion.
     ///
     /// - Parameter completion: callback to be executed when the fetch is complete
-    @objc public func fetch(_ completion: @escaping () -> ()) {
+    @preconcurrency @objc public func fetch(_ completion: @escaping @Sendable () -> ()) {
         hackleAppCore.fetch()
             .onComplete(queue: completionQueue, completion)
     }
@@ -366,7 +366,7 @@ extension HackleApp {
 }
 
 extension HackleApp {
-    func initialize(user: User? = nil, completion: @escaping () -> ()) {
+    func initialize(user: User? = nil, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
     }
 

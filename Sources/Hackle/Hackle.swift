@@ -34,7 +34,7 @@ import Foundation
     ///   - sdkKey: Your Hackle SDK key
     ///   - config: SDK configuration options. Defaults to ``HackleConfig/DEFAULT``
     ///   - completion: Completion handler called when initialization is complete
-    @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
+    @preconcurrency @objc public static func initialize(sdkKey: String, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping @Sendable () -> ()) {
         initialize(sdkKey: sdkKey, user: nil, config: config, completion: completion)
     }
 
@@ -55,7 +55,7 @@ import Foundation
     ///   - user: Initial user to set for the SDK. Can be nil
     ///   - config: SDK configuration options. Defaults to ``HackleConfig/DEFAULT``
     ///   - completion: Completion handler called when initialization is complete
-    @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping () -> ()) {
+    @preconcurrency @objc public static func initialize(sdkKey: String, user: User?, config: HackleConfig = HackleConfig.DEFAULT, completion: @escaping @Sendable () -> ()) {
         lock.write {
             if container.app != nil {
                 readyToUse(completion: completion)
@@ -69,7 +69,7 @@ import Foundation
         }
     }
 
-    private static func readyToUse(completion: @escaping () -> ()) {
+    private static func readyToUse(completion: @escaping @Sendable () -> ()) {
         queue.async {
             completion()
         }
