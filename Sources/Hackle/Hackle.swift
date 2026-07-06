@@ -90,12 +90,6 @@ import Foundation
 
 // MARK: async initialization
 extension Hackle {
-
-    // NOTE: async initialize는 기존 sync initialize와 동명 오버로드다.
-    // async 컨텍스트에서 `Hackle.initialize(sdkKey:)`를 await 없이 호출하면 async 오버로드가
-    // 우선 선택되어 컴파일 에러가 나는데, 이는 R1 정책([async-await 전환])에 따른 의도된 동작이며
-    // Firebase/Optimizely/Braze/Apple(SE-0297)과 동일한 "Async 접미사 없는" Swift 관례를 따른다.
-
     /// Initializes the Hackle SDK and suspends until initialization completes.
     ///
     /// - Parameter sdkKey: Your Hackle SDK key
