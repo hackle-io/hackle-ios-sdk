@@ -20,13 +20,19 @@ class MockHackleAppCore: Mock, HackleAppCore {
         self.sessionId = sessonId
         self.deviceId = deviceId
         self.user = user
+        super.init()
+        every(setUserRef).answers { _ in Task {} }
+        every(setUserIdRef).answers { _ in Task {} }
+        every(setDeviceIdRef).answers { _ in Task {} }
+        every(resetUserRef).answers { _ in Task {} }
+        every(fetchRef).answers { _ in Task {} }
     }
 
     lazy var getInAppMessageViewRef = MockFunction(self, getInAppMessageView)
     func getInAppMessageView(viewId: String) -> InAppMessageView? {
         call(getInAppMessageViewRef, args: viewId)
     }
-    
+
     lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
     func showUserExplorer() {
         call(showUserExplorerRef, args: ())
@@ -36,29 +42,29 @@ class MockHackleAppCore: Mock, HackleAppCore {
     func hideUserExplorer() {
         call(hideUserExplorerRef, args: ())
     }
-    
+
     lazy var setDeviceIdRef = MockFunction(self, setDeviceId)
-    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(setDeviceIdRef, args: (deviceId, hackleAppContext, completion))
+        return call(setDeviceIdRef, args: (deviceId, hackleAppContext))
     }
-    
+
     lazy var setUserRef = MockFunction(self, setUser)
-    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(setUserRef, args: (user, hackleAppContext, completion))
+        return call(setUserRef, args: (user, hackleAppContext))
     }
-    
+
     lazy var setUserIdRef = MockFunction(self, setUserId)
-    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(setUserIdRef, args: (userId, hackleAppContext, completion))
+        return call(setUserIdRef, args: (userId, hackleAppContext))
     }
-    
+
     lazy var updateUserPropertiesRef = MockFunction(self, updateUserProperties)
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(updateUserPropertiesRef, args: (operations, hackleAppContext, completion))
+        call(updateUserPropertiesRef, args: (operations, hackleAppContext))
     }
     
     lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> ())
@@ -80,21 +86,21 @@ class MockHackleAppCore: Mock, HackleAppCore {
     }
     
     lazy var resetUserRef = MockFunction(self, resetUser)
-    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(resetUserRef, args: (hackleAppContext, completion))
+        return call(resetUserRef, args: hackleAppContext)
     }
-    
+
     lazy var setPhoneNumberRef = MockFunction(self, setPhoneNumber)
-    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(setPhoneNumberRef, args: (phoneNumber, hackleAppContext, completion))
+        call(setPhoneNumberRef, args: (phoneNumber, hackleAppContext))
     }
-    
+
     lazy var unsetPhoneNumberRef = MockFunction(self, unsetPhoneNumber)
-    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(unsetPhoneNumberRef, args: (hackleAppContext, completion))
+        call(unsetPhoneNumberRef, args: hackleAppContext)
     }
     
     lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, User?, String, HackleAppContext) -> Decision)
@@ -128,8 +134,8 @@ class MockHackleAppCore: Mock, HackleAppCore {
     }
     
     lazy var fetchRef = MockFunction(self, fetch)
-    func fetch(completion: @escaping () -> ()) {
-        call(fetchRef, args: completion)
+    func fetch() -> Task<Void, Never> {
+        call(fetchRef, args: ())
     }
 
     func initialize(user: User?, completion: @escaping () -> ()) {

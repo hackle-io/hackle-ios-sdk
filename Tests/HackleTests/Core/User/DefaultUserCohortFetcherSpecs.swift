@@ -22,10 +22,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             expect(try actual.get()).to(throwError(HackleError.error("fail")))
@@ -38,10 +35,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             expect(try actual.get()).to(throwError(HackleError.error("Response is empty")))
@@ -54,10 +48,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             expect(try actual.get()).to(throwError(HackleError.error("Http status code: 500")))
@@ -70,10 +61,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             expect(try actual.get()).to(throwError(HackleError.error("Response body is empty")))
@@ -86,10 +74,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             expect(try actual.get()).to(throwError(HackleError.error("Invalid format")))
@@ -103,10 +88,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            var actual: Result<UserCohorts, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             let cohorts = try actual.get()
@@ -124,8 +106,7 @@ class DefaultUserCohortFetcherSpecs: QuickSpec {
             }
 
             // when
-            sut.fetch(user: User.builder().id("42").build()) { result in
-            }
+            awaitCompletion { _ = try await sut.fetch(user: User.builder().id("42").build()) }
 
             // then
             let request = httpClient.executeMock.firstInvokation().arguments.0
