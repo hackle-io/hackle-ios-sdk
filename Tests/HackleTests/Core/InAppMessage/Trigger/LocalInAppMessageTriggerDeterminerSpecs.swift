@@ -4,21 +4,21 @@ import Quick
 
 @testable import Hackle
 
-class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
+class LocalInAppMessageTriggerDeterminerSpecs: QuickSpec {
     override class func spec() {
 
-        var workspaceManager: MockWorkspaceManager!
+        var workspaceFetcher: MockWorkspaceConfigFetcher!
         var eventMatcher: InAppMessageTriggerEventMatcherStub!
         var evaluateProcessor: InAppMessageEvaluateProcessorStub!
-        var sut: DefaultInAppMessageTriggerDeterminer!
+        var sut: LocalInAppMessageTriggerDeterminer!
 
         beforeEach {
-            workspaceManager = MockWorkspaceManager()
+            workspaceFetcher = MockWorkspaceConfigFetcher()
             eventMatcher = InAppMessageTriggerEventMatcherStub()
             evaluateProcessor = InAppMessageEvaluateProcessorStub()
-            sut = DefaultInAppMessageTriggerDeterminer(
-                workspaceManager: workspaceManager,
+            sut = LocalInAppMessageTriggerDeterminer(
                 eventMatcher: eventMatcher,
+                workspaceFetcher: workspaceFetcher,
                 evaluateProcessor: evaluateProcessor
             )
         }
@@ -36,7 +36,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
 
         it("when workspace is nil then return nil") {
             // given
-            every(workspaceManager.workspaceMock).returns(nil)
+            every(workspaceFetcher.workspaceMock).returns(nil)
 
             let event = UserEvents.track("test")
 
@@ -50,7 +50,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
         it("when inAppMessage is empty then return nil") {
             // given
             let workspace = DefaultWorkspaceConfig.create()
-            every(workspaceManager.workspaceMock).returns(workspace)
+            every(workspaceFetcher.workspaceMock).returns(workspace)
 
             let event = UserEvents.track("test")
 
@@ -113,7 +113,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
                     inAppMessage
                 }
             )
-            every(workspaceManager.workspaceMock).returns(workspace)
+            every(workspaceFetcher.workspaceMock).returns(workspace)
         }
 
         func decision(isEventMatched: Bool, isEligible: Bool, reason: String) -> Decision {
