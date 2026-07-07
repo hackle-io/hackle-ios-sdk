@@ -4,9 +4,9 @@ import Quick
 import MockingKit
 @testable import Hackle
 
-class WorkspaceManagerSpecs: QuickSpec {
+class WorkspaceConfigManagerSpecs: QuickSpec {
     static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfigResponse {
-        let json = try! String(contentsOfFile: Bundle(for: WorkspaceManagerSpecs.self).path(forResource: filename, ofType: "json")!)
+        let json = try! String(contentsOfFile: Bundle(for: WorkspaceConfigManagerSpecs.self).path(forResource: filename, ofType: "json")!)
         return try! JSONDecoder().decode(WorkspaceConfigResponse.self, from: json.data(using: .utf8)!)
     }
     
@@ -14,7 +14,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         it("nil workspace data returns if not sync called and no saved data") {
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             let actual: WorkspaceConfig? = sut.fetch()
@@ -25,7 +25,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             awaitCompletion { try await sut.sync() }
@@ -42,7 +42,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
         
             let actual: WorkspaceConfig? = sut.fetch()
@@ -54,7 +54,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             
             expect(sut.fetch() as WorkspaceConfig?).to(beNil())
             
@@ -69,7 +69,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             awaitCompletion { try await sut.sync() }
@@ -87,7 +87,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let second = loadWorkspaceConfigFromRes(filename: "workspace_config_modified")
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [first, second])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             awaitCompletion { try await sut.sync() }
@@ -105,7 +105,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [nil])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             awaitCompletion { try await sut.sync() }
@@ -118,7 +118,7 @@ class WorkspaceManagerSpecs: QuickSpec {
         it("do nothing even http request occours error") {
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             awaitCompletion { try await sut.sync() }
@@ -132,7 +132,7 @@ class WorkspaceManagerSpecs: QuickSpec {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
             sut.initialize()
             
             awaitCompletion { try await sut.sync() }

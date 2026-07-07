@@ -399,7 +399,7 @@ extension HackleApp {
             httpClient: httpClient
         )
 
-        let workspaceManager = WorkspaceManager(
+        let workspaceManager = WorkspaceConfigManager(
             httpWorkspaceFetcher: httpWorkspaceFetcher,
             repository: DefaultWorkspaceConfigRepository(
                 fileStorage: try? DefaultFileStorage(sdkKey: sdkKey)

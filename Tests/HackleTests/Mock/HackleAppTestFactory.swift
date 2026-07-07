@@ -36,7 +36,7 @@ func makeHackleApp(
     eventQueue: DispatchQueue,
     synchronizer: Synchronizer,
     userManager: UserManager,
-    workspaceManager: WorkspaceManager,
+    workspaceManager: WorkspaceConfigManager,
     sessionManager: SessionManager,
     screenManager: ScreenManager,
     eventProcessor: UserEventProcessor,

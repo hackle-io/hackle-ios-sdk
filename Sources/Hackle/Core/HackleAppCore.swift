@@ -75,7 +75,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let applicationLifecycleObserver: ApplicationLifecycleObserver
     private let viewLifecycleObserver: ViewLifecycleObserver
     private let userManager: UserManager
-    private let workspaceManager: WorkspaceManager
+    private let workspaceManager: WorkspaceConfigManager
     private let sessionManager: SessionManager
     private let screenManager: ScreenManager
     private let eventProcessor: UserEventProcessor
@@ -118,7 +118,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         applicationLifecycleObserver: ApplicationLifecycleObserver,
         viewLifecycleObserver: ViewLifecycleObserver,
         userManager: UserManager,
-        workspaceManager: WorkspaceManager,
+        workspaceManager: WorkspaceConfigManager,
         sessionManager: SessionManager,
         screenManager: ScreenManager,
         eventProcessor: UserEventProcessor,
