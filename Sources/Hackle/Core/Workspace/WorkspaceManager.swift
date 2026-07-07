@@ -6,7 +6,7 @@
 import Foundation
 
 
-class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
+class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer, @unchecked Sendable {
     private let httpWorkspaceFetcher: HttpWorkspaceFetcher
     private let repository: WorkspaceConfigRepository
 
@@ -30,13 +30,15 @@ class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
         workspace
     }
 
-    func sync(completion: @escaping (Result<(), Error>) -> ()) {
-        httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified) { [weak self] result in
-            guard let self = self else {
-                completion(.failure(HackleError.error("Failed to workspace sync: instance deallocated")))
-                return
-            }
-            self.handle(result: result, completion: completion)
+    func sync() async throws {
+        let response = try await httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified)
+        handle(response: response)
+    }
+
+    private func handle(response: WorkspaceConfigResponse?) {
+        if let response {
+            setWorkspaceConfig(response)
+            repository.set(value: response)
         }
     }
 
@@ -52,18 +54,4 @@ class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer {
         }
     }
 
-    private func handle(result: Result<WorkspaceConfigResponse?, Error>, completion: @escaping (Result<(), Error>) -> ()) {
-        switch result {
-        case .success(let config):
-            if let config {
-                setWorkspaceConfig(config)
-                repository.set(value: config)
-            }
-            completion(.success(()))
-            return
-        case .failure(let error):
-            completion(.failure(error))
-            return
-        }
-    }
 }

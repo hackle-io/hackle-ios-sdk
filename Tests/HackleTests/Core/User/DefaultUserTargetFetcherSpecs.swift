@@ -25,10 +25,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 500, error: HackleError.error("fail")))
             }
 
-            var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             expect(try actual.get()).to(throwError(HackleError.error("fail")))
         }
@@ -38,10 +35,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(HttpResponse(request: request, data: nil, urlResponse: nil, error: nil))
             }
 
-            var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             expect(try actual.get()).to(throwError(HackleError.error("Response is empty")))
         }
@@ -51,10 +45,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 500))
             }
 
-            var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             expect(try actual.get()).to(throwError(HackleError.error("Http status code: 500")))
         }
@@ -64,10 +55,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200))
             }
 
-            var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             expect(try actual.get()).to(throwError(HackleError.error("Response body is empty")))
         }
@@ -77,10 +65,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200, data: "INVALID".data(using: .utf8)))
             }
 
-            var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             expect(try actual.get()).to(throwError(HackleError.error("Invalid format")))
         }
@@ -91,10 +76,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200, data: json.data(using: .utf8)))
             }
 
-            var actual: Result<UserTargetEvents, Error>!
-            sut.fetch(user: User.builder().id("42").build()) { result in
-                actual = result
-            }
+            let actual = awaitResult { try await sut.fetch(user: User.builder().id("42").build()) }
 
             let target = try actual.get()
             expect(target.count) == 2
@@ -106,7 +88,7 @@ class DefaultUserTargetFetcherSpecs: QuickSpec {
                 completion(response(statusCode: 200, data: json.data(using: .utf8)))
             }
 
-            sut.fetch(user: User.builder().id("42").build()) { _ in }
+            awaitCompletion { _ = try await sut.fetch(user: User.builder().id("42").build()) }
 
             let request = httpClient.executeMock.firstInvokation().arguments.0
             expect(request.headers?["X-HACKLE-USER"]).toNot(beNil())

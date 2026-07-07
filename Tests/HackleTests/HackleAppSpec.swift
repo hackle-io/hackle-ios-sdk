@@ -47,50 +47,12 @@ class HackleAppSpecs: QuickSpec {
                 featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
-            let urlHandler = ApplicationUrlHandler()
-            let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])
-            let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
-                InAppMessageViewImpressionEventActor(),
-                InAppMessageViewActionEventActor(actionHandlerFactory: inAppMessageActionHandlerFactory),
-                InAppMessageViewCloseEventActor()
-            ])
-            let inAppMessageViewEventActionHandler = InAppMessageViewEventActionHandler(
-                actorFactory: inAppMessageViewEventActorFactory
-            )
-            let inAppMessageEventTracker = DefaultInAppMessageEventTracker(
-                core: core
-            )
-            let inAppMessageViewEventTrackHandler = InAppMessageViewEventTrackHandler(
-                tracker: inAppMessageEventTracker
-            )
-            let inAppMessageViewEventHandlerFactory = DefaultInAppMessageViewEventHandlerFactory(handlers: [
-                inAppMessageViewEventActionHandler,
-                inAppMessageViewEventTrackHandler
-            ])
-            let inAppMessageViewEventProcessor = DefaultInAppMessageViewEventProcessor(
-                handlerFactory: inAppMessageViewEventHandlerFactory
-            )
-            inAppMessageUI = HackleInAppMessageUI(
-                clock: SystemClock.shared,
-                eventProcessor: inAppMessageViewEventProcessor,
-                htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory()
-            )
-
-            let applicationInstallDeterminer = ApplicationInstallDeterminer()
-            let applicationInstallStateManager = ApplicationInstallStateManager(
-                platformManager: platformManager,
-                applicationInstallDeterminer: applicationInstallDeterminer,
-                clock: SystemClock.shared
-            )
-
+            inAppMessageUI = makeInAppMessageUI(core: core)
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
-
-            let hackleAppCore = DefaultHackleAppCore(
+            let built = makeHackleApp(
                 core: core,
                 eventQueue: eventQueue,
                 synchronizer: synchronizer,
-                applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
-                viewLifecycleObserver: ViewLifecycleObserver.shared,
                 userManager: userManager,
                 workspaceManager: workspaceManager,
                 sessionManager: sessionManager,
@@ -98,19 +60,12 @@ class HackleAppSpecs: QuickSpec {
                 eventProcessor: eventProcessor,
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
-                fetchThrottler: throttler,
                 platformManager: platformManager,
-                inAppMessageUI: inAppMessageUI,
-                applicationInstallStateManager: applicationInstallStateManager,
                 userExplorer: userExplorer,
-                optOutManager: OptOutManager(configOptOutTracking: false)
+                inAppMessageUI: inAppMessageUI,
+                throttler: throttler
             )
-            sut = HackleApp(
-                hackleAppCore: hackleAppCore,
-                sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
-                config: HackleConfig.builder().mode(.native).build(),
-                hackleInvocator: DefaultHackleInvocator(processor: DefaultInvocationProcessor(handlerFactory: DefaultInvocationHandlerFactory(core: hackleAppCore)))
-            )
+            sut = built.sut
         }
 
         it("deviceId") {
@@ -139,7 +94,11 @@ class HackleAppSpecs: QuickSpec {
         describe("setUser") {
             it("set and sync") {
                 let user = User.builder().id("42").build()
-                sut.setUser(user: user)
+                waitUntil { done in
+                    sut.setUser(user: user) {
+                        done()
+                    }
+                }
                 verify(exactly: 1) {
                     userManager.setUserMock
                 }
@@ -152,16 +111,30 @@ class HackleAppSpecs: QuickSpec {
             it("completion") {
                 var count = 0
                 let user = User.builder().id("42").build()
-                sut.setUser(user: user) {
-                    count += 1
+                waitUntil { done in
+                    sut.setUser(user: user) {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
+            }
+
+            it("setUser 반환 시점에 유저 갱신이 이미 완료된다 (동기 프리픽스)") {
+                let user = User.builder().id("sync-prefix").build()
+                sut.setUser(user: user, completion: {})
+                // completion 대기 없이 즉시 확인 — mutation은 동기
+                expect(userManager.currentUser.id) == "sync-prefix"
             }
         }
 
         describe("setUserId") {
             it("set and sync") {
-                sut.setUserId(userId: "user_id")
+                waitUntil { done in
+                    sut.setUserId(userId: "user_id") {
+                        done()
+                    }
+                }
                 verify(exactly: 1) {
                     userManager.setUserIdMock
                 }
@@ -173,8 +146,11 @@ class HackleAppSpecs: QuickSpec {
 
             it("completion") {
                 var count = 0
-                sut.setUserId(userId: "user_id") {
-                    count += 1
+                waitUntil { done in
+                    sut.setUserId(userId: "user_id") {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
@@ -182,7 +158,11 @@ class HackleAppSpecs: QuickSpec {
 
         describe("setDeviceId") {
             it("set and sync") {
-                sut.setDeviceId(deviceId: "device_id")
+                waitUntil { done in
+                    sut.setDeviceId(deviceId: "device_id") {
+                        done()
+                    }
+                }
                 verify(exactly: 1) {
                     userManager.setDeviceIdMock
                 }
@@ -194,8 +174,11 @@ class HackleAppSpecs: QuickSpec {
 
             it("completion") {
                 var count = 0
-                sut.setDeviceId(deviceId: "device_id") {
-                    count += 1
+                waitUntil { done in
+                    sut.setDeviceId(deviceId: "device_id") {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
@@ -203,7 +186,11 @@ class HackleAppSpecs: QuickSpec {
 
         describe("resetUser") {
             it("reset") {
-                sut.resetUser()
+                waitUntil { done in
+                    sut.resetUser {
+                        done()
+                    }
+                }
                 verify(exactly: 1) {
                     userManager.resetUserMock
                 }
@@ -217,8 +204,11 @@ class HackleAppSpecs: QuickSpec {
             }
             it("completion") {
                 var count = 0
-                sut.resetUser {
-                    count += 1
+                waitUntil { done in
+                    sut.resetUser {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
@@ -226,7 +216,7 @@ class HackleAppSpecs: QuickSpec {
 
         describe("setUserProperty") {
             it("update properties") {
-                sut.setUserProperty(key: "age", value: 42)
+                sut.setUserProperty(key: "age", value: 42) {}
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
                 }
@@ -255,7 +245,7 @@ class HackleAppSpecs: QuickSpec {
 
         describe("updateUserProperties") {
             it("update properties") {
-                sut.updateUserProperties(operations: PropertyOperations.builder().set("age", 42).build())
+                sut.updateUserProperties(operations: PropertyOperations.builder().set("age", 42).build()) {}
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
                 }
@@ -278,6 +268,15 @@ class HackleAppSpecs: QuickSpec {
                     count += 1
                 }
                 expect(count) == 1
+            }
+
+            it("updateUserProperties completion은 동기 인라인으로 호출된다") {
+                var called = false
+                sut.updateUserProperties(operations: PropertyOperations.builder().set("k", "v").build()) {
+                    called = true
+                }
+                // 대기 없이 즉시 true — 현행 동기 인라인 계약 보존
+                expect(called) == true
             }
         }
 
@@ -495,6 +494,25 @@ class HackleAppSpecs: QuickSpec {
             expect(platformManager.device.properties.count) == 13
         }
 
+        it("initialize — sync 완료 후에 flush가 실행된다") {
+            var order: [String] = []
+            every(synchronizer.syncMock).answers { _ in
+                Thread.sleep(forTimeInterval: 0.1)
+                order.append("sync")
+            }
+            notificationManager.onFlush = {
+                order.append("flush")
+            }
+
+            waitUntil(timeout: .seconds(10)) { done in
+                sut.initialize(user: nil) {
+                    done()
+                }
+            }
+
+            expect(order) == ["sync", "flush"]
+        }
+
         it("create") {
             let config = HackleConfig.builder()
                 .sdkUrl(URL(string: "http://localhost")!)
@@ -582,6 +600,34 @@ class HackleAppSpecs: QuickSpec {
             }
         }
 
+        describe("fetch") {
+            it("fetch - 스로틀(reject) 시에도 completion이 호출된다") {
+                let rejectingBuilt = makeHackleApp(
+                    core: core,
+                    eventQueue: eventQueue,
+                    synchronizer: synchronizer,
+                    userManager: userManager,
+                    workspaceManager: workspaceManager,
+                    sessionManager: sessionManager,
+                    screenManager: screenManager,
+                    eventProcessor: eventProcessor,
+                    pushTokenRegistry: pushTokenRegistry,
+                    notificationManager: notificationManager,
+                    platformManager: platformManager,
+                    userExplorer: userExplorer,
+                    inAppMessageUI: inAppMessageUI,
+                    throttler: RejectingThrottler()
+                )
+                let rejectingSut = rejectingBuilt.sut
+
+                waitUntil { done in
+                    rejectingSut.fetch {
+                        done()
+                    }
+                }
+            }
+        }
+
         describe("DEPRECATED") {
             describe("experiment") {
                 beforeEach {
@@ -666,5 +712,11 @@ class HackleAppSpecs: QuickSpec {
                 expect(actual).to(beAnInstanceOf(DefaultRemoteConfig.self))
             }
         }
+    }
+}
+
+private class RejectingThrottler: Throttler {
+    func execute(accept: @escaping () -> (), reject: @escaping () -> ()) {
+        reject()
     }
 }

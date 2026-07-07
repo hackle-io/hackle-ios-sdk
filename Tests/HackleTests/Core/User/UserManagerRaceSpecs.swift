@@ -26,12 +26,8 @@ class UserManagerRaceSpecs: QuickSpec {
                 targetFetcher: targetFetcher,
                 clock: clock
             )
-            every(cohortFetcher.fetchMock).answers { _, completion in
-                completion(.success(UserCohorts()))
-            }
-            every(targetFetcher.fetchMock).answers { _, completion in
-                completion(.success(UserTargetEvents()))
-            }
+            every(cohortFetcher.fetchMock).answers { _ in UserCohorts() }
+            every(targetFetcher.fetchMock).answers { _ in UserTargetEvents() }
             sut.initialize(user: User.builder().id("id").build())
 
             let writerIterations = 2_000
@@ -42,7 +38,10 @@ class UserManagerRaceSpecs: QuickSpec {
             DispatchQueue.global(qos: .utility).async(group: group) {
                 for _ in 0..<writerIterations {
                     let sem = DispatchSemaphore(value: 0)
-                    sut.sync { sem.signal() }
+                    Task {
+                        try? await sut.sync()
+                        sem.signal()
+                    }
                     sem.wait()
                 }
             }
