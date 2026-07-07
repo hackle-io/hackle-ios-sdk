@@ -930,6 +930,50 @@ class LocalUserManagerSpecs: QuickSpec {
             }
         }
 
+        describe("onPropertyOperations") {
+            it("updateProperties 시 변경 전 user와 operations를 발행한다") {
+                sut.initialize(user: User.builder().userId("user_id").properties(["a": 1]).build())
+                let operations = PropertyOperations.builder().set("age", 42).build()
+
+                _ = sut.updateProperties(operations: operations)
+
+                verify(exactly: 1) {
+                    listener.onPropertyOperationsMock
+                }
+                let (user, publishedOperations, timestamp) = listener.onPropertyOperationsMock.firstInvokation().arguments
+                expect(user.userId) == "user_id"
+                expect(user.properties["age"]).to(beNil()) // 변경 "전" user로 발행 (android parity)
+                expect(publishedOperations.asDictionary()[.set] as? [String: Int]) == ["age": 42]
+                expect(timestamp) == Date(timeIntervalSince1970: 42) // clock.now()
+                verify(exactly: 0) {
+                    listener.onUserUpdatedMock // 식별자 불변 — onUserUpdated 미발행
+                }
+            }
+
+            it("resetUser 시 변경 후(default) user와 clearAll을 발행한다") {
+                sut.initialize(user: User.builder().userId("user_id").build())
+
+                _ = sut.resetUser()
+
+                verify(exactly: 1) {
+                    listener.onPropertyOperationsMock
+                }
+                let (user, operations, _) = listener.onPropertyOperationsMock.firstInvokation().arguments
+                expect(user.userId).to(beNil()) // reset 후 default user로 발행 (android parity)
+                expect(operations.contains(.clearAll)) == true
+            }
+
+            it("setUser/setUserId/setDeviceId 시에는 발행하지 않는다") {
+                sut.initialize(user: nil)
+                _ = sut.setUser(user: User.builder().userId("a").build())
+                _ = sut.setUserId(userId: "b")
+                _ = sut.setDeviceId(deviceId: "c")
+                verify(exactly: 0) {
+                    listener.onPropertyOperationsMock
+                }
+            }
+        }
+
         describe("onChanged") {
             it("foreground - do nothing") {
                 sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
@@ -973,5 +1017,9 @@ fileprivate class ReentrantUserListener: UserListener {
 
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
         reentrantUser = userManager?.toHackleUser(user: newUser)
+    }
+
+    func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        // nothing to do
     }
 }

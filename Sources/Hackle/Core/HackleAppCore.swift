@@ -230,8 +230,6 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(), user: nil, hackleAppContext: hackleAppContext)
-        eventProcessor.flush()
         userManager.updateProperties(operations: operations)
     }
 
@@ -253,7 +251,6 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     @discardableResult
     func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         let updated = userManager.resetUser()
-        track(event: PropertyOperations.clearAll().toEvent(), user: nil, hackleAppContext: hackleAppContext)
         return Task { await self.userManager.syncIfNeeded(updated: updated) }
     }
 

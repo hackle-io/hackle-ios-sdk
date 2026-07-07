@@ -170,6 +170,10 @@ class DefaultSessionManager: SessionManager, UserListener {
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
         startNewSessionIfNeeded(context: SessionContext.of(oldUser: oldUser, newUser: newUser, timestamp: timestamp))
     }
+
+    func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        // nothing to do
+    }
 }
 
 extension DefaultSessionManager: ApplicationLifecycleListener {

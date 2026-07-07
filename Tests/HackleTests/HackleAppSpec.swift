@@ -194,13 +194,12 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 1) {
                     userManager.resetUserMock
                 }
-                verify(exactly: 1) {
+                verify(exactly: 0) {
                     core.trackMock
                 }
                 verify(exactly: 1) {
                     userManager.syncIfNeededMock
                 }
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$properties"
             }
             it("completion") {
                 var count = 0
@@ -220,18 +219,16 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
                 }
-                verify(exactly: 1) {
+                verify(exactly: 0) {
                     core.trackMock
                 }
-                verify(exactly: 1) {
+                verify(exactly: 0) {
                     eventProcessor.flushMock
                 }
                 verify(exactly: 0) {
                     userManager.syncIfNeededMock
                 }
                 expect(userManager.updatePropertiesMock.firstInvokation().arguments.asDictionary()[.set] as? [String: Int]) == ["age": 42]
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$properties"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$set"] as? [String: Int]) == ["age": 42]
             }
 
             it("completion") {
@@ -249,17 +246,15 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
                 }
-                verify(exactly: 1) {
+                verify(exactly: 0) {
                     core.trackMock
                 }
-                verify(exactly: 1) {
+                verify(exactly: 0) {
                     eventProcessor.flushMock
                 }
                 verify(exactly: 0) {
                     userManager.syncIfNeededMock
                 }
-                expect(core.trackMock.firstInvokation().arguments.0.key) == "$properties"
-                expect(core.trackMock.firstInvokation().arguments.0.properties?["$set"] as? [String: Int]) == ["age": 42]
             }
 
             it("completion") {

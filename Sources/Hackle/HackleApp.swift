@@ -563,6 +563,15 @@ extension HackleApp {
             evaluateProcessor: evaluateProcessor
         )
 
+        // - PropertiesEventTracker
+
+        let propertiesEventTracker = PropertiesEventTracker(
+            core: core,
+            eventProcessor: eventProcessor,
+            userManager: userManager
+        )
+        userManager.addListener(listener: propertiesEventTracker)
+
         // - ApplicationLifecycleListener
 
         applicationLifecycleManager.addListener(listener: pollingSynchronizer)

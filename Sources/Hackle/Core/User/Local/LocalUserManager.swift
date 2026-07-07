@@ -187,6 +187,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
             let context = updateContext { _ in
                 defaultUser
             }
+            publishPropertyOperations(user: context.current.user, operations: PropertyOperations.clearAll(), timestamp: clock.now())
             return context.map { it in
                 it.user
             }
@@ -209,6 +210,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     private func operateProperties(operations: PropertyOperations) -> Updated<LocalUserContext> {
         updateContext { currentUser in
+            publishPropertyOperations(user: currentUser, operations: operations, timestamp: clock.now())
             let properties = operations.operate(base: currentUser.properties)
             return currentUser.with(properties: properties)
         }
@@ -234,6 +236,13 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         Log.debug("UserManager.publishUserUpdated()")
         for listener in userListeners {
             listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
+        }
+    }
+
+    private func publishPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        Log.debug("UserManager.publishPropertyOperations()")
+        for listener in userListeners {
+            listener.onPropertyOperations(user: user, operations: operations, timestamp: timestamp)
         }
     }
 
