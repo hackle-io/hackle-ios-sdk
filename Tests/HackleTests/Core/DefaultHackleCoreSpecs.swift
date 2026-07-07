@@ -12,7 +12,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
         init(workspace: WorkspaceConfig? = nil) {
             self.workspace = workspace
         }
-        func fetch() -> WorkspaceConfig? {
+        func workspace(user: HackleUser) -> WorkspaceConfig? {
             workspace
         }
     }
@@ -35,12 +35,12 @@ class DefaultHackleCoreSpecs: QuickSpec {
         let fetcher = MockWorkspaceConfigFetcher(workspace: workspace)
         let decisionProcessor = LocalDecisionProcessor(workspaceFetcher: fetcher, evaluateProcessor: evaluateProcessor)
 
-        // workspaceFetcher used by track() only
-        let workspaceFetcher = MockWorkspaceFetcher()
-        every(workspaceFetcher.fetchMock).returns(workspace)
+        // workspaceManager used by track() only
+        let workspaceManager = MockWorkspaceManager()
+        every(workspaceManager.workspaceMock).returns(workspace)
 
         return DefaultHackleCore(
-            workspaceFetcher: workspaceFetcher,
+            workspaceManager: workspaceManager,
             decisionProcessor: decisionProcessor,
             eventProcessor: eventProcessor,
             clock: SystemClock.shared

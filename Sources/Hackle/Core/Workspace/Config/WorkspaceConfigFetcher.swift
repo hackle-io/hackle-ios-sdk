@@ -1,5 +1,5 @@
 import Foundation
 
 protocol WorkspaceConfigFetcher {
-    func fetch() -> WorkspaceConfig?
+    func workspace(user: HackleUser) -> WorkspaceConfig?
 }

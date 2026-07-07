@@ -8,10 +8,10 @@ class NotificationManagerSpec: QuickSpec {
     override class func spec() {
         let dispatchQueue = DispatchQueue(label: "test")
         var core: HackleCoreStub!
-        var workspaceFetcher: MockWorkspaceFetcher!
+        var workspaceManager: MockWorkspaceManager!
         var userManager: MockUserManager!
         var repository: MockNotificationRepository!
-        
+
         beforeSuite {
             // 최초에 버전값을 초기화 해서 강제로 최신테이블 재생성
             UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameDatabaseVersion).remove(key: "shared_hackle.sqlite")
@@ -19,7 +19,7 @@ class NotificationManagerSpec: QuickSpec {
 
         beforeEach {
             core = HackleCoreStub()
-            workspaceFetcher = MockWorkspaceFetcher()
+            workspaceManager = MockWorkspaceManager()
             userManager = MockUserManager()
             repository = MockNotificationRepository()
             repository.deleteAll()
@@ -29,24 +29,12 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(DefaultWorkspaceConfig(
-                    id: 123,
-                    environmentId: 456,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 456))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
@@ -90,24 +78,12 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(DefaultWorkspaceConfig(
-                    id: 123,
-                    environmentId: 456,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 456))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
@@ -216,11 +192,11 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock).returns(nil)
+            every(workspaceManager.metadataMock).returns(nil)
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
@@ -257,24 +233,12 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(DefaultWorkspaceConfig(
-                    id: 123,
-                    environmentId: 222,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 222))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
@@ -339,24 +303,12 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(DefaultWorkspaceConfig(
-                    id: 3,
-                    environmentId: 456,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 3, environmentId: 456))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
@@ -421,11 +373,11 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
+            every(workspaceManager.metadataMock)
                 .returns(nil)
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
@@ -491,11 +443,11 @@ class NotificationManagerSpec: QuickSpec {
             let manager = DefaultNotificationManager(
                 core: core,
                 dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock).returns(nil)
+            every(workspaceManager.metadataMock).returns(nil)
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()

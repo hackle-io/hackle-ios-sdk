@@ -18,7 +18,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual).to(beNil())
         }
 
@@ -31,7 +31,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
 
             awaitCompletion { try await sut.sync() }
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == data.dto.workspace.id
             expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
             expect(repository.value).toNot(beNil())
@@ -46,7 +46,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == repository.value?.dto.workspace.id
             expect(actual?.metadata.environmentId) == repository.value?.dto.workspace.environment.id
         }
@@ -57,11 +57,11 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let repository = MockWorkspaceConfigRepository(value: data)
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
 
-            expect(sut.fetch() as WorkspaceConfig?).to(beNil())
+            expect(sut.workspace(user: HackleUser.of(userId: "user")) as WorkspaceConfig?).to(beNil())
 
             sut.initialize()
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == repository.value?.dto.workspace.id
             expect(actual?.metadata.environmentId) == repository.value?.dto.workspace.environment.id
         }
@@ -75,7 +75,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
 
             awaitCompletion { try await sut.sync() }
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == data.dto.workspace.id
             expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
             expect(repository.value).toNot(beNil())
@@ -111,7 +111,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
 
             awaitCompletion { try await sut.sync() }
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == data.dto.workspace.id
             expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
         }
@@ -124,7 +124,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
 
             awaitCompletion { try await sut.sync() }
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual).to(beNil())
             expect(repository.value).to(beNil())
         }
@@ -138,7 +138,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
 
             awaitCompletion { try await sut.sync() }
 
-            let actual: WorkspaceConfig? = sut.fetch()
+            let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual).toNot(beNil())
             expect(repository.value).toNot(beNil())
             expect(repository.value?.modifiedAt) == data.modifiedAt

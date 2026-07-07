@@ -9,7 +9,7 @@ class DefaultNotificationManager: NotificationManager {
 
     private let core: HackleCore
     private let dispatchQueue: DispatchQueue
-    private let workspaceFetcher: WorkspaceFetcher
+    private let workspaceManager: WorkspaceManager
     private let userManager: UserManager
     private let repository: NotificationRepository
 
@@ -18,12 +18,12 @@ class DefaultNotificationManager: NotificationManager {
     init(
         core: HackleCore,
         dispatchQueue: DispatchQueue,
-        workspaceFetcher: WorkspaceFetcher,
+        workspaceManager: WorkspaceManager,
         userManager: UserManager,
         repository: NotificationRepository
     ) {
         self.core = core
-        self.workspaceFetcher = workspaceFetcher
+        self.workspaceManager = workspaceManager
         self.userManager = userManager
         self.repository = repository
         self.dispatchQueue = dispatchQueue
@@ -46,15 +46,15 @@ class DefaultNotificationManager: NotificationManager {
             flushing.set(newValue: false)
         }
 
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let metadata = workspaceManager.metadata() else {
             Log.info("Workspace data is empty when notification data is flushing.")
             return
         }
 
         let user = userManager.currentUser
         let totalCount = repository.count(
-            workspaceId: workspace.metadata.id,
-            environmentId: workspace.metadata.environmentId
+            workspaceId: metadata.id,
+            environmentId: metadata.environmentId
         )
         if (totalCount <= 0) {
             Log.info("Notification data is empty.")
@@ -66,8 +66,8 @@ class DefaultNotificationManager: NotificationManager {
 
         for _ in 0...loop {
             let notifications = repository.getEntities(
-                workspaceId: workspace.metadata.id,
-                environmentId: workspace.metadata.environmentId,
+                workspaceId: metadata.id,
+                environmentId: metadata.environmentId,
                 limit: batchSize
             )
 
@@ -93,17 +93,17 @@ class DefaultNotificationManager: NotificationManager {
     }
 
     func onNotificationDataReceived(data: NotificationData, timestamp: Date) {
-        let workspace = workspaceFetcher.fetch()
-        if let workspace = workspace,
-           workspace.metadata.id == data.workspaceId,
-           workspace.metadata.environmentId == data.environmentId {
+        let metadata = workspaceManager.metadata()
+        if let metadata = metadata,
+           metadata.id == data.workspaceId,
+           metadata.environmentId == data.environmentId {
             track(event: data.toTrackEvent(), user: userManager.currentUser, timestamp: timestamp)
         } else {
-            if workspace == nil {
+            if metadata == nil {
                 Log.debug("Workspace data is empty.")
             } else {
                 Log.info(
-                    "Current environment(\(String(describing: workspace?.metadata.id)):\(String(describing: workspace?.metadata.environmentId))) is not same as notification environment(\(data.workspaceId):\(data.environmentId))."
+                    "Current environment(\(String(describing: metadata?.id)):\(String(describing: metadata?.environmentId))) is not same as notification environment(\(data.workspaceId):\(data.environmentId))."
                 )
             }
 

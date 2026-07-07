@@ -6,8 +6,7 @@
 import Foundation
 
 
-class WorkspaceConfigManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer, @unchecked Sendable {
-    // ↑ 이 시점에서는 아직 WorkspaceFetcher — Task 2.5에서 WorkspaceManager로 교체
+class WorkspaceConfigManager: WorkspaceManager, WorkspaceConfigFetcher, Synchronizer, @unchecked Sendable {
     private let httpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher
     private let repository: WorkspaceConfigRepository
 
@@ -22,11 +21,15 @@ class WorkspaceConfigManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchron
         load()
     }
 
-    func fetch() -> Workspace? {
+    func metadata() -> WorkspaceMetadata? {
+        context?.workspace.metadata
+    }
+
+    func workspace(user: HackleUser) -> Workspace? {
         context?.workspace
     }
 
-    func fetch() -> WorkspaceConfig? {
+    func workspace(user: HackleUser) -> WorkspaceConfig? {
         context?.workspace
     }
 

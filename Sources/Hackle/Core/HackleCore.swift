@@ -19,18 +19,18 @@ protocol HackleCore {
 
 class DefaultHackleCore: HackleCore {
 
-    private let workspaceFetcher: WorkspaceFetcher
+    private let workspaceManager: WorkspaceManager
     private let decisionProcessor: DecisionProcessor
     private let eventProcessor: UserEventProcessor
     private let clock: Clock
 
     init(
-        workspaceFetcher: WorkspaceFetcher,
+        workspaceManager: WorkspaceManager,
         decisionProcessor: DecisionProcessor,
         eventProcessor: UserEventProcessor,
         clock: Clock
     ) {
-        self.workspaceFetcher = workspaceFetcher
+        self.workspaceManager = workspaceManager
         self.decisionProcessor = decisionProcessor
         self.eventProcessor = eventProcessor
         self.clock = clock
@@ -57,7 +57,7 @@ class DefaultHackleCore: HackleCore {
     }
 
     func track(event: Event, user: HackleUser, timestamp: Date) {
-        let eventType = workspaceFetcher.fetch()?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
+        let eventType = workspaceManager.workspace(user: user)?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
         let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
         eventProcessor.process(event: userEvent)
     }

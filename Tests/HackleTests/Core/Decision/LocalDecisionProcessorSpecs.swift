@@ -10,7 +10,7 @@ class LocalDecisionProcessorSpecs: QuickSpec {
     final class StubWorkspaceConfigFetcher: WorkspaceConfigFetcher {
         let workspace: WorkspaceConfig?
         init(_ workspace: WorkspaceConfig?) { self.workspace = workspace }
-        func fetch() -> WorkspaceConfig? { workspace }
+        func workspace(user: HackleUser) -> WorkspaceConfig? { workspace }
     }
 
     static func processor(workspace: WorkspaceConfig, eventProcessor: UserEventProcessor) -> LocalDecisionProcessor {

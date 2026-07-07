@@ -6,12 +6,12 @@ protocol InAppMessageTriggerDeterminer {
 
 class DefaultInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
 
-    private let workspaceFetcher: WorkspaceFetcher
+    private let workspaceManager: WorkspaceManager
     private let eventMatcher: InAppMessageTriggerEventMatcher
     private let evaluateProcessor: InAppMessageEvaluateProcessor
 
-    init(workspaceFetcher: WorkspaceFetcher, eventMatcher: InAppMessageTriggerEventMatcher, evaluateProcessor: InAppMessageEvaluateProcessor) {
-        self.workspaceFetcher = workspaceFetcher
+    init(workspaceManager: WorkspaceManager, eventMatcher: InAppMessageTriggerEventMatcher, evaluateProcessor: InAppMessageEvaluateProcessor) {
+        self.workspaceManager = workspaceManager
         self.eventMatcher = eventMatcher
         self.evaluateProcessor = evaluateProcessor
     }
@@ -21,7 +21,7 @@ class DefaultInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
             return nil
         }
 
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceManager.workspace(user: trackEvent.user) else {
             return nil
         }
 

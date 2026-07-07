@@ -6,7 +6,7 @@ protocol InAppMessageDeliverProcessor {
 
 class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
-    private let workspaceFetcher: WorkspaceFetcher
+    private let workspaceManager: WorkspaceManager
     private let userManager: UserManager
     private let userDecoreator: UserDecorator
     private let identifierChecker: InAppMessageIdentifierChecker
@@ -15,7 +15,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
     private let presentProcessor: InAppMessagePresentProcessor
 
     init(
-        workspaceFetcher: WorkspaceFetcher,
+        workspaceManager: WorkspaceManager,
         userManager: UserManager,
         userDecoreator: UserDecorator,
         identifierChecker: InAppMessageIdentifierChecker,
@@ -23,7 +23,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         evaluateProcessor: InAppMessageEvaluateProcessor,
         presentProcessor: InAppMessagePresentProcessor
     ) {
-        self.workspaceFetcher = workspaceFetcher
+        self.workspaceManager = workspaceManager
         self.userManager = userManager
         self.userDecoreator = userDecoreator
         self.identifierChecker = identifierChecker
@@ -47,8 +47,12 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
     private func deliver(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse {
 
+        // resolve User (workspace(user:) 시그니처 요구로 선행 — 본 재편은 Chunk 3)
+        let user = userManager.resolve(user: nil, hackleAppContext: .default)
+            .decorateWith(docorator: userDecoreator)
+
         // check Workspace
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceManager.workspace(user: user) else {
             return InAppMessageDeliverResponse.of(request: request, code: .workspaceNotFound)
         }
 
@@ -57,10 +61,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
             return InAppMessageDeliverResponse.of(request: request, code: .inAppMessageNotFound)
         }
 
-        // check User
-        let user = userManager.resolve(user: nil, hackleAppContext: .default)
-            .decorateWith(docorator: userDecoreator)
-            
+        // check User identifier
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: request.identifiers, new: user.identifiers)
         if isIdentifierChanged {
             return InAppMessageDeliverResponse.of(request: request, code: .identifierChanged)

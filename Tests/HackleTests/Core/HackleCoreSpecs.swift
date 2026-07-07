@@ -30,10 +30,10 @@ class HackleCoreSpecs: QuickSpec {
          *            AB(6)
          */
         it("target_experiment") {
-            let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "target_experiment")
+            let workspaceManager = ResourcesWorkspaceManager(fileName: "target_experiment")
             let eventProcessor = InMemoryUserEventProcessor()
             let core = DefaultHackleCore.create(
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 eventProcessor: eventProcessor,
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
             )
@@ -67,10 +67,10 @@ class HackleCoreSpecs: QuickSpec {
          * └────┘
          */
         it("target_experiment_circular") {
-            let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "target_experiment_circular")
+            let workspaceManager = ResourcesWorkspaceManager(fileName: "target_experiment_circular")
             let eventProcessor = InMemoryUserEventProcessor()
             let core = DefaultHackleCore.create(
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 eventProcessor: eventProcessor,
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
             )
@@ -90,10 +90,10 @@ class HackleCoreSpecs: QuickSpec {
          *       25 %                        75 %
          */
         it("container") {
-            let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "container")
+            let workspaceManager = ResourcesWorkspaceManager(fileName: "container")
             let eventProcessor = InMemoryUserEventProcessor()
             let core = DefaultHackleCore.create(
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 eventProcessor: eventProcessor,
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
             )
@@ -111,10 +111,10 @@ class HackleCoreSpecs: QuickSpec {
         }
 
         it("segment_match") {
-            let workspaceFetcher = ResourcesWorkspaceFetcher(fileName: "segment_match")
+            let workspaceManager = ResourcesWorkspaceManager(fileName: "segment_match")
             let eventProcessor = InMemoryUserEventProcessor()
             let core = DefaultHackleCore.create(
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 eventProcessor: eventProcessor,
                 manualOverrideStorage: DelegatingManualOverrideStorage(storages: [])
             )

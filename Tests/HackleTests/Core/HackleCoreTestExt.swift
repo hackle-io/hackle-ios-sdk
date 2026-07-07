@@ -5,7 +5,7 @@ extension DefaultHackleCore {
 
     /// Wires a full local-evaluation core for tests using the new EvaluateProcessor / LocalDecisionProcessor family.
     static func create(
-        workspaceFetcher: ResourcesWorkspaceFetcher,
+        workspaceManager: ResourcesWorkspaceManager,
         eventProcessor: UserEventProcessor,
         manualOverrideStorage: ManualOverrideStorage,
         clock: Clock = SystemClock.shared
@@ -26,12 +26,12 @@ extension DefaultHackleCore {
         )
 
         let decisionProcessor = LocalDecisionProcessor(
-            workspaceFetcher: ResourcesWorkspaceConfigFetcher(workspaceFetcher),
+            workspaceFetcher: ResourcesWorkspaceConfigFetcher(workspaceManager),
             evaluateProcessor: evaluateProcessor
         )
 
         return DefaultHackleCore(
-            workspaceFetcher: workspaceFetcher,
+            workspaceManager: workspaceManager,
             decisionProcessor: decisionProcessor,
             eventProcessor: eventProcessor,
             clock: clock

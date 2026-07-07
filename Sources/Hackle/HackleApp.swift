@@ -391,7 +391,7 @@ extension HackleApp {
             interval: config.pollingInterval
         )
 
-        // - WorkspaceFetcher
+        // - WorkspaceManager
 
         let httpWorkspaceConfigFetcher = DefaultHttpWorkspaceConfigFetcher(
             config: config,
@@ -552,7 +552,7 @@ extension HackleApp {
         )
 
         let core = DefaultHackleCore(
-            workspaceFetcher: workspaceManager,
+            workspaceManager: workspaceManager,
             decisionProcessor: decisionProcessor,
             eventProcessor: eventProcessor,
             clock: clock
@@ -670,7 +670,7 @@ extension HackleApp {
         )
 
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
-            workspaceFetcher: workspaceManager,
+            workspaceManager: workspaceManager,
             userManager: userManager,
             userDecoreator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
@@ -701,7 +701,7 @@ extension HackleApp {
             targetMatcher: HackleCoreContext.shared.get(TargetMatcher.self)!
         )
         let inAppMessageTriggerDeterminer = DefaultInAppMessageTriggerDeterminer(
-            workspaceFetcher: workspaceManager,
+            workspaceManager: workspaceManager,
             eventMatcher: inAppMessageTriggerEventMatcher,
             evaluateProcessor: inAppMessageEvaluateProcessor
         )
@@ -749,7 +749,7 @@ extension HackleApp {
         let notificationManager = DefaultNotificationManager(
             core: core,
             dispatchQueue: DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility),
-            workspaceFetcher: workspaceManager,
+            workspaceManager: workspaceManager,
             userManager: userManager,
             repository: DefaultNotificationRepository(
                 sharedDatabase: sharedDatabase

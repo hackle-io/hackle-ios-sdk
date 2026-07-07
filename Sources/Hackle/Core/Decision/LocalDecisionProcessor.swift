@@ -11,7 +11,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
     }
 
     func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceFetcher.workspace(user: user) else {
             return Decision.of(experiment: nil, variation: "A", reason: DecisionReason.SDK_NOT_READY)
         }
         guard let experiment = workspace.getExperimentConfigOrNil(experimentKey: experimentKey) else {
@@ -30,7 +30,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {
         var decisions = [(Experiment, Decision)]()
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceFetcher.workspace(user: user) else {
             return decisions
         }
         for experiment in workspace.experiments {
@@ -50,7 +50,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
     }
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceFetcher.workspace(user: user) else {
             return FeatureFlagDecision.off(featureFlag: nil, reason: DecisionReason.SDK_NOT_READY)
         }
         guard let featureFlag = workspace.getFeatureFlagConfigOrNil(featureKey: featureKey) else {
@@ -69,7 +69,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
 
     func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
         var decisions = [(Experiment, FeatureFlagDecision)]()
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceFetcher.workspace(user: user) else {
             return decisions
         }
         for featureFlag in workspace.featureFlags {
@@ -89,7 +89,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
     }
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision {
-        guard let workspace = workspaceFetcher.fetch() else {
+        guard let workspace = workspaceFetcher.workspace(user: user) else {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.SDK_NOT_READY)
         }
         guard let parameter = workspace.getRemoteConfigParameterConfigOrNil(parameterKey: parameterKey) as? RemoteConfigParameter else {

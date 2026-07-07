@@ -7,17 +7,17 @@ import Quick
 class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
     override class func spec() {
 
-        var workspaceFetcher: MockWorkspaceFetcher!
+        var workspaceManager: MockWorkspaceManager!
         var eventMatcher: InAppMessageTriggerEventMatcherStub!
         var evaluateProcessor: InAppMessageEvaluateProcessorStub!
         var sut: DefaultInAppMessageTriggerDeterminer!
 
         beforeEach {
-            workspaceFetcher = MockWorkspaceFetcher()
+            workspaceManager = MockWorkspaceManager()
             eventMatcher = InAppMessageTriggerEventMatcherStub()
             evaluateProcessor = InAppMessageEvaluateProcessorStub()
             sut = DefaultInAppMessageTriggerDeterminer(
-                workspaceFetcher: workspaceFetcher,
+                workspaceManager: workspaceManager,
                 eventMatcher: eventMatcher,
                 evaluateProcessor: evaluateProcessor
             )
@@ -36,7 +36,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
 
         it("when workspace is nil then return nil") {
             // given
-            every(workspaceFetcher.fetchMock).returns(nil)
+            every(workspaceManager.workspaceMock).returns(nil)
 
             let event = UserEvents.track("test")
 
@@ -50,7 +50,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
         it("when inAppMessage is empty then return nil") {
             // given
             let workspace = DefaultWorkspaceConfig.create()
-            every(workspaceFetcher.fetchMock).returns(workspace)
+            every(workspaceManager.workspaceMock).returns(workspace)
 
             let event = UserEvents.track("test")
 
@@ -113,7 +113,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
                     inAppMessage
                 }
             )
-            every(workspaceFetcher.fetchMock).returns(workspace)
+            every(workspaceManager.workspaceMock).returns(workspace)
         }
 
         func decision(isEventMatched: Bool, isEligible: Bool, reason: String) -> Decision {
