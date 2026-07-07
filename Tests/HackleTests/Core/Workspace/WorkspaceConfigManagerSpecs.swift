@@ -144,5 +144,25 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             expect(repository.value?.modifiedAt) == data.modifiedAt
             expect(repository.value?.dto.workspace.id) == 3
         }
+
+        it("metadata returns nil before workspace loaded") {
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [])
+            let repository = MockWorkspaceConfigRepository()
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
+            sut.initialize()
+
+            expect(sut.metadata()).to(beNil())
+        }
+
+        it("metadata returns workspace metadata after initialize with saved data") {
+            let context = loadWorkspaceConfigFromRes()
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [])
+            let repository = MockWorkspaceConfigRepository(value: context)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
+            sut.initialize()
+
+            expect(sut.metadata()?.id) == 3
+            expect(sut.metadata()?.environmentId) == 5
+        }
     }
 }

@@ -7,13 +7,18 @@ import MockingKit
 class MockWorkspace: Mock, WorkspaceConfig {
     let id: Int64
     let environmentId: Int64
+    var metadata: WorkspaceMetadata {
+        WorkspaceMetadata(id: id, environmentId: environmentId)
+    }
+    let modifiedAt: String?
     let experiments: [Experiment]
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
 
-    init(id: Int64 = 0, environmentId: Int64 = 0, experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
+    init(id: Int64 = 0, environmentId: Int64 = 0, modifiedAt: String? = nil, experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
         self.id = id
         self.environmentId = environmentId
+        self.modifiedAt = modifiedAt
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.inAppMessages = inAppMessages
