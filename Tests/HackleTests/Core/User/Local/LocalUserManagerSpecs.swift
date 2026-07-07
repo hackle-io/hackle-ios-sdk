@@ -4,7 +4,7 @@ import Nimble
 @testable import Hackle
 
 
-class DefaultUserManagerSpecs: QuickSpec {
+class LocalUserManagerSpecs: QuickSpec {
     override class func spec() {
         var repository: KeyValueRepository!
         var cohortFetcher: MockUserCohortFetcher!
@@ -12,7 +12,7 @@ class DefaultUserManagerSpecs: QuickSpec {
         var clock: Clock!
         var device: Device!
         var bundleInfo: BundleInfo!
-        var sut: DefaultUserManager!
+        var sut: LocalUserManager!
 
         var listener: MockUserListener!
 
@@ -25,7 +25,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             MainActor.assumeIsolated { deviceImpl.initialize() }
             device = deviceImpl
             bundleInfo = BundleInfoImpl()
-            sut = DefaultUserManager(device: device, bundleInfo: bundleInfo, repository: UserRepository(repository: repository), cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
+            sut = LocalUserManager(device: device, bundleInfo: bundleInfo, repository: UserRepository(repository: repository), cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
             every(cohortFetcher.fetchMock).answers { _ in UserCohorts() }
             every(targetFetcher.fetchMock).answers { _ in UserTargetEvents() }
             listener = MockUserListener()
@@ -964,10 +964,10 @@ class DefaultUserManagerSpecs: QuickSpec {
 
 // onUserUpdated 시점에 toHackleUser(user:)를 재호출해 lock 재진입을 유발하는 테스트 전용 listener.
 fileprivate class ReentrantUserListener: UserListener {
-    private weak var userManager: DefaultUserManager?
+    private weak var userManager: LocalUserManager?
     private(set) var reentrantUser: HackleUser?
 
-    init(userManager: DefaultUserManager) {
+    init(userManager: LocalUserManager) {
         self.userManager = userManager
     }
 

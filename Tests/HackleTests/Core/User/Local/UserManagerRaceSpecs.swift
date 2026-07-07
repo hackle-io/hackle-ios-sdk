@@ -5,12 +5,12 @@ import MockingKit
 @testable import Hackle
 
 
-/// DefaultUserManager.context에 대한 data race 재현 스펙.
+/// LocalUserManager.context에 대한 data race 재현 스펙.
 /// -enableThreadSanitizer YES 로 실행할 것.
 class UserManagerRaceSpecs: QuickSpec {
     override class func spec() {
 
-        it("DefaultUserManager: concurrent context write (background sync) vs read (toHackleUser/currentUser)") {
+        it("LocalUserManager: concurrent context write (background sync) vs read (toHackleUser/currentUser)") {
             let repository = MemoryKeyValueRepository()
             let cohortFetcher = MockUserCohortFetcher()
             let targetFetcher = MockUserTargetFetcher()
@@ -18,7 +18,7 @@ class UserManagerRaceSpecs: QuickSpec {
             let deviceImpl = DeviceImpl(deviceId: "hackle_device_id")
             MainActor.assumeIsolated { deviceImpl.initialize() }
             let bundleInfo = BundleInfoImpl()
-            let sut = DefaultUserManager(
+            let sut = LocalUserManager(
                 device: deviceImpl,
                 bundleInfo: bundleInfo,
                 repository: UserRepository(repository: repository),

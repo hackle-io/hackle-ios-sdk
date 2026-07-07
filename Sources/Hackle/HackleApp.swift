@@ -412,7 +412,7 @@ extension HackleApp {
         let cohortFetcher = DefaultUserCohortFetcher(config: config, httpClient: httpClient)
         let targetFetcher = DefaultUserTargetEventsFetcher(config: config, httpClient: httpClient)
 
-        let userManager = DefaultUserManager(
+        let userManager = LocalUserManager(
             device: platformManager.device,
             bundleInfo: platformManager.bundleInfo,
             repository: userRepository,
