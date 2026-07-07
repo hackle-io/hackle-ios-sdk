@@ -704,9 +704,9 @@ extension HackleApp {
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
             targetMatcher: HackleCoreContext.shared.get(TargetMatcher.self)!
         )
-        let inAppMessageTriggerDeterminer = DefaultInAppMessageTriggerDeterminer(
-            workspaceManager: workspaceManager,
+        let inAppMessageTriggerDeterminer = LocalInAppMessageTriggerDeterminer(
             eventMatcher: inAppMessageTriggerEventMatcher,
+            workspaceFetcher: workspaceManager,
             evaluateProcessor: inAppMessageEvaluateProcessor
         )
         let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(

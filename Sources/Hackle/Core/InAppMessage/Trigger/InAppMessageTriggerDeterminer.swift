@@ -4,24 +4,31 @@ protocol InAppMessageTriggerDeterminer {
     func determine(event: UserEvent) throws -> InAppMessageTrigger?
 }
 
-class DefaultInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
+// android AbstractInAppMessageTriggerDeterminer<WORKSPACE, MESSAGE> 이식.
+// iOS는 InAppMessage(final class)·WorkspaceConfig(protocol existential) 특성상 제네릭 특수화가
+// 불가하여(결정 B) base Workspace/InAppMessage로 동작하는 비제네릭 template method로 구현.
+class AbstractInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
 
-    private let workspaceManager: WorkspaceManager
-    private let eventMatcher: InAppMessageTriggerEventMatcher
-    private let evaluateProcessor: InAppMessageEvaluateProcessor
+    let eventMatcher: InAppMessageTriggerEventMatcher
 
-    init(workspaceManager: WorkspaceManager, eventMatcher: InAppMessageTriggerEventMatcher, evaluateProcessor: InAppMessageEvaluateProcessor) {
-        self.workspaceManager = workspaceManager
+    init(eventMatcher: InAppMessageTriggerEventMatcher) {
         self.eventMatcher = eventMatcher
-        self.evaluateProcessor = evaluateProcessor
     }
 
-    func determine(event: UserEvent) throws -> InAppMessageTrigger? {
+    func workspace(user: HackleUser) -> Workspace? {
+        fatalError("abstract method: workspace(user:)")
+    }
+
+    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+        fatalError("abstract method: evaluate(workspace:inAppMessage:event:)")
+    }
+
+    final func determine(event: UserEvent) throws -> InAppMessageTrigger? {
         guard let trackEvent = event as? UserEvents.Track else {
             return nil
         }
 
-        guard let workspace = workspaceManager.workspace(user: trackEvent.user) else {
+        guard let workspace = workspace(user: trackEvent.user) else {
             return nil
         }
 
@@ -38,9 +45,36 @@ class DefaultInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
         }
         return nil
     }
+}
 
-    private func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
-        let request = InAppMessageEligibilityLocalEvaluateRequest.of(workspace: workspace, inAppMessage: inAppMessage, user: event.user, scope: .trigger, platformType: .ios, timestamp: event.timestamp)
+class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer {
+
+    private let workspaceFetcher: WorkspaceConfigFetcher
+    private let evaluateProcessor: InAppMessageEvaluateProcessor
+
+    init(
+        eventMatcher: InAppMessageTriggerEventMatcher,
+        workspaceFetcher: WorkspaceConfigFetcher,
+        evaluateProcessor: InAppMessageEvaluateProcessor
+    ) {
+        self.workspaceFetcher = workspaceFetcher
+        self.evaluateProcessor = evaluateProcessor
+        super.init(eventMatcher: eventMatcher)
+    }
+
+    override func workspace(user: HackleUser) -> Workspace? {
+        return workspaceFetcher.workspace(user: user)
+    }
+
+    override func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+        let request = InAppMessageEligibilityLocalEvaluateRequest.of(
+            workspace: workspace,
+            inAppMessage: inAppMessage,
+            user: event.user,
+            scope: .trigger,
+            platformType: .ios,
+            timestamp: event.timestamp
+        )
         return try evaluateProcessor.process(type: .trigger, request: request)
     }
 }
