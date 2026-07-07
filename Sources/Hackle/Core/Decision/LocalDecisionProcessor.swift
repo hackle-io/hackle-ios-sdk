@@ -100,9 +100,9 @@ final class LocalDecisionProcessor: DecisionProcessor {
             workspace: workspace,
             parameter: parameter,
             user: user,
-            defaultValue: defaultValue
+            requiredType: defaultValue.type
         )
         let response = try evaluateProcessor.remoteConfig(request)
-        return Decisions.toRemoteConfigDecision(evaluation: response.remoteConfigEvaluation)
+        return Decisions.toRemoteConfigDecision(evaluation: response.remoteConfigEvaluation, requiredType: defaultValue.type, defaultValue: defaultValue)
     }
 }

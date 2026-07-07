@@ -17,7 +17,7 @@ final class RemoteConfigLocalEvaluator: RemoteConfigEvaluator {
 
     func doEvaluate(request: RemoteConfigLocalEvaluateRequest, context: EvaluatorContext) throws -> RemoteConfigEvaluateResponse {
         if request.user.identifiers[request.parameter.identifierType] == nil {
-            let result = RemoteConfigEvaluateResult.of(reason: DecisionReason.IDENTIFIER_NOT_FOUND, value: request.defaultValue, valueId: nil)
+            let result = RemoteConfigEvaluateResult.of(reason: DecisionReason.IDENTIFIER_NOT_FOUND, value: nil)
             return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
         }
 
@@ -35,10 +35,10 @@ final class RemoteConfigLocalEvaluator: RemoteConfigEvaluator {
         value: RemoteConfigParameter.Value,
         reason: String
     ) -> RemoteConfigEvaluateResult {
-        if value.rawValue.type == request.defaultValue.type {
-            return RemoteConfigEvaluateResult.of(reason: reason, value: value.rawValue, valueId: value.id)
+        if request.requiredType.isInstance(value) {
+            return RemoteConfigEvaluateResult.of(reason: reason, value: value)
         } else {
-            return RemoteConfigEvaluateResult.of(reason: DecisionReason.TYPE_MISMATCH, value: request.defaultValue, valueId: nil)
+            return RemoteConfigEvaluateResult.of(reason: DecisionReason.TYPE_MISMATCH, value: value)  // ★ TYPE_MISMATCH여도 value 유지 (의도된 wire 변경 ①)
         }
     }
 }

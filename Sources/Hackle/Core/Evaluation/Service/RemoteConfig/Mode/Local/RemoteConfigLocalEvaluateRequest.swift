@@ -11,16 +11,16 @@ final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfig
     let parameter: RemoteConfigParameter
     let user: HackleUser
     let record: Bool
-    let defaultValue: HackleValue
+    let requiredType: HackleValueType
 
     var entity: Entity { parameter }
 
-    private init(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, record: Bool, defaultValue: HackleValue) {
+    private init(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, record: Bool, requiredType: HackleValueType) {
         self.workspace = workspace
         self.parameter = parameter
         self.user = user
         self.record = record
-        self.defaultValue = defaultValue
+        self.requiredType = requiredType
     }
 
     var description: String {
@@ -35,7 +35,7 @@ final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfig
         workspace: Workspace,
         parameter: RemoteConfigParameter,
         user: HackleUser,
-        defaultValue: HackleValue,
+        requiredType: HackleValueType,
         record: Bool = true
     ) -> RemoteConfigLocalEvaluateRequest {
         RemoteConfigLocalEvaluateRequest(
@@ -43,7 +43,7 @@ final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfig
             parameter: parameter,
             user: user,
             record: record,
-            defaultValue: defaultValue
+            requiredType: requiredType
         )
     }
 }

@@ -21,8 +21,11 @@ enum Decisions {
             : FeatureFlagDecision.on(featureFlag: evaluation.experiment, reason: result.reason, config: config)
     }
 
-    static func toRemoteConfigDecision(evaluation: RemoteConfigEvaluation) -> RemoteConfigDecision {
+    static func toRemoteConfigDecision(evaluation: RemoteConfigEvaluation, requiredType: HackleValueType, defaultValue: HackleValue) -> RemoteConfigDecision {
         let result = evaluation.remoteConfigResult
-        return RemoteConfigDecision(value: result.value, reason: result.reason)
+        guard let value = result.value, let typedValue = requiredType.cast(value) else {
+            return RemoteConfigDecision(value: defaultValue, reason: result.reason)
+        }
+        return RemoteConfigDecision(value: typedValue, reason: result.reason)
     }
 }

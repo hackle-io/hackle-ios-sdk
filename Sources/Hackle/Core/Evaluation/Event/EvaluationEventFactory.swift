@@ -45,7 +45,6 @@ class EvaluationEventFactory {
                 timestamp: timestamp
             )
         case let evaluation as RemoteConfigEvaluation:
-            properties.add(evaluation.properties)
             return UserEvents.remoteConfig(
                 user: user,
                 evaluation: evaluation,

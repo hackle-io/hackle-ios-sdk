@@ -63,7 +63,7 @@ enum UserEvents {
             timestamp: timestamp,
             user: user,
             parameter: evaluation.parameter,
-            valueId: evaluation.remoteConfigResult.valueId,
+            valueId: evaluation.remoteConfigResult.value?.id,
             decisionReason: evaluation.remoteConfigResult.reason,
             properties: properties
         )
