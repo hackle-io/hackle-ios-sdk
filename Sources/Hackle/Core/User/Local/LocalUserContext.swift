@@ -39,7 +39,7 @@ extension LocalUserContext {
 
     func update(cohorts: UserCohorts) -> LocalUserContext {
         let filtered = cohorts.filterBy(user: self.user)
-        let newCohorts = cohorts.toBuilder()
+        let newCohorts = self.cohorts.toBuilder()
             .putAll(cohorts: filtered)
             .build()
         return LocalUserContext.of(user: self.user, cohorts: newCohorts, targetEvents: targetEvents)

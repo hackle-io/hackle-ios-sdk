@@ -8,7 +8,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
     private var userListeners: [UserListener]
     private let repository: UserRepository
     private let cohortFetcher: UserCohortFetcher
-    private let targetFetcher: UserTargetEventsFetcher
+    private let targetFetcher: UserTargetEventFetcher
     private let clock: Clock
 
     private let device: Device
@@ -25,7 +25,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         currentContext.user
     }
 
-    init(device: Device, bundleInfo: BundleInfo, repository: UserRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
+    init(device: Device, bundleInfo: BundleInfo, repository: UserRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
         self.cohortFetcher = cohortFetcher
@@ -225,7 +225,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         context = newContext
 
         if !newUser.identifierEquals(other: oldUser) {
-            changeUser(oldUser: oldUser, newUser: newUser, timestamp: Date())
+            changeUser(oldUser: oldUser, newUser: newUser, timestamp: clock.now())
         }
 
         saveUser(user: newUser)

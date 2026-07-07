@@ -7,18 +7,18 @@
 
 import Foundation
 
-protocol UserTargetEventsFetcher {
+protocol UserTargetEventFetcher {
     func fetch(user: User) async throws -> UserTargetEvents
 }
 
-class DefaultUserTargetEventsFetcher: UserTargetEventsFetcher {
+class DefaultUserTargetEventFetcher: UserTargetEventFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
     private let timeout: TimeInterval = 10 // watchdog mainthread crash 회피를 위해 10초 설정
 
     init(config: HackleConfig, httpClient: HttpClient) {
-        self.url = URL(string: DefaultUserTargetEventsFetcher.url(config: config))!
+        self.url = URL(string: DefaultUserTargetEventFetcher.url(config: config))!
         self.httpClient = httpClient
     }
 

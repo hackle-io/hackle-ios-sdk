@@ -13,11 +13,11 @@ import Foundation
 class DefaultUserTargetFetcherSpecs: QuickSpec {
     override class func spec() {
         var httpClient: MockHttpClient!
-        var sut: DefaultUserTargetEventsFetcher!
+        var sut: DefaultUserTargetEventFetcher!
 
         beforeEach {
             httpClient = MockHttpClient()
-            sut = DefaultUserTargetEventsFetcher(config: HackleConfig.DEFAULT, httpClient: httpClient)
+            sut = DefaultUserTargetEventFetcher(config: HackleConfig.DEFAULT, httpClient: httpClient)
         }
 
         it("when error on fetch then complete with error") {

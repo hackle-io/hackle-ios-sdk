@@ -1,8 +1,12 @@
 import Foundation
 
-final class ExperimentEvaluateResult: EvaluateResult {
+final class ExperimentEvaluateResult: EvaluateResult, CustomStringConvertible {
     let reason: String
     let variation: Variation
+
+    var description: String {
+        "ExperimentEvaluateResult(reason: \(reason), variation: \(variation))"
+    }
 
     init(reason: String, variation: Variation) {
         self.reason = reason

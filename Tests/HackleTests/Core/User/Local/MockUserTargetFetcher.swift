@@ -6,7 +6,7 @@
 @testable import Hackle
 import MockingKit
 
-class MockUserTargetFetcher: Mock, UserTargetEventsFetcher {
+class MockUserTargetFetcher: Mock, UserTargetEventFetcher {
 
     init(result: Result<UserTargetEvents, Error>? = nil) {
         super.init()
