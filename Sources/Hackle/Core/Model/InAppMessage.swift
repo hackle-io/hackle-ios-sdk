@@ -239,12 +239,6 @@ extension InAppMessage {
         case image = "IMAGE"
     }
 
-    enum PlatformType: String, Codable {
-        case web = "WEB"
-        case ios = "IOS"
-        case android = "ANDROID"
-    }
-
     enum Orientation: String, Codable {
         case vertical = "VERTICAL"
         case horizontal = "HORIZONTAL"

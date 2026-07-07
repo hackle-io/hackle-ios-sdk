@@ -768,7 +768,7 @@ extension InAppMessageDto.MessageContextDto {
             experimentContext = InAppMessage.ExperimentContext(key: experimentKey)
         }
 
-        guard let platformTypes: [InAppMessage.PlatformType] = Enums.parseAllOrNil(platformTypes) else {
+        guard let platformTypes: [PlatformType] = Enums.parseAllOrNil(platformTypes) else {
             return nil
         }
 
