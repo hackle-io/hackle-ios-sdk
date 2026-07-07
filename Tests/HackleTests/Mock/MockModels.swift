@@ -115,14 +115,14 @@ final class MockVariation: Mock, Variation, @unchecked Sendable {
     let id: Id
     let key: Key
     let isDropped: Bool
-    let parameterConfigurationId: ParameterConfiguration.Id?
+    let parameterConfiguration: ParameterConfiguration?
 
 
-    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfigurationId: ParameterConfiguration.Id? = nil) {
+    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfiguration: ParameterConfiguration? = nil) {
         self.id = id
         self.key = key
         self.isDropped = isDropped
-        self.parameterConfigurationId = parameterConfigurationId
+        self.parameterConfiguration = parameterConfiguration
         super.init()
     }
 }

@@ -15,8 +15,8 @@ class HackleCoreStub: HackleCore {
 
     }
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
-        fatalError("experiment(experimentKey:user:defaultVariationKey:) has not been implemented")
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
+        fatalError("experiment(experimentKey:user:) has not been implemented")
     }
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {

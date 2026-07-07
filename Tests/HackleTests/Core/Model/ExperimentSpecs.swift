@@ -18,8 +18,8 @@ func experiment(
     executionVersion: Int = 1,
     winnerVariationId: Variation.Id? = nil,
     variations: [Variation] = [
-        VariationEntity(id: 1, key: "A", isDropped: false, parameterConfigurationId: nil),
-        VariationEntity(id: 2, key: "B", isDropped: false, parameterConfigurationId: nil)
+        VariationEntity(id: 1, key: "A", isDropped: false, parameterConfiguration: nil),
+        VariationEntity(id: 2, key: "B", isDropped: false, parameterConfiguration: nil)
     ],
     targetAudiences: [Target] = []
 ) -> ExperimentConfig {

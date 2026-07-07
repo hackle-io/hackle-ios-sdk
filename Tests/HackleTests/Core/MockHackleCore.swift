@@ -6,8 +6,8 @@ class MockHackleCore: Mock, HackleCore {
 
     lazy var experimentMock = MockFunction.throwable(self, experiment)
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
-        try call(experimentMock, args: (experimentKey, user, defaultVariationKey))
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
+        try call(experimentMock, args: (experimentKey, user))
     }
 
     lazy var experimentsMock = MockFunction.throwable(self, experiments)

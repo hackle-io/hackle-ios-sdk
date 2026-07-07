@@ -17,19 +17,18 @@ class DefaultUserEventFactorySpecs: QuickSpec {
 
             let evaluation1 = ExperimentEvaluation(
                 entity: experiment(id: 1),
-                result: ExperimentEvaluateResult(reason: DecisionReason.TRAFFIC_ALLOCATED, variationId: 42, variationKey: "B", config: ParameterConfigurationEntity(id: 42, parameters: [:]))
+                result: ExperimentEvaluateResult(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: VariationEntity(id: 42, key: "B", isDropped: false, parameterConfiguration: ParameterConfigurationEntity(id: 42, parameters: [:])))
             )
 
             let evaluation2 = ExperimentEvaluation(
                 entity: experiment(id: 2, type: .featureFlag, version: 2, executionVersion: 3),
-                result: ExperimentEvaluateResult(reason: DecisionReason.DEFAULT_RULE, variationId: 320, variationKey: "A", config: nil)
+                result: ExperimentEvaluateResult(reason: DecisionReason.DEFAULT_RULE, variation: VariationEntity(id: 320, key: "A", isDropped: false, parameterConfiguration: nil))
             )
 
             let request = remoteConfigRequest()
             let rcEvaluation = RemoteConfigEvaluation(
                 entity: request.parameter,
-                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: .string("RC"), valueId: 999),
-                properties: PropertiesBuilder().add("returnValue", "RC").build()
+                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: RemoteConfigParameter.Value(id: 999, rawValue: .string("RC")))
             )
             let response = RemoteConfigEvaluateResponse(
                 user: request.user,
@@ -49,7 +48,6 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(rc.parameter).to(beIdenticalTo(request.parameter))
             expect(rc.valueId) == 999
             expect(rc.decisionReason) == DecisionReason.TARGET_RULE_MATCH
-            expect(rc.properties["returnValue"] as? String) == "RC"
 
             expect(events[1]).to(beAnInstanceOf(UserEvents.Exposure.self))
             let exposure1 = events[1] as! UserEvents.Exposure

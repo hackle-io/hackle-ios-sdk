@@ -13,8 +13,8 @@ class HackleCoreSpecs: QuickSpec {
     override class func spec() {
 
         beforeSuite {
-            EvaluationContext.shared.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
-            EvaluationContext.shared.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
+            HackleCoreContext.shared.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
+            HackleCoreContext.shared.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
         }
 
         /*
@@ -46,10 +46,7 @@ class HackleCoreSpecs: QuickSpec {
             expect(eventProcessor.processedEvents.count) == 6
 
             let rc = eventProcessor.processedEvents.first as! UserEvents.RemoteConfig
-            expect(rc.properties.count) == 3
-            expect(rc.properties["requestValueType"] as? String) == "STRING"
-            expect(rc.properties["requestDefaultValue"] as? String) == "42"
-            expect(rc.properties["returnValue"] as? String) == "Targeting!!"
+            expect(rc.decisionReason) == DecisionReason.TARGET_RULE_MATCH
 
             for event in eventProcessor.processedEvents.dropFirst() {
                 expect(event).to(beAnInstanceOf(UserEvents.Exposure.self))
@@ -104,7 +101,7 @@ class HackleCoreSpecs: QuickSpec {
             var decisions: [Decision] = []
             for i in (0..<10000) {
                 let user = HackleUser.builder().identifier(.id, String(i)).build()
-                let decision = try core.experiment(experimentKey: 2, user: user, defaultVariationKey: "A")
+                let decision = try core.experiment(experimentKey: 2, user: user)
                 decisions.append(decision)
             }
             expect(eventProcessor.processedEvents.count) == 10000
@@ -123,12 +120,12 @@ class HackleCoreSpecs: QuickSpec {
             )
 
             let user1 = HackleUser.builder().identifier(.id, "matched_id").build()
-            let decision1 = try core.experiment(experimentKey: 1, user: user1, defaultVariationKey: "A")
+            let decision1 = try core.experiment(experimentKey: 1, user: user1)
             expect(decision1.reason) == DecisionReason.OVERRIDDEN
             expect(decision1.variation) == "A"
 
             let user2 = HackleUser.builder().identifier(.id, "not_matched_id").build()
-            let decision2 = try core.experiment(experimentKey: 1, user: user2, defaultVariationKey: "A")
+            let decision2 = try core.experiment(experimentKey: 1, user: user2)
             expect(decision2.reason) == DecisionReason.TRAFFIC_ALLOCATED
             expect(decision2.variation) == "A"
         }

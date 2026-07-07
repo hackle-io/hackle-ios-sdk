@@ -18,7 +18,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
     }
 
     static func core(workspace: WorkspaceConfig?, eventProcessor: UserEventProcessor) -> DefaultHackleCore {
-        let context = EvaluationContext()
+        let context = HackleCoreContext()
         let impressionStorage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
         let hiddenStorage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
         context.register(impressionStorage)
@@ -53,20 +53,20 @@ class DefaultHackleCoreSpecs: QuickSpec {
 
         describe("experiment") {
 
-            it("Workspace 를 가져올 수 없으면 기본그룹으로 결정한다") {
+            it("Workspace 를 가져올 수 없으면 컨트롤그룹(A)으로 결정한다") {
                 let sut = core(workspace: nil, eventProcessor: InMemoryUserEventProcessor())
-                let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "J")
-                expect(actual.variation) == "J"
+                let actual = try sut.experiment(experimentKey: 42, user: user)
+                expect(actual.variation) == "A"
                 expect(actual.reason) == DecisionReason.SDK_NOT_READY
             }
 
-            it("experimentKey 에 대한 Experiment 를 찾을 수 없으면 기본그룹으로 결정한다") {
+            it("experimentKey 에 대한 Experiment 를 찾을 수 없으면 컨트롤그룹(A)으로 결정한다") {
                 let workspace = MockWorkspace()
                 every(workspace.getExperimentOrNilMock).returns(nil)
                 let sut = core(workspace: workspace, eventProcessor: InMemoryUserEventProcessor())
 
-                let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "C")
-                expect(actual.variation) == "C"
+                let actual = try sut.experiment(experimentKey: 42, user: user)
+                expect(actual.variation) == "A"
                 expect(actual.reason) == DecisionReason.EXPERIMENT_NOT_FOUND
             }
 
@@ -76,8 +76,9 @@ class DefaultHackleCoreSpecs: QuickSpec {
                 let eventProcessor = InMemoryUserEventProcessor()
                 let sut = core(workspace: workspace, eventProcessor: eventProcessor)
 
-                let actual = try sut.experiment(experimentKey: 42, user: user, defaultVariationKey: "A")
+                let actual = try sut.experiment(experimentKey: 42, user: user)
 
+                expect(actual.variation) == "A"
                 expect(actual.reason) == DecisionReason.EXPERIMENT_DRAFT
                 expect(eventProcessor.processedEvents.count) == 1
                 expect(eventProcessor.processedEvents[0]).to(beAnInstanceOf(UserEvents.Exposure.self))

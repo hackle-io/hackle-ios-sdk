@@ -17,7 +17,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
         func doEvaluate(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
             let evaluation = evaluation ?? ExperimentEvaluation(
                 entity: request.experiment,
-                result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experiment.variations.first!, config: nil)
+                result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experiment.variations.first!)
             )
             return ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: context.references)
         }
@@ -87,7 +87,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 // then
                 expect(response.layoutEvaluation.layoutResult.message).to(be(message))
                 expect(response.layoutEvaluation.layoutResult.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
-                expect(response.experiment?.experimentResult.variationKey) == "B"
+                expect(response.experiment?.experimentResult.variation.key) == "B"
             }
 
             it("cannot evaluate when lang matches but variation key mismatches") {

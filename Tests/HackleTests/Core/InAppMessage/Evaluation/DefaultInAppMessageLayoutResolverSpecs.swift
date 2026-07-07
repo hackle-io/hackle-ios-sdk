@@ -10,7 +10,7 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
         it("resolve") {
             // given
             let evaluateProcessor = EvaluateProcessor.create(
-                context: EvaluationContext(),
+                context: HackleCoreContext(),
                 clock: SystemClock.shared,
                 eventProcessor: MockUserEventProcessor(),
                 overrideStorage: DelegatingManualOverrideStorage(storages: []),

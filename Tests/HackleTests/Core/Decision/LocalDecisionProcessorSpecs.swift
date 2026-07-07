@@ -14,7 +14,7 @@ class LocalDecisionProcessorSpecs: QuickSpec {
     }
 
     static func processor(workspace: WorkspaceConfig, eventProcessor: UserEventProcessor) -> LocalDecisionProcessor {
-        let context = EvaluationContext()
+        let context = HackleCoreContext()
         let impressionStorage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
         let hiddenStorage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
         context.register(impressionStorage)
@@ -46,7 +46,7 @@ class LocalDecisionProcessorSpecs: QuickSpec {
                 let eventProcessor = InMemoryUserEventProcessor()
                 let sut = processor(workspace: workspace, eventProcessor: eventProcessor)
 
-                _ = try sut.experiment(experimentKey: 1, user: user, defaultVariationKey: "A")
+                _ = try sut.experiment(experimentKey: 1, user: user)
 
                 expect(eventProcessor.processedEvents.count) == 1
             }

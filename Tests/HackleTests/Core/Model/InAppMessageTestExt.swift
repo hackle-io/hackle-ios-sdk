@@ -208,7 +208,7 @@ extension InAppMessage {
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessage = create(),
         scope: InAppMessageEvaluateScope = .trigger,
-        platformType: InAppMessage.PlatformType = .ios,
+        platformType: PlatformType = .ios,
         timestamp: Date = Date()
     ) -> InAppMessageEligibilityLocalEvaluateRequest {
         InAppMessageEligibilityLocalEvaluateRequest.of(

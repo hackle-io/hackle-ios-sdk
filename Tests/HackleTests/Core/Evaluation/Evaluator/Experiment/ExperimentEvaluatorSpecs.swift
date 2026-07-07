@@ -58,12 +58,14 @@ class ExperimentEvaluatorSpecs: QuickSpec {
                     let flow: ExperimentLocalEvaluationFlow = ExperimentLocalEvaluationFlow.end()
                     every(flowFactory.getMock).returns(flow)
 
-                    let request = experimentRequest()
+                    // ofControl 은 실제 "A" variation 을 요구하므로, 컨트롤 그룹을 가진 experiment 로 요청한다.
+                    let request = experimentRequest(experiment: experiment())
                     let context = Evaluators.context()
 
                     let actual: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: context)
 
                     expect(actual.experimentEvaluation.experimentResult.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
+                    expect(actual.experimentEvaluation.experimentResult.variation.key) == "A"
                 }
             }
         }

@@ -38,7 +38,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.OVERRIDDEN
-                expect(actual?.experimentResult.variationId) == variation?.id
+                expect(actual?.experimentResult.variation.id) == variation?.id
             }
 
             it("FeatureFlag 인 경우override된 사용자인 경우 overriddenVariation, INDIVIDUAL_TARGET_MATCH 으로 평가한다") {
@@ -54,7 +54,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.INDIVIDUAL_TARGET_MATCH
-                expect(actual?.experimentResult.variationId) == variation?.id
+                expect(actual?.experimentResult.variation.id) == variation?.id
             }
 
             it("override된 사용자가 아닌경우 다음 Flow로 평가한다") {
@@ -85,7 +85,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.EXPERIMENT_DRAFT
-                expect(actual?.experimentResult.variationId) == variation.id
+                expect(actual?.experimentResult.variation.id) == variation.id
             }
 
             it("DRAFT상태가 아니면 다름 flow로 평가한다") {
@@ -117,7 +117,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.EXPERIMENT_PAUSED
-                expect(actual?.experimentResult.variationId) == variation.id
+                expect(actual?.experimentResult.variation.id) == variation.id
             }
 
             it("기능 플래그가 PAUSED 상태면 기본그룹, FEATURE_FLAG_INACTIVE 로 평가한다") {
@@ -132,7 +132,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.FEATURE_FLAG_INACTIVE
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
 
             it("PAUSED 상태가 아니면 다음 플로우 실행한다") {
@@ -160,7 +160,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.EXPERIMENT_COMPLETED
-                expect(actual?.experimentResult.variationId) == 2
+                expect(actual?.experimentResult.variation.id) == 2
             }
 
             it("COMPLETED 상태지만 winner variation 이 없으면 에러") {
@@ -228,7 +228,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.NOT_IN_EXPERIMENT_TARGET
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
         }
 
@@ -267,13 +267,13 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.TRAFFIC_NOT_ALLOCATED
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
 
             it("할당된 Variation이 드랍 되었으면 기본그룹으로 평간한다") {
                 let experiment = experiment(type: .abTest, status: .running, variations: [
-                    VariationEntity(id: 1, key: "A", isDropped: false, parameterConfigurationId: nil),
-                    VariationEntity(id: 2, key: "B", isDropped: true, parameterConfigurationId: nil)
+                    VariationEntity(id: 1, key: "A", isDropped: false, parameterConfiguration: nil),
+                    VariationEntity(id: 2, key: "B", isDropped: true, parameterConfiguration: nil)
                 ])
                 let request = experimentRequest(experiment: experiment)
                 every(actionResolver.resolveOrNilMock).returns(experiment.getVariationOrNil(variationKey: "B"))
@@ -283,7 +283,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.VARIATION_DROPPED
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
 
             it("할당된 Variation 으로 평가한다") {
@@ -297,7 +297,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
         }
 
@@ -387,7 +387,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.TARGET_RULE_MATCH
-                expect(actual?.experimentResult.variationId) == variation.id
+                expect(actual?.experimentResult.variation.id) == variation.id
             }
         }
 
@@ -425,7 +425,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.DEFAULT_RULE
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
 
             it("기본 룰에 해당하는 Variation을 결정하지 못하면 예외 발생") {
@@ -451,7 +451,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.DEFAULT_RULE
-                expect(actual?.experimentResult.variationId) == variation.id
+                expect(actual?.experimentResult.variation.id) == variation.id
             }
         }
 
@@ -530,7 +530,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
         }
 
@@ -565,7 +565,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
 
                 // then
                 expect(actual?.experimentResult.reason) == DecisionReason.IDENTIFIER_NOT_FOUND
-                expect(actual?.experimentResult.variationKey) == "A"
+                expect(actual?.experimentResult.variation.key) == "A"
             }
         }
     }

@@ -10,7 +10,7 @@ extension DefaultHackleCore {
         manualOverrideStorage: ManualOverrideStorage,
         clock: Clock = SystemClock.shared
     ) -> DefaultHackleCore {
-        let context = EvaluationContext()
+        let context = HackleCoreContext()
         let impressionStorage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
         let hiddenStorage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
         context.register(impressionStorage)

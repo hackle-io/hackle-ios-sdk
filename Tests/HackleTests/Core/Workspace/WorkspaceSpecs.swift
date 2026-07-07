@@ -35,5 +35,24 @@ class WorkspaceSpecs: QuickSpec {
 
             expect(config?.getString(forKey: "string", defaultValue: "42")) == "string_value"
         }
+
+        // 회귀 ③: variation.parameterConfiguration 은 parameterConfigurationId 로 resolve 되어야 한다 (variation.id 로 오조회하면 안 된다).
+        it("variation 의 parameterConfiguration 은 parameterConfigurationId 로 resolve 된다 (variation.id 아님)") {
+            let file = Bundle(for: WorkspaceSpecs.self).path(forResource: "workspace_response", ofType: "json")!
+            let json = try! String(contentsOfFile: file)
+            let data = json.data(using: .utf8)!
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
+            let workspace = WorkspaceEntity.from(dto: dto)
+
+            let experiment = workspace.experiments.first { exp in
+                exp.variations.contains { $0.parameterConfiguration != nil }
+            }!
+            let variation = experiment.variations.first { $0.parameterConfiguration != nil }!
+
+            // parse-time resolve 된 객체가 workspace 조회 결과와 동일 id
+            let expected = workspace.getParameterConfigurationOrNil(parameterConfigurationId: variation.parameterConfiguration!.id)
+            expect(variation.parameterConfiguration?.id) == expected?.id
+            expect(variation.parameterConfiguration?.id) != variation.id   // ★ android 8f71c44 오조회 검출 (리소스에서 두 값이 다른 variation 선택)
+        }
     }
 }

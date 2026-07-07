@@ -24,7 +24,7 @@ class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
             let parameter = parameter()
             let user = HackleUser.of(userId: "test")
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, defaultValue: .string("test"))
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context(), rule: targetRule)
@@ -39,7 +39,7 @@ class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
             let parameter = parameter(identifierType: "customId")
             let user = HackleUser.of(userId: "test")
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, defaultValue: .string("test"))
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context(), rule: targetRule)
@@ -57,7 +57,7 @@ class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
             let workspace = MockWorkspace()
             every(workspace.getBucketOrNilMock).returns(nil)
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, defaultValue: .string("test"))
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, requiredType: .string)
 
             // when
             expect(try sut.matches(request: request, context: Evaluators.context(), rule: targetRule))
@@ -76,7 +76,7 @@ class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
             let workspace = MockWorkspace()
             every(workspace.getBucketOrNilMock).returns(bucket)
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, defaultValue: .string("test"))
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context(), rule: targetRule)
@@ -97,7 +97,7 @@ class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
             let workspace = MockWorkspace()
             every(workspace.getBucketOrNilMock).returns(bucket)
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, defaultValue: .string("test"))
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context(), rule: targetRule)

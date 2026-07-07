@@ -113,8 +113,7 @@ class DefaultEventValueResolverSpecs: QuickSpec {
             let request = remoteConfigRequest()
             let evaluation = RemoteConfigEvaluation(
                 entity: request.parameter,
-                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: .string("RC"), valueId: 999),
-                properties: [:]
+                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: RemoteConfigParameter.Value(id: 999, rawValue: .string("RC")))
             )
             let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["a": "b"], timestamp: Date())
 

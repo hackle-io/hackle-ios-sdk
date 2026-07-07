@@ -10,7 +10,7 @@ class UserEventSpecs: QuickSpec {
                 let parameterConfiguration = ParameterConfigurationEntity(id: 42, parameters: [:])
                 let evaluation = ExperimentEvaluation(
                     entity: experiment(),
-                    result: ExperimentEvaluateResult(reason: DecisionReason.TRAFFIC_ALLOCATED, variationId: 42, variationKey: "A", config: parameterConfiguration)
+                    result: ExperimentEvaluateResult(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: VariationEntity(id: 42, key: "A", isDropped: false, parameterConfiguration: parameterConfiguration))
                 )
                 let user = HackleUser.of(userId: "test_id")
                 let event = UserEvents.exposure(user: user, evaluation: evaluation, properties: ["a": "1"], timestamp: Date(timeIntervalSince1970: 42))
@@ -35,8 +35,7 @@ class UserEventSpecs: QuickSpec {
                 let user = HackleUser.of(userId: "id")
                 let evaluation = RemoteConfigEvaluation(
                     entity: parameter,
-                    result: RemoteConfigEvaluateResult(reason: DecisionReason.DEFAULT_RULE, value: .string("42"), valueId: 42),
-                    properties: ["1": "2"]
+                    result: RemoteConfigEvaluateResult(reason: DecisionReason.DEFAULT_RULE, value: RemoteConfigParameter.Value(id: 42, rawValue: .string("42")))
                 )
                 let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["1": "2"], timestamp: Date(timeIntervalSince1970: 42))
                 let newUser = HackleUser.of(userId: "new")
