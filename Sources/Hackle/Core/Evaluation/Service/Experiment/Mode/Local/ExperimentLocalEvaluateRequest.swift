@@ -11,17 +11,15 @@ final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEval
     let experimentConfig: ExperimentConfig
     let user: HackleUser
     let record: Bool
-    let defaultVariationKey: String
 
     var entity: Entity { experimentConfig }
     var experiment: Experiment { experimentConfig }
 
-    init(workspace: Workspace, entity: ExperimentConfig, user: HackleUser, record: Bool, defaultVariationKey: String) {
+    init(workspace: Workspace, entity: ExperimentConfig, user: HackleUser, record: Bool) {
         self.workspace = workspace
         self.experimentConfig = entity
         self.user = user
         self.record = record
-        self.defaultVariationKey = defaultVariationKey
     }
 
     var description: String {
@@ -33,8 +31,7 @@ final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEval
             workspace: requestedBy.workspace,
             entity: experiment,
             user: requestedBy.user,
-            record: requestedBy.record,
-            defaultVariationKey: "A"
+            record: requestedBy.record
         )
     }
 }

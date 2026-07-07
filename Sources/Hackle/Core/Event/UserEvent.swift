@@ -30,8 +30,8 @@ enum UserEvents {
             timestamp: timestamp,
             user: user,
             experiment: evaluation.experiment,
-            variationId: evaluation.experimentResult.variationId,
-            variationKey: evaluation.experimentResult.variationKey,
+            variationId: evaluation.experimentResult.variation.id,
+            variationKey: evaluation.experimentResult.variation.key,
             decisionReason: evaluation.experimentResult.reason,
             properties: properties
         )

@@ -10,20 +10,19 @@ final class LocalDecisionProcessor: DecisionProcessor {
         self.evaluateProcessor = evaluateProcessor
     }
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
         guard let workspace = workspaceFetcher.fetch() else {
-            return Decision.of(experiment: nil, variation: defaultVariationKey, reason: DecisionReason.SDK_NOT_READY)
+            return Decision.of(experiment: nil, variation: "A", reason: DecisionReason.SDK_NOT_READY)
         }
         guard let experiment = workspace.getExperimentConfigOrNil(experimentKey: experimentKey) else {
-            return Decision.of(experiment: nil, variation: defaultVariationKey, reason: DecisionReason.EXPERIMENT_NOT_FOUND)
+            return Decision.of(experiment: nil, variation: "A", reason: DecisionReason.EXPERIMENT_NOT_FOUND)
         }
 
         let request = ExperimentLocalEvaluateRequest(
             workspace: workspace,
             entity: experiment,
             user: user,
-            record: true,
-            defaultVariationKey: defaultVariationKey
+            record: true
         )
         let response = try evaluateProcessor.experiment(request)
         return Decisions.toDecision(evaluation: response.experimentEvaluation)
@@ -42,8 +41,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
                 workspace: workspace,
                 entity: experimentConfig,
                 user: user,
-                record: false,
-                defaultVariationKey: "A"
+                record: false
             )
             let response = try evaluateProcessor.experiment(request)
             decisions.append((experiment, Decisions.toDecision(evaluation: response.experimentEvaluation)))
@@ -63,8 +61,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
             workspace: workspace,
             entity: featureFlag,
             user: user,
-            record: true,
-            defaultVariationKey: "A"
+            record: true
         )
         let response = try evaluateProcessor.experiment(request)
         return Decisions.toFeatureFlagDecision(evaluation: response.experimentEvaluation)
@@ -83,8 +80,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
                 workspace: workspace,
                 entity: featureFlagConfig,
                 user: user,
-                record: false,
-                defaultVariationKey: "A"
+                record: false
             )
             let response = try evaluateProcessor.experiment(request)
             decisions.append((featureFlag, Decisions.toFeatureFlagDecision(evaluation: response.experimentEvaluation)))

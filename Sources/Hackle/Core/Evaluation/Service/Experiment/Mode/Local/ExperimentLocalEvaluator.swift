@@ -21,7 +21,7 @@ final class ExperimentLocalEvaluator: ExperimentEvaluator {
         if let flowEvaluation = try flow.evaluate(request: request, context: context) {
             evaluation = flowEvaluation
         } else {
-            let result = try ExperimentEvaluateResult.ofDefault(reason: DecisionReason.TRAFFIC_NOT_ALLOCATED, request: request)
+            let result = try ExperimentEvaluateResult.ofControl(reason: DecisionReason.TRAFFIC_NOT_ALLOCATED, request: request)
             evaluation = ExperimentEvaluation(entity: request.experiment, result: result)
         }
         return ExperimentEvaluateResponse(

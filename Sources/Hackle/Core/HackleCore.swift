@@ -2,7 +2,7 @@ import Foundation
 
 protocol HackleCore {
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)]
 
@@ -36,8 +36,8 @@ class DefaultHackleCore: HackleCore {
         self.clock = clock
     }
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
-        try decisionProcessor.experiment(experimentKey: experimentKey, user: user, defaultVariationKey: defaultVariationKey)
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
+        try decisionProcessor.experiment(experimentKey: experimentKey, user: user)
     }
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {

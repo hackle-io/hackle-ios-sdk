@@ -153,12 +153,19 @@ class WorkspaceEntity: WorkspaceConfig {
         let workspaceId = dto.workspace.id
         let environmentId = dto.workspace.environment.id
 
+        let parameterConfigurations = dto.parameterConfigurations.map { it in
+            it.toParameterConfiguration()
+        }
+        let parameterConfigurationsById = parameterConfigurations.associateBy { it in
+            it.id
+        }
+
         let experiments = dto.experiments.compactMap { it in
-            it.toExperimentOrNil(type: .abTest)
+            it.toExperimentOrNil(type: .abTest, parameterConfigurations: parameterConfigurationsById)
         }
 
         let featureFlags = dto.featureFlags.compactMap { it in
-            it.toExperimentOrNil(type: .featureFlag)
+            it.toExperimentOrNil(type: .featureFlag, parameterConfigurations: parameterConfigurationsById)
         }
 
         let buckets = dto.buckets.map { it in
@@ -175,10 +182,6 @@ class WorkspaceEntity: WorkspaceConfig {
 
         let containers = dto.containers.map { it in
             it.toContainer()
-        }
-
-        let parameterConfigurations = dto.parameterConfigurations.map { it in
-            it.toParameterConfiguration()
         }
 
         let remoteConfigParameters = dto.remoteConfigParameters.compactMap { it in
@@ -1046,13 +1049,21 @@ extension BucketDto {
 }
 
 extension VariationDto {
-    func toVariation() -> Variation {
-        VariationEntity(id: id, key: key, isDropped: status == "DROPPED", parameterConfigurationId: parameterConfigurationId)
+    func toVariation(parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]) -> Variation {
+        let parameterConfiguration = parameterConfigurationId.flatMap { id in
+            parameterConfigurations[id]   // ★ parameterConfigurationId 키로 조회 (android 8f71c44 버그 지점 원천 차단 — variation.id 오조회 금지)
+        }
+        return VariationEntity(
+            id: id,
+            key: key,
+            isDropped: status == "DROPPED",
+            parameterConfiguration: parameterConfiguration
+        )
     }
 }
 
 extension ExperimentDto {
-    func toExperimentOrNil(type: ExperimentType) -> Experiment? {
+    func toExperimentOrNil(type: ExperimentType, parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]) -> Experiment? {
         guard let experimentStatus = ExperimentDto.experimentStatusOrNil(executionStatus: execution.status) else {
             return nil
         }
@@ -1069,7 +1080,7 @@ extension ExperimentDto {
         }
 
         let variation = variations.map { it in
-            it.toVariation()
+            it.toVariation(parameterConfigurations: parameterConfigurations)
         }
 
         let userOverrides = execution.userOverrides.associate { it in

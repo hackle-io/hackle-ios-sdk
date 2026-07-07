@@ -45,7 +45,7 @@ final class InAppMessageLayoutLocalEvaluator: InAppMessageLayoutEvaluator {
         let experimentEvaluation = try experimentEvaluator.evaluate(sourceRequest: request, context: context, reference: experiment)
 
         let langCondition = langCondition(lang: request.inAppMessage.messageContext.defaultLang)
-        let experimentCondition = experimentCondition(variationKey: experimentEvaluation.experimentResult.variationKey)
+        let experimentCondition = experimentCondition(variationKey: experimentEvaluation.experimentResult.variation.key)
         return try selector.select(inAppMessage: request.inAppMessage) { message in
             langCondition(message) && experimentCondition(message)
         }

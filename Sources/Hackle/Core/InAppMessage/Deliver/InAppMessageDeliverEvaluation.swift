@@ -11,8 +11,8 @@ struct InAppMessageDeliverEvaluation {
         return PropertiesBuilder()
             .add("experiment_id", experiment.experiment.id)
             .add("experiment_key", experiment.experiment.key)
-            .add("variation_id", experiment.experimentResult.variationId)
-            .add("variation_key", experiment.experimentResult.variationKey)
+            .add("variation_id", experiment.experimentResult.variation.id)
+            .add("variation_key", experiment.experimentResult.variation.key)
             .add("experiment_decision_reason", experiment.experimentResult.reason)
             .build()
     }

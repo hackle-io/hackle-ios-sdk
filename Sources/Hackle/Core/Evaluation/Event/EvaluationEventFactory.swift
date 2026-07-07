@@ -35,7 +35,7 @@ class EvaluationEventFactory {
     private func create(user: HackleUser, evaluation: Evaluation, timestamp: Date, properties: PropertiesBuilder) -> UserEvent? {
         switch evaluation {
         case let evaluation as ExperimentEvaluation:
-            properties.add(EvaluationEventFactory.CONFIG_ID_PROPERTY_KEY, evaluation.experimentResult.config?.id)
+            properties.add(EvaluationEventFactory.CONFIG_ID_PROPERTY_KEY, evaluation.experimentResult.variation.parameterConfiguration?.id)
             properties.add(EvaluationEventFactory.EXPERIMENT_VERSION_KEY, evaluation.experiment.version)
             properties.add(EvaluationEventFactory.EXECUTION_VERSION_KEY, evaluation.experiment.executionVersion)
             return UserEvents.exposure(

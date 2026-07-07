@@ -38,27 +38,14 @@ extension ExperimentLocalFlowEvaluator {
         return evaluation
     }
 
-    func of(request: ExperimentLocalEvaluateRequest, reason: String, variation: Variation) throws -> ExperimentEvaluation {
-        let config = try Self.config(workspace: request.workspace, variation: variation)
-        let result = ExperimentEvaluateResult.of(reason: reason, variation: variation, config: config)
+    func of(request: ExperimentLocalEvaluateRequest, reason: String, variation: Variation) -> ExperimentEvaluation {
+        let result = ExperimentEvaluateResult.of(reason: reason, variation: variation)
         return ExperimentEvaluation(entity: request.experiment, result: result)
     }
 
-    func ofDefault(request: ExperimentLocalEvaluateRequest, reason: String) throws -> ExperimentEvaluation {
-        let result = try ExperimentEvaluateResult.ofDefault(reason: reason, request: request)
+    func ofControl(request: ExperimentLocalEvaluateRequest, reason: String) throws -> ExperimentEvaluation {
+        let result = try ExperimentEvaluateResult.ofControl(reason: reason, request: request)
         return ExperimentEvaluation(entity: request.experiment, result: result)
-    }
-
-    private static func config(workspace: Workspace, variation: Variation) throws -> ParameterConfiguration? {
-        guard let parameterConfigurationId = variation.parameterConfigurationId else {
-            return nil
-        }
-
-        guard let parameterConfiguration = workspace.getParameterConfigurationOrNil(parameterConfigurationId: parameterConfigurationId) else {
-            throw HackleError.error("ParameterConfiguration[\(parameterConfigurationId)]")
-        }
-
-        return parameterConfiguration
     }
 }
 
@@ -78,9 +65,9 @@ class OverrideExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         if let overriddenVariation = try overrideResolver.resolveOrNil(request: request, context: context) {
             switch request.experiment.type {
             case .abTest:
-                return try of(request: request, reason: DecisionReason.OVERRIDDEN, variation: overriddenVariation)
+                return of(request: request, reason: DecisionReason.OVERRIDDEN, variation: overriddenVariation)
             case .featureFlag:
-                return try of(request: request, reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, variation: overriddenVariation)
+                return of(request: request, reason: DecisionReason.INDIVIDUAL_TARGET_MATCH, variation: overriddenVariation)
             }
         } else {
             return try nextFlow.evaluate(request: request, context: context)
@@ -95,7 +82,7 @@ class DraftExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if request.experiment.status == .draft {
-            return try ofDefault(request: request, reason: DecisionReason.EXPERIMENT_DRAFT)
+            return try ofControl(request: request, reason: DecisionReason.EXPERIMENT_DRAFT)
         } else {
             return try nextFlow.evaluate(request: request, context: context)
         }
@@ -111,9 +98,9 @@ class PausedExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         if request.experiment.status == .paused {
             switch request.experiment.type {
             case .abTest:
-                return try ofDefault(request: request, reason: DecisionReason.EXPERIMENT_PAUSED)
+                return try ofControl(request: request, reason: DecisionReason.EXPERIMENT_PAUSED)
             case .featureFlag:
-                return try ofDefault(request: request, reason: DecisionReason.FEATURE_FLAG_INACTIVE)
+                return try ofControl(request: request, reason: DecisionReason.FEATURE_FLAG_INACTIVE)
             }
         } else {
             return try nextFlow.evaluate(request: request, context: context)
@@ -131,7 +118,7 @@ class CompletedExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
             guard let winnerVariation = request.experiment.winnerVariation else {
                 throw HackleError.error("winner variation [\(request.experiment.id)]")
             }
-            return try of(request: request, reason: DecisionReason.EXPERIMENT_COMPLETED, variation: winnerVariation)
+            return of(request: request, reason: DecisionReason.EXPERIMENT_COMPLETED, variation: winnerVariation)
         } else {
             return try nextFlow.evaluate(request: request, context: context)
         }
@@ -158,7 +145,7 @@ class TargetExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         if isUserInExperimentTarget {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
-            return try ofDefault(request: request, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
+            return try ofControl(request: request, reason: DecisionReason.NOT_IN_EXPERIMENT_TARGET)
         }
     }
 }
@@ -185,14 +172,14 @@ class TrafficAllocateExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator 
         }
 
         guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experiment.defaultRule) else {
-            return try ofDefault(request: request, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
+            return try ofControl(request: request, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
         }
 
         if variation.isDropped {
-            return try ofDefault(request: request, reason: DecisionReason.VARIATION_DROPPED)
+            return try ofControl(request: request, reason: DecisionReason.VARIATION_DROPPED)
         }
 
-        return try of(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED, variation: variation)
+        return of(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED, variation: variation)
     }
 }
 
@@ -230,7 +217,7 @@ class TargetRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
             throw HackleError.error("FeatureFlag must decide the Variation [\(request.experiment.id)]")
         }
 
-        return try of(request: request, reason: DecisionReason.TARGET_RULE_MATCH, variation: variation)
+        return of(request: request, reason: DecisionReason.TARGET_RULE_MATCH, variation: variation)
     }
 }
 
@@ -255,14 +242,14 @@ class DefaultRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         }
 
         if request.user.identifiers[request.experiment.identifierType] == nil {
-            return try ofDefault(request: request, reason: DecisionReason.DEFAULT_RULE)
+            return try ofControl(request: request, reason: DecisionReason.DEFAULT_RULE)
         }
 
         guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experiment.defaultRule) else {
             throw HackleError.error("FeatureFlag must decide the Variation [\(request.experiment.id)]")
         }
 
-        return try of(request: request, reason: DecisionReason.DEFAULT_RULE, variation: variation)
+        return of(request: request, reason: DecisionReason.DEFAULT_RULE, variation: variation)
     }
 }
 
@@ -291,7 +278,7 @@ class ContainerExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         if isUserInContainerGroup {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
-            return try ofDefault(request: request, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
+            return try ofControl(request: request, reason: DecisionReason.NOT_IN_MUTUAL_EXCLUSION_EXPERIMENT)
         }
     }
 }
@@ -305,7 +292,7 @@ class IdentifierExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         if request.user.identifiers[request.experiment.identifierType] != nil {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
-            return try ofDefault(request: request, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
+            return try ofControl(request: request, reason: DecisionReason.IDENTIFIER_NOT_FOUND)
         }
     }
 }

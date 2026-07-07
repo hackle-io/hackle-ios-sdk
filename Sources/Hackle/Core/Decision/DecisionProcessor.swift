@@ -2,7 +2,7 @@ import Foundation
 
 protocol DecisionProcessor {
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)]
 

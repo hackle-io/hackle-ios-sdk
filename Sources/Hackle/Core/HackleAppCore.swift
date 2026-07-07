@@ -282,8 +282,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
             decision = try core.experiment(
                 experimentKey: Int64(experimentKey),
-                user: hackleUser,
-                defaultVariationKey: defaultVariation
+                user: hackleUser
             )
         } catch {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")

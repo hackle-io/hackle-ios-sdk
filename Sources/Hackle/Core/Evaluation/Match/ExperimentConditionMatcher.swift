@@ -92,7 +92,7 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
             return false
         }
 
-        return valueOperatorMatcher.matches(userValue: evaluation.experimentResult.variationKey, match: condition.match)
+        return valueOperatorMatcher.matches(userValue: evaluation.experimentResult.variation.key, match: condition.match)
     }
 }
 
@@ -115,7 +115,7 @@ class FeatureFlagConditionMatcher: ExperimentEvaluatorMatcher {
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
-        let on = evaluation.experimentResult.variationKey != "A"
+        let on = evaluation.experimentResult.variation.key != "A"
         return valueOperatorMatcher.matches(userValue: on, match: condition.match)
     }
 }

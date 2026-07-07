@@ -19,9 +19,9 @@ final class ExperimentEvaluation: Evaluation, Equatable {
 
     static func ==(lhs: ExperimentEvaluation, rhs: ExperimentEvaluation) -> Bool {
         lhs.experiment.entityKey == rhs.experiment.entityKey
-            && lhs.experimentResult.variationId == rhs.experimentResult.variationId
-            && lhs.experimentResult.variationKey == rhs.experimentResult.variationKey
+            && lhs.experimentResult.variation.id == rhs.experimentResult.variation.id
+            && lhs.experimentResult.variation.key == rhs.experimentResult.variation.key
             && lhs.experimentResult.reason == rhs.experimentResult.reason
-            && lhs.experimentResult.config?.id == rhs.experimentResult.config?.id
+            && lhs.experimentResult.variation.parameterConfiguration?.id == rhs.experimentResult.variation.parameterConfiguration?.id
     }
 }

@@ -4,10 +4,10 @@ enum Decisions {
 
     static func toDecision(evaluation: ExperimentEvaluation) -> Decision {
         let result = evaluation.experimentResult
-        let config: ParameterConfig = result.config ?? EmptyParameterConfig.instance
+        let config: ParameterConfig = result.variation.parameterConfiguration ?? EmptyParameterConfig.instance
         return Decision.of(
             experiment: evaluation.experiment,
-            variation: result.variationKey,
+            variation: result.variation.key,
             reason: result.reason,
             config: config
         )
@@ -15,8 +15,8 @@ enum Decisions {
 
     static func toFeatureFlagDecision(evaluation: ExperimentEvaluation) -> FeatureFlagDecision {
         let result = evaluation.experimentResult
-        let config: ParameterConfig = result.config ?? EmptyParameterConfig.instance
-        return result.variationKey == "A"
+        let config: ParameterConfig = result.variation.parameterConfiguration ?? EmptyParameterConfig.instance
+        return result.variation.key == "A"
             ? FeatureFlagDecision.off(featureFlag: evaluation.experiment, reason: result.reason, config: config)
             : FeatureFlagDecision.on(featureFlag: evaluation.experiment, reason: result.reason, config: config)
     }
