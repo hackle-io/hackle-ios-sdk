@@ -50,7 +50,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
         it("inAppMessageNotFound") {
             // given
             let request = InAppMessage.deliverRequest()
-            let workspace = WorkspaceEntity.create()
+            let workspace = DefaultWorkspaceConfig.create()
             every(workspaceFetcher.fetchMock).returns(workspace)
 
             // when
@@ -64,7 +64,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             // given
             let inAppMessage = InAppMessage.create()
             let request = InAppMessage.deliverRequest()
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(true)
 
@@ -83,7 +83,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             let request = InAppMessage.deliverRequest(
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
@@ -111,7 +111,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
                 inAppMessageKey: 42,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
@@ -145,7 +145,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
                 inAppMessageKey: 42,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
@@ -177,7 +177,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
                 inAppMessageKey: 300,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
@@ -214,7 +214,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
                 inAppMessageKey: 77,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 
@@ -253,7 +253,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
                 inAppMessageKey: 78,
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
+            let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
             every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
 

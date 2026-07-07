@@ -11,7 +11,7 @@ class WorkspaceSpecs: QuickSpec {
             let json = try! String(contentsOfFile: file)
             let data = json.data(using: .utf8)!
             let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
-            let workspace = WorkspaceEntity.from(dto: dto)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto)
             expect(workspace.experiments.count).to(beGreaterThan(1))
 
             let experiment = workspace.getExperimentOrNil(experimentKey: 42)
@@ -42,7 +42,7 @@ class WorkspaceSpecs: QuickSpec {
             let json = try! String(contentsOfFile: file)
             let data = json.data(using: .utf8)!
             let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
-            let workspace = WorkspaceEntity.from(dto: dto)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto)
 
             let experiment = workspace.experiments.first { exp in
                 exp.variations.contains { $0.parameterConfiguration != nil }

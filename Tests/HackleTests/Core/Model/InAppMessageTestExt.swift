@@ -251,7 +251,7 @@ extension InAppMessage {
     static func layoutEvaluateResponse(
         inAppMessage: InAppMessage = create(),
         user: HackleUser = HackleUser.of(userId: "test"),
-        workspace: Workspace = WorkspaceEntity.create(),
+        workspace: Workspace = DefaultWorkspaceConfig.create(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
         message: InAppMessage.Message = message(),
         experiment: ExperimentEvaluation? = nil

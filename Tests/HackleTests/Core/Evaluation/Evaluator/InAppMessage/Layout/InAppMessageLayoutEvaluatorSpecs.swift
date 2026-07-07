@@ -71,7 +71,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let inAppMessage = InAppMessage.create(messageContext: messageContext)
 
                 let experiment = experiment(id: 5, key: 42)
-                let workspace = WorkspaceEntity.create(experiments: [experiment])
+                let workspace = DefaultWorkspaceConfig.create(experiments: [experiment])
                 let request = InAppMessage.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
                 experimentEvaluatorStub.evaluation = experimentEvaluation(
                     reason: DecisionReason.TRAFFIC_ALLOCATED,
@@ -101,7 +101,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
                 let inAppMessage = InAppMessage.create(messageContext: messageContext)
 
                 let experiment = experiment(id: 5, key: 42)
-                let workspace = WorkspaceEntity.create(experiments: [experiment])
+                let workspace = DefaultWorkspaceConfig.create(experiments: [experiment])
                 let request = InAppMessage.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
                 experimentEvaluatorStub.evaluation = experimentEvaluation(
                     reason: DecisionReason.TRAFFIC_ALLOCATED,

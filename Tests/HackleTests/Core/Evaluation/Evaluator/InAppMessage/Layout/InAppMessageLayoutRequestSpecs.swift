@@ -6,7 +6,7 @@ import Quick
 class InAppMessageLayoutRequestSpecs: QuickSpec {
     override class func spec() {
         it("of") {
-            let workspace = WorkspaceEntity.create()
+            let workspace = DefaultWorkspaceConfig.create()
             let user = HackleUser.builder().identifier(.id, "user").build()
 
             let request = InAppMessageLayoutLocalEvaluateRequest.of(

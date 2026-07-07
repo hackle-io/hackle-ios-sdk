@@ -34,7 +34,7 @@ class NotificationManagerSpec: QuickSpec {
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
+                .returns(DefaultWorkspaceConfig(
                     id: 123,
                     environmentId: 456,
                     experiments: [],
@@ -95,7 +95,7 @@ class NotificationManagerSpec: QuickSpec {
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
+                .returns(DefaultWorkspaceConfig(
                     id: 123,
                     environmentId: 456,
                     experiments: [],
@@ -262,7 +262,7 @@ class NotificationManagerSpec: QuickSpec {
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
+                .returns(DefaultWorkspaceConfig(
                     id: 123,
                     environmentId: 222,
                     experiments: [],
@@ -344,7 +344,7 @@ class NotificationManagerSpec: QuickSpec {
                 repository: repository
             )
             every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
+                .returns(DefaultWorkspaceConfig(
                     id: 3,
                     environmentId: 456,
                     experiments: [],

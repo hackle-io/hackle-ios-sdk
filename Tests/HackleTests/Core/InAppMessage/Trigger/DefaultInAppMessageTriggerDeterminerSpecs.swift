@@ -49,7 +49,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
 
         it("when inAppMessage is empty then return nil") {
             // given
-            let workspace = WorkspaceEntity.create()
+            let workspace = DefaultWorkspaceConfig.create()
             every(workspaceFetcher.fetchMock).returns(workspace)
 
             let event = UserEvents.track("test")
@@ -108,7 +108,7 @@ class DefaultInAppMessageTriggerDeterminerSpecs: QuickSpec {
                 }
 
             let inAppMessage = InAppMessage.create()
-            let workspace = WorkspaceEntity.create(
+            let workspace = DefaultWorkspaceConfig.create(
                 inAppMessages: decisions.map { _ in
                     inAppMessage
                 }

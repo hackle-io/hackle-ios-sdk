@@ -44,7 +44,7 @@ class WorkspaceManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer, 
 
     private func setWorkspaceConfig(_ config: WorkspaceConfigResponse) {
         lastModified = config.lastModified
-        workspace = WorkspaceEntity.from(dto: config.config) as? WorkspaceConfig
+        workspace = DefaultWorkspaceConfig.from(dto: config.config) as? WorkspaceConfig
     }
 
     private func readWorkspaceConfigFromLocal() {
