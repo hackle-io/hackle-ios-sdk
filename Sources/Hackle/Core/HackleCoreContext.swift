@@ -1,14 +1,14 @@
 //
-//  EvaluationContext.swift
+//  HackleCoreContext.swift
 //  Hackle
 //
 
 import Foundation
 
 
-class EvaluationContext: @unchecked Sendable {
+class HackleCoreContext: @unchecked Sendable {
 
-    static let shared = EvaluationContext()
+    static let shared = HackleCoreContext()
 
     private var instances = [Any]()
 
@@ -20,5 +20,10 @@ class EvaluationContext: @unchecked Sendable {
 
     func register(_ instance: Any) {
         instances.append(instance)
+    }
+
+    // java: HackleCoreContext.create()
+    static func create() -> HackleCoreContext {
+        HackleCoreContext()
     }
 }

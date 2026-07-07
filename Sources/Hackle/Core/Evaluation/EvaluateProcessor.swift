@@ -9,7 +9,7 @@ class EvaluateProcessor {
     }
 
     static func create(
-        context: EvaluationContext,
+        context: HackleCoreContext,
         clock: Clock,
         eventProcessor: UserEventProcessor,
         overrideStorage: ManualOverrideStorage,
