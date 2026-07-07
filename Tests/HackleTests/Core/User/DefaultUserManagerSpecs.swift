@@ -25,7 +25,7 @@ class DefaultUserManagerSpecs: QuickSpec {
             MainActor.assumeIsolated { deviceImpl.initialize() }
             device = deviceImpl
             bundleInfo = BundleInfoImpl()
-            sut = DefaultUserManager(device: device, bundleInfo: bundleInfo, repository: repository, cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
+            sut = DefaultUserManager(device: device, bundleInfo: bundleInfo, repository: UserRepository(repository: repository), cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
             every(cohortFetcher.fetchMock).answers { _ in UserCohorts() }
             every(targetFetcher.fetchMock).answers { _ in UserTargetEvents() }
             listener = MockUserListener()

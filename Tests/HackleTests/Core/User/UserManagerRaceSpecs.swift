@@ -21,7 +21,7 @@ class UserManagerRaceSpecs: QuickSpec {
             let sut = DefaultUserManager(
                 device: deviceImpl,
                 bundleInfo: bundleInfo,
-                repository: repository,
+                repository: UserRepository(repository: repository),
                 cohortFetcher: cohortFetcher,
                 targetFetcher: targetFetcher,
                 clock: clock

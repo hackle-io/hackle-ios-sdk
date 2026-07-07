@@ -32,11 +32,10 @@ protocol UserManager: Synchronizer {
 
 class DefaultUserManager: UserManager, @unchecked Sendable {
 
-    private static let USER_KEY = "user"
     private let recursiveLock = RecursiveLock(label: "io.hackle.DefaultUserManager")
 
     private var userListeners: [UserListener]
-    private let repository: KeyValueRepository
+    private let repository: UserRepository
     private let cohortFetcher: UserCohortFetcher
     private let targetFetcher: UserTargetEventsFetcher
     private let clock: Clock
@@ -55,7 +54,7 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
         currentContext.user
     }
 
-    init(device: Device, bundleInfo: BundleInfo, repository: KeyValueRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
+    init(device: Device, bundleInfo: BundleInfo, repository: UserRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventsFetcher, clock: Clock) {
         self.userListeners = []
         self.repository = repository
         self.cohortFetcher = cohortFetcher
@@ -268,26 +267,11 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
     }
 
     private func loadUser() -> User? {
-        guard let data = repository.getData(key: DefaultUserManager.USER_KEY) else {
-            return nil
-        }
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any?] else {
-            Log.error("Failed to deserialize User")
-            return nil
-        }
-
-        let user = User.from(json: json)
-        Log.debug("User loaded: \(user)")
-        return user
+        repository.get()
     }
 
     private func saveUser(user: User) {
-        guard let data = user.toData() else {
-            Log.error("Failed to serialize User.")
-            return
-        }
-        repository.putData(key: DefaultUserManager.USER_KEY, value: data)
-        Log.debug("User saved: \(user)")
+        repository.set(user: user)
     }
 }
 
@@ -351,27 +335,6 @@ private extension User {
             builder.deviceId(device.id)
         }
         return builder.build()
-    }
-
-    func toData() -> Data? {
-        let dict: [String: Any?] = [
-            "id": id,
-            "userId": userId,
-            "deviceId": deviceId,
-            "identifiers": identifiers,
-            "properties": properties
-        ]
-        return Json.serialize(dict)
-    }
-
-    static func from(json: [String: Any?]) -> User {
-        User(
-            id: json["id"] as? String,
-            userId: json["userId"] as? String,
-            deviceId: json["deviceId"] as? String,
-            identifiers: json["identifiers"] as? [String: String] ?? [:],
-            properties: json["properties"] as? [String: Any] ?? [:]
-        )
     }
 }
 
