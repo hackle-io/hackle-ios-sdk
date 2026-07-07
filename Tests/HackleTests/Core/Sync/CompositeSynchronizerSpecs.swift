@@ -49,7 +49,7 @@ class CompositeSynchronizerSpecs: QuickSpec {
             // when: 순차 await로 dispatch하면 첫 child가 배리어에서 영구 대기 → 타임아웃 실패.
             //       TaskGroup 팬아웃이면 둘 다 진입 → 배리어 통과 → 완료.
             var completed = false
-            awaitCompletion(timeout: .seconds(2)) {
+            awaitCompletion {
                 try await parallelSut.sync()
                 completed = true
             }

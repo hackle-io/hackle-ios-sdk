@@ -122,7 +122,7 @@ class LocalUserManagerSpecs: QuickSpec {
 
                 // when
                 sut.initialize(user: User.builder().id("id").property("a", "a").build())
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     try? await sut.sync()
                     let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
                     
@@ -238,7 +238,7 @@ class LocalUserManagerSpecs: QuickSpec {
 
                 sut.initialize(user: nil)
                 expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == []
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     try? await sut.sync()
                     expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
                 }
@@ -275,7 +275,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 // given
                 every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build() }
                 sut.initialize(user: nil)
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     try? await sut.sync()
                     expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == targetEvents
                     expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 2
@@ -283,7 +283,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 
                 let newTargetEvents = [targetEvent]
                 every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build() }
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     try? await sut.sync()
                     expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == newTargetEvents
                     expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
@@ -294,7 +294,7 @@ class LocalUserManagerSpecs: QuickSpec {
         describe("syncIfNeeded") {
             it("no new identifiers") {
                 // cohort not sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").build(),
@@ -304,7 +304,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 }
 
                 // cohort not sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").build(),
@@ -314,7 +314,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 }
 
                 // cohort not sync and target event sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").build(),
@@ -324,7 +324,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 }
 
                 // cohort not sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").build(),
@@ -334,7 +334,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 }
 
                 // cohort not sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
@@ -344,7 +344,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 }
 
                 // cohort not sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
@@ -361,7 +361,7 @@ class LocalUserManagerSpecs: QuickSpec {
             }
             it("new identifiers") {
                 // cohort sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().build(),
@@ -370,7 +370,7 @@ class LocalUserManagerSpecs: QuickSpec {
                     )
                 }
                 // cohort sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").build(),
@@ -379,7 +379,7 @@ class LocalUserManagerSpecs: QuickSpec {
                     )
                 }
                 // cohort sync and target event sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").build(),
@@ -388,7 +388,7 @@ class LocalUserManagerSpecs: QuickSpec {
                     )
                 }
                 // cohort sync and target event sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").build(),
@@ -397,7 +397,7 @@ class LocalUserManagerSpecs: QuickSpec {
                     )
                 }
                 // cohort sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").build(),
@@ -406,7 +406,7 @@ class LocalUserManagerSpecs: QuickSpec {
                     )
                 }
                 // cohort sync and target event not sync
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     await sut.syncIfNeeded(
                         updated: Updated(
                             previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
@@ -677,7 +677,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 every(cohortFetcher.fetchMock).answers { user in UserCohorts.Builder(cohorts: userCohorts).build() }
 
                 sut.initialize(user: User.builder().deviceId("device_id").build())
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     try? await sut.sync()
                     expect(sut.currentUser.resolvedIdentifiers) == [
                         "$id": "hackle_device_id",
@@ -706,7 +706,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 every(targetFetcher.fetchMock).answers { user in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
 
                 sut.initialize(user: nil)
-                awaitCompletion(timeout: .seconds(2)) {
+                awaitCompletion {
                     try? await sut.sync()
                     expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
                     expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].eventKey) == "purchase"
