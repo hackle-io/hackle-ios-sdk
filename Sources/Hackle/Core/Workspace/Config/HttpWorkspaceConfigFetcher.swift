@@ -1,22 +1,22 @@
 //
-//  HttpWorkspaceFetcher.swift
+//  HttpWorkspaceConfigFetcher.swift
 //  Hackle
 //
 
 import Foundation
 
 
-protocol HttpWorkspaceFetcher {
-    func fetchIfModified(lastModified: String?) async throws -> WorkspaceConfigResponse?
+protocol HttpWorkspaceConfigFetcher {
+    func fetchIfModified(lastModified: String?) async throws -> WorkspaceConfigContext?
 }
 
-class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
+class DefaultHttpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher {
 
     private let url: URL
     private let httpClient: HttpClient
 
     init(config: HackleConfig, sdk: Sdk, httpClient: HttpClient) {
-        self.url = URL(string: DefaultHttpWorkspaceFetcher.url(config: config, sdk: sdk))!
+        self.url = URL(string: DefaultHttpWorkspaceConfigFetcher.url(config: config, sdk: sdk))!
         self.httpClient = httpClient
     }
 
@@ -24,7 +24,7 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         "\(config.sdkUrl)/api/v2/workspaces/\(sdk.key)/config"
     }
 
-    func fetchIfModified(lastModified: String? = nil) async throws -> WorkspaceConfigResponse? {
+    func fetchIfModified(lastModified: String? = nil) async throws -> WorkspaceConfigContext? {
         let request = createRequest(lastModified: lastModified)
         return try await execute(request: request)
     }
@@ -37,14 +37,14 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
         }
     }
 
-    private func execute(request: HttpRequest) async throws -> WorkspaceConfigResponse? {
+    private func execute(request: HttpRequest) async throws -> WorkspaceConfigContext? {
         let sample = TimerSample.start()
         let response = await httpClient.execute(request: request)
         ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
         return try handleResponse(response: response)
     }
 
-    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfigResponse? {
+    private func handleResponse(response: HttpResponse) throws -> WorkspaceConfigContext? {
         if let error = response.error {
             throw error
         }
@@ -73,6 +73,6 @@ class DefaultHttpWorkspaceFetcher: HttpWorkspaceFetcher {
 
         Log.debug("Workspace fetched")
 
-        return WorkspaceConfigResponse(lastModified: lastModified, config: workspaceDto)
+        return WorkspaceConfigContext.of(dto: workspaceDto, modifiedAt: lastModified)
     }
 }

@@ -14,11 +14,11 @@
 //class PollingWorkspaceFetcherSpecs: QuickSpec {
 //    override class func spec() {
 //
-//        var httpWorkspaceFetcher: HttpWorkspaceFetcherStub!
+//        var httpWorkspaceFetcher: HttpWorkspaceConfigFetcherStub!
 //        var pollingScheduler: MockScheduler!
 //
 //        beforeEach {
-//            httpWorkspaceFetcher = HttpWorkspaceFetcherStub()
+//            httpWorkspaceFetcher = HttpWorkspaceConfigFetcherStub()
 //            pollingScheduler = MockScheduler()
 //        }
 //
@@ -101,7 +101,7 @@
 //        }
 //    }
 //
-//    private class HttpWorkspaceFetcherStub: HttpWorkspaceFetcher {
+//    private class HttpWorkspaceConfigFetcherStub: HttpWorkspaceConfigFetcher {
 //        var workspace: Workspace? = nil
 //
 //        func fetchIfModified(completion: @escaping (Workspace?, Error?) -> ()) {

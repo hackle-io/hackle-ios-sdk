@@ -2,6 +2,7 @@ import Foundation
 
 class DefaultWorkspaceConfig: WorkspaceConfig {
     let metadata: WorkspaceMetadata
+    let modifiedAt: String?
     let experiments: [Experiment]
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
@@ -19,6 +20,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     init(
         id: Int64,
         environmentId: Int64,
+        modifiedAt: String? = nil,
         experiments: [Experiment],
         featureFlags: [Experiment],
         buckets: [Bucket],
@@ -30,6 +32,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         inAppMessages: [InAppMessage]
     ) {
         self.metadata = WorkspaceMetadata(id: id, environmentId: environmentId)
+        self.modifiedAt = modifiedAt
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.inAppMessages = inAppMessages
@@ -115,7 +118,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) as? InAppMessageConfig
     }
 
-    static func from(dto: WorkspaceConfigDto) -> Workspace {
+    static func from(dto: WorkspaceConfigDto, modifiedAt: String?) -> WorkspaceConfig {
         let workspaceId = dto.workspace.id
         let environmentId = dto.workspace.environment.id
 
@@ -161,6 +164,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         return DefaultWorkspaceConfig(
             id: workspaceId,
             environmentId: environmentId,
+            modifiedAt: modifiedAt,
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,

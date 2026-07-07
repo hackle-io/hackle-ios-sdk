@@ -2,17 +2,17 @@ import Foundation
 @testable import Hackle
 
 class MockWorkspaceConfigRepository: WorkspaceConfigRepository {
-    var value: WorkspaceConfigResponse?
+    var value: WorkspaceConfigContext?
 
-    init(value: WorkspaceConfigResponse? = nil) {
+    init(value: WorkspaceConfigContext? = nil) {
         self.value = value
     }
 
-    func get() -> WorkspaceConfigResponse? {
+    func get() -> WorkspaceConfigContext? {
         return self.value
     }
 
-    func set(value: WorkspaceConfigResponse) {
+    func set(value: WorkspaceConfigContext) {
         self.value = value
     }
 }

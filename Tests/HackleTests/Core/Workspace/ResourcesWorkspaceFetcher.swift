@@ -16,7 +16,7 @@ class ResourcesWorkspaceFetcher: WorkspaceFetcher {
         let json = try! String(contentsOfFile: path)
 
         let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
-        workspaceConfig = DefaultWorkspaceConfig.from(dto: dto) as! WorkspaceConfig
+        workspaceConfig = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
     }
 
     func fetch() -> Workspace? {

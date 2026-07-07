@@ -393,14 +393,14 @@ extension HackleApp {
 
         // - WorkspaceFetcher
 
-        let httpWorkspaceFetcher = DefaultHttpWorkspaceFetcher(
+        let httpWorkspaceConfigFetcher = DefaultHttpWorkspaceConfigFetcher(
             config: config,
             sdk: sdk,
             httpClient: httpClient
         )
 
         let workspaceManager = WorkspaceConfigManager(
-            httpWorkspaceFetcher: httpWorkspaceFetcher,
+            httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher,
             repository: DefaultWorkspaceConfigRepository(
                 fileStorage: try? DefaultFileStorage(sdkKey: sdkKey)
             )

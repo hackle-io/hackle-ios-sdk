@@ -5,143 +5,144 @@ import MockingKit
 @testable import Hackle
 
 class WorkspaceConfigManagerSpecs: QuickSpec {
-    static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfigResponse {
+    static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfigContext {
         let json = try! String(contentsOfFile: Bundle(for: WorkspaceConfigManagerSpecs.self).path(forResource: filename, ofType: "json")!)
-        return try! JSONDecoder().decode(WorkspaceConfigResponse.self, from: json.data(using: .utf8)!)
+        let dto = try! JSONDecoder().decode(WorkspaceConfigRecordDto.self, from: json.data(using: .utf8)!)
+        return WorkspaceConfigContext.from(dto: dto)
     }
-    
+
     override class func spec() {
         it("nil workspace data returns if not sync called and no saved data") {
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).to(beNil())
         }
-        
+
         it("workspace data returns and write to repository") {
             let data = loadWorkspaceConfigFromRes()
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [data])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             awaitCompletion { try await sut.sync() }
-            
+
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.metadata.id) == data.config.workspace.id
-            expect(actual?.metadata.environmentId) == data.config.workspace.environment.id
+            expect(actual?.metadata.id) == data.dto.workspace.id
+            expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
             expect(repository.value).toNot(beNil())
-            expect(repository.value?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
-            expect(repository.value?.config.workspace.id) == 3
+            expect(repository.value?.modifiedAt) == "Tue, 16 Jan 2024 07:39:44 GMT"
+            expect(repository.value?.dto.workspace.id) == 3
         }
-        
+
         it("workspace data returns from repository") {
             let data = loadWorkspaceConfigFromRes()
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-        
+
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.metadata.id) == repository.value?.config.workspace.id
-            expect(actual?.metadata.environmentId) == repository.value?.config.workspace.environment.id
+            expect(actual?.metadata.id) == repository.value?.dto.workspace.id
+            expect(actual?.metadata.environmentId) == repository.value?.dto.workspace.environment.id
         }
-        
+
         it("workspace data returns from repository after initialize") {
             let data = loadWorkspaceConfigFromRes()
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
-            
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
+
             expect(sut.fetch() as WorkspaceConfig?).to(beNil())
-            
+
             sut.initialize()
-        
+
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.metadata.id) == repository.value?.config.workspace.id
-            expect(actual?.metadata.environmentId) == repository.value?.config.workspace.environment.id
+            expect(actual?.metadata.id) == repository.value?.dto.workspace.id
+            expect(actual?.metadata.environmentId) == repository.value?.dto.workspace.environment.id
         }
-        
+
         it("write repository workspace value") {
             let data = loadWorkspaceConfigFromRes()
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [data])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [data])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             awaitCompletion { try await sut.sync() }
-            
+
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.metadata.id) == data.config.workspace.id
-            expect(actual?.metadata.environmentId) == data.config.workspace.environment.id
+            expect(actual?.metadata.id) == data.dto.workspace.id
+            expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
             expect(repository.value).toNot(beNil())
-            expect(repository.value?.lastModified) == data.lastModified
-            expect(repository.value?.config.workspace.id) == 3
+            expect(repository.value?.modifiedAt) == data.modifiedAt
+            expect(repository.value?.dto.workspace.id) == 3
         }
-        
+
         it("change last modified value after sync call") {
             let first = loadWorkspaceConfigFromRes()
             let second = loadWorkspaceConfigFromRes(filename: "workspace_config_modified")
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [first, second])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [first, second])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             awaitCompletion { try await sut.sync() }
-            
-            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments).to(beNil())
-            expect(repository.value?.lastModified) == first.lastModified
-            
+
+            expect(httpWorkspaceConfigFetcher.fetchIfModifiedRef.lastInvokation().arguments).to(beNil())
+            expect(repository.value?.modifiedAt) == first.modifiedAt
+
             awaitCompletion { try await sut.sync() }
-            
-            expect(httpWorkspaceFetcher.fetchIfModifiedRef.lastInvokation().arguments) == first.lastModified
-            expect(repository.value?.lastModified) == second.lastModified
+
+            expect(httpWorkspaceConfigFetcher.fetchIfModifiedRef.lastInvokation().arguments) == first.modifiedAt
+            expect(repository.value?.modifiedAt) == second.modifiedAt
         }
-        
+
         it("do nothing if http request returns nil") {
             let data = loadWorkspaceConfigFromRes()
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [nil])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [nil])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             awaitCompletion { try await sut.sync() }
-            
+
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.metadata.id) == data.config.workspace.id
-            expect(actual?.metadata.environmentId) == data.config.workspace.environment.id
+            expect(actual?.metadata.id) == data.dto.workspace.id
+            expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
         }
-        
+
         it("do nothing even http request occours error") {
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository()
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             awaitCompletion { try await sut.sync() }
-            
+
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).to(beNil())
             expect(repository.value).to(beNil())
         }
-        
+
         it("do not overwrite workspace value even http request occours error") {
             let data = loadWorkspaceConfigFromRes()
-            let httpWorkspaceFetcher = MockHttpWorkspaceFetcher(returns: [HackleError.error("fail")])
+            let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository(value: data)
-            let sut = WorkspaceConfigManager(httpWorkspaceFetcher: httpWorkspaceFetcher, repository: repository)
+            let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
-            
+
             awaitCompletion { try await sut.sync() }
-            
+
             let actual: WorkspaceConfig? = sut.fetch()
             expect(actual).toNot(beNil())
             expect(repository.value).toNot(beNil())
-            expect(repository.value?.lastModified) == data.lastModified
-            expect(repository.value?.config.workspace.id) == 3
+            expect(repository.value?.modifiedAt) == data.modifiedAt
+            expect(repository.value?.dto.workspace.id) == 3
         }
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import MockingKit
 @testable import Hackle
 
-class MockHttpWorkspaceFetcher: Mock, HttpWorkspaceFetcher {
+class MockHttpWorkspaceConfigFetcher: Mock, HttpWorkspaceConfigFetcher {
 
     private let returns: [Any?]
     private var count = 0
@@ -16,15 +16,15 @@ class MockHttpWorkspaceFetcher: Mock, HttpWorkspaceFetcher {
     private func fetchIfModifiedStub(lastModified: String?) {
     }
 
-    func fetchIfModified(lastModified: String?) async throws -> WorkspaceConfigResponse? {
+    func fetchIfModified(lastModified: String?) async throws -> WorkspaceConfigContext? {
         call(fetchIfModifiedRef, args: lastModified)
 
         let value = returns[count]
         count += 1
 
         switch value {
-        case let config as WorkspaceConfigResponse:
-            return config
+        case let context as WorkspaceConfigContext:
+            return context
         case let error as Error:
             throw error
         default:

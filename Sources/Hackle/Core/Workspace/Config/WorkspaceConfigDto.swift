@@ -1,7 +1,7 @@
 import Foundation
 
-struct WorkspaceConfigResponse: Codable {
-    var lastModified: String?
+struct WorkspaceConfigRecordDto: Codable {
+    var lastModified: String?   // 영속 JSON 키 — modifiedAt로 개명 금지 (하위호환)
     var config: WorkspaceConfigDto
 }
 

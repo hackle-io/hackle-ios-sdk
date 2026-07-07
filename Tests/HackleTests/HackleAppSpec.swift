@@ -28,7 +28,7 @@ class HackleAppSpecs: QuickSpec {
             synchronizer = MockSynchronizer()
             userManager = MockUserManager()
             workspaceManager = WorkspaceConfigManager(
-                httpWorkspaceFetcher: MockHttpWorkspaceFetcher(returns: []),
+                httpWorkspaceConfigFetcher: MockHttpWorkspaceConfigFetcher(returns: []),
                 repository: MockWorkspaceConfigRepository()
             )
             let globalRepository = MemoryKeyValueRepository()

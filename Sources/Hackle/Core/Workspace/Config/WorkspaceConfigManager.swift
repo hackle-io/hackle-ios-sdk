@@ -7,51 +7,46 @@ import Foundation
 
 
 class WorkspaceConfigManager: WorkspaceFetcher, WorkspaceConfigFetcher, Synchronizer, @unchecked Sendable {
-    private let httpWorkspaceFetcher: HttpWorkspaceFetcher
+    // ↑ 이 시점에서는 아직 WorkspaceFetcher — Task 2.5에서 WorkspaceManager로 교체
+    private let httpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher
     private let repository: WorkspaceConfigRepository
 
-    private var lastModified: String? = nil
-    private var workspace: WorkspaceConfig? = nil
+    private var context: WorkspaceConfigContext? = nil
 
-    init(httpWorkspaceFetcher: HttpWorkspaceFetcher, repository: WorkspaceConfigRepository) {
-        self.httpWorkspaceFetcher = httpWorkspaceFetcher
+    init(httpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher, repository: WorkspaceConfigRepository) {
+        self.httpWorkspaceConfigFetcher = httpWorkspaceConfigFetcher
         self.repository = repository
     }
 
     func initialize() {
-        readWorkspaceConfigFromLocal()
+        load()
     }
 
     func fetch() -> Workspace? {
-        workspace
+        context?.workspace
     }
 
     func fetch() -> WorkspaceConfig? {
-        workspace
+        context?.workspace
     }
 
     func sync() async throws {
-        let response = try await httpWorkspaceFetcher.fetchIfModified(lastModified: lastModified)
-        handle(response: response)
+        let context = try await httpWorkspaceConfigFetcher.fetchIfModified(lastModified: self.context?.modifiedAt)
+        store(context: context)
     }
 
-    private func handle(response: WorkspaceConfigResponse?) {
-        if let response {
-            setWorkspaceConfig(response)
-            repository.set(value: response)
+    private func store(context: WorkspaceConfigContext?) {
+        guard let context else {
+            return
+        }
+        self.context = context
+        repository.set(value: context)
+    }
+
+    private func load() {
+        if let context = repository.get() {
+            self.context = context
+            Log.debug("WorkspaceConfig loaded: [modifiedAt: \(context.modifiedAt ?? "nil")]")
         }
     }
-
-    private func setWorkspaceConfig(_ config: WorkspaceConfigResponse) {
-        lastModified = config.lastModified
-        workspace = DefaultWorkspaceConfig.from(dto: config.config) as? WorkspaceConfig
-    }
-
-    private func readWorkspaceConfigFromLocal() {
-        if let config = repository.get() {
-            setWorkspaceConfig(config)
-            Log.debug("Workspace config loaded: [last modified: \(config.lastModified ?? "nil")]")
-        }
-    }
-
 }
