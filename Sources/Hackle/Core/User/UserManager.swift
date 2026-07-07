@@ -44,9 +44,9 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
     private let device: Device
     private let bundleInfo: BundleInfo
     private let defaultUser: User
-    private var context: UserContext
+    private var context: LocalUserContext
 
-    private var currentContext: UserContext {
+    private var currentContext: LocalUserContext {
         recursiveLock.lock {
             context
         }
@@ -64,7 +64,7 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
         self.device = device
         self.bundleInfo = bundleInfo
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
-        self.context = UserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+        self.context = LocalUserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
     }
 
     func addListener(listener: UserListener) {
@@ -79,7 +79,7 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
                 return
             }
             let initUser = (user ?? self.loadUser() ?? self.defaultUser)
-            self.context = UserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+            self.context = LocalUserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
@@ -104,7 +104,7 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
         return toHackleUser(context: context, hackleAppContext: .default)
     }
 
-    private func toHackleUser(context: UserContext, hackleAppContext: HackleAppContext) -> HackleUser {
+    private func toHackleUser(context: LocalUserContext, hackleAppContext: HackleAppContext) -> HackleUser {
         HackleUser.builder()
             .identifiers(context.user.identifiers)
             .identifier(.id, context.user.id)
@@ -231,20 +231,20 @@ class DefaultUserManager: UserManager, @unchecked Sendable {
         }
     }
 
-    private func updateUser(user: User) -> Updated<UserContext> {
+    private func updateUser(user: User) -> Updated<LocalUserContext> {
         updateContext { currentUser in
             user.with(device: device).mergeWith(other: currentUser)
         }
     }
 
-    private func operateProperties(operations: PropertyOperations) -> Updated<UserContext> {
+    private func operateProperties(operations: PropertyOperations) -> Updated<LocalUserContext> {
         updateContext { currentUser in
             let properties = operations.operate(base: currentUser.properties)
             return currentUser.with(properties: properties)
         }
     }
 
-    private func updateContext(updater: (User) -> User) -> Updated<UserContext> {
+    private func updateContext(updater: (User) -> User) -> Updated<LocalUserContext> {
         let oldContext = context
         let oldUser = oldContext.user
         let newUser = updater(oldUser)
