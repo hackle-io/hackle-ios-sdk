@@ -463,7 +463,7 @@ extension BucketDto {
 extension VariationDto {
     func toVariation(parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]) -> Variation {
         let parameterConfiguration = parameterConfigurationId.flatMap { id in
-            parameterConfigurations[id]   // ★ parameterConfigurationId 키로 조회 (android 8f71c44 버그 지점 원천 차단 — variation.id 오조회 금지)
+            parameterConfigurations[id]
         }
         return VariationEntity(
             id: id,

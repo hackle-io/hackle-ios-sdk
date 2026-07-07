@@ -1,7 +1,5 @@
 import Foundation
 
-// android trigger/LocalInAppMessageTriggerDeterminer.kt 이식.
-// AbstractInAppMessageTriggerDeterminer의 LOCAL 특수화 (WorkspaceConfigFetcher 기반 평가).
 class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer {
 
     private let workspaceFetcher: WorkspaceConfigFetcher

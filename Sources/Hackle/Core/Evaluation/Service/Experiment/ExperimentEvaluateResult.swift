@@ -21,7 +21,6 @@ final class ExperimentEvaluateResult: EvaluateResult, CustomStringConvertible {
         ExperimentEvaluateResult(reason: reason, variation: variation)
     }
 
-    // java: ofControl(reason, request) = of(reason, request.entity.controlVariation)
     static func ofControl(reason: String, request: ExperimentLocalEvaluateRequest) throws -> ExperimentEvaluateResult {
         of(reason: reason, variation: try request.experimentConfig.controlVariation)
     }

@@ -4,9 +4,6 @@ protocol InAppMessageTriggerDeterminer {
     func determine(event: UserEvent) throws -> InAppMessageTrigger?
 }
 
-// android AbstractInAppMessageTriggerDeterminer<WORKSPACE, MESSAGE> 이식.
-// iOS는 InAppMessage(final class)·WorkspaceConfig(protocol existential) 특성상 제네릭 특수화가
-// 불가하여(결정 B) base Workspace/InAppMessage로 동작하는 비제네릭 template method로 구현.
 class AbstractInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
 
     let eventMatcher: InAppMessageTriggerEventMatcher

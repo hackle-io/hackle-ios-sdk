@@ -52,7 +52,7 @@ class WorkspaceSpecs: QuickSpec {
             // parse-time resolve 된 객체가 workspace 조회 결과와 동일 id
             let expected = workspace.getParameterConfigurationOrNil(parameterConfigurationId: variation.parameterConfiguration!.id)
             expect(variation.parameterConfiguration?.id) == expected?.id
-            expect(variation.parameterConfiguration?.id) != variation.id   // ★ android 8f71c44 오조회 검출 (리소스에서 두 값이 다른 variation 선택)
+            expect(variation.parameterConfiguration?.id) != variation.id
         }
     }
 }

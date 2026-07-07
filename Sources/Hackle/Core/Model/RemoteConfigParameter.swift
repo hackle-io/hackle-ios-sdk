@@ -58,12 +58,10 @@ final class RemoteConfigParameter: RemoteConfigParameterConfig, Sendable {
 }
 
 extension HackleValueType {
-    // java: ValueType.cast(value) = RemoteConfigParameter.cast(this, value.rawValue)
     func cast(_ value: RemoteConfigParameter.Value) -> HackleValue? {
         value.rawValue.type == self ? value.rawValue : nil
     }
 
-    // java: ValueType.isInstance(value) = cast<Any>(value) != null
     func isInstance(_ value: RemoteConfigParameter.Value) -> Bool {
         cast(value) != nil
     }

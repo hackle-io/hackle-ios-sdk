@@ -4,7 +4,6 @@ protocol ExperimentConfig: Experiment, ConfigEntity {
 }
 
 extension ExperimentConfig {
-    // java ExperimentConfig.controlVariation: requireNotNull(getVariationOrNull("A"))
     var controlVariation: Variation {
         get throws {
             guard let variation = getVariationOrNil(variationKey: "A") else {

@@ -22,7 +22,6 @@ class HackleCoreContext: @unchecked Sendable {
         instances.append(instance)
     }
 
-    // java: HackleCoreContext.create()
     static func create() -> HackleCoreContext {
         HackleCoreContext()
     }

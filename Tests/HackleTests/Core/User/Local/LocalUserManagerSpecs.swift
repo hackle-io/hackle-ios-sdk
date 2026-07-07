@@ -942,7 +942,7 @@ class LocalUserManagerSpecs: QuickSpec {
                 }
                 let (user, publishedOperations, timestamp) = listener.onPropertyOperationsMock.firstInvokation().arguments
                 expect(user.userId) == "user_id"
-                expect(user.properties["age"]).to(beNil()) // 변경 "전" user로 발행 (android parity)
+                expect(user.properties["age"]).to(beNil())
                 expect(publishedOperations.asDictionary()[.set] as? [String: Int]) == ["age": 42]
                 expect(timestamp) == Date(timeIntervalSince1970: 42) // clock.now()
                 verify(exactly: 0) {
@@ -959,7 +959,7 @@ class LocalUserManagerSpecs: QuickSpec {
                     listener.onPropertyOperationsMock
                 }
                 let (user, operations, _) = listener.onPropertyOperationsMock.firstInvokation().arguments
-                expect(user.userId).to(beNil()) // reset 후 default user로 발행 (android parity)
+                expect(user.userId).to(beNil())
                 expect(operations.contains(.clearAll)) == true
             }
 
