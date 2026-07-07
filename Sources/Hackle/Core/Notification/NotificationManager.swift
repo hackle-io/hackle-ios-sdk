@@ -53,8 +53,8 @@ class DefaultNotificationManager: NotificationManager {
 
         let user = userManager.currentUser
         let totalCount = repository.count(
-            workspaceId: workspace.id,
-            environmentId: workspace.environmentId
+            workspaceId: workspace.metadata.id,
+            environmentId: workspace.metadata.environmentId
         )
         if (totalCount <= 0) {
             Log.info("Notification data is empty.")
@@ -66,8 +66,8 @@ class DefaultNotificationManager: NotificationManager {
 
         for _ in 0...loop {
             let notifications = repository.getEntities(
-                workspaceId: workspace.id,
-                environmentId: workspace.environmentId,
+                workspaceId: workspace.metadata.id,
+                environmentId: workspace.metadata.environmentId,
                 limit: batchSize
             )
 
@@ -95,15 +95,15 @@ class DefaultNotificationManager: NotificationManager {
     func onNotificationDataReceived(data: NotificationData, timestamp: Date) {
         let workspace = workspaceFetcher.fetch()
         if let workspace = workspace,
-           workspace.id == data.workspaceId,
-           workspace.environmentId == data.environmentId {
+           workspace.metadata.id == data.workspaceId,
+           workspace.metadata.environmentId == data.environmentId {
             track(event: data.toTrackEvent(), user: userManager.currentUser, timestamp: timestamp)
         } else {
             if workspace == nil {
                 Log.debug("Workspace data is empty.")
             } else {
                 Log.info(
-                    "Current environment(\(String(describing: workspace?.id)):\(String(describing: workspace?.environmentId))) is not same as notification environment(\(data.workspaceId):\(data.environmentId))."
+                    "Current environment(\(String(describing: workspace?.metadata.id)):\(String(describing: workspace?.metadata.environmentId))) is not same as notification environment(\(data.workspaceId):\(data.environmentId))."
                 )
             }
 

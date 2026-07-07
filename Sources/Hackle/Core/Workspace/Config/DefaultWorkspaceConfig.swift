@@ -1,8 +1,7 @@
 import Foundation
 
 class DefaultWorkspaceConfig: WorkspaceConfig {
-    let id: Int64
-    let environmentId: Int64
+    let metadata: WorkspaceMetadata
     let experiments: [Experiment]
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
@@ -30,8 +29,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         remoteConfigParameters: [RemoteConfigParameter],
         inAppMessages: [InAppMessage]
     ) {
-        self.id = id
-        self.environmentId = environmentId
+        self.metadata = WorkspaceMetadata(id: id, environmentId: environmentId)
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.inAppMessages = inAppMessages

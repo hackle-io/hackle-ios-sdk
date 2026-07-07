@@ -31,8 +31,8 @@ class WorkspaceManagerSpecs: QuickSpec {
             awaitCompletion { try await sut.sync() }
             
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.id) == data.config.workspace.id
-            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(actual?.metadata.id) == data.config.workspace.id
+            expect(actual?.metadata.environmentId) == data.config.workspace.environment.id
             expect(repository.value).toNot(beNil())
             expect(repository.value?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
             expect(repository.value?.config.workspace.id) == 3
@@ -46,8 +46,8 @@ class WorkspaceManagerSpecs: QuickSpec {
             sut.initialize()
         
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.id) == repository.value?.config.workspace.id
-            expect(actual?.environmentId) == repository.value?.config.workspace.environment.id
+            expect(actual?.metadata.id) == repository.value?.config.workspace.id
+            expect(actual?.metadata.environmentId) == repository.value?.config.workspace.environment.id
         }
         
         it("workspace data returns from repository after initialize") {
@@ -61,8 +61,8 @@ class WorkspaceManagerSpecs: QuickSpec {
             sut.initialize()
         
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.id) == repository.value?.config.workspace.id
-            expect(actual?.environmentId) == repository.value?.config.workspace.environment.id
+            expect(actual?.metadata.id) == repository.value?.config.workspace.id
+            expect(actual?.metadata.environmentId) == repository.value?.config.workspace.environment.id
         }
         
         it("write repository workspace value") {
@@ -75,8 +75,8 @@ class WorkspaceManagerSpecs: QuickSpec {
             awaitCompletion { try await sut.sync() }
             
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.id) == data.config.workspace.id
-            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(actual?.metadata.id) == data.config.workspace.id
+            expect(actual?.metadata.environmentId) == data.config.workspace.environment.id
             expect(repository.value).toNot(beNil())
             expect(repository.value?.lastModified) == data.lastModified
             expect(repository.value?.config.workspace.id) == 3
@@ -111,8 +111,8 @@ class WorkspaceManagerSpecs: QuickSpec {
             awaitCompletion { try await sut.sync() }
             
             let actual: WorkspaceConfig? = sut.fetch()
-            expect(actual?.id) == data.config.workspace.id
-            expect(actual?.environmentId) == data.config.workspace.environment.id
+            expect(actual?.metadata.id) == data.config.workspace.id
+            expect(actual?.metadata.environmentId) == data.config.workspace.environment.id
         }
         
         it("do nothing even http request occours error") {

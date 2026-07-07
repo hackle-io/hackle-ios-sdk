@@ -1,11 +1,12 @@
-//
-
 import Foundation
 
-protocol Workspace {
-    var id: Int64 { get }
+struct WorkspaceMetadata {
+    let id: Int64
+    let environmentId: Int64
+}
 
-    var environmentId: Int64 { get }
+protocol Workspace {
+    var metadata: WorkspaceMetadata { get }
 
     var experiments: [Experiment] { get }
 
