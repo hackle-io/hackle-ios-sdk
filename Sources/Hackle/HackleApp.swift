@@ -669,13 +669,17 @@ extension HackleApp {
             evaluateProcessor: evaluateProcessor
         )
 
+        // EvaluationMode 미도입 → LOCAL 고정 (REMOTE 회차에서 mode 분기 추가)
+        let inAppMessageDeliverEvaluator = InAppMessageDeliverLocalEvaluator(
+            workspaceFetcher: workspaceManager,
+            layoutResolver: inAppMessageLayoutResolver,
+            evaluateProcessor: inAppMessageEvaluateProcessor
+        )
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
-            workspaceManager: workspaceManager,
             userManager: userManager,
             userDecoreator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
-            layoutResolver: inAppMessageLayoutResolver,
-            evaluateProcessor: inAppMessageEvaluateProcessor,
+            evaluator: inAppMessageDeliverEvaluator,
             presentProcessor: inAppMessagePresentProcessor
         )
 

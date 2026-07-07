@@ -6,29 +6,23 @@ protocol InAppMessageDeliverProcessor {
 
 class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
-    private let workspaceManager: WorkspaceManager
     private let userManager: UserManager
     private let userDecoreator: UserDecorator
     private let identifierChecker: InAppMessageIdentifierChecker
-    private let layoutResolver: InAppMessageLayoutResolver
-    private let evaluateProcessor: InAppMessageEvaluateProcessor
+    private let evaluator: InAppMessageDeliverEvaluator
     private let presentProcessor: InAppMessagePresentProcessor
 
     init(
-        workspaceManager: WorkspaceManager,
         userManager: UserManager,
         userDecoreator: UserDecorator,
         identifierChecker: InAppMessageIdentifierChecker,
-        layoutResolver: InAppMessageLayoutResolver,
-        evaluateProcessor: InAppMessageEvaluateProcessor,
+        evaluator: InAppMessageDeliverEvaluator,
         presentProcessor: InAppMessagePresentProcessor
     ) {
-        self.workspaceManager = workspaceManager
         self.userManager = userManager
         self.userDecoreator = userDecoreator
         self.identifierChecker = identifierChecker
-        self.layoutResolver = layoutResolver
-        self.evaluateProcessor = evaluateProcessor
+        self.evaluator = evaluator
         self.presentProcessor = presentProcessor
     }
 
@@ -47,40 +41,39 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
     private func deliver(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse {
 
-        // resolve User (workspace(user:) 시그니처 요구로 선행 — 본 재편은 Chunk 3)
+        // check User
         let user = userManager.resolve(user: nil, hackleAppContext: .default)
             .decorateWith(docorator: userDecoreator)
 
-        // check Workspace
-        guard let workspace = workspaceManager.workspace(user: user) else {
-            return InAppMessageDeliverResponse.of(request: request, code: .workspaceNotFound)
-        }
-
-        // check InAppMessage
-        guard let inAppMessage = workspace.getInAppMessageOrNil(inAppMessageKey: request.inAppMessageKey) else {
-            return InAppMessageDeliverResponse.of(request: request, code: .inAppMessageNotFound)
-        }
-
-        // check User identifier
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: request.identifiers, new: user.identifiers)
         if isIdentifierChanged {
             return InAppMessageDeliverResponse.of(request: request, code: .identifierChanged)
         }
 
-        // resolve layout
-        let layoutResponse = try layoutResolver.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
+        // evaluate (dedup + re-evaluate)
+        let response = try evaluator.evaluate(request: request, user: user)
+        return try resolve(request: request, user: user, response: response)
+    }
 
-        // check Evaluation (re-evaluate + dedup)
-        let eligibilityRequest = InAppMessageEligibilityLocalEvaluateRequest.of(workspace: workspace, inAppMessage: inAppMessage, user: user, scope: .deliver, platformType: .ios, timestamp: request.requestedAt)
-        let eligibilityEvaluation = try evaluateProcessor.process(type: .deliver, request: eligibilityRequest)
-        if !eligibilityEvaluation.eligibilityResult.isEligible {
-            Log.debug("InAppMessage Deliver Ineligible. dispatchId: \(request.dispatchId), reason: \(eligibilityEvaluation.eligibilityResult.reason)")
+    private func resolve(
+        request: InAppMessageDeliverRequest,
+        user: HackleUser,
+        response: InAppMessageDeliverEvaluateResponse
+    ) throws -> InAppMessageDeliverResponse {
+        if !response.isEligible {
+            return InAppMessageDeliverResponse.of(request: request, code: response.code ?? .ineligible)
+        }
+
+        guard let evaluation = response.evaluation else {
             return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
         }
 
-        // present
-        let deliverEvaluation = InAppMessageDeliverEvaluation(eligibility: eligibilityEvaluation, layout: layoutResponse)
-        let presentRequest = InAppMessagePresentRequest.of(request: request, inAppMessage: inAppMessage, user: user, deliverEvaluation: deliverEvaluation)
+        let presentRequest = InAppMessagePresentRequest.of(
+            request: request,
+            inAppMessage: evaluation.eligibility.inAppMessage,
+            user: user,
+            deliverEvaluation: evaluation
+        )
         let presentResponse = try presentProcessor.process(request: presentRequest)
 
         return InAppMessageDeliverResponse.of(request: request, code: .present, presentResponse: presentResponse)
