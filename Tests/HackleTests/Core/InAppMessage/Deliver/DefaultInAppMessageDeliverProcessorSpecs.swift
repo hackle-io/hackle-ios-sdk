@@ -31,8 +31,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
 
         func eligibleResponse(experiment: ExperimentEvaluation? = nil) -> InAppMessageDeliverEvaluateResponse {
             let evaluation = InAppMessageDeliverEvaluation(
-                eligibility: InAppMessage.eligibilityEvaluation(isEligible: true),
-                layout: InAppMessage.layoutEvaluateResponse(experiment: experiment)
+                eligibility: InAppMessageEntity.eligibilityEvaluation(isEligible: true),
+                layout: InAppMessageEntity.layoutEvaluateResponse(experiment: experiment)
             )
             return InAppMessageDeliverEvaluateResponse.of(evaluation: evaluation)
         }
@@ -42,7 +42,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(identifierChecker.isIdentifierChangedMock).returns(true)
 
             // when
-            let actual = sut.process(request: InAppMessage.deliverRequest())
+            let actual = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.identifierChanged
@@ -54,7 +54,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(evaluator.evaluateMock).returns(InAppMessageDeliverEvaluateResponse.ineligible(code: .ineligible))
 
             // when
-            let actual = sut.process(request: InAppMessage.deliverRequest())
+            let actual = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
@@ -66,7 +66,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             every(evaluator.evaluateMock).returns(InAppMessageDeliverEvaluateResponse.ineligible(code: .workspaceNotFound))
 
             // when
-            let actual = sut.process(request: InAppMessage.deliverRequest())
+            let actual = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
@@ -76,11 +76,11 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             // given
             every(identifierChecker.isIdentifierChangedMock).returns(false)
             every(evaluator.evaluateMock).returns(eligibleResponse())
-            let presentResponse = InAppMessage.presentResponse()
+            let presentResponse = InAppMessageEntity.presentResponse()
             every(presentProcessor.processMock).returns(presentResponse)
 
             // when
-            let actual = sut.process(request: InAppMessage.deliverRequest(dispatchId: "111", inAppMessageKey: 42))
+            let actual = sut.process(request: InAppMessageEntity.deliverRequest(dispatchId: "111", inAppMessageKey: 42))
 
             // then
             expect(actual.dispatchId) == "111"
@@ -98,7 +98,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             }
 
             // when
-            let actual = sut.process(request: InAppMessage.deliverRequest())
+            let actual = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.exception
@@ -111,13 +111,13 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             var capturedRequest: InAppMessagePresentRequest?
             every(presentProcessor.processMock).answers { args in
                 capturedRequest = args
-                return InAppMessage.presentResponse()
+                return InAppMessageEntity.presentResponse()
             }
             let mockSession = Session(id: "0.ffffffff")
             sessionManager.currentSession = mockSession
 
             // when
-            _ = sut.process(request: InAppMessage.deliverRequest())
+            _ = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(capturedRequest).toNot(beNil())
@@ -133,11 +133,11 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             var capturedRequest: InAppMessagePresentRequest?
             every(presentProcessor.processMock).answers { args in
                 capturedRequest = args
-                return InAppMessage.presentResponse()
+                return InAppMessageEntity.presentResponse()
             }
 
             // when
-            _ = sut.process(request: InAppMessage.deliverRequest())
+            _ = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             let props = capturedRequest?.properties
@@ -154,11 +154,11 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             var capturedRequest: InAppMessagePresentRequest?
             every(presentProcessor.processMock).answers { args in
                 capturedRequest = args
-                return InAppMessage.presentResponse()
+                return InAppMessageEntity.presentResponse()
             }
 
             // when
-            _ = sut.process(request: InAppMessage.deliverRequest())
+            _ = sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             let props = capturedRequest?.properties

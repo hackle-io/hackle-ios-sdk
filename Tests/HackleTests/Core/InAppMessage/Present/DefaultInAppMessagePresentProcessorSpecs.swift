@@ -21,7 +21,7 @@ class DefaultInAppMessagePresentProcessorSpecs: QuickSpec {
 
         it("process") {
             // given
-            let request = InAppMessage.presentRequest(
+            let request = InAppMessageEntity.presentRequest(
                 dispatchId: "111"
             )
 

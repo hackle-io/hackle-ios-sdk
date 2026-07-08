@@ -20,9 +20,12 @@ class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer 
     }
 
     override func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+        guard let inAppMessageConfig = inAppMessage as? InAppMessageConfig else {
+            throw HackleError.error("InAppMessageConfig[\(inAppMessage.key)]")
+        }
         let request = InAppMessageEligibilityLocalEvaluateRequest.of(
             workspace: workspace,
-            inAppMessage: inAppMessage,
+            inAppMessage: inAppMessageConfig,
             user: event.user,
             scope: .trigger,
             platformType: .ios,

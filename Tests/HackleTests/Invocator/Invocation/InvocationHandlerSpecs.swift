@@ -120,7 +120,7 @@ class InvocationHandlerSpecs: QuickSpec {
                 
                 it("when view is exists then handle event") {
                     // given
-                    let context = InAppMessage.context()
+                    let context = InAppMessageEntity.context()
                     let view = MockInAppMessageView(id: "42", context: context, presented: true)
                     every(core.getInAppMessageViewRef).returns(view)
                     
@@ -146,7 +146,7 @@ class InvocationHandlerSpecs: QuickSpec {
                 }
                 
                 it("unsupported InAppMessageViewEventType") {
-                    let context = InAppMessage.context()
+                    let context = InAppMessageEntity.context()
                     let view = MockInAppMessageView(id: "42", context: context, presented: true)
                     every(core.getInAppMessageViewRef).returns(view)
                     

@@ -22,7 +22,7 @@ class InAppMessageExtSpecs: QuickSpec {
                     orientations: [.vertical, .horizontal],
                     messages: []
                 )
-                let msg = InAppMessage(
+                let msg = InAppMessageEntity(
                     id: 1,
                     key: 1,
                     status: .active,

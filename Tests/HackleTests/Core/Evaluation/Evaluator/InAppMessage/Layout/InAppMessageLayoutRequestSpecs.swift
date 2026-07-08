@@ -11,7 +11,7 @@ class InAppMessageLayoutRequestSpecs: QuickSpec {
 
             let request = InAppMessageLayoutLocalEvaluateRequest.of(
                 workspace: workspace,
-                inAppMessage: InAppMessage.create(id: 1),
+                inAppMessage: InAppMessageEntity.create(id: 1),
                 user: user,
                 scope: .trigger
             )

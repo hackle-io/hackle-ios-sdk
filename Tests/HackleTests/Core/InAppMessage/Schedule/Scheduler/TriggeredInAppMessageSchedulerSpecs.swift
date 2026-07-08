@@ -27,9 +27,9 @@ class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
         describe("deliver") {
             it("process deliver") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
-                let deliverResponse = InAppMessage.deliverResponse()
+                let deliverResponse = InAppMessageEntity.deliverResponse()
                 every(deliverProcessor.processMock).returns(deliverResponse)
 
                 // when
@@ -43,7 +43,7 @@ class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
 
         describe("delay") {
             it("registerAndDelay") {
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.registerAndDelayMock).returns(delay)
@@ -60,7 +60,7 @@ class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
         describe("ignore") {
             it("do nothing") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 // when
                 let actual = try sut.schedule(action: .ignore, request: request)

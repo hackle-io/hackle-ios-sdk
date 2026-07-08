@@ -59,7 +59,7 @@ class DraftInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityLoc
         context: EvaluatorContext,
         nextFlow: InAppMessageEligibilityLocalEvaluationFlow
     ) throws -> InAppMessageEligibilityEvaluation? {
-        if request.inAppMessage.status == .draft {
+        if request.inAppMessageConfig.status == .draft {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.IN_APP_MESSAGE_DRAFT)
             return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
         }
@@ -76,7 +76,7 @@ class PauseInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityLoc
         context: EvaluatorContext,
         nextFlow: InAppMessageEligibilityLocalEvaluationFlow
     ) throws -> InAppMessageEligibilityEvaluation? {
-        if request.inAppMessage.status == .pause {
+        if request.inAppMessageConfig.status == .pause {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.IN_APP_MESSAGE_PAUSED)
             return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
         }

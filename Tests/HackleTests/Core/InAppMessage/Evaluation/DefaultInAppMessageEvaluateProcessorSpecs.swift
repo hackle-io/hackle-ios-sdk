@@ -23,8 +23,8 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
 
         it("trigger evaluate") {
             // given
-            let inAppMessage = InAppMessage.create(status: .active)
-            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage, scope: .trigger)
+            let inAppMessage = InAppMessageEntity.create(status: .active)
+            let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage, scope: .trigger)
 
             // when
             let actual = try sut.process(type: .trigger, request: request)
@@ -36,8 +36,8 @@ class DefaultInAppMessageEvaluateProcessorSpecs: QuickSpec {
 
         it("deliver evaluate") {
             // given
-            let inAppMessage = InAppMessage.create(status: .active)
-            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage, scope: .deliver)
+            let inAppMessage = InAppMessageEntity.create(status: .active)
+            let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage, scope: .deliver)
 
             // when
             let actual = try sut.process(type: .deliver, request: request)

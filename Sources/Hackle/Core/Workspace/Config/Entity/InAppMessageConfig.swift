@@ -1,4 +1,6 @@
 import Foundation
 
-protocol InAppMessageConfig: ConfigEntity {
+protocol InAppMessageConfig: InAppMessage, ConfigEntity {
+    var status: InAppMessage.Status { get }
+    var targetContext: InAppMessage.TargetContext { get }
 }

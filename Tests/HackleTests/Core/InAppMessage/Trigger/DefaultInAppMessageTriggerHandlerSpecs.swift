@@ -19,7 +19,7 @@ class DefaultInAppMessageTriggerHandlerSpecs: QuickSpec {
 
         it("handle") {
             // given
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             let event = UserEvents.track("test", timestamp: 42)
             let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: event)
 

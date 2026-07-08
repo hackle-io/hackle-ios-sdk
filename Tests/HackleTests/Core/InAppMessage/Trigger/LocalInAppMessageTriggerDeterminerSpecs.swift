@@ -107,7 +107,7 @@ class LocalInAppMessageTriggerDeterminerSpecs: QuickSpec {
                     $0.evaluation
                 }
 
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             let workspace = DefaultWorkspaceConfig.create(
                 inAppMessages: decisions.map { _ in
                     inAppMessage
@@ -120,7 +120,7 @@ class LocalInAppMessageTriggerDeterminerSpecs: QuickSpec {
 
             return Decision(
                 isEventMacthed: isEventMatched,
-                evaluation: InAppMessage.eligibilityEvaluation(
+                evaluation: InAppMessageEntity.eligibilityEvaluation(
                     reason: reason,
                     isEligible: isEligible,
                 )

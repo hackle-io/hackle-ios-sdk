@@ -13,9 +13,12 @@ class DefaultInAppMessageLayoutResolver: InAppMessageLayoutResolver {
     }
 
     func resolve(workspace: Workspace, inAppMessage: InAppMessage, user: HackleUser) throws -> InAppMessageLayoutEvaluateResponse {
+        guard let inAppMessageConfig = inAppMessage as? InAppMessageConfig else {
+            throw HackleError.error("InAppMessageConfig[\(inAppMessage.key)]")
+        }
         let layoutRequest = InAppMessageLayoutLocalEvaluateRequest.of(
             workspace: workspace,
-            inAppMessage: inAppMessage,
+            inAppMessage: inAppMessageConfig,
             user: user,
             scope: .deliver
         )

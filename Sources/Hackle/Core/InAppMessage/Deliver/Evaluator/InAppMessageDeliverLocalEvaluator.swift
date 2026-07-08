@@ -24,7 +24,7 @@ class InAppMessageDeliverLocalEvaluator: InAppMessageDeliverEvaluator {
         }
 
         // check InAppMessage
-        guard let inAppMessage = workspace.getInAppMessageOrNil(inAppMessageKey: request.inAppMessageKey) else {
+        guard let inAppMessage = workspace.getInAppMessageConfigOrNil(inAppMessageKey: request.inAppMessageKey) else {
             return InAppMessageDeliverEvaluateResponse.ineligible(code: .inAppMessageNotFound)
         }
 

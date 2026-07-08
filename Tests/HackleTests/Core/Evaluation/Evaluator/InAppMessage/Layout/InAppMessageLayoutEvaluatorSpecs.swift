@@ -45,15 +45,15 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
         }
 
         it("supports") {
-            expect(sut.supports(request: InAppMessage.layoutRequest())) == true
-            expect(sut.supports(request: InAppMessage.eligibilityRequest())) == false
+            expect(sut.supports(request: InAppMessageEntity.layoutRequest())) == true
+            expect(sut.supports(request: InAppMessageEntity.eligibilityRequest())) == false
         }
 
         describe("experiment") {
             it("when cannot get experiment then throws error") {
-                let messageContext = InAppMessage.messageContext(experimentContext: InAppMessage.ExperimentContext(key: 42))
-                let inAppMessage = InAppMessage.create(messageContext: messageContext)
-                let request = InAppMessage.layoutRequest(inAppMessage: inAppMessage)
+                let messageContext = InAppMessageEntity.messageContext(experimentContext: InAppMessage.ExperimentContext(key: 42))
+                let inAppMessage = InAppMessageEntity.create(messageContext: messageContext)
+                let request = InAppMessageEntity.layoutRequest(inAppMessage: inAppMessage)
 
                 expect {
                     let _: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
@@ -63,16 +63,16 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
 
             it("evaluate by variation") {
                 // given
-                let message = InAppMessage.message(variationKey: "B")
-                let messageContext = InAppMessage.messageContext(
+                let message = InAppMessageEntity.message(variationKey: "B")
+                let messageContext = InAppMessageEntity.messageContext(
                     experimentContext: InAppMessage.ExperimentContext(key: 42),
                     messages: [message]
                 )
-                let inAppMessage = InAppMessage.create(messageContext: messageContext)
+                let inAppMessage = InAppMessageEntity.create(messageContext: messageContext)
 
                 let experiment = experiment(id: 5, key: 42)
                 let workspace = DefaultWorkspaceConfig.create(experiments: [experiment])
-                let request = InAppMessage.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
                 experimentEvaluatorStub.evaluation = experimentEvaluation(
                     reason: DecisionReason.TRAFFIC_ALLOCATED,
                     experiment: experiment,
@@ -92,17 +92,17 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
 
             it("cannot evaluate when lang matches but variation key mismatches") {
                 // given
-                let message = InAppMessage.message(variationKey: "A", lang: "en")
-                let messageContext = InAppMessage.messageContext(
+                let message = InAppMessageEntity.message(variationKey: "A", lang: "en")
+                let messageContext = InAppMessageEntity.messageContext(
                     defaultLang: "en",
                     experimentContext: InAppMessage.ExperimentContext(key: 42),
                     messages: [message]
                 )
-                let inAppMessage = InAppMessage.create(messageContext: messageContext)
+                let inAppMessage = InAppMessageEntity.create(messageContext: messageContext)
 
                 let experiment = experiment(id: 5, key: 42)
                 let workspace = DefaultWorkspaceConfig.create(experiments: [experiment])
-                let request = InAppMessage.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.layoutRequest(workspace: workspace, inAppMessage: inAppMessage)
                 experimentEvaluatorStub.evaluation = experimentEvaluation(
                     reason: DecisionReason.TRAFFIC_ALLOCATED,
                     experiment: experiment,
@@ -121,14 +121,14 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
 
             it("evaluate") {
                 // given
-                let message = InAppMessage.message(lang: "ko")
-                let inAppMessage = InAppMessage.create(
-                    messageContext: InAppMessage.messageContext(
+                let message = InAppMessageEntity.message(lang: "ko")
+                let inAppMessage = InAppMessageEntity.create(
+                    messageContext: InAppMessageEntity.messageContext(
                         defaultLang: "ko",
                         messages: [message]
                     )
                 )
-                let request = InAppMessage.layoutRequest(inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.layoutRequest(inAppMessage: inAppMessage)
 
                 // when
                 let response: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
@@ -139,14 +139,14 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
             }
 
             it("not match") {
-                let message = InAppMessage.message(lang: "en")
-                let inAppMessage = InAppMessage.create(
-                    messageContext: InAppMessage.messageContext(
+                let message = InAppMessageEntity.message(lang: "en")
+                let inAppMessage = InAppMessageEntity.create(
+                    messageContext: InAppMessageEntity.messageContext(
                         defaultLang: "ko",
                         messages: [message]
                     )
                 )
-                let request = InAppMessage.layoutRequest(inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.layoutRequest(inAppMessage: inAppMessage)
 
                 expect {
                     let _: InAppMessageLayoutEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
@@ -157,11 +157,11 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
 
         it("record") {
             // given
-            let request = InAppMessage.layoutRequest()
+            let request = InAppMessageEntity.layoutRequest()
             let response = InAppMessageLayoutEvaluateResponse(
                 user: request.user,
                 workspace: request.workspace,
-                evaluation: InAppMessage.layoutEvaluation(),
+                evaluation: InAppMessageEntity.layoutEvaluation(),
                 references: [],
                 experiment: nil
             )
