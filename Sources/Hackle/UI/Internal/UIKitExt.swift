@@ -53,8 +53,8 @@ extension UIButton {
 
 extension UIImageView {
 
-    func loadImage(url: String, completion: (() -> Void)? = nil) {
-        let cacheKey = NSString(string: url)
+    func loadImage(url: String, completion: (@MainActor () -> Void)? = nil) {
+        let cacheKey = url
         if let cachedImage = ImageCacheManager.shared.object(forKey: cacheKey) {
             self.image = cachedImage
             completion?()
