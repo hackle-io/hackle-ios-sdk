@@ -3,7 +3,7 @@ import Nimble
 import Quick
 @testable import Hackle
 
-class HackleAppAsyncApiSpecs: QuickSpec {
+class HackleAppAsyncApiSpecs: AsyncSpec {
     override class func spec() {
         var core: MockHackleCore!
         var eventQueue: DispatchQueue!
@@ -70,7 +70,7 @@ class HackleAppAsyncApiSpecs: QuickSpec {
 
         it("setUser async — 반환 시 유저 갱신과 sync가 모두 완료된다") {
             let user = User.builder().id("async-user").build()
-            awaitCompletion {
+            await awaitCompletion {
                 await sut.setUser(user: user)
                 expect(userManager.currentUser.id) == "async-user"
                 verify(exactly: 1) {
@@ -80,7 +80,7 @@ class HackleAppAsyncApiSpecs: QuickSpec {
         }
 
         it("updateUserProperties async — non-suspending으로 완료된다") {
-            awaitCompletion {
+            await awaitCompletion {
                 await sut.updateUserProperties(operations: PropertyOperations.builder().set("k", "v").build())
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
@@ -89,7 +89,7 @@ class HackleAppAsyncApiSpecs: QuickSpec {
         }
 
         it("fetch async — sync 완료 후 반환된다") {
-            awaitCompletion {
+            await awaitCompletion {
                 await sut.fetch()
                 verify(exactly: 1) {
                     synchronizer.syncMock

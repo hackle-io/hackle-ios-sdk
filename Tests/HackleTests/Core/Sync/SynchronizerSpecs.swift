@@ -3,13 +3,13 @@ import Nimble
 import Quick
 @testable import Hackle
 
-class SynchronizerSpecs: QuickSpec {
+class SynchronizerSpecs: AsyncSpec {
     override class func spec() {
         describe("Synchronizer.safeSync") {
             it("success") {
                 let counter = CumulativeMetricRegistry().counter(name: "counter")
                 let sut = SynchronizerStub(.success(()))
-                awaitCompletion {
+                await awaitCompletion {
                     await sut.safeSync()
                     counter.increment()
                 }
@@ -19,7 +19,7 @@ class SynchronizerSpecs: QuickSpec {
             it("failure - 에러를 삼키고 완료된다") {
                 let counter = CumulativeMetricRegistry().counter(name: "counter")
                 let sut = SynchronizerStub(.failure(HackleError.error("fail")))
-                awaitCompletion {
+                await awaitCompletion {
                     await sut.safeSync()
                     counter.increment()
                 }

@@ -3,7 +3,7 @@ import Nimble
 import Quick
 @testable import Hackle
 
-class PollingSynchronizerSpecs: QuickSpec {
+class PollingSynchronizerSpecs: AsyncSpec {
     override class func spec() {
 
         describe("sync") {
@@ -13,7 +13,7 @@ class PollingSynchronizerSpecs: QuickSpec {
                 let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 10)
 
                 // when
-                awaitCompletion { try await sut.sync() }
+                await awaitCompletion { try await sut.sync() }
 
                 // then
                 verify(exactly: 1) {

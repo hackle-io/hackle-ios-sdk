@@ -3,7 +3,7 @@ import Nimble
 import Quick
 @testable import Hackle
 
-class CompositeSynchronizerSpecs: QuickSpec {
+class CompositeSynchronizerSpecs: AsyncSpec {
     override class func spec() {
 
         var workspaceSynchronizer: MockSynchronizer!
@@ -22,7 +22,7 @@ class CompositeSynchronizerSpecs: QuickSpec {
             // given
             var count = 0
             // when
-            awaitCompletion {
+            await awaitCompletion {
                 try? await sut.sync()
                 count += 1
             }
@@ -49,7 +49,7 @@ class CompositeSynchronizerSpecs: QuickSpec {
             // when: 순차 await로 dispatch하면 첫 child가 배리어에서 영구 대기 → 타임아웃 실패.
             //       TaskGroup 팬아웃이면 둘 다 진입 → 배리어 통과 → 완료.
             var completed = false
-            awaitCompletion {
+            await awaitCompletion {
                 try await parallelSut.sync()
                 completed = true
             }
@@ -77,7 +77,7 @@ class CompositeSynchronizerSpecs: QuickSpec {
 
             // when
             var thrown: Error?
-            awaitCompletion {
+            await awaitCompletion {
                 do {
                     try await sut.sync()
                 } catch {

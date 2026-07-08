@@ -4,7 +4,7 @@ import Quick
 import MockingKit
 @testable import Hackle
 
-class WorkspaceConfigManagerSpecs: QuickSpec {
+class WorkspaceConfigManagerSpecs: AsyncSpec {
     static func loadWorkspaceConfigFromRes(filename: String = "workspace_config") -> WorkspaceConfigContext {
         let json = try! String(contentsOfFile: Bundle(for: WorkspaceConfigManagerSpecs.self).path(forResource: filename, ofType: "json")!)
         let dto = try! JSONDecoder().decode(WorkspaceConfigRecordDto.self, from: json.data(using: .utf8)!)
@@ -29,7 +29,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == data.dto.workspace.id
@@ -73,7 +73,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == data.dto.workspace.id
@@ -91,12 +91,12 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             expect(httpWorkspaceConfigFetcher.fetchIfModifiedRef.lastInvokation().arguments).to(beNil())
             expect(repository.value?.modifiedAt) == first.modifiedAt
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             expect(httpWorkspaceConfigFetcher.fetchIfModifiedRef.lastInvokation().arguments) == first.modifiedAt
             expect(repository.value?.modifiedAt) == second.modifiedAt
@@ -109,7 +109,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual?.metadata.id) == data.dto.workspace.id
@@ -122,7 +122,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual).to(beNil())
@@ -136,7 +136,7 @@ class WorkspaceConfigManagerSpecs: QuickSpec {
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
             sut.initialize()
 
-            awaitCompletion { try await sut.sync() }
+            await awaitCompletion { try await sut.sync() }
 
             let actual: WorkspaceConfig? = sut.workspace(user: HackleUser.of(userId: "user"))
             expect(actual).toNot(beNil())
