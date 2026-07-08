@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   ios-sdk-test:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
       
@@ -73,7 +73,7 @@ jobs:
           comment_mode: changes
 
   swift6-build:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
 
@@ -95,7 +95,7 @@ jobs:
                 | xcbeautify --renderer github-actions --quiet
 
   thread-sanitizer-test:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
 
