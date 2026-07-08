@@ -630,12 +630,6 @@ extension TargetRuleDto {
     }
 }
 
-extension EventTypeDto {
-    func toEventType() -> EventType {
-        EventTypeEntity(id: id, key: key)
-    }
-}
-
 extension SegmentDto {
     func toSegmentOrNil() -> Segment? {
         guard let segmentType: SegmentType = Enums.parseOrNil(rawValue: type) else {

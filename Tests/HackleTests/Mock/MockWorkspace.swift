@@ -45,12 +45,6 @@ class MockWorkspace: Mock, WorkspaceConfig {
         call(getBucketOrNilMock, args: bucketId)
     }
 
-    lazy var getEventTypeOrNilMock = MockFunction(self, getEventTypeOrNil)
-
-    func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
-        call(getEventTypeOrNilMock, args: eventTypeKey)
-    }
-
     lazy var getSegmentOrNilMock = MockFunction(self, getSegmentOrNil)
 
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
@@ -100,6 +94,6 @@ class MockWorkspace: Mock, WorkspaceConfig {
     lazy var toPropertiesMock = MockFunction(self, toProperties)
 
     func toProperties() -> [String: Any] {
-        call(toPropertiesMock, args: ())
+        call(toPropertiesMock, args: (), fallback: [:])
     }
 }

@@ -24,7 +24,5 @@ protocol Workspace {
 
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage?
 
-    func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? // Task 7에서 제거
-
     func toProperties() -> [String: Any]
 }

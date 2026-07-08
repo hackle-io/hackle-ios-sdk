@@ -7,7 +7,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
     private let buckets: [Bucket.Id: Bucket]
-    private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
     private let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
@@ -24,7 +23,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         experiments: [Experiment],
         featureFlags: [Experiment],
         buckets: [Bucket],
-        eventTypes: [EventType],
         segments: [Segment],
         containers: [Container],
         parameterConfigurations: [ParameterConfiguration],
@@ -38,9 +36,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         self.inAppMessages = inAppMessages
         self.buckets = buckets.associateBy {
             $0.id
-        }
-        self.eventTypes = eventTypes.associateBy {
-            $0.key
         }
         self.segments = segments.associateBy {
             $0.key
@@ -76,10 +71,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
 
     func getBucketOrNil(bucketId: Bucket.Id) -> Bucket? {
         buckets[bucketId]
-    }
-
-    func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
-        eventTypes[eventTypeKey]
     }
 
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
@@ -151,10 +142,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             it.toBucket()
         }
 
-        let eventTypes = dto.events.map { it in
-            it.toEventType()
-        }
-
         let segments = dto.segments.compactMap { it in
             it.toSegmentOrNil()
         }
@@ -178,7 +165,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
-            eventTypes: eventTypes,
             segments: segments,
             containers: containers,
             parameterConfigurations: parameterConfigurations,

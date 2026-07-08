@@ -53,7 +53,7 @@ class SessionEventTrackerSpecs: QuickSpec {
         }
 
         func trackEvent(key: String) -> UserEvent {
-            UserEvents.track(eventType: UndefinedEventType(key: key), event: Hackle.event(key: key), timestamp: Date(), user: HackleUser.builder().build())
+            UserEvents.track(event: Hackle.event(key: key), workspace: nil, timestamp: Date(), user: HackleUser.builder().build())
         }
     }
 }

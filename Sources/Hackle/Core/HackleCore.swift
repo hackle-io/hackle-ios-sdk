@@ -57,8 +57,8 @@ class DefaultHackleCore: HackleCore {
     }
 
     func track(event: Event, user: HackleUser, timestamp: Date) {
-        let eventType = workspaceManager.workspace(user: user)?.getEventTypeOrNil(eventTypeKey: event.key) ?? UndefinedEventType(key: event.key)
-        let userEvent = UserEvents.track(eventType: eventType, event: event, timestamp: timestamp, user: user)
+        let workspace = workspaceManager.workspace(user: user)
+        let userEvent = UserEvents.track(event: event, workspace: workspace, timestamp: timestamp, user: user)
         eventProcessor.process(event: userEvent)
     }
 

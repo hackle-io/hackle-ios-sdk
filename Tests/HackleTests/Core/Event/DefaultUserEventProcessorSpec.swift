@@ -124,7 +124,7 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 // given
                 let sut = processor()
                 let user = HackleUser.builder().identifier(.id, "id").build()
-                let event = UserEvents.track(eventType: UndefinedEventType(key: "$session_start"), event: Hackle.event(key: "$session_start"), timestamp: Date(), user: user)
+                let event = UserEvents.track(event: Hackle.event(key: "$session_start"), workspace: nil, timestamp: Date(), user: user)
 
                 // when
                 sut.process(event: event)
