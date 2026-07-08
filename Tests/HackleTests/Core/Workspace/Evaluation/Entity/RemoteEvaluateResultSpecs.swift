@@ -72,5 +72,41 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 expect(rcEvaluation.remoteConfigResult.value?.id).to(equal(7))
             }
         }
+
+        describe("InAppMessageRemoteEvaluateResults") {
+            let iam = iamFixture()
+
+            it("eligibility result is an InAppMessage entity holding layout result") {
+                let layout = InAppMessageLayoutRemoteEvaluateResult(
+                    id: 5, key: 50,
+                    period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
+                    evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
+                    message: iam.messageContext.messages[0],
+                    reason: DecisionReason.IN_APP_MESSAGE_TARGET,
+                    references: []
+                )
+                let sut = InAppMessageEligibilityRemoteEvaluateResult(
+                    id: 5, key: 50,
+                    period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
+                    evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
+                    isEligible: true,
+                    reason: DecisionReason.IN_APP_MESSAGE_TARGET,
+                    references: [],
+                    layout: layout
+                )
+                expect(sut.serviceType).to(equal(.inAppMessage))
+                expect(sut.entityKey).to(equal(EntityKey(serviceType: .inAppMessage, id: 5)))
+                expect(sut.isEligible).to(beTrue())
+                expect(sut.reason).to(equal(DecisionReason.IN_APP_MESSAGE_TARGET))
+                expect(sut.layout.entityKey).to(equal(layout.entityKey))
+                expect(sut.layout).to(beIdenticalTo(layout))
+                expect((sut.toEvaluation() as? InAppMessageEligibilityEvaluation)?.entity.entityKey).to(equal(sut.entityKey))
+                expect((layout.toEvaluation() as? InAppMessageLayoutEvaluation)?.entity.entityKey).to(equal(layout.entityKey))
+            }
+        }
     }
+}
+
+private func iamFixture() -> InAppMessageEntity {
+    InAppMessageEntity.create()
 }
