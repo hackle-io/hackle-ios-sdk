@@ -14,7 +14,7 @@ class RemoteConfigEventDedupDeterminerSpecs: QuickSpec {
                 insertId: "insert_id",
                 timestamp: Date(),
                 user: HackleUser.builder().build(),
-                parameter: RemoteConfigParameter(
+                parameter: RemoteConfigParameterEntity(
                     id: 42,
                     key: "rc",
                     type: .string,

@@ -173,7 +173,7 @@ class DefaultHackleCoreSpecs: QuickSpec {
         describe("remoteConfig") {
 
             it("단일 remoteConfig 조회 시 이벤트를 기록한다") {
-                let parameter = RemoteConfigParameter(id: 1, key: "rc", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("dv")))
+                let parameter = RemoteConfigParameterEntity(id: 1, key: "rc", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("dv")))
                 let workspace = MockWorkspace()
                 every(workspace.getRemoteConfigParameterMock).returns(parameter)
                 let eventProcessor = InMemoryUserEventProcessor()

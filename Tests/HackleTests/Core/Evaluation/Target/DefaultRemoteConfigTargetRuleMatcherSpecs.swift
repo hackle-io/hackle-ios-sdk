@@ -117,8 +117,8 @@ class DefaultRemoteConfigTargetRuleMatcherSpecs: QuickSpec {
             )
         }
 
-        func parameter(identifierType: String = "$id") -> RemoteConfigParameter {
-            RemoteConfigParameter(id: 42, key: "key", type: .string, identifierType: identifierType, targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 320, rawValue: HackleValue.string("str")))
+        func parameter(identifierType: String = "$id") -> RemoteConfigParameterEntity {
+            RemoteConfigParameterEntity(id: 42, key: "key", type: .string, identifierType: identifierType, targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 320, rawValue: HackleValue.string("str")))
         }
     }
 }

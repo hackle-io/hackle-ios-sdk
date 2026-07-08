@@ -31,7 +31,7 @@ class UserEventSpecs: QuickSpec {
 
         describe("RemoteConfig") {
             it("copy") {
-                let parameter = RemoteConfigParameter(id: 42, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("dv")))
+                let parameter = RemoteConfigParameterEntity(id: 42, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("dv")))
                 let user = HackleUser.of(userId: "id")
                 let evaluation = RemoteConfigEvaluation(
                     entity: parameter,
@@ -43,7 +43,7 @@ class UserEventSpecs: QuickSpec {
                 let remoteConfigEvent = actual as! UserEvents.RemoteConfig
 
                 expect(remoteConfigEvent.user).to(beIdenticalTo(newUser))
-                expect(remoteConfigEvent.parameter).to(beIdenticalTo(parameter))
+                expect(remoteConfigEvent.parameter as? RemoteConfigParameterEntity).to(beIdenticalTo(parameter))
                 expect(remoteConfigEvent.valueId) == 42
                 expect(remoteConfigEvent.decisionReason) == DecisionReason.DEFAULT_RULE
                 expect(remoteConfigEvent.properties["1"] as? String) == "2"

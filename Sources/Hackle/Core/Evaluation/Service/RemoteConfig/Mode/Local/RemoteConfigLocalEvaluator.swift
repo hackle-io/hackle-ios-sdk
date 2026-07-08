@@ -16,7 +16,7 @@ final class RemoteConfigLocalEvaluator: RemoteConfigEvaluator {
     }
 
     func doEvaluate(request: RemoteConfigLocalEvaluateRequest, context: EvaluatorContext) throws -> RemoteConfigEvaluateResponse {
-        if request.user.identifiers[request.parameter.identifierType] == nil {
+        if request.user.identifiers[request.parameterConfig.identifierType] == nil {
             let result = RemoteConfigEvaluateResult.of(reason: DecisionReason.IDENTIFIER_NOT_FOUND, value: nil)
             return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
         }
@@ -26,7 +26,7 @@ final class RemoteConfigLocalEvaluator: RemoteConfigEvaluator {
             return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
         }
 
-        let result = self.result(request: request, value: request.parameter.defaultValue, reason: DecisionReason.DEFAULT_RULE)
+        let result = self.result(request: request, value: request.parameterConfig.defaultValue, reason: DecisionReason.DEFAULT_RULE)
         return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
     }
 

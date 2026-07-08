@@ -8,32 +8,33 @@ import Foundation
 final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfigEvaluateRequest, Equatable, CustomStringConvertible {
 
     let workspace: Workspace
-    let parameter: RemoteConfigParameter
+    let parameterConfig: RemoteConfigParameterConfig
     let user: HackleUser
     let record: Bool
     let requiredType: HackleValueType
 
-    var entity: Entity { parameter }
+    var parameter: RemoteConfigParameter { parameterConfig }
+    var entity: Entity { parameterConfig }
 
-    private init(workspace: Workspace, parameter: RemoteConfigParameter, user: HackleUser, record: Bool, requiredType: HackleValueType) {
+    private init(workspace: Workspace, parameter: RemoteConfigParameterConfig, user: HackleUser, record: Bool, requiredType: HackleValueType) {
         self.workspace = workspace
-        self.parameter = parameter
+        self.parameterConfig = parameter
         self.user = user
         self.record = record
         self.requiredType = requiredType
     }
 
     var description: String {
-        "RemoteConfigEvaluateRequest(key=\(parameter.key))"
+        "RemoteConfigEvaluateRequest(key=\(parameterConfig.key))"
     }
 
     static func ==(lhs: RemoteConfigLocalEvaluateRequest, rhs: RemoteConfigLocalEvaluateRequest) -> Bool {
-        lhs.parameter.entityKey == rhs.parameter.entityKey
+        lhs.parameterConfig.entityKey == rhs.parameterConfig.entityKey
     }
 
     static func of(
         workspace: Workspace,
-        parameter: RemoteConfigParameter,
+        parameter: RemoteConfigParameterConfig,
         user: HackleUser,
         requiredType: HackleValueType,
         record: Bool = true

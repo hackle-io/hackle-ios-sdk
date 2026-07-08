@@ -689,7 +689,7 @@ extension RemoteConfigParameterDto {
         guard let type: HackleValueType = Enums.parseOrNil(rawValue: type) else {
             return nil
         }
-        return RemoteConfigParameter(
+        return RemoteConfigParameterEntity(
             id: id,
             key: key,
             type: type,
@@ -707,7 +707,7 @@ extension RemoteConfigParameterDto.TargetRuleDto {
         guard let target = target.toTargetOrNil(.property) else {
             return nil
         }
-        return RemoteConfigParameter.TargetRule(
+        return RemoteConfigParameterEntity.TargetRule(
             key: key,
             name: name,
             target: target,
@@ -719,6 +719,6 @@ extension RemoteConfigParameterDto.TargetRuleDto {
 
 extension RemoteConfigParameterDto.ValueDto {
     func toValue() -> RemoteConfigParameter.Value {
-        RemoteConfigParameter.Value(id: id, rawValue: value)
+        RemoteConfigParameterEntity.Value(id: id, rawValue: value)
     }
 }

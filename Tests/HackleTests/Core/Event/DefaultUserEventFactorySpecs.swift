@@ -45,7 +45,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let rc = events[0] as! UserEvents.RemoteConfig
             expect(rc.timestamp) == Date(timeIntervalSince1970: 42)
             expect(rc.user).to(beIdenticalTo(request.user))
-            expect(rc.parameter).to(beIdenticalTo(request.parameter))
+            expect(rc.parameter as? RemoteConfigParameterEntity).to(beIdenticalTo(request.parameter as? RemoteConfigParameterEntity))
             expect(rc.valueId) == 999
             expect(rc.decisionReason) == DecisionReason.TARGET_RULE_MATCH
 

@@ -50,8 +50,8 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                 identifierType: String = "$id",
                 targetRules: [RemoteConfigParameter.TargetRule] = [],
                 defaultValue: RemoteConfigParameter.Value
-            ) -> RemoteConfigParameter {
-                RemoteConfigParameter(id: id, key: key, type: type, identifierType: identifierType, targetRules: targetRules, defaultValue: defaultValue)
+            ) -> RemoteConfigParameterEntity {
+                RemoteConfigParameterEntity(id: id, key: key, type: type, identifierType: identifierType, targetRules: targetRules, defaultValue: defaultValue)
             }
 
             it("식별자가 없는 경우") {
