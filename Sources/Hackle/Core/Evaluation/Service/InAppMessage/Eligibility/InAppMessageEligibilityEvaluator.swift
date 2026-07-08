@@ -1,4 +1,4 @@
 import Foundation
 
-protocol InAppMessageEligibilityEvaluator: LocalEvaluator where Request: InAppMessageEligibilityEvaluateRequest, Response == InAppMessageEligibilityEvaluateResponse {
+protocol InAppMessageEligibilityEvaluator: ContextualEvaluator where Request: InAppMessageEligibilityEvaluateRequest, Response == InAppMessageEligibilityEvaluateResponse {
 }

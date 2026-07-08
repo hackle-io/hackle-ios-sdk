@@ -5,7 +5,10 @@
 
 import Foundation
 
-final class RemoteConfigLocalEvaluator: RemoteConfigEvaluator {
+final class RemoteConfigLocalEvaluator: LocalEvaluator, RemoteConfigEvaluator {
+
+    typealias Request = RemoteConfigLocalEvaluateRequest
+    typealias Response = RemoteConfigEvaluateResponse
 
     private let targetRuleDeterminer: RemoteConfigParameterTargetRuleDeterminer
     let eventRecorder: EvaluationEventRecorder

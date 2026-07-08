@@ -1,6 +1,6 @@
 import Foundation
 
-final class InAppMessageLayoutLocalEvaluator: InAppMessageLayoutEvaluator {
+final class InAppMessageLayoutLocalEvaluator: LocalEvaluator, InAppMessageLayoutEvaluator {
     typealias Request = InAppMessageLayoutLocalEvaluateRequest
     typealias Response = InAppMessageLayoutEvaluateResponse
 
