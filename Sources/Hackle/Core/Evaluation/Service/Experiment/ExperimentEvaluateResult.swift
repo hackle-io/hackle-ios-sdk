@@ -1,6 +1,6 @@
 import Foundation
 
-final class ExperimentEvaluateResult: EvaluateResult, CustomStringConvertible {
+class ExperimentEvaluateResult: EvaluateResult, CustomStringConvertible {
     let reason: String
     let variation: Variation
 
