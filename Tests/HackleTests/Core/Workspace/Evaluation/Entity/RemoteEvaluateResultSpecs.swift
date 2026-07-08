@@ -22,6 +22,10 @@ class RemoteEvaluateResultSpecs: QuickSpec {
             it("is an Experiment entity carrying the server-evaluated result") {
                 expect(sut.serviceType).to(equal(.abTest))
                 expect(sut.entityKey).to(equal(EntityKey(serviceType: .abTest, id: 1)))
+                expect(sut.key).to(equal(10))
+                expect(sut.version).to(equal(2))
+                expect(sut.type).to(equal(.abTest))
+                expect(sut.executionVersion).to(equal(3))
                 expect(sut.variation.id).to(equal(42))
                 expect(sut.reason).to(equal(DecisionReason.OVERRIDDEN))
                 expect(sut.references.count).to(equal(1))
@@ -52,8 +56,10 @@ class RemoteEvaluateResultSpecs: QuickSpec {
             it("is a RemoteConfigParameter entity carrying the server-evaluated result") {
                 expect(sut.serviceType).to(equal(.remoteConfig))
                 expect(sut.key).to(equal("rc_key"))
+                expect(sut.type).to(equal(.string))
                 expect(sut.value?.id).to(equal(7))
                 expect(sut.reason).to(equal(DecisionReason.TARGET_RULE_MATCH))
+                expect(sut.references).to(beEmpty())
             }
 
             it("toEvaluation returns RemoteConfigEvaluation of itself") {
