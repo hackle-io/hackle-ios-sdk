@@ -13,11 +13,11 @@ class DefaultExperimentTargetDeterminer: ExperimentTargetDeterminer {
     }
 
     func isUserInExperimentTarget(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
-        if request.experiment.targetAudiences.isEmpty {
+        if request.experimentConfig.targetAudiences.isEmpty {
             return true
         }
 
-        return try request.experiment.targetAudiences.contains { it in
+        return try request.experimentConfig.targetAudiences.contains { it in
             try targetMatcher.matches(request: request, context: context, target: it)
         }
     }

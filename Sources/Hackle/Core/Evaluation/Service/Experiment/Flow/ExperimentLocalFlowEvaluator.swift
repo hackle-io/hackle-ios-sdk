@@ -63,7 +63,7 @@ class OverrideExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
         if let overriddenVariation = try overrideResolver.resolveOrNil(request: request, context: context) {
-            switch request.experiment.type {
+            switch request.experimentConfig.type {
             case .abTest:
                 return of(request: request, reason: DecisionReason.OVERRIDDEN, variation: overriddenVariation)
             case .featureFlag:
@@ -81,7 +81,7 @@ class DraftExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        if request.experiment.status == .draft {
+        if request.experimentConfig.status == .draft {
             return try ofControl(request: request, reason: DecisionReason.EXPERIMENT_DRAFT)
         } else {
             return try nextFlow.evaluate(request: request, context: context)
@@ -95,8 +95,8 @@ class PausedExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        if request.experiment.status == .paused {
-            switch request.experiment.type {
+        if request.experimentConfig.status == .paused {
+            switch request.experimentConfig.type {
             case .abTest:
                 return try ofControl(request: request, reason: DecisionReason.EXPERIMENT_PAUSED)
             case .featureFlag:
@@ -114,9 +114,9 @@ class CompletedExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        if request.experiment.status == .completed {
-            guard let winnerVariation = request.experiment.winnerVariation else {
-                throw HackleError.error("winner variation [\(request.experiment.id)]")
+        if request.experimentConfig.status == .completed {
+            guard let winnerVariation = request.experimentConfig.winnerVariation else {
+                throw HackleError.error("winner variation [\(request.experimentConfig.id)]")
             }
             return of(request: request, reason: DecisionReason.EXPERIMENT_COMPLETED, variation: winnerVariation)
         } else {
@@ -137,8 +137,8 @@ class TargetExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        guard request.experiment.type == .abTest else {
-            throw HackleError.error("Experiment type must be abTest [\(request.experiment.id)]")
+        guard request.experimentConfig.type == .abTest else {
+            throw HackleError.error("Experiment type must be abTest [\(request.experimentConfig.id)]")
         }
 
         let isUserInExperimentTarget = try experimentTargetDeterminer.isUserInExperimentTarget(request: request, context: context)
@@ -163,15 +163,15 @@ class TrafficAllocateExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator 
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        guard request.experiment.status == .running else {
-            throw HackleError.error("Experiment status must be running [\(request.experiment.id)]")
+        guard request.experimentConfig.status == .running else {
+            throw HackleError.error("Experiment status must be running [\(request.experimentConfig.id)]")
         }
 
-        guard request.experiment.type == .abTest else {
-            throw HackleError.error("Experiment type must be abTest [\(request.experiment.id)]")
+        guard request.experimentConfig.type == .abTest else {
+            throw HackleError.error("Experiment type must be abTest [\(request.experimentConfig.id)]")
         }
 
-        guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experiment.defaultRule) else {
+        guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experimentConfig.defaultRule) else {
             return try ofControl(request: request, reason: DecisionReason.TRAFFIC_NOT_ALLOCATED)
         }
 
@@ -197,15 +197,15 @@ class TargetRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        guard request.experiment.status == .running else {
-            throw HackleError.error("Experiment status must be running [\(request.experiment.id)]")
+        guard request.experimentConfig.status == .running else {
+            throw HackleError.error("Experiment status must be running [\(request.experimentConfig.id)]")
         }
 
-        guard request.experiment.type == .featureFlag else {
-            throw HackleError.error("Experiment type must be featureFlag [\(request.experiment.id)]")
+        guard request.experimentConfig.type == .featureFlag else {
+            throw HackleError.error("Experiment type must be featureFlag [\(request.experimentConfig.id)]")
         }
 
-        if request.user.identifiers[request.experiment.identifierType] == nil {
+        if request.user.identifiers[request.experimentConfig.identifierType] == nil {
             return try nextFlow.evaluate(request: request, context: context)
         }
 
@@ -214,7 +214,7 @@ class TargetRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         }
 
         guard let variation = try actionResolver.resolveOrNil(request: request, action: targetRule.action) else {
-            throw HackleError.error("FeatureFlag must decide the Variation [\(request.experiment.id)]")
+            throw HackleError.error("FeatureFlag must decide the Variation [\(request.experimentConfig.id)]")
         }
 
         return of(request: request, reason: DecisionReason.TARGET_RULE_MATCH, variation: variation)
@@ -233,20 +233,20 @@ class DefaultRuleExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        guard request.experiment.status == .running else {
-            throw HackleError.error("Experiment status must be running [\(request.experiment.id)]")
+        guard request.experimentConfig.status == .running else {
+            throw HackleError.error("Experiment status must be running [\(request.experimentConfig.id)]")
         }
 
-        guard request.experiment.type == .featureFlag else {
-            throw HackleError.error("Experiment type must be featureFlag [\(request.experiment.id)]")
+        guard request.experimentConfig.type == .featureFlag else {
+            throw HackleError.error("Experiment type must be featureFlag [\(request.experimentConfig.id)]")
         }
 
-        if request.user.identifiers[request.experiment.identifierType] == nil {
+        if request.user.identifiers[request.experimentConfig.identifierType] == nil {
             return try ofControl(request: request, reason: DecisionReason.DEFAULT_RULE)
         }
 
-        guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experiment.defaultRule) else {
-            throw HackleError.error("FeatureFlag must decide the Variation [\(request.experiment.id)]")
+        guard let variation = try actionResolver.resolveOrNil(request: request, action: request.experimentConfig.defaultRule) else {
+            throw HackleError.error("FeatureFlag must decide the Variation [\(request.experimentConfig.id)]")
         }
 
         return of(request: request, reason: DecisionReason.DEFAULT_RULE, variation: variation)
@@ -266,7 +266,7 @@ class ContainerExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        guard let containerId = request.experiment.containerId else {
+        guard let containerId = request.experimentConfig.containerId else {
             return try nextFlow.evaluate(request: request, context: context)
         }
 
@@ -289,7 +289,7 @@ class IdentifierExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
         context: EvaluatorContext,
         nextFlow: ExperimentLocalEvaluationFlow
     ) throws -> ExperimentEvaluation? {
-        if request.user.identifiers[request.experiment.identifierType] != nil {
+        if request.user.identifiers[request.experimentConfig.identifierType] != nil {
             return try nextFlow.evaluate(request: request, context: context)
         } else {
             return try ofControl(request: request, reason: DecisionReason.IDENTIFIER_NOT_FOUND)

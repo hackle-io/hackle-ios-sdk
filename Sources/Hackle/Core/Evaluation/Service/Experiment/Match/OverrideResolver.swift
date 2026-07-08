@@ -39,7 +39,7 @@ class DefaultOverrideResolver: OverrideResolver {
     }
 
     private func resolveUserOverrideOrNil(request: ExperimentLocalEvaluateRequest) -> Variation? {
-        let experiment = request.experiment
+        let experiment = request.experimentConfig
         guard let identifier = request.user.identifiers[experiment.identifierType] else {
             return nil
         }
@@ -50,7 +50,7 @@ class DefaultOverrideResolver: OverrideResolver {
     }
 
     private func resolveSegmentOverrideOrNil(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> Variation? {
-        guard let overriddenRule = try request.experiment.segmentOverrides.first(where: { it in try targetMatcher.matches(request: request, context: context, target: it.target) }) else {
+        guard let overriddenRule = try request.experimentConfig.segmentOverrides.first(where: { it in try targetMatcher.matches(request: request, context: context, target: it.target) }) else {
             return nil
         }
         return try actionResolver.resolveOrNil(request: request, action: overriddenRule.action)

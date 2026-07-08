@@ -17,7 +17,7 @@ class DefaultContainerResolver: ContainerResolver {
     }
 
     func isUserInContainerGroup(request: ExperimentLocalEvaluateRequest, container: Container) throws -> Bool {
-        guard let identifier = request.user.identifiers[request.experiment.identifierType] else {
+        guard let identifier = request.user.identifiers[request.experimentConfig.identifierType] else {
             return false
         }
 
@@ -33,6 +33,6 @@ class DefaultContainerResolver: ContainerResolver {
             throw HackleError.error("ContainerGroup[\(slot.variationId)]")
         }
 
-        return containerGroup.experiments.contains(request.experiment.id)
+        return containerGroup.experiments.contains(request.experimentConfig.id)
     }
 }

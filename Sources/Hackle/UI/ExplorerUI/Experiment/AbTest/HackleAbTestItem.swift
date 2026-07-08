@@ -26,7 +26,7 @@ struct HackleAbTestItem: Comparable {
         decisions.map { experiment, decision in
                 var overriddenVariation: Variation? = nil
                 if let overriddenVariationId = overrides[experiment.id] {
-                    overriddenVariation = experiment.getVariationOrNil(variationId: overriddenVariationId)
+                    overriddenVariation = (experiment as? ExperimentConfig)?.getVariationOrNil(variationId: overriddenVariationId)
                 }
                 return HackleAbTestItem(experiment: experiment, decision: decision, overriddenVariation: overriddenVariation)
             }

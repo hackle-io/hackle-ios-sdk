@@ -28,7 +28,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
         func evaluation(request: ExperimentLocalEvaluateRequest, reason: String) -> ExperimentEvaluation {
             ExperimentEvaluation(
                 entity: request.experiment,
-                result: ExperimentEvaluateResult.of(reason: reason, variation: request.experiment.variations.first!)
+                result: ExperimentEvaluateResult.of(reason: reason, variation: request.experimentConfig.variations.first!)
             )
         }
 

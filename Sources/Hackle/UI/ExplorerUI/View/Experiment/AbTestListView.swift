@@ -26,7 +26,7 @@ struct AbTestListView: View {
                         variationTitle: item.decision.variation,
                         isOverridable: DecisionReasons.isOverridable(reason: item.decision.reason),
                         isResetEnabled: item.overriddenVariation != nil,
-                        variations: item.experiment.variations.map { variation in
+                        variations: ((item.experiment as? ExperimentConfig)?.variations ?? []).map { variation in
                             ActionSheetVariation(title: variation.key, variation: variation)
                         },
                         onOverrideSet: { selected in
@@ -49,22 +49,22 @@ struct AbTestListView: View {
     }
 
     private func currentVariation(for item: HackleAbTestItem) -> Variation? {
-        item.experiment.getVariationOrNil(variationKey: item.decision.variation)
+        (item.experiment as? ExperimentConfig)?.getVariationOrNil(variationKey: item.decision.variation)
     }
 }
 
 private extension HackleAbTestItem {
     var keyLabel: String {
-        "[\(experiment.key)] \(experiment.name ?? "")"
+        "[\(experiment.key)] \((experiment as? ExperimentConfig)?.name ?? "")"
     }
 
     var descLabel: String {
         [
             "V\(experiment.version)",
-            experiment.status.rawValue,
-            experiment.variations.map(\.key)
+            (experiment as? ExperimentConfig)?.status.rawValue ?? "",
+            ((experiment as? ExperimentConfig)?.variations ?? []).map(\.key)
                 .joined(separator: "/"),
-            experiment.identifierType
+            (experiment as? ExperimentConfig)?.identifierType ?? ""
         ]
             .joined(separator: " | ")
     }

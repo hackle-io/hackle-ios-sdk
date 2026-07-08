@@ -17,7 +17,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
         func doEvaluate(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
             let evaluation = evaluation ?? ExperimentEvaluation(
                 entity: request.experiment,
-                result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experiment.variations.first!)
+                result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experimentConfig.variations.first!)
             )
             return ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: context.references)
         }

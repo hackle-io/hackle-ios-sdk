@@ -26,7 +26,7 @@ struct FeatureFlagListView: View {
                         variationTitle: String(item.decision.isOn),
                         isOverridable: DecisionReasons.isOverridable(reason: item.decision.reason),
                         isResetEnabled: item.overriddenVariation != nil,
-                        variations: item.experiment.variations.map { variation in
+                        variations: ((item.experiment as? ExperimentConfig)?.variations ?? []).map { variation in
                             ActionSheetVariation(title: String(variation.isOn), variation: variation)
                         },
                         onOverrideSet: { selected in
@@ -50,17 +50,17 @@ struct FeatureFlagListView: View {
 
     private func currentVariation(for item: HackleFeatureFlagItem) -> Variation? {
         let isOn = item.decision.isOn
-        return item.experiment.variations.first { $0.isOn == isOn }
+        return ((item.experiment as? ExperimentConfig)?.variations ?? []).first { $0.isOn == isOn }
     }
 }
 
 private extension HackleFeatureFlagItem {
     var keyLabel: String {
-        "[\(experiment.key)] \(experiment.name ?? "")"
+        "[\(experiment.key)] \((experiment as? ExperimentConfig)?.name ?? "")"
     }
 
     var descLabel: String {
-        "\(experiment.status.rawValue) | \(experiment.identifierType)"
+        "\((experiment as? ExperimentConfig)?.status.rawValue ?? "") | \((experiment as? ExperimentConfig)?.identifierType ?? "")"
     }
 }
 
