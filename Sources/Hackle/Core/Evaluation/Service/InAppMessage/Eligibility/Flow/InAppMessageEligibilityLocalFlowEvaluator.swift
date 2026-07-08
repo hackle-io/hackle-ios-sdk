@@ -10,6 +10,29 @@ protocol InAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityFlowE
     ) throws -> InAppMessageEligibilityEvaluation?
 }
 
+extension InAppMessageEligibilityLocalFlowEvaluator {
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
+        context: EvaluatorContext,
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let inAppMessageRequest = request as? InAppMessageEligibilityLocalEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityLocalEvaluateRequest)")
+        }
+        guard let inAppMessageNextFlow = nextFlow as? InAppMessageEligibilityLocalEvaluationFlow else {
+            throw HackleError.error("Unsupported flow: \(type(of: nextFlow)) (expected: InAppMessageEligibilityLocalEvaluationFlow)")
+        }
+        let inAppMessageEvaluation = try evaluate(request: inAppMessageRequest, context: context, nextFlow: inAppMessageNextFlow)
+        if inAppMessageEvaluation == nil {
+            return nil
+        }
+        guard let evaluation = inAppMessageEvaluation as? E else {
+            throw HackleError.error("Unsupported evaluation: \(type(of: inAppMessageEvaluation)) (expected: \(E.self))")
+        }
+        return evaluation
+    }
+}
+
 /// Platform check
 ///
 /// iOS를 지원안하면 UNSUPPORTED_PLATFORM
@@ -31,9 +54,9 @@ class PlatformInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibility
 ///
 /// 테스트 디바이스에서 사용
 class OverrideInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityLocalFlowEvaluator {
-    private let userOverrideMatcher: InAppMessageMatcher
+    private let userOverrideMatcher: InAppMessageUserOverrideMatcher
 
-    init(userOverrideMatcher: InAppMessageMatcher) {
+    init(userOverrideMatcher: InAppMessageUserOverrideMatcher) {
         self.userOverrideMatcher = userOverrideMatcher
     }
 
@@ -88,9 +111,9 @@ class PauseInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityLoc
 ///
 /// IAM 타겟팅이 된 경우
 class TargetInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityLocalFlowEvaluator {
-    private let targetMatcher: InAppMessageMatcher
+    private let targetMatcher: InAppMessageTargetMatcher
 
-    init(targetMatcher: InAppMessageMatcher) {
+    init(targetMatcher: InAppMessageTargetMatcher) {
         self.targetMatcher = targetMatcher
     }
 

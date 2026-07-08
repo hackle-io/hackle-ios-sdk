@@ -5,7 +5,7 @@
 
 import Foundation
 
-class InAppMessageUserOverrideMatcher: InAppMessageMatcher {
+class InAppMessageUserOverrideMatcher {
     func matches(request: InAppMessageEligibilityLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
         return request.inAppMessageConfig.targetContext.overrides.contains { it in
             isUserOverridden(request: request, userOverride: it)

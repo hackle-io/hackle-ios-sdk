@@ -5,7 +5,7 @@
 
 import Foundation
 
-class InAppMessageTargetMatcher: InAppMessageMatcher {
+class InAppMessageTargetMatcher {
 
     private let targetMatcher: TargetMatcher
 

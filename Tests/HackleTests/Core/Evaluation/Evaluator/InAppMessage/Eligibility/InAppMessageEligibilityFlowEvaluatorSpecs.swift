@@ -16,11 +16,11 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
             context = Evaluators.context()
         }
 
-        describe("InAppMessageEligibilityFlowEvaluator") {
+        describe("InAppMessageEligibilityLocalFlowEvaluator") {
 
             let evaluation = InAppMessageEntity.eligibilityEvaluation()
 
-            class Sut: InAppMessageEligibilityFlowEvaluator {
+            class Sut: InAppMessageEligibilityLocalFlowEvaluator {
                 private let evaluation: InAppMessageEligibilityEvaluation?
 
                 init(evaluation: InAppMessageEligibilityEvaluation?) {
@@ -82,19 +82,21 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
 
         describe("OverrideInAppMessageEligibilityLocalFlowEvaluator") {
 
-            var userOverrideMatcher: InAppMessageMatcherStub!
             var sut: OverrideInAppMessageEligibilityLocalFlowEvaluator!
 
             beforeEach {
-                userOverrideMatcher = InAppMessageMatcherStub()
-                sut = OverrideInAppMessageEligibilityLocalFlowEvaluator(userOverrideMatcher: userOverrideMatcher)
+                sut = OverrideInAppMessageEligibilityLocalFlowEvaluator(userOverrideMatcher: InAppMessageUserOverrideMatcher())
             }
 
             it("when user is overridden then evaluated as OVERRIDDEN") {
                 // given
-                userOverrideMatcher.isMatched = true
-
-                let request = InAppMessageEntity.eligibilityRequest()
+                let user = HackleUser.builder().identifier(.user, "a").build()
+                let inAppMessage = InAppMessageEntity.create(
+                    targetContext: InAppMessageEntity.targetContext(overrides: [
+                        InAppMessage.UserOverride(identifierType: "$userId", identifiers: ["a"])
+                    ])
+                )
+                let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
                 // when
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
@@ -217,18 +219,21 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
         }
 
         describe("TargetInAppMessageEligibilityLocalFlowEvaluator") {
-            var targetMatcher: InAppMessageMatcherStub!
+            var targetMatcher: TargetMatcherStub!
             var sut: TargetInAppMessageEligibilityLocalFlowEvaluator!
+            let target = Target(conditions: [
+                Target.Condition(key: Target.Key(type: .userProperty, name: "age"), match: Target.Match(type: .match, matchOperator: ._in, valueType: .number, values: [HackleValue(value: 1)]))
+            ])
 
             beforeEach {
-                targetMatcher = InAppMessageMatcherStub()
-                sut = TargetInAppMessageEligibilityLocalFlowEvaluator(targetMatcher: targetMatcher)
+                targetMatcher = TargetMatcherStub.of(false)
+                sut = TargetInAppMessageEligibilityLocalFlowEvaluator(targetMatcher: InAppMessageTargetMatcher(targetMatcher: targetMatcher))
             }
 
             it("when user not in inAppMessage target then evaluated as nil") {
                 // given
-                targetMatcher.isMatched = false
-                let request = InAppMessageEntity.eligibilityRequest()
+                let inAppMessage = InAppMessageEntity.create(targetContext: InAppMessageEntity.targetContext(targets: [target]))
+                let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage)
 
                 // when
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
@@ -240,8 +245,9 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
 
             it("when user in inAppMessage target then evaluate next flow") {
                 // given
-                targetMatcher.isMatched = true
-                let request = InAppMessageEntity.eligibilityRequest()
+                targetMatcher.isMatches = [true]
+                let inAppMessage = InAppMessageEntity.create(targetContext: InAppMessageEntity.targetContext(targets: [target]))
+                let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage)
 
                 // when
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)!
