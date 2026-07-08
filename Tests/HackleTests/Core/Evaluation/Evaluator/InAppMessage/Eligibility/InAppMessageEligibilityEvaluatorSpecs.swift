@@ -4,22 +4,43 @@ import Nimble
 @testable import Hackle
 
 class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
+
+    class FlowFactoryStub: InAppMessageEligibilityLocalEvaluationFlowFactory {
+        let flow: InAppMessageEligibilityLocalEvaluationFlow
+        init(flow: InAppMessageEligibilityLocalEvaluationFlow) {
+            self.flow = flow
+        }
+        func get(request: InAppMessageEligibilityLocalEvaluateRequest) -> InAppMessageEligibilityLocalEvaluationFlow {
+            flow
+        }
+    }
+
+    static func layoutResponse(request: InAppMessageEligibilityLocalEvaluateRequest, layout: InAppMessageLayoutEvaluation) -> InAppMessageLayoutEvaluateResponse {
+        InAppMessageLayoutEvaluateResponse(
+            user: request.user,
+            workspace: request.workspace,
+            evaluation: layout,
+            references: [],
+            experiment: nil
+        )
+    }
+
     override class func spec() {
 
         it("supports") {
-            let sut = InAppMessageEligibilityEvaluator(
-                flow: InAppMessageEligibilityFlow.end(),
+            let sut = InAppMessageEligibilityLocalEvaluator(
+                evaluationFlowFactory: FlowFactoryStub(flow: .end()),
                 eventRecorder: MockEvaluationEventRecorder()
             )
-            expect(sut.support(request: experimentRequest())) == false
-            expect(sut.support(request: remoteConfigRequest())) == false
-            expect(sut.support(request: InAppMessage.eligibilityRequest())) == true
+            expect(sut.supports(request: experimentRequest())) == false
+            expect(sut.supports(request: remoteConfigRequest())) == false
+            expect(sut.supports(request: InAppMessage.eligibilityRequest())) == true
         }
 
         describe("evaluate") {
             it("circular") {
-                let sut = InAppMessageEligibilityEvaluator(
-                    flow: InAppMessageEligibilityFlow.end(),
+                let sut = InAppMessageEligibilityLocalEvaluator(
+                    evaluationFlowFactory: FlowFactoryStub(flow: .end()),
                     eventRecorder: MockEvaluationEventRecorder()
                 )
 
@@ -28,7 +49,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 context.add(request)
 
                 expect {
-                    let _: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
+                    let _: InAppMessageEligibilityEvaluateResponse = try sut.evaluate(request: request, context: context)
                 }
                     .to(throwError())
             }
@@ -36,35 +57,33 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
             context("flow") {
                 it("evaluation") {
                     let evaluation = InAppMessage.eligibilityEvaluation()
-                    let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.create(evaluation)
-                    let eventRecorder = MockEvaluationEventRecorder()
-                    let sut = InAppMessageEligibilityEvaluator(
-                        flow: flow,
-                        eventRecorder: eventRecorder
+                    let flow: InAppMessageEligibilityLocalEvaluationFlow = InAppMessageEligibilityLocalEvaluationFlow.create(evaluation)
+                    let sut = InAppMessageEligibilityLocalEvaluator(
+                        evaluationFlowFactory: FlowFactoryStub(flow: flow),
+                        eventRecorder: MockEvaluationEventRecorder()
                     )
 
                     let request = InAppMessage.eligibilityRequest()
                     let context = Evaluators.context()
 
-                    let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
+                    let response: InAppMessageEligibilityEvaluateResponse = try sut.evaluate(request: request, context: context)
 
-                    expect(actual).to(beIdenticalTo(evaluation))
+                    expect(response.eligibilityEvaluation.eligibilityResult.reason) == evaluation.eligibilityResult.reason
+                    expect(response.eligibilityEvaluation.eligibilityResult.isEligible) == evaluation.eligibilityResult.isEligible
                 }
 
                 it("default") {
-                    let flow: InAppMessageEligibilityFlow = InAppMessageEligibilityFlow.end()
-                    let eventRecorder = MockEvaluationEventRecorder()
-                    let sut = InAppMessageEligibilityEvaluator(
-                        flow: flow,
-                        eventRecorder: eventRecorder
+                    let sut = InAppMessageEligibilityLocalEvaluator(
+                        evaluationFlowFactory: FlowFactoryStub(flow: .end()),
+                        eventRecorder: MockEvaluationEventRecorder()
                     )
 
                     let request = InAppMessage.eligibilityRequest()
                     let context = Evaluators.context()
 
-                    let actual: InAppMessageEligibilityEvaluation = try sut.evaluate(request: request, context: context)
+                    let response: InAppMessageEligibilityEvaluateResponse = try sut.evaluate(request: request, context: context)
 
-                    expect(actual.reason) == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
+                    expect(response.eligibilityEvaluation.eligibilityResult.reason) == DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET
                 }
             }
         }
@@ -72,83 +91,64 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
         describe("record") {
 
             var eventRecorder: MockEvaluationEventRecorder!
-            var sut: InAppMessageEligibilityEvaluator!
+            var sut: InAppMessageEligibilityLocalEvaluator!
 
             beforeEach {
                 eventRecorder = MockEvaluationEventRecorder()
-                sut = InAppMessageEligibilityEvaluator(flow: .end(), eventRecorder: eventRecorder)
+                sut = InAppMessageEligibilityLocalEvaluator(evaluationFlowFactory: FlowFactoryStub(flow: .end()), eventRecorder: eventRecorder)
+            }
+
+            func response(request: InAppMessageEligibilityLocalEvaluateRequest, isEligible: Bool, layout: InAppMessageLayoutEvaluateResponse?) -> InAppMessageEligibilityEvaluateResponse {
+                InAppMessageEligibilityEvaluateResponse(
+                    user: request.user,
+                    workspace: request.workspace,
+                    evaluation: InAppMessage.eligibilityEvaluation(isEligible: isEligible),
+                    references: [],
+                    layout: layout
+                )
             }
 
             it("record eligibility evaluation") {
-                // given
                 let request = InAppMessage.eligibilityRequest()
-                let evaluation = InAppMessage.eligibilityEvaluation()
+                let resp = response(request: request, isEligible: true, layout: nil)
 
-                // when
-                sut.record(request: request, evaluation: evaluation)
+                sut.record(request: request, response: resp)
 
-                // then
-                verify(exactly: 1) {
-                    eventRecorder.recordMock
-                }
-                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
+                expect(eventRecorder.recordCount) == 1
+                expect(eventRecorder.records[0] as? InAppMessageEligibilityEvaluateResponse).to(beIdenticalTo(resp))
             }
 
             it("when eligible then do not record layout evaluation") {
-                // given
                 let request = InAppMessage.eligibilityRequest()
-                let layoutEvaluation = InAppMessage.layoutEvaluation()
-                let evaluation = InAppMessage.eligibilityEvaluation(
-                    isEligible: true,
-                    layoutEvaluation: layoutEvaluation
-                )
+                let layout = layoutResponse(request: request, layout: InAppMessage.layoutEvaluation())
+                let resp = response(request: request, isEligible: true, layout: layout)
 
-                // when
-                sut.record(request: request, evaluation: evaluation)
+                sut.record(request: request, response: resp)
 
-                // then
-                verify(exactly: 1) {
-                    eventRecorder.recordMock
-                }
-                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
+                expect(eventRecorder.recordCount) == 1
+                expect(eventRecorder.records[0] as? InAppMessageEligibilityEvaluateResponse).to(beIdenticalTo(resp))
             }
 
             it("when ineligible without layout then do not record layout") {
-                // given
                 let request = InAppMessage.eligibilityRequest()
-                let evaluation = InAppMessage.eligibilityEvaluation(
-                    isEligible: false,
-                    layoutEvaluation: nil
-                )
+                let resp = response(request: request, isEligible: false, layout: nil)
 
-                // when
-                sut.record(request: request, evaluation: evaluation)
+                sut.record(request: request, response: resp)
 
-                // then
-                verify(exactly: 1) {
-                    eventRecorder.recordMock
-                }
-                expect(eventRecorder.recordMock.firstInvokation().arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
+                expect(eventRecorder.recordCount) == 1
+                expect(eventRecorder.records[0] as? InAppMessageEligibilityEvaluateResponse).to(beIdenticalTo(resp))
             }
 
             it("when ineligible with layout then record layout evaluation") {
-                // given
                 let request = InAppMessage.eligibilityRequest()
-                let layoutEvaluation = InAppMessage.layoutEvaluation()
-                let evaluation = InAppMessage.eligibilityEvaluation(
-                    isEligible: false,
-                    layoutEvaluation: layoutEvaluation
-                )
+                let layout = layoutResponse(request: request, layout: InAppMessage.layoutEvaluation())
+                let resp = response(request: request, isEligible: false, layout: layout)
 
-                // when
-                sut.record(request: request, evaluation: evaluation)
+                sut.record(request: request, response: resp)
 
-                // then
-                verify(exactly: 2) {
-                    eventRecorder.recordMock
-                }
-                expect(eventRecorder.recordMock.invokations()[0].arguments.1 as? InAppMessageEligibilityEvaluation).to(beIdenticalTo(evaluation))
-                expect(eventRecorder.recordMock.invokations()[1].arguments.1 as? InAppMessageLayoutEvaluation).to(beIdenticalTo(layoutEvaluation))
+                expect(eventRecorder.recordCount) == 2
+                expect(eventRecorder.records[0] as? InAppMessageEligibilityEvaluateResponse).to(beIdenticalTo(resp))
+                expect(eventRecorder.records[1] as? InAppMessageLayoutEvaluateResponse).to(beIdenticalTo(layout))
             }
         }
     }

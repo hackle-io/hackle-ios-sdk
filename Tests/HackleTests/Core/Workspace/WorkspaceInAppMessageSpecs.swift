@@ -14,7 +14,7 @@ import Nimble
 class WorkspaceInAppMessageSpecs: QuickSpec {
     override class func spec() {
         it("valid") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
 
             expect(workspace.inAppMessages.count) == 11
 
@@ -124,7 +124,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - custom with multiple slots") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
 
             switch iam.timetable {
@@ -142,7 +142,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - all type") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 2)!
 
             switch iam.timetable {
@@ -154,7 +154,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - missing field defaults to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 3)!
 
             switch iam.timetable {
@@ -166,7 +166,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - invalid dayOfWeek skipped") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 4)!
 
             switch iam.timetable {
@@ -179,7 +179,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - all invalid slots fallback to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 5)!
 
             switch iam.timetable {
@@ -191,7 +191,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - empty slots fallback to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 6)!
 
             switch iam.timetable {
@@ -203,7 +203,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - null value defaults to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 7)!
 
             switch iam.timetable {
@@ -215,7 +215,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - unknown type defaults to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 8)!
 
             switch iam.timetable {
@@ -227,7 +227,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - boundary time full day") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 9)!
 
             switch iam.timetable {
@@ -242,7 +242,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - all days of week") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 10)!
 
             switch iam.timetable {
@@ -261,12 +261,12 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("invalid") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam_invalid").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam_invalid").workspaceConfig
             expect(workspace.inAppMessages.count) == 0
         }
 
         it("html - displayType HTML with valid html data") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 12)!
             expect(iam.messageContext.messages.count) == 1
             expect(iam.messageContext.messages[0].layout.displayType) == .html
@@ -275,7 +275,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("html - displayType HTML without html data should exclude message") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 11)
             expect(iam).to(beNil())
         }

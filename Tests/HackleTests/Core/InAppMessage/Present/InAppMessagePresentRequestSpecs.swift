@@ -11,14 +11,14 @@ class InAppMessagePresentRequestSpecs: QuickSpec {
             let inAppMessage = InAppMessage.create()
             let user = HackleUser.builder().identifier(.id, "user").build()
             let eligibility = InAppMessage.eligibilityEvaluation()
-            let layout = InAppMessage.layoutEvaluation()
+            let layout = InAppMessage.layoutEvaluateResponse()
+            let deliverEvaluation = InAppMessageDeliverEvaluation(eligibility: eligibility, layout: layout)
 
             let request = InAppMessagePresentRequest.of(
                 request: deliverRequest,
                 inAppMessage: inAppMessage,
                 user: user,
-                eligibilityEvaluation: eligibility,
-                layoutEvaluation: layout
+                deliverEvaluation: deliverEvaluation
             )
 
             expect(request.triggerEvent.key) == "checkout"

@@ -2,8 +2,6 @@
 //  EventConditionMatcherSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/06/26.
-//
 
 import Foundation
 import Quick
@@ -23,7 +21,7 @@ class EventConditionMatcherSpecs: QuickSpec {
             sut = EventConditionMatcher(eventValueResolver: eventValueResolver, valueOperatorMatcher: valueOperatorMatcher)
         }
 
-        it("when request is not of EvaluatorEventRequest type then returns false") {
+        it("when request is not of EventEvaluateRequest type then returns false") {
             // given
             let condition = Target.Condition(
                 key: Target.Key(type: .eventProperty, name: "os_name"),
@@ -64,17 +62,19 @@ class EventConditionMatcherSpecs: QuickSpec {
         }
     }
 
-    private class EventRequest: EvaluatorEventRequest {
-        let key: EvaluatorKey
+    private class EventRequest: EventEvaluateRequest {
         let workspace: Workspace
         let user: HackleUser
         let event: UserEvent
+        let entity: Entity
+        let record: Bool
 
         init(workspace: Workspace, user: HackleUser, event: UserEvent) {
-            self.key = EvaluatorKey(type: .inAppMessage, id: event.timestamp.epochMillis)
             self.workspace = workspace
             self.user = user
             self.event = event
+            self.entity = DefaultEntity(serviceType: .inAppMessage, id: event.timestamp.epochMillis)
+            self.record = true
         }
     }
 }
@@ -111,13 +111,9 @@ class DefaultEventValueResolverSpecs: QuickSpec {
             let user = HackleUser.builder().identifier(.id, "user").build()
 
             let request = remoteConfigRequest()
-            let evaluation = RemoteConfigEvaluation.of(
-                request: request,
-                context: Evaluators.context(),
-                valueId: 999,
-                value: .string("RC"),
-                reason: DecisionReason.TARGET_RULE_MATCH,
-                properties: PropertiesBuilder()
+            let evaluation = RemoteConfigEvaluation(
+                entity: request.parameter,
+                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: RemoteConfigParameter.Value(id: 999, rawValue: .string("RC")))
             )
             let event = UserEvents.remoteConfig(user: user, evaluation: evaluation, properties: ["a": "b"], timestamp: Date())
 

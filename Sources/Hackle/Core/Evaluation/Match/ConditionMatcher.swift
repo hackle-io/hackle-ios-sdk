@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ConditionMatcher {
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
 }
 
 protocol ConditionMatcherFactory {
@@ -17,7 +17,7 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
     private let cohortConditionMatcher: ConditionMatcher
     private let targetEventConditionMatcher: ConditionMatcher
 
-    init(evaluator: Evaluator, clock: Clock) {
+    init(evaluator: DelegatingEvaluator, clock: Clock) {
         let valueOperatorMatcher = DefaultValueOperatorMatcher(
             valueMatcherFactory: ValueMatcherFactory(),
             operatorMatcherFactory: OperatorMatcherFactory()

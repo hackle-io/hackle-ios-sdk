@@ -9,23 +9,17 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
 
         it("resolve") {
             // given
-            let core = MockHackleCore()
-            let layoutEvalautor = InAppMessageLayoutEvaluator(
-                experimentEvaluator: InAppMessageExperimentEvaluator(
-                    evaluator: MockEvaluator()
-                ),
-                selector: InAppMessageLayoutSelector(),
-                eventRecorder: MockEvaluationEventRecorder()
+            let evaluateProcessor = EvaluateProcessor.create(
+                context: HackleCoreContext(),
+                clock: SystemClock.shared,
+                eventProcessor: MockUserEventProcessor(),
+                overrideStorage: DelegatingManualOverrideStorage(storages: []),
+                impressionStorage: DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()),
+                hiddenStorage: DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
             )
-            let sut = DefaultInAppMessageLayoutResolver(
-                core: core,
-                layoutEvaluator: layoutEvalautor
-            )
+            let sut = DefaultInAppMessageLayoutResolver(evaluateProcessor: evaluateProcessor)
 
-            let evaluation = InAppMessage.layoutEvaluation()
-            every(core.inAppMessageMock).returns(evaluation)
-
-            let workspace = WorkspaceEntity.create()
+            let workspace = DefaultWorkspaceConfig.create()
             let inAppMessage = InAppMessage.create()
             let user = HackleUser.of(userId: "test")
 
@@ -33,8 +27,8 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
             let actual = try sut.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
 
             // then
-            expect(actual as? InAppMessageLayoutEvaluation).to(beIdenticalTo(evaluation))
-            expect(core.inAppMessageMock.firstInvokation().arguments.2 as? InAppMessageLayoutEvaluator).to(beIdenticalTo(layoutEvalautor))
+            expect(actual.layoutEvaluation.inAppMessage.id) == inAppMessage.id
+            expect(actual.layoutEvaluation.layoutResult.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
         }
     }
 }

@@ -1,6 +1,4 @@
 //
-// Created by yong on 2020/12/11.
-//
 
 import Foundation
 
@@ -32,9 +30,9 @@ enum UserEvents {
             timestamp: timestamp,
             user: user,
             experiment: evaluation.experiment,
-            variationId: evaluation.variationId,
-            variationKey: evaluation.variationKey,
-            decisionReason: evaluation.reason,
+            variationId: evaluation.experimentResult.variation.id,
+            variationKey: evaluation.experimentResult.variation.key,
+            decisionReason: evaluation.experimentResult.reason,
             properties: properties
         )
     }
@@ -65,8 +63,8 @@ enum UserEvents {
             timestamp: timestamp,
             user: user,
             parameter: evaluation.parameter,
-            valueId: evaluation.valueId,
-            decisionReason: evaluation.reason,
+            valueId: evaluation.remoteConfigResult.value?.id,
+            decisionReason: evaluation.remoteConfigResult.reason,
             properties: properties
         )
     }

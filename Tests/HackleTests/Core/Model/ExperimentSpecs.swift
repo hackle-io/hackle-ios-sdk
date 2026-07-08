@@ -2,8 +2,6 @@
 //  ExperimentSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/04/19.
-//
 
 import Foundation
 @testable import Hackle
@@ -20,11 +18,11 @@ func experiment(
     executionVersion: Int = 1,
     winnerVariationId: Variation.Id? = nil,
     variations: [Variation] = [
-        VariationEntity(id: 1, key: "A", isDropped: false, parameterConfigurationId: nil),
-        VariationEntity(id: 2, key: "B", isDropped: false, parameterConfigurationId: nil)
+        VariationEntity(id: 1, key: "A", isDropped: false, parameterConfiguration: nil),
+        VariationEntity(id: 2, key: "B", isDropped: false, parameterConfiguration: nil)
     ],
     targetAudiences: [Target] = []
-) -> Experiment {
+) -> ExperimentConfig {
     ExperimentEntity(
         id: id,
         key: key,

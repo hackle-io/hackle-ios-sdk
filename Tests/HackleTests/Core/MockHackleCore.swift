@@ -6,8 +6,8 @@ class MockHackleCore: Mock, HackleCore {
 
     lazy var experimentMock = MockFunction.throwable(self, experiment)
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
-        try call(experimentMock, args: (experimentKey, user, defaultVariationKey))
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
+        try call(experimentMock, args: (experimentKey, user))
     }
 
     lazy var experimentsMock = MockFunction.throwable(self, experiments)
@@ -42,15 +42,5 @@ class MockHackleCore: Mock, HackleCore {
 
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision {
         call(remoteConfigMock, args: (parameterKey, user, defaultValue))
-    }
-
-    lazy var inAppMessageMock = MockFunction.throwable(self, _inAppMessage)
-
-    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation {
-        return try _inAppMessage(request: request, context: context, evaluator: evaluator) as! Evaluation
-    }
-
-    private func _inAppMessage(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> EvaluatorEvaluation {
-        return try call(inAppMessageMock, args: (request, context, evaluator))
     }
 }

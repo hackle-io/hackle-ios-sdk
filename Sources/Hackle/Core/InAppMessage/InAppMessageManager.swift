@@ -17,4 +17,8 @@ class InAppMessageManager: UserEventListener, UserListener {
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
         resetProcessor.process(oldUser: oldUser, newUser: newUser)
     }
+
+    func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        // nothing to do
+    }
 }

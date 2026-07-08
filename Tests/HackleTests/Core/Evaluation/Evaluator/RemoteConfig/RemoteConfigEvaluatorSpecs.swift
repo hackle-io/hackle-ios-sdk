@@ -2,8 +2,6 @@
 //  RemoteConfigEvaluatorSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/04/20.
-//
 
 import Foundation
 import Quick
@@ -13,21 +11,34 @@ import MockingKit
 
 class RemoteConfigEvaluatorSpecs: QuickSpec {
 
+    class TargetRuleMatcherStub: RemoteConfigParameterTargetRuleMatcher {
+        var matchedRule: RemoteConfigParameter.TargetRule?
+
+        init() {
+            super.init(targetMatcher: MockTargetMatcher(), bucketer: MockBucketer())
+        }
+
+        override func matches(request: RemoteConfigLocalEvaluateRequest, context: EvaluatorContext, rule: RemoteConfigParameter.TargetRule) throws -> Bool {
+            rule === matchedRule
+        }
+    }
+
     override class func spec() {
 
-        var remoteConfigTargetRuleDeterminer: MockRemoteConfigTargetRuleDeterminer!
-        var sut: RemoteConfigEvaluator!
+        var matcher: TargetRuleMatcherStub!
+        var sut: RemoteConfigLocalEvaluator!
 
         beforeEach {
-            remoteConfigTargetRuleDeterminer = MockRemoteConfigTargetRuleDeterminer()
-            sut = RemoteConfigEvaluator(remoteConfigTargetRuleDeterminer: remoteConfigTargetRuleDeterminer)
-
-            every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
+            matcher = TargetRuleMatcherStub()
+            sut = RemoteConfigLocalEvaluator(
+                targetRuleDeterminer: RemoteConfigParameterTargetRuleDeterminer(matcher: matcher),
+                eventRecorder: MockEvaluationEventRecorder()
+            )
         }
 
         it("supports") {
-            expect(sut.support(request: experimentRequest())) == false
-            expect(sut.support(request: remoteConfigRequest())) == true
+            expect(sut.supports(request: experimentRequest())) == false
+            expect(sut.supports(request: remoteConfigRequest())) == true
         }
 
         describe("evaluate") {
@@ -54,15 +65,12 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                 let request = remoteConfigRequest(parameter: parameter)
 
                 // when
-                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                let response: RemoteConfigEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
+                let actual = response.remoteConfigEvaluation
 
                 // then
-                expect(actual.valueId).to(beNil())
-                expect(actual.value) == HackleValue.string("default")
-                expect(actual.reason) == DecisionReason.IDENTIFIER_NOT_FOUND
-                expect(actual.properties["requestValueType"] as? String) == "STRING"
-                expect(actual.properties["requestDefaultValue"] as? String) == "default"
-                expect(actual.properties["returnValue"] as? String) == "default"
+                expect(actual.remoteConfigResult.value).to(beNil())
+                expect(actual.remoteConfigResult.reason) == DecisionReason.IDENTIFIER_NOT_FOUND
             }
 
             it("TargetRule 에 해당하는 경우") {
@@ -80,22 +88,18 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                     defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("hello value"))
                 )
 
-                every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(targetRule)
+                matcher.matchedRule = targetRule
 
                 let request = remoteConfigRequest(parameter: parameter)
 
                 // when
-                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                let response: RemoteConfigEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
+                let actual = response.remoteConfigEvaluation
 
                 // then
-                expect(actual.valueId) == 320
-                expect(actual.value) == HackleValue.string("targetRuleValue")
-                expect(actual.reason) == DecisionReason.TARGET_RULE_MATCH
-                expect(actual.properties["requestValueType"] as? String) == "STRING"
-                expect(actual.properties["requestDefaultValue"] as? String) == "default"
-                expect(actual.properties["returnValue"] as? String) == "targetRuleValue"
-                expect(actual.properties["targetRuleKey"] as? String) == "target_rule_key"
-                expect(actual.properties["targetRuleName"] as? String) == "target_rule_name"
+                expect(actual.remoteConfigResult.value?.id) == 320
+                expect(actual.remoteConfigResult.value?.rawValue) == HackleValue.string("targetRuleValue")
+                expect(actual.remoteConfigResult.reason) == DecisionReason.TARGET_RULE_MATCH
             }
 
             it("TargetRule 에 매치되지 않는 경우") {
@@ -113,20 +117,18 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                     defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: HackleValue.string("hello value"))
                 )
 
-                every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
+                matcher.matchedRule = nil
 
                 let request = remoteConfigRequest(parameter: parameter)
 
                 // when
-                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                let response: RemoteConfigEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
+                let actual = response.remoteConfigEvaluation
 
                 // then
-                expect(actual.valueId) == 43
-                expect(actual.value) == HackleValue.string("hello value")
-                expect(actual.reason) == DecisionReason.DEFAULT_RULE
-                expect(actual.properties["requestValueType"] as? String) == "STRING"
-                expect(actual.properties["requestDefaultValue"] as? String) == "default"
-                expect(actual.properties["returnValue"] as? String) == "hello value"
+                expect(actual.remoteConfigResult.value?.id) == 43
+                expect(actual.remoteConfigResult.value?.rawValue) == HackleValue.string("hello value")
+                expect(actual.remoteConfigResult.reason) == DecisionReason.DEFAULT_RULE
             }
 
             it("type match") {
@@ -157,21 +159,50 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
 
             func verifyMatch(_ v1: HackleValue, _ v2: HackleValue, _ isMatch: Bool) throws {
                 let parameter = parameter(type: .string, defaultValue: RemoteConfigParameter.Value(id: 43, rawValue: v1))
-                every(remoteConfigTargetRuleDeterminer.determineTargetRuleOrNilMock).returns(nil)
+                matcher.matchedRule = nil
 
                 let request = remoteConfigRequest(parameter: parameter, defaultValue: v2)
 
-                let actual: RemoteConfigEvaluation = try sut.evaluate(request: request, context: Evaluators.context())
+                let response: RemoteConfigEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
+                let actual = response.remoteConfigEvaluation
 
                 if isMatch {
-                    expect(actual.valueId) == 43
-                    expect(actual.value) == v1
-                    expect(actual.reason) == DecisionReason.DEFAULT_RULE
+                    expect(actual.remoteConfigResult.value?.id) == 43
+                    expect(actual.remoteConfigResult.value?.rawValue) == v1
+                    expect(actual.remoteConfigResult.reason) == DecisionReason.DEFAULT_RULE
                 } else {
-                    expect(actual.valueId).to(beNil())
-                    expect(actual.value) == v2
-                    expect(actual.reason) == DecisionReason.TYPE_MISMATCH
+                    expect(actual.remoteConfigResult.value?.id) == 43       // ★ 이전: valueId nil
+                    expect(actual.remoteConfigResult.value?.rawValue) == v1 // ★ 이전: v2(defaultValue)
+                    expect(actual.remoteConfigResult.reason) == DecisionReason.TYPE_MISMATCH
                 }
+            }
+
+            // 회귀 ②: TYPE_MISMATCH 여도 value 를 유지해 노출 이벤트 valueId 가 실제 값 id 로 기록된다.
+            it("TYPE_MISMATCH 여도 value 를 유지해 노출 이벤트 valueId 가 실제 값 id 로 기록된다") {
+                // given: string 요청 vs number 값
+                let parameter = parameter(
+                    type: .string,
+                    defaultValue: RemoteConfigParameter.Value(id: 77, rawValue: HackleValue.double(999))
+                )
+                matcher.matchedRule = nil
+                let request = remoteConfigRequest(parameter: parameter, defaultValue: .string("default"))
+
+                // when
+                let response: RemoteConfigEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
+                let actual = response.remoteConfigEvaluation
+
+                // then: 결과에 value 유지
+                expect(actual.remoteConfigResult.reason) == DecisionReason.TYPE_MISMATCH
+                expect(actual.remoteConfigResult.value?.id) == 77
+                expect(actual.remoteConfigResult.value?.rawValue) == HackleValue.double(999)
+
+                // then: 노출 이벤트 valueId = 실제 값 id (이전: nil)
+                let events = EvaluationEventFactory(clock: SystemClock.shared).create(response: response)
+                let rcEvent = events.first as! UserEvents.RemoteConfig
+                expect(rcEvent.valueId) == 77
+
+                // then: 사용자에게 반환되는 값은 여전히 defaultValue (타입 불일치이므로)
+                expect(Decisions.toRemoteConfigDecision(evaluation: actual, requiredType: .string, defaultValue: .string("default")).value) == .string("default")
             }
         }
     }

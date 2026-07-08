@@ -9,7 +9,7 @@ import Foundation
 @testable import Hackle
 
 
-extension WorkspaceEntity {
+extension DefaultWorkspaceConfig {
 
     static func create(
         id: Int64 = 0,
@@ -23,8 +23,8 @@ extension WorkspaceEntity {
         parameterConfigurations: [ParameterConfiguration] = [],
         remoteConfigParameters: [RemoteConfigParameter] = [],
         inAppMessages: [InAppMessage] = []
-    ) -> WorkspaceEntity {
-        WorkspaceEntity(
+    ) -> DefaultWorkspaceConfig {
+        DefaultWorkspaceConfig(
             id: id,
             environmentId: environmentId,
             experiments: experiments,

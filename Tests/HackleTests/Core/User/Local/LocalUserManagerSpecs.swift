@@ -1,0 +1,1025 @@
+import Foundation
+import Quick
+import Nimble
+@testable import Hackle
+
+
+class LocalUserManagerSpecs: AsyncSpec {
+    override class func spec() {
+        var repository: KeyValueRepository!
+        var cohortFetcher: MockUserCohortFetcher!
+        var targetFetcher: MockUserTargetFetcher!
+        var clock: Clock!
+        var device: Device!
+        var bundleInfo: BundleInfo!
+        var sut: LocalUserManager!
+
+        var listener: MockUserListener!
+
+        beforeEach {
+            repository = MemoryKeyValueRepository()
+            cohortFetcher = MockUserCohortFetcher()
+            targetFetcher = MockUserTargetFetcher()
+            clock = FixedClock(date: Date(timeIntervalSince1970: 42))
+            let deviceImpl = DeviceImpl(deviceId: "hackle_device_id")
+            await MainActor.run { deviceImpl.initialize() }
+            device = deviceImpl
+            bundleInfo = BundleInfoImpl()
+            sut = LocalUserManager(device: device, bundleInfo: bundleInfo, repository: UserRepository(repository: repository), cohortFetcher: cohortFetcher, targetFetcher: targetFetcher, clock: clock)
+            every(cohortFetcher.fetchMock).answers { _ in UserCohorts() }
+            every(targetFetcher.fetchMock).answers { _ in UserTargetEvents() }
+            listener = MockUserListener()
+            sut.addListener(listener: listener)
+        }
+
+        describe("initialize") {
+            it("with default user") {
+                sut.initialize(user: nil)
+                let user = sut.currentUser
+                expect(user.resolvedIdentifiers) == ["$id": "hackle_device_id", "$deviceId": "hackle_device_id"]
+            }
+
+            it("with saved user") {
+                repository.putData(key: "user", value: Json.serialize([
+                    "deviceId": "saved_device_id",
+                    "userId": "saved_user_id",
+                ])!)
+                sut.initialize(user: nil)
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "saved_device_id",
+                    "$userId": "saved_user_id",
+                ]
+            }
+
+            it("when failed to load user then init with default user") {
+                repository.putData(key: "user", value: "invalid json".data(using: .utf8)!)
+                sut.initialize(user: nil)
+                let user = sut.currentUser
+                expect(user.resolvedIdentifiers) == ["$id": "hackle_device_id", "$deviceId": "hackle_device_id"]
+            }
+
+            it("with init user") {
+                repository.putData(key: "user", value: Json.serialize([
+                    "deviceId": "saved_device_id",
+                    "userId": "saved_user_id",
+                ])!)
+                sut.initialize(user: User.builder().deviceId("init_device_id").userId("init_user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "init_device_id",
+                    "$userId": "init_user_id",
+                ]
+            }
+        }
+
+        describe("resolve") {
+            it("currentUser") {
+                sut.initialize(user: User.builder().id("init_id").deviceId("init_device_id").userId("init_user_id").build())
+                let actual = sut.resolve(user: nil, hackleAppContext: .default)
+                expect(actual.identifiers) == [
+                    "$id": "init_id",
+                    "$deviceId": "init_device_id",
+                    "$userId": "init_user_id",
+                    "$hackleDeviceId": "hackle_device_id"
+                ]
+            }
+
+            it("inputUser") {
+                sut.initialize(user: nil)
+                let actual = sut.resolve(user: User.builder().id("input_id").build(), hackleAppContext: .default)
+                expect(actual.identifiers) == [
+                    "$id": "input_id",
+                    "$deviceId": "hackle_device_id",
+                    "$hackleDeviceId": "hackle_device_id"
+                ]
+            }
+        }
+
+        describe("toHackleUser") {
+            it("merge with current context") {
+                // given
+                let userCohorts = UserCohorts.builder()
+                    .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "id"), cohorts: [Cohort(id: 42)]))
+                    .build()
+                let userTargetEvents = UserTargetEvents.builder()
+                    .put(targetEvent: TargetEvent(
+                        eventKey: "purchase",
+                        stats: [
+                            TargetEvent.Stat(
+                                date: 1737361789000,
+                                count: 10)
+                        ],
+                        property: TargetEvent.Property(
+                            key: "product_name",
+                            type: .eventProperty,
+                            value: HackleValue.string("shampo")
+                        )
+                    ))
+                    .build()
+                every(cohortFetcher.fetchMock).answers { _ in UserCohorts.Builder(cohorts: userCohorts).build() }
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
+
+                // when
+                sut.initialize(user: User.builder().id("id").property("a", "a").build())
+                await awaitCompletion {
+                    try? await sut.sync()
+                    let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
+                    
+                    // then
+                    expect(hackleUser.identifiers) == [
+                        "$id": "id",
+                        "$deviceId": "hackle_device_id",
+                        "$userId": "user_id",
+                        "$hackleDeviceId": "hackle_device_id"
+                    ]
+                    expect(hackleUser.properties as? [String: String]) == ["b": "b"]
+                    expect(hackleUser.cohorts) == [Cohort(id: 42)]
+                }
+            }
+
+            it("full") {
+                let hackleUser = sut.toHackleUser(user: User.builder()
+                    .id("id")
+                    .deviceId("device_id")
+                    .userId("user_id")
+                    .identifier("custom", "custom_id")
+                    .property("age", 42)
+                    .build()
+                )
+
+                expect(hackleUser.identifiers) == [
+                    "$id": "id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                    "$hackleDeviceId": "hackle_device_id",
+                    "custom": "custom_id"
+                ]
+                expect(hackleUser.properties as? [String: Int]) == ["age": 42]
+            }
+
+            it("fill default id") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                expect(hackleUser.identifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$hackleDeviceId": "hackle_device_id"
+                ]
+            }
+
+            it("hackle properties") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                expect(hackleUser.hackleProperties.count) > 0
+            }
+
+            it("hackle properties contains device properties") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+
+                // Device properties
+                expect(hackleUser.hackleProperties["platform"] as? String) == "iOS"
+                expect(hackleUser.hackleProperties["osName"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["osVersion"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["deviceModel"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["deviceType"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["deviceBrand"] as? String) == "Apple"
+                expect(hackleUser.hackleProperties["deviceManufacturer"] as? String) == "Apple"
+                expect(hackleUser.hackleProperties["locale"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["language"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["timeZone"] as? String).notTo(beNil())
+                expect(hackleUser.hackleProperties["screenWidth"] as? Int).notTo(beNil())
+                expect(hackleUser.hackleProperties["screenHeight"] as? Int).notTo(beNil())
+                expect(hackleUser.hackleProperties["isApp"] as? Bool) == true
+            }
+
+            it("hackle properties contains bundle info properties") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+
+                // BundleInfo properties
+                expect(hackleUser.hackleProperties["packageName"]).notTo(beNil())
+                expect(hackleUser.hackleProperties["versionName"]).notTo(beNil())
+                expect(hackleUser.hackleProperties["versionCode"]).notTo(beNil())
+            }
+
+            it("hackle properties merges device and bundle info") {
+                let hackleUser = sut.toHackleUser(user: User.builder().build())
+
+                // Should contain both device and bundle info properties
+                let hasDeviceProperty = hackleUser.hackleProperties["platform"] != nil
+                let hasBundleProperty = hackleUser.hackleProperties["packageName"] != nil
+
+                expect(hasDeviceProperty) == true
+                expect(hasBundleProperty) == true
+                expect(hackleUser.hackleProperties.count) >= 16 // At least device (13) + bundle (3) properties
+            }
+        }
+
+        describe("sync") {
+            it("update userCohorts") {
+                let userCohorts = UserCohorts.builder()
+                    .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "hackle_device_id"), cohorts: [Cohort(id: 42)]))
+                    .build()
+                let userTargetEvents = UserTargetEvents.builder()
+                    .put(targetEvent: TargetEvent(
+                        eventKey: "purchase",
+                        stats: [
+                            TargetEvent.Stat(
+                                date: 1737361789000,
+                                count: 10)
+                        ],
+                        property: TargetEvent.Property(
+                            key: "product_name",
+                            type: .eventProperty,
+                            value: HackleValue.string("shampo")
+                        )
+                    ))
+                    .build()
+                every(cohortFetcher.fetchMock).answers { _ in UserCohorts.Builder(cohorts: userCohorts).build() }
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
+
+                sut.initialize(user: nil)
+                expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == []
+                await awaitCompletion {
+                    try? await sut.sync()
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
+                }
+            }
+        }
+        
+        describe("sync") {
+            it("when sync target event, overwrite") {
+                let targetEvent = TargetEvent(
+                    eventKey: "purchase",
+                    stats: [
+                        TargetEvent.Stat(
+                            date: 1737361789000,
+                            count: 10)
+                    ],
+                    property: TargetEvent.Property(
+                        key: "product_name",
+                        type: .eventProperty,
+                        value: HackleValue.string("shampo")
+                    )
+                )
+                let targetEvent2 = TargetEvent(
+                    eventKey: "login",
+                    stats: [
+                        TargetEvent.Stat(
+                            date: 1737361789000,
+                            count: 10)
+                    ],
+                    property: nil
+                )
+                let targetEvents = [targetEvent, targetEvent2]
+                
+                
+                // given
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: targetEvents).build()).build() }
+                sut.initialize(user: nil)
+                await awaitCompletion {
+                    try? await sut.sync()
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == targetEvents
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 2
+                }
+                
+                let newTargetEvents = [targetEvent]
+                every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build() }
+                await awaitCompletion {
+                    try? await sut.sync()
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == newTargetEvents
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
+                }
+            }
+        }
+
+        describe("syncIfNeeded") {
+            it("no new identifiers") {
+                // cohort not sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().build()
+                        )
+                    )
+                }
+
+                // cohort not sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().id("id").build()
+                        )
+                    )
+                }
+
+                // cohort not sync and target event sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").build()
+                        )
+                    )
+                }
+
+                // cohort not sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").build()
+                        )
+                    )
+                }
+
+                // cohort not sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").build()
+                        )
+                    )
+                }
+
+                // cohort not sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
+                        )
+                    )
+                }
+                verify(exactly: 0) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 1) {
+                    targetFetcher.fetchMock
+                }
+            }
+            it("new identifiers") {
+                // cohort sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().build(),
+                            current: User.builder().id("new_id").build()
+                        )
+                    )
+                }
+                // cohort sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().id("new_id").build()
+                        )
+                    )
+                }
+                // cohort sync and target event sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").build(),
+                            current: User.builder().id("id").deviceId("new_device_id").build()
+                        )
+                    )
+                }
+                // cohort sync and target event sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").deviceId("new_device_id").build()
+                        )
+                    )
+                }
+                // cohort sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                        )
+                    )
+                }
+                // cohort sync and target event not sync
+                await awaitCompletion {
+                    await sut.syncIfNeeded(
+                        updated: Updated(
+                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
+                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
+                        )
+                    )
+                }
+                verify(exactly: 6) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 2) {
+                    targetFetcher.fetchMock
+                }
+            }
+        }
+
+        describe("setUser") {
+            it("decorate hackleDeviceId") {
+                let actual = sut.setUser(user: User.builder().build())
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+            }
+
+            it("defaultUser -> deviceId") {
+                sut.initialize(user: nil)
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+
+                let actual = sut.setUser(user: User.builder().deviceId("device_id").build())
+                expect(actual.previous.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+            }
+
+            it("defaultUser -> deviceId, userId") {
+                sut.initialize(user: nil)
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+
+                let actual = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(actual.previous.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+            }
+
+            it("deviceId -> deviceId(diff)") {
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                ]
+            }
+
+            it("deviceId -> deviceId, userId(new)") {
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+            }
+
+            it("deviceId -> deviceId(diff), userId(new)") {
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                    "$userId": "user_id",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                    "$userId": "user_id",
+                ]
+            }
+
+            it("deviceId, userId -> deviceId") {
+                sut.initialize(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+            }
+
+            it("deviceId, userId -> deviceId(diff)") {
+                sut.initialize(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                ]
+            }
+
+            it("deviceId, userId -> deviceId(diff), userId") {
+                sut.initialize(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                    "$userId": "user_id",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                    "$userId": "user_id",
+                ]
+            }
+
+            it("deviceId, userId -> deviceId, userId(diff)") {
+                sut.initialize(user: User.builder().deviceId("device_id").userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+
+                _ = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id_2",
+                ]
+                let (oldUser, newUser, _) = listener.onUserUpdatedMock.firstInvokation().arguments
+                expect(oldUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id",
+                ]
+                expect(newUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                    "$userId": "user_id_2",
+                ]
+            }
+
+            it("update cohorts") {
+                let userCohorts = UserCohorts.builder()
+                    .put(cohort: UserCohort(identifier: Identifier(type: "$id", value: "hackle_device_id"), cohorts: [Cohort(id: 42)]))
+                    .put(cohort: UserCohort(identifier: Identifier(type: "$deviceId", value: "hackle_device_id"), cohorts: [Cohort(id: 43)]))
+                    .build()
+                every(cohortFetcher.fetchMock).answers { user in UserCohorts.Builder(cohorts: userCohorts).build() }
+
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                await awaitCompletion {
+                    try? await sut.sync()
+                    expect(sut.currentUser.resolvedIdentifiers) == [
+                        "$id": "hackle_device_id",
+                        "$deviceId": "device_id",
+                    ]
+                    expect(sut.resolve(user: sut.currentUser, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
+                }
+            }
+            
+            it("update target event") {
+                let userTargetEvents = UserTargetEvents.builder()
+                    .put(targetEvent: TargetEvent(
+                        eventKey: "purchase",
+                        stats: [
+                            TargetEvent.Stat(
+                                date: 1737361789000,
+                                count: 10)
+                        ],
+                        property: TargetEvent.Property(
+                            key: "product_name",
+                            type: .eventProperty,
+                            value: HackleValue.string("shampo")
+                        )
+                    ))
+                    .build()
+                every(targetFetcher.fetchMock).answers { user in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
+
+                sut.initialize(user: nil)
+                await awaitCompletion {
+                    try? await sut.sync()
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].eventKey) == "purchase"
+                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].property?.key) == "product_name"
+                }
+            }
+        }
+
+        describe("updateUserProperties") {
+            it("update") {
+                sut.initialize(user: nil)
+
+                let operations = PropertyOperations.builder()
+                    .set("d", "d")
+                    .increment("a", 42)
+                    .append("c", "cc")
+                    .build()
+                let actual = sut.updateProperties(operations: operations)
+                expect(actual.current.properties["a"] as? Double) == 42.0
+                expect(actual.current.properties["c"] as? [String]) == ["cc"]
+                expect(actual.current.properties["d"] as? String) == "d"
+            }
+
+            it("existed properties") {
+                sut.initialize(user: User.builder()
+                    .properties([
+                        "a": 42,
+                        "b": "b",
+                        "c": "c",
+                    ])
+                    .build()
+                )
+
+                let operations = PropertyOperations.builder()
+                    .set("d", "d")
+                    .increment("a", 42)
+                    .append("c", "cc")
+                    .build()
+                let actual = sut.updateProperties(operations: operations)
+
+                expect(actual.current.properties["a"] as? Double) == 84.0
+                expect(actual.current.properties["b"] as? String) == "b"
+                expect(actual.current.properties["c"] as? [String]) == ["c", "cc"]
+                expect(actual.current.properties["d"] as? String) == "d"
+            }
+        }
+
+        describe("setUserId") {
+            it("new") {
+                sut.initialize(user: nil)
+                let actual = sut.setUserId(userId: "user_id")
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+                verify(exactly: 1) {
+                    listener.onUserUpdatedMock
+                }
+            }
+
+            it("unset") {
+                sut.initialize(user: User.builder().userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+
+                let actual = sut.setUserId(userId: nil)
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                verify(exactly: 1) {
+                    listener.onUserUpdatedMock
+                }
+            }
+
+            it("change") {
+                sut.initialize(user: User.builder().userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+
+                let actual = sut.setUserId(userId: "user_id_2")
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id_2",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id_2",
+                ]
+                verify(exactly: 1) {
+                    listener.onUserUpdatedMock
+                }
+            }
+
+            it("same") {
+                sut.initialize(user: User.builder().userId("user_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+
+                let actual = sut.setUserId(userId: "user_id")
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                    "$userId": "user_id",
+                ]
+                verify(exactly: 0) {
+                    listener.onUserUpdatedMock
+                }
+            }
+        }
+
+        describe("setDeviceId") {
+            it("new") {
+                sut.initialize(user: nil)
+                let actual = sut.setDeviceId(deviceId: "device_id")
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                verify(exactly: 1) {
+                    listener.onUserUpdatedMock
+                }
+            }
+
+            it("change") {
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                let actual = sut.setDeviceId(deviceId: "device_id_2")
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id_2",
+                ]
+                verify(exactly: 1) {
+                    listener.onUserUpdatedMock
+                }
+            }
+
+            it("same") {
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                let actual = sut.setDeviceId(deviceId: "device_id")
+                expect(actual.current.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+                verify(exactly: 0) {
+                    listener.onUserUpdatedMock
+                }
+            }
+        }
+
+        describe("resetUser") {
+            it("same") {
+                sut.initialize(user: nil)
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+
+                _ = sut.resetUser()
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                verify(exactly: 0) {
+                    listener.onUserUpdatedMock
+                }
+            }
+
+            it("rest") {
+                sut.initialize(user: User.builder().deviceId("device_id").build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "device_id",
+                ]
+
+                _ = sut.resetUser()
+                expect(sut.currentUser.resolvedIdentifiers) == [
+                    "$id": "hackle_device_id",
+                    "$deviceId": "hackle_device_id",
+                ]
+                verify(exactly: 1) {
+                    listener.onUserUpdatedMock
+                }
+            }
+        }
+
+        describe("onPropertyOperations") {
+            it("updateProperties 시 변경 전 user와 operations를 발행한다") {
+                sut.initialize(user: User.builder().userId("user_id").properties(["a": 1]).build())
+                let operations = PropertyOperations.builder().set("age", 42).build()
+
+                _ = sut.updateProperties(operations: operations)
+
+                verify(exactly: 1) {
+                    listener.onPropertyOperationsMock
+                }
+                let (user, publishedOperations, timestamp) = listener.onPropertyOperationsMock.firstInvokation().arguments
+                expect(user.userId) == "user_id"
+                expect(user.properties["age"]).to(beNil())
+                expect(publishedOperations.asDictionary()[.set] as? [String: Int]) == ["age": 42]
+                expect(timestamp) == Date(timeIntervalSince1970: 42) // clock.now()
+                verify(exactly: 0) {
+                    listener.onUserUpdatedMock // 식별자 불변 — onUserUpdated 미발행
+                }
+            }
+
+            it("resetUser 시 변경 후(default) user와 clearAll을 발행한다") {
+                sut.initialize(user: User.builder().userId("user_id").build())
+
+                _ = sut.resetUser()
+
+                verify(exactly: 1) {
+                    listener.onPropertyOperationsMock
+                }
+                let (user, operations, _) = listener.onPropertyOperationsMock.firstInvokation().arguments
+                expect(user.userId).to(beNil())
+                expect(operations.contains(.clearAll)) == true
+            }
+
+            it("setUser/setUserId/setDeviceId 시에는 발행하지 않는다") {
+                sut.initialize(user: nil)
+                _ = sut.setUser(user: User.builder().userId("a").build())
+                _ = sut.setUserId(userId: "b")
+                _ = sut.setDeviceId(deviceId: "c")
+                verify(exactly: 0) {
+                    listener.onPropertyOperationsMock
+                }
+            }
+        }
+
+        describe("onChanged") {
+            it("foreground - do nothing") {
+                sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
+            }
+            it("background") {
+                expect(repository.getData(key: "user")).to(beNil())
+                sut.onBackground(nil, timestamp: Date())
+                expect(repository.getData(key: "user")).notTo(beNil())
+            }
+        }
+
+        // setUser -> changeUser -> SessionManager -> SessionEventTracker -> toHackleUser(user:) 재진입 체인.
+        // 비재진입 lock이면 deadlock한다.
+        describe("re-entrant lock") {
+            it("listener가 onUserUpdated에서 toHackleUser를 재호출해도 deadlock 없이 완료된다") {
+                let reentrant = ReentrantUserListener(userManager: sut)
+                sut.addListener(listener: reentrant)
+                sut.initialize(user: nil)
+
+                let done = DispatchSemaphore(value: 0)
+                DispatchQueue.global().async {
+                    _ = sut.setUser(user: User.builder().userId("user_id").build())
+                    done.signal()
+                }
+
+                expect(done.wait(timeout: .now() + 3)) == DispatchTimeoutResult.success
+                expect(reentrant.reentrantUser?.identifiers["$userId"]) == "user_id"
+            }
+        }
+    }
+}
+
+// onUserUpdated 시점에 toHackleUser(user:)를 재호출해 lock 재진입을 유발하는 테스트 전용 listener.
+fileprivate class ReentrantUserListener: UserListener {
+    private weak var userManager: LocalUserManager?
+    private(set) var reentrantUser: HackleUser?
+
+    init(userManager: LocalUserManager) {
+        self.userManager = userManager
+    }
+
+    func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+        reentrantUser = userManager?.toHackleUser(user: newUser)
+    }
+
+    func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        // nothing to do
+    }
+}

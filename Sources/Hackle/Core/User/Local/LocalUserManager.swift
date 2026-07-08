@@ -1,0 +1,275 @@
+import Foundation
+import UIKit
+
+class LocalUserManager: UserManager, @unchecked Sendable {
+
+    private let recursiveLock = RecursiveLock(label: "io.hackle.LocalUserManager")
+
+    private var userListeners: [UserListener]
+    private let repository: UserRepository
+    private let cohortFetcher: UserCohortFetcher
+    private let targetFetcher: UserTargetEventFetcher
+    private let clock: Clock
+
+    private let device: Device
+    private let bundleInfo: BundleInfo
+    private let defaultUser: User
+    private var context: LocalUserContext
+
+    private var currentContext: LocalUserContext {
+        recursiveLock.lock {
+            context
+        }
+    }
+    var currentUser: User {
+        currentContext.user
+    }
+
+    init(device: Device, bundleInfo: BundleInfo, repository: UserRepository, cohortFetcher: UserCohortFetcher, targetFetcher: UserTargetEventFetcher, clock: Clock) {
+        self.userListeners = []
+        self.repository = repository
+        self.cohortFetcher = cohortFetcher
+        self.targetFetcher = targetFetcher
+        self.clock = clock
+        self.device = device
+        self.bundleInfo = bundleInfo
+        self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
+        self.context = LocalUserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+    }
+
+    func addListener(listener: UserListener) {
+        userListeners.append(listener)
+        Log.debug("UserListener added [\(listener)]")
+    }
+
+    func initialize(user: User?) {
+        recursiveLock.lock { [weak self] in
+            guard let self = self else {
+                Log.debug("UserManager instance deallocated")
+                return
+            }
+            let initUser = (user ?? self.loadUser() ?? self.defaultUser)
+            self.context = LocalUserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+        }
+        Log.debug("UserManager initialized [\(currentUser)]")
+    }
+
+    // HackleUser resolve
+
+    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser {
+        guard let user else {
+            return toHackleUser(context: currentContext, hackleAppContext: hackleAppContext)
+        }
+
+        let context = recursiveLock.lock {
+            updateUser(user: user)
+        }
+        return toHackleUser(context: context.current, hackleAppContext: hackleAppContext)
+    }
+
+    func toHackleUser(user: User) -> HackleUser {
+        let context = recursiveLock.lock {
+            self.context.with(user: user)
+        }
+        return toHackleUser(context: context, hackleAppContext: .default)
+    }
+
+    private func toHackleUser(context: LocalUserContext, hackleAppContext: HackleAppContext) -> HackleUser {
+        HackleUser.builder()
+            .identifiers(context.user.identifiers)
+            .identifier(.id, context.user.id)
+            .identifier(.id, device.id, overwrite: false)
+            .identifier(.user, context.user.userId)
+            .identifier(.device, context.user.deviceId)
+            .identifier(.device, device.id, overwrite: false)
+            .identifier(.hackleDevice, device.id)
+            .properties(context.user.properties)
+            .hackleProperties(hackleProperties(hackleAppContext: hackleAppContext, device: device, bundleInfo: bundleInfo))
+            .cohorts(context.cohorts.rawCohorts)
+            .targetEvents(context.targetEvents)
+            .build()
+    }
+    
+    private func hackleProperties(
+        hackleAppContext: HackleAppContext, device: Device, bundleInfo: BundleInfo) -> [String: Any] {
+            let hackleProperties = hackleAppContext.browserProperties
+                .append(device.properties)
+                .append(bundleInfo.properties)
+
+        return hackleProperties
+    }
+        
+
+    // Sync
+
+    func sync() async throws {
+        await sync(user: currentUser, shouldSyncCohort: true, shouldSyncTargetEvent: true)
+    }
+
+    func syncIfNeeded(updated: Updated<User>) async {
+        await sync(
+            user: updated.current,
+            shouldSyncCohort: hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current),
+            shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current)
+        )
+    }
+
+    private func sync(user: User, shouldSyncCohort: Bool, shouldSyncTargetEvent: Bool) async {
+        await withTaskGroup(of: Void.self) { group in
+            if shouldSyncCohort {
+                group.addTask { await self.syncCohort(user: user) }
+            }
+            if shouldSyncTargetEvent {
+                group.addTask { await self.syncTargetEvent(user: user) }
+            }
+        }
+    }
+
+    private func syncCohort(user: User) async {
+        do {
+            let cohorts = try await cohortFetcher.fetch(user: user)
+            recursiveLock.lock {
+                context = context.update(cohorts: cohorts)
+            }
+        } catch {
+            Log.error("Cohort sync failed: \(error)")
+        }
+    }
+
+    private func syncTargetEvent(user: User) async {
+        do {
+            let targetEvents = try await targetFetcher.fetch(user: user)
+            recursiveLock.lock {
+                context = context.update(targetEvents: targetEvents)
+            }
+        } catch {
+            Log.error("Target event sync failed: \(error)")
+        }
+    }
+
+    private func hasNewIdentifiers(previousUser: User, currentUser: User) -> Bool {
+        let previousIdentifiers = previousUser.resolvedIdentifiers
+        let currentIdentifiers = currentUser.resolvedIdentifiers
+
+        return currentIdentifiers.contains { type, value in
+            !previousIdentifiers.contains(type: type, value: value)
+        }
+    }
+
+    // User update
+
+    func setUser(user: User) -> Updated<User> {
+        recursiveLock.lock {
+            updateUser(user: user).map { it in
+                it.user
+            }
+        }
+    }
+
+    func setUserId(userId: String?) -> Updated<User> {
+        recursiveLock.lock {
+            updateUser(user: context.user.toBuilder().userId(userId).build()).map { it in
+                it.user
+            }
+        }
+    }
+
+    func setDeviceId(deviceId: String) -> Updated<User> {
+        recursiveLock.lock {
+            updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).map { it in
+                it.user
+            }
+        }
+    }
+
+    func resetUser() -> Updated<User> {
+        recursiveLock.lock {
+            let context = updateContext { _ in
+                defaultUser
+            }
+            publishPropertyOperations(user: context.current.user, operations: PropertyOperations.clearAll(), timestamp: clock.now())
+            return context.map { it in
+                it.user
+            }
+        }
+    }
+
+    func updateProperties(operations: PropertyOperations) -> Updated<User> {
+        recursiveLock.lock {
+            operateProperties(operations: operations).map { it in
+                it.user
+            }
+        }
+    }
+
+    private func updateUser(user: User) -> Updated<LocalUserContext> {
+        updateContext { currentUser in
+            user.with(device: device).mergeWith(other: currentUser)
+        }
+    }
+
+    private func operateProperties(operations: PropertyOperations) -> Updated<LocalUserContext> {
+        updateContext { currentUser in
+            publishPropertyOperations(user: currentUser, operations: operations, timestamp: clock.now())
+            let properties = operations.operate(base: currentUser.properties)
+            return currentUser.with(properties: properties)
+        }
+    }
+
+    private func updateContext(updater: (User) -> User) -> Updated<LocalUserContext> {
+        let oldContext = context
+        let oldUser = oldContext.user
+        let newUser = updater(oldUser)
+
+        let newContext = context.with(user: newUser)
+        context = newContext
+
+        if !newUser.identifierEquals(other: oldUser) {
+            changeUser(oldUser: oldUser, newUser: newUser, timestamp: clock.now())
+        }
+
+        saveUser(user: newUser)
+        return Updated(previous: oldContext, current: newContext)
+    }
+
+    private func changeUser(oldUser: User, newUser: User, timestamp: Date) {
+        Log.debug("UserManager.publishUserUpdated()")
+        for listener in userListeners {
+            listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
+        }
+    }
+
+    private func publishPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        Log.debug("UserManager.publishPropertyOperations()")
+        for listener in userListeners {
+            listener.onPropertyOperations(user: user, operations: operations, timestamp: timestamp)
+        }
+    }
+
+    private func loadUser() -> User? {
+        repository.get()
+    }
+
+    private func saveUser(user: User) {
+        repository.set(user: user)
+    }
+}
+
+extension LocalUserManager: ApplicationLifecycleListener {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
+        // nothing to do
+    }
+    
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
+        Log.debug("UserManager.onBackground")
+        saveUser(user: currentUser)
+    }
+}
+
+fileprivate extension [String: Any] {
+    func append(_ new: [String: Any]) -> [String: Any] {
+        self.merging(new) {
+            (_, new) in new
+        }
+    }
+}

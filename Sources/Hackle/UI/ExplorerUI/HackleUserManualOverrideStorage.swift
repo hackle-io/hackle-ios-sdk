@@ -2,8 +2,6 @@
 //  HackleUserManualOverrideStorage.swift
 //  Hackle
 //
-//  Created by yong on 2023/03/24.
-//
 
 import Foundation
 
@@ -20,7 +18,7 @@ class HackleUserManualOverrideStorage: ManualOverrideStorage {
         HackleUserManualOverrideStorage(keyValueRepository: UserDefaultsKeyValueRepository.of(suiteName: suiteName))
     }
 
-    func get(experiment: Experiment, user: HackleUser) -> Variation? {
+    func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
         guard let variationId = get(experiment: experiment) else {
             return nil
         }

@@ -2,8 +2,6 @@
 //  MockHackleCore.swift
 //  HackleTests
 //
-//  Created by yong on 2023/06/26.
-//
 
 import Foundation
 import MockingKit
@@ -17,8 +15,8 @@ class HackleCoreStub: HackleCore {
 
     }
 
-    func experiment(experimentKey: Experiment.Key, user: HackleUser, defaultVariationKey: Variation.Key) throws -> Decision {
-        fatalError("experiment(experimentKey:user:defaultVariationKey:) has not been implemented")
+    func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
+        fatalError("experiment(experimentKey:user:) has not been implemented")
     }
 
     func experiments(user: HackleUser) throws -> [(Experiment, Decision)] {
@@ -56,18 +54,5 @@ class HackleCoreStub: HackleCore {
         let decision = inAppMessageDecisions[inAppMessageCount]
         inAppMessageCount += 1
         return decision
-    }
-
-    var evaluations: [InAppMessageEvaluatorEvaluation] = [] {
-        didSet {
-            evaluationCount = 0
-        }
-    }
-    var evaluationCount = 0
-
-    func inAppMessage<Evaluation>(request: InAppMessageEvaluatorRequest, context: EvaluatorContext, evaluator: InAppMessageEvaluator) throws -> Evaluation where Evaluation: InAppMessageEvaluatorEvaluation {
-        let evaluation = evaluations[evaluationCount]
-        evaluationCount += 1
-        return evaluation as! Evaluation
     }
 }

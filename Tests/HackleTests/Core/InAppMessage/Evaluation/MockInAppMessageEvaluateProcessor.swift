@@ -5,7 +5,7 @@ import MockingKit
 class MockInAppMessageEvaluateProcessor: Mock, InAppMessageEvaluateProcessor {
     lazy var processMock = MockFunction.throwable(self, process)
 
-    func process(type: InAppMessageEvaluateType, request: InAppMessageEligibilityRequest) throws -> InAppMessageEligibilityEvaluation {
+    func process(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityLocalEvaluateRequest) throws -> InAppMessageEligibilityEvaluation {
         return try call(processMock, args: (type, request))
     }
 }
@@ -20,7 +20,7 @@ class InAppMessageEvaluateProcessorStub: InAppMessageEvaluateProcessor {
 
     var count = 0
 
-    func process(type: InAppMessageEvaluateType, request: InAppMessageEligibilityRequest) throws -> InAppMessageEligibilityEvaluation {
+    func process(type: InAppMessageEvaluateScope, request: InAppMessageEligibilityLocalEvaluateRequest) throws -> InAppMessageEligibilityEvaluation {
         let evaluation = evaluations[count]
         count += 1
         return evaluation

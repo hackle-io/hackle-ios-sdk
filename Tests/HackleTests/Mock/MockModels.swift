@@ -1,6 +1,4 @@
 //
-// Created by yong on 2020/12/16.
-//
 
 import Foundation
 import MockingKit
@@ -40,7 +38,7 @@ class MockSlot: Mock, Slot {
     }
 }
 
-final class MockExperiment: Mock, Experiment, @unchecked Sendable {
+final class MockExperiment: Mock, ExperimentConfig, @unchecked Sendable {
     let id: Id
     let key: Key
     let name: String?
@@ -117,14 +115,14 @@ final class MockVariation: Mock, Variation, @unchecked Sendable {
     let id: Id
     let key: Key
     let isDropped: Bool
-    let parameterConfigurationId: ParameterConfiguration.Id?
+    let parameterConfiguration: ParameterConfiguration?
 
 
-    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfigurationId: ParameterConfiguration.Id? = nil) {
+    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfiguration: ParameterConfiguration? = nil) {
         self.id = id
         self.key = key
         self.isDropped = isDropped
-        self.parameterConfigurationId = parameterConfigurationId
+        self.parameterConfiguration = parameterConfiguration
         super.init()
     }
 }

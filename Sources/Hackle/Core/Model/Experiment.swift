@@ -1,10 +1,8 @@
 //
-// Created by yong on 2020/12/11.
-//
 
 import Foundation
 
-protocol Experiment: Sendable {
+protocol Experiment: Entity, Sendable {
     typealias Id = Int64
     typealias Key = Int64
 
@@ -27,6 +25,17 @@ protocol Experiment: Sendable {
 
     func getVariationOrNil(variationId: Variation.Id) -> Variation?
     func getVariationOrNil(variationKey: Variation.Key) -> Variation?
+}
+
+extension Experiment {
+    var serviceType: ServiceType {
+        switch type {
+        case .abTest:
+            return .abTest
+        case .featureFlag:
+            return .featureFlag
+        }
+    }
 }
 
 

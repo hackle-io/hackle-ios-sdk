@@ -2,15 +2,17 @@
 //  RemoteConfigParameter.swift
 //  Hackle
 //
-//  Created by yong on 2022/11/17.
-//
 
 import Foundation
 
 
-final class RemoteConfigParameter: Sendable {
+final class RemoteConfigParameter: RemoteConfigParameterConfig, Sendable {
     typealias Id = Int64
     typealias Key = String
+
+    var serviceType: ServiceType {
+        .remoteConfig
+    }
 
     let id: Id
     let key: Key
@@ -52,5 +54,15 @@ final class RemoteConfigParameter: Sendable {
             self.bucketId = bucketId
             self.value = value
         }
+    }
+}
+
+extension HackleValueType {
+    func cast(_ value: RemoteConfigParameter.Value) -> HackleValue? {
+        value.rawValue.type == self ? value.rawValue : nil
+    }
+
+    func isInstance(_ value: RemoteConfigParameter.Value) -> Bool {
+        cast(value) != nil
     }
 }

@@ -2,8 +2,6 @@
 //  InAppMessageTestExt.swift
 //  HackleTests
 //
-//  Created by yong on 2023/06/25.
-//
 
 import Foundation
 
@@ -209,12 +207,16 @@ extension InAppMessage {
         workspace: Workspace = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessage = create(),
+        scope: InAppMessageEvaluateScope = .trigger,
+        platformType: PlatformType = .ios,
         timestamp: Date = Date()
-    ) -> InAppMessageEligibilityRequest {
-        InAppMessageEligibilityRequest(
+    ) -> InAppMessageEligibilityLocalEvaluateRequest {
+        InAppMessageEligibilityLocalEvaluateRequest.of(
             workspace: workspace,
-            user: user,
             inAppMessage: inAppMessage,
+            user: user,
+            scope: scope,
+            platformType: platformType,
             timestamp: timestamp
         )
     }
@@ -222,44 +224,58 @@ extension InAppMessage {
     static func layoutRequest(
         workspace: Workspace = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        inAppMessage: InAppMessage = create()
-    ) -> InAppMessageLayoutRequest {
-        return InAppMessageLayoutRequest(
+        inAppMessage: InAppMessage = create(),
+        scope: InAppMessageEvaluateScope = .trigger,
+        record: Bool = true
+    ) -> InAppMessageLayoutLocalEvaluateRequest {
+        return InAppMessageLayoutLocalEvaluateRequest.of(
             workspace: workspace,
+            inAppMessage: inAppMessage,
             user: user,
-            inAppMessage: inAppMessage
+            scope: scope,
+            record: record
         )
     }
 
     static func layoutEvaluation(
-        request: InAppMessageLayoutRequest = layoutRequest(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        targetEvaluations: [EvaluatorEvaluation] = [],
-        message: InAppMessage.Message = message(),
-        properties: [String: Any] = [:]
+        inAppMessage: InAppMessage = create(),
+        message: InAppMessage.Message = message()
     ) -> InAppMessageLayoutEvaluation {
         return InAppMessageLayoutEvaluation(
-            request: request,
-            reason: reason,
-            targetEvaluations: targetEvaluations,
-            message: message,
-            properties: properties
+            entity: inAppMessage,
+            result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message)
+        )
+    }
+
+    static func layoutEvaluateResponse(
+        inAppMessage: InAppMessage = create(),
+        user: HackleUser = HackleUser.of(userId: "test"),
+        workspace: Workspace = DefaultWorkspaceConfig.create(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        message: InAppMessage.Message = message(),
+        experiment: ExperimentEvaluation? = nil
+    ) -> InAppMessageLayoutEvaluateResponse {
+        return InAppMessageLayoutEvaluateResponse(
+            user: user,
+            workspace: workspace,
+            evaluation: InAppMessageLayoutEvaluation(
+                entity: inAppMessage,
+                result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message)
+            ),
+            references: [],
+            experiment: experiment
         )
     }
 
     static func eligibilityEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        isEligible: Bool = true,
-        layoutEvaluation: InAppMessageLayoutEvaluation? = nil
+        isEligible: Bool = true
     ) -> InAppMessageEligibilityEvaluation {
         InAppMessageEligibilityEvaluation(
-            reason: reason,
-            targetEvaluations: targetEvaluations,
-            inAppMessage: inAppMessage,
-            isEligible: isEligible,
-            layoutEvaluation: layoutEvaluation
+            entity: inAppMessage,
+            result: InAppMessageEligibilityEvaluateResult(reason: reason, isEligible: isEligible)
         )
     }
 

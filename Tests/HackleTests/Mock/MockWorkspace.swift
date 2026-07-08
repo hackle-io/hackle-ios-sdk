@@ -1,21 +1,24 @@
 //
-// Created by yong on 2020/12/17.
-//
 
 import Foundation
 import MockingKit
 @testable import Hackle
 
-class MockWorkspace: Mock, Workspace {
+class MockWorkspace: Mock, WorkspaceConfig {
     let id: Int64
     let environmentId: Int64
+    var metadata: WorkspaceMetadata {
+        WorkspaceMetadata(id: id, environmentId: environmentId)
+    }
+    let modifiedAt: String?
     let experiments: [Experiment]
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
 
-    init(id: Int64 = 0, environmentId: Int64 = 0, experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
+    init(id: Int64 = 0, environmentId: Int64 = 0, modifiedAt: String? = nil, experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
         self.id = id
         self.environmentId = environmentId
+        self.modifiedAt = modifiedAt
         self.experiments = experiments
         self.featureFlags = featureFlags
         self.inAppMessages = inAppMessages
@@ -74,5 +77,21 @@ class MockWorkspace: Mock, Workspace {
 
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
         call(getInAppMessageOrNilMock, args: inAppMessageKey)
+    }
+
+    func getExperimentConfigOrNil(experimentKey: Experiment.Key) -> ExperimentConfig? {
+        getExperimentOrNil(experimentKey: experimentKey) as? ExperimentConfig
+    }
+
+    func getFeatureFlagConfigOrNil(featureKey: Experiment.Key) -> ExperimentConfig? {
+        getFeatureFlagOrNil(featureKey: featureKey) as? ExperimentConfig
+    }
+
+    func getRemoteConfigParameterConfigOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameterConfig? {
+        getRemoteConfigParameterOrNil(parameterKey: parameterKey) as? RemoteConfigParameterConfig
+    }
+
+    func getInAppMessageConfigOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessageConfig? {
+        getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) as? InAppMessageConfig
     }
 }

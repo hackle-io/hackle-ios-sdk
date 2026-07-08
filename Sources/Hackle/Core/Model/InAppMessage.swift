@@ -2,14 +2,16 @@
 //  InAppMessage.swift
 //  Hackle
 //
-//  Created by yong on 2023/05/31.
-//
 
 import Foundation
 
-final class InAppMessage: HackleInAppMessage, Sendable {
+final class InAppMessage: HackleInAppMessage, InAppMessageConfig, Sendable {
     typealias Id = Int64
     typealias Key = Int64
+
+    var serviceType: ServiceType {
+        .inAppMessage
+    }
 
     let id: Id
     let key: Key
@@ -235,12 +237,6 @@ extension InAppMessage {
         case imageOnly = "IMAGE_ONLY"
         case textOnly = "TEXT_ONLY"
         case image = "IMAGE"
-    }
-
-    enum PlatformType: String, Codable {
-        case web = "WEB"
-        case ios = "IOS"
-        case android = "ANDROID"
     }
 
     enum Orientation: String, Codable {

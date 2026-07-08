@@ -7,125 +7,80 @@ import Quick
 class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
     override class func spec() {
 
-        var workspaceFetcher: MockWorkspaceFetcher!
         var userManager: MockUserManager!
         var identifierChecker: MockInAppMessageIdentifierChecker!
-        var layoutResolver: MockInAppMessageLayoutResolver!
-        var evaluateProcessor: MockInAppMessageEvaluateProcessor!
+        var evaluator: MockInAppMessageDeliverEvaluator!
         var presentProcessor: MockInAppMessagePresentProcessor!
-        var sut: DefaultInAppMessageDeliverProcessor!
         var sessionManager: MockSessionManager!
+        var sut: DefaultInAppMessageDeliverProcessor!
 
         beforeEach {
-            workspaceFetcher = MockWorkspaceFetcher()
             userManager = MockUserManager()
             identifierChecker = MockInAppMessageIdentifierChecker()
-            layoutResolver = MockInAppMessageLayoutResolver()
-            evaluateProcessor = MockInAppMessageEvaluateProcessor()
+            evaluator = MockInAppMessageDeliverEvaluator()
             presentProcessor = MockInAppMessagePresentProcessor()
             sessionManager = MockSessionManager()
             sut = DefaultInAppMessageDeliverProcessor(
-                workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
                 userDecoreator: SessionUserDecorator(sessionManager: sessionManager),
                 identifierChecker: identifierChecker,
-                layoutResolver: layoutResolver,
-                evaluateProcessor: evaluateProcessor,
+                evaluator: evaluator,
                 presentProcessor: presentProcessor
             )
         }
 
-        it("workspaceNotFound") {
-            // given
-            let request = InAppMessage.deliverRequest()
-            every(workspaceFetcher.fetchMock).returns(nil)
-
-            // when
-            let actual = sut.process(request: request)
-
-            // then
-            expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
-        }
-
-        it("inAppMessageNotFound") {
-            // given
-            let request = InAppMessage.deliverRequest()
-            let workspace = WorkspaceEntity.create()
-            every(workspaceFetcher.fetchMock).returns(workspace)
-
-            // when
-            let actual = sut.process(request: request)
-
-            // then
-            expect(actual.code) == InAppMessageDeliverResponse.Code.inAppMessageNotFound
+        func eligibleResponse(experiment: ExperimentEvaluation? = nil) -> InAppMessageDeliverEvaluateResponse {
+            let evaluation = InAppMessageDeliverEvaluation(
+                eligibility: InAppMessage.eligibilityEvaluation(isEligible: true),
+                layout: InAppMessage.layoutEvaluateResponse(experiment: experiment)
+            )
+            return InAppMessageDeliverEvaluateResponse.of(evaluation: evaluation)
         }
 
         it("identifierChanged") {
             // given
-            let inAppMessage = InAppMessage.create()
-            let request = InAppMessage.deliverRequest()
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(true)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = sut.process(request: InAppMessage.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.identifierChanged
         }
 
-        it("ineligible") {
+        it("ineligible (evaluator가 ineligible 반환)") {
             // given
-            let inAppMessage = InAppMessage.create(
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: true)
-            )
-            let request = InAppMessage.deliverRequest(
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: false)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
+            every(evaluator.evaluateMock).returns(InAppMessageDeliverEvaluateResponse.ineligible(code: .ineligible))
 
             // when
-            let actual = sut.process(request: request)
+            let actual = sut.process(request: InAppMessage.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
         }
 
+        it("workspaceNotFound 코드 전파 (evaluator → response.code)") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(InAppMessageDeliverEvaluateResponse.ineligible(code: .workspaceNotFound))
+
+            // when
+            let actual = sut.process(request: InAppMessage.deliverRequest())
+
+            // then
+            expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
+        }
+
         it("present") {
             // given
-            let inAppMessage = InAppMessage.create(
-                key: 42,
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
-            )
-            let request = InAppMessage.deliverRequest(
-                dispatchId: "111",
-                inAppMessageKey: 42,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
-
+            every(evaluator.evaluateMock).returns(eligibleResponse())
             let presentResponse = InAppMessage.presentResponse()
             every(presentProcessor.processMock).returns(presentResponse)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = sut.process(request: InAppMessage.deliverRequest(dispatchId: "111", inAppMessageKey: 42))
 
             // then
             expect(actual.dispatchId) == "111"
@@ -136,31 +91,14 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
 
         it("exception") {
             // given
-            let inAppMessage = InAppMessage.create(
-                key: 42,
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
-            )
-            let request = InAppMessage.deliverRequest(
-                dispatchId: "111",
-                inAppMessageKey: 42,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
-
+            every(evaluator.evaluateMock).returns(eligibleResponse())
             every(presentProcessor.processMock).answers { _ in
                 throw HackleError.error("fail")
             }
 
             // when
-            let actual = sut.process(request: request)
+            let actual = sut.process(request: InAppMessage.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.exception
@@ -168,25 +106,8 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
 
         it("userDecorator_injects_session_into_user_context_when_session_exists") {
             // given
-            let inAppMessage = InAppMessage.create(
-                key: 300,
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
-            )
-            let request = InAppMessage.deliverRequest(
-                dispatchId: "sess-deco-1",
-                inAppMessageKey: 300,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
-
+            every(evaluator.evaluateMock).returns(eligibleResponse())
             var capturedRequest: InAppMessagePresentRequest?
             every(presentProcessor.processMock).answers { args in
                 capturedRequest = args
@@ -196,11 +117,53 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
             sessionManager.currentSession = mockSession
 
             // when
-            _ = sut.process(request: request)
+            _ = sut.process(request: InAppMessage.deliverRequest())
 
+            // then
             expect(capturedRequest).toNot(beNil())
             let user = capturedRequest?.user
             expect(user?.identifiers.keys.contains(IdentifierType.session.rawValue)).to(beTrue())
+        }
+
+        it("present_request_carries_experiment_properties_when_experiment_backed") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            let experiment = experimentEvaluation(variationId: 320, variationKey: "B")
+            every(evaluator.evaluateMock).returns(eligibleResponse(experiment: experiment))
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessage.presentResponse()
+            }
+
+            // when
+            _ = sut.process(request: InAppMessage.deliverRequest())
+
+            // then
+            let props = capturedRequest?.properties
+            expect(props?["experiment_key"] as? Int64).toNot(beNil())
+            expect(props?["variation_id"] as? Int64) == 320
+            expect(props?["variation_key"] as? String) == "B"
+            expect(props?["experiment_decision_reason"] as? String) == DecisionReason.TRAFFIC_ALLOCATED
+        }
+
+        it("present_request_has_no_experiment_properties_when_not_experiment_backed") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(eligibleResponse(experiment: nil))
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessage.presentResponse()
+            }
+
+            // when
+            _ = sut.process(request: InAppMessage.deliverRequest())
+
+            // then
+            let props = capturedRequest?.properties
+            expect(props?["experiment_key"]).to(beNil())
+            expect(props?["variation_key"]).to(beNil())
         }
     }
 }

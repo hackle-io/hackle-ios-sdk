@@ -2,8 +2,6 @@
 //  TimetableInAppMessageEligibilityFlowEvaluatorSpec.swift
 //  HackleTests
 //
-//  Created by sungwoo.yeo on 11/18/25.
-//
 
 import Foundation
 import Quick
@@ -15,14 +13,14 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
 
         var sut: TimetableInAppMessageEligibilityFlowEvaluator!
         var evaluatorContext: EvaluatorContext!
-        var nextFlow: InAppMessageEligibilityFlow!
+        var nextFlow: InAppMessageEligibilityLocalEvaluationFlow!
         var evaluation: InAppMessageEligibilityEvaluation!
 
         beforeEach {
             sut = TimetableInAppMessageEligibilityFlowEvaluator()
             evaluatorContext = Evaluators.context()
             evaluation = InAppMessage.eligibilityEvaluation()
-            nextFlow = InAppMessageEligibilityFlow.create(evaluation)
+            nextFlow = InAppMessageEligibilityLocalEvaluationFlow.create(evaluation)
         }
 
         describe("TimetableInAppMessageEligibilityFlowEvaluator") {
@@ -91,8 +89,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
                     )
 
                     expect(actual).toNot(beNil())
-                    expect(actual?.isEligible).to(beFalse())
-                    expect(actual?.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
+                    expect(actual?.eligibilityResult.isEligible).to(beFalse())
+                    expect(actual?.eligibilityResult.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
                 }
 
                 it("should return NOT_IN_IN_APP_MESSAGE_TIMETABLE when timestamp is after slot") {
@@ -113,8 +111,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
                     )
 
                     expect(actual).toNot(beNil())
-                    expect(actual?.isEligible).to(beFalse())
-                    expect(actual?.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
+                    expect(actual?.eligibilityResult.isEligible).to(beFalse())
+                    expect(actual?.eligibilityResult.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
                 }
 
                 it("should return NOT_IN_IN_APP_MESSAGE_TIMETABLE when day is different") {
@@ -135,8 +133,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
                     )
 
                     expect(actual).toNot(beNil())
-                    expect(actual?.isEligible).to(beFalse())
-                    expect(actual?.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
+                    expect(actual?.eligibilityResult.isEligible).to(beFalse())
+                    expect(actual?.eligibilityResult.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
                 }
             }
 
@@ -213,8 +211,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
                     )
 
                     expect(actual).toNot(beNil())
-                    expect(actual?.isEligible).to(beFalse())
-                    expect(actual?.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
+                    expect(actual?.eligibilityResult.isEligible).to(beFalse())
+                    expect(actual?.eligibilityResult.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
                 }
             }
 
@@ -264,8 +262,8 @@ class TimetableInAppMessageEligibilityFlowEvaluatorSpec: QuickSpec {
                     )
 
                     expect(actual).toNot(beNil())
-                    expect(actual?.isEligible).to(beFalse())
-                    expect(actual?.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
+                    expect(actual?.eligibilityResult.isEligible).to(beFalse())
+                    expect(actual?.eligibilityResult.reason).to(equal(DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE))
                 }
 
                 it("should include one millisecond before end time") {

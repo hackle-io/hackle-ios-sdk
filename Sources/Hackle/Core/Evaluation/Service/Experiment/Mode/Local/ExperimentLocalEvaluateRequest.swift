@@ -1,0 +1,37 @@
+//
+//  ExperimentLocalEvaluateRequest.swift
+//  Hackle
+//
+
+import Foundation
+
+final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEvaluateRequest, CustomStringConvertible {
+
+    let workspace: Workspace
+    let experimentConfig: ExperimentConfig
+    let user: HackleUser
+    let record: Bool
+
+    var entity: Entity { experimentConfig }
+    var experiment: Experiment { experimentConfig }
+
+    init(workspace: Workspace, entity: ExperimentConfig, user: HackleUser, record: Bool) {
+        self.workspace = workspace
+        self.experimentConfig = entity
+        self.user = user
+        self.record = record
+    }
+
+    var description: String {
+        "ExperimentEvaluateRequest(type=\(experimentConfig.type.rawValue), key=\(experimentConfig.key))"
+    }
+
+    static func of(requestedBy: LocalEvaluateRequest, experiment: ExperimentConfig) -> ExperimentLocalEvaluateRequest {
+        ExperimentLocalEvaluateRequest(
+            workspace: requestedBy.workspace,
+            entity: experiment,
+            user: requestedBy.user,
+            record: requestedBy.record
+        )
+    }
+}
