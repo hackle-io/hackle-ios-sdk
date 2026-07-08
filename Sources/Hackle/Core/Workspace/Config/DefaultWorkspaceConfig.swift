@@ -11,7 +11,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
     private let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
-    private let remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
+    private let _remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
 
     private let _experiments: [Experiment.Key: Experiment]
     private let _featureFlags: [Experiment.Key: Experiment]
@@ -51,7 +51,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         self.parameterConfigurations = parameterConfigurations.associateBy {
             $0.id
         }
-        self.remoteConfigParameters = remoteConfigParameters.associateBy {
+        self._remoteConfigParameters = remoteConfigParameters.associateBy {
             $0.key
         }
 
@@ -95,11 +95,21 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     }
 
     func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
-        remoteConfigParameters[parameterKey]
+        _remoteConfigParameters[parameterKey]
     }
 
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
         _inAppMessages[inAppMessageKey]
+    }
+
+    var remoteConfigParameters: [RemoteConfigParameter] {
+        Array(_remoteConfigParameters.values)
+    }
+
+    func toProperties() -> [String: Any] {
+        PropertiesBuilder()
+            .add("config_modified_at", modifiedAt)
+            .build()
     }
 
     func getExperimentConfigOrNil(experimentKey: Experiment.Key) -> ExperimentConfig? {
