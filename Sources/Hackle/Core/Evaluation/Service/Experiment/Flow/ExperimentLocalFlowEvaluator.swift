@@ -270,7 +270,7 @@ class ContainerExperimentLocalFlowEvaluator: ExperimentLocalFlowEvaluator {
             return try nextFlow.evaluate(request: request, context: context)
         }
 
-        guard let container = request.workspace.getContainerOrNil(containerId: containerId) else {
+        guard let container = request.workspaceConfig.getContainerOrNil(containerId: containerId) else {
             throw HackleError.error("Container[\(containerId)]")
         }
 

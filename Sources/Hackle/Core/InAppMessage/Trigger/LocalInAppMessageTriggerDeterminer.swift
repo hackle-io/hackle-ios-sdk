@@ -15,11 +15,11 @@ class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer 
         super.init(eventMatcher: eventMatcher)
     }
 
-    override func workspace(user: HackleUser) -> Workspace? {
+    override func workspace(user: HackleUser) -> WorkspaceConfig? {
         return workspaceFetcher.workspace(user: user)
     }
 
-    override func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+    override func evaluate(workspace: WorkspaceConfig, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
         guard let inAppMessageConfig = inAppMessage as? InAppMessageConfig else {
             throw HackleError.error("InAppMessageConfig[\(inAppMessage.key)]")
         }

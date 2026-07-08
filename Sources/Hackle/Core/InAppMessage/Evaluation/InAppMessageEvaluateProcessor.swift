@@ -17,7 +17,7 @@ class DefaultInAppMessageEvaluateProcessor: InAppMessageEvaluateProcessor {
         request: InAppMessageEligibilityLocalEvaluateRequest
     ) throws -> InAppMessageEligibilityEvaluation {
         let eligibilityRequest = InAppMessageEligibilityLocalEvaluateRequest.of(
-            workspace: request.workspace,
+            workspace: request.workspaceConfig,
             inAppMessage: request.inAppMessageConfig,
             user: request.user,
             scope: type,

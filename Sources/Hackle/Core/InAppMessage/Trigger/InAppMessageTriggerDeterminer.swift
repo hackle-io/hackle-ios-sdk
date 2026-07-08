@@ -12,11 +12,11 @@ class AbstractInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
         self.eventMatcher = eventMatcher
     }
 
-    func workspace(user: HackleUser) -> Workspace? {
+    func workspace(user: HackleUser) -> WorkspaceConfig? {
         fatalError("abstract method: workspace(user:)")
     }
 
-    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+    func evaluate(workspace: WorkspaceConfig, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
         fatalError("abstract method: evaluate(workspace:inAppMessage:event:)")
     }
 

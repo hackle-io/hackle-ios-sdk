@@ -55,7 +55,8 @@ class LocalEvaluatorSpecs: QuickSpec {
 
     struct StubLocalEvaluateRequest: LocalEvaluateRequest {
         var user: HackleUser = HackleUser.builder().build()
-        var workspace: Workspace = MockWorkspace()
+        var workspaceConfig: WorkspaceConfig = MockWorkspace()
+        var workspace: Workspace { workspaceConfig }
         var entity: Entity = DefaultEntity(serviceType: .abTest, id: 1)
         var record: Bool = false
     }

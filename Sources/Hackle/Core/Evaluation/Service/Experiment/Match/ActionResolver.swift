@@ -36,7 +36,7 @@ class DefaultActionResolver: ActionResolver {
         guard let bucketId = action.bucketId else {
             throw HackleError.error("action bucket[\(request.experimentConfig.id)]")
         }
-        guard let bucket = request.workspace.getBucketOrNil(bucketId: bucketId) else {
+        guard let bucket = request.workspaceConfig.getBucketOrNil(bucketId: bucketId) else {
             throw HackleError.error("bucket[\(bucketId)]")
         }
         guard let identifier = request.user.identifiers[request.experimentConfig.identifierType] else {

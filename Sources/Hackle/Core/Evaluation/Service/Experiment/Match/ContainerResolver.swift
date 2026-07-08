@@ -21,7 +21,7 @@ class DefaultContainerResolver: ContainerResolver {
             return false
         }
 
-        guard let bucket = request.workspace.getBucketOrNil(bucketId: container.bucketId) else {
+        guard let bucket = request.workspaceConfig.getBucketOrNil(bucketId: container.bucketId) else {
             throw HackleError.error("Bucket[\(container.bucketId)]")
         }
 

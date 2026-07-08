@@ -204,7 +204,7 @@ extension InAppMessageEntity {
     }
 
     static func eligibilityRequest(
-        workspace: Workspace = MockWorkspace(),
+        workspace: WorkspaceConfig = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessageConfig = create(),
         scope: InAppMessageEvaluateScope = .trigger,
@@ -222,7 +222,7 @@ extension InAppMessageEntity {
     }
 
     static func layoutRequest(
-        workspace: Workspace = MockWorkspace(),
+        workspace: WorkspaceConfig = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessageConfig = create(),
         scope: InAppMessageEvaluateScope = .trigger,

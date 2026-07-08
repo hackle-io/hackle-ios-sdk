@@ -41,7 +41,7 @@ class RemoteConfigParameterTargetRuleMatcher {
             return false
         }
 
-        guard let bucket = request.workspace.getBucketOrNil(bucketId: rule.bucketId) else {
+        guard let bucket = request.workspaceConfig.getBucketOrNil(bucketId: rule.bucketId) else {
             throw HackleError.error("Bucket[\(rule.bucketId)]")
         }
 

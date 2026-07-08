@@ -169,7 +169,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
 
         it("ExperimentRequest 가 아니면 evaluation 그대로 사용") {
             let experimentRequest = request(experiment: experiment(type: .abTest))
-            let request = remoteConfigRequest(workspace: experimentRequest.workspace)
+            let request = remoteConfigRequest(workspace: experimentRequest.workspaceConfig)
             let condition = Target.Condition(
                 key: Target.Key(type: .abTest, name: "42"),
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [.string("A")])
