@@ -56,3 +56,12 @@ func experimentRemoteResult(
         variation: variation, reason: reason, references: references
     )
 }
+
+func remoteConfigRemoteResult(
+    id: Int64 = 2,
+    key: String = "rc_key",
+    value: RemoteConfigParameter.Value? = RemoteConfigParameterEntity.Value(id: 7, rawValue: HackleValue(value: "v")),
+    reason: String = DecisionReason.TARGET_RULE_MATCH
+) -> RemoteConfigParameterRemoteEvaluateResult {
+    RemoteConfigParameterRemoteEvaluateResult(id: id, key: key, type: .string, value: value, reason: reason, references: [])
+}
