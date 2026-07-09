@@ -23,14 +23,7 @@ class InAppMessageEligibilityRemoteEvaluatorSpecs: QuickSpec {
         }
 
         func request(isEligible: Bool = true, reason: String = DecisionReason.IN_APP_MESSAGE_TARGET) -> InAppMessageEligibilityRemoteEvaluateRequest {
-            InAppMessageEligibilityRemoteEvaluateRequest.of(
-                workspace: MockWorkspaceEvaluation(),
-                entity: inAppMessageEligibilityRemoteResult(isEligible: isEligible, reason: reason),
-                user: HackleUser.builder().build(),
-                scope: .trigger,
-                platformType: .ios,
-                timestamp: Date()
-            )
+            iamRemoteRequest(isEligible: isEligible, reason: reason, user: HackleUser.builder().build())
         }
 
         describe("remoteEvaluate") {
