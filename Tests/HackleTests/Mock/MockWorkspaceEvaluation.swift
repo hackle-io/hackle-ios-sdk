@@ -65,3 +65,38 @@ func remoteConfigRemoteResult(
 ) -> RemoteConfigParameterRemoteEvaluateResult {
     RemoteConfigParameterRemoteEvaluateResult(id: id, key: key, type: .string, value: value, reason: reason, references: [])
 }
+
+func inAppMessageLayoutRemoteResult(
+    id: Int64 = 5,
+    key: Int64 = 50,
+    reason: String = DecisionReason.IN_APP_MESSAGE_TARGET
+) -> InAppMessageLayoutRemoteEvaluateResult {
+    let iam = InAppMessageEntity.create()
+    return InAppMessageLayoutRemoteEvaluateResult(
+        id: id, key: key,
+        period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
+        evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
+        message: iam.messageContext.messages[0],
+        reason: reason,
+        references: []
+    )
+}
+
+func inAppMessageEligibilityRemoteResult(
+    id: Int64 = 5,
+    key: Int64 = 50,
+    isEligible: Bool = true,
+    reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+    layout: InAppMessageLayoutRemoteEvaluateResult? = nil
+) -> InAppMessageEligibilityRemoteEvaluateResult {
+    let iam = InAppMessageEntity.create()
+    return InAppMessageEligibilityRemoteEvaluateResult(
+        id: id, key: key,
+        period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
+        evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
+        isEligible: isEligible,
+        reason: reason,
+        references: [],
+        layout: layout ?? inAppMessageLayoutRemoteResult(id: id, key: key)
+    )
+}
