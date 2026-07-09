@@ -87,9 +87,10 @@ func inAppMessageEligibilityRemoteResult(
     key: Int64 = 50,
     isEligible: Bool = true,
     reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+    evaluateContext: InAppMessage.EvaluateContext = InAppMessageEntity.evaluateContext(),
     layout: InAppMessageLayoutRemoteEvaluateResult? = nil
 ) -> InAppMessageEligibilityRemoteEvaluateResult {
-    let iam = InAppMessageEntity.create()
+    let iam = InAppMessageEntity.create(evaluateContext: evaluateContext)
     return InAppMessageEligibilityRemoteEvaluateResult(
         id: id, key: key,
         period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
