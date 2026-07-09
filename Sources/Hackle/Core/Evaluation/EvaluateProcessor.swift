@@ -76,10 +76,33 @@ class EvaluateProcessor {
         evaluatorFactory.add(inAppMessageLayoutLocalEvaluator)
         evaluatorFactory.add(inAppMessageEligibilityLocalEvaluator)
 
+        // ===== Remote =====
+
+        let experimentRemoteEvaluator = ExperimentRemoteEvaluator(
+            eventRecorder: eventRecorder
+        )
+        let remoteConfigRemoteEvaluator = RemoteConfigRemoteEvaluator(
+            eventRecorder: eventRecorder
+        )
+        let inAppMessageLayoutRemoteEvaluator = InAppMessageLayoutRemoteEvaluator(
+            eventRecorder: eventRecorder
+        )
+        let inAppMessageEligibilityRemoteEvaluator = InAppMessageEligibilityRemoteEvaluator(
+            evaluationFlowFactory: DefaultInAppMessageEligibilityRemoteEvaluationFlowFactory(
+                impressionStorage: impressionStorage,
+                hiddenStorage: hiddenStorage,
+                layoutEvaluator: inAppMessageLayoutRemoteEvaluator
+            ),
+            eventRecorder: eventRecorder
+        )
+
+        evaluatorFactory.add(experimentRemoteEvaluator)
+        evaluatorFactory.add(remoteConfigRemoteEvaluator)
+        evaluatorFactory.add(inAppMessageLayoutRemoteEvaluator)
+        evaluatorFactory.add(inAppMessageEligibilityRemoteEvaluator)
+
         return EvaluateProcessor(evaluatorFactory: evaluatorFactory)
     }
-
-    // 타입드 진입점(experiment/remoteConfig/inAppMessage x2)은 step 3/4/5에서 추가.
 
     fileprivate func evaluate<Res: EvaluateResponse>(evaluator: any Evaluator, request: EvaluateRequest) throws -> Res {
         let response: Res = try evaluator.evaluate(request: request, context: Evaluators.context())
