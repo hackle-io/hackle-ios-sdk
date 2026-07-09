@@ -97,12 +97,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         Array(_remoteConfigParameters.values)
     }
 
-    func toProperties() -> [String: Any] {
-        PropertiesBuilder()
-            .add("config_modified_at", modifiedAt)
-            .build()
-    }
-
     func getExperimentConfigOrNil(experimentKey: Experiment.Key) -> ExperimentConfig? {
         getExperimentOrNil(experimentKey: experimentKey) as? ExperimentConfig
     }
@@ -171,5 +165,13 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             remoteConfigParameters: remoteConfigParameters,
             inAppMessages: inAppMessages
         )
+    }
+}
+
+extension DefaultWorkspaceConfig {
+    func toProperties() -> [String: Any] {
+        PropertiesBuilder()
+            .add("config_modified_at", modifiedAt)
+            .build()
     }
 }
