@@ -15,7 +15,7 @@ class RemoteConfigParameterTargetRuleDeterminer {
     }
 
     func determine(request: RemoteConfigLocalEvaluateRequest, context: EvaluatorContext) throws -> RemoteConfigParameter.TargetRule? {
-        try request.parameter.targetRules.first { it in
+        try request.parameterConfig.targetRules.first { it in
             try matcher.matches(request: request, context: context, rule: it)
         }
     }
@@ -37,11 +37,11 @@ class RemoteConfigParameterTargetRuleMatcher {
             return false
         }
 
-        guard let identifier = request.user.identifiers[request.parameter.identifierType] else {
+        guard let identifier = request.user.identifiers[request.parameterConfig.identifierType] else {
             return false
         }
 
-        guard let bucket = request.workspace.getBucketOrNil(bucketId: rule.bucketId) else {
+        guard let bucket = request.workspaceConfig.getBucketOrNil(bucketId: rule.bucketId) else {
             throw HackleError.error("Bucket[\(rule.bucketId)]")
         }
 

@@ -18,7 +18,7 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
             let view = MainActor.assumeIsolated {
                 MockInAppMessageView(
                     id: viewId,
-                    context: InAppMessage.context(triggerEvent: event)
+                    context: InAppMessageEntity.context(triggerEvent: event)
                 )
             }
             return InAppMessageViewJavascriptBridge(app: app, view: view)

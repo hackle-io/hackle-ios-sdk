@@ -45,7 +45,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             let rc = events[0] as! UserEvents.RemoteConfig
             expect(rc.timestamp) == Date(timeIntervalSince1970: 42)
             expect(rc.user).to(beIdenticalTo(request.user))
-            expect(rc.parameter).to(beIdenticalTo(request.parameter))
+            expect(rc.parameter as? RemoteConfigParameterEntity).to(beIdenticalTo(request.parameter as? RemoteConfigParameterEntity))
             expect(rc.valueId) == 999
             expect(rc.decisionReason) == DecisionReason.TARGET_RULE_MATCH
 
@@ -82,7 +82,7 @@ class DefaultUserEventFactorySpecs: QuickSpec {
 
             let evaluation1 = experimentEvaluation(reason: DecisionReason.TRAFFIC_ALLOCATED, experiment: experiment(id: 1), variationId: 42, variationKey: "B")
 
-            let request = InAppMessage.eligibilityRequest()
+            let request = InAppMessageEntity.eligibilityRequest()
             let eligibilityEvaluation = InAppMessageEligibilityEvaluation(
                 entity: request.inAppMessage,
                 result: InAppMessageEligibilityEvaluateResult(reason: DecisionReason.IN_APP_MESSAGE_TARGET, isEligible: true)

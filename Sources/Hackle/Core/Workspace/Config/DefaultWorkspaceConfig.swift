@@ -7,11 +7,10 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     let featureFlags: [Experiment]
     let inAppMessages: [InAppMessage]
     private let buckets: [Bucket.Id: Bucket]
-    private let eventTypes: [EventType.Key: EventType]
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
     private let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
-    private let remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
+    private let _remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
 
     private let _experiments: [Experiment.Key: Experiment]
     private let _featureFlags: [Experiment.Key: Experiment]
@@ -24,7 +23,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         experiments: [Experiment],
         featureFlags: [Experiment],
         buckets: [Bucket],
-        eventTypes: [EventType],
         segments: [Segment],
         containers: [Container],
         parameterConfigurations: [ParameterConfiguration],
@@ -39,9 +37,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         self.buckets = buckets.associateBy {
             $0.id
         }
-        self.eventTypes = eventTypes.associateBy {
-            $0.key
-        }
         self.segments = segments.associateBy {
             $0.key
         }
@@ -51,7 +46,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         self.parameterConfigurations = parameterConfigurations.associateBy {
             $0.id
         }
-        self.remoteConfigParameters = remoteConfigParameters.associateBy {
+        self._remoteConfigParameters = remoteConfigParameters.associateBy {
             $0.key
         }
 
@@ -78,10 +73,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         buckets[bucketId]
     }
 
-    func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
-        eventTypes[eventTypeKey]
-    }
-
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment? {
         segments[segmentKey]
     }
@@ -95,11 +86,15 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     }
 
     func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
-        remoteConfigParameters[parameterKey]
+        _remoteConfigParameters[parameterKey]
     }
 
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
         _inAppMessages[inAppMessageKey]
+    }
+
+    var remoteConfigParameters: [RemoteConfigParameter] {
+        Array(_remoteConfigParameters.values)
     }
 
     func getExperimentConfigOrNil(experimentKey: Experiment.Key) -> ExperimentConfig? {
@@ -141,10 +136,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             it.toBucket()
         }
 
-        let eventTypes = dto.events.map { it in
-            it.toEventType()
-        }
-
         let segments = dto.segments.compactMap { it in
             it.toSegmentOrNil()
         }
@@ -168,12 +159,19 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
-            eventTypes: eventTypes,
             segments: segments,
             containers: containers,
             parameterConfigurations: parameterConfigurations,
             remoteConfigParameters: remoteConfigParameters,
             inAppMessages: inAppMessages
         )
+    }
+}
+
+extension DefaultWorkspaceConfig {
+    func toProperties() -> [String: Any] {
+        PropertiesBuilder()
+            .add("config_modified_at", modifiedAt)
+            .build()
     }
 }

@@ -20,7 +20,7 @@ class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
         it("when trigger rule is empty then returns false") {
             // given
             let event = UserEvents.track("test")
-            let inAppMessage = InAppMessage.create(eventTrigger: InAppMessage.eventTrigger(rules: []))
+            let inAppMessage = InAppMessageEntity.create(eventTrigger: InAppMessageEntity.eventTrigger(rules: []))
 
             // when
             let actual = try sut.matches(workspace: workspace, inAppMessage: inAppMessage, event: event)
@@ -32,7 +32,7 @@ class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
         it("when all trigger rules do not match then returns false") {
             // given
             let event = UserEvents.track("test")
-            let inAppMessage = InAppMessage.create(eventTrigger: InAppMessage.eventTrigger(rules: [
+            let inAppMessage = InAppMessageEntity.create(eventTrigger: InAppMessageEntity.eventTrigger(rules: [
                 InAppMessage.EventTrigger.Rule(eventKey: "not_match", targets: []),
                 InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [.create(Target.condition())]),
                 InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [.create(Target.condition(), Target.condition())]),
@@ -50,7 +50,7 @@ class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
         it("when trigger rule matched then returns true") {
             // given
             let event = UserEvents.track("test")
-            let inAppMessage = InAppMessage.create(eventTrigger: InAppMessage.eventTrigger(rules: [
+            let inAppMessage = InAppMessageEntity.create(eventTrigger: InAppMessageEntity.eventTrigger(rules: [
                 InAppMessage.EventTrigger.Rule(eventKey: "not_match", targets: []),
                 InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [.create(Target.condition())]),
                 InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [.create(Target.condition())]),

@@ -5,14 +5,48 @@
 
 import Foundation
 
-final class InAppMessage: HackleInAppMessage, InAppMessageConfig, Sendable {
+protocol InAppMessage: Entity, HackleInAppMessage, Sendable {
     typealias Id = Int64
     typealias Key = Int64
+    typealias Status = InAppMessageEntity.Status
+    typealias Period = InAppMessageEntity.Period
+    typealias Timetable = InAppMessageEntity.Timetable
+    typealias TimetableSlot = InAppMessageEntity.TimetableSlot
+    typealias EventTrigger = InAppMessageEntity.EventTrigger
+    typealias EvaluateContext = InAppMessageEntity.EvaluateContext
+    typealias TargetContext = InAppMessageEntity.TargetContext
+    typealias UserOverride = InAppMessageEntity.UserOverride
+    typealias DisplayType = InAppMessageEntity.DisplayType
+    typealias LayoutType = InAppMessageEntity.LayoutType
+    typealias Orientation = InAppMessageEntity.Orientation
+    typealias Behavior = InAppMessageEntity.Behavior
+    typealias ActionType = InAppMessageEntity.ActionType
+    typealias ActionArea = InAppMessageEntity.ActionArea
+    typealias VerticalAlignment = InAppMessageEntity.VerticalAlignment
+    typealias HorizontalAlignment = InAppMessageEntity.HorizontalAlignment
+    typealias DelayType = InAppMessageEntity.DelayType
+    typealias HtmlResourceType = InAppMessageEntity.HtmlResourceType
+    typealias MessageContext = InAppMessageEntity.MessageContext
+    typealias ExperimentContext = InAppMessageEntity.ExperimentContext
+    typealias Message = InAppMessageEntity.Message
+    typealias Action = InAppMessageEntity.Action
 
+    var id: Id { get }
+    var key: Key { get }
+    var period: Period { get }
+    var timetable: Timetable { get }
+    var eventTrigger: EventTrigger { get }
+    var evaluateContext: EvaluateContext { get }
+    var messageContext: MessageContext { get }
+}
+
+extension InAppMessage {
     var serviceType: ServiceType {
         .inAppMessage
     }
+}
 
+final class InAppMessageEntity: InAppMessageConfig, Sendable {
     let id: Id
     let key: Key
     let status: Status
@@ -46,7 +80,7 @@ final class InAppMessage: HackleInAppMessage, InAppMessageConfig, Sendable {
     }
 }
 
-extension InAppMessage {
+extension InAppMessageEntity {
     enum Status: String, Codable {
         case initialized = "INITIALIZED"
         case draft = "DRAFT"
@@ -542,11 +576,13 @@ extension InAppMessage {
     }
 }
 
-extension InAppMessage: CustomStringConvertible {
+extension InAppMessageEntity: CustomStringConvertible {
     var description: String {
         return "InAppMessage(id: \(id), key: \(key), status: \(status))"
     }
+}
 
+extension InAppMessage {
     func supports(platform: PlatformType) -> Bool {
         messageContext.platformTypes.contains(platform)
     }

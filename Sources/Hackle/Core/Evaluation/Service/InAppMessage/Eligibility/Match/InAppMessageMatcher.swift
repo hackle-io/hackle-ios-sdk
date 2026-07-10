@@ -6,5 +6,5 @@
 import Foundation
 
 protocol InAppMessageMatcher {
-    func matches(request: InAppMessageEligibilityLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool
+    func matches(request: InAppMessageEligibilityEvaluateRequest, context: EvaluatorContext) throws -> Bool
 }

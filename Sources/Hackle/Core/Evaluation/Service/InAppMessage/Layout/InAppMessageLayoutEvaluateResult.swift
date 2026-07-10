@@ -1,6 +1,6 @@
 import Foundation
 
-final class InAppMessageLayoutEvaluateResult: EvaluateResult {
+class InAppMessageLayoutEvaluateResult: EvaluateResult {
     let reason: String
     let message: InAppMessage.Message
 

@@ -8,23 +8,9 @@ protocol Experiment: Entity, Sendable {
 
     var id: Id { get }
     var key: Key { get }
-    var name: String? { get }
-    var type: ExperimentType { get }
-    var identifierType: String { get }
-    var status: ExperimentStatus { get }
     var version: Int { get }
+    var type: ExperimentType { get }
     var executionVersion: Int { get }
-    var variations: [Variation] { get }
-    var userOverrides: [User.Id: Variation.Id] { get }
-    var segmentOverrides: [TargetRule] { get }
-    var targetAudiences: [Target] { get }
-    var targetRules: [TargetRule] { get }
-    var defaultRule: Action { get }
-    var containerId: Container.Id? { get }
-    var winnerVariation: Variation? { get }
-
-    func getVariationOrNil(variationId: Variation.Id) -> Variation?
-    func getVariationOrNil(variationKey: Variation.Key) -> Variation?
 }
 
 extension Experiment {

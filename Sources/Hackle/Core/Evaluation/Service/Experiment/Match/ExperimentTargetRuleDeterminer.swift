@@ -13,7 +13,7 @@ class DefaultExperimentTargetRuleDeterminer: ExperimentTargetRuleDeterminer {
     }
 
     func determineTargetRuleOrNil(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> TargetRule? {
-        try request.experiment.targetRules.first { it in
+        try request.experimentConfig.targetRules.first { it in
             try targetMatcher.matches(request: request, context: context, target: it.target)
         }
     }

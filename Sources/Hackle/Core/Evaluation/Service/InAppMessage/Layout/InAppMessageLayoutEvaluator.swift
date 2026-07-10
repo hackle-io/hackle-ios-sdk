@@ -1,4 +1,4 @@
 import Foundation
 
-protocol InAppMessageLayoutEvaluator: LocalEvaluator where Request: InAppMessageLayoutEvaluateRequest, Response == InAppMessageLayoutEvaluateResponse {
+protocol InAppMessageLayoutEvaluator: ContextualEvaluator where Request: InAppMessageLayoutEvaluateRequest, Response == InAppMessageLayoutEvaluateResponse {
 }

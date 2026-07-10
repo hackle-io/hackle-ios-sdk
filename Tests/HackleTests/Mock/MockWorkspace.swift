@@ -13,14 +13,16 @@ class MockWorkspace: Mock, WorkspaceConfig {
     let modifiedAt: String?
     let experiments: [Experiment]
     let featureFlags: [Experiment]
+    let remoteConfigParameters: [RemoteConfigParameter]
     let inAppMessages: [InAppMessage]
 
-    init(id: Int64 = 0, environmentId: Int64 = 0, modifiedAt: String? = nil, experiments: [Experiment] = [], featureFlags: [Experiment] = [], inAppMessages: [InAppMessage] = []) {
+    init(id: Int64 = 0, environmentId: Int64 = 0, modifiedAt: String? = nil, experiments: [Experiment] = [], featureFlags: [Experiment] = [], remoteConfigParameters: [RemoteConfigParameter] = [], inAppMessages: [InAppMessage] = []) {
         self.id = id
         self.environmentId = environmentId
         self.modifiedAt = modifiedAt
         self.experiments = experiments
         self.featureFlags = featureFlags
+        self.remoteConfigParameters = remoteConfigParameters
         self.inAppMessages = inAppMessages
         super.init()
     }
@@ -41,12 +43,6 @@ class MockWorkspace: Mock, WorkspaceConfig {
 
     func getBucketOrNil(bucketId: Bucket.Id) -> Bucket? {
         call(getBucketOrNilMock, args: bucketId)
-    }
-
-    lazy var getEventTypeOrNilMock = MockFunction(self, getEventTypeOrNil)
-
-    func getEventTypeOrNil(eventTypeKey: EventType.Key) -> EventType? {
-        call(getEventTypeOrNilMock, args: eventTypeKey)
     }
 
     lazy var getSegmentOrNilMock = MockFunction(self, getSegmentOrNil)
@@ -93,5 +89,11 @@ class MockWorkspace: Mock, WorkspaceConfig {
 
     func getInAppMessageConfigOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessageConfig? {
         getInAppMessageOrNil(inAppMessageKey: inAppMessageKey) as? InAppMessageConfig
+    }
+
+    lazy var toPropertiesMock = MockFunction(self, toProperties)
+
+    func toProperties() -> [String: Any] {
+        call(toPropertiesMock, args: (), fallback: [:])
     }
 }

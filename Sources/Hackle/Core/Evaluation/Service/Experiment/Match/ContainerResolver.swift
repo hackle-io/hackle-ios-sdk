@@ -17,11 +17,11 @@ class DefaultContainerResolver: ContainerResolver {
     }
 
     func isUserInContainerGroup(request: ExperimentLocalEvaluateRequest, container: Container) throws -> Bool {
-        guard let identifier = request.user.identifiers[request.experiment.identifierType] else {
+        guard let identifier = request.user.identifiers[request.experimentConfig.identifierType] else {
             return false
         }
 
-        guard let bucket = request.workspace.getBucketOrNil(bucketId: container.bucketId) else {
+        guard let bucket = request.workspaceConfig.getBucketOrNil(bucketId: container.bucketId) else {
             throw HackleError.error("Bucket[\(container.bucketId)]")
         }
 
@@ -33,6 +33,6 @@ class DefaultContainerResolver: ContainerResolver {
             throw HackleError.error("ContainerGroup[\(slot.variationId)]")
         }
 
-        return containerGroup.experiments.contains(request.experiment.id)
+        return containerGroup.experiments.contains(request.experimentConfig.id)
     }
 }

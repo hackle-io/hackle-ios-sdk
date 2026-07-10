@@ -14,10 +14,10 @@ extension DefaultWorkspaceConfig {
     static func create(
         id: Int64 = 0,
         environmentId: Int64 = 0,
+        modifiedAt: String? = nil,
         experiments: [Experiment] = [],
         featureFlags: [Experiment] = [],
         buckets: [Bucket] = [],
-        eventTypes: [EventType] = [],
         segments: [Segment] = [],
         containers: [Container] = [],
         parameterConfigurations: [ParameterConfiguration] = [],
@@ -27,10 +27,10 @@ extension DefaultWorkspaceConfig {
         DefaultWorkspaceConfig(
             id: id,
             environmentId: environmentId,
+            modifiedAt: modifiedAt,
             experiments: experiments,
             featureFlags: featureFlags,
             buckets: buckets,
-            eventTypes: eventTypes,
             segments: segments,
             containers: containers,
             parameterConfigurations: parameterConfigurations,

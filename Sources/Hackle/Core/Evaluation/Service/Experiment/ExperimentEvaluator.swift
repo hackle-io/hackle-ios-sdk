@@ -5,5 +5,5 @@
 
 import Foundation
 
-protocol ExperimentEvaluator: LocalEvaluator where Request == ExperimentLocalEvaluateRequest, Response == ExperimentEvaluateResponse {
+protocol ExperimentEvaluator: ContextualEvaluator where Request: ExperimentEvaluateRequest, Response == ExperimentEvaluateResponse {
 }

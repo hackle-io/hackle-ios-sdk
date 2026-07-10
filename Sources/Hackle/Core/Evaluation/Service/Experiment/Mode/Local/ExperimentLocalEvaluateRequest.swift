@@ -7,16 +7,17 @@ import Foundation
 
 final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEvaluateRequest, CustomStringConvertible {
 
-    let workspace: Workspace
+    let workspaceConfig: WorkspaceConfig
     let experimentConfig: ExperimentConfig
     let user: HackleUser
     let record: Bool
 
+    var workspace: Workspace { workspaceConfig }
     var entity: Entity { experimentConfig }
     var experiment: Experiment { experimentConfig }
 
-    init(workspace: Workspace, entity: ExperimentConfig, user: HackleUser, record: Bool) {
-        self.workspace = workspace
+    init(workspace: WorkspaceConfig, entity: ExperimentConfig, user: HackleUser, record: Bool) {
+        self.workspaceConfig = workspace
         self.experimentConfig = entity
         self.user = user
         self.record = record
@@ -28,7 +29,7 @@ final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEval
 
     static func of(requestedBy: LocalEvaluateRequest, experiment: ExperimentConfig) -> ExperimentLocalEvaluateRequest {
         ExperimentLocalEvaluateRequest(
-            workspace: requestedBy.workspace,
+            workspace: requestedBy.workspaceConfig,
             entity: experiment,
             user: requestedBy.user,
             record: requestedBy.record

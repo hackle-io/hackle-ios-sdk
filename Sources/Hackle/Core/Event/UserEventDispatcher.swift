@@ -144,6 +144,7 @@ extension UserEvents.Exposure {
         dto["variationKey"] = variationKey
         dto["decisionReason"] = decisionReason
         dto["properties"] = properties
+        dto["internalProperties"] = internalProperties
 
         return dto
     }
@@ -161,8 +162,9 @@ extension UserEvents.Track {
         dto["userProperties"] = user.properties
         dto["hackleProperties"] = user.hackleProperties
 
-        dto["eventTypeId"] = eventType.id
-        dto["eventTypeKey"] = eventType.key
+        dto["internalProperties"] = internalProperties
+        dto["eventTypeId"] = 0
+        dto["eventTypeKey"] = event.key
         if let value = event.value {
             dto["value"] = value
         }
@@ -191,6 +193,7 @@ extension UserEvents.RemoteConfig {
         dto["valueId"] = valueId
         dto["decisionReason"] = decisionReason
         dto["properties"] = properties
+        dto["internalProperties"] = internalProperties
 
         return dto
     }

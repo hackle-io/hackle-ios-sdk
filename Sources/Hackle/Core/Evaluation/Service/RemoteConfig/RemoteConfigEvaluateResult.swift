@@ -1,6 +1,6 @@
 import Foundation
 
-final class RemoteConfigEvaluateResult: EvaluateResult {
+class RemoteConfigEvaluateResult: EvaluateResult {
     let reason: String
     let value: RemoteConfigParameter.Value?
 

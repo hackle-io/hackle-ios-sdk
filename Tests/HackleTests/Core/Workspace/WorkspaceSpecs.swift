@@ -45,9 +45,9 @@ class WorkspaceSpecs: QuickSpec {
             let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
 
             let experiment = workspace.experiments.first { exp in
-                exp.variations.contains { $0.parameterConfiguration != nil }
+                ((exp as? ExperimentConfig)?.variations ?? []).contains { $0.parameterConfiguration != nil }
             }!
-            let variation = experiment.variations.first { $0.parameterConfiguration != nil }!
+            let variation = ((experiment as? ExperimentConfig)?.variations ?? []).first { $0.parameterConfiguration != nil }!
 
             // parse-time resolve 된 객체가 workspace 조회 결과와 동일 id
             let expected = workspace.getParameterConfigurationOrNil(parameterConfigurationId: variation.parameterConfiguration!.id)

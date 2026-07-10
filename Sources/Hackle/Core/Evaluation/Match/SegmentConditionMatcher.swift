@@ -30,7 +30,7 @@ class SegmentConditionMatcher: ConditionMatcher {
         guard let segmentKey = value.stringOrNil else {
             throw HackleError.error("SegmentKey[\(value)]")
         }
-        guard let segment = request.workspace.getSegmentOrNil(segmentKey: segmentKey) else {
+        guard let segment = request.workspaceConfig.getSegmentOrNil(segmentKey: segmentKey) else {
             throw HackleError.error("Segment[\(segmentKey)]")
         }
         return try segmentMatcher.matches(request: request, context: context, segment: segment)

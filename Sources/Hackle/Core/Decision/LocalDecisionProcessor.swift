@@ -92,7 +92,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
         guard let workspace = workspaceFetcher.workspace(user: user) else {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.SDK_NOT_READY)
         }
-        guard let parameter = workspace.getRemoteConfigParameterConfigOrNil(parameterKey: parameterKey) as? RemoteConfigParameter else {
+        guard let parameter = workspace.getRemoteConfigParameterConfigOrNil(parameterKey: parameterKey) else {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.REMOTE_CONFIG_PARAMETER_NOT_FOUND)
         }
 

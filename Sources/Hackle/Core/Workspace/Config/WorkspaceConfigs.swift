@@ -31,13 +31,13 @@ extension InAppMessageDto {
         let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
         let eventTriggerDelay = eventTriggerDelay?.toDelayOrNil() ?? InAppMessage.EventTrigger.Delay.default
 
-        return InAppMessage(
+        return InAppMessageEntity(
             id: id,
             key: key,
             status: status,
             period: period,
             timetable: timetable,
-            eventTrigger: InAppMessage.EventTrigger(
+            eventTrigger: InAppMessageEntity.EventTrigger(
                 rules: eventTriggerRules,
                 frequencyCap: eventFrequencyCap,
                 delay: eventTriggerDelay
@@ -71,7 +71,7 @@ extension InAppMessageDto.TimetableSlotDto {
             return nil
         }
         let timeUnit = TimeUnit.milliseconds
-        return InAppMessage.TimetableSlot(
+        return InAppMessageEntity.TimetableSlot(
             dayOfWeek: dayOfWeek,
             startSecondsInclusive: timeUnit.convert(Double(startMillisInclusive), to: .seconds),
             endSecondsExclusive: timeUnit.convert(Double(endMillisExclusive), to: .seconds)
@@ -81,7 +81,7 @@ extension InAppMessageDto.TimetableSlotDto {
 
 extension InAppMessageDto.EventTriggerRuleDto {
     func toTriggerRule() -> InAppMessage.EventTrigger.Rule {
-        InAppMessage.EventTrigger.Rule(eventKey: eventKey, targets: targets.compactMap {
+        InAppMessageEntity.EventTrigger.Rule(eventKey: eventKey, targets: targets.compactMap {
             $0.toTargetOrNil(.property)
         })
     }
@@ -89,7 +89,7 @@ extension InAppMessageDto.EventTriggerRuleDto {
 
 extension InAppMessageDto.EventFrequencyCapDto {
     func toFrequencyCap() -> InAppMessage.EventTrigger.FrequencyCap {
-        InAppMessage.EventTrigger.FrequencyCap(
+        InAppMessageEntity.EventTrigger.FrequencyCap(
             identifierCaps: identifiers.map { $0.toIdentifierCap() },
             durationCap: duration?.toDurationCapOrNil()
         )
@@ -98,7 +98,7 @@ extension InAppMessageDto.EventFrequencyCapDto {
 
 extension InAppMessageDto.IdentifierCapDto {
     func toIdentifierCap() -> InAppMessage.EventTrigger.IdentifierCap {
-        InAppMessage.EventTrigger.IdentifierCap(identifierType: identifierType, count: countPerIdentifier)
+        InAppMessageEntity.EventTrigger.IdentifierCap(identifierType: identifierType, count: countPerIdentifier)
     }
 }
 
@@ -107,7 +107,7 @@ extension InAppMessageDto.DurationCapDto {
         guard let timeUnit: TimeUnit = Enums.parseOrNil(rawValue: durationUnit.timeUnit) else {
             return nil
         }
-        return InAppMessage.EventTrigger.DurationCap(
+        return InAppMessageEntity.EventTrigger.DurationCap(
             duration: timeUnit.convert(Double(durationUnit.amount), to: .seconds),
             count: countPerDuration
         )
@@ -116,7 +116,7 @@ extension InAppMessageDto.DurationCapDto {
 
 extension InAppMessageDto.TargetContextDto {
     func toTargetContext() -> InAppMessage.TargetContext {
-        InAppMessage.TargetContext(
+        InAppMessageEntity.TargetContext(
             overrides: overrides.map {
                 $0.toUserOverride()
             },
@@ -141,7 +141,7 @@ extension InAppMessageDto.EventTriggerDelayDto {
         } else {
             condition = nil
         }
-        return InAppMessage.EventTrigger.Delay(
+        return InAppMessageEntity.EventTrigger.Delay(
             type: type,
             afterCondition: condition
         )
@@ -153,7 +153,7 @@ extension InAppMessageDto.EventTriggerDelayDto.AfterConditionDto {
         guard let timeUnit: TimeUnit = Enums.parseOrNil(rawValue: duration.timeUnit) else {
             return nil
         }
-        return InAppMessage.EventTrigger.Delay.AfterCondition(
+        return InAppMessageEntity.EventTrigger.Delay.AfterCondition(
             duration: timeUnit.convert(Double(duration.amount), to: .seconds)
         )
     }
@@ -161,7 +161,7 @@ extension InAppMessageDto.EventTriggerDelayDto.AfterConditionDto {
 
 extension InAppMessageDto.EvaluateContextDto {
     func toEvaluateContext() -> InAppMessage.EvaluateContext {
-        return InAppMessage.EvaluateContext(
+        return InAppMessageEntity.EvaluateContext(
             atDeliverTime: atDeliverTime
         )
     }
@@ -169,7 +169,7 @@ extension InAppMessageDto.EvaluateContextDto {
 
 extension InAppMessageDto.TargetContextDto.UserOverrideDto {
     func toUserOverride() -> InAppMessage.UserOverride {
-        InAppMessage.UserOverride(identifierType: identifierType, identifiers: identifiers)
+        InAppMessageEntity.UserOverride(identifierType: identifierType, identifiers: identifiers)
     }
 }
 
@@ -177,7 +177,7 @@ extension InAppMessageDto.MessageContextDto {
     func toMessageContextOrNil() -> InAppMessage.MessageContext? {
         var experimentContext: InAppMessage.ExperimentContext? = nil
         if exposure.type == "AB_TEST", let experimentKey = exposure.key {
-            experimentContext = InAppMessage.ExperimentContext(key: experimentKey)
+            experimentContext = InAppMessageEntity.ExperimentContext(key: experimentKey)
         }
 
         guard let platformTypes: [PlatformType] = Enums.parseAllOrNil(platformTypes) else {
@@ -192,7 +192,7 @@ extension InAppMessageDto.MessageContextDto {
             return nil
         }
 
-        return InAppMessage.MessageContext(
+        return InAppMessageEntity.MessageContext(
             defaultLang: defaultLang,
             experimentContext: experimentContext,
             platformTypes: platformTypes,
@@ -258,7 +258,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             return nil
         }
 
-        return InAppMessage.Message(
+        return InAppMessageEntity.Message(
             variationKey: variationKey,
             lang: lang,
             layout: layout,
@@ -267,7 +267,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto {
             text: text?.toText(),
             buttons: buttons,
             closeButton: xButton,
-            background: InAppMessage.Message.Background(color: background.color),
+            background: InAppMessageEntity.Message.Background(color: background.color),
             action: messageAction,
             outerButtons: outerButtons,
             innerButtons: innerButtons,
@@ -293,7 +293,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.LayoutDto {
             messageAlignment = alignment
         }
 
-        return InAppMessage.Message.Layout(
+        return InAppMessageEntity.Message.Layout(
             displayType: displayType,
             layoutType: layoutType,
             alignment: messageAlignment
@@ -315,7 +315,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ImageDto {
             imageAction = action
         }
 
-        return InAppMessage.Message.Image(
+        return InAppMessageEntity.Message.Image(
             orientation: orientation,
             imagePath: imagePath,
             action: imageAction
@@ -328,7 +328,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ImageAutoScrollDto {
         guard let timeUnit: TimeUnit = Enums.parseOrNil(rawValue: interval.timeUnit) else {
             return nil
         }
-        return InAppMessage.Message.ImageAutoScroll(
+        return InAppMessageEntity.Message.ImageAutoScroll(
             interval: timeUnit.convert(Double(interval.amount), to: .seconds)
         )
     }
@@ -342,13 +342,13 @@ extension InAppMessageDto.MessageContextDto.ActionDto {
         guard let type: InAppMessage.ActionType = Enums.parseOrNil(rawValue: type) else {
             return nil
         }
-        return InAppMessage.Action(behavior: behavior, type: type, value: value)
+        return InAppMessageEntity.Action(behavior: behavior, type: type, value: value)
     }
 }
 
 extension InAppMessageDto.MessageContextDto.MessageDto.TextDto {
     func toText() -> InAppMessage.Message.Text {
-        InAppMessage.Message.Text(
+        InAppMessageEntity.Message.Text(
             title: title.toAttribute(),
             body: body.toAttribute()
         )
@@ -357,7 +357,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.TextDto {
 
 extension InAppMessageDto.MessageContextDto.MessageDto.TextDto.TextAttributeDto {
     func toAttribute() -> InAppMessage.Message.Text.Attribute {
-        InAppMessage.Message.Text.Attribute(text: text, style: InAppMessage.Message.Text.Style(textColor: style.textColor))
+        InAppMessageEntity.Message.Text.Attribute(text: text, style: InAppMessageEntity.Message.Text.Style(textColor: style.textColor))
     }
 }
 
@@ -366,9 +366,9 @@ extension InAppMessageDto.MessageContextDto.MessageDto.ButtonDto {
         guard let action = action.toActionOrNil() else {
             return nil
         }
-        return InAppMessage.Message.Button(
+        return InAppMessageEntity.Message.Button(
             text: text,
-            style: InAppMessage.Message.Button.Style(
+            style: InAppMessageEntity.Message.Button.Style(
                 textColor: style.textColor,
                 bgColor: style.bgColor,
                 borderColor: style.borderColor
@@ -386,7 +386,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.AlignmentDto {
         guard let horizontal: InAppMessage.HorizontalAlignment = Enums.parseOrNil(rawValue: horizontal) else {
             return nil
         }
-        return InAppMessage.Message.Alignment(
+        return InAppMessageEntity.Message.Alignment(
             vertical: vertical,
             horizontal: horizontal
         )
@@ -401,7 +401,7 @@ extension InAppMessageDto.MessageContextDto.MessageDto.PositionalButtonDto {
         guard let alignment = alignment.toAlignmentOrNil() else {
             return nil
         }
-        return InAppMessage.Message.PositionalButton(
+        return InAppMessageEntity.Message.PositionalButton(
             button: button,
             alignment: alignment
         )
@@ -414,9 +414,9 @@ extension InAppMessageDto.MessageContextDto.MessageDto.CloseButtonDto {
             return nil
         }
 
-        return InAppMessage.Message.Button(
+        return InAppMessageEntity.Message.Button(
             text: "✕",
-            style: InAppMessage.Message.Button.Style(
+            style: InAppMessageEntity.Message.Button.Style(
                 textColor: style.color,
                 bgColor: "#FFFFFF",
                 borderColor: "#FFFFFF"
@@ -436,12 +436,12 @@ extension InAppMessageDto.MessageContextDto.MessageDto.HtmlDto {
             guard let text = text else {
                 return nil
             }
-            return InAppMessage.Message.Html(resourceType: resourceType, text: text, path: nil)
+            return InAppMessageEntity.Message.Html(resourceType: resourceType, text: text, path: nil)
         case .path:
             guard let path = path else {
                 return nil
             }
-            return InAppMessage.Message.Html(resourceType: resourceType, text: nil, path: path)
+            return InAppMessageEntity.Message.Html(resourceType: resourceType, text: nil, path: path)
         }
     }
 }
@@ -630,12 +630,6 @@ extension TargetRuleDto {
     }
 }
 
-extension EventTypeDto {
-    func toEventType() -> EventType {
-        EventTypeEntity(id: id, key: key)
-    }
-}
-
 extension SegmentDto {
     func toSegmentOrNil() -> Segment? {
         guard let segmentType: SegmentType = Enums.parseOrNil(rawValue: type) else {
@@ -689,7 +683,7 @@ extension RemoteConfigParameterDto {
         guard let type: HackleValueType = Enums.parseOrNil(rawValue: type) else {
             return nil
         }
-        return RemoteConfigParameter(
+        return RemoteConfigParameterEntity(
             id: id,
             key: key,
             type: type,
@@ -707,7 +701,7 @@ extension RemoteConfigParameterDto.TargetRuleDto {
         guard let target = target.toTargetOrNil(.property) else {
             return nil
         }
-        return RemoteConfigParameter.TargetRule(
+        return RemoteConfigParameterEntity.TargetRule(
             key: key,
             name: name,
             target: target,
@@ -719,6 +713,6 @@ extension RemoteConfigParameterDto.TargetRuleDto {
 
 extension RemoteConfigParameterDto.ValueDto {
     func toValue() -> RemoteConfigParameter.Value {
-        RemoteConfigParameter.Value(id: id, rawValue: value)
+        RemoteConfigParameterEntity.Value(id: id, rawValue: value)
     }
 }

@@ -5,7 +5,7 @@
 
 import Foundation
 
-class InAppMessageTargetMatcher: InAppMessageMatcher {
+class InAppMessageTargetMatcher {
 
     private let targetMatcher: TargetMatcher
 
@@ -14,7 +14,7 @@ class InAppMessageTargetMatcher: InAppMessageMatcher {
     }
 
     func matches(request: InAppMessageEligibilityLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
-        let targets = request.inAppMessage.targetContext.targets
+        let targets = request.inAppMessageConfig.targetContext.targets
         return try targetMatcher.anyMatches(request: request, context: context, targets: targets)
     }
 }

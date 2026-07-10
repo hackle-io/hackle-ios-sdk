@@ -7,9 +7,9 @@ import Foundation
 @testable import Hackle
 
 func remoteConfigRequest(
-    workspace: Workspace = MockWorkspace(),
+    workspace: WorkspaceConfig = MockWorkspace(),
     user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-    parameter: RemoteConfigParameter = RemoteConfigParameter(id: 1, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("parameter default"))),
+    parameter: RemoteConfigParameterConfig = RemoteConfigParameterEntity(id: 1, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("parameter default"))),
     defaultValue: HackleValue = .string("default")
 ) -> RemoteConfigLocalEvaluateRequest {
     RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, requiredType: defaultValue.type)

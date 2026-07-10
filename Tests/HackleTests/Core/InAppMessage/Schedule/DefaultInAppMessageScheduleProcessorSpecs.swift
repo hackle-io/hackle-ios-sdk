@@ -25,7 +25,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
 
         it("schedule") {
             // given
-            let request = InAppMessage.scheduleRequest()
+            let request = InAppMessageEntity.scheduleRequest()
             let response = InAppMessageScheduleResponse.of(request: request, code: .deliver)
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
             every(scheduler.deliverMock).returns(response)
@@ -39,7 +39,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
 
         it("exception") {
             // given
-            let request = InAppMessage.scheduleRequest()
+            let request = InAppMessageEntity.scheduleRequest()
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
             every(scheduler.deliverMock).answers { _ in
                 throw HackleError.error("tail")
@@ -54,7 +54,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
 
         it("onSchedule") {
             // given
-            let request = InAppMessage.scheduleRequest()
+            let request = InAppMessageEntity.scheduleRequest()
             let response = InAppMessageScheduleResponse.of(request: request, code: .deliver)
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
             every(scheduler.deliverMock).returns(response)

@@ -34,7 +34,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
             )
             expect(sut.supports(request: experimentRequest())) == false
             expect(sut.supports(request: remoteConfigRequest())) == false
-            expect(sut.supports(request: InAppMessage.eligibilityRequest())) == true
+            expect(sut.supports(request: InAppMessageEntity.eligibilityRequest())) == true
         }
 
         describe("evaluate") {
@@ -44,7 +44,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                     eventRecorder: MockEvaluationEventRecorder()
                 )
 
-                let request = InAppMessage.eligibilityRequest()
+                let request = InAppMessageEntity.eligibilityRequest()
                 let context = Evaluators.context()
                 context.add(request)
 
@@ -56,14 +56,14 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
 
             context("flow") {
                 it("evaluation") {
-                    let evaluation = InAppMessage.eligibilityEvaluation()
+                    let evaluation = InAppMessageEntity.eligibilityEvaluation()
                     let flow: InAppMessageEligibilityLocalEvaluationFlow = InAppMessageEligibilityLocalEvaluationFlow.create(evaluation)
                     let sut = InAppMessageEligibilityLocalEvaluator(
                         evaluationFlowFactory: FlowFactoryStub(flow: flow),
                         eventRecorder: MockEvaluationEventRecorder()
                     )
 
-                    let request = InAppMessage.eligibilityRequest()
+                    let request = InAppMessageEntity.eligibilityRequest()
                     let context = Evaluators.context()
 
                     let response: InAppMessageEligibilityEvaluateResponse = try sut.evaluate(request: request, context: context)
@@ -78,7 +78,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                         eventRecorder: MockEvaluationEventRecorder()
                     )
 
-                    let request = InAppMessage.eligibilityRequest()
+                    let request = InAppMessageEntity.eligibilityRequest()
                     let context = Evaluators.context()
 
                     let response: InAppMessageEligibilityEvaluateResponse = try sut.evaluate(request: request, context: context)
@@ -102,14 +102,14 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
                 InAppMessageEligibilityEvaluateResponse(
                     user: request.user,
                     workspace: request.workspace,
-                    evaluation: InAppMessage.eligibilityEvaluation(isEligible: isEligible),
+                    evaluation: InAppMessageEntity.eligibilityEvaluation(isEligible: isEligible),
                     references: [],
                     layout: layout
                 )
             }
 
             it("record eligibility evaluation") {
-                let request = InAppMessage.eligibilityRequest()
+                let request = InAppMessageEntity.eligibilityRequest()
                 let resp = response(request: request, isEligible: true, layout: nil)
 
                 sut.record(request: request, response: resp)
@@ -119,8 +119,8 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
             }
 
             it("when eligible then do not record layout evaluation") {
-                let request = InAppMessage.eligibilityRequest()
-                let layout = layoutResponse(request: request, layout: InAppMessage.layoutEvaluation())
+                let request = InAppMessageEntity.eligibilityRequest()
+                let layout = layoutResponse(request: request, layout: InAppMessageEntity.layoutEvaluation())
                 let resp = response(request: request, isEligible: true, layout: layout)
 
                 sut.record(request: request, response: resp)
@@ -130,7 +130,7 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
             }
 
             it("when ineligible without layout then do not record layout") {
-                let request = InAppMessage.eligibilityRequest()
+                let request = InAppMessageEntity.eligibilityRequest()
                 let resp = response(request: request, isEligible: false, layout: nil)
 
                 sut.record(request: request, response: resp)
@@ -140,8 +140,8 @@ class InAppMessageEligibilityEvaluatorSpecs: QuickSpec {
             }
 
             it("when ineligible with layout then record layout evaluation") {
-                let request = InAppMessage.eligibilityRequest()
-                let layout = layoutResponse(request: request, layout: InAppMessage.layoutEvaluation())
+                let request = InAppMessageEntity.eligibilityRequest()
+                let layout = layoutResponse(request: request, layout: InAppMessageEntity.layoutEvaluation())
                 let resp = response(request: request, isEligible: false, layout: layout)
 
                 sut.record(request: request, response: resp)

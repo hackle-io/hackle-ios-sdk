@@ -26,8 +26,8 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
         }
 
         func request(scope: InAppMessageEvaluateScope, atDeliverTime: Bool = false) -> InAppMessageEligibilityLocalEvaluateRequest {
-            let inAppMessage = InAppMessage.create(evaluateContext: InAppMessage.evaluateContext(atDeliverTime: atDeliverTime))
-            return InAppMessage.eligibilityRequest(inAppMessage: inAppMessage, scope: scope)
+            let inAppMessage = InAppMessageEntity.create(evaluateContext: InAppMessageEntity.evaluateContext(atDeliverTime: atDeliverTime))
+            return InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage, scope: scope)
         }
 
         it("trigger flow") {

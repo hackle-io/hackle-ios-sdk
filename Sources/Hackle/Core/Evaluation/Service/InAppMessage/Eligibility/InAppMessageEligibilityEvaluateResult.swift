@@ -1,6 +1,6 @@
 import Foundation
 
-final class InAppMessageEligibilityEvaluateResult: EvaluateResult {
+class InAppMessageEligibilityEvaluateResult: EvaluateResult {
     let reason: String
     let isEligible: Bool
 

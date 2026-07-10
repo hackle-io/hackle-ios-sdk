@@ -18,7 +18,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
 
             expect(workspace.inAppMessages.count) == 11
 
-            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
+            let iam = workspace.getInAppMessageConfigOrNil(inAppMessageKey: 1)!
             expect(iam.id) == 1
             expect(iam.key) == 1
             expect(iam.status) == .active

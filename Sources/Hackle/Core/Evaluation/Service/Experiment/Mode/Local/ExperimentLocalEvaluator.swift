@@ -5,7 +5,10 @@
 
 import Foundation
 
-final class ExperimentLocalEvaluator: ExperimentEvaluator {
+final class ExperimentLocalEvaluator: LocalEvaluator, ExperimentEvaluator {
+
+    typealias Request = ExperimentLocalEvaluateRequest
+    typealias Response = ExperimentEvaluateResponse
 
     private let evaluationFlowFactory: ExperimentLocalEvaluationFlowFactory
     let eventRecorder: EvaluationEventRecorder

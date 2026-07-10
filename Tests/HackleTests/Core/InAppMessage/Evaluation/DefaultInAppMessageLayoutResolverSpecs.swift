@@ -20,7 +20,7 @@ class DefaultInAppMessageLayoutResolverSpecs: QuickSpec {
             let sut = DefaultInAppMessageLayoutResolver(evaluateProcessor: evaluateProcessor)
 
             let workspace = DefaultWorkspaceConfig.create()
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             let user = HackleUser.of(userId: "test")
 
             // when

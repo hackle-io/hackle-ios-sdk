@@ -1,6 +1,6 @@
 import Foundation
 
-final class InAppMessageEligibilityLocalEvaluator: InAppMessageEligibilityEvaluator {
+final class InAppMessageEligibilityLocalEvaluator: LocalEvaluator, InAppMessageEligibilityEvaluator {
 
     typealias Request = InAppMessageEligibilityLocalEvaluateRequest
     typealias Response = InAppMessageEligibilityEvaluateResponse

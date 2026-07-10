@@ -2,23 +2,25 @@ import Foundation
 
 final class InAppMessageLayoutLocalEvaluateRequest: LocalEvaluateRequest, InAppMessageLayoutEvaluateRequest, CustomStringConvertible {
 
-    let workspace: Workspace
-    let inAppMessage: InAppMessage
+    let workspaceConfig: WorkspaceConfig
+    let inAppMessageConfig: InAppMessageConfig
     let user: HackleUser
     let record: Bool
     let scope: InAppMessageEvaluateScope
 
-    var entity: Entity { inAppMessage }
+    var workspace: Workspace { workspaceConfig }
+    var entity: Entity { inAppMessageConfig }
+    var inAppMessage: InAppMessage { inAppMessageConfig }
 
     private init(
-        workspace: Workspace,
-        inAppMessage: InAppMessage,
+        workspace: WorkspaceConfig,
+        inAppMessage: InAppMessageConfig,
         user: HackleUser,
         record: Bool,
         scope: InAppMessageEvaluateScope
     ) {
-        self.workspace = workspace
-        self.inAppMessage = inAppMessage
+        self.workspaceConfig = workspace
+        self.inAppMessageConfig = inAppMessage
         self.user = user
         self.record = record
         self.scope = scope
@@ -29,8 +31,8 @@ final class InAppMessageLayoutLocalEvaluateRequest: LocalEvaluateRequest, InAppM
     }
 
     static func of(
-        workspace: Workspace,
-        inAppMessage: InAppMessage,
+        workspace: WorkspaceConfig,
+        inAppMessage: InAppMessageConfig,
         user: HackleUser,
         scope: InAppMessageEvaluateScope,
         record: Bool = true
@@ -46,8 +48,8 @@ final class InAppMessageLayoutLocalEvaluateRequest: LocalEvaluateRequest, InAppM
 
     static func of(request: InAppMessageEligibilityLocalEvaluateRequest) -> InAppMessageLayoutLocalEvaluateRequest {
         InAppMessageLayoutLocalEvaluateRequest(
-            workspace: request.workspace,
-            inAppMessage: request.inAppMessage,
+            workspace: request.workspaceConfig,
+            inAppMessage: request.inAppMessageConfig,
             user: request.user,
             record: request.record,
             scope: request.scope

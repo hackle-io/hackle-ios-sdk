@@ -68,8 +68,8 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
             expect(actual).to(beNil())
         }
 
-        func parameter(_ targetRules: RemoteConfigParameter.TargetRule...) -> RemoteConfigParameter {
-            RemoteConfigParameter(
+        func parameter(_ targetRules: RemoteConfigParameter.TargetRule...) -> RemoteConfigParameterEntity {
+            RemoteConfigParameterEntity(
                 id: 42,
                 key: "key",
                 type: HackleValueType.string,

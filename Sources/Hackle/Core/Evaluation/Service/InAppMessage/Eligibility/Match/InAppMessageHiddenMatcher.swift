@@ -13,7 +13,7 @@ class InAppMessageHiddenMatcher: InAppMessageMatcher {
         self.storage = storage
     }
 
-    func matches(request: InAppMessageEligibilityLocalEvaluateRequest, context: EvaluatorContext) throws -> Bool {
+    func matches(request: InAppMessageEligibilityEvaluateRequest, context: EvaluatorContext) throws -> Bool {
         storage.exist(inAppMessage: request.inAppMessage, now: request.timestamp)
     }
 }

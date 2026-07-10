@@ -27,7 +27,7 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
 
         describe("deliver") {
             it("when delay not found then throw error") {
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
                 every(delayManager.deleteMock).returns(nil)
 
                 expect {
@@ -38,12 +38,12 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
 
             it("deliver") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.deleteMock).returns(delay)
 
-                let deliverResponse = InAppMessage.deliverResponse()
+                let deliverResponse = InAppMessageEntity.deliverResponse()
                 every(deliverProcessor.processMock).returns(deliverResponse)
 
                 // when
@@ -61,7 +61,7 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
         describe("delay") {
             it("delay") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.delayMock).returns(delay)
@@ -78,7 +78,7 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
         describe("ignore") {
             it("delete delay") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.deleteMock).returns(delay)

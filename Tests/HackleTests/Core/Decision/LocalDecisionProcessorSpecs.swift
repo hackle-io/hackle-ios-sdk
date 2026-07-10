@@ -63,7 +63,7 @@ class LocalDecisionProcessorSpecs: QuickSpec {
             }
 
             it("single remoteConfig records a remote-config event (record == true)") {
-                let parameter = RemoteConfigParameter(id: 1, key: "rc", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("dv")))
+                let parameter = RemoteConfigParameterEntity(id: 1, key: "rc", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("dv")))
                 let workspace = MockWorkspace()
                 every(workspace.getRemoteConfigParameterMock).returns(parameter)
                 let eventProcessor = InMemoryUserEventProcessor()

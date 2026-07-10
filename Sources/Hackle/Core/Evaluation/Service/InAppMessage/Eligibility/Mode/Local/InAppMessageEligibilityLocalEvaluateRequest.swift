@@ -2,27 +2,29 @@ import Foundation
 
 final class InAppMessageEligibilityLocalEvaluateRequest: LocalEvaluateRequest, InAppMessageEligibilityEvaluateRequest, CustomStringConvertible {
 
-    let workspace: Workspace
-    let inAppMessage: InAppMessage
+    let workspaceConfig: WorkspaceConfig
+    let inAppMessageConfig: InAppMessageConfig
     let user: HackleUser
     let record: Bool
     let scope: InAppMessageEvaluateScope
     let platformType: PlatformType
     let timestamp: Date
 
-    var entity: Entity { inAppMessage }
+    var workspace: Workspace { workspaceConfig }
+    var entity: Entity { inAppMessageConfig }
+    var inAppMessage: InAppMessage { inAppMessageConfig }
 
     private init(
-        workspace: Workspace,
-        inAppMessage: InAppMessage,
+        workspace: WorkspaceConfig,
+        inAppMessage: InAppMessageConfig,
         user: HackleUser,
         record: Bool,
         scope: InAppMessageEvaluateScope,
         platformType: PlatformType,
         timestamp: Date
     ) {
-        self.workspace = workspace
-        self.inAppMessage = inAppMessage
+        self.workspaceConfig = workspace
+        self.inAppMessageConfig = inAppMessage
         self.user = user
         self.record = record
         self.scope = scope
@@ -35,8 +37,8 @@ final class InAppMessageEligibilityLocalEvaluateRequest: LocalEvaluateRequest, I
     }
 
     static func of(
-        workspace: Workspace,
-        inAppMessage: InAppMessage,
+        workspace: WorkspaceConfig,
+        inAppMessage: InAppMessageConfig,
         user: HackleUser,
         scope: InAppMessageEvaluateScope,
         platformType: PlatformType,

@@ -5,5 +5,5 @@
 
 import Foundation
 
-protocol RemoteConfigEvaluator: LocalEvaluator where Request == RemoteConfigLocalEvaluateRequest, Response == RemoteConfigEvaluateResponse {
+protocol RemoteConfigEvaluator: ContextualEvaluator where Request: RemoteConfigEvaluateRequest, Response == RemoteConfigEvaluateResponse {
 }

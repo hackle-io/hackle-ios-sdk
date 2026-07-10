@@ -1,53 +1,23 @@
 import Foundation
 
 protocol InAppMessageEligibilityFlowEvaluator: FlowEvaluator {
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
-        context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation?
-}
-
-extension InAppMessageEligibilityFlowEvaluator {
-    func evaluate<Request: EvaluateRequest, E: Evaluation>(
-        request: Request,
-        context: EvaluatorContext,
-        nextFlow: EvaluationFlow<Request, E>
-    ) throws -> E? {
-        guard let inAppMessageRequest = request as? InAppMessageEligibilityLocalEvaluateRequest else {
-            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityLocalEvaluateRequest)")
-        }
-
-        guard let inAppMessageNextFlow = nextFlow as? InAppMessageEligibilityLocalEvaluationFlow else {
-            throw HackleError.error("Unsupported flow: \(type(of: nextFlow)) (expected: InAppMessageEligibilityLocalEvaluationFlow)")
-        }
-
-        let inAppMessageEvaluation = try evaluate(request: inAppMessageRequest, context: context, nextFlow: inAppMessageNextFlow)
-
-        if inAppMessageEvaluation == nil {
-            return nil
-        }
-
-        guard let evaluation = inAppMessageEvaluation as? E else {
-            throw HackleError.error("Unsupported evaluation: \(type(of: inAppMessageEvaluation)) (expected: \(E.self))")
-        }
-
-        return evaluation
-    }
 }
 
 /// Period Check
 ///
 /// IAM의 기간에 포함되지 않는 경우 NOT_IN_IN_APP_MESSAGE_PERIOD
 class PeriodInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
         context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
-        guard request.inAppMessage.period.within(date: request.timestamp) else {
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let iamRequest = request as? InAppMessageEligibilityEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
+        }
+        guard iamRequest.inAppMessage.period.within(date: iamRequest.timestamp) else {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_PERIOD)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
+            return try evaluation(entity: iamRequest.inAppMessage, result: result)
         }
         return try nextFlow.evaluate(request: request, context: context)
     }
@@ -57,14 +27,17 @@ class PeriodInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEva
 ///
 /// IAM의 시간표에 포함되지 않는 경우 NOT_IN_IN_APP_MESSAGE_TIMETABLE
 class TimetableInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
         context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
-        guard request.inAppMessage.timetable.within(date: request.timestamp) else {
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let iamRequest = request as? InAppMessageEligibilityEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
+        }
+        guard iamRequest.inAppMessage.timetable.within(date: iamRequest.timestamp) else {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TIMETABLE)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
+            return try evaluation(entity: iamRequest.inAppMessage, result: result)
         }
         return try nextFlow.evaluate(request: request, context: context)
     }
@@ -78,14 +51,17 @@ class FrequencyCapInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityF
         self.frequencyCapMatcher = frequencyCapMatcher
     }
 
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
         context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
-        if try frequencyCapMatcher.matches(request: request, context: context) {
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let iamRequest = request as? InAppMessageEligibilityEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
+        }
+        if try frequencyCapMatcher.matches(request: iamRequest, context: context) {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.IN_APP_MESSAGE_FREQUENCY_CAPPED)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
+            return try evaluation(entity: iamRequest.inAppMessage, result: result)
         }
         return try nextFlow.evaluate(request: request, context: context)
     }
@@ -102,26 +78,43 @@ class HiddenInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEva
         self.hiddenMatcher = hiddenMatcher
     }
 
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
         context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
-        if try hiddenMatcher.matches(request: request, context: context) {
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let iamRequest = request as? InAppMessageEligibilityEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
+        }
+        if try hiddenMatcher.matches(request: iamRequest, context: context) {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.IN_APP_MESSAGE_HIDDEN)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
+            return try evaluation(entity: iamRequest.inAppMessage, result: result)
         }
         return try nextFlow.evaluate(request: request, context: context)
     }
 }
 
 class EligibleInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
         context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let iamRequest = request as? InAppMessageEligibilityEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
+        }
         let result = InAppMessageEligibilityEvaluateResult.eligible(reason: DecisionReason.IN_APP_MESSAGE_TARGET)
-        return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
+        return try evaluation(entity: iamRequest.inAppMessage, result: result)
+    }
+}
+
+extension InAppMessageEligibilityFlowEvaluator {
+    /// 공유 evaluator가 생성한 evaluation을 flow의 E 타입으로 안전 변환 (기존 브리지 관례)
+    func evaluation<E: Evaluation>(entity: InAppMessage, result: InAppMessageEligibilityEvaluateResult) throws -> E {
+        let evaluation = InAppMessageEligibilityEvaluation(entity: entity, result: result)
+        guard let e = evaluation as? E else {
+            throw HackleError.error("Unsupported evaluation: \(type(of: evaluation)) (expected: \(E.self))")
+        }
+        return e
     }
 }
