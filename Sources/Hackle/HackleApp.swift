@@ -393,34 +393,71 @@ extension HackleApp {
 
         // - WorkspaceManager
 
-        let httpWorkspaceConfigFetcher = DefaultHttpWorkspaceConfigFetcher(
-            config: config,
-            sdk: sdk,
-            httpClient: httpClient
-        )
+        let fileStorage = try? DefaultFileStorage(sdkKey: sdkKey)
 
-        let workspaceManager = WorkspaceConfigManager(
-            httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher,
-            repository: DefaultWorkspaceConfigRepository(
-                fileStorage: try? DefaultFileStorage(sdkKey: sdkKey)
+        let workspaceMode: WorkspaceMode
+        switch config.evaluationMode {
+        case .local:
+            let httpWorkspaceConfigFetcher = DefaultHttpWorkspaceConfigFetcher(
+                config: config,
+                sdk: sdk,
+                httpClient: httpClient
             )
-        )
-        compositeSynchronizer.add(synchronizer: workspaceManager)
+            let workspaceConfigManager = WorkspaceConfigManager(
+                httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher,
+                repository: DefaultWorkspaceConfigRepository(fileStorage: fileStorage)
+            )
+            compositeSynchronizer.add(synchronizer: workspaceConfigManager)
+            workspaceMode = .local(workspaceConfigManager)
+        case .remote:
+            let evaluateClient = WorkspaceRemoteEvaluateClient(sdkUrl: config.sdkUrl, httpClient: httpClient)
+            let evaluatorFactory = WorkspaceRemoteEvaluatorFactory(evaluators: [
+                AllWorkspaceRemoteEvaluator(client: evaluateClient),
+                SpecificWorkspaceRemoteEvaluator(client: evaluateClient)
+            ])
+            let evaluationManager = WorkspaceEvaluationManager(
+                evaluateProcessor: WorkspaceEvaluateProcessor(evaluatorFactory: evaluatorFactory),
+                repository: FileWorkspaceEvaluationRepository(fileStorage: fileStorage),
+                cache: LruWorkspaceEvaluationCache(capacity: 10)
+            )
+            workspaceMode = .remote(evaluationManager)
+        }
+
+        let workspaceManager: WorkspaceManager
+        switch workspaceMode {
+        case .local(let manager):
+            workspaceManager = manager
+        case .remote(let manager):
+            workspaceManager = manager
+        }
 
         // - UserManager
         let userRepository = UserRepository(repository: keyValueRepositoryBySdkKey)
-        let cohortFetcher = DefaultUserCohortFetcher(config: config, httpClient: httpClient)
-        let targetFetcher = DefaultUserTargetEventFetcher(config: config, httpClient: httpClient)
 
-        let userManager = LocalUserManager(
-            device: platformManager.device,
-            bundleInfo: platformManager.bundleInfo,
-            repository: userRepository,
-            cohortFetcher: cohortFetcher,
-            targetFetcher: targetFetcher,
-            clock: clock
-        )
-        compositeSynchronizer.add(synchronizer: userManager)
+        let userManager: UserManager
+        switch workspaceMode {
+        case .local:
+            let cohortFetcher = DefaultUserCohortFetcher(config: config, httpClient: httpClient)
+            let targetFetcher = DefaultUserTargetEventFetcher(config: config, httpClient: httpClient)
+            let localUserManager = LocalUserManager(
+                device: platformManager.device,
+                bundleInfo: platformManager.bundleInfo,
+                repository: userRepository,
+                cohortFetcher: cohortFetcher,
+                targetFetcher: targetFetcher,
+                clock: clock
+            )
+            compositeSynchronizer.add(synchronizer: localUserManager)
+            userManager = localUserManager
+        case .remote(let evaluationManager):
+            userManager = RemoteUserManager(
+                clock: clock,
+                device: platformManager.device,
+                bundleInfo: platformManager.bundleInfo,
+                repository: userRepository,
+                evaluationManager: evaluationManager
+            )
+        }
 
         // - SessionManager
 
@@ -547,10 +584,19 @@ extension HackleApp {
             hiddenStorage: inAppMessageHiddenStorage
         )
 
-        let decisionProcessor = LocalDecisionProcessor(
-            workspaceFetcher: workspaceManager,
-            evaluateProcessor: evaluateProcessor
-        )
+        let decisionProcessor: DecisionProcessor
+        switch workspaceMode {
+        case .local(let workspaceConfigManager):
+            decisionProcessor = LocalDecisionProcessor(
+                workspaceFetcher: workspaceConfigManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        case .remote(let workspaceEvaluationManager):
+            decisionProcessor = RemoteDecisionProcessor(
+                workspaceFetcher: workspaceEvaluationManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        }
 
         let core = DefaultHackleCore(
             workspaceManager: workspaceManager,
@@ -672,11 +718,19 @@ extension HackleApp {
 
         let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
 
-        // EvaluationMode 미도입 → LOCAL 고정 (REMOTE 회차에서 mode 분기 추가)
-        let inAppMessageDeliverEvaluator = InAppMessageDeliverLocalEvaluator(
-            workspaceFetcher: workspaceManager,
-            evaluateProcessor: evaluateProcessor
-        )
+        let inAppMessageDeliverEvaluator: InAppMessageDeliverEvaluator
+        switch workspaceMode {
+        case .local(let workspaceConfigManager):
+            inAppMessageDeliverEvaluator = InAppMessageDeliverLocalEvaluator(
+                workspaceFetcher: workspaceConfigManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        case .remote(let workspaceEvaluationManager):
+            inAppMessageDeliverEvaluator = InAppMessageDeliverRemoteEvaluator(
+                workspaceManager: workspaceEvaluationManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        }
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
             userManager: userManager,
             userDecoreator: sessionUserDecorator,
@@ -706,11 +760,21 @@ extension HackleApp {
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
             targetMatcher: HackleCoreContext.shared.get(TargetMatcher.self)!
         )
-        let inAppMessageTriggerDeterminer = LocalInAppMessageTriggerDeterminer(
-            eventMatcher: inAppMessageTriggerEventMatcher,
-            workspaceFetcher: workspaceManager,
-            evaluateProcessor: evaluateProcessor
-        )
+        let inAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer
+        switch workspaceMode {
+        case .local(let workspaceConfigManager):
+            inAppMessageTriggerDeterminer = LocalInAppMessageTriggerDeterminer(
+                eventMatcher: inAppMessageTriggerEventMatcher,
+                workspaceFetcher: workspaceConfigManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        case .remote(let workspaceEvaluationManager):
+            inAppMessageTriggerDeterminer = RemoteInAppMessageTriggerDeterminer(
+                eventMatcher: inAppMessageTriggerEventMatcher,
+                workspaceManager: workspaceEvaluationManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        }
         let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(
             scheduleProcessor: inAppMessageScheduleProcessor
         )
@@ -862,4 +926,9 @@ extension HackleApp {
         applicationLifecycleManager.addListener(listener: monitoringMetricRegistry)
         Metrics.addRegistry(registry: monitoringMetricRegistry)
     }
+}
+
+fileprivate enum WorkspaceMode {
+    case local(WorkspaceConfigManager)
+    case remote(WorkspaceEvaluationManager)
 }
