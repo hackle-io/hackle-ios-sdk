@@ -559,10 +559,6 @@ extension HackleApp {
             clock: clock
         )
 
-        let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
-            evaluateProcessor: evaluateProcessor
-        )
-
         // - PropertiesEventTracker
 
         let propertiesEventTracker = PropertiesEventTracker(
@@ -675,15 +671,11 @@ extension HackleApp {
         )
 
         let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
-        let inAppMessageLayoutResolver = DefaultInAppMessageLayoutResolver(
-            evaluateProcessor: evaluateProcessor
-        )
 
         // EvaluationMode 미도입 → LOCAL 고정 (REMOTE 회차에서 mode 분기 추가)
         let inAppMessageDeliverEvaluator = InAppMessageDeliverLocalEvaluator(
             workspaceFetcher: workspaceManager,
-            layoutResolver: inAppMessageLayoutResolver,
-            evaluateProcessor: inAppMessageEvaluateProcessor
+            evaluateProcessor: evaluateProcessor
         )
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
             userManager: userManager,
@@ -717,7 +709,7 @@ extension HackleApp {
         let inAppMessageTriggerDeterminer = LocalInAppMessageTriggerDeterminer(
             eventMatcher: inAppMessageTriggerEventMatcher,
             workspaceFetcher: workspaceManager,
-            evaluateProcessor: inAppMessageEvaluateProcessor
+            evaluateProcessor: evaluateProcessor
         )
         let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(
             scheduleProcessor: inAppMessageScheduleProcessor

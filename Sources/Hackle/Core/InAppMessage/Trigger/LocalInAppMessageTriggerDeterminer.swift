@@ -3,34 +3,33 @@ import Foundation
 class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer {
 
     private let workspaceFetcher: WorkspaceConfigFetcher
-    private let evaluateProcessor: InAppMessageEvaluateProcessor
+    private let evaluateProcessor: EvaluateProcessor
 
     init(
         eventMatcher: InAppMessageTriggerEventMatcher,
         workspaceFetcher: WorkspaceConfigFetcher,
-        evaluateProcessor: InAppMessageEvaluateProcessor
+        evaluateProcessor: EvaluateProcessor
     ) {
         self.workspaceFetcher = workspaceFetcher
         self.evaluateProcessor = evaluateProcessor
         super.init(eventMatcher: eventMatcher)
     }
 
-    override func workspace(user: HackleUser) -> WorkspaceConfig? {
-        return workspaceFetcher.workspace(user: user)
+    override func workspace(user: HackleUser) -> Workspace? {
+        workspaceFetcher.workspace(user: user)
     }
 
-    override func evaluate(workspace: WorkspaceConfig, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
-        guard let inAppMessageConfig = inAppMessage as? InAppMessageConfig else {
-            throw HackleError.error("InAppMessageConfig[\(inAppMessage.key)]")
+    override func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+        guard let workspaceConfig = workspace as? WorkspaceConfig, let inAppMessageConfig = inAppMessage as? InAppMessageConfig else {
+            throw HackleError.error("Unsupported workspace type for local trigger (key=\(inAppMessage.key))")
         }
-        let request = InAppMessageEligibilityLocalEvaluateRequest.of(
-            workspace: workspace,
+        let response = try evaluateProcessor.eligibility(
+            workspace: workspaceConfig,
             inAppMessage: inAppMessageConfig,
             user: event.user,
             scope: .trigger,
-            platformType: .ios,
             timestamp: event.timestamp
         )
-        return try evaluateProcessor.process(type: .trigger, request: request)
+        return response.eligibilityEvaluation
     }
 }
