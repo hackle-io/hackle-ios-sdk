@@ -119,15 +119,14 @@ class HackleAppSpecs: QuickSpec {
                 expect(count) == 1
             }
 
-            // Task 11: HackleAppCore.setUser가 Task { await userManager.setUser(user:) }로 mutation까지 통째로 감싸며
-            // 이전의 "동기 프리픽스"(반환 즉시 mutation 완료 보장)는 소실되었다 — mutation도 이제 completion 이후에만 보장된다.
-            it("setUser completion 이후에 유저 갱신이 완료된다 (async 전환으로 동기 프리픽스 보장 소실)") {
+            // 동기 프리픽스 회귀 가드: HackleAppCore.setUser는 userManager.setUser(user:)를 forward하고,
+            // mutation은 userManager 내부에서 동기적으로 끝난다. 따라서 completion(네트워크 sync)을 기다리지 않아도
+            // sut.setUser 반환 즉시 유저 갱신이 보인다.
+            // 구 형태(`Task { await userManager.setUser }`)에서는 mutation이 Task로 지연되어 이 단언이 깨진다.
+            it("setUser 반환 시점에 유저 갱신이 이미 완료된다 (동기 프리픽스)") {
                 let user = User.builder().id("sync-prefix").build()
-                waitUntil { done in
-                    sut.setUser(user: user) {
-                        done()
-                    }
-                }
+                sut.setUser(user: user, completion: {})
+                // completion 대기 없이 즉시 확인 — mutation은 동기 프리픽스
                 expect(userManager.currentUser.id) == "sync-prefix"
             }
         }

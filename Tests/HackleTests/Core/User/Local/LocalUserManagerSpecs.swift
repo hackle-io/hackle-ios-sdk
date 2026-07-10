@@ -300,7 +300,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("변경이 없으면 cohort와 targetEvent 모두 동기화하지 않는다") {
                 sut.initialize(user: User.builder().userId("user_a").deviceId("device_a").build())
 
-                await sut.setUserId(userId: "user_a") // 동일 값 재설정
+                await sut.setUserId(userId: "user_a").value // 동일 값 재설정
 
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
@@ -313,7 +313,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("userId가 새로운 값으로 변경되면 cohort와 targetEvent를 모두 동기화한다") {
                 sut.initialize(user: User.builder().userId("user_a").build())
 
-                await sut.setUserId(userId: "user_b")
+                await sut.setUserId(userId: "user_b").value
 
                 expect(sut.currentUser.userId) == "user_b"
                 verify(exactly: 1) {
@@ -327,7 +327,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("userId가 제거되면(새 식별자 없음) targetEvent만 동기화한다") {
                 sut.initialize(user: User.builder().userId("user_a").build())
 
-                await sut.setUserId(userId: nil)
+                await sut.setUserId(userId: nil).value
 
                 expect(sut.currentUser.userId).to(beNil())
                 verify(exactly: 0) {
@@ -341,7 +341,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("deviceId가 새로운 값으로 변경되면 cohort와 targetEvent를 모두 동기화한다") {
                 sut.initialize(user: User.builder().deviceId("device_a").build())
 
-                await sut.setDeviceId(deviceId: "device_b")
+                await sut.setDeviceId(deviceId: "device_b").value
 
                 expect(sut.currentUser.deviceId) == "device_b"
                 verify(exactly: 1) {
@@ -355,7 +355,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("deviceId를 동일한 값으로 재설정하면 아무것도 동기화하지 않는다") {
                 sut.initialize(user: User.builder().deviceId("device_a").build())
 
-                await sut.setDeviceId(deviceId: "device_a")
+                await sut.setDeviceId(deviceId: "device_a").value
 
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
@@ -368,7 +368,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("setUser로 커스텀 식별자만 변경되면(userId/deviceId 동일) cohort만 동기화한다") {
                 sut.initialize(user: User.builder().deviceId("device_a").identifier("custom", "custom_id").build())
 
-                await sut.setUser(user: User.builder().deviceId("device_a").identifier("custom", "new_custom_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_a").identifier("custom", "new_custom_id").build()).value
 
                 verify(exactly: 1) {
                     cohortFetcher.fetchMock
@@ -381,7 +381,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("resetUser로 userId가 제거되면(새 식별자 없음) targetEvent만 동기화한다") {
                 sut.initialize(user: User.builder().userId("user_x").build())
 
-                await sut.resetUser()
+                await sut.resetUser().value
 
                 expect(sut.currentUser.userId).to(beNil())
                 verify(exactly: 0) {
@@ -393,9 +393,67 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
         }
 
+        // 동기 프리픽스 회귀 가드: mutator는 mutation을 반환 전에 동기적으로 끝내고(android updateContext),
+        // 네트워크 sync만 Task<Void, Never>로 반환한다(android syncIfNeeded). 반환된 Task를 await하지 않아도
+        // currentUser/hackleUser()는 이미 변경을 반영해야 한다.
+        // 구 형태(mutator가 async이고 HackleAppCore가 `Task { await ... }`로 통째로 감싸던)에서는 mutation이
+        // Task 실행 시점까지 지연되어 이 단언이 깨진다 — "log in 후 즉시 variation 평가" 순서 회귀의 가드.
+        describe("동기 프리픽스 (mutation before Task return)") {
+            it("setUser 반환 즉시 currentUser/hackleUser가 갱신된다 (Task await 이전)") {
+                sut.initialize(user: nil)
+
+                let task = sut.setUser(user: User.builder().userId("login_user").build())
+
+                expect(sut.currentUser.userId) == "login_user"
+                expect(sut.hackleUser().identifiers["$userId"]) == "login_user"
+
+                await task.value // 네트워크 sync 정리
+            }
+
+            it("setUserId 반환 즉시 currentUser가 갱신된다 (Task await 이전)") {
+                sut.initialize(user: nil)
+
+                let task = sut.setUserId(userId: "user_id")
+
+                expect(sut.currentUser.userId) == "user_id"
+
+                await task.value
+            }
+
+            it("setDeviceId 반환 즉시 currentUser가 갱신된다 (Task await 이전)") {
+                sut.initialize(user: nil)
+
+                let task = sut.setDeviceId(deviceId: "device_id")
+
+                expect(sut.currentUser.deviceId) == "device_id"
+
+                await task.value
+            }
+
+            it("resetUser 반환 즉시 currentUser가 기본 유저로 갱신된다 (Task await 이전)") {
+                sut.initialize(user: User.builder().userId("user_id").build())
+
+                let task = sut.resetUser()
+
+                expect(sut.currentUser.userId).to(beNil())
+
+                await task.value
+            }
+
+            it("updateProperties 반환 즉시 currentUser 프로퍼티가 갱신된다 (Task await 이전)") {
+                sut.initialize(user: nil)
+
+                let task = sut.updateProperties(operations: PropertyOperations.builder().set("k", "v").build())
+
+                expect(sut.currentUser.properties["k"] as? String) == "v"
+
+                await task.value
+            }
+        }
+
         describe("setUser") {
             it("decorate hackleDeviceId") {
-                await sut.setUser(user: User.builder().build())
+                await sut.setUser(user: User.builder().build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -409,7 +467,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -432,7 +490,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -457,7 +515,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -480,7 +538,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -505,7 +563,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -531,7 +589,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -556,7 +614,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -581,7 +639,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -608,7 +666,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build()).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -682,7 +740,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     .increment("a", 42)
                     .append("c", "cc")
                     .build()
-                await sut.updateProperties(operations: operations)
+                await sut.updateProperties(operations: operations).value
                 expect(sut.currentUser.properties["a"] as? Double) == 42.0
                 expect(sut.currentUser.properties["c"] as? [String]) == ["cc"]
                 expect(sut.currentUser.properties["d"] as? String) == "d"
@@ -703,7 +761,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     .increment("a", 42)
                     .append("c", "cc")
                     .build()
-                await sut.updateProperties(operations: operations)
+                await sut.updateProperties(operations: operations).value
 
                 expect(sut.currentUser.properties["a"] as? Double) == 84.0
                 expect(sut.currentUser.properties["b"] as? String) == "b"
@@ -715,7 +773,7 @@ class LocalUserManagerSpecs: AsyncSpec {
         describe("setUserId") {
             it("new") {
                 sut.initialize(user: nil)
-                await sut.setUserId(userId: "user_id")
+                await sut.setUserId(userId: "user_id").value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -734,7 +792,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUserId(userId: nil)
+                await sut.setUserId(userId: nil).value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -752,7 +810,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUserId(userId: "user_id_2")
+                await sut.setUserId(userId: "user_id_2").value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -771,7 +829,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                await sut.setUserId(userId: "user_id")
+                await sut.setUserId(userId: "user_id").value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -786,7 +844,7 @@ class LocalUserManagerSpecs: AsyncSpec {
         describe("setDeviceId") {
             it("new") {
                 sut.initialize(user: nil)
-                await sut.setDeviceId(deviceId: "device_id")
+                await sut.setDeviceId(deviceId: "device_id").value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -798,7 +856,7 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("change") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
-                await sut.setDeviceId(deviceId: "device_id_2")
+                await sut.setDeviceId(deviceId: "device_id_2").value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -810,7 +868,7 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("same") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
-                await sut.setDeviceId(deviceId: "device_id")
+                await sut.setDeviceId(deviceId: "device_id").value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -829,7 +887,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                await sut.resetUser()
+                await sut.resetUser().value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -846,7 +904,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                await sut.resetUser()
+                await sut.resetUser().value
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -862,7 +920,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.initialize(user: User.builder().userId("user_id").properties(["a": 1]).build())
                 let operations = PropertyOperations.builder().set("age", 42).build()
 
-                await sut.updateProperties(operations: operations)
+                await sut.updateProperties(operations: operations).value
 
                 verify(exactly: 1) {
                     listener.onPropertyOperationsMock
@@ -880,7 +938,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("resetUser 시 변경 후(default) user와 clearAll을 발행한다") {
                 sut.initialize(user: User.builder().userId("user_id").build())
 
-                await sut.resetUser()
+                await sut.resetUser().value
 
                 verify(exactly: 1) {
                     listener.onPropertyOperationsMock
@@ -892,9 +950,9 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("setUser/setUserId/setDeviceId 시에는 발행하지 않는다") {
                 sut.initialize(user: nil)
-                await sut.setUser(user: User.builder().userId("a").build())
-                await sut.setUserId(userId: "b")
-                await sut.setDeviceId(deviceId: "c")
+                await sut.setUser(user: User.builder().userId("a").build()).value
+                await sut.setUserId(userId: "b").value
+                await sut.setDeviceId(deviceId: "c").value
                 verify(exactly: 0) {
                     listener.onPropertyOperationsMock
                 }
@@ -920,12 +978,13 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.addListener(listener: reentrant)
                 sut.initialize(user: nil)
 
-                // setUser(async)의 mutation은 recursiveLock.lock { } 내부에서 여전히 동기적으로 일어난다(첫 await는
-                // syncIfNeeded 이전이 아니라 그 호출 자체이므로, lock 재진입 체인은 async 승격 이전과 동일하게 검증 가능).
+                // setUser의 mutation은 recursiveLock.lock { } 내부에서 동기적으로 일어나며(동기 프리픽스),
+                // 반환된 Task는 네트워크 sync만 담당한다. 따라서 lock 재진입 체인(onUserUpdated → hackleUser)은
+                // Task를 await하기 전에 이미 완료된다.
                 let done = DispatchSemaphore(value: 0)
                 DispatchQueue.global().async {
                     Task {
-                        await sut.setUser(user: User.builder().userId("user_id").build())
+                        await sut.setUser(user: User.builder().userId("user_id").build()).value
                         done.signal()
                     }
                 }

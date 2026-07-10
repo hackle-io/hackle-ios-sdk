@@ -212,24 +212,26 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
+    // mutation은 userManager 내부에서 동기적으로 끝난다(동기 프리픽스). 여기서 Task { await ... }로 감싸면
+    // mutation까지 지연되므로, 반환된 Task(네트워크 sync)를 그대로 forward한다.
     @discardableResult
     func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        Task { await self.userManager.setUser(user: user) }
+        return userManager.setUser(user: user)
     }
 
     @discardableResult
     func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        Task { await self.userManager.setUserId(userId: userId) }
+        return userManager.setUserId(userId: userId)
     }
 
     @discardableResult
     func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        Task { await self.userManager.setDeviceId(deviceId: deviceId) }
+        return userManager.setDeviceId(deviceId: deviceId)
     }
 
     @discardableResult
     func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        Task { await self.userManager.updateProperties(operations: operations) }
+        return userManager.updateProperties(operations: operations)
     }
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
@@ -249,7 +251,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     @discardableResult
     func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        Task { await self.userManager.resetUser() }
+        return userManager.resetUser()
     }
 
     func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext) {

@@ -147,28 +147,31 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     // User update
 
-    func setUser(user: User) async {
+    // android LocalUserManager.update: `val updated = updateContext(update); return syncIfNeeded(updated)`.
+    // mutation(updateContext)은 lock 안에서 동기적으로 끝난 뒤(= 동기 프리픽스), 네트워크 sync만 Task로 반환한다.
+    func setUser(user: User) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
             updateUser(user: user)
         }
-        await syncIfNeeded(updated: updated)
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func setUserId(userId: String?) async {
+    func setUserId(userId: String?) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
             updateUser(user: context.user.toBuilder().userId(userId).build())
         }
-        await syncIfNeeded(updated: updated)
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func setDeviceId(deviceId: String) async {
+    func setDeviceId(deviceId: String) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
             updateUser(user: context.user.toBuilder().deviceId(deviceId).build())
         }
-        await syncIfNeeded(updated: updated)
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func resetUser() async {
+    // android resetUser: updateContext -> trackProperties(clearAll) -> syncIfNeeded. 앞의 두 단계는 동기 프리픽스.
+    func resetUser() -> Task<Void, Never> {
         let updated = recursiveLock.lock {
             let updated = updateContext { _ in
                 defaultUser
@@ -176,14 +179,14 @@ class LocalUserManager: UserManager, @unchecked Sendable {
             publishPropertyOperations(user: updated.new.user, operations: PropertyOperations.clearAll(), timestamp: clock.now())
             return updated
         }
-        await syncIfNeeded(updated: updated)
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func updateProperties(operations: PropertyOperations) async {
+    func updateProperties(operations: PropertyOperations) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
             operateProperties(operations: operations)
         }
-        await syncIfNeeded(updated: updated)
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
     private func updateUser(user: User) -> UserUpdated<LocalUserContext> {

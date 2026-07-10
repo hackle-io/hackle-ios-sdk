@@ -8,15 +8,15 @@ protocol UserManager: Synchronizer, ApplicationLifecycleListener {
 
     func hackleUser(user: User, appContext: HackleAppContext) -> HackleUser
 
-    func setUser(user: User) async
+    func setUser(user: User) -> Task<Void, Never>
 
-    func resetUser() async
+    func resetUser() -> Task<Void, Never>
 
-    func setUserId(userId: String?) async
+    func setUserId(userId: String?) -> Task<Void, Never>
 
-    func setDeviceId(deviceId: String) async
+    func setDeviceId(deviceId: String) -> Task<Void, Never>
 
-    func updateProperties(operations: PropertyOperations) async
+    func updateProperties(operations: PropertyOperations) -> Task<Void, Never>
 
     func addListener(listener: UserListener)
 }

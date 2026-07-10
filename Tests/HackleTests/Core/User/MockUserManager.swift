@@ -35,46 +35,51 @@ class MockUserManager: Mock, UserManager, @unchecked Sendable {
         return call(hackleUserMock, args: (user, appContext))
     }
 
-    // MockFunction/MockReference는 동기 함수 타입만 받는다 — async 프로토콜 메서드는 기존 sync()/syncStub와
-    // 동일하게 "이름 없는 sync 스텁"을 레퍼런스로 쓰고, 실제 async 구현에서 call()로 위임한다.
+    // mutator는 mutation을 동기적으로 수행(currentUser 갱신 + call)한 뒤 네트워크 sync용 Task를 반환한다.
+    // 동기 프리픽스 계약을 반영 — 반환된 Task를 await하지 않아도 currentUser는 즉시 갱신된다.
     lazy var setUserMock = MockFunction(self, setUserStub)
     private func setUserStub(user: User) {
     }
-    func setUser(user: User) async {
+    func setUser(user: User) -> Task<Void, Never> {
         currentUser = user
         call(setUserMock, args: user)
+        return Task {}
     }
 
     lazy var setUserIdMock = MockFunction(self, setUserIdStub)
     private func setUserIdStub(userId: String?) {
     }
-    func setUserId(userId: String?) async {
+    func setUserId(userId: String?) -> Task<Void, Never> {
         currentUser = currentUser.toBuilder().userId(userId).build()
         call(setUserIdMock, args: userId)
+        return Task {}
     }
 
     lazy var setDeviceIdMock = MockFunction(self, setDeviceIdStub)
     private func setDeviceIdStub(deviceId: String) {
     }
-    func setDeviceId(deviceId: String) async {
+    func setDeviceId(deviceId: String) -> Task<Void, Never> {
         currentUser = currentUser.toBuilder().deviceId(deviceId).build()
         call(setDeviceIdMock, args: deviceId)
+        return Task {}
     }
 
     lazy var resetUserMock = MockFunction(self, resetUserStub)
     private func resetUserStub() {
     }
-    func resetUser() async {
+    func resetUser() -> Task<Void, Never> {
         currentUser = User.builder().build()
         call(resetUserMock, args: ())
+        return Task {}
     }
 
     lazy var updatePropertiesMock = MockFunction(self, updatePropertiesStub)
     private func updatePropertiesStub(operations: PropertyOperations) {
     }
-    func updateProperties(operations: PropertyOperations) async {
+    func updateProperties(operations: PropertyOperations) -> Task<Void, Never> {
         currentUser = currentUser.toBuilder().properties(operations.operate(base: [:])).build()
         call(updatePropertiesMock, args: operations)
+        return Task {}
     }
 
     lazy var syncMock = MockFunction.throwable(self, syncStub)
