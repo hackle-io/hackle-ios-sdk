@@ -103,28 +103,28 @@ class MockHackleAppCore: Mock, HackleAppCore {
         call(unsetPhoneNumberRef, args: hackleAppContext)
     }
     
-    lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, User?, String, HackleAppContext) -> Decision)
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
+    lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, String, HackleAppContext) -> Decision)
+    func variationDetail(experimentKey: Int, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
         self.hackleAppContext = hackleAppContext
-        return call(variationDetailRef, args: (experimentKey, user, defaultVariation, hackleAppContext))
+        return call(variationDetailRef, args: (experimentKey, defaultVariation, hackleAppContext))
     }
-    
-    lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int, User?, HackleAppContext) -> FeatureFlagDecision)
-    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
+
+    lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int, HackleAppContext) -> FeatureFlagDecision)
+    func featureFlagDetail(featureKey: Int, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
         self.hackleAppContext = hackleAppContext
-        return call(featureFlagDetailRef, args: (featureKey, user, hackleAppContext))
+        return call(featureFlagDetailRef, args: (featureKey, hackleAppContext))
     }
-    
-    lazy var trackRef = MockFunction(self, track as (Event, User?, HackleAppContext) -> ())
-    func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
+
+    lazy var trackRef = MockFunction(self, track as (Event, HackleAppContext) -> ())
+    func track(event: Event, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(trackRef, args: (event, user, hackleAppContext))
+        call(trackRef, args: (event, hackleAppContext))
     }
-    
-    lazy var remoteConfigRef = MockFunction(self, remoteConfig as (String, HackleValue, User?, HackleAppContext) -> RemoteConfigDecision)
-    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
+
+    lazy var remoteConfigRef = MockFunction(self, remoteConfig as (String, HackleValue, HackleAppContext) -> RemoteConfigDecision)
+    func remoteConfig(key: String, defaultValue: HackleValue, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
         self.hackleAppContext = hackleAppContext
-        return call(remoteConfigRef, args: (key, defaultValue, user, hackleAppContext))
+        return call(remoteConfigRef, args: (key, defaultValue, hackleAppContext))
     }
     
     lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen, HackleAppContext) -> ())
@@ -146,7 +146,7 @@ class MockHackleAppCore: Mock, HackleAppCore {
         fatalError("NOT IMPLEMENTED")
     }
     
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
+    func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision] {
         fatalError("NOT IMPLEMENTED")
     }
     

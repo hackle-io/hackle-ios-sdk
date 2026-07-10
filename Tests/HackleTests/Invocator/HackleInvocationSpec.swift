@@ -415,16 +415,15 @@ class HackleInvocationSpec: QuickSpec {
                         let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
-                        
+
                         let result = sut.invoke(string: jsonString)
                         expect(core.variationDetailRef.invokations().count) == 1
-                        
+
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1).to(beNil())
-                        expect(arguments.2) == "D"
-                        
+                        expect(arguments.1) == "D"
+
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
@@ -436,116 +435,15 @@ class HackleInvocationSpec: QuickSpec {
                         let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
-                        
+
                         let result = sut.invoke(string: jsonString)
                         expect(core.variationDetailRef.invokations().count) == 1
-                        
+
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1).to(beNil())
-                        expect(arguments.2) == "A"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "A"
-                    }
-                }
-                context("with user string") {
-                    it("happy case") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "defaultVariation": "D",
-                            "user": "abcd1234"
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variation", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "abcd1234"
-                        expect(arguments.2) == "D"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "C"
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("expect 'A' default variation parameter") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "user": "abcd1234"
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variation", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "abcd1234"
-                        expect(arguments.2) == "A"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "A"
-                    }
-                }
-                context("with user object") {
-                    it("happy case") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "defaultVariation": "D",
-                            "user": ["id": "foo"]
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variation", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "foo"
-                        expect(arguments.2) == "D"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"] as? String) == "C"
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("expect 'A' default variation parameter") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "user": ["id": "foo"]
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variation", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "foo"
-                        expect(arguments.2) == "A"
-                        
+                        expect(arguments.1) == "A"
+
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
@@ -574,24 +472,23 @@ class HackleInvocationSpec: QuickSpec {
                         let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
-                        
+
                         let result = sut.invoke(string: jsonString)
                         expect(core.variationDetailRef.invokations().count) == 1
-                        
+
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1).to(beNil())
-                        expect(arguments.2) == "D"
-                        
+                        expect(arguments.1) == "D"
+
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
-                        
+
                         let data = dict["data"] as! [String: Any]
                         expect(data["variation"] as? String) == "C"
                         expect(data["reason"] as? String) == "DEFAULT_RULE"
-                        
+
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
                         expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
@@ -603,153 +500,24 @@ class HackleInvocationSpec: QuickSpec {
                         let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
-                        
+
                         let result = sut.invoke(string: jsonString)
                         expect(core.variationDetailRef.invokations().count) == 1
-                        
+
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1).to(beNil())
-                        expect(arguments.2) == "A"
-                        
+                        expect(arguments.1) == "A"
+
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
-                        
+
                         let data = dict["data"] as! [String: Any]
                         expect(data["experiment"]).to(beNil())
                         expect(data["variation"] as? String) == "A"
                         expect(data["reason"] as? String) == "DEFAULT_RULE"
-                        
-                        let config = data["config"] as! [String: Any]
-                        expect(config["parameters"]).toNot(beNil())
-                    }
-                }
-                context("with user string") {
-                    it("happy case") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "defaultVariation": "D",
-                            "user": "abcd1234"
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "abcd1234"
-                        expect(arguments.2) == "D"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        
-                        let data = dict["data"] as! [String: Any]
-                        expect(data["experiment"]).to(beNil())
-                        expect(data["variation"] as? String) == "C"
-                        expect(data["reason"] as? String) == "DEFAULT_RULE"
-                        
-                        let config = data["config"] as! [String: Any]
-                        expect(config["parameters"]).toNot(beNil())
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("expect 'A' default variation parameter") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "user": "abcd1234"
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "abcd1234"
-                        expect(arguments.2) == "A"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        
-                        let data = dict["data"] as! [String: Any]
-                        expect(data["experiment"]).to(beNil())
-                        expect(data["variation"] as? String) == "A"
-                        expect(data["reason"] as? String) == "DEFAULT_RULE"
-                        
-                        let config = data["config"] as! [String: Any]
-                        expect(config["parameters"]).toNot(beNil())
-                    }
-                }
-                context("with user object") {
-                    it("happy case") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "defaultVariation": "D",
-                            "user": ["id": "foo"]
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "foo"
-                        expect(arguments.2) == "D"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        
-                        let data = dict["data"] as! [String: Any]
-                        expect(data["experiment"]).to(beNil())
-                        expect(data["variation"] as? String) == "C"
-                        expect(data["reason"] as? String) == "DEFAULT_RULE"
-                        
-                        let config = data["config"] as! [String: Any]
-                        expect(config["parameters"]).toNot(beNil())
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("expect 'A' default variation parameter") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "user": ["id": "foo"]
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
-                        every(core.variationDetailRef)
-                            .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
-                        
-                        let result = sut.invoke(string: jsonString)
-                        expect(core.variationDetailRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.variationDetailRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0) == 123
-                        expect(arguments.1?.id) == "foo"
-                        expect(arguments.2) == "A"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        
-                        let data = dict["data"] as! [String: Any]
-                        expect(data["experiment"]).to(beNil())
-                        expect(data["variation"] as? String) == "A"
-                        expect(data["reason"] as? String) == "DEFAULT_RULE"
-                        
+
                         let config = data["config"] as! [String: Any]
                         expect(config["parameters"]).toNot(beNil())
                     }
@@ -782,52 +550,6 @@ class HackleInvocationSpec: QuickSpec {
                     let arguments = firstInvokation.arguments
                     expect(arguments.0) == 123
                         
-                    let dict = result.jsonObject()!
-                    expect(dict["success"] as? Bool) == true
-                    expect(dict["message"] as? String) == "OK"
-                    expect(dict["data"] as? Bool) == true
-                    expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                }
-                it("with user string case") {
-                    let parameters = [
-                        "featureKey": 123,
-                        "user": "abcd1234"
-                    ] as [String: Any]
-                    let jsonString = createJsonString(command: "isFeatureOn", parameters: parameters)
-                    every(core.featureFlagDetailRef)
-                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
-                        
-                    let result = sut.invoke(string: jsonString)
-                    expect(core.featureFlagDetailRef.invokations().count) == 1
-                        
-                    let firstInvokation = core.featureFlagDetailRef.firstInvokation()
-                    let arguments = firstInvokation.arguments
-                    expect(arguments.0) == 123
-                    expect(arguments.1?.id) == "abcd1234"
-                        
-                    let dict = result.jsonObject()!
-                    expect(dict["success"] as? Bool) == true
-                    expect(dict["message"] as? String) == "OK"
-                    expect(dict["data"] as? Bool) == true
-                    expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                }
-                it("with user object case") {
-                    let parameters = [
-                        "featureKey": 123,
-                        "user": ["id": "foo"]
-                    ] as [String: Any]
-                    let jsonString = createJsonString(command: "isFeatureOn", parameters: parameters)
-                    every(core.featureFlagDetailRef)
-                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
-                        
-                    let result = sut.invoke(string: jsonString)
-                    expect(core.featureFlagDetailRef.invokations().count) == 1
-                        
-                    let firstInvokation = core.featureFlagDetailRef.firstInvokation()
-                    let arguments = firstInvokation.arguments
-                    expect(arguments.0) == 123
-                    expect(arguments.1?.id) == "foo"
-
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"] as? String) == "OK"
@@ -875,66 +597,6 @@ class HackleInvocationSpec: QuickSpec {
                     expect(config["parameters"]).toNot(beNil())
                     expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                 }
-                it("with user string case") {
-                    let parameters = [
-                        "featureKey": 123,
-                        "user": "abcd1234"
-                    ] as [String: Any]
-                    let jsonString = createJsonString(command: "featureFlagDetail", parameters: parameters)
-                    every(core.featureFlagDetailRef)
-                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
-                        
-                    let result = sut.invoke(string: jsonString)
-                    expect(core.featureFlagDetailRef.invokations().count) == 1
-                        
-                    let firstInvokation = core.featureFlagDetailRef.firstInvokation()
-                    let arguments = firstInvokation.arguments
-                    expect(arguments.0) == 123
-                    expect(arguments.1?.id) == "abcd1234"
-                        
-                    let dict = result.jsonObject()!
-                    expect(dict["success"] as? Bool) == true
-                    expect(dict["message"] as? String) == "OK"
-                    
-                    let data = dict["data"] as! [String: Any]
-                    expect(data["featureFlag"]).to(beNil())
-                    expect(data["isOn"] as? Bool) == true
-                    expect(data["reason"] as? String) == "DEFAULT_RULE"
-                    
-                    let config = data["config"] as! [String: Any]
-                    expect(config["parameters"]).toNot(beNil())
-                    expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                }
-                it("with user case") {
-                    let parameters = [
-                        "featureKey": 123,
-                        "user": ["id": "foo"]
-                    ] as [String: Any]
-                    let jsonString = createJsonString(command: "featureFlagDetail", parameters: parameters)
-                    every(core.featureFlagDetailRef)
-                        .returns(FeatureFlagDecision.on(featureFlag: nil, reason: "DEFAULT_RULE"))
-                        
-                    let result = sut.invoke(string: jsonString)
-                    expect(core.featureFlagDetailRef.invokations().count) == 1
-                        
-                    let firstInvokation = core.featureFlagDetailRef.firstInvokation()
-                    let arguments = firstInvokation.arguments
-                    expect(arguments.0) == 123
-                    expect(arguments.1?.id) == "foo"
-
-                    let dict = result.jsonObject()!
-                    expect(dict["success"] as? Bool) == true
-                    expect(dict["message"] as? String) == "OK"
-                    
-                    let data = dict["data"] as! [String: Any]
-                    expect(data["featureFlag"]).to(beNil())
-                    expect(data["isOn"] as? Bool) == true
-                    expect(data["reason"] as? String) == "DEFAULT_RULE"
-                    
-                    let config = data["config"] as! [String: Any]
-                    expect(config["parameters"]).toNot(beNil())
-                    expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                }
                 it("invalid parameters case") {
                     let jsonString = createJsonString(command: "featureFlagDetail", parameters: [:])
                     let result = sut.invoke(string: jsonString)
@@ -961,48 +623,6 @@ class HackleInvocationSpec: QuickSpec {
                         let firstInvokation = core.trackRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0.key) == "abcd1234"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"]).to(beNil())
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("with user string") {
-                        let parameters = [
-                            "event": "abcd1234",
-                            "user": "foo"
-                        ]
-                        let jsonString = createJsonString(command: "track", parameters: parameters)
-                        let result = sut.invoke(string: jsonString)
-                        
-                        expect(core.trackRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.trackRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0.key) == "abcd1234"
-                        expect(arguments.1?.id) == "foo"
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"]).to(beNil())
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("with user object") {
-                        let parameters = [
-                            "event": "abcd1234",
-                            "user": ["id": "foo"]
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "track", parameters: parameters)
-                        let result = sut.invoke(string: jsonString)
-                        
-                        expect(core.trackRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.trackRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0.key) == "abcd1234"
-                        expect(arguments.1?.id) == "foo"
                         
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -1039,88 +659,6 @@ class HackleInvocationSpec: QuickSpec {
                         expect(arguments.0.properties!["number"] as? Double) == 123.0
                         expect(arguments.0.properties!["string"] as? String) == "text"
                         
-                        let array = arguments.0.properties!["array"] as! [Any]
-                        expect(array.count) == 2
-                        expect(array[0] as? Double) == 123.0
-                        expect(array[1] as? String) == "123"
-                        expect(arguments.0.properties!["map"]).to(beNil())
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"]).to(beNil())
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("with user string") {
-                        let parameters = [
-                            "event": [
-                                "key": "foo",
-                                "value": 1234,
-                                "properties": [
-                                    "null": nil,
-                                    "number": 123,
-                                    "string": "text",
-                                    "array": [123, "123", nil] as [Any?],
-                                    "map": ["key": "value"]
-                                ] as [String: Any?]
-                            ] as [String: Any],
-                            "user": "abcd1234"
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "track", parameters: parameters)
-                        let result = sut.invoke(string: jsonString)
-                        
-                        expect(core.trackRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.trackRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0.key) == "foo"
-                        expect(arguments.0.value) == 1234
-                        expect(arguments.0.properties!.count) == 3
-                        expect(arguments.0.properties!["number"] as? Double) == 123.0
-                        expect(arguments.0.properties!["string"] as? String) == "text"
-                        expect(arguments.1?.id) == "abcd1234"
-                        
-                        let array = arguments.0.properties!["array"] as! [Any]
-                        expect(array.count) == 2
-                        expect(array[0] as? Double) == 123.0
-                        expect(array[1] as? String) == "123"
-                        expect(arguments.0.properties!["map"]).to(beNil())
-                        
-                        let dict = result.jsonObject()!
-                        expect(dict["success"] as? Bool) == true
-                        expect(dict["message"] as? String) == "OK"
-                        expect(dict["data"]).to(beNil())
-                        expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                    }
-                    it("with user object") {
-                        let parameters = [
-                            "event": [
-                                "key": "foo",
-                                "value": 1234,
-                                "properties": [
-                                    "null": nil,
-                                    "number": 123,
-                                    "string": "text",
-                                    "array": [123, "123", nil] as [Any?],
-                                    "map": ["key": "value"]
-                                ] as [String: Any?]
-                            ] as [String: Any],
-                            "user": ["id": "abcd1234"]
-                        ] as [String: Any]
-                        let jsonString = createJsonString(command: "track", parameters: parameters)
-                        let result = sut.invoke(string: jsonString)
-                        
-                        expect(core.trackRef.invokations().count) == 1
-                        
-                        let firstInvokation = core.trackRef.firstInvokation()
-                        let arguments = firstInvokation.arguments
-                        expect(arguments.0.key) == "foo"
-                        expect(arguments.0.value) == 1234
-                        expect(arguments.0.properties!.count) == 3
-                        expect(arguments.0.properties!["number"] as? Double) == 123.0
-                        expect(arguments.0.properties!["string"] as? String) == "text"
-                        expect(arguments.1?.id) == "abcd1234"
-
                         let array = arguments.0.properties!["array"] as! [Any]
                         expect(array.count) == 2
                         expect(array[0] as? Double) == 123.0
@@ -1257,248 +795,6 @@ class HackleInvocationSpec: QuickSpec {
                         expect(dict["success"] as? Bool) == true
                         expect(dict["message"] as? String) == "OK"
                         expect(dict["data"] as? String) == "default"
-                    }
-                    context("with user string") {
-                        it("number case") {
-                            let parameters = [
-                                "key": "number",
-                                "valueType": "number",
-                                "defaultValue": 0,
-                                "user": "abcd1234"
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Double) == 1234.5678
-                        }
-                        it("number default value return case") {
-                            let parameters = [
-                                "key": "number",
-                                "valueType": "number",
-                                "defaultValue": 0,
-                                "user": "abcd1234"
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "notnumber"), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Double) == 0.0
-                        }
-                        it("boolean case") {
-                            let parameters = [
-                                "key": "bool",
-                                "valueType": "boolean",
-                                "defaultValue": false,
-                                "user": "abcd1234"
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Bool) == true
-                        }
-                        it("boolean default value return case") {
-                            let parameters = [
-                                "key": "bool",
-                                "valueType": "boolean",
-                                "defaultValue": true,
-                                "user": "abcd1234"
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Bool) == true
-                        }
-                        it("string case") {
-                            let parameters = [
-                                "key": "string",
-                                "valueType": "string",
-                                "defaultValue": "default",
-                                "user": "abcd1234"
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "abcd1234"
-                        }
-                        it("string default value return case") {
-                            let parameters = [
-                                "key": "string",
-                                "valueType": "string",
-                                "defaultValue": "default",
-                                "user": "abcd1234"
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "default"
-                        }
-                    }
-                    context("with user object") {
-                        it("number case") {
-                            let parameters = [
-                                "key": "number",
-                                "valueType": "number",
-                                "defaultValue": 0,
-                                "user": ["id": "abcd1234"]
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234.5678), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Double) == 1234.5678
-                            expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
-                        }
-                        it("number default value return case") {
-                            let parameters = [
-                                "key": "number",
-                                "valueType": "number",
-                                "defaultValue": 0,
-                                "user": ["id": "abcd1234"]
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Double) == 0.0
-                        }
-                        it("boolean case") {
-                            let parameters = [
-                                "key": "bool",
-                                "valueType": "boolean",
-                                "defaultValue": false,
-                                "user": ["id": "abcd1234"]
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Bool) == true
-                        }
-                        it("boolean default value return case") {
-                            let parameters = [
-                                "key": "bool",
-                                "valueType": "boolean",
-                                "defaultValue": true,
-                                "user": ["id": "abcd1234"]
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: true), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? Bool) == true
-                        }
-                        it("string case") {
-                            let parameters = [
-                                "key": "string",
-                                "valueType": "string",
-                                "defaultValue": "default",
-                                "user": ["id": "abcd1234"]
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: "abcd1234"), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "abcd1234"
-                        }
-                        it("string default value return case") {
-                            let parameters = [
-                                "key": "string",
-                                "valueType": "string",
-                                "defaultValue": "default",
-                                "user": ["id": "abcd1234"]
-                            ] as [String: Any]
-                            every(core.remoteConfigRef).returns(RemoteConfigDecision(value: HackleValue(value: 1234), reason: ""))
-                            let jsonString = createJsonString(command: "remoteConfig", parameters: parameters)
-                            let result = sut.invoke(string: jsonString)
-                            expect(core.remoteConfigRef.invokations().count) == 1
-                            let firstInvokation = core.remoteConfigRef.firstInvokation()
-                            let arguments = firstInvokation.arguments
-                            expect(arguments.2?.id) == "abcd1234"
-
-                            let dict = result.jsonObject()!
-                            expect(dict["success"] as? Bool) == true
-                            expect(dict["message"] as? String) == "OK"
-                            expect(dict["data"] as? String) == "default"
-                        }
                     }
                 }
                 it("invalid parameters case") {

@@ -203,14 +203,14 @@ import WebKit
     ///   - experimentKey: the unique key for the experiment
     /// - Returns: a ``Decision`` object
     @objc public func variationDetail(experimentKey: Int) -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: nil, defaultVariation: "A", hackleAppContext: .default)
+        hackleAppCore.variationDetail(experimentKey: experimentKey, defaultVariation: "A", hackleAppContext: .default)
     }
-    
+
     /// Decide the variations for all experiments and returns a map of decision results.
     ///
     /// - Returns: a dictionary where key is experimentKey and value is ``Decision`` result
     @objc public func allVariationDetails() -> [Int: Decision] {
-        hackleAppCore.allVariationDetails(user: nil, hackleAppContext: .default)
+        hackleAppCore.allVariationDetails(hackleAppContext: .default)
     }
 
     /// Decide whether the feature is turned on to the user.
@@ -226,7 +226,7 @@ import WebKit
     /// - Parameter featureKey: the unique key for the feature
     /// - Returns: a ``FeatureFlagDecision`` object
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .default)
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, hackleAppContext: .default)
     }
 
     /// Records the event that occurred by the user.
@@ -240,14 +240,14 @@ import WebKit
     ///
     /// - Parameter event: the ``Event`` that occurred
     @objc public func track(event: Event) {
-        hackleAppCore.track(event: event, user: nil, hackleAppContext: .default)
+        hackleAppCore.track(event: event, hackleAppContext: .default)
     }
 
     /// Returns an instance of Hackle Remote Config.
     ///
     /// - Returns: a ``HackleRemoteConfig`` instance
     @objc public func remoteConfig() -> HackleRemoteConfig {
-        DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: nil)
+        DefaultRemoteConfig(hackleAppCore: hackleAppCore)
     }
 
     /// Injects the supplied object into this WebView.

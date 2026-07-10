@@ -45,15 +45,15 @@ protocol HackleAppCore: AnyObject {
 
     func unsetPhoneNumber(hackleAppContext: HackleAppContext)
 
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
+    func variationDetail(experimentKey: Int, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
 
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision]
+    func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision]
 
-    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision
+    func featureFlagDetail(featureKey: Int, hackleAppContext: HackleAppContext) -> FeatureFlagDecision
 
-    func track(event: Event, user: User?, hackleAppContext: HackleAppContext)
+    func track(event: Event, hackleAppContext: HackleAppContext)
 
-    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision
+    func remoteConfig(key: String, defaultValue: HackleValue, hackleAppContext: HackleAppContext) -> RemoteConfigDecision
 
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
 
@@ -234,17 +234,17 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(key: "$push_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
+        track(event: operations.toEvent(key: "$push_subscriptions"), hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
     func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(key: "$sms_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
+        track(event: operations.toEvent(key: "$sms_subscriptions"), hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
+        track(event: operations.toEvent(key: "$kakao_subscriptions"), hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
@@ -259,7 +259,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             .set(PIIProperty.phoneNumber.rawValue, phoneNumber)
             .build()
             .toSecuredEvent()
-        track(event: event, user: nil, hackleAppContext: hackleAppContext)
+        track(event: event, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
@@ -268,15 +268,15 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             .unset(PIIProperty.phoneNumber.rawValue)
             .build()
             .toSecuredEvent()
-        track(event: event, user: nil, hackleAppContext: hackleAppContext)
+        track(event: event, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
+    func variationDetail(experimentKey: Int, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
         let sample = TimerSample.start()
         let decision: Decision
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
             decision = try core.experiment(
                 experimentKey: Int64(experimentKey),
                 user: hackleUser
@@ -289,9 +289,9 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         return decision
     }
 
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
+    func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision] {
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
             return try core.experiments(user: hackleUser).associate { experiment, decision in
                 (Int(experiment.key), decision)
             }
@@ -301,11 +301,11 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
-    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
+    func featureFlagDetail(featureKey: Int, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
         let sample = TimerSample.start()
         let decision: FeatureFlagDecision
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
             decision = try core.featureFlag(
                 featureKey: Int64(featureKey),
                 user: hackleUser
@@ -318,16 +318,16 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         return decision
     }
 
-    func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
-        let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+    func track(event: Event, hackleAppContext: HackleAppContext) {
+        let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
         core.track(event: event, user: hackleUser)
     }
 
-    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
+    func remoteConfig(key: String, defaultValue: HackleValue, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
         let sample = TimerSample.start()
         let decision: RemoteConfigDecision
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
             decision = try core.remoteConfig(parameterKey: key, user: hackleUser, defaultValue: defaultValue)
         } catch {
             Log.error("Unexpected exception while deciding remote config parameter[\(key)]. Returning default value: \(String(describing: error))")

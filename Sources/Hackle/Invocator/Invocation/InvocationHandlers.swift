@@ -240,10 +240,8 @@ extension AbTestInvocationHandler {
             throw HackleError.error("parameters.experimentKey must be provided.")
         }
         let defaultVariation = request.parameters.defaultVariation()
-        let user = request.parameters.user()
         let decision = core.variationDetail(
             experimentKey: experimentKey,
-            user: user,
             defaultVariation: defaultVariation,
             hackleAppContext: request.appContext
         )
@@ -291,8 +289,7 @@ extension FeatureFlagInvocationHandler {
             throw HackleError.error("parameters.featureKey must be provided.")
         }
 
-        let user = request.parameters.user()
-        let decision = core.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: request.appContext)
+        let decision = core.featureFlagDetail(featureKey: featureKey, hackleAppContext: request.appContext)
         let data = transform(decision: decision)
         return .success(data: data)
     }
@@ -357,8 +354,7 @@ class RemoteConfigInvocationHandler: InvocationHandler {
         guard let defaultValue = defaultValue(request) else {
             throw HackleError.error("parameters.defaultValue must be provided.")
         }
-        let user = request.parameters.user()
-        let decision = core.remoteConfig(key: key, defaultValue: HackleValue(value: defaultValue), user: user, hackleAppContext: request.appContext)
+        let decision = core.remoteConfig(key: key, defaultValue: HackleValue(value: defaultValue), hackleAppContext: request.appContext)
         let resultValue = resultValue(decision.value)
         let value = resultValue ?? defaultValue
         return .success(data: value)
@@ -379,8 +375,7 @@ class TrackInvocationHandler: InvocationHandler {
         guard let event = request.parameters.event() else {
             throw HackleError.error("parameters.event must be provided.")
         }
-        let user = request.parameters.user()
-        core.track(event: event, user: user, hackleAppContext: request.appContext)
+        core.track(event: event, hackleAppContext: request.appContext)
         return .success()
     }
 }
