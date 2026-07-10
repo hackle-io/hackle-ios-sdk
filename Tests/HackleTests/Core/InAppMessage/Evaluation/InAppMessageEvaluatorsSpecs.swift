@@ -36,6 +36,23 @@ class InAppMessageEvaluatorsSpecs: QuickSpec {
                 expect(response.eligibilityEvaluation.inAppMessage.id) == inAppMessage.id
                 expect(response.eligibilityEvaluation.eligibilityResult.isEligible) == true
             }
+
+            it("inAppMessage가 ineligible(draft)이면 isEligible false를 반환한다") {
+                let inAppMessage = InAppMessageEntity.create(status: .draft)
+                let workspace = DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage])
+                let user = HackleUser.builder().identifier(.id, "id_1").build()
+
+                let response = try evaluateProcessor.eligibility(
+                    workspace: workspace,
+                    inAppMessage: inAppMessage,
+                    user: user,
+                    scope: .trigger,
+                    timestamp: Date()
+                )
+
+                expect(response.eligibilityEvaluation.inAppMessage.id) == inAppMessage.id
+                expect(response.eligibilityEvaluation.eligibilityResult.isEligible) == false
+            }
         }
 
         describe("LOCAL layout") {

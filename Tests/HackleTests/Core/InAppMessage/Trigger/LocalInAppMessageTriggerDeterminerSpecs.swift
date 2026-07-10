@@ -84,5 +84,20 @@ class LocalInAppMessageTriggerDeterminerSpecs: QuickSpec {
             expect(actual?.reason) == DecisionReason.IN_APP_MESSAGE_TARGET
             expect(actual?.event.event.key) == event.event.key
         }
+
+        it("when eventMatcher matches but inAppMessage is ineligible(draft) then return nil") {
+            // given
+            let inAppMessage = InAppMessageEntity.create(key: 42, status: .draft)
+            every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
+            every(eventMatcher.matchesMock).returns(true)
+
+            let event = UserEvents.track("test")
+
+            // when
+            let actual = try sut.determine(event: event)
+
+            // then
+            expect(actual).to(beNil())
+        }
     }
 }

@@ -61,5 +61,23 @@ class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
             expect(actual.evaluation?.eligibility.eligibilityResult.isEligible) == true
             expect(actual.evaluation?.layout.layoutEvaluation.layoutResult.message).toNot(beNil())
         }
+
+        it("ineligible IAM(draft, atDeliverTime 재평가) -> ineligible 응답 (evaluation nil)") {
+            // given
+            let inAppMessage = InAppMessageEntity.create(
+                key: 42,
+                status: .draft,
+                evaluateContext: InAppMessageEntity.evaluateContext(atDeliverTime: true)
+            )
+            every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
+
+            // when
+            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
+
+            // then
+            expect(actual.isEligible) == false
+            expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
+            expect(actual.evaluation).to(beNil())
+        }
     }
 }
