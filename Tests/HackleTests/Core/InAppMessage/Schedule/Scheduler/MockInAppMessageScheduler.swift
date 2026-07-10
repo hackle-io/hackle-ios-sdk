@@ -9,21 +9,34 @@ class MockInAppMessageScheduler: Mock, InAppMessageScheduler {
         return call(supportMock, args: scheduleType)
     }
 
-    lazy var deliverMock = MockFunction.throwable(self, deliver)
+    // MockFunction은 sync 함수 타입만 받으므로, async 프로토콜 메서드 대신 sync stub으로 참조를 만든다(MockUserManager 관례와 동일).
+    lazy var deliverMock = MockFunction.throwable(self, deliverStub)
 
-    func deliver(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    private func deliverStub(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+        fatalError("deliverStub is not invoked directly; it only exists to type the MockFunction reference")
+    }
+
+    func deliver(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         return try call(deliverMock, args: request)
     }
 
-    lazy var delayMock = MockFunction.throwable(self, delay)
+    lazy var delayMock = MockFunction.throwable(self, delayStub)
 
-    func delay(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    private func delayStub(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+        fatalError("delayStub is not invoked directly; it only exists to type the MockFunction reference")
+    }
+
+    func delay(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         return try call(delayMock, args: request)
     }
 
-    lazy var ignoreMock = MockFunction.throwable(self, ignore)
+    lazy var ignoreMock = MockFunction.throwable(self, ignoreStub)
 
-    func ignore(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    private func ignoreStub(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+        fatalError("ignoreStub is not invoked directly; it only exists to type the MockFunction reference")
+    }
+
+    func ignore(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         return try call(ignoreMock, args: request)
     }
 }

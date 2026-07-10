@@ -14,18 +14,18 @@ class TriggeredInAppMessageScheduler: InAppMessageScheduler {
         return scheduleType == .triggered
     }
 
-    func deliver(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    func deliver(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         let deliverRequest = InAppMessageDeliverRequest.of(request: request)
-        let deliverResponse = deliverProcessor.process(request: deliverRequest)
+        let deliverResponse = await deliverProcessor.process(request: deliverRequest)
         return InAppMessageScheduleResponse.of(request: request, code: .deliver, deliverReponse: deliverResponse)
     }
 
-    func delay(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    func delay(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         let delay = try delayManager.registerAndDelay(request: request)
         return InAppMessageScheduleResponse.of(request: request, code: .delay, delay: delay)
     }
 
-    func ignore(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    func ignore(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         return InAppMessageScheduleResponse.of(request: request, code: .ignore)
     }
 }

@@ -4,7 +4,7 @@ import Quick
 
 @testable import Hackle
 
-class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
+class InAppMessageDeliverLocalEvaluatorSpecs: AsyncSpec {
     override class func spec() {
 
         var workspaceFetcher: MockWorkspaceConfigFetcher!
@@ -28,7 +28,7 @@ class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
             every(workspaceFetcher.workspaceMock).returns(nil)
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == false
@@ -40,7 +40,7 @@ class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
             every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create())
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == false
@@ -53,7 +53,7 @@ class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
             every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == true
@@ -72,7 +72,7 @@ class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
             every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == false

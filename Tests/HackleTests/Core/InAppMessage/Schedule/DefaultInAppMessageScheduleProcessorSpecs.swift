@@ -4,7 +4,7 @@ import Quick
 
 @testable import Hackle
 
-class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
+class DefaultInAppMessageScheduleProcessorSpecs: AsyncSpec {
     override class func spec() {
 
         var actionDeterminer: MockInAppMessageScheduleActionDeterminer!
@@ -31,7 +31,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
             every(scheduler.deliverMock).returns(response)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: request)
 
             // then
             expect(actual).to(beIdenticalTo(response))
@@ -46,7 +46,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
             }
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: request)
 
             // then
             expect(actual.code) == .exception
@@ -62,10 +62,8 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
             // when
             sut.onSchedule(request: request)
 
-            // then
-            verify(exactly: 1) {
-                scheduler.deliverMock
-            }
+            // then — onSchedule은 Task {}로 발사되므로 toEventually로 완료 대기 (AsyncSpec이므로 async 버전 사용)
+            await expect(scheduler.deliverMock.invokations().count).toEventually(equal(1), timeout: .seconds(1))
         }
     }
 }

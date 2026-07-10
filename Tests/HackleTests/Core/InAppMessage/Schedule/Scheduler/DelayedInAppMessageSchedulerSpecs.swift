@@ -4,7 +4,7 @@ import Quick
 
 @testable import Hackle
 
-class DelayedInAppMessageSchedulerSpecs: QuickSpec {
+class DelayedInAppMessageSchedulerSpecs: AsyncSpec {
     override class func spec() {
 
         var deliverProcessor: MockInAppMessageDeliverProcessor!
@@ -30,8 +30,8 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
                 let request = InAppMessageEntity.scheduleRequest()
                 every(delayManager.deleteMock).returns(nil)
 
-                expect {
-                    try sut.schedule(action: .deliver, request: request)
+                await expect {
+                    try await sut.schedule(action: .deliver, request: request)
                 }
                     .to(throwError())
             }
@@ -47,7 +47,7 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
                 every(deliverProcessor.processMock).returns(deliverResponse)
 
                 // when
-                let actual = try sut.schedule(
+                let actual = try await sut.schedule(
                     action: .deliver,
                     request: request
                 )
@@ -67,7 +67,7 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
                 every(delayManager.delayMock).returns(delay)
 
                 // when
-                let actual = try sut.schedule(action: .delay, request: request)
+                let actual = try await sut.schedule(action: .delay, request: request)
 
                 // then
                 expect(actual.code) == .delay
@@ -84,7 +84,7 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
                 every(delayManager.deleteMock).returns(delay)
 
                 // when
-                let actual = try sut.schedule(action: .ignore, request: request)
+                let actual = try await sut.schedule(action: .ignore, request: request)
 
                 // then
                 expect(actual.code) == .ignore

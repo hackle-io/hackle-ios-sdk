@@ -10,7 +10,7 @@ class InAppMessageDeliverLocalEvaluator: InAppMessageDeliverEvaluator {
         self.evaluateProcessor = evaluateProcessor
     }
 
-    func evaluate(request: InAppMessageDeliverRequest, user: HackleUser) throws -> InAppMessageDeliverEvaluateResponse {
+    func evaluate(request: InAppMessageDeliverRequest, user: HackleUser) async throws -> InAppMessageDeliverEvaluateResponse {
 
         // check Workspace
         guard let workspace = workspaceFetcher.workspace(user: user) else {

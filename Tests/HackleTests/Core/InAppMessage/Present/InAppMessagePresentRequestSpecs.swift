@@ -8,7 +8,6 @@ class InAppMessagePresentRequestSpecs: QuickSpec {
         it("trigger event is taken from deliverRequest.triggerEvent") {
             let event = Event.builder("checkout").value(42.0).property("step", "review").build()
             let deliverRequest = InAppMessageEntity.deliverRequest(triggerEvent: event)
-            let inAppMessage = InAppMessageEntity.create()
             let user = HackleUser.builder().identifier(.id, "user").build()
             let eligibility = InAppMessageEntity.eligibilityEvaluation()
             let layout = InAppMessageEntity.layoutEvaluateResponse()
@@ -16,9 +15,8 @@ class InAppMessagePresentRequestSpecs: QuickSpec {
 
             let request = InAppMessagePresentRequest.of(
                 request: deliverRequest,
-                inAppMessage: inAppMessage,
                 user: user,
-                deliverEvaluation: deliverEvaluation
+                evaluation: deliverEvaluation
             )
 
             expect(request.triggerEvent.key) == "checkout"
