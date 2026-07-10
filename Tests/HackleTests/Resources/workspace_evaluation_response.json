@@ -446,7 +446,7 @@
                 "path": "https://hackle.io"
               }
             },
-            "reason": "IN_APP_MESSAGE_TARGET",
+            "reason": "LAYOUT_INNER_REASON",
             "references": []
           },
           "reason": "IN_APP_MESSAGE_TARGET",

@@ -82,6 +82,7 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
                 expect(result.isEligible) == true
                 expect(result.evaluateContext.atDeliverTime) == true
                 expect(result.layout.id) == 400
+                expect(result.layout.reason) == "IN_APP_MESSAGE_TARGET" // outer(eligibility) reason이어야 하며, nested layout.reason("LAYOUT_INNER_REASON")이 아니어야 한다
                 if case .range = result.period {
                 } else {
                     fail("period must be range")
