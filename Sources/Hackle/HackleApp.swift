@@ -257,7 +257,7 @@ import WebKit
     ///   - uiDelegate: Optional UI delegate for the WebView. If not provided, the WebView's existing delegate will be used
     ///   - webViewConfig: Configuration for WebView integration behavior. Defaults to ``HackleWebViewConfig/DEFAULT``
     @MainActor @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
-        let javascriptBridge = HackleJavascriptBridge(invocator: invocator(), sdkKey: sdk.key, mode: config.mode, webViewConfig: webViewConfig)
+        let javascriptBridge = HackleJavascriptBridge(invocator: invocator(), sdkKey: sdk.key, mode: config.appMode, webViewConfig: webViewConfig)
         javascriptBridge.apply(to: webView, uiDelegate: uiDelegate)
     }
 
@@ -502,7 +502,7 @@ extension HackleApp {
         let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
 
-        if config.mode == .web_view_wrapper {
+        if config.appMode == .web_view_wrapper {
             eventFilters.append(WebViewWrapperUserEventFilter())
             eventDecorators.append(WebViewWrapperUserEventDecorator())
         }
