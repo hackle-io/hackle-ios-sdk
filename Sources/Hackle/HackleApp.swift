@@ -531,8 +531,8 @@ extension HackleApp {
 
         // - Core
 
-        let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
-        let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
+        let abOverrideStorage = DefaultExperimentManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
+        let ffOverrideStorage = DefaultExperimentManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
         let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
         let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
         HackleCoreContext.shared.register(inAppMessageHiddenStorage)

@@ -43,8 +43,8 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
                 core: core,
                 userManager: userManager,
                 pushTokenManager: MockPushTokenManager(),
-                abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
+                abTestOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
+                featureFlagOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
             inAppMessageUI = makeInAppMessageUI(core: core)

@@ -1,12 +1,12 @@
 //
-//  HackleUserManualOverrideStorage.swift
+//  DefaultExperimentManualOverrideStorage.swift
 //  Hackle
 //
 
 import Foundation
 
 
-class HackleUserManualOverrideStorage: ManualOverrideStorage {
+class DefaultExperimentManualOverrideStorage: ManualOverrideStorage {
 
     private let keyValueRepository: KeyValueRepository
 
@@ -14,8 +14,8 @@ class HackleUserManualOverrideStorage: ManualOverrideStorage {
         self.keyValueRepository = keyValueRepository
     }
 
-    static func create(suiteName: String) -> HackleUserManualOverrideStorage {
-        HackleUserManualOverrideStorage(keyValueRepository: UserDefaultsKeyValueRepository.of(suiteName: suiteName))
+    static func create(suiteName: String) -> DefaultExperimentManualOverrideStorage {
+        DefaultExperimentManualOverrideStorage(keyValueRepository: UserDefaultsKeyValueRepository.of(suiteName: suiteName))
     }
 
     func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
