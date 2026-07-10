@@ -42,7 +42,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
     private func deliver(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse {
 
         // check User
-        let user = userManager.resolve(user: nil, hackleAppContext: .default)
+        let user = userManager.hackleUser()
             .decorateWith(docorator: userDecoreator)
 
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: request.identifiers, new: user.identifiers)

@@ -61,7 +61,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     }
 
     func currentUser() -> HackleUser {
-        userManager.resolve(user: nil, hackleAppContext: .default)
+        userManager.hackleUser()
     }
 
     func registeredPushToken() -> String? {

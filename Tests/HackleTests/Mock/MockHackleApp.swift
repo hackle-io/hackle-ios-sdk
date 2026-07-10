@@ -25,6 +25,7 @@ class MockHackleAppCore: Mock, HackleAppCore {
         every(setUserIdRef).answers { _ in Task {} }
         every(setDeviceIdRef).answers { _ in Task {} }
         every(resetUserRef).answers { _ in Task {} }
+        every(updateUserPropertiesRef).answers { _ in Task {} }
         every(fetchRef).answers { _ in Task {} }
     }
 
@@ -62,9 +63,10 @@ class MockHackleAppCore: Mock, HackleAppCore {
     }
 
     lazy var updateUserPropertiesRef = MockFunction(self, updateUserProperties)
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) {
+    @discardableResult
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(updateUserPropertiesRef, args: (operations, hackleAppContext))
+        return call(updateUserPropertiesRef, args: (operations, hackleAppContext))
     }
     
     lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> ())

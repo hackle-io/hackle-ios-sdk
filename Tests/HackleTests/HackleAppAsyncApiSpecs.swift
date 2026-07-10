@@ -73,8 +73,9 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
             await awaitCompletion {
                 await sut.setUser(user: user)
                 expect(userManager.currentUser.id) == "async-user"
+                // mutator가 sync 책임을 흡수 — setUserMock 호출 완료가 곧 update+sync 완료를 의미한다
                 verify(exactly: 1) {
-                    userManager.syncIfNeededMock
+                    userManager.setUserMock
                 }
             }
         }

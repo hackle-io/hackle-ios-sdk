@@ -30,7 +30,8 @@ protocol HackleAppCore: AnyObject {
     @discardableResult
     func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext)
+    @discardableResult
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
 
@@ -213,24 +214,22 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     @discardableResult
     func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        let updated = userManager.setUser(user: user)
-        return Task { await self.userManager.syncIfNeeded(updated: updated) }
+        Task { await self.userManager.setUser(user: user) }
     }
 
     @discardableResult
     func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        let updated = userManager.setUserId(userId: userId)
-        return Task { await self.userManager.syncIfNeeded(updated: updated) }
+        Task { await self.userManager.setUserId(userId: userId) }
     }
 
     @discardableResult
     func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        let updated = userManager.setDeviceId(deviceId: deviceId)
-        return Task { await self.userManager.syncIfNeeded(updated: updated) }
+        Task { await self.userManager.setDeviceId(deviceId: deviceId) }
     }
 
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) {
-        userManager.updateProperties(operations: operations)
+    @discardableResult
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
+        Task { await self.userManager.updateProperties(operations: operations) }
     }
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
@@ -250,8 +249,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     @discardableResult
     func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
-        let updated = userManager.resetUser()
-        return Task { await self.userManager.syncIfNeeded(updated: updated) }
+        Task { await self.userManager.resetUser() }
     }
 
     func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext) {
@@ -276,7 +274,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         let sample = TimerSample.start()
         let decision: Decision
         do {
-            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             decision = try core.experiment(
                 experimentKey: Int64(experimentKey),
                 user: hackleUser
@@ -291,7 +289,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision] {
         do {
-            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             return try core.experiments(user: hackleUser).associate { experiment, decision in
                 (Int(experiment.key), decision)
             }
@@ -305,7 +303,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         let sample = TimerSample.start()
         let decision: FeatureFlagDecision
         do {
-            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             decision = try core.featureFlag(
                 featureKey: Int64(featureKey),
                 user: hackleUser
@@ -319,7 +317,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func track(event: Event, hackleAppContext: HackleAppContext) {
-        let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
+        let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
         core.track(event: event, user: hackleUser)
     }
 
@@ -327,7 +325,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         let sample = TimerSample.start()
         let decision: RemoteConfigDecision
         do {
-            let hackleUser = userManager.resolve(user: nil, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             decision = try core.remoteConfig(parameterKey: key, user: hackleUser, defaultValue: defaultValue)
         } catch {
             Log.error("Unexpected exception while deciding remote config parameter[\(key)]. Returning default value: \(String(describing: error))")

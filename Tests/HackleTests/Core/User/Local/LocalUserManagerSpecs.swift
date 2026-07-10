@@ -73,10 +73,10 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
         }
 
-        describe("resolve") {
+        describe("hackleUser") {
             it("currentUser") {
                 sut.initialize(user: User.builder().id("init_id").deviceId("init_device_id").userId("init_user_id").build())
-                let actual = sut.resolve(user: nil, hackleAppContext: .default)
+                let actual = sut.hackleUser()
                 expect(actual.identifiers) == [
                     "$id": "init_id",
                     "$deviceId": "init_device_id",
@@ -87,7 +87,7 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("inputUser") {
                 sut.initialize(user: nil)
-                let actual = sut.resolve(user: User.builder().id("input_id").build(), hackleAppContext: .default)
+                let actual = sut.hackleUser(user: User.builder().id("input_id").build())
                 expect(actual.identifiers) == [
                     "$id": "input_id",
                     "$deviceId": "hackle_device_id",
@@ -96,7 +96,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
         }
 
-        describe("toHackleUser") {
+        describe("hackleUser(user:) merge") {
             it("merge with current context") {
                 // given
                 let userCohorts = UserCohorts.builder()
@@ -124,7 +124,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.initialize(user: User.builder().id("id").property("a", "a").build())
                 await awaitCompletion {
                     try? await sut.sync()
-                    let hackleUser = sut.toHackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
+                    let hackleUser = sut.hackleUser(user: User.builder().id("id").userId("user_id").property("b", "b").build())
                     
                     // then
                     expect(hackleUser.identifiers) == [
@@ -139,7 +139,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
 
             it("full") {
-                let hackleUser = sut.toHackleUser(user: User.builder()
+                let hackleUser = sut.hackleUser(user: User.builder()
                     .id("id")
                     .deviceId("device_id")
                     .userId("user_id")
@@ -159,7 +159,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
 
             it("fill default id") {
-                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                let hackleUser = sut.hackleUser(user: User.builder().build())
                 expect(hackleUser.identifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -168,12 +168,12 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
 
             it("hackle properties") {
-                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                let hackleUser = sut.hackleUser(user: User.builder().build())
                 expect(hackleUser.hackleProperties.count) > 0
             }
 
             it("hackle properties contains device properties") {
-                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                let hackleUser = sut.hackleUser(user: User.builder().build())
 
                 // Device properties
                 expect(hackleUser.hackleProperties["platform"] as? String) == "iOS"
@@ -192,7 +192,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
 
             it("hackle properties contains bundle info properties") {
-                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                let hackleUser = sut.hackleUser(user: User.builder().build())
 
                 // BundleInfo properties
                 expect(hackleUser.hackleProperties["packageName"]).notTo(beNil())
@@ -201,7 +201,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
 
             it("hackle properties merges device and bundle info") {
-                let hackleUser = sut.toHackleUser(user: User.builder().build())
+                let hackleUser = sut.hackleUser(user: User.builder().build())
 
                 // Should contain both device and bundle info properties
                 let hasDeviceProperty = hackleUser.hackleProperties["platform"] != nil
@@ -237,10 +237,10 @@ class LocalUserManagerSpecs: AsyncSpec {
                 every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: userTargetEvents).build() }
 
                 sut.initialize(user: nil)
-                expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == []
+                expect(sut.hackleUser().cohorts) == []
                 await awaitCompletion {
                     try? await sut.sync()
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
+                    expect(sut.hackleUser().cohorts) == [Cohort(id: 42)]
                 }
             }
         }
@@ -277,81 +277,59 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.initialize(user: nil)
                 await awaitCompletion {
                     try? await sut.sync()
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == targetEvents
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 2
+                    expect(sut.hackleUser().targetEvents) == targetEvents
+                    expect(sut.hackleUser().targetEvents.count) == 2
                 }
                 
                 let newTargetEvents = [targetEvent]
                 every(targetFetcher.fetchMock).answers { _ in UserTargetEvents.Builder(targetEvents: UserTargetEvents.builder().putAll(targetEvents: newTargetEvents).build()).build() }
                 await awaitCompletion {
                     try? await sut.sync()
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents) == newTargetEvents
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
+                    expect(sut.hackleUser().targetEvents) == newTargetEvents
+                    expect(sut.hackleUser().targetEvents.count) == 1
                 }
             }
         }
 
-        describe("syncIfNeeded") {
-            it("no new identifiers") {
-                // cohort not sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().build()
-                        )
-                    )
-                }
+        // Task 11: syncIfNeeded(updated:)가 private으로 바뀌어 mutator가 내부에서 흡수한다.
+        // BEFORE(구 계약)에는 Updated(previous:current:)를 합성해 syncIfNeeded를 직접 호출/검증했으나,
+        // AFTER(신 계약)에서는 mutator(setUserId/setDeviceId/setUser/resetUser) 호출 후 cohort/targetEvent
+        // fetch 여부로 간접 검증한다. hasNewIdentifiers(추가된 식별자 유무 → cohort)와
+        // identifierEquals(userId+deviceId 동일 여부 → targetEvent)의 분기를 각각 대표 케이스로 커버한다.
+        describe("mutator 호출에 따른 cohort/targetEvent 동기화") {
+            it("변경이 없으면 cohort와 targetEvent 모두 동기화하지 않는다") {
+                sut.initialize(user: User.builder().userId("user_a").deviceId("device_a").build())
 
-                // cohort not sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().id("id").build()
-                        )
-                    )
-                }
+                await sut.setUserId(userId: "user_a") // 동일 값 재설정
 
-                // cohort not sync and target event sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").build()
-                        )
-                    )
+                verify(exactly: 0) {
+                    cohortFetcher.fetchMock
                 }
+                verify(exactly: 0) {
+                    targetFetcher.fetchMock
+                }
+            }
 
-                // cohort not sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").build()
-                        )
-                    )
-                }
+            it("userId가 새로운 값으로 변경되면 cohort와 targetEvent를 모두 동기화한다") {
+                sut.initialize(user: User.builder().userId("user_a").build())
 
-                // cohort not sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").build()
-                        )
-                    )
-                }
+                await sut.setUserId(userId: "user_b")
 
-                // cohort not sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build()
-                        )
-                    )
+                expect(sut.currentUser.userId) == "user_b"
+                verify(exactly: 1) {
+                    cohortFetcher.fetchMock
                 }
+                verify(exactly: 1) {
+                    targetFetcher.fetchMock
+                }
+            }
+
+            it("userId가 제거되면(새 식별자 없음) targetEvent만 동기화한다") {
+                sut.initialize(user: User.builder().userId("user_a").build())
+
+                await sut.setUserId(userId: nil)
+
+                expect(sut.currentUser.userId).to(beNil())
                 verify(exactly: 0) {
                     cohortFetcher.fetchMock
                 }
@@ -359,65 +337,57 @@ class LocalUserManagerSpecs: AsyncSpec {
                     targetFetcher.fetchMock
                 }
             }
-            it("new identifiers") {
-                // cohort sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().build(),
-                            current: User.builder().id("new_id").build()
-                        )
-                    )
-                }
-                // cohort sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().id("new_id").build()
-                        )
-                    )
-                }
-                // cohort sync and target event sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").build(),
-                            current: User.builder().id("id").deviceId("new_device_id").build()
-                        )
-                    )
-                }
-                // cohort sync and target event sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").deviceId("new_device_id").build()
-                        )
-                    )
-                }
-                // cohort sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
-                        )
-                    )
-                }
-                // cohort sync and target event not sync
-                await awaitCompletion {
-                    await sut.syncIfNeeded(
-                        updated: Updated(
-                            previous: User.builder().id("id").deviceId("device_id").identifier("custom", "custom_id").build(),
-                            current: User.builder().id("id").deviceId("device_id").identifier("custom", "new_custom_id").build()
-                        )
-                    )
-                }
-                verify(exactly: 6) {
+
+            it("deviceId가 새로운 값으로 변경되면 cohort와 targetEvent를 모두 동기화한다") {
+                sut.initialize(user: User.builder().deviceId("device_a").build())
+
+                await sut.setDeviceId(deviceId: "device_b")
+
+                expect(sut.currentUser.deviceId) == "device_b"
+                verify(exactly: 1) {
                     cohortFetcher.fetchMock
                 }
-                verify(exactly: 2) {
+                verify(exactly: 1) {
+                    targetFetcher.fetchMock
+                }
+            }
+
+            it("deviceId를 동일한 값으로 재설정하면 아무것도 동기화하지 않는다") {
+                sut.initialize(user: User.builder().deviceId("device_a").build())
+
+                await sut.setDeviceId(deviceId: "device_a")
+
+                verify(exactly: 0) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 0) {
+                    targetFetcher.fetchMock
+                }
+            }
+
+            it("setUser로 커스텀 식별자만 변경되면(userId/deviceId 동일) cohort만 동기화한다") {
+                sut.initialize(user: User.builder().deviceId("device_a").identifier("custom", "custom_id").build())
+
+                await sut.setUser(user: User.builder().deviceId("device_a").identifier("custom", "new_custom_id").build())
+
+                verify(exactly: 1) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 0) {
+                    targetFetcher.fetchMock
+                }
+            }
+
+            it("resetUser로 userId가 제거되면(새 식별자 없음) targetEvent만 동기화한다") {
+                sut.initialize(user: User.builder().userId("user_x").build())
+
+                await sut.resetUser()
+
+                expect(sut.currentUser.userId).to(beNil())
+                verify(exactly: 0) {
+                    cohortFetcher.fetchMock
+                }
+                verify(exactly: 1) {
                     targetFetcher.fetchMock
                 }
             }
@@ -425,8 +395,8 @@ class LocalUserManagerSpecs: AsyncSpec {
 
         describe("setUser") {
             it("decorate hackleDeviceId") {
-                let actual = sut.setUser(user: User.builder().build())
-                expect(actual.current.resolvedIdentifiers) == [
+                await sut.setUser(user: User.builder().build())
+                expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                 ]
@@ -439,15 +409,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                let actual = sut.setUser(user: User.builder().deviceId("device_id").build())
-                expect(actual.previous.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "hackle_device_id",
-                ]
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "device_id",
-                ]
+                await sut.setUser(user: User.builder().deviceId("device_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -470,11 +432,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                let actual = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
-                expect(actual.previous.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "hackle_device_id",
-                ]
+                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -499,7 +457,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -522,7 +480,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -547,7 +505,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -573,7 +531,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -598,7 +556,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id_2").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -623,7 +581,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
+                await sut.setUser(user: User.builder().deviceId("device_id_2").userId("user_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -650,7 +608,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                _ = sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build())
+                await sut.setUser(user: User.builder().deviceId("device_id").userId("user_id_2").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -683,7 +641,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                         "$id": "hackle_device_id",
                         "$deviceId": "device_id",
                     ]
-                    expect(sut.resolve(user: sut.currentUser, hackleAppContext: .default).cohorts) == [Cohort(id: 42)]
+                    expect(sut.hackleUser(user: sut.currentUser).cohorts) == [Cohort(id: 42)]
                 }
             }
             
@@ -708,9 +666,9 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.initialize(user: nil)
                 await awaitCompletion {
                     try? await sut.sync()
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents.count) == 1
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].eventKey) == "purchase"
-                    expect(sut.resolve(user: nil, hackleAppContext: .default).targetEvents[0].property?.key) == "product_name"
+                    expect(sut.hackleUser().targetEvents.count) == 1
+                    expect(sut.hackleUser().targetEvents[0].eventKey) == "purchase"
+                    expect(sut.hackleUser().targetEvents[0].property?.key) == "product_name"
                 }
             }
         }
@@ -724,10 +682,10 @@ class LocalUserManagerSpecs: AsyncSpec {
                     .increment("a", 42)
                     .append("c", "cc")
                     .build()
-                let actual = sut.updateProperties(operations: operations)
-                expect(actual.current.properties["a"] as? Double) == 42.0
-                expect(actual.current.properties["c"] as? [String]) == ["cc"]
-                expect(actual.current.properties["d"] as? String) == "d"
+                await sut.updateProperties(operations: operations)
+                expect(sut.currentUser.properties["a"] as? Double) == 42.0
+                expect(sut.currentUser.properties["c"] as? [String]) == ["cc"]
+                expect(sut.currentUser.properties["d"] as? String) == "d"
             }
 
             it("existed properties") {
@@ -745,24 +703,19 @@ class LocalUserManagerSpecs: AsyncSpec {
                     .increment("a", 42)
                     .append("c", "cc")
                     .build()
-                let actual = sut.updateProperties(operations: operations)
+                await sut.updateProperties(operations: operations)
 
-                expect(actual.current.properties["a"] as? Double) == 84.0
-                expect(actual.current.properties["b"] as? String) == "b"
-                expect(actual.current.properties["c"] as? [String]) == ["c", "cc"]
-                expect(actual.current.properties["d"] as? String) == "d"
+                expect(sut.currentUser.properties["a"] as? Double) == 84.0
+                expect(sut.currentUser.properties["b"] as? String) == "b"
+                expect(sut.currentUser.properties["c"] as? [String]) == ["c", "cc"]
+                expect(sut.currentUser.properties["d"] as? String) == "d"
             }
         }
 
         describe("setUserId") {
             it("new") {
                 sut.initialize(user: nil)
-                let actual = sut.setUserId(userId: "user_id")
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "hackle_device_id",
-                    "$userId": "user_id",
-                ]
+                await sut.setUserId(userId: "user_id")
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -781,11 +734,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                let actual = sut.setUserId(userId: nil)
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "hackle_device_id",
-                ]
+                await sut.setUserId(userId: nil)
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -803,12 +752,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                let actual = sut.setUserId(userId: "user_id_2")
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "hackle_device_id",
-                    "$userId": "user_id_2",
-                ]
+                await sut.setUserId(userId: "user_id_2")
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -827,12 +771,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$userId": "user_id",
                 ]
 
-                let actual = sut.setUserId(userId: "user_id")
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "hackle_device_id",
-                    "$userId": "user_id",
-                ]
+                await sut.setUserId(userId: "user_id")
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -847,11 +786,7 @@ class LocalUserManagerSpecs: AsyncSpec {
         describe("setDeviceId") {
             it("new") {
                 sut.initialize(user: nil)
-                let actual = sut.setDeviceId(deviceId: "device_id")
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "device_id",
-                ]
+                await sut.setDeviceId(deviceId: "device_id")
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -863,11 +798,7 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("change") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
-                let actual = sut.setDeviceId(deviceId: "device_id_2")
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "device_id_2",
-                ]
+                await sut.setDeviceId(deviceId: "device_id_2")
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id_2",
@@ -879,11 +810,7 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("same") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
-                let actual = sut.setDeviceId(deviceId: "device_id")
-                expect(actual.current.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
-                    "$deviceId": "device_id",
-                ]
+                await sut.setDeviceId(deviceId: "device_id")
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "device_id",
@@ -902,7 +829,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "hackle_device_id",
                 ]
 
-                _ = sut.resetUser()
+                await sut.resetUser()
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -919,7 +846,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                     "$deviceId": "device_id",
                 ]
 
-                _ = sut.resetUser()
+                await sut.resetUser()
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
@@ -935,7 +862,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.initialize(user: User.builder().userId("user_id").properties(["a": 1]).build())
                 let operations = PropertyOperations.builder().set("age", 42).build()
 
-                _ = sut.updateProperties(operations: operations)
+                await sut.updateProperties(operations: operations)
 
                 verify(exactly: 1) {
                     listener.onPropertyOperationsMock
@@ -953,7 +880,7 @@ class LocalUserManagerSpecs: AsyncSpec {
             it("resetUser 시 변경 후(default) user와 clearAll을 발행한다") {
                 sut.initialize(user: User.builder().userId("user_id").build())
 
-                _ = sut.resetUser()
+                await sut.resetUser()
 
                 verify(exactly: 1) {
                     listener.onPropertyOperationsMock
@@ -965,9 +892,9 @@ class LocalUserManagerSpecs: AsyncSpec {
 
             it("setUser/setUserId/setDeviceId 시에는 발행하지 않는다") {
                 sut.initialize(user: nil)
-                _ = sut.setUser(user: User.builder().userId("a").build())
-                _ = sut.setUserId(userId: "b")
-                _ = sut.setDeviceId(deviceId: "c")
+                await sut.setUser(user: User.builder().userId("a").build())
+                await sut.setUserId(userId: "b")
+                await sut.setDeviceId(deviceId: "c")
                 verify(exactly: 0) {
                     listener.onPropertyOperationsMock
                 }
@@ -985,18 +912,22 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
         }
 
-        // setUser -> changeUser -> SessionManager -> SessionEventTracker -> toHackleUser(user:) 재진입 체인.
+        // setUser -> changeUser -> SessionManager -> SessionEventTracker -> hackleUser(user:) 재진입 체인.
         // 비재진입 lock이면 deadlock한다.
         describe("re-entrant lock") {
-            it("listener가 onUserUpdated에서 toHackleUser를 재호출해도 deadlock 없이 완료된다") {
+            it("listener가 onUserUpdated에서 hackleUser를 재호출해도 deadlock 없이 완료된다") {
                 let reentrant = ReentrantUserListener(userManager: sut)
                 sut.addListener(listener: reentrant)
                 sut.initialize(user: nil)
 
+                // setUser(async)의 mutation은 recursiveLock.lock { } 내부에서 여전히 동기적으로 일어난다(첫 await는
+                // syncIfNeeded 이전이 아니라 그 호출 자체이므로, lock 재진입 체인은 async 승격 이전과 동일하게 검증 가능).
                 let done = DispatchSemaphore(value: 0)
                 DispatchQueue.global().async {
-                    _ = sut.setUser(user: User.builder().userId("user_id").build())
-                    done.signal()
+                    Task {
+                        await sut.setUser(user: User.builder().userId("user_id").build())
+                        done.signal()
+                    }
                 }
 
                 expect(done.wait(timeout: .now() + 3)) == DispatchTimeoutResult.success
@@ -1006,7 +937,7 @@ class LocalUserManagerSpecs: AsyncSpec {
     }
 }
 
-// onUserUpdated 시점에 toHackleUser(user:)를 재호출해 lock 재진입을 유발하는 테스트 전용 listener.
+// onUserUpdated 시점에 hackleUser(user:)를 재호출해 lock 재진입을 유발하는 테스트 전용 listener.
 fileprivate class ReentrantUserListener: UserListener {
     private weak var userManager: LocalUserManager?
     private(set) var reentrantUser: HackleUser?
@@ -1016,7 +947,7 @@ fileprivate class ReentrantUserListener: UserListener {
     }
 
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
-        reentrantUser = userManager?.toHackleUser(user: newUser)
+        reentrantUser = userManager?.hackleUser(user: newUser)
     }
 
     func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {

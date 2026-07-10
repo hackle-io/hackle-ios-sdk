@@ -138,7 +138,7 @@ import WebKit
     ///   - completion: callback to be executed when the operation is complete
     @preconcurrency @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default)
-        completion()
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Updates push notification subscription status.
@@ -337,7 +337,7 @@ extension HackleApp {
     ///
     /// - Parameter operations: a set of ``PropertyOperations`` to apply to user properties
     public func updateUserProperties(operations: PropertyOperations) async {
-        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default)
+        await hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default).value
     }
 
     /// Resets the current user, and suspends until the user synchronization completes.

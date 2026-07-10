@@ -55,7 +55,7 @@ class ApplicationEventTracker: ApplicationLifecycleListener, ApplicationInstallS
     }
     
     private func track(_ event: Event, _ timestamp: Date) {
-        let hackleUser = userManager.resolve(user: nil, hackleAppContext: HackleAppContext.default)
+        let hackleUser = userManager.hackleUser()
         core.track(event: event, user: hackleUser, timestamp: timestamp)
     }
 }

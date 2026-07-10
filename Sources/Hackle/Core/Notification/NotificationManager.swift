@@ -119,7 +119,7 @@ class DefaultNotificationManager: NotificationManager {
     }
 
     private func track(event: Event, user: User, timestamp: Date) {
-        let hackleUser = userManager.toHackleUser(user: user)
+        let hackleUser = userManager.hackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
         Log.info("Push click event queued.")
     }

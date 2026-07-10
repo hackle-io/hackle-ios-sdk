@@ -38,7 +38,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let timestamp = Date()
             manager.onNotificationDataReceived(
@@ -87,7 +87,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let timestamp = Date()
             let matchData = NotificationData(
@@ -200,7 +200,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             manager.onNotificationDataReceived(
                 data: NotificationData(
@@ -242,7 +242,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
@@ -312,7 +312,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
@@ -382,7 +382,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
@@ -451,7 +451,7 @@ class NotificationManagerSpec: QuickSpec {
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let timeStamp = Date()
             manager.onNotificationDataReceived(
