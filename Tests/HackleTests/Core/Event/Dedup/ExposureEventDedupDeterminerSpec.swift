@@ -17,9 +17,14 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
         
         beforeEach {
             repository = UserDefaultsKeyValueRepository.of(suiteName: "unittest_exposure_repo_abcd1234")
+            repository.clear()
             exposureEventDedupDeterminerSut = ExposureEventDedupDeterminer(repository: repository, dedupInterval: 1)
         }
-        
+
+        afterEach {
+            repository.clear()
+        }
+
         describe("isDedupTarget") {
             it("dedupInterval 이 -1 이면 중복제거 하지 않는다") {
                 // given
@@ -327,8 +332,9 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 }
                 
                 sut.cache().saveToRepository()
-                sut.cache().loadFromRepository()
-                expect(sut.isDedupTarget(event: firstEvent)) == false
+                // 앱 재시작 모사: 새 인스턴스가 빈 repository에서 init 시 로드 → 저장된 값 없음 → 중복제거 안 함
+                let reloaded = ExposureEventDedupDeterminer(repository: repository, dedupInterval: 100)
+                expect(reloaded.isDedupTarget(event: firstEvent)) == false
             }
 
             it("TC1") {
