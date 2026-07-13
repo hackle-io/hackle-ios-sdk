@@ -8,8 +8,6 @@ final class InAppMessageLayoutRemoteEvaluateRequest: RemoteEvaluateRequest, InAp
     let scope: InAppMessageEvaluateScope
     let record: Bool
 
-    var workspace: Workspace { evaluationWorkspace }
-    var entity: Entity { result }
     var remoteResult: RemoteEvaluateResult { result }
     var inAppMessage: InAppMessage { result }
 

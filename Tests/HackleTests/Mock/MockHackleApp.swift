@@ -144,10 +144,6 @@ class MockHackleAppCore: Mock, HackleAppCore {
         fatalError("NOT IMPLEMENTED")
     }
     
-    func allVariationDetails(user: User?) -> [Int: Decision] {
-        fatalError("NOT IMPLEMENTED")
-    }
-    
     func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision] {
         fatalError("NOT IMPLEMENTED")
     }

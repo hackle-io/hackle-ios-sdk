@@ -62,7 +62,6 @@ class RemoteEvaluatorSpecs: QuickSpec {
         let user: HackleUser = HackleUser.builder().build()
         let record: Bool = false
 
-        var workspace: Workspace { evaluationWorkspace }
         var entity: Entity { result }
         var remoteResult: RemoteEvaluateResult { result }
 

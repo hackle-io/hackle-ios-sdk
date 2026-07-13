@@ -7,8 +7,6 @@ final class ExperimentRemoteEvaluateRequest: RemoteEvaluateRequest, ExperimentEv
     let user: HackleUser
     let record: Bool
 
-    var workspace: Workspace { evaluationWorkspace }
-    var entity: Entity { result }
     var remoteResult: RemoteEvaluateResult { result }
     var experiment: Experiment { result }
 

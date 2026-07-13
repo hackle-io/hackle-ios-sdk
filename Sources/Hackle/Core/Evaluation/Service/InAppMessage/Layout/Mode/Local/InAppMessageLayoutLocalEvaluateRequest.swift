@@ -8,8 +8,6 @@ final class InAppMessageLayoutLocalEvaluateRequest: LocalEvaluateRequest, InAppM
     let record: Bool
     let scope: InAppMessageEvaluateScope
 
-    var workspace: Workspace { workspaceConfig }
-    var entity: Entity { inAppMessageConfig }
     var inAppMessage: InAppMessage { inAppMessageConfig }
 
     private init(

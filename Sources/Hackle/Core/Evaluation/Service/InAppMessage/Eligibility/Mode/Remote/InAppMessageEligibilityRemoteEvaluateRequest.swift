@@ -10,8 +10,6 @@ final class InAppMessageEligibilityRemoteEvaluateRequest: RemoteEvaluateRequest,
     let platformType: PlatformType
     let timestamp: Date
 
-    var workspace: Workspace { evaluationWorkspace }
-    var entity: Entity { result }
     var remoteResult: RemoteEvaluateResult { result }
     var inAppMessage: InAppMessage { result }
 
