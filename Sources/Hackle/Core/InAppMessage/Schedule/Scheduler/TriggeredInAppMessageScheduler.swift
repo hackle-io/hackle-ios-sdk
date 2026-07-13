@@ -21,7 +21,7 @@ class TriggeredInAppMessageScheduler: InAppMessageScheduler {
     }
 
     func delay(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
-        let delay = try delayManager.registerAndDelay(request: request)
+        let delay = delayManager.registerAndDelay(request: request)
         return InAppMessageScheduleResponse.of(request: request, code: .delay, delay: delay)
     }
 

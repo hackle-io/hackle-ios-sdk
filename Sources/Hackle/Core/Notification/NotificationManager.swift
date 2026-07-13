@@ -4,7 +4,7 @@ protocol NotificationManager: NotificationDataReceiver {
     func flush()
 }
 
-class DefaultNotificationManager: NotificationManager {
+class DefaultNotificationManager: NotificationManager, @unchecked Sendable {
     private static let DEFAULT_FLUSH_BATCH_SIZE = 5
 
     private let core: HackleCore

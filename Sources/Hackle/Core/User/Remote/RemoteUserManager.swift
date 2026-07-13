@@ -144,7 +144,10 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
     ) -> Task<Void, Never> {
         let updated = updateContext(update: update)
         let syncContext = SyncContext(userContext: updated.new, operations: operations)
-        return Task { await self.syncIfNeeded(updated: updated, syncContext: syncContext) }
+        // 동기 프리픽스: evaluationKey 변경 여부를 Task 진입 전에 판단해 Bool만 넘긴다.
+        // updated(non-Sendable)를 Task 클로저로 캡처하지 않아 sending 데이터 레이스 경고를 피한다.
+        let evaluationKeyChanged = updated.old.evaluationKey != updated.new.evaluationKey
+        return Task { await self.syncIfNeeded(evaluationKeyChanged: evaluationKeyChanged, syncContext: syncContext) }
     }
 
     private func updateContext(update: (RemoteUserContext) -> RemoteUserContext) -> UserUpdated<RemoteUserContext> {
@@ -186,12 +189,12 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         await evaluationManager.sync(context: evaluationContext)
     }
 
-    private func syncIfNeeded(updated: UserUpdated<RemoteUserContext>, syncContext: SyncContext) async {
+    private func syncIfNeeded(evaluationKeyChanged: Bool, syncContext: SyncContext) async {
         if syncContext.operations.count > 0 {
             await sync(context: syncContext)
             return
         }
-        if updated.old.evaluationKey != updated.new.evaluationKey {
+        if evaluationKeyChanged {
             await sync(context: syncContext)
             return
         }
