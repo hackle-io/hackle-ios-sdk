@@ -67,12 +67,10 @@ class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
             expect(targetMatcher.callCount) == 3
         }
 
-        describe("트리거 단계에서는 SEGMENT/AB_TEST를 판단하지 않는다 (전체 타겟팅은 eligibility 단계에서 평가 - 실물 TargetMatcher로 고정)") {
+        describe("실물 TargetMatcher 배선 - 트리거 단계는 이벤트 기반 조건을 평가한다") {
 
-            // 트리거 Request(InAppMessageTriggerEventMatcher 내부 Request)는 LocalEvaluateRequest를 의도적으로 채택하지 않는다.
-            // → SEGMENT/AB_TEST처럼 workspace 재귀 평가가 필요한 조건은 트리거 단계에선 평가되지 않고(항상 false),
-            //   eligibility 단계(InAppMessageEligibilityLocalEvaluateRequest)에서 전체 타겟팅으로 평가된다. (Android 원본과 동일)
-            // ⚠️ 트리거 Request에 LocalEvaluateRequest를 붙이지 말 것 — 붙이면 트리거 단계에서 segment/AB가 평가되기 시작한다.
+            // 트리거 단계는 이벤트 기반 조건(EVENT_PROPERTY 등)만 평가한다.
+            // SEGMENT/AB_TEST 등 전체 타겟팅은 트리거가 아니라 eligibility 단계에서 판단한다.
             var realSut: DefaultInAppMessageTriggerEventMatcher!
 
             beforeEach {
@@ -88,34 +86,6 @@ class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
 
             func rule(_ conditions: Target.Condition...) -> InAppMessage.EventTrigger.Rule {
                 InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [Target(conditions: conditions)])
-            }
-
-            it("SEGMENT 조건이 든 트리거 룰은 트리거 단계에서 매치되지 않는다 (segment 판단은 eligibility 단계 몫)") {
-                let event = UserEvents.track("test")
-                let inAppMessage = InAppMessageEntity.create(eventTrigger: InAppMessageEntity.eventTrigger(rules: [
-                    rule(Target.condition(
-                        key: Target.key(type: .segment, name: "SEGMENT"),
-                        match: Target.match(values: [.string("seg_01")])
-                    ))
-                ]))
-
-                let actual = try realSut.matches(workspace: workspace, inAppMessage: inAppMessage, event: event)
-
-                expect(actual) == false
-            }
-
-            it("AB_TEST 조건이 든 트리거 룰은 트리거 단계에서 매치되지 않는다 (experiment 판단은 eligibility 단계 몫)") {
-                let event = UserEvents.track("test")
-                let inAppMessage = InAppMessageEntity.create(eventTrigger: InAppMessageEntity.eventTrigger(rules: [
-                    rule(Target.condition(
-                        key: Target.key(type: .abTest, name: "42"),
-                        match: Target.match(values: [.string("A")])
-                    ))
-                ]))
-
-                let actual = try realSut.matches(workspace: workspace, inAppMessage: inAppMessage, event: event)
-
-                expect(actual) == false
             }
 
             it("EVENT_PROPERTY 조건은 트리거 단계에서 평가된다") {
