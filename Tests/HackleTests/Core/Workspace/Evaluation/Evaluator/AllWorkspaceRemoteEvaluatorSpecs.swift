@@ -146,5 +146,16 @@ class AllWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
                 try await sut.evaluate(request: AllWorkspaceEvaluateRequest(context: context(), record: nil))
             }.to(throwError())
         }
+
+        it("지원하지 않는 request 타입이면 throw한다") {
+            let request = SpecificWorkspaceEvaluateRequest(
+                context: context(),
+                targets: [DefaultEntity(serviceType: .inAppMessage, id: 400)]
+            )
+
+            await expect {
+                try await sut.evaluate(request: request)
+            }.to(throwError())
+        }
     }
 }

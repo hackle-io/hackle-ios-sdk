@@ -58,5 +58,14 @@ class SpecificWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
             expect(response.status) == WorkspaceEvaluateStatus.full
             expect(response.evaluation).toNot(beNil())
         }
+
+        it("지원하지 않는 request 타입이면 throw한다") {
+            let user = HackleUser.builder().identifier(.id, "id_1").build()
+            let request = AllWorkspaceEvaluateRequest(context: WorkspaceEvaluateContext.of(user: user), record: nil)
+
+            await expect {
+                try await sut.evaluate(request: request)
+            }.to(throwError())
+        }
     }
 }
