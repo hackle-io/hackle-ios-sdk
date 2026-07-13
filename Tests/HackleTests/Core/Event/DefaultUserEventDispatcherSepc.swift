@@ -47,6 +47,10 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             every(eventBackoffController.isAllowNextFlushMock).returns(true)
         }
 
+        afterEach {
+            eventRepository.deleteDatabaseFile()
+        }
+
         func mockResponse(statusCode: Int, error: Error? = nil) -> HttpResponse {
             let url = URL(string: "localhost")!
 

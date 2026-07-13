@@ -19,6 +19,10 @@ class SQLiteEventRepositorySpec: QuickSpec {
             sut.deleteAll()
         }
 
+        afterEach {
+            sut.deleteDatabaseFile()
+        }
+
         describe("count") {
             context("DB에 이벤트가 없을 때") {
                 it("0을 반환해야 한다") {
@@ -179,6 +183,21 @@ class SQLiteEventRepositorySpec: QuickSpec {
 
                 // Then
                 expect(sut.count()).to(equal(1))
+            }
+        }
+
+        describe("instance isolation") {
+            it("서로 다른 인스턴스는 DB를 공유하지 않는다") {
+                let repoA = MockSQLiteEventRepository()
+                let repoB = MockSQLiteEventRepository()
+
+                repoA.save(event: UserEvents.track(UUID().uuidString))
+
+                expect(repoA.count()).to(equal(1))
+                expect(repoB.count()).to(equal(0)) // 고정 key로 공유되면 1이 되어 실패
+
+                repoA.deleteDatabaseFile()
+                repoB.deleteDatabaseFile()
             }
         }
     }

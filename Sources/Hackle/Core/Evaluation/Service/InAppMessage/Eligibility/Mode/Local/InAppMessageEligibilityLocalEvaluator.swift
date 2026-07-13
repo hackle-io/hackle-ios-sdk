@@ -19,14 +19,4 @@ final class InAppMessageEligibilityLocalEvaluator: LocalEvaluator, InAppMessageE
             ?? InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.NOT_IN_IN_APP_MESSAGE_TARGET)
         return InAppMessageEligibilityEvaluateResponse.of(request: request, context: context, result: result)
     }
-
-    func record(request: EvaluateRequest, response: EvaluateResponse) {
-        eventRecorder.record(response: response)
-        guard let eligibilityResponse = response as? InAppMessageEligibilityEvaluateResponse else {
-            return
-        }
-        if !eligibilityResponse.eligibilityEvaluation.eligibilityResult.isEligible, let layout = eligibilityResponse.layout {
-            eventRecorder.record(response: layout)
-        }
-    }
 }
