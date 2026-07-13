@@ -18,7 +18,7 @@ class PropertiesEventTracker: UserListener {
 
     func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
         let event = operations.toEvent()
-        let hackleUser = userManager.toHackleUser(user: user)
+        let hackleUser = userManager.hackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
         eventProcessor.flush()
     }

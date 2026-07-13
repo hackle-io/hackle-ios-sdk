@@ -1,0 +1,482 @@
+{
+  "status": "FULL",
+  "evaluation": {
+    "workspace": {
+      "id": 1,
+      "environment": {
+        "id": 2
+      }
+    },
+    "results": [
+      {
+        "type": "AB_TEST",
+        "id": 100,
+        "hash": 1001,
+        "experiment": {
+          "id": 100,
+          "key": 10,
+          "version": 1,
+          "executionVersion": 1,
+          "variation": {
+            "id": 2001,
+            "key": "B",
+            "status": "ACTIVE",
+            "parameterConfigurationId": null
+          },
+          "config": null,
+          "reason": "TRAFFIC_ALLOCATED",
+          "references": [
+            { "type": "AB_TEST", "id": 100 },
+            { "type": "UNKNOWN_TYPE", "id": 999 }
+          ]
+        },
+        "featureFlag": null,
+        "remoteConfig": null,
+        "inAppMessage": null
+      },
+      {
+        "type": "FEATURE_FLAG",
+        "id": 200,
+        "hash": 2001,
+        "experiment": null,
+        "featureFlag": {
+          "id": 200,
+          "key": 20,
+          "version": 1,
+          "executionVersion": 1,
+          "variation": {
+            "id": 2002,
+            "key": "A",
+            "status": "ACTIVE",
+            "parameterConfigurationId": null
+          },
+          "config": null,
+          "reason": "DEFAULT_RULE",
+          "references": []
+        },
+        "remoteConfig": null,
+        "inAppMessage": null
+      },
+      {
+        "type": "REMOTE_CONFIG",
+        "id": 300,
+        "hash": 3001,
+        "experiment": null,
+        "featureFlag": null,
+        "remoteConfig": {
+          "id": 300,
+          "key": "rc_key",
+          "valueType": "STRING",
+          "value": {
+            "id": 3001,
+            "value": "remote_value"
+          },
+          "reason": "DEFAULT_RULE",
+          "references": []
+        },
+        "inAppMessage": null
+      },
+      {
+        "type": "REMOTE_CONFIG",
+        "id": 301,
+        "hash": 3002,
+        "experiment": null,
+        "featureFlag": null,
+        "remoteConfig": {
+          "id": 301,
+          "key": "rc_invalid",
+          "valueType": "NOT_A_VALUE_TYPE",
+          "value": null,
+          "reason": "DEFAULT_RULE",
+          "references": []
+        },
+        "inAppMessage": null
+      },
+      {
+        "type": "IN_APP_MESSAGE",
+        "id": 400,
+        "hash": 4001,
+        "experiment": null,
+        "featureFlag": null,
+        "remoteConfig": null,
+        "inAppMessage": {
+          "id": 400,
+          "key": 40,
+          "period": {
+            "type": "CUSTOM",
+            "startMillisInclusive": 42000,
+            "endMillisExclusive": 4102444800000
+          },
+          "timetable": null,
+          "eventTriggerRules": [
+            {
+              "eventKey": "view_home",
+              "targets": [
+                {
+                  "conditions": [
+                    {
+                      "key": {
+                        "type": "EVENT_PROPERTY",
+                        "name": "category"
+                      },
+                      "match": {
+                        "type": "MATCH",
+                        "operator": "IN",
+                        "valueType": "STRING",
+                        "values": [
+                          "a",
+                          "b"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "eventFrequencyCap": null,
+          "eventTriggerDelay": null,
+          "evaluateContext": {
+            "atDeliverTime": true
+          },
+          "messageContext": {
+            "defaultLang": "ko",
+            "platformTypes": [
+              "ANDROID",
+              "IOS"
+            ],
+            "exposure": {
+              "type": "DEFAULT",
+              "key": null
+            },
+            "orientations": [
+              "VERTICAL",
+              "HORIZONTAL"
+            ],
+            "messages": [
+              {
+                "lang": "ko",
+                "layout": {
+                  "displayType": "MODAL",
+                  "layoutType": "IMAGE_ONLY",
+                  "alignment": {
+                    "horizontal": "LEFT",
+                    "vertical": "TOP"
+                  }
+                },
+                "images": [
+                  {
+                    "orientation": "VERTICAL",
+                    "imagePath": "https://vertical-image.png",
+                    "action": {
+                      "behavior": "CLICK",
+                      "type": "WEB_LINK",
+                      "value": "https://www.hackle.io"
+                    }
+                  },
+                  {
+                    "orientation": "HORIZONTAL",
+                    "imagePath": "https://horizontal-image.png",
+                    "action": {
+                      "behavior": "CLICK",
+                      "type": "WEB_LINK",
+                      "value": "https://www.hackle.io"
+                    }
+                  }
+                ],
+                "imageAutoScroll": {
+                  "interval": {
+                    "timeUnit": "SECONDS",
+                    "amount": 42
+                  }
+                },
+                "text": {
+                  "title": {
+                    "text": "title_text",
+                    "style": {
+                      "textColor": "#0000FF"
+                    }
+                  },
+                  "body": {
+                    "text": "body_text",
+                    "style": {
+                      "textColor": "#000000"
+                    }
+                  }
+                },
+                "buttons": [
+                  {
+                    "text": "close",
+                    "style": {
+                      "textColor": "#000000",
+                      "bgColor": "#FFFFFF",
+                      "borderColor": "#FFFFFF"
+                    },
+                    "action": {
+                      "behavior": "CLICK",
+                      "type": "HIDDEN",
+                      "value": ""
+                    }
+                  },
+                  {
+                    "text": "apply",
+                    "style": {
+                      "textColor": "#ffffff",
+                      "bgColor": "#5e5af4",
+                      "borderColor": "#FFFFFF"
+                    },
+                    "action": {
+                      "behavior": "CLICK",
+                      "type": "WEB_LINK",
+                      "value": "https://dashboard.hackle.io"
+                    }
+                  }
+                ],
+                "background": {
+                  "color": "#FFFFFF"
+                },
+                "closeButton": {
+                  "style": {
+                    "color": "#000001"
+                  },
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "CLOSE",
+                    "value": null
+                  }
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "LINK_AND_CLOSE",
+                  "value": "https://www.hackle.io"
+                },
+                "outerButtons": [
+                  {
+                    "button": {
+                      "text": "outer",
+                      "style": {
+                        "textColor": "#000000",
+                        "bgColor": "#FFFFFF",
+                        "borderColor": "#FFFFFF"
+                      },
+                      "action": {
+                        "behavior": "CLICK",
+                        "type": "CLOSE",
+                        "value": ""
+                      }
+                    },
+                    "alignment": {
+                      "horizontal": "RIGHT",
+                      "vertical": "BOTTOM"
+                    }
+                  }
+                ],
+                "innerButtons": [
+                  {
+                    "button": {
+                      "text": "inner",
+                      "style": {
+                        "textColor": "#000000",
+                        "bgColor": "#FFFFFF",
+                        "borderColor": "#FFFFFF"
+                      },
+                      "action": {
+                        "behavior": "CLICK",
+                        "type": "CLOSE",
+                        "value": ""
+                      }
+                    },
+                    "alignment": {
+                      "horizontal": "RIGHT",
+                      "vertical": "BOTTOM"
+                    }
+                  }
+                ],
+                "html": {
+                  "resourceType": "PATH",
+                  "text": null,
+                  "path": "https://hackle.io"
+                }
+              }
+            ]
+          },
+          "isEligible": true,
+          "layout": {
+            "message": {
+              "lang": "ko",
+              "layout": {
+                "displayType": "MODAL",
+                "layoutType": "IMAGE_ONLY",
+                "alignment": {
+                  "horizontal": "LEFT",
+                  "vertical": "TOP"
+                }
+              },
+              "images": [
+                {
+                  "orientation": "VERTICAL",
+                  "imagePath": "https://vertical-image.png",
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "WEB_LINK",
+                    "value": "https://www.hackle.io"
+                  }
+                },
+                {
+                  "orientation": "HORIZONTAL",
+                  "imagePath": "https://horizontal-image.png",
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "WEB_LINK",
+                    "value": "https://www.hackle.io"
+                  }
+                }
+              ],
+              "imageAutoScroll": {
+                "interval": {
+                  "timeUnit": "SECONDS",
+                  "amount": 42
+                }
+              },
+              "text": {
+                "title": {
+                  "text": "title_text",
+                  "style": {
+                    "textColor": "#0000FF"
+                  }
+                },
+                "body": {
+                  "text": "body_text",
+                  "style": {
+                    "textColor": "#000000"
+                  }
+                }
+              },
+              "buttons": [
+                {
+                  "text": "close",
+                  "style": {
+                    "textColor": "#000000",
+                    "bgColor": "#FFFFFF",
+                    "borderColor": "#FFFFFF"
+                  },
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "HIDDEN",
+                    "value": ""
+                  }
+                },
+                {
+                  "text": "apply",
+                  "style": {
+                    "textColor": "#ffffff",
+                    "bgColor": "#5e5af4",
+                    "borderColor": "#FFFFFF"
+                  },
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "WEB_LINK",
+                    "value": "https://dashboard.hackle.io"
+                  }
+                }
+              ],
+              "background": {
+                "color": "#FFFFFF"
+              },
+              "closeButton": {
+                "style": {
+                  "color": "#000001"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "CLOSE",
+                  "value": null
+                }
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "LINK_AND_CLOSE",
+                "value": "https://www.hackle.io"
+              },
+              "outerButtons": [
+                {
+                  "button": {
+                    "text": "outer",
+                    "style": {
+                      "textColor": "#000000",
+                      "bgColor": "#FFFFFF",
+                      "borderColor": "#FFFFFF"
+                    },
+                    "action": {
+                      "behavior": "CLICK",
+                      "type": "CLOSE",
+                      "value": ""
+                    }
+                  },
+                  "alignment": {
+                    "horizontal": "RIGHT",
+                    "vertical": "BOTTOM"
+                  }
+                }
+              ],
+              "innerButtons": [
+                {
+                  "button": {
+                    "text": "inner",
+                    "style": {
+                      "textColor": "#000000",
+                      "bgColor": "#FFFFFF",
+                      "borderColor": "#FFFFFF"
+                    },
+                    "action": {
+                      "behavior": "CLICK",
+                      "type": "CLOSE",
+                      "value": ""
+                    }
+                  },
+                  "alignment": {
+                    "horizontal": "RIGHT",
+                    "vertical": "BOTTOM"
+                  }
+                }
+              ],
+              "html": {
+                "resourceType": "PATH",
+                "text": null,
+                "path": "https://hackle.io"
+              }
+            },
+            "reason": "LAYOUT_INNER_REASON",
+            "references": []
+          },
+          "reason": "IN_APP_MESSAGE_TARGET",
+          "references": [
+            { "type": "IN_APP_MESSAGE", "id": 400 }
+          ]
+        }
+      },
+      {
+        "type": "UNKNOWN_SERVICE",
+        "id": 900,
+        "hash": 9001,
+        "experiment": null,
+        "featureFlag": null,
+        "remoteConfig": null,
+        "inAppMessage": null
+      }
+    ],
+    "metadata": {
+      "evaluatedAt": 1720000000000,
+      "results": {
+        "hash": 12345
+      },
+      "user": {
+        "hash": 67890
+      },
+      "config": {
+        "modifiedAt": "Thu, 10 Jul 2026 00:00:00 GMT"
+      }
+    }
+  },
+  "deleted": []
+}

@@ -15,7 +15,7 @@ class PropertiesEventTrackerSpecs: QuickSpec {
             core = MockHackleCore()
             eventProcessor = MockUserEventProcessor()
             userManager = MockUserManager()
-            every(userManager.toHackleUserMock).answers { user in
+            every(userManager.hackleUserMock).answers { user, hackleAppContext in
                 HackleUser.of(user: user, hackleProperties: [:])
             }
             sut = PropertiesEventTracker(core: core, eventProcessor: eventProcessor, userManager: userManager)

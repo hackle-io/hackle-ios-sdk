@@ -17,7 +17,7 @@ class EngagementEventTrackerSpecs: QuickSpec {
 
         it("track") {
             // given
-            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            every(userManager.hackleUserMock).returns(HackleUser.builder().build())
             let engagement = Engagement(screen: Screen.builder(name: "name", className: "class").build(), duration: 42.0)
             let user = User.builder().build()
 
@@ -37,7 +37,7 @@ class EngagementEventTrackerSpecs: QuickSpec {
 
         it("includes custom screen properties in $engagement event") {
             // given
-            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            every(userManager.hackleUserMock).returns(HackleUser.builder().build())
             let screen = Screen.builder(name: "Detail", className: "DetailVC")
                 .property("session_id", "session-12345")
                 .property("product_id", "ABC-123")
@@ -65,7 +65,7 @@ class EngagementEventTrackerSpecs: QuickSpec {
 
         it("merges screen properties with engagement_time_ms") {
             // given
-            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            every(userManager.hackleUserMock).returns(HackleUser.builder().build())
             let screen = Screen.builder(name: "Game", className: "GameVC")
                 .property("level", 10)
                 .property("score", 9999)
@@ -93,7 +93,7 @@ class EngagementEventTrackerSpecs: QuickSpec {
 
         it("works with empty screen properties") {
             // given
-            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            every(userManager.hackleUserMock).returns(HackleUser.builder().build())
             let screen = Screen.builder(name: "Empty", className: "EmptyVC").build()
             let engagement = Engagement(screen: screen, duration: 100.0)
             let user = User.builder().build()

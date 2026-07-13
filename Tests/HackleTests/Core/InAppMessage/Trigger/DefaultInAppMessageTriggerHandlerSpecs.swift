@@ -32,10 +32,8 @@ class DefaultInAppMessageTriggerHandlerSpecs: QuickSpec {
             // when
             sut.handle(trigger: trigger)
 
-            // then
-            verify(exactly: 1) {
-                scheduleProcessor.processMock
-            }
+            // then — handle은 Task {}로 발사되므로 toEventually로 완료 대기
+            expect(scheduleProcessor.processMock.invokations().count).toEventually(equal(1), timeout: .seconds(1))
             let request = scheduleProcessor.processMock.firstInvokation()
                 .arguments
             expect(request.scheduleType) == .triggered

@@ -49,9 +49,9 @@ class UserManagerRaceSpecs: QuickSpec {
             for _ in 0..<readerCount {
                 DispatchQueue.global(qos: .utility).async(group: group) {
                     for i in 0..<readerIterations {
-                        _ = sut.toHackleUser(user: User.builder().id("r-\(i)").build())
+                        _ = sut.hackleUser(user: User.builder().id("r-\(i)").build())
                         _ = sut.currentUser
-                        _ = sut.resolve(user: nil, hackleAppContext: .default)
+                        _ = sut.hackleUser()
                     }
                 }
             }

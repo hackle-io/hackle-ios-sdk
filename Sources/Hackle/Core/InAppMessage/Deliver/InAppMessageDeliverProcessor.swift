@@ -1,7 +1,7 @@
 import Foundation
 
 protocol InAppMessageDeliverProcessor {
-    func process(request: InAppMessageDeliverRequest) -> InAppMessageDeliverResponse
+    func process(request: InAppMessageDeliverRequest) async -> InAppMessageDeliverResponse
 }
 
 class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
@@ -26,11 +26,11 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         self.presentProcessor = presentProcessor
     }
 
-    func process(request: InAppMessageDeliverRequest) -> InAppMessageDeliverResponse {
+    func process(request: InAppMessageDeliverRequest) async -> InAppMessageDeliverResponse {
         Log.debug("InAppMessage Deliver Request: \(request)")
 
         do {
-            let response = try deliver(request: request)
+            let response = try await deliver(request: request)
             Log.debug("InAppMessage Deliver Response: \(response)")
             return response
         } catch {
@@ -39,10 +39,10 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         }
     }
 
-    private func deliver(request: InAppMessageDeliverRequest) throws -> InAppMessageDeliverResponse {
+    private func deliver(request: InAppMessageDeliverRequest) async throws -> InAppMessageDeliverResponse {
 
         // check User
-        let user = userManager.resolve(user: nil, hackleAppContext: .default)
+        let user = userManager.hackleUser()
             .decorateWith(docorator: userDecoreator)
 
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: request.identifiers, new: user.identifiers)
@@ -51,7 +51,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         }
 
         // evaluate (dedup + re-evaluate)
-        let response = try evaluator.evaluate(request: request, user: user)
+        let response = try await evaluator.evaluate(request: request, user: user)
         return try resolve(request: request, user: user, response: response)
     }
 
@@ -70,9 +70,8 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
         let presentRequest = InAppMessagePresentRequest.of(
             request: request,
-            inAppMessage: evaluation.eligibility.inAppMessage,
             user: user,
-            deliverEvaluation: evaluation
+            evaluation: evaluation
         )
         let presentResponse = try presentProcessor.process(request: presentRequest)
 

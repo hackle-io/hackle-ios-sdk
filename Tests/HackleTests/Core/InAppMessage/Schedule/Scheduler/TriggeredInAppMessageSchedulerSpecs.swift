@@ -3,7 +3,7 @@ import Quick
 import Nimble
 @testable import Hackle
 
-class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
+class TriggeredInAppMessageSchedulerSpecs: AsyncSpec {
     override class func spec() {
 
         var deliverProcessor: MockInAppMessageDeliverProcessor!
@@ -33,7 +33,7 @@ class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
                 every(deliverProcessor.processMock).returns(deliverResponse)
 
                 // when
-                let actual = try sut.schedule(action: .deliver, request: request)
+                let actual = try await sut.schedule(action: .deliver, request: request)
 
                 // then
                 expect(actual.code) == .deliver
@@ -49,7 +49,7 @@ class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
                 every(delayManager.registerAndDelayMock).returns(delay)
 
                 // when
-                let actual = try sut.schedule(action: .delay, request: request)
+                let actual = try await sut.schedule(action: .delay, request: request)
 
                 // then
                 expect(actual.code) == .delay
@@ -63,7 +63,7 @@ class TriggeredInAppMessageSchedulerSpecs: QuickSpec {
                 let request = InAppMessageEntity.scheduleRequest()
 
                 // when
-                let actual = try sut.schedule(action: .ignore, request: request)
+                let actual = try await sut.schedule(action: .ignore, request: request)
 
                 // then
                 expect(actual.code) == .ignore

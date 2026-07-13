@@ -3,20 +3,14 @@ import Foundation
 class InAppMessageDeliverLocalEvaluator: InAppMessageDeliverEvaluator {
 
     private let workspaceFetcher: WorkspaceConfigFetcher
-    private let layoutResolver: InAppMessageLayoutResolver
-    private let evaluateProcessor: InAppMessageEvaluateProcessor
+    private let evaluateProcessor: EvaluateProcessor
 
-    init(
-        workspaceFetcher: WorkspaceConfigFetcher,
-        layoutResolver: InAppMessageLayoutResolver,
-        evaluateProcessor: InAppMessageEvaluateProcessor
-    ) {
+    init(workspaceFetcher: WorkspaceConfigFetcher, evaluateProcessor: EvaluateProcessor) {
         self.workspaceFetcher = workspaceFetcher
-        self.layoutResolver = layoutResolver
         self.evaluateProcessor = evaluateProcessor
     }
 
-    func evaluate(request: InAppMessageDeliverRequest, user: HackleUser) throws -> InAppMessageDeliverEvaluateResponse {
+    func evaluate(request: InAppMessageDeliverRequest, user: HackleUser) async throws -> InAppMessageDeliverEvaluateResponse {
 
         // check Workspace
         guard let workspace = workspaceFetcher.workspace(user: user) else {
@@ -29,20 +23,12 @@ class InAppMessageDeliverLocalEvaluator: InAppMessageDeliverEvaluator {
         }
 
         // resolve layout
-        let layout = try layoutResolver.resolve(workspace: workspace, inAppMessage: inAppMessage, user: user)
+        let layout = try evaluateProcessor.layout(workspace: workspace, inAppMessage: inAppMessage, user: user, scope: .deliver)
 
         // check Evaluation (re-evaluate + dedup)
-        let eligibilityRequest = InAppMessageEligibilityLocalEvaluateRequest.of(
-            workspace: workspace,
-            inAppMessage: inAppMessage,
-            user: user,
-            scope: .deliver,
-            platformType: .ios,
-            timestamp: request.requestedAt
-        )
-        let eligibility = try evaluateProcessor.process(type: .deliver, request: eligibilityRequest)
+        let eligibility = try evaluateProcessor.eligibility(workspace: workspace, inAppMessage: inAppMessage, user: user, scope: .deliver, timestamp: request.requestedAt)
 
-        let evaluation = InAppMessageDeliverEvaluation(eligibility: eligibility, layout: layout)
+        let evaluation = InAppMessageDeliverEvaluation(eligibility: eligibility.eligibilityEvaluation, layout: layout)
         return InAppMessageDeliverEvaluateResponse.of(evaluation: evaluation)
     }
 }

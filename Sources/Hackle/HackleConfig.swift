@@ -17,7 +17,8 @@ public final class HackleConfig: NSObject, Sendable {
     let apiUrl: URL
     let monitoringUrl: URL
     let monitoringEnabled: Bool
-    let mode: HackleAppMode
+    let appMode: HackleAppMode
+    let evaluationMode: EvaluationMode
     let automaticScreenTracking: Bool
     let automaticAppLifecycleTracking: Bool
     let sessionTracking: Bool
@@ -35,10 +36,11 @@ public final class HackleConfig: NSObject, Sendable {
         apiUrl = builder.apiUrl
         monitoringUrl = builder.monitoringUrl
         monitoringEnabled = builder.monitoringEnabled
-        mode = builder.mode
+        appMode = builder.appMode
+        evaluationMode = builder.evaluationMode
         automaticScreenTracking = builder.automaticScreenTracking
         automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
-        sessionTracking = (mode == .native && builder.sessionTracking)
+        sessionTracking = (appMode == .native && builder.sessionTracking)
         sessionPolicy = builder.sessionPolicy
         pollingInterval = builder.pollingInterval
         eventFlushInterval = builder.eventFlushInterval
@@ -86,7 +88,8 @@ public class HackleConfigBuilder: NSObject {
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
     var monitoringEnabled: Bool = true
 
-    var mode: HackleAppMode = .native
+    var appMode: HackleAppMode = .native
+    var evaluationMode: EvaluationMode = .local
 
     var automaticScreenTracking: Bool = true
     var automaticAppLifecycleTracking: Bool = true
@@ -155,7 +158,16 @@ public class HackleConfigBuilder: NSObject {
     /// - Parameter mode: The ``HackleAppMode`` to use
     /// - Returns: This builder instance for method chaining
     @objc public func mode(_ mode: HackleAppMode) -> HackleConfigBuilder {
-        self.mode = mode
+        self.appMode = mode
+        return self
+    }
+
+    /// Sets the evaluation mode.
+    ///
+    /// - Parameter evaluationMode: The ``EvaluationMode`` to use
+    /// - Returns: This builder instance for method chaining
+    @objc(evaluationMode:) public func mode(_ evaluationMode: EvaluationMode) -> HackleConfigBuilder {
+        self.evaluationMode = evaluationMode
         return self
     }
 

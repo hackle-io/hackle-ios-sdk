@@ -43,8 +43,8 @@ class HackleAppSpecs: QuickSpec {
                 core: core,
                 userManager: userManager,
                 pushTokenManager: MockPushTokenManager(),
-                abTestOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                featureFlagOverrideStorage: HackleUserManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
+                abTestOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
+                featureFlagOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
                 devToolsAPI: MockDevToolsAPI()
             )
             inAppMessageUI = makeInAppMessageUI(core: core)
@@ -99,11 +99,10 @@ class HackleAppSpecs: QuickSpec {
                         done()
                     }
                 }
+                // Task 11: mutator가 sync 책임을 흡수해 async가 되며 syncIfNeeded(updated:)가 프로토콜에서 삭제됨.
+                // setUserMock 호출 완료(waitUntil로 대기)가 곧 update+sync 완료를 의미한다.
                 verify(exactly: 1) {
                     userManager.setUserMock
-                }
-                verify(exactly: 1) {
-                    userManager.syncIfNeededMock
                 }
                 expect(userManager.setUserMock.firstInvokation().arguments).to(beIdenticalTo(user))
             }
@@ -120,10 +119,14 @@ class HackleAppSpecs: QuickSpec {
                 expect(count) == 1
             }
 
+            // 동기 프리픽스 회귀 가드: HackleAppCore.setUser는 userManager.setUser(user:)를 forward하고,
+            // mutation은 userManager 내부에서 동기적으로 끝난다. 따라서 completion(네트워크 sync)을 기다리지 않아도
+            // sut.setUser 반환 즉시 유저 갱신이 보인다.
+            // 구 형태(`Task { await userManager.setUser }`)에서는 mutation이 Task로 지연되어 이 단언이 깨진다.
             it("setUser 반환 시점에 유저 갱신이 이미 완료된다 (동기 프리픽스)") {
                 let user = User.builder().id("sync-prefix").build()
                 sut.setUser(user: user, completion: {})
-                // completion 대기 없이 즉시 확인 — mutation은 동기
+                // completion 대기 없이 즉시 확인 — mutation은 동기 프리픽스
                 expect(userManager.currentUser.id) == "sync-prefix"
             }
         }
@@ -137,9 +140,6 @@ class HackleAppSpecs: QuickSpec {
                 }
                 verify(exactly: 1) {
                     userManager.setUserIdMock
-                }
-                verify(exactly: 1) {
-                    userManager.syncIfNeededMock
                 }
                 expect(userManager.setUserIdMock.firstInvokation().arguments) == "user_id"
             }
@@ -165,9 +165,6 @@ class HackleAppSpecs: QuickSpec {
                 }
                 verify(exactly: 1) {
                     userManager.setDeviceIdMock
-                }
-                verify(exactly: 1) {
-                    userManager.syncIfNeededMock
                 }
                 expect(userManager.setDeviceIdMock.firstInvokation().arguments) == "device_id"
             }
@@ -197,9 +194,6 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 0) {
                     core.trackMock
                 }
-                verify(exactly: 1) {
-                    userManager.syncIfNeededMock
-                }
             }
             it("completion") {
                 var count = 0
@@ -215,7 +209,13 @@ class HackleAppSpecs: QuickSpec {
 
         describe("setUserProperty") {
             it("update properties") {
-                sut.setUserProperty(key: "age", value: 42) {}
+                // Task 11: updateUserProperties가 Task<Void, Never>를 반환하도록 바뀌며(LOCKED — user-confirmed)
+                // completion이 Task 완료 후 completionQueue로 재디스패치된다. mutator 호출도 이제 completion 이후에만 보장된다.
+                waitUntil { done in
+                    sut.setUserProperty(key: "age", value: 42) {
+                        done()
+                    }
+                }
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
                 }
@@ -225,16 +225,16 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 0) {
                     eventProcessor.flushMock
                 }
-                verify(exactly: 0) {
-                    userManager.syncIfNeededMock
-                }
                 expect(userManager.updatePropertiesMock.firstInvokation().arguments.asDictionary()[.set] as? [String: Int]) == ["age": 42]
             }
 
             it("completion") {
                 var count = 0
-                sut.setUserProperty(key: "age", value: 42) {
-                    count += 1
+                waitUntil { done in
+                    sut.setUserProperty(key: "age", value: 42) {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
@@ -242,7 +242,11 @@ class HackleAppSpecs: QuickSpec {
 
         describe("updateUserProperties") {
             it("update properties") {
-                sut.updateUserProperties(operations: PropertyOperations.builder().set("age", 42).build()) {}
+                waitUntil { done in
+                    sut.updateUserProperties(operations: PropertyOperations.builder().set("age", 42).build()) {
+                        done()
+                    }
+                }
                 verify(exactly: 1) {
                     userManager.updatePropertiesMock
                 }
@@ -252,25 +256,29 @@ class HackleAppSpecs: QuickSpec {
                 verify(exactly: 0) {
                     eventProcessor.flushMock
                 }
-                verify(exactly: 0) {
-                    userManager.syncIfNeededMock
-                }
             }
 
             it("completion") {
                 var count = 0
-                sut.updateUserProperties(operations: PropertyOperations.builder().set("age", 42).build()) {
-                    count += 1
+                waitUntil { done in
+                    sut.updateUserProperties(operations: PropertyOperations.builder().set("age", 42).build()) {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
 
-            it("updateUserProperties completion은 동기 인라인으로 호출된다") {
+            // Task 11 LOCKED divergence(user-confirmed): updateUserProperties -> Task<Void, Never>로 바뀌며
+            // completion이 completionQueue로 재디스패치된다. 이전의 "동기 인라인" 계약은 의도적으로 소실되었다.
+            it("updateUserProperties completion은 Task 완료 후 비동기로 호출된다 (동기 인라인 계약 소실)") {
                 var called = false
-                sut.updateUserProperties(operations: PropertyOperations.builder().set("k", "v").build()) {
-                    called = true
+                waitUntil { done in
+                    sut.updateUserProperties(operations: PropertyOperations.builder().set("k", "v").build()) {
+                        called = true
+                        done()
+                    }
                 }
-                // 대기 없이 즉시 true — 현행 동기 인라인 계약 보존
                 expect(called) == true
             }
         }
@@ -303,7 +311,7 @@ class HackleAppSpecs: QuickSpec {
             it("variation") {
                 // given
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                every(userManager.resolveMock).returns(hackleUser)
+                every(userManager.hackleUserMock).returns(hackleUser)
 
                 let decision = Decision.of(experiment: nil, variation: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
                 every(core.experimentMock).returns(decision)
@@ -313,14 +321,14 @@ class HackleAppSpecs: QuickSpec {
 
                 // then
                 expect(actual) == "B"
-                expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
             }
 
             describe("variationDetail") {
                 it("success") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                    every(userManager.resolveMock).returns(hackleUser)
+                    every(userManager.hackleUserMock).returns(hackleUser)
 
                     let decision = Decision.of(experiment: nil, variation: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
                     every(core.experimentMock).returns(decision)
@@ -330,13 +338,13 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual).to(beIdenticalTo(decision))
-                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                    expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
 
                 it("error") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                    every(userManager.resolveMock).returns(hackleUser)
+                    every(userManager.hackleUserMock).returns(hackleUser)
 
                     every(core.experimentMock).willThrow(HackleError.error("fail"))
 
@@ -346,7 +354,7 @@ class HackleAppSpecs: QuickSpec {
                     // then
                     expect(actual.variation) == "A"
                     expect(actual.reason) == DecisionReason.EXCEPTION
-                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                    expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
             }
 
@@ -354,7 +362,7 @@ class HackleAppSpecs: QuickSpec {
                 it("success") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                    every(userManager.resolveMock).returns(hackleUser)
+                    every(userManager.hackleUserMock).returns(hackleUser)
 
                     let experiment = MockExperiment(id: 1, key: 42)
                     let decision = Decision.of(experiment: experiment, variation: "B", reason: DecisionReason.TRAFFIC_ALLOCATED)
@@ -366,13 +374,13 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual[42]).to(beIdenticalTo(decision))
-                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                    expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
 
                 it("error") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                    every(userManager.resolveMock).returns(hackleUser)
+                    every(userManager.hackleUserMock).returns(hackleUser)
 
                     every(core.experimentsMock).willThrow(HackleError.error("fail"))
 
@@ -381,7 +389,7 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual.count) == 0
-                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                    expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
             }
         }
@@ -390,7 +398,7 @@ class HackleAppSpecs: QuickSpec {
             it("isFeatureOn") {
                 // given
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                every(userManager.resolveMock).returns(hackleUser)
+                every(userManager.hackleUserMock).returns(hackleUser)
 
                 let decision = FeatureFlagDecision.on(featureFlag: nil, reason: DecisionReason.DEFAULT_RULE)
                 every(core.featureFlagMock).returns(decision)
@@ -400,14 +408,14 @@ class HackleAppSpecs: QuickSpec {
 
                 // then
                 expect(actual) == true
-                expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
             }
 
             describe("featureFlagDetail") {
                 it("success") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                    every(userManager.resolveMock).returns(hackleUser)
+                    every(userManager.hackleUserMock).returns(hackleUser)
 
                     let decision = FeatureFlagDecision.on(featureFlag: nil, reason: DecisionReason.DEFAULT_RULE)
                     every(core.featureFlagMock).returns(decision)
@@ -417,13 +425,13 @@ class HackleAppSpecs: QuickSpec {
 
                     // then
                     expect(actual).to(beIdenticalTo(decision))
-                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                    expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
 
                 it("error") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                    every(userManager.resolveMock).returns(hackleUser)
+                    every(userManager.hackleUserMock).returns(hackleUser)
 
                     every(core.featureFlagMock).willThrow(HackleError.error("fail"))
 
@@ -433,7 +441,7 @@ class HackleAppSpecs: QuickSpec {
                     // then
                     expect(actual.isOn) == false
                     expect(actual.reason) == DecisionReason.EXCEPTION
-                    expect(userManager.resolveMock.firstInvokation().arguments.0).to(beNil())
+                    expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
             }
         }
@@ -442,7 +450,7 @@ class HackleAppSpecs: QuickSpec {
             it("eventKey") {
                 // given
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                every(userManager.resolveMock).returns(hackleUser)
+                every(userManager.hackleUserMock).returns(hackleUser)
 
                 // when
                 sut.track(eventKey: "42")
@@ -456,7 +464,7 @@ class HackleAppSpecs: QuickSpec {
             it("event") {
                 // given
                 let hackleUser = HackleUser.builder().identifier("$id", "42").build()
-                every(userManager.resolveMock).returns(hackleUser)
+                every(userManager.hackleUserMock).returns(hackleUser)
                 let event = Event.builder("42").build()
 
                 // when
@@ -620,91 +628,6 @@ class HackleAppSpecs: QuickSpec {
                         done()
                     }
                 }
-            }
-        }
-
-        describe("DEPRECATED") {
-            describe("experiment") {
-                beforeEach {
-                    every(core.experimentMock).returns(Decision.of(experiment: nil, variation: "B", reason: DecisionReason.TRAFFIC_ALLOCATED))
-                    every(core.experimentsMock).returns([])
-                }
-
-                it("variation - userId") {
-                    expect(sut.variation(experimentKey: 42, userId: "user_id")) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("variation - user") {
-                    let user = User.builder().id("user_id").build()
-                    expect(sut.variation(experimentKey: 42, user: user)) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("variationDetail - userId") {
-                    expect(sut.variationDetail(experimentKey: 42, userId: "user_id").variation) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("variationDetail - user") {
-                    let user = User.builder().id("user_id").build()
-                    expect(sut.variationDetail(experimentKey: 42, user: user).variation) == "B"
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("allVariationDetails") {
-                    let user = User.builder().id("user_id").build()
-                    expect(sut.allVariationDetails(user: user).count) == 0
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-            }
-            describe("feature flag") {
-                beforeEach {
-                    every(core.featureFlagMock).returns(FeatureFlagDecision.on(featureFlag: nil, reason: DecisionReason.DEFAULT_RULE))
-                }
-
-                it("isFeatureOn - userId") {
-                    expect(sut.isFeatureOn(featureKey: 42, userId: "user_id")) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("isFeatureOn - user") {
-                    let user = User.builder().id("user_id").build()
-                    expect(sut.isFeatureOn(featureKey: 42, user: user)) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("featureFlagDetail - userId") {
-                    expect(sut.featureFlagDetail(featureKey: 42, userId: "user_id").isOn) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-
-                it("featureFlagDetail - user") {
-                    let user = User.builder().id("user_id").build()
-                    expect(sut.featureFlagDetail(featureKey: 42, user: user).isOn) == true
-                    expect(userManager.resolveMock.firstInvokation().arguments.0?.id) == "user_id"
-                }
-            }
-
-            it("track") {
-                sut.track(eventKey: "test", userId: "user_id")
-                sut.track(eventKey: "test", user: User.builder().id("user_id").build())
-                sut.track(event: Event.builder("test").build(), userId: "user_id")
-                sut.track(event: Event.builder("test").build(), user: User.builder().id("user_id").build())
-
-                verify(exactly: 4) {
-                    userManager.resolveMock
-                }
-
-                for invokation in userManager.resolveMock.invokations() {
-                    expect(invokation.arguments.0?.id) == "user_id"
-                }
-            }
-
-            it("remoteConfig") {
-                let user = User.builder().id("user_id").build()
-                let actual = sut.remoteConfig(user: user)
-                expect(actual).to(beAnInstanceOf(DefaultRemoteConfig.self))
             }
         }
     }

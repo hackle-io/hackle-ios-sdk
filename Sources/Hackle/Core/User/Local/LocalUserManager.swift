@@ -56,22 +56,11 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     // HackleUser resolve
 
-    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser {
-        guard let user else {
-            return toHackleUser(context: currentContext, hackleAppContext: hackleAppContext)
-        }
-
-        let context = recursiveLock.lock {
-            updateUser(user: user)
-        }
-        return toHackleUser(context: context.current, hackleAppContext: hackleAppContext)
-    }
-
-    func toHackleUser(user: User) -> HackleUser {
+    func hackleUser(user: User, appContext: HackleAppContext) -> HackleUser {
         let context = recursiveLock.lock {
             self.context.with(user: user)
         }
-        return toHackleUser(context: context, hackleAppContext: .default)
+        return toHackleUser(context: context, hackleAppContext: appContext)
     }
 
     private func toHackleUser(context: LocalUserContext, hackleAppContext: HackleAppContext) -> HackleUser {
@@ -89,7 +78,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
             .targetEvents(context.targetEvents)
             .build()
     }
-    
+
     private func hackleProperties(
         hackleAppContext: HackleAppContext, device: Device, bundleInfo: BundleInfo) -> [String: Any] {
             let hackleProperties = hackleAppContext.browserProperties
@@ -98,7 +87,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
         return hackleProperties
     }
-        
+
 
     // Sync
 
@@ -106,11 +95,11 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         await sync(user: currentUser, shouldSyncCohort: true, shouldSyncTargetEvent: true)
     }
 
-    func syncIfNeeded(updated: Updated<User>) async {
+    private func syncIfNeeded(updated: UserUpdated<LocalUserContext>) async {
         await sync(
-            user: updated.current,
-            shouldSyncCohort: hasNewIdentifiers(previousUser: updated.previous, currentUser: updated.current),
-            shouldSyncTargetEvent: !updated.previous.identifierEquals(other: updated.current)
+            user: updated.new.user,
+            shouldSyncCohort: hasNewIdentifiers(previousUser: updated.old.user, currentUser: updated.new.user),
+            shouldSyncTargetEvent: !updated.old.user.identifierEquals(other: updated.new.user)
         )
     }
 
@@ -158,57 +147,55 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     // User update
 
-    func setUser(user: User) -> Updated<User> {
-        recursiveLock.lock {
-            updateUser(user: user).map { it in
-                it.user
-            }
+    // android LocalUserManager.update: `val updated = updateContext(update); return syncIfNeeded(updated)`.
+    // mutation(updateContext)은 lock 안에서 동기적으로 끝난 뒤(= 동기 프리픽스), 네트워크 sync만 Task로 반환한다.
+    func setUser(user: User) -> Task<Void, Never> {
+        let updated = recursiveLock.lock {
+            updateUser(user: user)
         }
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func setUserId(userId: String?) -> Updated<User> {
-        recursiveLock.lock {
-            updateUser(user: context.user.toBuilder().userId(userId).build()).map { it in
-                it.user
-            }
+    func setUserId(userId: String?) -> Task<Void, Never> {
+        let updated = recursiveLock.lock {
+            updateUser(user: context.user.toBuilder().userId(userId).build())
         }
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func setDeviceId(deviceId: String) -> Updated<User> {
-        recursiveLock.lock {
-            updateUser(user: context.user.toBuilder().deviceId(deviceId).build()).map { it in
-                it.user
-            }
+    func setDeviceId(deviceId: String) -> Task<Void, Never> {
+        let updated = recursiveLock.lock {
+            updateUser(user: context.user.toBuilder().deviceId(deviceId).build())
         }
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func resetUser() -> Updated<User> {
-        recursiveLock.lock {
-            let context = updateContext { _ in
+    // android resetUser: updateContext -> trackProperties(clearAll) -> syncIfNeeded. 앞의 두 단계는 동기 프리픽스.
+    func resetUser() -> Task<Void, Never> {
+        let updated = recursiveLock.lock {
+            let updated = updateContext { _ in
                 defaultUser
             }
-            publishPropertyOperations(user: context.current.user, operations: PropertyOperations.clearAll(), timestamp: clock.now())
-            return context.map { it in
-                it.user
-            }
+            publishPropertyOperations(user: updated.new.user, operations: PropertyOperations.clearAll(), timestamp: clock.now())
+            return updated
         }
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    func updateProperties(operations: PropertyOperations) -> Updated<User> {
-        recursiveLock.lock {
-            operateProperties(operations: operations).map { it in
-                it.user
-            }
+    func updateProperties(operations: PropertyOperations) -> Task<Void, Never> {
+        let updated = recursiveLock.lock {
+            operateProperties(operations: operations)
         }
+        return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    private func updateUser(user: User) -> Updated<LocalUserContext> {
+    private func updateUser(user: User) -> UserUpdated<LocalUserContext> {
         updateContext { currentUser in
             user.with(device: device).mergeWith(other: currentUser)
         }
     }
 
-    private func operateProperties(operations: PropertyOperations) -> Updated<LocalUserContext> {
+    private func operateProperties(operations: PropertyOperations) -> UserUpdated<LocalUserContext> {
         updateContext { currentUser in
             publishPropertyOperations(user: currentUser, operations: operations, timestamp: clock.now())
             let properties = operations.operate(base: currentUser.properties)
@@ -216,7 +203,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         }
     }
 
-    private func updateContext(updater: (User) -> User) -> Updated<LocalUserContext> {
+    private func updateContext(updater: (User) -> User) -> UserUpdated<LocalUserContext> {
         let oldContext = context
         let oldUser = oldContext.user
         let newUser = updater(oldUser)
@@ -229,7 +216,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         }
 
         saveUser(user: newUser)
-        return Updated(previous: oldContext, current: newContext)
+        return UserUpdated(old: oldContext, new: newContext)
     }
 
     private func changeUser(oldUser: User, newUser: User, timestamp: Date) {
@@ -255,11 +242,12 @@ class LocalUserManager: UserManager, @unchecked Sendable {
     }
 }
 
-extension LocalUserManager: ApplicationLifecycleListener {
+// ApplicationLifecycleListener conformance (UserManager 프로토콜이 상속)
+extension LocalUserManager {
     func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
         // nothing to do
     }
-    
+
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("UserManager.onBackground")
         saveUser(user: currentUser)

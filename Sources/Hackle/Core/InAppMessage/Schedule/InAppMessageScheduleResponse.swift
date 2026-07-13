@@ -1,6 +1,6 @@
 import Foundation
 
-class InAppMessageScheduleResponse {
+class InAppMessageScheduleResponse: @unchecked Sendable {
     let dispatchId: String
     let inAppMesasgeKey: InAppMessage.Key
     let code: Code

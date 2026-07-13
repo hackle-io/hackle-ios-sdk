@@ -1,29 +1,37 @@
 import Foundation
 
-protocol UserManager: Synchronizer {
+protocol UserManager: Synchronizer, ApplicationLifecycleListener {
 
     var currentUser: User { get }
 
     func initialize(user: User?)
 
-    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser
+    func hackleUser(user: User, appContext: HackleAppContext) -> HackleUser
 
-    func toHackleUser(user: User) -> HackleUser
+    func setUser(user: User) -> Task<Void, Never>
 
-    @discardableResult
-    func setUser(user: User) -> Updated<User>
+    func resetUser() -> Task<Void, Never>
 
-    @discardableResult
-    func setUserId(userId: String?) -> Updated<User>
+    func setUserId(userId: String?) -> Task<Void, Never>
 
-    @discardableResult
-    func setDeviceId(deviceId: String) -> Updated<User>
+    func setDeviceId(deviceId: String) -> Task<Void, Never>
 
-    @discardableResult
-    func updateProperties(operations: PropertyOperations) -> Updated<User>
+    func updateProperties(operations: PropertyOperations) -> Task<Void, Never>
 
-    @discardableResult
-    func resetUser() -> Updated<User>
+    func addListener(listener: UserListener)
+}
 
-    func syncIfNeeded(updated: Updated<User>) async
+// Kotlin 기본 인자 대응 (D7)
+extension UserManager {
+    func hackleUser() -> HackleUser {
+        hackleUser(user: currentUser, appContext: .default)
+    }
+
+    func hackleUser(user: User) -> HackleUser {
+        hackleUser(user: user, appContext: .default)
+    }
+
+    func hackleUser(appContext: HackleAppContext) -> HackleUser {
+        hackleUser(user: currentUser, appContext: appContext)
+    }
 }

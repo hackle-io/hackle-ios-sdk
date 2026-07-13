@@ -4,107 +4,80 @@ import Quick
 
 @testable import Hackle
 
-class InAppMessageDeliverLocalEvaluatorSpecs: QuickSpec {
+class InAppMessageDeliverLocalEvaluatorSpecs: AsyncSpec {
     override class func spec() {
 
         var workspaceFetcher: MockWorkspaceConfigFetcher!
-        var layoutResolver: MockInAppMessageLayoutResolver!
-        var evaluateProcessor: MockInAppMessageEvaluateProcessor!
         var sut: InAppMessageDeliverLocalEvaluator!
 
         beforeEach {
             workspaceFetcher = MockWorkspaceConfigFetcher()
-            layoutResolver = MockInAppMessageLayoutResolver()
-            evaluateProcessor = MockInAppMessageEvaluateProcessor()
-            sut = InAppMessageDeliverLocalEvaluator(
-                workspaceFetcher: workspaceFetcher,
-                layoutResolver: layoutResolver,
-                evaluateProcessor: evaluateProcessor
+            let evaluateProcessor = EvaluateProcessor.create(
+                context: HackleCoreContext(),
+                clock: SystemClock.shared,
+                eventProcessor: MockUserEventProcessor(),
+                overrideStorage: DelegatingManualOverrideStorage(storages: []),
+                impressionStorage: DefaultInAppMessageImpressionStorage.create(suiteName: "iam_local_deliver_impression"),
+                hiddenStorage: DefaultInAppMessageHiddenStorage.create(suiteName: "iam_local_deliver_hidden")
             )
+            sut = InAppMessageDeliverLocalEvaluator(workspaceFetcher: workspaceFetcher, evaluateProcessor: evaluateProcessor)
         }
 
-        it("workspaceNotFound") {
+        it("workspace 없음 -> workspaceNotFound") {
             // given
             every(workspaceFetcher.workspaceMock).returns(nil)
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == false
             expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
         }
 
-        it("inAppMessageNotFound") {
+        it("workspace에 해당 key IAM 없음 -> inAppMessageNotFound") {
             // given
             every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create())
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == false
             expect(actual.code) == InAppMessageDeliverResponse.Code.inAppMessageNotFound
         }
 
-        it("ineligible") {
+        it("정상(활성 IAM 픽스처) -> evaluation(eligibility+layout) 포함한 eligible 응답") {
             // given
             let inAppMessage = InAppMessageEntity.create(key: 42)
             every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
-            every(layoutResolver.resolveMock).returns(InAppMessageEntity.layoutEvaluateResponse())
-            every(evaluateProcessor.processMock).returns(InAppMessageEntity.eligibilityEvaluation(isEligible: false))
 
             // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
-
-            // then
-            expect(actual.isEligible) == false
-            expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
-        }
-
-        it("eligible -> evaluation(layout+eligibility) 반환") {
-            // given
-            let inAppMessage = InAppMessageEntity.create(key: 42)
-            every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
-            let layout = InAppMessageEntity.layoutEvaluateResponse()
-            every(layoutResolver.resolveMock).returns(layout)
-            every(evaluateProcessor.processMock).returns(InAppMessageEntity.eligibilityEvaluation(isEligible: true))
-
-            // when
-            let actual = try sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
 
             // then
             expect(actual.isEligible) == true
             expect(actual.code).to(beNil())
-            expect(actual.evaluation?.layout).to(beIdenticalTo(layout))
+            expect(actual.evaluation?.eligibility.eligibilityResult.isEligible) == true
+            expect(actual.evaluation?.layout.layoutEvaluation.layoutResult.message).toNot(beNil())
         }
 
-        it("evaluate는 workspaceFetcher/layoutResolver/evaluateProcessor에 위임한다 (seam 경유 동작 불변 회귀)") {
+        it("ineligible IAM(draft, atDeliverTime 재평가) -> ineligible 응답 (evaluation nil)") {
             // given
-            let inAppMessage = InAppMessageEntity.create(key: 99)
-            let request = InAppMessageEntity.deliverRequest(inAppMessageKey: 99)
-            let user = HackleUser.of(userId: "regression-user")
+            let inAppMessage = InAppMessageEntity.create(
+                key: 42,
+                status: .draft,
+                evaluateContext: InAppMessageEntity.evaluateContext(atDeliverTime: true)
+            )
             every(workspaceFetcher.workspaceMock).returns(DefaultWorkspaceConfig.create(inAppMessages: [inAppMessage]))
-            let layout = InAppMessageEntity.layoutEvaluateResponse()
-            every(layoutResolver.resolveMock).returns(layout)
-            let eligibility = InAppMessageEntity.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibility)
 
             // when
-            let actual = try sut.evaluate(request: request, user: user)
+            let actual = try await sut.evaluate(request: InAppMessageEntity.deliverRequest(inAppMessageKey: 42), user: HackleUser.of(userId: "u"))
 
             // then
-            verify(exactly: 1) {
-                workspaceFetcher.workspaceMock
-            }
-            verify(exactly: 1) {
-                layoutResolver.resolveMock
-            }
-            verify(exactly: 1) {
-                evaluateProcessor.processMock
-            }
-            expect(actual.evaluation?.eligibility).to(beIdenticalTo(eligibility))
-            expect(actual.evaluation?.layout).to(beIdenticalTo(layout))
+            expect(actual.isEligible) == false
+            expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
+            expect(actual.evaluation).to(beNil())
         }
     }
 }

@@ -1,109 +1,85 @@
 import Foundation
-import Quick
-import Nimble
+import UIKit
 import MockingKit
 @testable import Hackle
 
-class MockUserManager: Mock, UserManager {
+class MockUserManager: Mock, UserManager, @unchecked Sendable {
 
     var currentUser: User
+    var lastHackleAppContext: HackleAppContext? = nil
 
     init(currentUser: User = HackleUserBuilder().build()) {
         self.currentUser = currentUser
         super.init()
 
-        every(setUserMock).answers { user in
-            let previous = self.currentUser
-            self.currentUser = user
-            return Updated(previous: previous, current: user)
-        }
-        every(setUserIdMock).answers { userId in
-            let user = self.currentUser.toBuilder().userId(userId).build()
-            let previous = self.currentUser
-            self.currentUser = user
-            return Updated(previous: previous, current: user)
-        }
-
-        every(setDeviceIdMock).answers { deviceId in
-            let user = self.currentUser.toBuilder().deviceId(deviceId).build()
-            let previous = self.currentUser
-            self.currentUser = user
-            return Updated(previous: previous, current: user)
-        }
-
-        every(updatePropertiesMock).answers { operations in
-            let user = self.currentUser.toBuilder().properties(operations.operate(base: [:])).build()
-            let previous = self.currentUser
-            self.currentUser = user
-            return Updated(previous: previous, current: user)
-        }
-
-        every(resetUserMock).answers {
-            let user = User.builder().build()
-            let previous = self.currentUser
-            self.currentUser = user
-            return Updated(previous: previous, current: user)
-        }
-
-        every(resolveMock).answers { user, hackleAppContext in
-            HackleUser.of(user: user ?? self.currentUser, hackleProperties: [:])
+        every(hackleUserMock).answers { user, hackleAppContext in
+            HackleUser.of(user: user, hackleProperties: [:])
                 .toBuilder()
                 .hackleProperties(hackleAppContext.browserProperties)
                 .build()
         }
+    }
 
-        every(syncIfNeededMock).answers { _ in }
-        every(syncMock).answers { _ in }
+    func addListener(listener: UserListener) {
     }
 
     lazy var initializeMock = MockFunction(self, initialize)
-
     func initialize(user: User?) {
         call(initializeMock, args: user)
     }
 
-    lazy var resolveMock = MockFunction(self, resolve)
-    var lastHackleAppContext: HackleAppContext?
-
-    func resolve(user: User?, hackleAppContext: HackleAppContext) -> HackleUser {
-        lastHackleAppContext = hackleAppContext
-        return call(resolveMock, args: (user, hackleAppContext))
+    // 기본 동작: 현재 유저 기반 HackleUser 반환 (기존 resolveMock 기본값과 동일하게 HackleUser.of 사용)
+    lazy var hackleUserMock = MockFunction(self, hackleUser as (User, HackleAppContext) -> HackleUser)
+    func hackleUser(user: User, appContext: HackleAppContext) -> HackleUser {
+        lastHackleAppContext = appContext
+        return call(hackleUserMock, args: (user, appContext))
     }
 
-    lazy var toHackleUserMock = MockFunction(self, toHackleUser)
-
-    func toHackleUser(user: User) -> HackleUser {
-        call(toHackleUserMock, args: user)
+    // mutator는 mutation을 동기적으로 수행(currentUser 갱신 + call)한 뒤 네트워크 sync용 Task를 반환한다.
+    // 동기 프리픽스 계약을 반영 — 반환된 Task를 await하지 않아도 currentUser는 즉시 갱신된다.
+    lazy var setUserMock = MockFunction(self, setUserStub)
+    private func setUserStub(user: User) {
     }
-
-    lazy var setUserMock = MockFunction(self, setUser)
-
-    func setUser(user: User) -> Updated<User> {
+    func setUser(user: User) -> Task<Void, Never> {
+        currentUser = user
         call(setUserMock, args: user)
+        return Task {}
     }
 
-    lazy var setUserIdMock = MockFunction(self, setUserId)
-
-    func setUserId(userId: String?) -> Updated<User> {
+    lazy var setUserIdMock = MockFunction(self, setUserIdStub)
+    private func setUserIdStub(userId: String?) {
+    }
+    func setUserId(userId: String?) -> Task<Void, Never> {
+        currentUser = currentUser.toBuilder().userId(userId).build()
         call(setUserIdMock, args: userId)
+        return Task {}
     }
 
-    lazy var setDeviceIdMock = MockFunction(self, setDeviceId)
-
-    func setDeviceId(deviceId: String) -> Updated<User> {
+    lazy var setDeviceIdMock = MockFunction(self, setDeviceIdStub)
+    private func setDeviceIdStub(deviceId: String) {
+    }
+    func setDeviceId(deviceId: String) -> Task<Void, Never> {
+        currentUser = currentUser.toBuilder().deviceId(deviceId).build()
         call(setDeviceIdMock, args: deviceId)
+        return Task {}
     }
 
-    lazy var updatePropertiesMock = MockFunction(self, updateProperties)
-
-    func updateProperties(operations: PropertyOperations) -> Updated<User> {
-        call(updatePropertiesMock, args: operations)
+    lazy var resetUserMock = MockFunction(self, resetUserStub)
+    private func resetUserStub() {
     }
-
-    lazy var resetUserMock = MockFunction(self, resetUser)
-
-    func resetUser() -> Updated<User> {
+    func resetUser() -> Task<Void, Never> {
+        currentUser = User.builder().build()
         call(resetUserMock, args: ())
+        return Task {}
+    }
+
+    lazy var updatePropertiesMock = MockFunction(self, updatePropertiesStub)
+    private func updatePropertiesStub(operations: PropertyOperations) {
+    }
+    func updateProperties(operations: PropertyOperations) -> Task<Void, Never> {
+        currentUser = currentUser.toBuilder().properties(operations.operate(base: [:])).build()
+        call(updatePropertiesMock, args: operations)
+        return Task {}
     }
 
     lazy var syncMock = MockFunction.throwable(self, syncStub)
@@ -115,12 +91,9 @@ class MockUserManager: Mock, UserManager {
         try call(syncMock, args: ())
     }
 
-    lazy var syncIfNeededMock = MockFunction(self, syncIfNeededStub)
-
-    private func syncIfNeededStub(updated: Updated<User>) {
+    func onForeground(_ topViewController: UIViewController?, timestamp: Date, isFromBackground: Bool) {
     }
 
-    func syncIfNeeded(updated: Updated<User>) async {
-        call(syncIfNeededMock, args: updated)
+    func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
     }
 }

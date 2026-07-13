@@ -51,7 +51,7 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
             it("when current token is nil then register token") {
                 // given
                 let token = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
-                every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
+                every(userManager.hackleUserMock).returns(HackleUser.of(userId: "test"))
 
                 // when
                 sut.onSessionStarted(session: Session.create(timestamp: Date()), user: User.builder().build(), timestamp: Date())
@@ -67,7 +67,7 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
             it("when current token and new token are difference then register token") {
                 // given
                 repository.putString(key: "apns_token", value: "current_token")
-                every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
+                every(userManager.hackleUserMock).returns(HackleUser.of(userId: "test"))
                 let token = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
 
                 // when
@@ -84,7 +84,7 @@ class DefaultPushTokenManagerSpecs: QuickSpec {
             it("when session not started then do not register token") {
                 // given
                 let token = PushToken(platformType: .ios, providerType: .apn, value: "new_token")
-                every(userManager.toHackleUserMock).returns(HackleUser.of(userId: "test"))
+                every(userManager.hackleUserMock).returns(HackleUser.of(userId: "test"))
 
                 // when
                 sut.onTokenRegistered(token: token, timestamp: Date())
