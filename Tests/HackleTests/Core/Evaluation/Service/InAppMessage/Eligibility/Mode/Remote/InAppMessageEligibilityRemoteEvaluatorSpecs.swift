@@ -137,6 +137,18 @@ class InAppMessageEligibilityRemoteEvaluatorSpecs: QuickSpec {
                 expect(eventRecorder.records[0] as? InAppMessageEligibilityEvaluateResponse).to(beIdenticalTo(resp))
                 expect(eventRecorder.records[1] as? InAppMessageLayoutEvaluateResponse).to(beIdenticalTo(layout))
             }
+
+            it("any Evaluator 경유(witness dispatch)에서도 eligibility 특수화 record가 선택된다") {
+                let req = request()
+                let layout = InAppMessageEntity.layoutEvaluateResponse()
+                let resp = response(isEligible: false, layout: layout)
+
+                let erased: any Evaluator = recordSut
+                erased.record(request: req, response: resp)
+
+                expect(eventRecorder.recordCount) == 2
+                expect(eventRecorder.records[1] as? InAppMessageLayoutEvaluateResponse).to(beIdenticalTo(layout))
+            }
         }
     }
 
