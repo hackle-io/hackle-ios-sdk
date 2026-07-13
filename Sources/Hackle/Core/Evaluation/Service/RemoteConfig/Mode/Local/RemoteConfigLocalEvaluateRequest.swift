@@ -13,9 +13,7 @@ final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfig
     let record: Bool
     let requiredType: HackleValueType
 
-    var workspace: Workspace { workspaceConfig }
     var parameter: RemoteConfigParameter { parameterConfig }
-    var entity: Entity { parameterConfig }
 
     private init(workspace: WorkspaceConfig, parameter: RemoteConfigParameterConfig, user: HackleUser, record: Bool, requiredType: HackleValueType) {
         self.workspaceConfig = workspace

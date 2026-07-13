@@ -6,3 +6,7 @@ protocol InAppMessageEligibilityEvaluateRequest: EvaluateRequest {
     var platformType: PlatformType { get }
     var timestamp: Date { get }
 }
+
+extension InAppMessageEligibilityEvaluateRequest {
+    var entity: Entity { inAppMessage }
+}

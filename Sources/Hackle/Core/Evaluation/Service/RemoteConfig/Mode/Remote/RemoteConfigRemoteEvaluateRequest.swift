@@ -8,8 +8,6 @@ final class RemoteConfigRemoteEvaluateRequest: RemoteEvaluateRequest, RemoteConf
     let record: Bool
     let requiredType: HackleValueType
 
-    var workspace: Workspace { evaluationWorkspace }
-    var entity: Entity { result }
     var remoteResult: RemoteEvaluateResult { result }
     var parameter: RemoteConfigParameter { result }
 

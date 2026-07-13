@@ -10,8 +10,6 @@ final class InAppMessageEligibilityLocalEvaluateRequest: LocalEvaluateRequest, I
     let platformType: PlatformType
     let timestamp: Date
 
-    var workspace: Workspace { workspaceConfig }
-    var entity: Entity { inAppMessageConfig }
     var inAppMessage: InAppMessage { inAppMessageConfig }
 
     private init(

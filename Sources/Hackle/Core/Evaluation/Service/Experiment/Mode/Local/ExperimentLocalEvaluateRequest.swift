@@ -12,8 +12,6 @@ final class ExperimentLocalEvaluateRequest: LocalEvaluateRequest, ExperimentEval
     let user: HackleUser
     let record: Bool
 
-    var workspace: Workspace { workspaceConfig }
-    var entity: Entity { experimentConfig }
     var experiment: Experiment { experimentConfig }
 
     init(workspace: WorkspaceConfig, entity: ExperimentConfig, user: HackleUser, record: Bool) {
