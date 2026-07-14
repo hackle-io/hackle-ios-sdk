@@ -14,7 +14,6 @@ struct WorkspaceEvaluateContext {
         WorkspaceEvaluateContext(platformType: .ios, user: user, operations: operations)
     }
 
-    // Kotlin 기본 인자 대응 (D7)
     static func of(user: HackleUser) -> WorkspaceEvaluateContext {
         of(user: user, operations: PropertyOperations.empty())
     }

@@ -1,6 +1,5 @@
 import Foundation
 
-// android evaluator/WorkspaceEvaluations object 대응 (model/WorkspaceEvaluations.swift와 파일명 충돌 회피 — D2)
 enum WorkspaceEvaluationMerger {
 
     private struct Key: Hashable {
@@ -50,7 +49,7 @@ enum WorkspaceEvaluationMerger {
         )
     }
 
-    // 서버가 준 metadata hash(Kotlin Int = 32비트)와 비교하므로 반드시 Int32 랩핑 산술로 계산한다.
+    // 서버 metadata hash는 32비트 정수이므로 반드시 Int32 랩핑 산술로 계산한다.
     // Swift Int(64비트)로 계산하면 오버플로 시 불일치 → 불필요한 FORCE_FULL 재요청 루프.
     static func hash(results: [EvaluateResultDto]) -> Int32 {
         var acc: Int32 = 1

@@ -2,20 +2,13 @@ import Foundation
 
 extension ExperimentEvaluateResultDto {
     func toResult(type: ExperimentType) -> ExperimentRemoteEvaluateResult {
-        let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
-        if let config = config {
-            let configuration = config.toParameterConfiguration()
-            parameterConfigurations = [configuration.id: configuration]
-        } else {
-            parameterConfigurations = [:]
-        }
         return ExperimentRemoteEvaluateResult(
             id: id,
             key: key,
             version: version,
             type: type,
             executionVersion: executionVersion,
-            variation: variation.toVariation(parameterConfigurations: parameterConfigurations),
+            variation: variation.toVariation(parameterConfiguration: config?.toParameterConfiguration()),
             reason: reason,
             references: references.compactMap { it in
                 it.toEntityOrNil()

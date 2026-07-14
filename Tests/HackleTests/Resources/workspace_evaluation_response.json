@@ -23,7 +23,12 @@
             "status": "ACTIVE",
             "parameterConfigurationId": null
           },
-          "config": null,
+          "config": {
+            "id": 9001,
+            "parameters": [
+              { "key": "button_color", "value": "blue" }
+            ]
+          },
           "reason": "TRAFFIC_ALLOCATED",
           "references": [
             { "type": "AB_TEST", "id": 100 },

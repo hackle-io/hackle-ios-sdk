@@ -174,8 +174,6 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
         }
 
         describe("scope에 맞는 evaluator가 없는 경우") {
-            // Task 8 roll-up: WorkspaceRemoteEvaluatorFactory.get(scope:) not-found throw가
-            // Task 8에는 전용 spec이 없어 Task 9 통합 테스트로 커버리지가 이연됨.
             it("sync는 factory throw도 삼키고 기존 상태를 유지한다") {
                 let noEvaluatorSut = WorkspaceEvaluationManager(
                     evaluateProcessor: WorkspaceEvaluateProcessor(

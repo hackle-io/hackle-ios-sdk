@@ -24,11 +24,5 @@ class WorkspaceEvaluationSpecs: QuickSpec {
             expect(found?.entityKey).to(equal(experiment.entityKey))
             expect(workspace.result(entity: DefaultEntity(serviceType: .abTest, id: 2))).to(beNil())
         }
-
-        it("toProperties exposes config_modified_at") {
-            let workspace = MockWorkspaceEvaluation()
-            workspace.modifiedAt = "modified"
-            expect(workspace.toProperties()["config_modified_at"] as? String).to(equal("modified"))
-        }
     }
 }

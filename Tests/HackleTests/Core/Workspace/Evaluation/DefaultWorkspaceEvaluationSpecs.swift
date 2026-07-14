@@ -75,6 +75,14 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
                 expect(result.references.count) == 1 // UNKNOWN_TYPE reference는 skip
             }
 
+            it("config가 오면 parameterConfigurationId와 무관하게 variation에 직접 부착한다") {
+                let sut = DefaultWorkspaceEvaluation.from(dto: decodeResponse().evaluation!)
+                let result = sut.getExperimentResultOrNil(experimentKey: 10)!
+
+                // 픽스처의 variation.parameterConfigurationId는 null — pcid 조회 방식이면 config가 유실된다
+                expect(result.variation.parameterConfiguration?.id) == 9001
+            }
+
             it("in-app message result의 period·evaluateContext·layout을 매핑한다") {
                 let sut = DefaultWorkspaceEvaluation.from(dto: decodeResponse().evaluation!)
                 let result = sut.getInAppMessageResultOrNil(inAppMessageKey: 40)!

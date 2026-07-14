@@ -13,6 +13,21 @@ struct WorkspaceEvaluateResponseDto: Codable {
     let status: String // FULL, DELTA, NOT_MODIFIED
     let evaluation: WorkspaceEvaluationDto?
     let deleted: [EntityDto]
+
+    private enum CodingKeys: String, CodingKey {
+        case status, evaluation, deleted
+    }
+}
+
+extension WorkspaceEvaluateResponseDto {
+    // 서버가 deleted를 생략할 수 있어(특히 NOT_MODIFIED) 누락을 관용한다.
+    // init을 extension에 두어 memberwise init을 보존한다(테스트 생성부에서 사용).
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        status = try container.decode(String.self, forKey: .status)
+        evaluation = try container.decodeIfPresent(WorkspaceEvaluationDto.self, forKey: .evaluation)
+        deleted = try container.decodeIfPresent([EntityDto].self, forKey: .deleted) ?? []
+    }
 }
 
 struct WorkspaceEvaluationDto: Codable {

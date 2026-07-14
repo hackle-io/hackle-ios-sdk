@@ -41,7 +41,7 @@ final class RemoteConfigLocalEvaluator: LocalEvaluator, RemoteConfigEvaluator {
         if request.requiredType.isInstance(value) {
             return RemoteConfigEvaluateResult.of(reason: reason, value: value)
         } else {
-            return RemoteConfigEvaluateResult.of(reason: DecisionReason.TYPE_MISMATCH, value: value)  // ★ TYPE_MISMATCH여도 value 유지 (의도된 wire 변경 ①)
+            return RemoteConfigEvaluateResult.of(reason: DecisionReason.TYPE_MISMATCH, value: value)  // TYPE_MISMATCH여도 value 유지 (의도된 wire 변경)
         }
     }
 }

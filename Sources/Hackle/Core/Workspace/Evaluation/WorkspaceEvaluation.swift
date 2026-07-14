@@ -51,10 +51,4 @@ extension WorkspaceEvaluation {
     func getInAppMessageOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessage? {
         getInAppMessageResultOrNil(inAppMessageKey: inAppMessageKey)
     }
-
-    func toProperties() -> [String: Any] {
-        PropertiesBuilder()
-            .add("config_modified_at", modifiedAt)
-            .build()
-    }
 }

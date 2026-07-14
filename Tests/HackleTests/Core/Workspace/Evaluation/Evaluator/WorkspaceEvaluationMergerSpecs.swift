@@ -105,8 +105,8 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
                 expect(WorkspaceEvaluationMerger.hash(results: a)) == WorkspaceEvaluationMerger.hash(results: b)
             }
 
-            it("Int32 랩핑 산술로 오버플로해도 크래시 없이 서버(Kotlin Int)와 같은 값을 만든다") {
-                // Kotlin: acc=1; acc=acc*31+Int.MAX_VALUE = 2147483678 → Int 오버플로 = -2147483618
+            it("Int32 랩핑 산술로 오버플로해도 크래시 없이 서버(32비트 정수)와 같은 값을 만든다") {
+                // acc=1; acc = acc*31 + Int32.max = 2147483678 → Int32 오버플로 = -2147483618
                 let results = [result(id: 1, hash: Int32.max)]
                 expect(WorkspaceEvaluationMerger.hash(results: results)) == Int32(bitPattern: 0x8000001E)
 

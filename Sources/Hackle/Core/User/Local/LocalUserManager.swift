@@ -147,7 +147,6 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     // User update
 
-    // android LocalUserManager.update: `val updated = updateContext(update); return syncIfNeeded(updated)`.
     // mutation(updateContext)은 lock 안에서 동기적으로 끝난 뒤(= 동기 프리픽스), 네트워크 sync만 Task로 반환한다.
     func setUser(user: User) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
@@ -170,7 +169,6 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         return Task { await self.syncIfNeeded(updated: updated) }
     }
 
-    // android resetUser: updateContext -> trackProperties(clearAll) -> syncIfNeeded. 앞의 두 단계는 동기 프리픽스.
     func resetUser() -> Task<Void, Never> {
         let updated = recursiveLock.lock {
             let updated = updateContext { _ in
@@ -251,13 +249,5 @@ extension LocalUserManager {
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("UserManager.onBackground")
         saveUser(user: currentUser)
-    }
-}
-
-fileprivate extension [String: Any] {
-    func append(_ new: [String: Any]) -> [String: Any] {
-        self.merging(new) {
-            (_, new) in new
-        }
     }
 }

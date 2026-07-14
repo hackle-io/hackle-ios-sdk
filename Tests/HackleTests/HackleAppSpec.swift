@@ -99,7 +99,6 @@ class HackleAppSpecs: QuickSpec {
                         done()
                     }
                 }
-                // Task 11: mutator가 sync 책임을 흡수해 async가 되며 syncIfNeeded(updated:)가 프로토콜에서 삭제됨.
                 // setUserMock 호출 완료(waitUntil로 대기)가 곧 update+sync 완료를 의미한다.
                 verify(exactly: 1) {
                     userManager.setUserMock
@@ -209,8 +208,8 @@ class HackleAppSpecs: QuickSpec {
 
         describe("setUserProperty") {
             it("update properties") {
-                // Task 11: updateUserProperties가 Task<Void, Never>를 반환하도록 바뀌며(LOCKED — user-confirmed)
-                // completion이 Task 완료 후 completionQueue로 재디스패치된다. mutator 호출도 이제 completion 이후에만 보장된다.
+                // updateUserProperties가 Task<Void, Never>를 반환하므로 completion은 Task 완료 후
+                // completionQueue로 재디스패치된다. mutator 호출도 completion 이후에만 보장된다.
                 waitUntil { done in
                     sut.setUserProperty(key: "age", value: 42) {
                         done()
@@ -269,8 +268,6 @@ class HackleAppSpecs: QuickSpec {
                 expect(count) == 1
             }
 
-            // Task 11 LOCKED divergence(user-confirmed): updateUserProperties -> Task<Void, Never>로 바뀌며
-            // completion이 completionQueue로 재디스패치된다. 이전의 "동기 인라인" 계약은 의도적으로 소실되었다.
             it("updateUserProperties completion은 Task 완료 후 비동기로 호출된다 (동기 인라인 계약 소실)") {
                 var called = false
                 waitUntil { done in

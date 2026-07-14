@@ -291,11 +291,9 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
         }
 
-        // Task 11: syncIfNeeded(updated:)가 private으로 바뀌어 mutator가 내부에서 흡수한다.
-        // BEFORE(구 계약)에는 Updated(previous:current:)를 합성해 syncIfNeeded를 직접 호출/검증했으나,
-        // AFTER(신 계약)에서는 mutator(setUserId/setDeviceId/setUser/resetUser) 호출 후 cohort/targetEvent
-        // fetch 여부로 간접 검증한다. hasNewIdentifiers(추가된 식별자 유무 → cohort)와
-        // identifierEquals(userId+deviceId 동일 여부 → targetEvent)의 분기를 각각 대표 케이스로 커버한다.
+        // syncIfNeeded가 private이라 직접 검증할 수 없으므로, mutator 호출 후 cohort/targetEvent fetch 여부로
+        // 간접 검증한다. hasNewIdentifiers(추가된 식별자 유무 → cohort)와 identifierEquals(userId+deviceId
+        // 동일 여부 → targetEvent) 분기를 각각 대표 케이스로 커버한다.
         describe("mutator 호출에 따른 cohort/targetEvent 동기화") {
             it("변경이 없으면 cohort와 targetEvent 모두 동기화하지 않는다") {
                 sut.initialize(user: User.builder().userId("user_a").deviceId("device_a").build())
@@ -393,11 +391,9 @@ class LocalUserManagerSpecs: AsyncSpec {
             }
         }
 
-        // 동기 프리픽스 회귀 가드: mutator는 mutation을 반환 전에 동기적으로 끝내고(android updateContext),
-        // 네트워크 sync만 Task<Void, Never>로 반환한다(android syncIfNeeded). 반환된 Task를 await하지 않아도
-        // currentUser/hackleUser()는 이미 변경을 반영해야 한다.
-        // 구 형태(mutator가 async이고 HackleAppCore가 `Task { await ... }`로 통째로 감싸던)에서는 mutation이
-        // Task 실행 시점까지 지연되어 이 단언이 깨진다 — "log in 후 즉시 variation 평가" 순서 회귀의 가드.
+        // 동기 프리픽스 회귀 가드: mutator는 mutation을 반환 전에 동기적으로 끝내므로, 반환된 Task를
+        // await하지 않아도 currentUser/hackleUser()는 이미 변경을 반영해야 한다. mutator가 async이던 구 형태에서는
+        // mutation이 Task 실행 시점까지 지연되어 이 단언이 깨진다 — "log in 후 즉시 variation 평가" 순서 회귀의 가드.
         describe("동기 프리픽스 (mutation before Task return)") {
             it("setUser 반환 즉시 currentUser/hackleUser가 갱신된다 (Task await 이전)") {
                 sut.initialize(user: nil)

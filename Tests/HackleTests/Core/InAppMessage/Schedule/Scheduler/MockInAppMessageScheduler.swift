@@ -9,7 +9,7 @@ class MockInAppMessageScheduler: Mock, InAppMessageScheduler {
         return call(supportMock, args: scheduleType)
     }
 
-    // MockFunction은 sync 함수 타입만 받으므로, async 프로토콜 메서드 대신 sync stub으로 참조를 만든다(MockUserManager 관례와 동일).
+    // MockFunction은 sync 함수 타입만 받으므로, async 프로토콜 메서드는 sync stub으로 참조를 만든다.
     lazy var deliverMock = MockFunction.throwable(self, deliverStub)
 
     private func deliverStub(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
