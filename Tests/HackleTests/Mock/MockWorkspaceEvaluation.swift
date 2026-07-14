@@ -34,6 +34,13 @@ class MockWorkspaceEvaluation: WorkspaceEvaluation {
         all.append(contentsOf: inAppMessageResults)
         return all.first { $0.entityKey == entity.entityKey }
     }
+
+    func toProperties() -> [String: Any] {
+        PropertiesBuilder()
+            .add("config_modified_at", modifiedAt)
+            .add("remote_evaluated_at", evaluatedAt)
+            .build()
+    }
 }
 
 class MockWorkspaceEvaluationFetcher: WorkspaceEvaluationFetcher {
