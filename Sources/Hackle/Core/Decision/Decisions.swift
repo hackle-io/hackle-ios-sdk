@@ -1,28 +1,32 @@
 import Foundation
 
-enum Decisions {
+// java-core decision/Decisions 대응 — receiver extension 형태
+extension ExperimentEvaluation {
 
-    static func toDecision(evaluation: ExperimentEvaluation) -> Decision {
-        let result = evaluation.experimentResult
+    func toDecision() -> Decision {
+        let result = experimentResult
         let config: ParameterConfig = result.variation.parameterConfiguration ?? EmptyParameterConfig.instance
         return Decision.of(
-            experiment: evaluation.experiment,
+            experiment: experiment,
             variation: result.variation.key,
             reason: result.reason,
             config: config
         )
     }
 
-    static func toFeatureFlagDecision(evaluation: ExperimentEvaluation) -> FeatureFlagDecision {
-        let result = evaluation.experimentResult
+    func toFeatureFlagDecision() -> FeatureFlagDecision {
+        let result = experimentResult
         let config: ParameterConfig = result.variation.parameterConfiguration ?? EmptyParameterConfig.instance
         return result.variation.key == "A"
-            ? FeatureFlagDecision.off(featureFlag: evaluation.experiment, reason: result.reason, config: config)
-            : FeatureFlagDecision.on(featureFlag: evaluation.experiment, reason: result.reason, config: config)
+            ? FeatureFlagDecision.off(featureFlag: experiment, reason: result.reason, config: config)
+            : FeatureFlagDecision.on(featureFlag: experiment, reason: result.reason, config: config)
     }
+}
 
-    static func toRemoteConfigDecision(evaluation: RemoteConfigEvaluation, requiredType: HackleValueType, defaultValue: HackleValue) -> RemoteConfigDecision {
-        let result = evaluation.remoteConfigResult
+extension RemoteConfigEvaluation {
+
+    func toDecision(requiredType: HackleValueType, defaultValue: HackleValue) -> RemoteConfigDecision {
+        let result = remoteConfigResult
         guard let value = result.value, let typedValue = requiredType.cast(value) else {
             return RemoteConfigDecision(value: defaultValue, reason: result.reason)
         }

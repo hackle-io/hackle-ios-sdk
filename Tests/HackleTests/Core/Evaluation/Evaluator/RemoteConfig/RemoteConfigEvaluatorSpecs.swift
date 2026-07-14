@@ -202,7 +202,7 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                 expect(rcEvent.valueId) == 77
 
                 // then: 사용자에게 반환되는 값은 여전히 defaultValue (타입 불일치이므로)
-                expect(Decisions.toRemoteConfigDecision(evaluation: actual, requiredType: .string, defaultValue: .string("default")).value) == .string("default")
+                expect(actual.toDecision(requiredType: .string, defaultValue: .string("default")).value) == .string("default")
             }
         }
     }
