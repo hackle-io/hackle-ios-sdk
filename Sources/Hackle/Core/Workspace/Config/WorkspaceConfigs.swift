@@ -462,10 +462,13 @@ extension BucketDto {
 
 extension VariationDto {
     func toVariation(parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]) -> Variation {
-        let parameterConfiguration = parameterConfigurationId.flatMap { id in
+        toVariation(parameterConfiguration: parameterConfigurationId.flatMap { id in
             parameterConfigurations[id]
-        }
-        return VariationEntity(
+        })
+    }
+
+    func toVariation(parameterConfiguration: ParameterConfiguration?) -> Variation {
+        VariationEntity(
             id: id,
             key: key,
             isDropped: status == "DROPPED",
