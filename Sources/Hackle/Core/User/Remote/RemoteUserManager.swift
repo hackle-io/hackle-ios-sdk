@@ -15,9 +15,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
     private let defaultUser: User
     private var context: RemoteUserContext
 
-    // 초기 sync용 컨텍스트 — Synchronizer.sync()가 1회 소비한다 (android initSyncContext 패리티).
-    // §11 known gap: REMOTE 분기에는 현재 sync()의 외부 호출자가 없다 — Task 18도 이를 등록하지 않는다.
-    // 정답지(android)도 동일한 상태이므로 여기서 "고치지" 않는다.
+    // 초기 sync용 컨텍스트 — sync()가 1회 소비한다.
     private let initSyncContext = AtomicReference<SyncContext?>(value: nil)
 
     private var currentContext: RemoteUserContext {
@@ -95,11 +93,8 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
 
     // Update User
     //
-    // 동기 프리픽스 계약 (Task 11 확정, android 1:1): mutator는 mutation(updateContext)을
-    // recursiveLock 아래에서 동기적으로 끝내고, 네트워크 sync(syncIfNeeded)만 Task<Void, Never>로 반환한다.
-    // android: `val updated = updateContext(update); return syncIfNeeded(updated, syncContext)`
-    // (RemoteUserManager.kt:121-127) — updateContext는 synchronized(lock) 블록으로 이미 동기적이며,
-    // syncIfNeeded가 반환하는 CompletableFuture 생성 자체도 호출 스레드를 막지 않는다.
+    // 동기 프리픽스 계약: mutator는 mutation(updateContext)을 recursiveLock 아래에서 동기적으로 끝내고,
+    // 네트워크 sync(syncIfNeeded)만 Task<Void, Never>로 반환한다.
 
     func setUser(user: User) -> Task<Void, Never> {
         updateAndSyncIfNeeded(operations: RemoteUserManager.setOperations(properties: user.properties)) { _ in
@@ -125,9 +120,8 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         }
     }
 
-    // android updateProperties (kt:113-118): remote는 properties를 로컬에 저장하지 않으므로 mutation이 없다.
-    // syncContext는 Task 진입 전, 호출 시점에 동기적으로 캡처한다(currentContext는 lock을 통한 스냅샷) —
-    // android가 `val context = SyncContext(currentContext, operations)`를 future 생성 이전에 평가하는 것과 동일한 타이밍.
+    // remote는 properties를 로컬에 저장하지 않으므로 mutation이 없다.
+    // syncContext는 Task 진입 전 동기적으로 캡처한다(currentContext는 lock을 통한 스냅샷).
     func updateProperties(operations: PropertyOperations) -> Task<Void, Never> {
         if operations.count == 0 {
             return Task {}
@@ -136,15 +130,13 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         return Task { await self.sync(context: syncContext) }
     }
 
-    // updateAndSyncIfNeeded: updateContext(동기, lock 하)로 mutation을 즉시 끝낸 뒤,
-    // 네트워크 sync만 담당하는 Task를 반환한다. 이 함수 자체는 async가 아니다 — 동기 프리픽스의 핵심.
     private func updateAndSyncIfNeeded(
         operations: PropertyOperations = PropertyOperations.empty(),
         update: (RemoteUserContext) -> RemoteUserContext
     ) -> Task<Void, Never> {
         let updated = updateContext(update: update)
         let syncContext = SyncContext(userContext: updated.new, operations: operations)
-        // 동기 프리픽스: evaluationKey 변경 여부를 Task 진입 전에 판단해 Bool만 넘긴다.
+        // evaluationKey 변경 여부를 Task 진입 전에 판단해 Bool만 넘긴다.
         // updated(non-Sendable)를 Task 클로저로 캡처하지 않아 sending 데이터 레이스 경고를 피한다.
         let evaluationKeyChanged = updated.old.evaluationKey != updated.new.evaluationKey
         return Task { await self.syncIfNeeded(evaluationKeyChanged: evaluationKeyChanged, syncContext: syncContext) }
@@ -177,7 +169,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         let operations: PropertyOperations
     }
 
-    // Synchronizer 프로토콜 메서드. initSyncContext를 1회 소비한다 (§11 parity, 호출자는 REMOTE 분기에 없음).
+    // Synchronizer 프로토콜 메서드. initSyncContext를 1회 소비한다.
     func sync() async throws {
         let syncContext = initSyncContext.getAndSet(newValue: nil) ?? SyncContext(userContext: currentContext, operations: PropertyOperations.empty())
         await sync(context: syncContext)

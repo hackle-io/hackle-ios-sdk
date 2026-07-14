@@ -12,10 +12,8 @@ struct RemoteUserContext: UserContext {
         RemoteUserContext(user: sanitize(user: user))
     }
 
-    // `User.toBuilder().properties([:])`는 HackleUserBuilder.properties(_:)가 내부적으로
-    // PropertiesBuilder.add(merge)를 호출하는 "추가" 방식이라 빈 dict를 넘겨도 기존 properties가
-    // 지워지지 않는다 (android toBuilder().properties(emptyMap())의 replace semantics와 다름 — Read로 확인됨).
-    // 그래서 fresh builder에 id/userId/deviceId/identifiers만 이관해 properties를 비운다.
+    // HackleUserBuilder.properties(_:)는 내부적으로 add(merge) 방식이라 빈 dict를 넘겨도 기존
+    // properties가 지워지지 않는다. 그래서 fresh builder에 식별자만 이관해 properties를 비운다.
     private static func sanitize(user: User) -> User {
         if user.properties.isEmpty {
             return user

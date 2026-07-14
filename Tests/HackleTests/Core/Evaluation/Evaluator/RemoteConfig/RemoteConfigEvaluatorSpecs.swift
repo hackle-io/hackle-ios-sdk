@@ -171,13 +171,13 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                     expect(actual.remoteConfigResult.value?.rawValue) == v1
                     expect(actual.remoteConfigResult.reason) == DecisionReason.DEFAULT_RULE
                 } else {
-                    expect(actual.remoteConfigResult.value?.id) == 43       // ★ 이전: valueId nil
-                    expect(actual.remoteConfigResult.value?.rawValue) == v1 // ★ 이전: v2(defaultValue)
+                    expect(actual.remoteConfigResult.value?.id) == 43
+                    expect(actual.remoteConfigResult.value?.rawValue) == v1
                     expect(actual.remoteConfigResult.reason) == DecisionReason.TYPE_MISMATCH
                 }
             }
 
-            // 회귀 ②: TYPE_MISMATCH 여도 value 를 유지해 노출 이벤트 valueId 가 실제 값 id 로 기록된다.
+            // 회귀 가드: TYPE_MISMATCH 여도 value 를 유지해 노출 이벤트 valueId 가 실제 값 id 로 기록된다.
             it("TYPE_MISMATCH 여도 value 를 유지해 노출 이벤트 valueId 가 실제 값 id 로 기록된다") {
                 // given: string 요청 vs number 값
                 let parameter = parameter(
@@ -196,7 +196,7 @@ class RemoteConfigEvaluatorSpecs: QuickSpec {
                 expect(actual.remoteConfigResult.value?.id) == 77
                 expect(actual.remoteConfigResult.value?.rawValue) == HackleValue.double(999)
 
-                // then: 노출 이벤트 valueId = 실제 값 id (이전: nil)
+                // then: 노출 이벤트 valueId = 실제 값 id
                 let events = EvaluationEventFactory(clock: SystemClock.shared).create(response: response)
                 let rcEvent = events.first as! UserEvents.RemoteConfig
                 expect(rcEvent.valueId) == 77

@@ -70,7 +70,7 @@ class ExperimentEvaluationSpecs: QuickSpec {
             expect(evaluation.experimentResult.variation.parameterConfiguration).to(beNil())
         }
 
-        // 회귀 ①: ofControl 은 항상 컨트롤 그룹(A) 의 variation 을 반환하고, A 가 없으면 예외를 던진다.
+        // 회귀 가드: ofControl 은 항상 컨트롤 그룹(A) 의 variation 을 반환하고, A 가 없으면 예외를 던진다.
         it("ofControl 은 컨트롤 그룹(A) 의 variation 을 반환한다") {
             let exp = experiment(
                 type: .abTest,

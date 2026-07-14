@@ -50,7 +50,7 @@ class InAppMessageEligibilityRemoteEvaluatorSpecs: QuickSpec {
             }
 
             it("stores the resolved layout response on the response when the flow resolves one") {
-                // LayoutResolve가 context에 layout response를 set한 뒤 Ineligible로 끝나는 flow (P8 시나리오)
+                // LayoutResolve가 context에 layout response를 set한 뒤 Ineligible로 끝나는 flow
                 let layoutEvaluator = InAppMessageLayoutRemoteEvaluator(
                     eventRecorder: EvaluationEventRecorder(
                         eventFactory: EvaluationEventFactory(clock: SystemClock.shared),

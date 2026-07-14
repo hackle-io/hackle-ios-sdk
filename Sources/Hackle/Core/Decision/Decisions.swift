@@ -1,6 +1,5 @@
 import Foundation
 
-// java-core decision/Decisions 대응 — receiver extension 형태
 extension ExperimentEvaluation {
 
     func toDecision() -> Decision {

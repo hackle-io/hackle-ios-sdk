@@ -26,10 +26,9 @@ private class RecordingUserListener: UserListener {
     }
 }
 
-// Task 12: RemoteUserManager는 REMOTE 모드의 UserManager 구현체다.
-// UserManager 프로토콜의 mutator는 Task 11에서 async가 아니라 `-> Task<Void, Never>`로 확정되었다
-// (mutation은 lock 아래 동기적으로 끝나고, 네트워크 sync만 Task로 미룬다 — LocalUserManager와 동일 계약).
-// 그래서 아래 테스트는 `await sut.setUser(...)`가 아니라 `await sut.setUser(...).value`로 sync 완료를 기다린다.
+// RemoteUserManager는 REMOTE 모드의 UserManager 구현체다. mutator는 async가 아니라 `-> Task<Void, Never>`이며
+// (mutation은 lock 아래 동기적으로 끝나고 네트워크 sync만 Task로 미룬다), 그래서 아래 테스트는
+// `await sut.setUser(...).value`로 sync 완료를 기다린다.
 class RemoteUserManagerSpecs: AsyncSpec {
     override class func spec() {
 
@@ -153,10 +152,9 @@ class RemoteUserManagerSpecs: AsyncSpec {
             }
         }
 
-        // 동기 프리픽스 회귀 가드 (Task 11 LocalUserManagerSpecs와 동일한 취지):
-        // mutator는 mutation을 반환 전에 recursiveLock 아래 동기적으로 끝내고(android updateContext),
-        // 네트워크 sync만 Task<Void, Never>로 반환한다(android syncIfNeeded). 반환된 Task를 await하기 전에도
-        // currentUser는 이미 변경을 반영해야 한다. updateProperties는 로컬 상태를 바꾸지 않으므로 가드 대상이 아니다.
+        // 동기 프리픽스 회귀 가드: mutator는 mutation을 반환 전에 recursiveLock 아래 동기적으로 끝내므로,
+        // 반환된 Task를 await하기 전에도 currentUser는 이미 변경을 반영해야 한다.
+        // updateProperties는 로컬 상태를 바꾸지 않으므로 가드 대상이 아니다.
         describe("동기 프리픽스 (mutation before Task return)") {
             beforeEach {
                 sut.initialize(user: HackleUserBuilder().userId("user_1").build())

@@ -21,7 +21,6 @@ protocol UserManager: Synchronizer, ApplicationLifecycleListener {
     func addListener(listener: UserListener)
 }
 
-// Kotlin 기본 인자 대응 (D7)
 extension UserManager {
     func hackleUser() -> HackleUser {
         hackleUser(user: currentUser, appContext: .default)

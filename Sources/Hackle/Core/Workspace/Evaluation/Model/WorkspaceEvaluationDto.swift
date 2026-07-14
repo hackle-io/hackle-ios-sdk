@@ -20,8 +20,8 @@ struct WorkspaceEvaluateResponseDto: Codable {
 }
 
 extension WorkspaceEvaluateResponseDto {
-    // 서버가 deleted를 생략할 수 있다(특히 NOT_MODIFIED). android(Gson)는 누락을 조용히 허용하므로
-    // 동일하게 관용한다. init을 본체가 아닌 extension에 두어 memberwise init을 보존한다(테스트 생성부 사용).
+    // 서버가 deleted를 생략할 수 있어(특히 NOT_MODIFIED) 누락을 관용한다.
+    // init을 extension에 두어 memberwise init을 보존한다(테스트 생성부에서 사용).
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         status = try container.decode(String.self, forKey: .status)

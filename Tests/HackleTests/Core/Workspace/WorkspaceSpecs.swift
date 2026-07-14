@@ -36,7 +36,7 @@ class WorkspaceSpecs: QuickSpec {
             expect(config?.getString(forKey: "string", defaultValue: "42")) == "string_value"
         }
 
-        // 회귀 ③: variation.parameterConfiguration 은 parameterConfigurationId 로 resolve 되어야 한다 (variation.id 로 오조회하면 안 된다).
+        // 회귀 가드: variation.parameterConfiguration 은 parameterConfigurationId 로 resolve 되어야 한다 (variation.id 로 오조회하면 안 된다).
         it("variation 의 parameterConfiguration 은 parameterConfigurationId 로 resolve 된다 (variation.id 아님)") {
             let file = Bundle(for: WorkspaceSpecs.self).path(forResource: "workspace_response", ofType: "json")!
             let json = try! String(contentsOfFile: file)

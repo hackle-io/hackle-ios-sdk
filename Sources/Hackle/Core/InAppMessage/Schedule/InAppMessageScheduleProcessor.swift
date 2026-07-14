@@ -35,7 +35,7 @@ class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InApp
         return try await scheduler.schedule(action: action, request: request)
     }
 
-    // InAppMessageScheduleListener — delay 타이머 콜백 (P9 Task 진입 경계 ②)
+    // InAppMessageScheduleListener의 delay 타이머 콜백
     func onSchedule(request: InAppMessageScheduleRequest) {
         Task {
             await self.process(request: request)
