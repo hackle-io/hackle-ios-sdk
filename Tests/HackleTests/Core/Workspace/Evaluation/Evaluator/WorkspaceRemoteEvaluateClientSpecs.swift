@@ -100,5 +100,15 @@ class WorkspaceRemoteEvaluateClientSpecs: AsyncSpec {
 
             await expect { try await sut.evaluate(request: requestDto()) }.to(throwError())
         }
+
+        it("deleted·evaluation이 생략된 NOT_MODIFIED 응답을 디코딩한다") {
+            stub(statusCode: 200, data: #"{"status":"NOT_MODIFIED"}"#.data(using: .utf8)!)
+
+            let response = try await sut.evaluate(request: requestDto())
+
+            expect(response.status) == "NOT_MODIFIED"
+            expect(response.evaluation).to(beNil())
+            expect(response.deleted).to(beEmpty())
+        }
     }
 }

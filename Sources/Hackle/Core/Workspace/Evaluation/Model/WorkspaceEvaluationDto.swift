@@ -13,6 +13,21 @@ struct WorkspaceEvaluateResponseDto: Codable {
     let status: String // FULL, DELTA, NOT_MODIFIED
     let evaluation: WorkspaceEvaluationDto?
     let deleted: [EntityDto]
+
+    private enum CodingKeys: String, CodingKey {
+        case status, evaluation, deleted
+    }
+}
+
+extension WorkspaceEvaluateResponseDto {
+    // 서버가 deleted를 생략할 수 있다(특히 NOT_MODIFIED). android(Gson)는 누락을 조용히 허용하므로
+    // 동일하게 관용한다. init을 본체가 아닌 extension에 두어 memberwise init을 보존한다(테스트 생성부 사용).
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        status = try container.decode(String.self, forKey: .status)
+        evaluation = try container.decodeIfPresent(WorkspaceEvaluationDto.self, forKey: .evaluation)
+        deleted = try container.decodeIfPresent([EntityDto].self, forKey: .deleted) ?? []
+    }
 }
 
 struct WorkspaceEvaluationDto: Codable {
