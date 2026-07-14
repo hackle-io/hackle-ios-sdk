@@ -89,8 +89,8 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
 
     private func hackleProperties(appContext: HackleAppContext) -> [String: Any] {
         appContext.browserProperties
-            .merging(device.properties) { _, new in new }
-            .merging(bundleInfo.properties) { _, new in new }
+            .append(device.properties)
+            .append(bundleInfo.properties)
     }
 
     // Update User

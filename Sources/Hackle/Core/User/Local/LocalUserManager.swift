@@ -253,11 +253,3 @@ extension LocalUserManager {
         saveUser(user: currentUser)
     }
 }
-
-fileprivate extension [String: Any] {
-    func append(_ new: [String: Any]) -> [String: Any] {
-        self.merging(new) {
-            (_, new) in new
-        }
-    }
-}
