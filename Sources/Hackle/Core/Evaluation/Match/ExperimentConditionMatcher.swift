@@ -80,11 +80,7 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
     }
 
     func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation {
-        let evaluation = experimentResponse.experimentEvaluation
-        if sourceRequest is ExperimentEvaluateRequest && evaluation.experimentResult.reason == DecisionReason.TRAFFIC_ALLOCATED {
-            return ExperimentEvaluation(entity: evaluation.experiment, result: evaluation.experimentResult.with(reason: DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING))
-        }
-        return evaluation
+        ExperimentReference.resolve(sourceRequest: sourceRequest, evaluation: experimentResponse.experimentEvaluation)
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
