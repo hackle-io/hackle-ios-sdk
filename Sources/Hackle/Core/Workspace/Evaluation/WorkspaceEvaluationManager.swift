@@ -55,12 +55,12 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
     }
 
     private func store(context: WorkspaceEvaluationContext) {
-        let snapshots = cache.put(record: context)
-        repository.set(records: snapshots)
+        let snapshots = cache.put(context: context)
+        repository.set(contexts: snapshots)
     }
 
     private func load() {
-        let records = repository.get()
-        cache.restore(records: records)
+        let contexts = repository.get()
+        cache.restore(contexts: contexts)
     }
 }

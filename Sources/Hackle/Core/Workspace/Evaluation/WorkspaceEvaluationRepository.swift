@@ -2,7 +2,7 @@ import Foundation
 
 protocol WorkspaceEvaluationRepository {
     func get() -> [WorkspaceEvaluationContext]
-    func set(records: [WorkspaceEvaluationContext])
+    func set(contexts: [WorkspaceEvaluationContext])
 }
 
 class FileWorkspaceEvaluationRepository: WorkspaceEvaluationRepository {
@@ -32,12 +32,12 @@ class FileWorkspaceEvaluationRepository: WorkspaceEvaluationRepository {
         }
     }
 
-    func set(records: [WorkspaceEvaluationContext]) {
+    func set(contexts: [WorkspaceEvaluationContext]) {
         guard let fileStorage = fileStorage else {
             return
         }
         do {
-            let dtos = records.map { it in
+            let dtos = contexts.map { it in
                 WorkspaceEvaluationContextDto(key: it.key.identifiers, evaluation: it.dto, fullEvaluatedAt: it.fullEvaluatedAt)
             }
             let data = try JSONEncoder().encode(dtos)

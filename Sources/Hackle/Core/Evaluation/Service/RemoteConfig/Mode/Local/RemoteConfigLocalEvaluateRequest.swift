@@ -33,14 +33,14 @@ final class RemoteConfigLocalEvaluateRequest: LocalEvaluateRequest, RemoteConfig
 
     static func of(
         workspace: WorkspaceConfig,
-        parameter: RemoteConfigParameterConfig,
+        entity: RemoteConfigParameterConfig,
         user: HackleUser,
         requiredType: HackleValueType,
         record: Bool = true
     ) -> RemoteConfigLocalEvaluateRequest {
         RemoteConfigLocalEvaluateRequest(
             workspace: workspace,
-            parameter: parameter,
+            parameter: entity,
             user: user,
             record: record,
             requiredType: requiredType

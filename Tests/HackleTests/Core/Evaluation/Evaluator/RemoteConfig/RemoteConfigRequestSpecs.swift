@@ -12,5 +12,5 @@ func remoteConfigRequest(
     parameter: RemoteConfigParameterConfig = RemoteConfigParameterEntity(id: 1, key: "key", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 1, rawValue: .string("parameter default"))),
     defaultValue: HackleValue = .string("default")
 ) -> RemoteConfigLocalEvaluateRequest {
-    RemoteConfigLocalEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, requiredType: defaultValue.type)
+    RemoteConfigLocalEvaluateRequest.of(workspace: workspace, entity: parameter, user: user, requiredType: defaultValue.type)
 }

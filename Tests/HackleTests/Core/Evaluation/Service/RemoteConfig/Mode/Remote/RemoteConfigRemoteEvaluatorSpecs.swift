@@ -22,7 +22,7 @@ class RemoteConfigRemoteEvaluatorSpecs: QuickSpec {
         func request(result: RemoteConfigParameterRemoteEvaluateResult, requiredType: HackleValueType = .string) -> RemoteConfigRemoteEvaluateRequest {
             RemoteConfigRemoteEvaluateRequest.of(
                 workspace: MockWorkspaceEvaluation(),
-                parameter: result,
+                entity: result,
                 user: HackleUser.builder().build(),
                 requiredType: requiredType
             )

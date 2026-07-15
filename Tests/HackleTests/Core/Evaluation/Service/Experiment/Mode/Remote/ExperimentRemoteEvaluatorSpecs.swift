@@ -23,7 +23,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             let workspace = MockWorkspaceEvaluation()
             let request = ExperimentRemoteEvaluateRequest.of(
                 workspace: workspace,
-                experiment: experimentRemoteResult(id: 1, key: 10),
+                entity: experimentRemoteResult(id: 1, key: 10),
                 user: HackleUser.builder().build()
             )
             expect(sut.supports(request: request)).to(beTrue())
@@ -33,7 +33,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             let result = experimentRemoteResult(id: 1, key: 10, reason: DecisionReason.TRAFFIC_ALLOCATED)
             let workspace = MockWorkspaceEvaluation()
             workspace.experimentResults = [result]
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: result, user: HackleUser.builder().build())
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build())
 
             let response: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
 
@@ -47,7 +47,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             let main = experimentRemoteResult(id: 1, key: 10, type: .abTest, reason: DecisionReason.TRAFFIC_ALLOCATED, references: [reference])
             let workspace = MockWorkspaceEvaluation()
             workspace.experimentResults = [main, reference]
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: main, user: HackleUser.builder().build())
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: main, user: HackleUser.builder().build())
             let context = Evaluators.context()
             let sut = ExperimentRemoteEvaluator(
                 eventRecorder: EvaluationEventRecorder(
@@ -65,7 +65,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
         it("record delegates to eventRecorder") {
             let result = experimentRemoteResult(id: 1, key: 10)
             let workspace = MockWorkspaceEvaluation()
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: result, user: HackleUser.builder().build())
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build())
             let response: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
 
             sut.record(request: request, response: response)

@@ -30,7 +30,7 @@ class FileWorkspaceEvaluationRepositorySpecs: QuickSpec {
         }
 
         it("set 후 get으로 round-trip된다 (key·dto 보존)") {
-            sut.set(records: [record(id: "1"), record(id: "2")])
+            sut.set(contexts: [record(id: "1"), record(id: "2")])
 
             let loaded = sut.get()
 
@@ -53,7 +53,7 @@ class FileWorkspaceEvaluationRepositorySpecs: QuickSpec {
 
         it("fileStorage가 nil이면 get은 빈 배열, set은 no-op이다") {
             let sut = FileWorkspaceEvaluationRepository(fileStorage: nil)
-            sut.set(records: [record(id: "1")])
+            sut.set(contexts: [record(id: "1")])
             expect(sut.get()).to(beEmpty())
         }
 
@@ -77,7 +77,7 @@ class FileWorkspaceEvaluationRepositorySpecs: QuickSpec {
                 dto: evaluationDto(),
                 fullEvaluatedAt: 1720000000000
             )
-            sut.set(records: [context])
+            sut.set(contexts: [context])
 
             let restored = sut.get()
 

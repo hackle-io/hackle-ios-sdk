@@ -47,20 +47,20 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
             )
         }
 
-        var specificEvaluator: RecordingPartialEvaluator!
+        var partialEvaluator: RecordingPartialEvaluator!
         var evaluateProcessor: EvaluateProcessor!
         var workspaceManager: WorkspaceEvaluationManager!
         var cache: LruWorkspaceEvaluationCache!
         var sut: InAppMessageDeliverRemoteEvaluator!
 
         beforeEach {
-            specificEvaluator = RecordingPartialEvaluator()
+            partialEvaluator = RecordingPartialEvaluator()
             cache = LruWorkspaceEvaluationCache(capacity: 10)
             workspaceManager = WorkspaceEvaluationManager(
                 fullEvaluator: FullWorkspaceRemoteEvaluator(
                     client: RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: MockHttpClient())
                 ),
-                partialEvaluator: specificEvaluator,
+                partialEvaluator: partialEvaluator,
                 repository: FileWorkspaceEvaluationRepository(fileStorage: nil),
                 cache: cache
             )
@@ -76,7 +76,7 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
         }
 
         func cacheWorkspace(dto: WorkspaceEvaluationDto) {
-            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: dto, fullEvaluatedAt: 0))
+            _ = cache.put(context: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: dto, fullEvaluatedAt: 0))
         }
 
         it("workspace가 없으면 WORKSPACE_NOT_FOUND ineligible이다") {
@@ -95,21 +95,21 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
         context("atDeliverTime이 true인 경우 (픽스처 IAM 40)") {
             it("선평가(record:false)가 eligible이면 SPECIFIC 재평가로 fresh workspace를 받아 최종 평가한다") {
                 cacheWorkspace(dto: evaluationDto())
-                specificEvaluator.response = PartialWorkspaceEvaluateResponse(
+                partialEvaluator.response = PartialWorkspaceEvaluateResponse(
                     evaluation: DefaultWorkspaceEvaluation.from(dto: evaluationDto(), fullEvaluatedAt: 0)
                 )
 
                 let response = try await sut.evaluate(request: deliverRequest(inAppMessageKey: 40), user: user())
 
-                expect(specificEvaluator.requests.count) == 1
-                expect(specificEvaluator.requests[0].entities.map { $0.id }) == [400]
+                expect(partialEvaluator.requests.count) == 1
+                expect(partialEvaluator.requests[0].entities.map { $0.id }) == [400]
                 expect(response.isEligible) == true
                 expect(response.evaluation).toNot(beNil())
             }
 
             it("SPECIFIC 재평가가 실패하면 에러가 전파된다") {
                 cacheWorkspace(dto: evaluationDto())
-                specificEvaluator.response = nil // throw 유도
+                partialEvaluator.response = nil // throw 유도
 
                 await expect {
                     try await sut.evaluate(request: deliverRequest(inAppMessageKey: 40), user: user())
@@ -127,7 +127,7 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
 
             let response = try await sut.evaluate(request: deliverRequest(inAppMessageKey: 40), user: user())
 
-            expect(specificEvaluator.requests.count) == 0
+            expect(partialEvaluator.requests.count) == 0
             expect(response.isEligible) == true
         }
     }

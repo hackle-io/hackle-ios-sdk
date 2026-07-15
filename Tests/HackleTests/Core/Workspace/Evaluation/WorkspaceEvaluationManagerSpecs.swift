@@ -86,7 +86,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                     dto: evaluationDto(),
                     fullEvaluatedAt: 0
                 )
-                repository.set(records: [record])
+                repository.set(contexts: [record])
 
                 sut.initialize()
 

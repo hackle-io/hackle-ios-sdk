@@ -23,7 +23,7 @@ class EvaluateProcessorSpecs: QuickSpec {
             let result = experimentRemoteResult(id: 1, key: 10, reason: DecisionReason.TRAFFIC_ALLOCATED)
             let workspace = MockWorkspaceEvaluation()
             workspace.experimentResults = [result]
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: result, user: HackleUser.builder().build())
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build())
 
             let response = try sut.experiment(request)
 
@@ -39,7 +39,7 @@ class EvaluateProcessorSpecs: QuickSpec {
             let sut = createSut(eventProcessor: eventProcessor)
             let result = experimentRemoteResult(id: 1, key: 10)
             let workspace = MockWorkspaceEvaluation()
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: result, user: HackleUser.builder().build(), record: false)
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build(), record: false)
 
             _ = try sut.experiment(request)
 
@@ -53,7 +53,7 @@ class EvaluateProcessorSpecs: QuickSpec {
             let sut = createSut(eventProcessor: eventProcessor)
             let result = remoteConfigRemoteResult()
             let workspace = MockWorkspaceEvaluation()
-            let request = RemoteConfigRemoteEvaluateRequest.of(workspace: workspace, parameter: result, user: HackleUser.builder().build(), requiredType: .string)
+            let request = RemoteConfigRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build(), requiredType: .string)
 
             let response = try sut.remoteConfig(request)
 
