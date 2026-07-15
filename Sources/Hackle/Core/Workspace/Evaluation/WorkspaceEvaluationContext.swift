@@ -41,3 +41,15 @@ extension WorkspaceEvaluationContext {
         })
     }
 }
+
+extension WorkspaceEvaluationContext {
+    func toDto() -> BaseEvaluationDto {
+        BaseEvaluationDto(
+            fullEvaluatedAt: fullEvaluatedAt,
+            metadata: dto.metadata,
+            entities: dto.results.map { it in
+                EvaluateEntityDto(type: it.type, id: it.id, hash: it.hash)
+            }
+        )
+    }
+}

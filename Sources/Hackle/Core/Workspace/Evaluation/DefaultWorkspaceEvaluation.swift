@@ -99,13 +99,26 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
             .build()
     }
 
-    static func from(dto: WorkspaceEvaluationDto, fullEvaluatedAt: Int64?) -> DefaultWorkspaceEvaluation {
+    static func from(dto: WorkspaceEvaluationDto, fullEvaluatedAt: Int64) -> DefaultWorkspaceEvaluation {
+        create(workspace: dto.workspace, metadata: dto.metadata, results: dto.results, fullEvaluatedAt: fullEvaluatedAt)
+    }
+
+    static func from(dto: EntityEvaluationDto) -> DefaultWorkspaceEvaluation {
+        create(workspace: dto.workspace, metadata: dto.metadata, results: dto.results, fullEvaluatedAt: nil)
+    }
+
+    private static func create(
+        workspace: WorkspaceDto,
+        metadata: EvaluationMetadataDto,
+        results: [EvaluateResultDto],
+        fullEvaluatedAt: Int64?
+    ) -> DefaultWorkspaceEvaluation {
         var experiments = [ExperimentRemoteEvaluateResult]()
         var featureFlags = [ExperimentRemoteEvaluateResult]()
         var remoteConfigParameters = [RemoteConfigParameterRemoteEvaluateResult]()
         var inAppMessages = [InAppMessageEligibilityRemoteEvaluateResult]()
 
-        for result in dto.results {
+        for result in results {
             guard let serviceType: ServiceType = Enums.parseOrNil(rawValue: result.type) else {
                 continue
             }
@@ -129,10 +142,10 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
             }
         }
         return DefaultWorkspaceEvaluation(
-            id: dto.workspace.id,
-            environmentId: dto.workspace.environment.id,
-            evaluatedAt: dto.metadata.evaluatedAt,
-            modifiedAt: dto.metadata.config.modifiedAt,
+            id: workspace.id,
+            environmentId: workspace.environment.id,
+            evaluatedAt: metadata.evaluatedAt,
+            modifiedAt: metadata.config.modifiedAt,
             fullEvaluatedAt: fullEvaluatedAt,
             experimentResults: experiments.sorted { $0.order < $1.order },
             featureFlagResults: featureFlags.sorted { $0.order < $1.order },

@@ -9,7 +9,7 @@ class LruWorkspaceEvaluationCacheSpecs: QuickSpec {
         func record(id: String) -> WorkspaceEvaluationContext {
             let file = Bundle(for: LruWorkspaceEvaluationCacheSpecs.self).path(forResource: "workspace_evaluation_response", ofType: "json")!
             let data = try! Data(contentsOf: URL(fileURLWithPath: file))
-            let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
+            let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).full!
             return WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.Key(identifiers: ["$id": id]), dto: dto, fullEvaluatedAt: 0)
         }
 

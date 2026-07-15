@@ -60,7 +60,7 @@ class WorkspaceEvaluationContextSpecs: QuickSpec {
             it("dto로 DefaultWorkspaceEvaluation을 만들고 원본 dto를 보존한다") {
                 let file = Bundle(for: WorkspaceEvaluationContextSpecs.self).path(forResource: "workspace_evaluation_response", ofType: "json")!
                 let data = try! Data(contentsOf: URL(fileURLWithPath: file))
-                let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
+                let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).full!
 
                 let key = WorkspaceEvaluationContext.Key(identifiers: ["$id": "id_1"])
                 let context = WorkspaceEvaluationContext.of(key: key, dto: dto, fullEvaluatedAt: 1720000000000)

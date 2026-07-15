@@ -410,13 +410,10 @@ extension HackleApp {
             compositeSynchronizer.add(synchronizer: workspaceConfigManager)
             workspaceMode = .local(workspaceConfigManager)
         case .remote:
-            let evaluateClient = WorkspaceRemoteEvaluateClient(sdkUrl: config.sdkUrl, httpClient: httpClient)
-            let evaluatorFactory = WorkspaceRemoteEvaluatorFactory(evaluators: [
-                AllWorkspaceRemoteEvaluator(client: evaluateClient),
-                SpecificWorkspaceRemoteEvaluator(client: evaluateClient)
-            ])
+            let evaluateClient = RemoteEvaluateClient(sdkUrl: config.sdkUrl, httpClient: httpClient)
             let evaluationManager = WorkspaceEvaluationManager(
-                evaluateProcessor: WorkspaceEvaluateProcessor(evaluatorFactory: evaluatorFactory),
+                fullEvaluator: FullWorkspaceRemoteEvaluator(client: evaluateClient),
+                partialEvaluator: PartialWorkspaceRemoteEvaluator(client: evaluateClient),
                 repository: FileWorkspaceEvaluationRepository(fileStorage: fileStorage),
                 cache: LruWorkspaceEvaluationCache(capacity: 10)
             )

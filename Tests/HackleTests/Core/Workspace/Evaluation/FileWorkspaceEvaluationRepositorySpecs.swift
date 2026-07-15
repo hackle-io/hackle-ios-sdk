@@ -9,7 +9,7 @@ class FileWorkspaceEvaluationRepositorySpecs: QuickSpec {
         func evaluationDto() -> WorkspaceEvaluationDto {
             let file = Bundle(for: FileWorkspaceEvaluationRepositorySpecs.self).path(forResource: "workspace_evaluation_response", ofType: "json")!
             let data = try! Data(contentsOf: URL(fileURLWithPath: file))
-            return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
+            return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).full!
         }
 
         func record(id: String) -> WorkspaceEvaluationContext {

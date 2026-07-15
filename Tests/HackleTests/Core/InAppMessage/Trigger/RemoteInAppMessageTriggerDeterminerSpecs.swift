@@ -1,6 +1,7 @@
 import Foundation
 import Quick
 import Nimble
+import MockingKit
 @testable import Hackle
 
 class RemoteInAppMessageTriggerDeterminerSpecs: QuickSpec {
@@ -9,7 +10,7 @@ class RemoteInAppMessageTriggerDeterminerSpecs: QuickSpec {
         func evaluationDto() -> WorkspaceEvaluationDto {
             let file = Bundle(for: RemoteInAppMessageTriggerDeterminerSpecs.self).path(forResource: "workspace_evaluation_response", ofType: "json")!
             let data = try! Data(contentsOf: URL(fileURLWithPath: file))
-            return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
+            return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).full!
         }
 
         func user() -> HackleUser {
@@ -28,8 +29,10 @@ class RemoteInAppMessageTriggerDeterminerSpecs: QuickSpec {
         beforeEach {
             eventMatcher = MockInAppMessageTriggerEventMatcher()
             cache = LruWorkspaceEvaluationCache(capacity: 10)
+            let evaluateClient = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: MockHttpClient())
             workspaceManager = WorkspaceEvaluationManager(
-                evaluateProcessor: WorkspaceEvaluateProcessor(evaluatorFactory: WorkspaceRemoteEvaluatorFactory(evaluators: [])),
+                fullEvaluator: FullWorkspaceRemoteEvaluator(client: evaluateClient),
+                partialEvaluator: PartialWorkspaceRemoteEvaluator(client: evaluateClient),
                 repository: FileWorkspaceEvaluationRepository(fileStorage: nil),
                 cache: cache
             )

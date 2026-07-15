@@ -7,11 +7,7 @@ enum WorkspaceEvaluationMerger {
         let id: Int64
     }
 
-    static func merge(evaluation: WorkspaceEvaluationDto, response: WorkspaceEvaluateResponseDto) throws -> WorkspaceEvaluationDto {
-        guard let responseEvaluation = response.evaluation else {
-            throw HackleError.error("evaluation")
-        }
-
+    static func merge(evaluation: WorkspaceEvaluationDto, delta: WorkspaceEvaluationDeltaDto) -> WorkspaceEvaluationDto {
         var order = [Key]()
         var merged = [Key: EvaluateResultDto]()
 
@@ -23,16 +19,16 @@ enum WorkspaceEvaluationMerger {
             merged[key] = result
         }
 
-        for result in responseEvaluation.results {
-            let key = Key(type: result.type, id: result.id)
+        for change in delta.changed {
+            let key = Key(type: change.type, id: change.id)
             if merged[key] == nil {
                 order.append(key)
             }
-            merged[key] = result
+            merged[key] = change
         }
 
-        for entity in response.deleted {
-            let key = Key(type: entity.type, id: entity.id)
+        for delete in delta.deleted {
+            let key = Key(type: delete.type, id: delete.id)
             if merged.removeValue(forKey: key) != nil {
                 order.removeAll { it in
                     it == key
@@ -42,10 +38,10 @@ enum WorkspaceEvaluationMerger {
 
         return WorkspaceEvaluationDto(
             workspace: evaluation.workspace,
+            metadata: delta.metadata,
             results: order.compactMap { key in
                 merged[key]
-            },
-            metadata: responseEvaluation.metadata
+            }
         )
     }
 

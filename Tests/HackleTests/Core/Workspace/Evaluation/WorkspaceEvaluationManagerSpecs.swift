@@ -1,24 +1,40 @@
 import Foundation
 import Quick
 import Nimble
+import MockingKit
 @testable import Hackle
 
-private class StubWorkspaceRemoteEvaluator: WorkspaceRemoteEvaluator {
-    let scope: WorkspaceEvaluateScope
-    var responses: [Result<WorkspaceEvaluateResponse, Error>] = []
-    var receivedRequests: [WorkspaceEvaluateRequest] = []
+private class RecordingFullEvaluator: FullWorkspaceRemoteEvaluator {
+    var requests: [FullWorkspaceEvaluateRequest] = []
+    var responder: ((FullWorkspaceEvaluateRequest) throws -> FullWorkspaceEvaluateResponse)?
 
-    init(scope: WorkspaceEvaluateScope) {
-        self.scope = scope
+    init() {
+        super.init(client: RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: MockHttpClient()))
     }
 
-    func supports(scope: WorkspaceEvaluateScope) -> Bool {
-        self.scope == scope
+    override func evaluate(request: FullWorkspaceEvaluateRequest) async throws -> FullWorkspaceEvaluateResponse {
+        requests.append(request)
+        guard let responder = responder else {
+            throw HackleError.error("no responder")
+        }
+        return try responder(request)
+    }
+}
+
+private class RecordingPartialEvaluator: PartialWorkspaceRemoteEvaluator {
+    var requests: [PartialWorkspaceEvaluateRequest] = []
+    var responder: ((PartialWorkspaceEvaluateRequest) throws -> PartialWorkspaceEvaluateResponse)?
+
+    init() {
+        super.init(client: RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: MockHttpClient()))
     }
 
-    func evaluate(request: WorkspaceEvaluateRequest) async throws -> WorkspaceEvaluateResponse {
-        receivedRequests.append(request)
-        return try responses.removeFirst().get()
+    override func evaluate(request: PartialWorkspaceEvaluateRequest) async throws -> PartialWorkspaceEvaluateResponse {
+        requests.append(request)
+        guard let responder = responder else {
+            throw HackleError.error("no responder")
+        }
+        return try responder(request)
     }
 }
 
@@ -28,30 +44,36 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
         func evaluationDto() -> WorkspaceEvaluationDto {
             let file = Bundle(for: WorkspaceEvaluationManagerSpecs.self).path(forResource: "workspace_evaluation_response", ofType: "json")!
             let data = try! Data(contentsOf: URL(fileURLWithPath: file))
-            return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
+            return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).full!
         }
 
         func user(id: String) -> HackleUser {
             HackleUser.builder().identifier(.id, id).build()
         }
 
-        var allEvaluator: StubWorkspaceRemoteEvaluator!
-        var specificEvaluator: StubWorkspaceRemoteEvaluator!
+        // FULL 응답을 모사: request.context.key로 새 context를 만들어 반환
+        func fullResponse(request: FullWorkspaceEvaluateRequest) -> FullWorkspaceEvaluateResponse {
+            let dto = evaluationDto()
+            let context = WorkspaceEvaluationContext.of(key: request.context.key, dto: dto, fullEvaluatedAt: dto.metadata.evaluatedAt)
+            return FullWorkspaceEvaluateResponse(context: context)
+        }
+
+        var fullEvaluator: RecordingFullEvaluator!
+        var partialEvaluator: RecordingPartialEvaluator!
         var repository: FileWorkspaceEvaluationRepository!
         var fileStorage: MockFileStorage!
         var cache: LruWorkspaceEvaluationCache!
         var sut: WorkspaceEvaluationManager!
 
         beforeEach {
-            allEvaluator = StubWorkspaceRemoteEvaluator(scope: .all)
-            specificEvaluator = StubWorkspaceRemoteEvaluator(scope: .specific)
+            fullEvaluator = RecordingFullEvaluator()
+            partialEvaluator = RecordingPartialEvaluator()
             fileStorage = MockFileStorage()
             repository = FileWorkspaceEvaluationRepository(fileStorage: fileStorage)
             cache = LruWorkspaceEvaluationCache(capacity: 10)
             sut = WorkspaceEvaluationManager(
-                evaluateProcessor: WorkspaceEvaluateProcessor(
-                    evaluatorFactory: WorkspaceRemoteEvaluatorFactory(evaluators: [allEvaluator, specificEvaluator])
-                ),
+                fullEvaluator: fullEvaluator,
+                partialEvaluator: partialEvaluator,
                 repository: repository,
                 cache: cache
             )
@@ -81,7 +103,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
 
         describe("sync") {
             it("FULL 응답이면 캐시에 저장하고 전체 스냅샷을 파일에 저장한다") {
-                allEvaluator.responses = [.success(.of(status: .full, dto: evaluationDto()))]
+                fullEvaluator.responder = { request in fullResponse(request: request) }
 
                 let context = RemoteEvaluateContext.of(user: user(id: "id_1"))
                 await sut.sync(context: context)
@@ -91,27 +113,29 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                 expect(repository.get().count) == 1 // 파일 저장 확인
             }
 
-            it("record가 있으면 AllWorkspaceEvaluateRequest에 record를 실어 보낸다") {
-                allEvaluator.responses = [
-                    .success(.of(status: .full, dto: evaluationDto())),
-                    .success(.notModified())
-                ]
+            it("첫 sync는 base 없이, 캐시가 채워진 뒤 두 번째 sync는 base를 실어 보낸다") {
+                fullEvaluator.responder = { request in
+                    if let base = request.base {
+                        return FullWorkspaceEvaluateResponse(context: base) // 204(NOT_MODIFIED) 모사
+                    }
+                    return fullResponse(request: request)
+                }
                 let context = RemoteEvaluateContext.of(user: user(id: "id_1"))
 
                 await sut.sync(context: context)
                 await sut.sync(context: context)
 
-                let first = allEvaluator.receivedRequests[0] as! AllWorkspaceEvaluateRequest
-                let second = allEvaluator.receivedRequests[1] as! AllWorkspaceEvaluateRequest
-                expect(first.record).to(beNil())
-                expect(second.record).toNot(beNil())
+                expect(fullEvaluator.requests[0].base).to(beNil())
+                expect(fullEvaluator.requests[1].base).toNot(beNil())
             }
 
-            it("NOT_MODIFIED면 기존 record를 유지한다") {
-                allEvaluator.responses = [
-                    .success(.of(status: .full, dto: evaluationDto())),
-                    .success(.notModified())
-                ]
+            it("base를 그대로 반환(NOT_MODIFIED)해도 기존 record를 유지한다") {
+                fullEvaluator.responder = { request in
+                    if let base = request.base {
+                        return FullWorkspaceEvaluateResponse(context: base)
+                    }
+                    return fullResponse(request: request)
+                }
                 let context = RemoteEvaluateContext.of(user: user(id: "id_1"))
 
                 await sut.sync(context: context)
@@ -121,7 +145,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
             }
 
             it("실패해도 throw하지 않고 로그만 남긴다 (기존 상태 유지)") {
-                allEvaluator.responses = [.failure(HackleError.error("http fail"))]
+                fullEvaluator.responder = { _ in throw HackleError.error("http fail") }
 
                 await sut.sync(context: RemoteEvaluateContext.of(user: user(id: "id_1")))
 
@@ -131,7 +155,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
 
         describe("workspace(user:)") {
             it("키가 일치하는 유저만 workspace를 얻는다 (SESSION 제외 규칙 반영)") {
-                allEvaluator.responses = [.success(.of(status: .full, dto: evaluationDto()))]
+                fullEvaluator.responder = { request in fullResponse(request: request) }
                 let syncUser = HackleUser.builder()
                     .identifier(.id, "id_1")
                     .identifier(.session, "session_1")
@@ -149,9 +173,11 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
             }
         }
 
-        describe("evaluate (SPECIFIC)") {
+        describe("evaluate (partial)") {
             it("응답 evaluation으로 일회성 WorkspaceEvaluation을 만들고 캐시·파일에는 저장하지 않는다") {
-                specificEvaluator.responses = [.success(.of(status: .full, dto: evaluationDto()))]
+                partialEvaluator.responder = { _ in
+                    PartialWorkspaceEvaluateResponse(evaluation: DefaultWorkspaceEvaluation.from(dto: evaluationDto(), fullEvaluatedAt: 0))
+                }
 
                 let result = try await sut.evaluate(
                     context: RemoteEvaluateContext.of(user: user(id: "id_1")),
@@ -161,45 +187,14 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                 expect(result.metadata.id) == 1
                 expect(sut.workspace(user: user(id: "id_1"))).to(beNil()) // 캐시 미저장
                 expect(repository.get()).to(beEmpty()) // 파일 미저장
-                let request = specificEvaluator.receivedRequests[0] as! SpecificWorkspaceEvaluateRequest
-                expect(request.targets.count) == 1
+                expect(partialEvaluator.requests[0].entities.count) == 1
             }
 
-            it("응답 evaluation이 없으면 throw한다") {
-                specificEvaluator.responses = [.success(.notModified())]
+            it("partialEvaluator가 실패하면 throw한다") {
+                partialEvaluator.responder = { _ in throw HackleError.error("partial fail") }
 
                 await expect {
                     try await sut.evaluate(context: RemoteEvaluateContext.of(user: user(id: "id_1")), entities: [])
-                }.to(throwError())
-            }
-        }
-
-        describe("scope에 맞는 evaluator가 없는 경우") {
-            it("sync는 factory throw도 삼키고 기존 상태를 유지한다") {
-                let noEvaluatorSut = WorkspaceEvaluationManager(
-                    evaluateProcessor: WorkspaceEvaluateProcessor(
-                        evaluatorFactory: WorkspaceRemoteEvaluatorFactory(evaluators: [])
-                    ),
-                    repository: FileWorkspaceEvaluationRepository(fileStorage: MockFileStorage()),
-                    cache: LruWorkspaceEvaluationCache(capacity: 10)
-                )
-
-                await noEvaluatorSut.sync(context: RemoteEvaluateContext.of(user: user(id: "id_1")))
-
-                expect(noEvaluatorSut.workspace(user: user(id: "id_1"))).to(beNil())
-            }
-
-            it("evaluate는 factory throw를 그대로 전파한다") {
-                let noEvaluatorSut = WorkspaceEvaluationManager(
-                    evaluateProcessor: WorkspaceEvaluateProcessor(
-                        evaluatorFactory: WorkspaceRemoteEvaluatorFactory(evaluators: [])
-                    ),
-                    repository: FileWorkspaceEvaluationRepository(fileStorage: MockFileStorage()),
-                    cache: LruWorkspaceEvaluationCache(capacity: 10)
-                )
-
-                await expect {
-                    try await noEvaluatorSut.evaluate(context: RemoteEvaluateContext.of(user: user(id: "id_1")), entities: [])
                 }.to(throwError())
             }
         }
