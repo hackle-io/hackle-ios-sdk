@@ -72,6 +72,24 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             )
         }
 
+        it("when property type matches but key name mismatches, do not count event") {
+            let targetEvents = [
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
+            ]
+
+            verify(
+                targetEvents: targetEvents,
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                    key: Target.Key(type: .eventProperty, name: "productName"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk")])
+                )),
+                operator: .gte,
+                valueType: .number,
+                targetValue: 1,
+                expected: false
+            )
+        }
+
         it("when target event is empty in 30 days, fail") {
             verify(
                 targetEvents: [],

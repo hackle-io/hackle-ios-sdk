@@ -17,7 +17,8 @@ class WorkspaceSpecs: QuickSpec {
             let experiment = workspace.getExperimentOrNil(experimentKey: 42)
             expect(experiment).toNot(beNil())
 
-            // pcid 100538은 fixture상 featureFlag(key 42)의 variation(105052)에 parse-time 부착된다
+            // pcid 100538은 fixture상 어떤 featureFlag의 variation에 parse-time 부착되어 있으며,
+            // 아래 검증은 parse된 그래프 전체(featureFlags의 모든 variation)를 훑어 해당 parameterConfiguration을 찾아낸다
             let config = workspace.featureFlags
                 .flatMap { ($0 as? ExperimentConfig)?.variations ?? [] }
                 .compactMap { $0.parameterConfiguration }
