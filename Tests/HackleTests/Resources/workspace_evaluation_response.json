@@ -15,6 +15,7 @@
         "experiment": {
           "id": 100,
           "key": 10,
+          "order": 100,
           "version": 1,
           "executionVersion": 1,
           "variation": {
@@ -26,13 +27,22 @@
           "config": {
             "id": 9001,
             "parameters": [
-              { "key": "button_color", "value": "blue" }
+              {
+                "key": "button_color",
+                "value": "blue"
+              }
             ]
           },
           "reason": "TRAFFIC_ALLOCATED",
           "references": [
-            { "type": "AB_TEST", "id": 100 },
-            { "type": "UNKNOWN_TYPE", "id": 999 }
+            {
+              "type": "AB_TEST",
+              "id": 100
+            },
+            {
+              "type": "UNKNOWN_TYPE",
+              "id": 999
+            }
           ]
         },
         "featureFlag": null,
@@ -47,6 +57,7 @@
         "featureFlag": {
           "id": 200,
           "key": 20,
+          "order": 200,
           "version": 1,
           "executionVersion": 1,
           "variation": {
@@ -456,7 +467,10 @@
           },
           "reason": "IN_APP_MESSAGE_TARGET",
           "references": [
-            { "type": "IN_APP_MESSAGE", "id": 400 }
+            {
+              "type": "IN_APP_MESSAGE",
+              "id": 400
+            }
           ]
         }
       },

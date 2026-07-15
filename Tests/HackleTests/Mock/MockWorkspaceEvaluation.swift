@@ -53,13 +53,14 @@ class MockWorkspaceEvaluationFetcher: WorkspaceEvaluationFetcher {
 func experimentRemoteResult(
     id: Int64 = 1,
     key: Int64 = 10,
+    order: Int64 = 0,
     type: ExperimentType = .abTest,
     variation: Variation = VariationEntity(id: 42, key: "B", isDropped: false, parameterConfiguration: nil),
     reason: String = DecisionReason.OVERRIDDEN,
     references: [Entity] = []
 ) -> ExperimentRemoteEvaluateResult {
     ExperimentRemoteEvaluateResult(
-        id: id, key: key, version: 1, type: type, executionVersion: 1,
+        id: id, key: key, version: 1, order: order, type: type, executionVersion: 1,
         variation: variation, reason: reason, references: references
     )
 }

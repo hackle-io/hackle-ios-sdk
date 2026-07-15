@@ -11,6 +11,7 @@ class ExplorerExperimentItemLabelSpecs: QuickSpec {
                 id: 1,
                 key: 42,
                 version: 3,
+                order: 0,
                 type: type,
                 executionVersion: 1,
                 variation: VariationEntity(id: 1, key: "A", isDropped: false, parameterConfiguration: nil),

@@ -129,8 +129,8 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
             environmentId: dto.workspace.environment.id,
             evaluatedAt: dto.metadata.evaluatedAt,
             modifiedAt: dto.metadata.config.modifiedAt,
-            experimentResults: experiments,
-            featureFlagResults: featureFlags,
+            experimentResults: experiments.sorted { $0.order < $1.order },
+            featureFlagResults: featureFlags.sorted { $0.order < $1.order },
             remoteConfigParameterResults: remoteConfigParameters,
             inAppMessageResults: inAppMessages
         )

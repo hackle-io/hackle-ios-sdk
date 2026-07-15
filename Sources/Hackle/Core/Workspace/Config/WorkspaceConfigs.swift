@@ -514,6 +514,7 @@ extension ExperimentDto {
             identifierType: identifierType,
             status: experimentStatus,
             version: version,
+            order: order,
             executionVersion: execution.version,
             variations: variation,
             userOverrides: userOverrides,

@@ -6,6 +6,7 @@ extension ExperimentEvaluateResultDto {
             id: id,
             key: key,
             version: version,
+            order: order,
             type: type,
             executionVersion: executionVersion,
             variation: variation.toVariation(parameterConfiguration: config?.toParameterConfiguration()),

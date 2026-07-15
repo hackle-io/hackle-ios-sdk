@@ -30,6 +30,7 @@ class EnvironmentDto: Codable {
 class ExperimentDto: Codable {
     var id: Int64
     var key: Int64
+    var order: Int64
     var name: String?
     var identifierType: String
     var status: String

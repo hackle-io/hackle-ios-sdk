@@ -69,6 +69,7 @@ struct EvaluateResultDto: Codable {
 struct ExperimentEvaluateResultDto: Codable {
     let id: Int64
     let key: Int64
+    let order: Int64
     let version: Int
     let executionVersion: Int
 

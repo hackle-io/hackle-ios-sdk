@@ -41,6 +41,55 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
                 expect(sut.evaluatedAt) == 1720000000000
                 expect(sut.modifiedAt) == "Thu, 10 Jul 2026 00:00:00 GMT"
             }
+
+            it("experimentResults와 featureFlagResults를 order 오름차순으로 정렬한다") {
+                func resultJson(type: String, id: Int64, order: Int64) -> String {
+                    """
+                    {
+                      "type": "\(type)",
+                      "id": \(id),
+                      "hash": 1,
+                      "\(type == "AB_TEST" ? "experiment" : "featureFlag")": {
+                        "id": \(id),
+                        "key": \(id),
+                        "order": \(order),
+                        "version": 1,
+                        "executionVersion": 1,
+                        "variation": {"id": 1, "key": "A", "status": "ACTIVE", "parameterConfigurationId": null},
+                        "config": null,
+                        "reason": "TRAFFIC_ALLOCATED",
+                        "references": []
+                      }
+                    }
+                    """
+                }
+
+                let json = """
+                {
+                  "workspace": {"id": 1, "environment": {"id": 2}},
+                  "results": [
+                    \(resultJson(type: "AB_TEST", id: 1, order: 3)),
+                    \(resultJson(type: "AB_TEST", id: 2, order: 1)),
+                    \(resultJson(type: "AB_TEST", id: 3, order: 2)),
+                    \(resultJson(type: "FEATURE_FLAG", id: 11, order: 3)),
+                    \(resultJson(type: "FEATURE_FLAG", id: 12, order: 1)),
+                    \(resultJson(type: "FEATURE_FLAG", id: 13, order: 2))
+                  ],
+                  "metadata": {
+                    "evaluatedAt": 1720000000000,
+                    "results": {"hash": 1},
+                    "user": {"hash": 1},
+                    "config": {"modifiedAt": "Thu, 10 Jul 2026 00:00:00 GMT"}
+                  }
+                }
+                """
+                let data = json.data(using: .utf8)!
+                let dto = try! JSONDecoder().decode(WorkspaceEvaluationDto.self, from: data)
+                let sut = DefaultWorkspaceEvaluation.from(dto: dto)
+
+                expect(sut.experimentResults.map { $0.order }) == [1, 2, 3]
+                expect(sut.featureFlagResults.map { $0.order }) == [1, 2, 3]
+            }
         }
 
         describe("조회") {

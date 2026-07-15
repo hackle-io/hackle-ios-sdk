@@ -46,6 +46,7 @@ final class MockExperiment: Mock, ExperimentConfig, @unchecked Sendable {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
+    let order: Int64
     let executionVersion: Int
     let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
@@ -64,6 +65,7 @@ final class MockExperiment: Mock, ExperimentConfig, @unchecked Sendable {
         identifierType: String = IdentifierType.id.rawValue,
         status: ExperimentStatus = .running,
         version: Int = 1,
+        order: Int64 = 0,
         executionVersion: Int = 1,
         variations: [Variation] = [],
         userOverrides: [User.Id: Variation.Id] = [:],
@@ -81,6 +83,7 @@ final class MockExperiment: Mock, ExperimentConfig, @unchecked Sendable {
         self.identifierType = identifierType
         self.status = status
         self.version = version
+        self.order = order
         self.executionVersion = executionVersion
         self.variations = variations
         self.userOverrides = userOverrides

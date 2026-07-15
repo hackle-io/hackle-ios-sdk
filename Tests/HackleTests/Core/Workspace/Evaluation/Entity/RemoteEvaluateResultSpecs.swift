@@ -12,6 +12,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 id: 1,
                 key: 10,
                 version: 2,
+                order: 4,
                 type: .abTest,
                 executionVersion: 3,
                 variation: variation,
@@ -24,6 +25,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 expect(sut.entityKey).to(equal(EntityKey(serviceType: .abTest, id: 1)))
                 expect(sut.key).to(equal(10))
                 expect(sut.version).to(equal(2))
+                expect(sut.order).to(equal(4))
                 expect(sut.type).to(equal(.abTest))
                 expect(sut.executionVersion).to(equal(3))
                 expect(sut.variation.id).to(equal(42))
