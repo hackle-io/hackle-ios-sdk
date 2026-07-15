@@ -34,7 +34,7 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
         return cache.get(key: key)?.workspace
     }
 
-    func sync(context: WorkspaceEvaluateContext) async {
+    func sync(context: RemoteEvaluateContext) async {
         do {
             let record = cache.get(key: context.key)
             let request = AllWorkspaceEvaluateRequest(context: context, record: record)
@@ -46,7 +46,7 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
         }
     }
 
-    func evaluate(context: WorkspaceEvaluateContext, entities: [Entity]) async throws -> WorkspaceEvaluation {
+    func evaluate(context: RemoteEvaluateContext, entities: [Entity]) async throws -> WorkspaceEvaluation {
         let request = SpecificWorkspaceEvaluateRequest(context: context, targets: entities)
         let response = try await evaluateProcessor.process(request: request)
         guard let evaluation = response.evaluation else {

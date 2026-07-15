@@ -82,10 +82,10 @@ class AllWorkspaceEvaluateRequest: WorkspaceEvaluateRequest {
     var scope: WorkspaceEvaluateScope {
         .all
     }
-    let context: WorkspaceEvaluateContext
+    let context: RemoteEvaluateContext
     let record: WorkspaceEvaluationContext?
 
-    init(context: WorkspaceEvaluateContext, record: WorkspaceEvaluationContext?) {
+    init(context: RemoteEvaluateContext, record: WorkspaceEvaluationContext?) {
         self.context = context
         self.record = record
     }

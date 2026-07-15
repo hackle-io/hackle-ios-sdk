@@ -82,7 +82,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
             it("FULL 응답이면 캐시에 저장하고 전체 스냅샷을 파일에 저장한다") {
                 allEvaluator.responses = [.success(.of(status: .full, dto: evaluationDto()))]
 
-                let context = WorkspaceEvaluateContext.of(user: user(id: "id_1"))
+                let context = RemoteEvaluateContext.of(user: user(id: "id_1"))
                 await sut.sync(context: context)
 
                 let workspace: WorkspaceEvaluation? = sut.workspace(user: user(id: "id_1"))
@@ -95,7 +95,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                     .success(.of(status: .full, dto: evaluationDto())),
                     .success(.notModified())
                 ]
-                let context = WorkspaceEvaluateContext.of(user: user(id: "id_1"))
+                let context = RemoteEvaluateContext.of(user: user(id: "id_1"))
 
                 await sut.sync(context: context)
                 await sut.sync(context: context)
@@ -111,7 +111,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                     .success(.of(status: .full, dto: evaluationDto())),
                     .success(.notModified())
                 ]
-                let context = WorkspaceEvaluateContext.of(user: user(id: "id_1"))
+                let context = RemoteEvaluateContext.of(user: user(id: "id_1"))
 
                 await sut.sync(context: context)
                 await sut.sync(context: context)
@@ -122,7 +122,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
             it("실패해도 throw하지 않고 로그만 남긴다 (기존 상태 유지)") {
                 allEvaluator.responses = [.failure(HackleError.error("http fail"))]
 
-                await sut.sync(context: WorkspaceEvaluateContext.of(user: user(id: "id_1")))
+                await sut.sync(context: RemoteEvaluateContext.of(user: user(id: "id_1")))
 
                 expect(sut.workspace(user: user(id: "id_1"))).to(beNil())
             }
@@ -135,7 +135,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                     .identifier(.id, "id_1")
                     .identifier(.session, "session_1")
                     .build()
-                await sut.sync(context: WorkspaceEvaluateContext.of(user: syncUser))
+                await sut.sync(context: RemoteEvaluateContext.of(user: syncUser))
 
                 let sameUserNewSession = HackleUser.builder()
                     .identifier(.id, "id_1")
@@ -153,7 +153,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                 specificEvaluator.responses = [.success(.of(status: .full, dto: evaluationDto()))]
 
                 let result = try await sut.evaluate(
-                    context: WorkspaceEvaluateContext.of(user: user(id: "id_1")),
+                    context: RemoteEvaluateContext.of(user: user(id: "id_1")),
                     entities: [DefaultEntity(serviceType: .inAppMessage, id: 400)]
                 )
 
@@ -168,7 +168,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                 specificEvaluator.responses = [.success(.notModified())]
 
                 await expect {
-                    try await sut.evaluate(context: WorkspaceEvaluateContext.of(user: user(id: "id_1")), entities: [])
+                    try await sut.evaluate(context: RemoteEvaluateContext.of(user: user(id: "id_1")), entities: [])
                 }.to(throwError())
             }
         }
@@ -183,7 +183,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                     cache: LruWorkspaceEvaluationCache(capacity: 10)
                 )
 
-                await noEvaluatorSut.sync(context: WorkspaceEvaluateContext.of(user: user(id: "id_1")))
+                await noEvaluatorSut.sync(context: RemoteEvaluateContext.of(user: user(id: "id_1")))
 
                 expect(noEvaluatorSut.workspace(user: user(id: "id_1"))).to(beNil())
             }
@@ -198,7 +198,7 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
                 )
 
                 await expect {
-                    try await noEvaluatorSut.evaluate(context: WorkspaceEvaluateContext.of(user: user(id: "id_1")), entities: [])
+                    try await noEvaluatorSut.evaluate(context: RemoteEvaluateContext.of(user: user(id: "id_1")), entities: [])
                 }.to(throwError())
             }
         }

@@ -177,7 +177,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
 
     private func sync(context: SyncContext) async {
         let hackleUser = hackleUser(user: context.userContext.user)
-        let evaluationContext = WorkspaceEvaluateContext.of(user: hackleUser, operations: context.operations)
+        let evaluationContext = RemoteEvaluateContext.of(user: hackleUser, operations: context.operations)
         await evaluationManager.sync(context: evaluationContext)
     }
 

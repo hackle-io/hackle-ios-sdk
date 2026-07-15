@@ -75,10 +75,10 @@ class WorkspaceEvaluationContextSpecs: QuickSpec {
             }
         }
 
-        describe("WorkspaceEvaluateContext") {
+        describe("RemoteEvaluateContext") {
             it("of(user:)는 platformType ios, empty operations로 만든다") {
                 let user = HackleUser.builder().identifier(.id, "id_1").build()
-                let context = WorkspaceEvaluateContext.of(user: user)
+                let context = RemoteEvaluateContext.of(user: user)
 
                 expect(context.platformType) == PlatformType.ios
                 expect(context.operations.count) == 0
@@ -95,13 +95,13 @@ class WorkspaceEvaluationContextSpecs: QuickSpec {
                     .set("grade", "GOLD")
                     .build()
 
-                let dto = WorkspaceEvaluateContext.of(user: user, operations: operations).toDto()
+                let dto = RemoteEvaluateContext.of(user: user, operations: operations).toDto()
 
                 expect(dto.platformType) == "IOS"
                 expect(dto.user.identifiers) == ["$id": "id_1"]
                 expect(dto.user.userProperties["age"] as? Int) == 30
                 expect(dto.user.hackleProperties["platform"] as? String) == "iOS"
-                expect((dto.operations["$set"] as? [String: Any])?["grade"] as? String) == "GOLD"
+                expect(dto.operations["$set"]?["grade"] as? String) == "GOLD"
             }
         }
     }

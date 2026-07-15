@@ -13,8 +13,8 @@ class AllWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
             return try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
         }
 
-        func context() -> WorkspaceEvaluateContext {
-            WorkspaceEvaluateContext.of(user: HackleUser.builder().identifier(.id, "id_1").build())
+        func context() -> RemoteEvaluateContext {
+            RemoteEvaluateContext.of(user: HackleUser.builder().identifier(.id, "id_1").build())
         }
 
         func record() -> WorkspaceEvaluationContext {

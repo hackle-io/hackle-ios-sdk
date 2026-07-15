@@ -1,6 +1,6 @@
 import Foundation
 
-struct WorkspaceEvaluateContext {
+struct RemoteEvaluateContext {
 
     let platformType: PlatformType
     let user: HackleUser
@@ -10,23 +10,23 @@ struct WorkspaceEvaluateContext {
         WorkspaceEvaluationContext.keyOf(user: user)
     }
 
-    static func of(user: HackleUser, operations: PropertyOperations) -> WorkspaceEvaluateContext {
-        WorkspaceEvaluateContext(platformType: .ios, user: user, operations: operations)
+    static func of(user: HackleUser, operations: PropertyOperations) -> RemoteEvaluateContext {
+        RemoteEvaluateContext(platformType: .ios, user: user, operations: operations)
     }
 
-    static func of(user: HackleUser) -> WorkspaceEvaluateContext {
+    static func of(user: HackleUser) -> RemoteEvaluateContext {
         of(user: user, operations: PropertyOperations.empty())
     }
 
-    func toDto() -> WorkspaceEvaluateContextDto {
-        WorkspaceEvaluateContextDto(
+    func toDto() -> RemoteEvaluateContextDto {
+        RemoteEvaluateContextDto(
             platformType: platformType.rawValue,
             user: HackleUserDto(
                 identifiers: user.identifiers,
                 userProperties: user.properties,
                 hackleProperties: user.hackleProperties
             ),
-            operations: operations.asDictionary().reduce(into: [String: Any]()) { acc, entry in
+            operations: operations.asDictionary().reduce(into: [String: [String: Any]]()) { acc, entry in
                 acc[entry.key.rawValue] = entry.value
             }
         )

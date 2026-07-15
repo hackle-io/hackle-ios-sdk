@@ -35,7 +35,7 @@ class InAppMessageDeliverRemoteEvaluator: InAppMessageDeliverEvaluator {
         if !response.eligibilityEvaluation.eligibilityResult.isEligible {
             return workspace
         }
-        return try await workspaceManager.evaluate(context: WorkspaceEvaluateContext.of(user: user), entities: [inAppMessage])
+        return try await workspaceManager.evaluate(context: RemoteEvaluateContext.of(user: user), entities: [inAppMessage])
     }
 
     private func evaluate(

@@ -141,7 +141,7 @@ extension InAppMessageDto {
 struct WorkspaceEvaluateRequestDto {
     let scope: String // ALL, SPECIFIC
     let policy: String // AUTO, FORCE_FULL
-    let context: WorkspaceEvaluateContextDto
+    let context: RemoteEvaluateContextDto
     let entities: [EvaluateEntityDto]
     let current: WorkspaceEvaluationMetadataDto?
 
@@ -161,10 +161,10 @@ struct WorkspaceEvaluateRequestDto {
     }
 }
 
-struct WorkspaceEvaluateContextDto {
+struct RemoteEvaluateContextDto {
     let platformType: String // ANDROID, IOS, WEB
     let user: HackleUserDto
-    let operations: [String: Any]
+    let operations: [String: [String: Any]]
 
     func toBody() -> [String: Any] {
         [

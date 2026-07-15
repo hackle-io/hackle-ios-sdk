@@ -11,7 +11,7 @@ class WorkspaceRemoteEvaluateClientSpecs: AsyncSpec {
             WorkspaceEvaluateRequestDto(
                 scope: "ALL",
                 policy: "FORCE_FULL",
-                context: WorkspaceEvaluateContextDto(
+                context: RemoteEvaluateContextDto(
                     platformType: "IOS",
                     user: HackleUserDto(identifiers: ["$id": "id_1"], userProperties: ["age": 30], hackleProperties: [:]),
                     operations: ["$set": ["grade": "GOLD"]]

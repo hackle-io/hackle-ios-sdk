@@ -40,7 +40,7 @@ class SpecificWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
         it("항상 FORCE_FULL + targets의 serviceType/id(hash 없음)로 요청하고 응답을 FULL로 취급한다") {
             let user = HackleUser.builder().identifier(.id, "id_1").build()
             let request = SpecificWorkspaceEvaluateRequest(
-                context: WorkspaceEvaluateContext.of(user: user),
+                context: RemoteEvaluateContext.of(user: user),
                 targets: [DefaultEntity(serviceType: .inAppMessage, id: 400)]
             )
 
@@ -61,7 +61,7 @@ class SpecificWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
 
         it("지원하지 않는 request 타입이면 throw한다") {
             let user = HackleUser.builder().identifier(.id, "id_1").build()
-            let request = AllWorkspaceEvaluateRequest(context: WorkspaceEvaluateContext.of(user: user), record: nil)
+            let request = AllWorkspaceEvaluateRequest(context: RemoteEvaluateContext.of(user: user), record: nil)
 
             await expect {
                 try await sut.evaluate(request: request)

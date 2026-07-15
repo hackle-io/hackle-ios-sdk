@@ -33,10 +33,10 @@ class SpecificWorkspaceEvaluateRequest: WorkspaceEvaluateRequest {
     var scope: WorkspaceEvaluateScope {
         .specific
     }
-    let context: WorkspaceEvaluateContext
+    let context: RemoteEvaluateContext
     let targets: [Entity]
 
-    init(context: WorkspaceEvaluateContext, targets: [Entity]) {
+    init(context: RemoteEvaluateContext, targets: [Entity]) {
         self.context = context
         self.targets = targets
     }
