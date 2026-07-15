@@ -128,5 +128,6 @@ jobs:
                 -only-testing:HackleTests/DelegatingMetricRegistrySpecs/concurrency \
                 -only-testing:HackleTests/MetricsRaceSpecs \
                 -only-testing:HackleTests/UserManagerRaceSpecs \
+                -only-testing:HackleTests/WorkspaceConfigManagerRaceSpecs \
                 -parallel-testing-enabled NO \
                 | xcbeautify --renderer github-actions --quiet

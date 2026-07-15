@@ -57,12 +57,6 @@ class MockWorkspace: Mock, WorkspaceConfig {
         call(getContainerOrNilMock, args: containerId)
     }
 
-    lazy var getParameterConfigurationOrNilMock = MockFunction(self, getParameterConfigurationOrNil)
-
-    func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration? {
-        call(getParameterConfigurationOrNilMock, args: parameterConfigurationId)
-    }
-
     lazy var getRemoteConfigParameterMock = MockFunction(self, getRemoteConfigParameterOrNil)
 
     func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {

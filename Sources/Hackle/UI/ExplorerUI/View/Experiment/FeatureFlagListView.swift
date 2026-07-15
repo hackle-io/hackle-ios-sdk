@@ -54,13 +54,16 @@ struct FeatureFlagListView: View {
     }
 }
 
-private extension HackleFeatureFlagItem {
+extension HackleFeatureFlagItem {
     var keyLabel: String {
         "[\(experiment.key)] \((experiment as? ExperimentConfig)?.name ?? "")"
     }
 
     var descLabel: String {
-        "\((experiment as? ExperimentConfig)?.status.rawValue ?? "") | \((experiment as? ExperimentConfig)?.identifierType ?? "")"
+        guard let config = experiment as? ExperimentConfig else {
+            return ""
+        }
+        return "\(config.status.rawValue) | \(config.identifierType)"
     }
 }
 

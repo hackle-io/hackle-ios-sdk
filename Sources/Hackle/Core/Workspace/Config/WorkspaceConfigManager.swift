@@ -10,7 +10,7 @@ class WorkspaceConfigManager: WorkspaceManager, WorkspaceConfigFetcher, Synchron
     private let httpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher
     private let repository: WorkspaceConfigRepository
 
-    private var context: WorkspaceConfigContext? = nil
+    private let context = AtomicReference<WorkspaceConfigContext?>(value: nil)
 
     init(httpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher, repository: WorkspaceConfigRepository) {
         self.httpWorkspaceConfigFetcher = httpWorkspaceConfigFetcher
@@ -22,19 +22,20 @@ class WorkspaceConfigManager: WorkspaceManager, WorkspaceConfigFetcher, Synchron
     }
 
     func metadata() -> WorkspaceMetadata? {
-        context?.workspace.metadata
+        context.get()?.workspace.metadata
     }
 
     func workspace(user: HackleUser) -> Workspace? {
-        context?.workspace
+        context.get()?.workspace
     }
 
     func workspace(user: HackleUser) -> WorkspaceConfig? {
-        context?.workspace
+        context.get()?.workspace
     }
 
     func sync() async throws {
-        let context = try await httpWorkspaceConfigFetcher.fetchIfModified(lastModified: self.context?.modifiedAt)
+        let lastModified = context.get()?.modifiedAt
+        let context = try await httpWorkspaceConfigFetcher.fetchIfModified(lastModified: lastModified)
         store(context: context)
     }
 
@@ -42,13 +43,13 @@ class WorkspaceConfigManager: WorkspaceManager, WorkspaceConfigFetcher, Synchron
         guard let context else {
             return
         }
-        self.context = context
+        self.context.set(newValue: context)
         repository.set(value: context)
     }
 
     private func load() {
         if let context = repository.get() {
-            self.context = context
+            self.context.set(newValue: context)
             Log.debug("WorkspaceConfig loaded: [modifiedAt: \(context.modifiedAt ?? "nil")]")
         }
     }
