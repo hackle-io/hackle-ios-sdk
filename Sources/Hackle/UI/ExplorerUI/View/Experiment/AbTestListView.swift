@@ -53,18 +53,21 @@ struct AbTestListView: View {
     }
 }
 
-private extension HackleAbTestItem {
+extension HackleAbTestItem {
     var keyLabel: String {
         "[\(experiment.key)] \((experiment as? ExperimentConfig)?.name ?? "")"
     }
 
     var descLabel: String {
-        [
-            "V\(experiment.version)",
-            (experiment as? ExperimentConfig)?.status.rawValue ?? "",
-            ((experiment as? ExperimentConfig)?.variations ?? []).map(\.key)
+        guard let config = experiment as? ExperimentConfig else {
+            return ""
+        }
+        return [
+            "V\(config.version)",
+            config.status.rawValue,
+            config.variations.map(\.key)
                 .joined(separator: "/"),
-            (experiment as? ExperimentConfig)?.identifierType ?? ""
+            config.identifierType
         ]
             .joined(separator: " | ")
     }
