@@ -17,7 +17,11 @@ class WorkspaceSpecs: QuickSpec {
             let experiment = workspace.getExperimentOrNil(experimentKey: 42)
             expect(experiment).toNot(beNil())
 
-            let config = workspace.getParameterConfigurationOrNil(parameterConfigurationId: 100538)
+            // pcid 100538은 fixture상 featureFlag(key 42)의 variation(105052)에 parse-time 부착된다
+            let config = workspace.featureFlags
+                .flatMap { ($0 as? ExperimentConfig)?.variations ?? [] }
+                .compactMap { $0.parameterConfiguration }
+                .first { $0.id == 100538 }
             expect(config).toNot(beNil())
 
             expect(config?.getInt(forKey: "int1", defaultValue: 42)) == 1
@@ -49,9 +53,8 @@ class WorkspaceSpecs: QuickSpec {
             }!
             let variation = ((experiment as? ExperimentConfig)?.variations ?? []).first { $0.parameterConfiguration != nil }!
 
-            // parse-time resolve 된 객체가 workspace 조회 결과와 동일 id
-            let expected = workspace.getParameterConfigurationOrNil(parameterConfigurationId: variation.parameterConfiguration!.id)
-            expect(variation.parameterConfiguration?.id) == expected?.id
+            // parse-time resolve 된 객체는 dto의 parameterConfigurationId(100550)여야 한다 (variation.id 223310로 오조회 금지)
+            expect(variation.parameterConfiguration?.id) == 100550
             expect(variation.parameterConfiguration?.id) != variation.id
         }
     }

@@ -9,7 +9,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
     private let buckets: [Bucket.Id: Bucket]
     private let segments: [Segment.Key: Segment]
     private let containers: [Container.Id: Container]
-    private let parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]
     private let _remoteConfigParameters: [RemoteConfigParameter.Key: RemoteConfigParameter]
 
     private let _experiments: [Experiment.Key: Experiment]
@@ -25,7 +24,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
         buckets: [Bucket],
         segments: [Segment],
         containers: [Container],
-        parameterConfigurations: [ParameterConfiguration],
         remoteConfigParameters: [RemoteConfigParameter],
         inAppMessages: [InAppMessage]
     ) {
@@ -41,9 +39,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             $0.key
         }
         self.containers = containers.associateBy {
-            $0.id
-        }
-        self.parameterConfigurations = parameterConfigurations.associateBy {
             $0.id
         }
         self._remoteConfigParameters = remoteConfigParameters.associateBy {
@@ -79,10 +74,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
 
     func getContainerOrNil(containerId: Container.Id) -> Container? {
         containers[containerId]
-    }
-
-    func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration? {
-        parameterConfigurations[parameterConfigurationId]
     }
 
     func getRemoteConfigParameterOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameter? {
@@ -161,7 +152,6 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
             buckets: buckets,
             segments: segments,
             containers: containers,
-            parameterConfigurations: parameterConfigurations,
             remoteConfigParameters: remoteConfigParameters,
             inAppMessages: inAppMessages
         )

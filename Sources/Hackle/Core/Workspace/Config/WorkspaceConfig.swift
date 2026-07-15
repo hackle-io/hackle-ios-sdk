@@ -11,5 +11,4 @@ protocol WorkspaceConfig: Workspace {
     func getBucketOrNil(bucketId: Bucket.Id) -> Bucket?
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment?
     func getContainerOrNil(containerId: Container.Id) -> Container?
-    func getParameterConfigurationOrNil(parameterConfigurationId: ParameterConfiguration.Id) -> ParameterConfiguration?
 }

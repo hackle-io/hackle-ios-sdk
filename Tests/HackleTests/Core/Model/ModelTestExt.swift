@@ -20,7 +20,6 @@ extension DefaultWorkspaceConfig {
         buckets: [Bucket] = [],
         segments: [Segment] = [],
         containers: [Container] = [],
-        parameterConfigurations: [ParameterConfiguration] = [],
         remoteConfigParameters: [RemoteConfigParameter] = [],
         inAppMessages: [InAppMessage] = []
     ) -> DefaultWorkspaceConfig {
@@ -33,7 +32,6 @@ extension DefaultWorkspaceConfig {
             buckets: buckets,
             segments: segments,
             containers: containers,
-            parameterConfigurations: parameterConfigurations,
             remoteConfigParameters: remoteConfigParameters,
             inAppMessages: inAppMessages
         )
