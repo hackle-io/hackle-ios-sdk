@@ -34,6 +34,7 @@ extension InAppMessageDto {
         return InAppMessageEntity(
             id: id,
             key: key,
+            order: order,
             status: status,
             period: period,
             timetable: timetable,

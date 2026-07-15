@@ -25,6 +25,7 @@ class InAppMessageExtSpecs: QuickSpec {
                 let msg = InAppMessageEntity(
                     id: 1,
                     key: 1,
+                    order: 0,
                     status: .active,
                     period: .always,
                     timetable: .all,

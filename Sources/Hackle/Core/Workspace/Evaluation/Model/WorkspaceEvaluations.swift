@@ -89,6 +89,7 @@ extension InAppMessageEligibilityEvaluateResultDto {
         let layoutResult = InAppMessageLayoutRemoteEvaluateResult(
             id: id,
             key: key,
+            order: order,
             period: period,
             timetable: timetable,
             eventTrigger: eventTrigger,
@@ -104,6 +105,7 @@ extension InAppMessageEligibilityEvaluateResultDto {
         return InAppMessageEligibilityRemoteEvaluateResult(
             id: id,
             key: key,
+            order: order,
             period: period,
             timetable: timetable,
             eventTrigger: eventTrigger,

@@ -132,7 +132,7 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
             experimentResults: experiments.sorted { $0.order < $1.order },
             featureFlagResults: featureFlags.sorted { $0.order < $1.order },
             remoteConfigParameterResults: remoteConfigParameters,
-            inAppMessageResults: inAppMessages
+            inAppMessageResults: inAppMessages.sorted { $0.order < $1.order }
         )
     }
 }

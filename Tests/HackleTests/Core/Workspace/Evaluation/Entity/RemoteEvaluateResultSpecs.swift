@@ -80,7 +80,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
 
             it("eligibility result is an InAppMessage entity holding layout result") {
                 let layout = InAppMessageLayoutRemoteEvaluateResult(
-                    id: 5, key: 50,
+                    id: 5, key: 50, order: 6,
                     period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
                     evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
                     message: iam.messageContext.messages[0],
@@ -88,7 +88,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                     references: []
                 )
                 let sut = InAppMessageEligibilityRemoteEvaluateResult(
-                    id: 5, key: 50,
+                    id: 5, key: 50, order: 6,
                     period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
                     evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
                     isEligible: true,
@@ -98,6 +98,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 )
                 expect(sut.serviceType).to(equal(.inAppMessage))
                 expect(sut.entityKey).to(equal(EntityKey(serviceType: .inAppMessage, id: 5)))
+                expect(sut.order).to(equal(6))
                 expect(sut.isEligible).to(beTrue())
                 expect(sut.reason).to(equal(DecisionReason.IN_APP_MESSAGE_TARGET))
                 expect(sut.layout.entityKey).to(equal(layout.entityKey))

@@ -118,6 +118,7 @@
         "inAppMessage": {
           "id": 400,
           "key": 40,
+          "order": 400,
           "period": {
             "type": "CUSTOM",
             "startMillisInclusive": 42000,

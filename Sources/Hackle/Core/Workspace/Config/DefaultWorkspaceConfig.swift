@@ -141,7 +141,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
 
         let inAppMessages = dto.inAppMessages.compactMap { it in
             it.toInAppMessageOrNil()
-        }
+        }.sorted { $0.order < $1.order }
 
         return DefaultWorkspaceConfig(
             id: workspaceId,

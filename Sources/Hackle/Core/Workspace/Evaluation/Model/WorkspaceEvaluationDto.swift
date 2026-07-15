@@ -92,6 +92,7 @@ struct RemoteConfigParameterEvaluateResultDto: Codable {
 struct InAppMessageEligibilityEvaluateResultDto: Codable {
     let id: Int64
     let key: Int64
+    let order: Int64
 
     // Period
     let period: InAppMessageDto.PeriodDto?

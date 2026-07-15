@@ -33,6 +33,7 @@ protocol InAppMessage: Entity, HackleInAppMessage, Sendable {
 
     var id: Id { get }
     var key: Key { get }
+    var order: Int64 { get }
     var period: Period { get }
     var timetable: Timetable { get }
     var eventTrigger: EventTrigger { get }
@@ -49,6 +50,7 @@ extension InAppMessage {
 final class InAppMessageEntity: InAppMessageConfig, Sendable {
     let id: Id
     let key: Key
+    let order: Int64
     let status: Status
     let period: Period
     let timetable: Timetable
@@ -60,6 +62,7 @@ final class InAppMessageEntity: InAppMessageConfig, Sendable {
     init(
         id: Id,
         key: Key,
+        order: Int64,
         status: Status,
         period: Period,
         timetable: Timetable,
@@ -70,6 +73,7 @@ final class InAppMessageEntity: InAppMessageConfig, Sendable {
     ) {
         self.id = id
         self.key = key
+        self.order = order
         self.status = status
         self.period = period
         self.timetable = timetable
@@ -89,9 +93,28 @@ extension InAppMessageEntity {
         case finished = "FINISHED"
     }
 
+    enum PeriodType: String {
+        case immediate = "IMMEDIATE"
+        case custom = "CUSTOM"
+    }
+
+    enum TimetableType: String {
+        case all = "ALL"
+        case custom = "CUSTOM"
+    }
+
     enum Period {
         case always
         case range(startInclusive: Date, endExclusive: Date)
+
+        var type: PeriodType {
+            switch self {
+            case .always:
+                return .immediate
+            case .range:
+                return .custom
+            }
+        }
 
         func within(date: Date) -> Bool {
             switch self {
@@ -106,6 +129,15 @@ extension InAppMessageEntity {
     enum Timetable {
         case all
         case custom(slots: [TimetableSlot])
+
+        var type: TimetableType {
+            switch self {
+            case .all:
+                return .all
+            case .custom:
+                return .custom
+            }
+        }
 
         func within(date: Date) -> Bool {
             switch self {

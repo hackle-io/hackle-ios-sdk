@@ -90,6 +90,74 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
                 expect(sut.experimentResults.map { $0.order }) == [1, 2, 3]
                 expect(sut.featureFlagResults.map { $0.order }) == [1, 2, 3]
             }
+
+            it("inAppMessageResults를 order 오름차순으로 정렬한다") {
+                func resultJson(id: Int64, order: Int64) -> String {
+                    """
+                    {
+                      "type": "IN_APP_MESSAGE",
+                      "id": \(id),
+                      "hash": 1,
+                      "inAppMessage": {
+                        "id": \(id),
+                        "key": \(id),
+                        "order": \(order),
+                        "period": null,
+                        "timetable": null,
+                        "eventTriggerRules": [],
+                        "eventFrequencyCap": null,
+                        "eventTriggerDelay": null,
+                        "evaluateContext": {"atDeliverTime": false},
+                        "messageContext": {
+                          "defaultLang": "ko",
+                          "exposure": {"type": "DEFAULT", "key": null},
+                          "platformTypes": ["IOS"],
+                          "orientations": ["VERTICAL"],
+                          "messages": []
+                        },
+                        "isEligible": true,
+                        "layout": {
+                          "message": {
+                            "lang": "ko",
+                            "layout": {"displayType": "MODAL", "layoutType": "IMAGE_ONLY", "alignment": null},
+                            "images": [],
+                            "buttons": [],
+                            "background": {"color": "#FFFFFF"},
+                            "outerButtons": [],
+                            "innerButtons": []
+                          },
+                          "reason": "LAYOUT_REASON",
+                          "references": []
+                        },
+                        "reason": "IN_APP_MESSAGE_TARGET",
+                        "references": []
+                      }
+                    }
+                    """
+                }
+
+                let json = """
+                {
+                  "workspace": {"id": 1, "environment": {"id": 2}},
+                  "results": [
+                    \(resultJson(id: 1, order: 3)),
+                    \(resultJson(id: 2, order: 1)),
+                    \(resultJson(id: 3, order: 2))
+                  ],
+                  "metadata": {
+                    "evaluatedAt": 1720000000000,
+                    "results": {"hash": 1},
+                    "user": {"hash": 1},
+                    "config": {"modifiedAt": "Thu, 10 Jul 2026 00:00:00 GMT"}
+                  }
+                }
+                """
+                let data = json.data(using: .utf8)!
+                let dto = try! JSONDecoder().decode(WorkspaceEvaluationDto.self, from: data)
+                let sut = DefaultWorkspaceEvaluation.from(dto: dto)
+
+                expect(sut.inAppMessageResults.map { $0.order }) == [1, 2, 3]
+            }
         }
 
         describe("조회") {

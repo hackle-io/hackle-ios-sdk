@@ -12,6 +12,7 @@ extension InAppMessageEntity {
     static func create(
         id: Id = 1,
         key: Key = 1,
+        order: Int64 = 0,
         status: Status = .active,
         period: Period = .always,
         timetable: Timetable = .all,
@@ -23,6 +24,7 @@ extension InAppMessageEntity {
         InAppMessageEntity(
             id: id,
             key: key,
+            order: order,
             status: status,
             period: period,
             timetable: timetable,
