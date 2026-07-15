@@ -19,12 +19,12 @@ class RemoteConfigRemoteEvaluatorSpecs: QuickSpec {
             )
         }
 
-        func request(result: RemoteConfigParameterRemoteEvaluateResult) -> RemoteConfigRemoteEvaluateRequest {
+        func request(result: RemoteConfigParameterRemoteEvaluateResult, requiredType: HackleValueType = .string) -> RemoteConfigRemoteEvaluateRequest {
             RemoteConfigRemoteEvaluateRequest.of(
                 workspace: MockWorkspaceEvaluation(),
                 parameter: result,
                 user: HackleUser.builder().build(),
-                requiredType: .string
+                requiredType: requiredType
             )
         }
 
@@ -51,6 +51,47 @@ class RemoteConfigRemoteEvaluatorSpecs: QuickSpec {
             verify(exactly: 1) {
                 eventProcessor.processMock
             }
+        }
+
+        func makeEvaluator() -> RemoteConfigRemoteEvaluator {
+            RemoteConfigRemoteEvaluator(
+                eventRecorder: EvaluationEventRecorder(
+                    eventFactory: EvaluationEventFactory(clock: SystemClock.shared),
+                    eventProcessor: MockUserEventProcessor()
+                )
+            )
+        }
+
+        it("requiredType과 값 타입이 일치하지 않으면 TYPE_MISMATCH로 반환한다 (value 유지)") {
+            let localSut = makeEvaluator()
+            let result = remoteConfigRemoteResult(value: RemoteConfigParameter.Value(id: 7, rawValue: HackleValue.string("v")), reason: DecisionReason.TARGET_RULE_MATCH)
+
+            let response: RemoteConfigEvaluateResponse = try localSut.evaluate(request: request(result: result, requiredType: .number), context: Evaluators.context())
+
+            expect(response.remoteConfigEvaluation.remoteConfigResult.reason) == DecisionReason.TYPE_MISMATCH
+            expect(response.remoteConfigEvaluation.remoteConfigResult.value?.id) == 7
+            expect(response.remoteConfigEvaluation.remoteConfigResult.value?.rawValue) == HackleValue.string("v")
+        }
+
+        it("requiredType과 값 타입이 일치하면 entity의 reason을 유지한다") {
+            let localSut = makeEvaluator()
+            let result = remoteConfigRemoteResult(value: RemoteConfigParameter.Value(id: 7, rawValue: HackleValue.string("v")), reason: DecisionReason.TARGET_RULE_MATCH)
+
+            let response: RemoteConfigEvaluateResponse = try localSut.evaluate(request: request(result: result, requiredType: .string), context: Evaluators.context())
+
+            expect(response.remoteConfigEvaluation.remoteConfigResult.reason) == DecisionReason.TARGET_RULE_MATCH
+            expect(response.remoteConfigEvaluation.remoteConfigResult.value?.id) == 7
+            expect(response.remoteConfigEvaluation.remoteConfigResult.value?.rawValue) == HackleValue.string("v")
+        }
+
+        it("entity의 value가 nil이면 타입 검사 없이 reason을 유지한다") {
+            let localSut = makeEvaluator()
+            let result = remoteConfigRemoteResult(value: nil, reason: DecisionReason.SDK_NOT_READY)
+
+            let response: RemoteConfigEvaluateResponse = try localSut.evaluate(request: request(result: result, requiredType: .string), context: Evaluators.context())
+
+            expect(response.remoteConfigEvaluation.remoteConfigResult.reason) == DecisionReason.SDK_NOT_READY
+            expect(response.remoteConfigEvaluation.remoteConfigResult.value).to(beNil())
         }
     }
 }

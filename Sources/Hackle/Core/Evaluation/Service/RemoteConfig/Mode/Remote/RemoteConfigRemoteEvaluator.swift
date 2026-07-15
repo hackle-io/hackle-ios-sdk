@@ -12,6 +12,7 @@ final class RemoteConfigRemoteEvaluator: RemoteEvaluator, RemoteConfigEvaluator 
     }
 
     func remoteEvaluate(request: RemoteConfigRemoteEvaluateRequest, context: EvaluatorContext) throws -> RemoteConfigEvaluateResponse {
-        RemoteConfigEvaluateResponse.of(request: request, context: context, result: request.result)
+        let result = RemoteConfigEvaluateResult.of(request: request, value: request.result.value, reason: request.result.reason)
+        return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
     }
 }
