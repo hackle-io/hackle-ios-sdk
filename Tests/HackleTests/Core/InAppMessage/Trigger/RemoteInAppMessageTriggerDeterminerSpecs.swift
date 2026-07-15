@@ -54,7 +54,7 @@ class RemoteInAppMessageTriggerDeterminerSpecs: QuickSpec {
         }
 
         it("matcher가 매칭되고 eligibility가 eligible이면 trigger를 반환한다") {
-            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: evaluationDto()))
+            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: evaluationDto(), fullEvaluatedAt: 0))
             // eventMatcher가 모든 IAM에 대해 true를 반환하도록 스텁 (기존 Mock의 등록 관례 사용)
             every(eventMatcher.matchesMock).returns(true)
 
@@ -65,7 +65,7 @@ class RemoteInAppMessageTriggerDeterminerSpecs: QuickSpec {
         }
 
         it("matcher가 매칭되지 않으면 nil을 반환한다") {
-            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: evaluationDto()))
+            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: evaluationDto(), fullEvaluatedAt: 0))
             every(eventMatcher.matchesMock).returns(false)
 
             let trigger = try sut.determine(event: trackEvent(key: "view_home"))

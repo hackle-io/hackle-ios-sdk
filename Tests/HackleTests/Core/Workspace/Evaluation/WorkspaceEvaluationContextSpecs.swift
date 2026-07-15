@@ -63,15 +63,17 @@ class WorkspaceEvaluationContextSpecs: QuickSpec {
                 let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
 
                 let key = WorkspaceEvaluationContext.Key(identifiers: ["$id": "id_1"])
-                let context = WorkspaceEvaluationContext.of(key: key, dto: dto)
+                let context = WorkspaceEvaluationContext.of(key: key, dto: dto, fullEvaluatedAt: 1720000000000)
 
                 expect(context.key) == key
                 expect(context.workspace.metadata.id) == 1
                 expect(context.dto.results.count) == dto.results.count
+                expect(context.fullEvaluatedAt) == 1720000000000
 
-                let record = WorkspaceEvaluationRecordDto(key: ["$id": "id_1"], evaluation: dto)
+                let record = WorkspaceEvaluationContextDto(key: ["$id": "id_1"], evaluation: dto, fullEvaluatedAt: 1720000000000)
                 let restored = WorkspaceEvaluationContext.from(dto: record)
                 expect(restored.key) == key
+                expect(restored.fullEvaluatedAt) == 1720000000000
             }
         }
 

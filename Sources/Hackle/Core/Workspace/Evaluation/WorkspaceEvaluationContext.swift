@@ -5,6 +5,7 @@ struct WorkspaceEvaluationContext: WorkspaceContext {
     let workspace: WorkspaceEvaluation
     let key: Key
     let dto: WorkspaceEvaluationDto // delta 병합·재직렬화용 원본 보존
+    let fullEvaluatedAt: Int64
 
     struct Key: Hashable {
         let identifiers: [String: String]
@@ -15,16 +16,17 @@ extension WorkspaceEvaluationContext {
 
     private static let EXCLUDED: Set<String> = [IdentifierType.session.rawValue, IdentifierType.hackleDevice.rawValue]
 
-    static func of(key: Key, dto: WorkspaceEvaluationDto) -> WorkspaceEvaluationContext {
+    static func of(key: Key, dto: WorkspaceEvaluationDto, fullEvaluatedAt: Int64) -> WorkspaceEvaluationContext {
         WorkspaceEvaluationContext(
-            workspace: DefaultWorkspaceEvaluation.from(dto: dto),
+            workspace: DefaultWorkspaceEvaluation.from(dto: dto, fullEvaluatedAt: fullEvaluatedAt),
             key: key,
-            dto: dto
+            dto: dto,
+            fullEvaluatedAt: fullEvaluatedAt
         )
     }
 
-    static func from(dto: WorkspaceEvaluationRecordDto) -> WorkspaceEvaluationContext {
-        of(key: Key(identifiers: dto.key), dto: dto.evaluation)
+    static func from(dto: WorkspaceEvaluationContextDto) -> WorkspaceEvaluationContext {
+        of(key: Key(identifiers: dto.key), dto: dto.evaluation, fullEvaluatedAt: dto.fullEvaluatedAt)
     }
 
     static func keyOf(user: HackleUser) -> Key {

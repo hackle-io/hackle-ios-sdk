@@ -61,7 +61,8 @@ class WorkspaceEvaluationManagerSpecs: AsyncSpec {
             it("파일에 저장된 record를 캐시로 복원한다") {
                 let record = WorkspaceEvaluationContext.of(
                     key: WorkspaceEvaluationContext.keyOf(user: user(id: "id_1")),
-                    dto: evaluationDto()
+                    dto: evaluationDto(),
+                    fullEvaluatedAt: 0
                 )
                 repository.set(records: [record])
 

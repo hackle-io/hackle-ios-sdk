@@ -2,9 +2,10 @@ import Foundation
 
 // MARK: - 저장 (workspace_evaluation.json)
 
-struct WorkspaceEvaluationRecordDto: Codable {
+struct WorkspaceEvaluationContextDto: Codable {
     let key: [String: String] // identifiers
     let evaluation: WorkspaceEvaluationDto
+    let fullEvaluatedAt: Int64
 }
 
 // MARK: - 응답

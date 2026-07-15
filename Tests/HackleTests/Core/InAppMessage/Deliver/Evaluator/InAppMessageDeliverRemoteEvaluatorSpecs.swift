@@ -73,7 +73,7 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
         }
 
         func cacheWorkspace(dto: WorkspaceEvaluationDto) {
-            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: dto))
+            _ = cache.put(record: WorkspaceEvaluationContext.of(key: WorkspaceEvaluationContext.keyOf(user: user()), dto: dto, fullEvaluatedAt: 0))
         }
 
         it("workspace가 없으면 WORKSPACE_NOT_FOUND ineligible이다") {

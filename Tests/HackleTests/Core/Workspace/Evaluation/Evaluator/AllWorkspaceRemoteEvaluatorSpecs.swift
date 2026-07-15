@@ -18,7 +18,7 @@ class AllWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
         }
 
         func record() -> WorkspaceEvaluationContext {
-            WorkspaceEvaluationContext.of(key: context().key, dto: evaluationDto())
+            WorkspaceEvaluationContext.of(key: context().key, dto: evaluationDto(), fullEvaluatedAt: 0)
         }
 
         // 응답 JSON을 만들어 반환하는 헬퍼: status/evaluation/deleted를 dict로 조립 후 직렬화

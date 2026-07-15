@@ -21,12 +21,12 @@ class FileWorkspaceEvaluationRepository: WorkspaceEvaluationRepository {
         }
         do {
             let data = try fileStorage.read(filename: FileWorkspaceEvaluationRepository.FILE_NAME)
-            let records = try JSONDecoder().decode([WorkspaceEvaluationRecordDto].self, from: data)
-            return records.map { it in
+            let contexts = try JSONDecoder().decode([WorkspaceEvaluationContextDto].self, from: data)
+            return contexts.map { it in
                 WorkspaceEvaluationContext.from(dto: it)
             }
         } catch {
-            Log.error("Failed to read WorkspaceEvaluationRecord: \(error)")
+            Log.error("Failed to read WorkspaceEvaluationContext: \(error)")
             try? fileStorage.delete(filename: FileWorkspaceEvaluationRepository.FILE_NAME)
             return []
         }
@@ -38,12 +38,12 @@ class FileWorkspaceEvaluationRepository: WorkspaceEvaluationRepository {
         }
         do {
             let dtos = records.map { it in
-                WorkspaceEvaluationRecordDto(key: it.key.identifiers, evaluation: it.dto)
+                WorkspaceEvaluationContextDto(key: it.key.identifiers, evaluation: it.dto, fullEvaluatedAt: it.fullEvaluatedAt)
             }
             let data = try JSONEncoder().encode(dtos)
             try fileStorage.write(filename: FileWorkspaceEvaluationRepository.FILE_NAME, data: data)
         } catch {
-            Log.error("Failed to save WorkspaceEvaluationRecord: \(error)")
+            Log.error("Failed to save WorkspaceEvaluationContext: \(error)")
         }
     }
 }

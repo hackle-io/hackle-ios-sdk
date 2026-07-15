@@ -52,7 +52,7 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
         guard let evaluation = response.evaluation else {
             throw HackleError.error("evaluation")
         }
-        return DefaultWorkspaceEvaluation.from(dto: evaluation)
+        return DefaultWorkspaceEvaluation.from(dto: evaluation, fullEvaluatedAt: nil)
     }
 
     private func resolveResponse(
@@ -64,7 +64,7 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
             guard let evaluation = response.evaluation else {
                 throw HackleError.error("response evaluation")
             }
-            return WorkspaceEvaluationContext.of(key: request.context.key, dto: evaluation)
+            return WorkspaceEvaluationContext.of(key: request.context.key, dto: evaluation, fullEvaluatedAt: evaluation.metadata.evaluatedAt)
         case .delta, .notModified: // DELTA는 evaluator가 FULL로 변환하므로 실제 발생하지 않지만 방어 로직
             guard let record = request.record else {
                 throw HackleError.error("current record")
