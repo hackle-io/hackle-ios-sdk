@@ -1,7 +1,8 @@
 import Foundation
 
-class RemoteInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer {
-
+class RemoteInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
+    let eventMatcher: InAppMessageTriggerEventMatcher
+    
     private let workspaceManager: WorkspaceEvaluationManager
     private let evaluateProcessor: EvaluateProcessor
 
@@ -10,17 +11,17 @@ class RemoteInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer
         workspaceManager: WorkspaceEvaluationManager,
         evaluateProcessor: EvaluateProcessor
     ) {
+        self.eventMatcher = eventMatcher
         self.workspaceManager = workspaceManager
         self.evaluateProcessor = evaluateProcessor
-        super.init(eventMatcher: eventMatcher)
     }
 
-    override func workspace(user: HackleUser) -> Workspace? {
+    func workspace(user: HackleUser) -> Workspace? {
         let workspace: WorkspaceEvaluation? = workspaceManager.workspace(user: user)
         return workspace
     }
 
-    override func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
         guard let workspaceEvaluation = workspace as? WorkspaceEvaluation,
               let result = inAppMessage as? InAppMessageEligibilityRemoteEvaluateResult else {
             throw HackleError.error("Unsupported workspace type for remote trigger (key=\(inAppMessage.key))")

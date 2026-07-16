@@ -1,26 +1,15 @@
 import Foundation
 
 protocol InAppMessageTriggerDeterminer {
+    var eventMatcher: InAppMessageTriggerEventMatcher { get }
+    
+    func workspace(user: HackleUser) -> Workspace?
+    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation
     func determine(event: UserEvent) throws -> InAppMessageTrigger?
 }
 
-class AbstractInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
-
-    let eventMatcher: InAppMessageTriggerEventMatcher
-
-    init(eventMatcher: InAppMessageTriggerEventMatcher) {
-        self.eventMatcher = eventMatcher
-    }
-
-    func workspace(user: HackleUser) -> Workspace? {
-        fatalError("abstract method: workspace(user:)")
-    }
-
-    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
-        fatalError("abstract method: evaluate(workspace:inAppMessage:event:)")
-    }
-
-    final func determine(event: UserEvent) throws -> InAppMessageTrigger? {
+extension InAppMessageTriggerDeterminer {
+    func determine(event: UserEvent) throws -> InAppMessageTrigger? {
         guard let trackEvent = event as? UserEvents.Track else {
             return nil
         }

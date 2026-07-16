@@ -1,6 +1,7 @@
 import Foundation
 
-class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer {
+class LocalInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
+    let eventMatcher: InAppMessageTriggerEventMatcher
 
     private let workspaceFetcher: WorkspaceConfigFetcher
     private let evaluateProcessor: EvaluateProcessor
@@ -10,16 +11,16 @@ class LocalInAppMessageTriggerDeterminer: AbstractInAppMessageTriggerDeterminer 
         workspaceFetcher: WorkspaceConfigFetcher,
         evaluateProcessor: EvaluateProcessor
     ) {
+        self.eventMatcher = eventMatcher
         self.workspaceFetcher = workspaceFetcher
         self.evaluateProcessor = evaluateProcessor
-        super.init(eventMatcher: eventMatcher)
     }
 
-    override func workspace(user: HackleUser) -> Workspace? {
+    func workspace(user: HackleUser) -> Workspace? {
         workspaceFetcher.workspace(user: user)
     }
 
-    override func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
+    func evaluate(workspace: Workspace, inAppMessage: InAppMessage, event: UserEvents.Track) throws -> InAppMessageEligibilityEvaluation {
         guard let workspaceConfig = workspace as? WorkspaceConfig, let inAppMessageConfig = inAppMessage as? InAppMessageConfig else {
             throw HackleError.error("Unsupported workspace type for local trigger (key=\(inAppMessage.key))")
         }
