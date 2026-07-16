@@ -1,6 +1,6 @@
 import Foundation
 
-class RemoteInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
+final class RemoteInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
     let eventMatcher: InAppMessageTriggerEventMatcher
     
     private let workspaceManager: WorkspaceEvaluationManager

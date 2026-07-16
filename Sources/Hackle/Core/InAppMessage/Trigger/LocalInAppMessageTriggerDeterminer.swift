@@ -1,6 +1,6 @@
 import Foundation
 
-class LocalInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
+final class LocalInAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer {
     let eventMatcher: InAppMessageTriggerEventMatcher
 
     private let workspaceFetcher: WorkspaceConfigFetcher
