@@ -22,6 +22,12 @@ extension RemoteEvaluator {
                 continue
             }
             guard let result = request.evaluationWorkspace.result(entity: reference) else {
+                let tags = [
+                    "service.type": reference.serviceType.rawValue,
+                    "entity.id": String(reference.id)
+                ]
+                Metrics.counter(name: "workspace.evaluation.reference.unresolved", tags: tags).increment()
+                Log.info("Reference result not found (reference=\(reference), root=\(request.remoteResult))")
                 continue
             }
             context.add(resolveReference(request: request, result: result))
