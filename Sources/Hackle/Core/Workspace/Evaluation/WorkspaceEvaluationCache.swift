@@ -10,7 +10,7 @@ protocol WorkspaceEvaluationCache {
 class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
 
     private let capacity: Int
-    private let safeLock = SafeLock(label: "io.hackle.LruWorkspaceEvaluationCache")
+    private let lock = NSLock()
     private var entries = [WorkspaceEvaluationContext.Key: WorkspaceEvaluationContext]()
     private var order = [WorkspaceEvaluationContext.Key]()
 
@@ -19,10 +19,9 @@ class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
     }
 
     func get(key: WorkspaceEvaluationContext.Key) -> WorkspaceEvaluationContext? {
-        safeLock.lock {
-            return entries[key]
-        }
-        
+        lock.lock()
+        defer { lock.unlock() }
+        return entries[key]
     }
 
     func put(context: WorkspaceEvaluationContext) -> [WorkspaceEvaluationContext] {
@@ -41,21 +40,21 @@ class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
     }
 
     func latest() -> WorkspaceEvaluationContext? {
-        safeLock.lock {
-            guard let key = order.last else {
-                return nil
-            }
-            return entries[key]
+        lock.lock()
+        defer { lock.unlock() }
+        guard let key = order.last else {
+            return nil
         }
+        return entries[key]
     }
 
     func restore(contexts: [WorkspaceEvaluationContext]) {
-        safeLock.lock {
-            entries.removeAll()
-            order.removeAll()
-            for context in contexts.suffix(capacity) {
-                add(context: context)
-            }
+        lock.lock()
+        defer { lock.unlock() }
+        entries.removeAll()
+        order.removeAll()
+        for context in contexts.suffix(capacity) {
+            add(context: context)
         }
     }
 
