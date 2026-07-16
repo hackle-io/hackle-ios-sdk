@@ -103,6 +103,20 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             expect(context?.dto).toNot(beNil())
         }
 
+        it("when response body has no order field then complete with workspace config dto") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response_without_order", ofType: "json")!)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            let context = try actual.get()
+            expect(context).toNot(beNil())
+            expect(context?.dto.experiments.count).to(beGreaterThan(0))
+            expect(context?.dto.experiments.allSatisfy { $0.order == nil }).to(beTrue())
+        }
+
         it("url") {
             let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
             every(httpClient.executeMock).answers { request, completion in
