@@ -26,10 +26,14 @@ class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
     }
 
     func put(context: WorkspaceEvaluationContext) -> [WorkspaceEvaluationContext] {
-        safeLock.lock {
-            remove(key: context.key)
-            add(context: context)
-            evict()
+        let lastEvaluatedAt = get(key: context.key)?.dto.metadata.evaluatedAt ?? Int64.min
+        return safeLock.lock {
+            if lastEvaluatedAt <= context.dto.metadata.evaluatedAt {
+                remove(key: context.key)
+                add(context: context)
+                evict()
+            }
+
             return order.compactMap { key in
                 entries[key]
             }
