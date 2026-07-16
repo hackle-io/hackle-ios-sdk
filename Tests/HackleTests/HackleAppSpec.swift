@@ -338,7 +338,7 @@ class HackleAppSpecs: QuickSpec {
                     expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
 
-                it("error") {
+                it("when core throws then return control variation") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
                     every(userManager.hackleUserMock).returns(hackleUser)
@@ -374,7 +374,7 @@ class HackleAppSpecs: QuickSpec {
                     expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
 
-                it("error") {
+                it("when core throws then return empty decisions") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
                     every(userManager.hackleUserMock).returns(hackleUser)
@@ -425,7 +425,7 @@ class HackleAppSpecs: QuickSpec {
                     expect(userManager.hackleUserMock.firstInvokation().arguments.0).to(beIdenticalTo(userManager.currentUser))
                 }
 
-                it("error") {
+                it("when core throws then return off decision") {
                     // given
                     let hackleUser = HackleUser.builder().identifier("$id", "42").build()
                     every(userManager.hackleUserMock).returns(hackleUser)

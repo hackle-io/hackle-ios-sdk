@@ -26,7 +26,7 @@ class DelayedInAppMessageSchedulerSpecs: AsyncSpec {
         }
 
         describe("deliver") {
-            it("when delay not found then throw error") {
+            it("when delay not found then throws") {
                 let request = InAppMessageEntity.scheduleRequest()
                 every(delayManager.deleteMock).returns(nil)
 

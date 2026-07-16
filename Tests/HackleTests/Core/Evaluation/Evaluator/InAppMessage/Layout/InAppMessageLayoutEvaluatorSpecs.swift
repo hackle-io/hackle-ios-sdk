@@ -50,7 +50,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
         }
 
         describe("experiment") {
-            it("when cannot get experiment then throws error") {
+            it("when cannot get experiment then throws") {
                 let messageContext = InAppMessageEntity.messageContext(experimentContext: InAppMessage.ExperimentContext(key: 42))
                 let inAppMessage = InAppMessageEntity.create(messageContext: messageContext)
                 let request = InAppMessageEntity.layoutRequest(inAppMessage: inAppMessage)

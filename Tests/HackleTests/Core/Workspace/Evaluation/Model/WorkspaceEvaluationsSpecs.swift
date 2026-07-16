@@ -169,13 +169,14 @@ class WorkspaceEvaluationsSpecs: QuickSpec {
         }
 
         describe("DefaultWorkspaceEvaluation.from") {
-            it("미지의 result type은 드랍하고 나머지 결과를 유지한다") {
+            it("해석 불가능한 결과는 드랍하고 나머지 결과를 유지한다") {
                 let evaluation = DefaultWorkspaceEvaluation.from(dto: fullDto(), fullEvaluatedAt: 123)
 
-                // fixture: AB_TEST 1, FEATURE_FLAG 1, REMOTE_CONFIG 2, IN_APP_MESSAGE 1, UNKNOWN_SERVICE 1(드랍)
+                // fixture: AB_TEST 1, FEATURE_FLAG 1, REMOTE_CONFIG 2(유효 1 + NOT_A_VALUE_TYPE 1), IN_APP_MESSAGE 1, UNKNOWN_SERVICE 1
                 expect(evaluation.experimentResults.count) == 1
                 expect(evaluation.featureFlagResults.count) == 1
-                expect(evaluation.remoteConfigParameterResults.count) == 2
+                expect(evaluation.remoteConfigParameterResults.count) == 1
+                expect(evaluation.remoteConfigParameterResults[0].key) == "rc_key" // rc_invalid는 드랍
                 expect(evaluation.inAppMessageResults.count) == 1
                 expect(evaluation.fullEvaluatedAt) == 123
             }
@@ -190,7 +191,7 @@ class WorkspaceEvaluationsSpecs: QuickSpec {
 
                 expect(evaluation.experimentResults.count) == 0
                 expect(evaluation.featureFlagResults.count) == 1
-                expect(evaluation.remoteConfigParameterResults.count) == 2
+                expect(evaluation.remoteConfigParameterResults.count) == 1
                 expect(evaluation.inAppMessageResults.count) == 1
             }
         }

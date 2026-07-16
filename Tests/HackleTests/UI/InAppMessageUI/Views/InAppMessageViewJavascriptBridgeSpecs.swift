@@ -86,7 +86,7 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
                 expect(sut.source).to(contain("C:\\\\\\\\Users"))
             }
 
-            it("returns empty string when JSON serialization fails") {
+            it("returns empty string when JSON is not serializable") {
                 let event = Event(key: "hello", value: nil, properties: ["badDate": Date()])
                 let sut = bridge(event: event)
                 expect(sut.source).to(contain("getInAppMessageTriggerEvent: function() { return '' }"))
