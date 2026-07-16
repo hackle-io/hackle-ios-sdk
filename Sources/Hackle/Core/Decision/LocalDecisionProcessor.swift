@@ -98,7 +98,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
 
         let request = RemoteConfigLocalEvaluateRequest.of(
             workspace: workspace,
-            parameter: parameter,
+            entity: parameter,
             user: user,
             requiredType: defaultValue.type
         )

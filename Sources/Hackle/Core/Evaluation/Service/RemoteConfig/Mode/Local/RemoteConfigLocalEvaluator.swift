@@ -25,23 +25,11 @@ final class RemoteConfigLocalEvaluator: LocalEvaluator, RemoteConfigEvaluator {
         }
 
         if let targetRule = try targetRuleDeterminer.determine(request: request, context: context) {
-            let result = self.result(request: request, value: targetRule.value, reason: DecisionReason.TARGET_RULE_MATCH)
+            let result = RemoteConfigEvaluateResult.of(request: request, value: targetRule.value, reason: DecisionReason.TARGET_RULE_MATCH)
             return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
         }
 
-        let result = self.result(request: request, value: request.parameterConfig.defaultValue, reason: DecisionReason.DEFAULT_RULE)
+        let result = RemoteConfigEvaluateResult.of(request: request, value: request.parameterConfig.defaultValue, reason: DecisionReason.DEFAULT_RULE)
         return RemoteConfigEvaluateResponse.of(request: request, context: context, result: result)
-    }
-
-    private func result(
-        request: RemoteConfigLocalEvaluateRequest,
-        value: RemoteConfigParameter.Value,
-        reason: String
-    ) -> RemoteConfigEvaluateResult {
-        if request.requiredType.isInstance(value) {
-            return RemoteConfigEvaluateResult.of(reason: reason, value: value)
-        } else {
-            return RemoteConfigEvaluateResult.of(reason: DecisionReason.TYPE_MISMATCH, value: value)  // TYPE_MISMATCH여도 value 유지 (의도된 wire 변경)
-        }
     }
 }

@@ -9,6 +9,7 @@ protocol Experiment: Entity, Sendable {
     var id: Id { get }
     var key: Key { get }
     var version: Int { get }
+    var order: Int64 { get }
     var type: ExperimentType { get }
     var executionVersion: Int { get }
 }
@@ -45,6 +46,7 @@ final class ExperimentEntity: Experiment, Sendable {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
+    let order: Int64
     let executionVersion: Int
     let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
@@ -63,6 +65,7 @@ final class ExperimentEntity: Experiment, Sendable {
         identifierType: String,
         status: ExperimentStatus,
         version: Int,
+        order: Int64,
         executionVersion: Int,
         variations: [Variation],
         userOverrides: [User.Id: Variation.Id],
@@ -80,6 +83,7 @@ final class ExperimentEntity: Experiment, Sendable {
         self.identifierType = identifierType
         self.status = status
         self.version = version
+        self.order = order
         self.executionVersion = executionVersion
         self.variations = variations
         self.userOverrides = userOverrides

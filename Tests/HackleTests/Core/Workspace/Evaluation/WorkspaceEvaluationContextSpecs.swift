@@ -60,25 +60,27 @@ class WorkspaceEvaluationContextSpecs: QuickSpec {
             it("dto로 DefaultWorkspaceEvaluation을 만들고 원본 dto를 보존한다") {
                 let file = Bundle(for: WorkspaceEvaluationContextSpecs.self).path(forResource: "workspace_evaluation_response", ofType: "json")!
                 let data = try! Data(contentsOf: URL(fileURLWithPath: file))
-                let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).evaluation!
+                let dto = try! JSONDecoder().decode(WorkspaceEvaluateResponseDto.self, from: data).full!
 
                 let key = WorkspaceEvaluationContext.Key(identifiers: ["$id": "id_1"])
-                let context = WorkspaceEvaluationContext.of(key: key, dto: dto)
+                let context = WorkspaceEvaluationContext.of(key: key, dto: dto, fullEvaluatedAt: 1720000000000)
 
                 expect(context.key) == key
                 expect(context.workspace.metadata.id) == 1
                 expect(context.dto.results.count) == dto.results.count
+                expect(context.fullEvaluatedAt) == 1720000000000
 
-                let record = WorkspaceEvaluationRecordDto(key: ["$id": "id_1"], evaluation: dto)
+                let record = WorkspaceEvaluationContextDto(key: ["$id": "id_1"], evaluation: dto, fullEvaluatedAt: 1720000000000)
                 let restored = WorkspaceEvaluationContext.from(dto: record)
                 expect(restored.key) == key
+                expect(restored.fullEvaluatedAt) == 1720000000000
             }
         }
 
-        describe("WorkspaceEvaluateContext") {
+        describe("RemoteEvaluateContext") {
             it("of(user:)는 platformType ios, empty operations로 만든다") {
                 let user = HackleUser.builder().identifier(.id, "id_1").build()
-                let context = WorkspaceEvaluateContext.of(user: user)
+                let context = RemoteEvaluateContext.of(user: user)
 
                 expect(context.platformType) == PlatformType.ios
                 expect(context.operations.count) == 0
@@ -95,13 +97,13 @@ class WorkspaceEvaluationContextSpecs: QuickSpec {
                     .set("grade", "GOLD")
                     .build()
 
-                let dto = WorkspaceEvaluateContext.of(user: user, operations: operations).toDto()
+                let dto = RemoteEvaluateContext.of(user: user, operations: operations).toDto()
 
                 expect(dto.platformType) == "IOS"
                 expect(dto.user.identifiers) == ["$id": "id_1"]
                 expect(dto.user.userProperties["age"] as? Int) == 30
                 expect(dto.user.hackleProperties["platform"] as? String) == "iOS"
-                expect((dto.operations["$set"] as? [String: Any])?["grade"] as? String) == "GOLD"
+                expect(dto.operations["$set"]?["grade"] as? String) == "GOLD"
             }
         }
     }

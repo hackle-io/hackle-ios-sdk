@@ -23,11 +23,11 @@ final class ExperimentRemoteEvaluateRequest: RemoteEvaluateRequest, ExperimentEv
 
     static func of(
         workspace: WorkspaceEvaluation,
-        experiment: ExperimentRemoteEvaluateResult,
+        entity: ExperimentRemoteEvaluateResult,
         user: HackleUser,
         record: Bool = true
     ) -> ExperimentRemoteEvaluateRequest {
-        ExperimentRemoteEvaluateRequest(workspace: workspace, entity: experiment, user: user, record: record)
+        ExperimentRemoteEvaluateRequest(workspace: workspace, entity: entity, user: user, record: record)
     }
 
     static func of(

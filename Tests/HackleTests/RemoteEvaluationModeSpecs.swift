@@ -40,14 +40,10 @@ class RemoteEvaluationModeSpecs: AsyncSpec {
             }
 
             // REMOTE 그래프 수동 조립 (create의 REMOTE 분기와 동일 구성)
-            let evaluateClient = WorkspaceRemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
+            let evaluateClient = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             let evaluationManager = WorkspaceEvaluationManager(
-                evaluateProcessor: WorkspaceEvaluateProcessor(
-                    evaluatorFactory: WorkspaceRemoteEvaluatorFactory(evaluators: [
-                        AllWorkspaceRemoteEvaluator(client: evaluateClient),
-                        SpecificWorkspaceRemoteEvaluator(client: evaluateClient)
-                    ])
-                ),
+                fullEvaluator: FullWorkspaceRemoteEvaluator(client: evaluateClient),
+                partialEvaluator: PartialWorkspaceRemoteEvaluator(client: evaluateClient),
                 repository: FileWorkspaceEvaluationRepository(fileStorage: nil),
                 cache: LruWorkspaceEvaluationCache(capacity: 10)
             )

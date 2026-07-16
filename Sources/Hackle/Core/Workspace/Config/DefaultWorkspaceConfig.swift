@@ -117,11 +117,11 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
 
         let experiments = dto.experiments.compactMap { it in
             it.toExperimentOrNil(type: .abTest, parameterConfigurations: parameterConfigurationsById)
-        }
+        }.sorted { $0.order < $1.order }
 
         let featureFlags = dto.featureFlags.compactMap { it in
             it.toExperimentOrNil(type: .featureFlag, parameterConfigurations: parameterConfigurationsById)
-        }
+        }.sorted { $0.order < $1.order }
 
         let buckets = dto.buckets.map { it in
             it.toBucket()
@@ -141,7 +141,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
 
         let inAppMessages = dto.inAppMessages.compactMap { it in
             it.toInAppMessageOrNil()
-        }
+        }.sorted { $0.order < $1.order }
 
         return DefaultWorkspaceConfig(
             id: workspaceId,

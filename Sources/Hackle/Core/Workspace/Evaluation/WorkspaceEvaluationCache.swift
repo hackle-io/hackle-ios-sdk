@@ -2,9 +2,9 @@ import Foundation
 
 protocol WorkspaceEvaluationCache {
     func get(key: WorkspaceEvaluationContext.Key) -> WorkspaceEvaluationContext?
-    func put(record: WorkspaceEvaluationContext) -> [WorkspaceEvaluationContext] // put 후 전체 스냅샷(오래된 순)
+    func put(context: WorkspaceEvaluationContext) -> [WorkspaceEvaluationContext] // put 후 전체 스냅샷(오래된 순)
     func latest() -> WorkspaceEvaluationContext?
-    func restore(records: [WorkspaceEvaluationContext])
+    func restore(contexts: [WorkspaceEvaluationContext])
 }
 
 class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
@@ -24,11 +24,11 @@ class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
         return entries[key]
     }
 
-    func put(record: WorkspaceEvaluationContext) -> [WorkspaceEvaluationContext] {
+    func put(context: WorkspaceEvaluationContext) -> [WorkspaceEvaluationContext] {
         lock.lock()
         defer { lock.unlock() }
-        remove(key: record.key)
-        add(record: record)
+        remove(key: context.key)
+        add(context: context)
         evict()
         return order.compactMap { key in
             entries[key]
@@ -44,13 +44,13 @@ class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
         return entries[key]
     }
 
-    func restore(records: [WorkspaceEvaluationContext]) {
+    func restore(contexts: [WorkspaceEvaluationContext]) {
         lock.lock()
         defer { lock.unlock() }
         entries.removeAll()
         order.removeAll()
-        for record in records.suffix(capacity) {
-            add(record: record)
+        for context in contexts.suffix(capacity) {
+            add(context: context)
         }
     }
 
@@ -61,9 +61,9 @@ class LruWorkspaceEvaluationCache: WorkspaceEvaluationCache {
         }
     }
 
-    private func add(record: WorkspaceEvaluationContext) {
-        entries[record.key] = record
-        order.append(record.key)
+    private func add(context: WorkspaceEvaluationContext) {
+        entries[context.key] = context
+        order.append(context.key)
     }
 
     private func evict() {

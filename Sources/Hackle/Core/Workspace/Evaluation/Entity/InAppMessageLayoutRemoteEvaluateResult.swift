@@ -4,6 +4,7 @@ final class InAppMessageLayoutRemoteEvaluateResult: InAppMessageLayoutEvaluateRe
 
     let id: InAppMessage.Id
     let key: InAppMessage.Key
+    let order: Int64
     let period: InAppMessage.Period
     let timetable: InAppMessage.Timetable
     let eventTrigger: InAppMessage.EventTrigger
@@ -14,6 +15,7 @@ final class InAppMessageLayoutRemoteEvaluateResult: InAppMessageLayoutEvaluateRe
     init(
         id: InAppMessage.Id,
         key: InAppMessage.Key,
+        order: Int64,
         period: InAppMessage.Period,
         timetable: InAppMessage.Timetable,
         eventTrigger: InAppMessage.EventTrigger,
@@ -25,6 +27,7 @@ final class InAppMessageLayoutRemoteEvaluateResult: InAppMessageLayoutEvaluateRe
     ) {
         self.id = id
         self.key = key
+        self.order = order
         self.period = period
         self.timetable = timetable
         self.eventTrigger = eventTrigger

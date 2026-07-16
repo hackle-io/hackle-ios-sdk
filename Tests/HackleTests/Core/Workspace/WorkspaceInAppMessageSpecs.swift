@@ -265,6 +265,53 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(workspace.inAppMessages.count) == 0
         }
 
+        it("inAppMessages를 order 오름차순으로 정렬한다") {
+            func inAppMessageJson(id: Int64, order: Int64) -> String {
+                """
+                {
+                  "id": \(id),
+                  "key": \(id),
+                  "order": \(order),
+                  "timeUnit": "IMMEDIATE",
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+                """
+            }
+
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "events": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                \(inAppMessageJson(id: 1, order: 3)),
+                \(inAppMessageJson(id: 2, order: 1)),
+                \(inAppMessageJson(id: 3, order: 2))
+              ]
+            }
+            """
+            let data = json.data(using: .utf8)!
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+
+            expect(workspace.inAppMessages.map { $0.order }) == [1, 2, 3]
+        }
+
         it("html - displayType HTML with valid html data") {
             let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 12)!

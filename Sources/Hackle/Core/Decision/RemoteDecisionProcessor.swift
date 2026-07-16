@@ -18,7 +18,7 @@ final class RemoteDecisionProcessor: DecisionProcessor {
             return Decision.of(experiment: nil, variation: "A", reason: DecisionReason.EXPERIMENT_NOT_FOUND)
         }
 
-        let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: experiment, user: user)
+        let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: experiment, user: user)
         let response = try evaluateProcessor.experiment(request)
         return response.experimentEvaluation.toDecision()
     }
@@ -29,7 +29,7 @@ final class RemoteDecisionProcessor: DecisionProcessor {
             return decisions
         }
         for experiment in workspace.experimentResults {
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: experiment, user: user, record: false)
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: experiment, user: user, record: false)
             let response = try evaluateProcessor.experiment(request)
             decisions.append((experiment, response.experimentEvaluation.toDecision()))
         }
@@ -44,7 +44,7 @@ final class RemoteDecisionProcessor: DecisionProcessor {
             return FeatureFlagDecision.off(featureFlag: nil, reason: DecisionReason.FEATURE_FLAG_NOT_FOUND)
         }
 
-        let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: featureFlag, user: user)
+        let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: featureFlag, user: user)
         let response = try evaluateProcessor.experiment(request)
         return response.experimentEvaluation.toFeatureFlagDecision()
     }
@@ -55,7 +55,7 @@ final class RemoteDecisionProcessor: DecisionProcessor {
             return decisions
         }
         for featureFlag in workspace.featureFlagResults {
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: featureFlag, user: user, record: false)
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: featureFlag, user: user, record: false)
             let response = try evaluateProcessor.experiment(request)
             decisions.append((featureFlag, response.experimentEvaluation.toFeatureFlagDecision()))
         }
@@ -70,7 +70,7 @@ final class RemoteDecisionProcessor: DecisionProcessor {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.REMOTE_CONFIG_PARAMETER_NOT_FOUND)
         }
 
-        let request = RemoteConfigRemoteEvaluateRequest.of(workspace: workspace, parameter: parameter, user: user, requiredType: defaultValue.type)
+        let request = RemoteConfigRemoteEvaluateRequest.of(workspace: workspace, entity: parameter, user: user, requiredType: defaultValue.type)
         let response = try evaluateProcessor.remoteConfig(request)
         return response.remoteConfigEvaluation.toDecision(requiredType: defaultValue.type, defaultValue: defaultValue)
     }

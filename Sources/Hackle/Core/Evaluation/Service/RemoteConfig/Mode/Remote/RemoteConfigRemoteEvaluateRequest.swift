@@ -31,11 +31,11 @@ final class RemoteConfigRemoteEvaluateRequest: RemoteEvaluateRequest, RemoteConf
 
     static func of(
         workspace: WorkspaceEvaluation,
-        parameter: RemoteConfigParameterRemoteEvaluateResult,
+        entity: RemoteConfigParameterRemoteEvaluateResult,
         user: HackleUser,
         requiredType: HackleValueType,
         record: Bool = true
     ) -> RemoteConfigRemoteEvaluateRequest {
-        RemoteConfigRemoteEvaluateRequest(workspace: workspace, entity: parameter, user: user, record: record, requiredType: requiredType)
+        RemoteConfigRemoteEvaluateRequest(workspace: workspace, entity: entity, user: user, record: record, requiredType: requiredType)
     }
 }

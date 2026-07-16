@@ -15,53 +15,48 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
             EvaluateResultDto(type: type, id: id, hash: hash, experiment: nil, featureFlag: nil, remoteConfig: nil, inAppMessage: nil)
         }
 
-        func metadata(resultsHash: Int32 = 0) -> WorkspaceEvaluationMetadataDto {
+        func metadata(hash: Int32 = 0) -> WorkspaceEvaluationMetadataDto {
             WorkspaceEvaluationMetadataDto(
+                hash: hash,
                 evaluatedAt: 1720000000000,
-                results: WorkspaceEvaluateResultsMetadataDto(hash: resultsHash),
                 user: HackleUserMetadataDto(hash: 0),
                 config: WorkspaceConfigMetadataDto(modifiedAt: "modified_at")
             )
         }
 
-        func evaluation(results: [EvaluateResultDto], metadata m: WorkspaceEvaluationMetadataDto? = nil) -> WorkspaceEvaluationDto {
-            WorkspaceEvaluationDto(workspace: workspaceDto(), results: results, metadata: m ?? metadata())
+        func evaluation(results: [EvaluateResultDto]) -> WorkspaceEvaluationDto {
+            WorkspaceEvaluationDto(workspace: workspaceDto(), metadata: metadata(), results: results)
+        }
+
+        func delta(metadata m: WorkspaceEvaluationMetadataDto, changed: [EvaluateResultDto] = [], deleted: [EntityDto] = []) -> WorkspaceEvaluationDeltaDto {
+            WorkspaceEvaluationDeltaDto(metadata: m, changed: changed, deleted: deleted)
         }
 
         describe("merge") {
-            it("같은 (type,id)는 응답으로 교체하고 새 항목은 뒤에 추가하며 순서를 보존한다") {
+            it("같은 (type,id)는 delta로 교체하고 새 항목은 뒤에 추가하며 순서를 보존한다") {
                 let current = evaluation(results: [
                     result(id: 1, hash: 10),
                     result(id: 2, hash: 20),
                     result(id: 3, hash: 30)
                 ])
-                let responseMetadata = metadata(resultsHash: 999)
-                let response = WorkspaceEvaluateResponseDto(
-                    status: "DELTA",
-                    evaluation: evaluation(results: [
-                        result(id: 2, hash: 21),
-                        result(id: 4, hash: 40)
-                    ], metadata: responseMetadata),
-                    deleted: []
-                )
+                let d = delta(metadata: metadata(hash: 999), changed: [
+                    result(id: 2, hash: 21),
+                    result(id: 4, hash: 40)
+                ])
 
-                let merged = try! WorkspaceEvaluationMerger.merge(evaluation: current, response: response)
+                let merged = WorkspaceEvaluationMerger.merge(evaluation: current, delta: d)
 
                 expect(merged.results.map { $0.id }) == [1, 2, 3, 4]
                 expect(merged.results.map { $0.hash }) == [10, 21, 30, 40]
-                expect(merged.metadata.results.hash) == 999 // metadata는 응답 것
+                expect(merged.metadata.hash) == 999 // metadata는 delta 것
                 expect(merged.workspace.id) == 1 // workspace는 기존 것
             }
 
             it("type이 다르면 id가 같아도 다른 항목이다") {
                 let current = evaluation(results: [result(type: "AB_TEST", id: 1, hash: 10)])
-                let response = WorkspaceEvaluateResponseDto(
-                    status: "DELTA",
-                    evaluation: evaluation(results: [result(type: "FEATURE_FLAG", id: 1, hash: 11)]),
-                    deleted: []
-                )
+                let d = delta(metadata: metadata(), changed: [result(type: "FEATURE_FLAG", id: 1, hash: 11)])
 
-                let merged = try! WorkspaceEvaluationMerger.merge(evaluation: current, response: response)
+                let merged = WorkspaceEvaluationMerger.merge(evaluation: current, delta: d)
 
                 expect(merged.results.count) == 2
             }
@@ -71,24 +66,11 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
                     result(id: 1, hash: 10),
                     result(id: 2, hash: 20)
                 ])
-                let response = WorkspaceEvaluateResponseDto(
-                    status: "DELTA",
-                    evaluation: evaluation(results: []),
-                    deleted: [EntityDto(type: "AB_TEST", id: 1)]
-                )
+                let d = delta(metadata: metadata(), deleted: [EntityDto(type: "AB_TEST", id: 1)])
 
-                let merged = try! WorkspaceEvaluationMerger.merge(evaluation: current, response: response)
+                let merged = WorkspaceEvaluationMerger.merge(evaluation: current, delta: d)
 
                 expect(merged.results.map { $0.id }) == [2]
-            }
-
-            it("response.evaluation이 nil이면 throw한다") {
-                let current = evaluation(results: [])
-                let response = WorkspaceEvaluateResponseDto(status: "DELTA", evaluation: nil, deleted: [])
-
-                expect {
-                    try WorkspaceEvaluationMerger.merge(evaluation: current, response: response)
-                }.to(throwError())
             }
         }
 

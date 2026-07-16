@@ -6,6 +6,7 @@ extension ExperimentEvaluateResultDto {
             id: id,
             key: key,
             version: version,
+            order: order,
             type: type,
             executionVersion: executionVersion,
             variation: variation.toVariation(parameterConfiguration: config?.toParameterConfiguration()),
@@ -88,6 +89,7 @@ extension InAppMessageEligibilityEvaluateResultDto {
         let layoutResult = InAppMessageLayoutRemoteEvaluateResult(
             id: id,
             key: key,
+            order: order,
             period: period,
             timetable: timetable,
             eventTrigger: eventTrigger,
@@ -103,6 +105,7 @@ extension InAppMessageEligibilityEvaluateResultDto {
         return InAppMessageEligibilityRemoteEvaluateResult(
             id: id,
             key: key,
+            order: order,
             period: period,
             timetable: timetable,
             eventTrigger: eventTrigger,

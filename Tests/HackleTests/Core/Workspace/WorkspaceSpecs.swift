@@ -58,5 +58,41 @@ class WorkspaceSpecs: QuickSpec {
             expect(variation.parameterConfiguration?.id) == 100550
             expect(variation.parameterConfiguration?.id) != variation.id
         }
+
+        it("experiments와 featureFlags를 order 오름차순으로 정렬한다") {
+            func experimentJson(id: Int64, order: Int64) -> String {
+                """
+                {"id": \(id), "key": \(id), "order": \(order), "name": null, "identifierType": "$id", "status": "RUNNING", "version": 1, "bucketId": 1, "variations": [], "execution": {"status": "RUNNING", "version": 1, "userOverrides": [], "segmentOverrides": [], "targetAudiences": [], "targetRules": [], "defaultRule": {"type": "VARIATION", "variationId": 1}}, "winnerVariationId": null, "containerId": null}
+                """
+            }
+
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [
+                \(experimentJson(id: 1, order: 3)),
+                \(experimentJson(id: 2, order: 1)),
+                \(experimentJson(id: 3, order: 2))
+              ],
+              "featureFlags": [
+                \(experimentJson(id: 11, order: 3)),
+                \(experimentJson(id: 12, order: 1)),
+                \(experimentJson(id: 13, order: 2))
+              ],
+              "buckets": [],
+              "events": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": []
+            }
+            """
+            let data = json.data(using: .utf8)!
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+            expect(workspace.experiments.map { ($0 as! ExperimentEntity).order }) == [1, 2, 3]
+            expect(workspace.featureFlags.map { ($0 as! ExperimentEntity).order }) == [1, 2, 3]
+        }
     }
 }

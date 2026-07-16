@@ -53,13 +53,14 @@ class MockWorkspaceEvaluationFetcher: WorkspaceEvaluationFetcher {
 func experimentRemoteResult(
     id: Int64 = 1,
     key: Int64 = 10,
+    order: Int64 = 0,
     type: ExperimentType = .abTest,
     variation: Variation = VariationEntity(id: 42, key: "B", isDropped: false, parameterConfiguration: nil),
     reason: String = DecisionReason.OVERRIDDEN,
     references: [Entity] = []
 ) -> ExperimentRemoteEvaluateResult {
     ExperimentRemoteEvaluateResult(
-        id: id, key: key, version: 1, type: type, executionVersion: 1,
+        id: id, key: key, version: 1, order: order, type: type, executionVersion: 1,
         variation: variation, reason: reason, references: references
     )
 }
@@ -76,11 +77,12 @@ func remoteConfigRemoteResult(
 func inAppMessageLayoutRemoteResult(
     id: Int64 = 5,
     key: Int64 = 50,
+    order: Int64 = 0,
     reason: String = DecisionReason.IN_APP_MESSAGE_TARGET
 ) -> InAppMessageLayoutRemoteEvaluateResult {
     let iam = InAppMessageEntity.create()
     return InAppMessageLayoutRemoteEvaluateResult(
-        id: id, key: key,
+        id: id, key: key, order: order,
         period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
         evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
         message: iam.messageContext.messages[0],
@@ -92,6 +94,7 @@ func inAppMessageLayoutRemoteResult(
 func inAppMessageEligibilityRemoteResult(
     id: Int64 = 5,
     key: Int64 = 50,
+    order: Int64 = 0,
     isEligible: Bool = true,
     reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
     evaluateContext: InAppMessage.EvaluateContext = InAppMessageEntity.evaluateContext(),
@@ -99,12 +102,12 @@ func inAppMessageEligibilityRemoteResult(
 ) -> InAppMessageEligibilityRemoteEvaluateResult {
     let iam = InAppMessageEntity.create(evaluateContext: evaluateContext)
     return InAppMessageEligibilityRemoteEvaluateResult(
-        id: id, key: key,
+        id: id, key: key, order: order,
         period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
         evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
         isEligible: isEligible,
         reason: reason,
         references: [],
-        layout: layout ?? inAppMessageLayoutRemoteResult(id: id, key: key)
+        layout: layout ?? inAppMessageLayoutRemoteResult(id: id, key: key, order: order)
     )
 }

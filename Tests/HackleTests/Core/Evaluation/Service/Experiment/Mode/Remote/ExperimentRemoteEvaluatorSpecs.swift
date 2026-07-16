@@ -23,7 +23,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             let workspace = MockWorkspaceEvaluation()
             let request = ExperimentRemoteEvaluateRequest.of(
                 workspace: workspace,
-                experiment: experimentRemoteResult(id: 1, key: 10),
+                entity: experimentRemoteResult(id: 1, key: 10),
                 user: HackleUser.builder().build()
             )
             expect(sut.supports(request: request)).to(beTrue())
@@ -33,7 +33,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             let result = experimentRemoteResult(id: 1, key: 10, reason: DecisionReason.TRAFFIC_ALLOCATED)
             let workspace = MockWorkspaceEvaluation()
             workspace.experimentResults = [result]
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: result, user: HackleUser.builder().build())
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build())
 
             let response: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
 
@@ -42,10 +42,30 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             expect(response.experimentEvaluation.experimentResult.reason).to(equal(DecisionReason.TRAFFIC_ALLOCATED))
         }
 
+        it("실험 평가 시 AB_TEST reference의 TRAFFIC_ALLOCATED를 BY_TARGETING으로 컨텍스트에 올린다") {
+            let reference = experimentRemoteResult(id: 2, key: 20, type: .abTest, reason: DecisionReason.TRAFFIC_ALLOCATED)
+            let main = experimentRemoteResult(id: 1, key: 10, type: .abTest, reason: DecisionReason.TRAFFIC_ALLOCATED, references: [reference])
+            let workspace = MockWorkspaceEvaluation()
+            workspace.experimentResults = [main, reference]
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: main, user: HackleUser.builder().build())
+            let context = Evaluators.context()
+            let sut = ExperimentRemoteEvaluator(
+                eventRecorder: EvaluationEventRecorder(
+                    eventFactory: EvaluationEventFactory(clock: SystemClock.shared),
+                    eventProcessor: MockUserEventProcessor()
+                )
+            )
+
+            let _: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: context)
+
+            let added = context.references.compactMap { $0 as? ExperimentEvaluation }.first!
+            expect(added.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
+        }
+
         it("record delegates to eventRecorder") {
             let result = experimentRemoteResult(id: 1, key: 10)
             let workspace = MockWorkspaceEvaluation()
-            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, experiment: result, user: HackleUser.builder().build())
+            let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: result, user: HackleUser.builder().build())
             let response: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: Evaluators.context())
 
             sut.record(request: request, response: response)

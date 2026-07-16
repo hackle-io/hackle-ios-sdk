@@ -18,6 +18,7 @@
     {
       "id": 1,
       "key": 1,
+      "order": 1,
       "timeUnit": "INVALID",
       "startEpochTime": 42,
       "endEpochTime": 43,

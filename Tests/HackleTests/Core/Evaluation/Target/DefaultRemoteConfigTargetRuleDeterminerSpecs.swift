@@ -27,7 +27,7 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
                 targetRule(false)
             )
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, requiredType: .string)
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), entity: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.determine(request: request, context: Evaluators.context())
@@ -46,7 +46,7 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
                 targetRule(false)
             )
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, requiredType: .string)
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), entity: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.determine(request: request, context: Evaluators.context())
@@ -59,7 +59,7 @@ class DefaultRemoteConfigTargetRuleDeterminerSpecs: QuickSpec {
             // given
             let parameter = parameter()
 
-            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), parameter: parameter, user: user, requiredType: .string)
+            let request = RemoteConfigLocalEvaluateRequest.of(workspace: MockWorkspace(), entity: parameter, user: user, requiredType: .string)
 
             // when
             let actual = try sut.determine(request: request, context: Evaluators.context())

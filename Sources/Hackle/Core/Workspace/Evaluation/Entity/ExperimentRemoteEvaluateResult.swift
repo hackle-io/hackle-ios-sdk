@@ -5,6 +5,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
     let id: Experiment.Id
     let key: Experiment.Key
     let version: Int
+    let order: Int64
     let type: ExperimentType
     let executionVersion: Int
     let references: [Entity]
@@ -13,6 +14,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
         id: Experiment.Id,
         key: Experiment.Key,
         version: Int,
+        order: Int64,
         type: ExperimentType,
         executionVersion: Int,
         variation: Variation,
@@ -22,6 +24,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
         self.id = id
         self.key = key
         self.version = version
+        self.order = order
         self.type = type
         self.executionVersion = executionVersion
         self.references = references

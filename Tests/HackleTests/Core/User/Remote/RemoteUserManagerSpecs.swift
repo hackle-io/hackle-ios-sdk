@@ -1,19 +1,21 @@
 import Foundation
 import Quick
 import Nimble
+import MockingKit
 @testable import Hackle
 
-private class RecordingAllEvaluator: WorkspaceRemoteEvaluator {
-    var requests: [AllWorkspaceEvaluateRequest] = []
-    var response: WorkspaceEvaluateResponse = .notModified()
+// FullWorkspaceRemoteEvaluator를 상속해 요청을 기록한다. 실제 네트워크는 타지 않으며,
+// evaluate는 항상 throw하지만 Manager.sync가 에러를 삼키므로 sync 흐름은 정상 완료된다.
+private class RecordingFullEvaluator: FullWorkspaceRemoteEvaluator {
+    var requests: [FullWorkspaceEvaluateRequest] = []
 
-    func supports(scope: WorkspaceEvaluateScope) -> Bool {
-        scope == .all
+    init() {
+        super.init(client: RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: MockHttpClient()))
     }
 
-    func evaluate(request: WorkspaceEvaluateRequest) async throws -> WorkspaceEvaluateResponse {
-        requests.append(request as! AllWorkspaceEvaluateRequest)
-        return response
+    override func evaluate(request: FullWorkspaceEvaluateRequest) async throws -> FullWorkspaceEvaluateResponse {
+        requests.append(request)
+        throw HackleError.error("stub")
     }
 }
 
@@ -32,20 +34,21 @@ private class RecordingUserListener: UserListener {
 class RemoteUserManagerSpecs: AsyncSpec {
     override class func spec() {
 
-        var allEvaluator: RecordingAllEvaluator!
+        var allEvaluator: RecordingFullEvaluator!
         var repository: UserRepository!
         var listener: RecordingUserListener!
         var device: MockDevice!
         var sut: RemoteUserManager!
 
         beforeEach {
-            allEvaluator = RecordingAllEvaluator()
+            allEvaluator = RecordingFullEvaluator()
             repository = UserRepository(repository: MemoryKeyValueRepository())
             listener = RecordingUserListener()
             device = MockDevice(id: "hackle_device_id", properties: ["platform": "iOS"])
             let evaluationManager = WorkspaceEvaluationManager(
-                evaluateProcessor: WorkspaceEvaluateProcessor(
-                    evaluatorFactory: WorkspaceRemoteEvaluatorFactory(evaluators: [allEvaluator])
+                fullEvaluator: allEvaluator,
+                partialEvaluator: PartialWorkspaceRemoteEvaluator(
+                    client: RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: MockHttpClient())
                 ),
                 repository: FileWorkspaceEvaluationRepository(fileStorage: nil),
                 cache: LruWorkspaceEvaluationCache(capacity: 10)

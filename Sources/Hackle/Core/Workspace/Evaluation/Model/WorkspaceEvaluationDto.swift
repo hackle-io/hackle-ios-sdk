@@ -2,49 +2,42 @@ import Foundation
 
 // MARK: - 저장 (workspace_evaluation.json)
 
-struct WorkspaceEvaluationRecordDto: Codable {
+struct WorkspaceEvaluationContextDto: Codable {
     let key: [String: String] // identifiers
     let evaluation: WorkspaceEvaluationDto
+    let fullEvaluatedAt: Int64
 }
 
 // MARK: - 응답
 
 struct WorkspaceEvaluateResponseDto: Codable {
-    let status: String // FULL, DELTA, NOT_MODIFIED
-    let evaluation: WorkspaceEvaluationDto?
-    let deleted: [EntityDto]
-
-    private enum CodingKeys: String, CodingKey {
-        case status, evaluation, deleted
-    }
-}
-
-extension WorkspaceEvaluateResponseDto {
-    // 서버가 deleted를 생략할 수 있어(특히 NOT_MODIFIED) 누락을 관용한다.
-    // init을 extension에 두어 memberwise init을 보존한다(테스트 생성부에서 사용).
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        status = try container.decode(String.self, forKey: .status)
-        evaluation = try container.decodeIfPresent(WorkspaceEvaluationDto.self, forKey: .evaluation)
-        deleted = try container.decodeIfPresent([EntityDto].self, forKey: .deleted) ?? []
-    }
+    let status: String // FULL, DELTA
+    let full: WorkspaceEvaluationDto?
+    let delta: WorkspaceEvaluationDeltaDto?
 }
 
 struct WorkspaceEvaluationDto: Codable {
     let workspace: WorkspaceDto
-    let results: [EvaluateResultDto]
     let metadata: WorkspaceEvaluationMetadataDto
+    let results: [EvaluateResultDto]
 }
 
-struct WorkspaceEvaluationMetadataDto: Codable {
+struct WorkspaceEvaluationDeltaDto: Codable {
+    let metadata: WorkspaceEvaluationMetadataDto
+    let changed: [EvaluateResultDto]
+    let deleted: [EntityDto]
+}
+
+protocol EvaluationMetadataDto {
+    var evaluatedAt: Int64 { get }
+    var config: WorkspaceConfigMetadataDto { get }
+}
+
+struct WorkspaceEvaluationMetadataDto: Codable, EvaluationMetadataDto {
+    let hash: Int32
     let evaluatedAt: Int64
-    let results: WorkspaceEvaluateResultsMetadataDto
     let user: HackleUserMetadataDto
     let config: WorkspaceConfigMetadataDto
-}
-
-struct WorkspaceEvaluateResultsMetadataDto: Codable {
-    let hash: Int32
 }
 
 struct HackleUserMetadataDto: Codable {
@@ -53,6 +46,21 @@ struct HackleUserMetadataDto: Codable {
 
 struct WorkspaceConfigMetadataDto: Codable {
     let modifiedAt: String
+}
+
+struct EntityEvaluateResponseDto: Codable {
+    let evaluation: EntityEvaluationDto
+}
+
+struct EntityEvaluationDto: Codable {
+    let workspace: WorkspaceDto
+    let metadata: EntityEvaluationMetadataDto
+    let results: [EvaluateResultDto]
+}
+
+struct EntityEvaluationMetadataDto: Codable, EvaluationMetadataDto {
+    let evaluatedAt: Int64
+    let config: WorkspaceConfigMetadataDto
 }
 
 struct EvaluateResultDto: Codable {
@@ -69,6 +77,7 @@ struct EvaluateResultDto: Codable {
 struct ExperimentEvaluateResultDto: Codable {
     let id: Int64
     let key: Int64
+    let order: Int64
     let version: Int
     let executionVersion: Int
 
@@ -91,6 +100,7 @@ struct RemoteConfigParameterEvaluateResultDto: Codable {
 struct InAppMessageEligibilityEvaluateResultDto: Codable {
     let id: Int64
     let key: Int64
+    let order: Int64
 
     // Period
     let period: InAppMessageDto.PeriodDto?
@@ -137,32 +147,70 @@ extension InAppMessageDto {
 // MARK: - 요청 (userProperties/operations가 [String: Any]라 Codable 불가 → dictionary 직렬화)
 
 struct WorkspaceEvaluateRequestDto {
-    let scope: String // ALL, SPECIFIC
     let policy: String // AUTO, FORCE_FULL
-    let context: WorkspaceEvaluateContextDto
-    let entities: [EvaluateEntityDto]
-    let current: WorkspaceEvaluationMetadataDto?
+    let context: RemoteEvaluateContextDto
+    let base: BaseEvaluationDto?
 
     func toBody() -> [String: Any] {
         var body: [String: Any] = [
-            "scope": scope,
             "policy": policy,
-            "context": context.toBody(),
-            "entities": entities.map { it in
-                it.toBody()
-            }
+            "context": context.toBody()
         ]
-        if let current = current {
-            body["current"] = current.toBody()
+        if let base = base {
+            body["base"] = base.toBody()
         }
         return body
     }
 }
 
-struct WorkspaceEvaluateContextDto {
+struct BaseEvaluationDto {
+    let fullEvaluatedAt: Int64
+    let metadata: WorkspaceEvaluationMetadataDto
+    let entities: [EvaluateEntityDto]
+
+    func toBody() -> [String: Any] {
+        [
+            "fullEvaluatedAt": fullEvaluatedAt,
+            "metadata": metadata.toBody(),
+            "entities": entities.map { it in
+                it.toBody()
+            }
+        ]
+    }
+}
+
+struct EvaluateEntityDto {
+    let type: String
+    let id: Int64
+    let hash: Int32
+
+    func toBody() -> [String: Any] {
+        [
+            "type": type,
+            "id": id,
+            "hash": hash
+        ]
+    }
+}
+
+struct EntityEvaluateRequestDto {
+    let context: RemoteEvaluateContextDto
+    let entities: [EntityDto]
+
+    func toBody() -> [String: Any] {
+        [
+            "context": context.toBody(),
+            "entities": entities.map { it in
+                ["type": it.type, "id": it.id] as [String: Any]
+            }
+        ]
+    }
+}
+
+struct RemoteEvaluateContextDto {
     let platformType: String // ANDROID, IOS, WEB
     let user: HackleUserDto
-    let operations: [String: Any]
+    let operations: [String: [String: Any]]
 
     func toBody() -> [String: Any] {
         [
@@ -187,28 +235,11 @@ struct HackleUserDto {
     }
 }
 
-struct EvaluateEntityDto {
-    let type: String
-    let id: Int64
-    let hash: Int32?
-
-    func toBody() -> [String: Any] {
-        var body: [String: Any] = [
-            "type": type,
-            "id": id
-        ]
-        if let hash = hash {
-            body["hash"] = hash
-        }
-        return body
-    }
-}
-
 extension WorkspaceEvaluationMetadataDto {
     func toBody() -> [String: Any] {
         [
+            "hash": hash,
             "evaluatedAt": evaluatedAt,
-            "results": ["hash": results.hash],
             "user": ["hash": user.hash],
             "config": ["modifiedAt": config.modifiedAt]
         ]

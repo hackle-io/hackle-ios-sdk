@@ -12,6 +12,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 id: 1,
                 key: 10,
                 version: 2,
+                order: 4,
                 type: .abTest,
                 executionVersion: 3,
                 variation: variation,
@@ -24,6 +25,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 expect(sut.entityKey).to(equal(EntityKey(serviceType: .abTest, id: 1)))
                 expect(sut.key).to(equal(10))
                 expect(sut.version).to(equal(2))
+                expect(sut.order).to(equal(4))
                 expect(sut.type).to(equal(.abTest))
                 expect(sut.executionVersion).to(equal(3))
                 expect(sut.variation.id).to(equal(42))
@@ -78,7 +80,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
 
             it("eligibility result is an InAppMessage entity holding layout result") {
                 let layout = InAppMessageLayoutRemoteEvaluateResult(
-                    id: 5, key: 50,
+                    id: 5, key: 50, order: 6,
                     period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
                     evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
                     message: iam.messageContext.messages[0],
@@ -86,7 +88,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                     references: []
                 )
                 let sut = InAppMessageEligibilityRemoteEvaluateResult(
-                    id: 5, key: 50,
+                    id: 5, key: 50, order: 6,
                     period: iam.period, timetable: iam.timetable, eventTrigger: iam.eventTrigger,
                     evaluateContext: iam.evaluateContext, messageContext: iam.messageContext,
                     isEligible: true,
@@ -96,6 +98,7 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 )
                 expect(sut.serviceType).to(equal(.inAppMessage))
                 expect(sut.entityKey).to(equal(EntityKey(serviceType: .inAppMessage, id: 5)))
+                expect(sut.order).to(equal(6))
                 expect(sut.isEligible).to(beTrue())
                 expect(sut.reason).to(equal(DecisionReason.IN_APP_MESSAGE_TARGET))
                 expect(sut.layout.entityKey).to(equal(layout.entityKey))
