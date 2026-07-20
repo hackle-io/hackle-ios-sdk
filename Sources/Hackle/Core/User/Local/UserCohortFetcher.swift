@@ -47,7 +47,6 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
         if let error = response.error {
             throw error
         }
-        // statusCode nil == non-HTTP 응답. "Response is empty" 계약 보존(테스트가 잠금)
         guard let statusCode = response.statusCode else {
             throw HackleError.error("Response is empty")
         }

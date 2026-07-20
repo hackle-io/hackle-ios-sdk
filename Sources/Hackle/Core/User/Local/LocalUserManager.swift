@@ -211,6 +211,13 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         saveUser(user: newUser)
         return UserUpdated(old: oldContext, new: newContext)
     }
+    
+    private func publishPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
+        Log.debug("UserManager.publishPropertyOperations()")
+        for listener in userListeners {
+            listener.onPropertyOperations(user: user, operations: operations, timestamp: timestamp)
+        }
+    }
 
     private func loadUser() -> User? {
         repository.get()
