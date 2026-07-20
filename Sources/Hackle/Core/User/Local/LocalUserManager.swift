@@ -211,7 +211,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         saveUser(user: newUser)
         return UserUpdated(old: oldContext, new: newContext)
     }
-    
+
     private func publishPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {
         Log.debug("UserManager.publishPropertyOperations()")
         for listener in userListeners {
