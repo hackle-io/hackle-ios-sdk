@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 71;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,11 +29,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EE0000000000000000000001 /* Exceptions for Sources in Hackle */ = {
+		EE0000000000000000000001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Hackle.h,
-				HackleNotification.h,
 				HackleNotification.m,
 			);
 			target = "Hackle::Hackle" /* Hackle */;
@@ -41,27 +39,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		EE0000000000000000000002 /* Sources */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				EE0000000000000000000001 /* Exceptions for Sources in Hackle */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = Sources/Hackle;
-			sourceTree = "<group>";
-		};
-		EE0000000000000000000003 /* Tests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = Tests/HackleTests;
-			sourceTree = "<group>";
-		};
+		EE0000000000000000000002 /* Sources/Hackle */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EE0000000000000000000001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Sources/Hackle; sourceTree = "<group>"; };
+		EE0000000000000000000003 /* Tests/HackleTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Tests/HackleTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +77,8 @@
 		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
-				EE0000000000000000000002 /* Sources */,
-				EE0000000000000000000003 /* Tests */,
+				EE0000000000000000000002 /* Sources/Hackle */,
+				EE0000000000000000000003 /* Tests/HackleTests */,
 				OBJ_14 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -120,7 +99,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				EE0000000000000000000002 /* Sources */,
+				EE0000000000000000000002 /* Sources/Hackle */,
 			);
 			name = Hackle;
 			productName = Hackle;
@@ -141,7 +120,7 @@
 				OBJ_44 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				EE0000000000000000000003 /* Tests */,
+				EE0000000000000000000003 /* Tests/HackleTests */,
 			);
 			name = HackleTests;
 			packageProductDependencies = (
@@ -183,7 +162,6 @@
 				EE67F86A25828DE4006CD00A /* XCRemoteSwiftPackageReference "Nimble" */,
 				EE67F87125828DFF006CD00A /* XCRemoteSwiftPackageReference "MockingKit" */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = OBJ_14 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -340,25 +318,6 @@
 			};
 			name = Debug;
 		};
-		OBJ_4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				USE_HEADERMAP = NO;
-			};
-			name = Release;
-		};
 		OBJ_37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -410,6 +369,25 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGET_NAME = HackleTests;
+			};
+			name = Release;
+		};
+		OBJ_4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				USE_HEADERMAP = NO;
 			};
 			name = Release;
 		};
