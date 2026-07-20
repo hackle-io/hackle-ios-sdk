@@ -39,23 +39,21 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         return view
     }
 
-    func present(context: InAppMessagePresentationContext) {
-        Task { @MainActor in
-            self.presentNow(context: context)
-        }
+    func present(context: InAppMessagePresentationContext) async -> Bool {
+        await presentNow(context: context)
     }
 
-    @MainActor private func presentNow(context: InAppMessagePresentationContext) {
+    @MainActor private func presentNow(context: InAppMessagePresentationContext) -> Bool {
         guard checkRootViewController(),
               noMessagePresented(),
               orientationSupported(context: context)
         else {
-            return
+            return false
         }
 
         // Message View
         guard let messageView = createMessageView(context: context) else {
-            return
+            return false
         }
 
         // ViewController
@@ -77,6 +75,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         } else {
             window.isHidden = false
         }
+        return true
     }
 
     @MainActor private func checkRootViewController() -> Bool {
