@@ -38,9 +38,9 @@ class DefaultHttpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher {
     }
 
     private func execute(request: HttpRequest) async throws -> WorkspaceConfigContext? {
-        let sample = TimerSample.start()
-        let response = await httpClient.execute(request: request)
-        ApiCallMetrics.record(operation: "get.workspace", sample: sample, response: response)
+        let response = await ApiCallMetrics.record(operation: "get.workspace") {
+            await self.httpClient.execute(request: request)
+        }
         return try handleResponse(response: response)
     }
 

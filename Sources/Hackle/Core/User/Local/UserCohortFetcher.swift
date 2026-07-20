@@ -28,9 +28,9 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
 
     func fetch(user: User) async throws -> UserCohorts {
         let request = try createRequest(user: user)
-        let sample = TimerSample.start()
-        let response = await httpClient.execute(request: request, timeout: timeout)
-        ApiCallMetrics.record(operation: "get.cohorts", sample: sample, response: response)
+        let response = await ApiCallMetrics.record(operation: "get.cohorts") {
+            await self.httpClient.execute(request: request, timeout: self.timeout)
+        }
         return try handleResponse(response: response)
     }
 
