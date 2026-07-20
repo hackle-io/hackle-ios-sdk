@@ -158,7 +158,7 @@ class UserTargetEventsSpecs: QuickSpec {
                 expect(userTargetEvents[1].property?.value.asString()) == "platinum"
             }
             
-            it("fail parse property") {
+            it("cannot parse property") {
                 let json = """
                 {
                     "events": [

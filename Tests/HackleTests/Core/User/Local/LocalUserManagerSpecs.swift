@@ -52,7 +52,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                 ]
             }
 
-            it("when failed to load user then init with default user") {
+            it("when unable to load user then init with default user") {
                 repository.putData(key: "user", value: "invalid json".data(using: .utf8)!)
                 sut.initialize(user: nil)
                 let user = sut.currentUser

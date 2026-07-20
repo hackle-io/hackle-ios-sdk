@@ -1,0 +1,975 @@
+{
+  "workspace": {
+    "id": 1,
+    "environment": {
+      "id": 1,
+      "primary": true
+    }
+  },
+  "experiments": [],
+  "featureFlags": [],
+  "buckets": [],
+  "events": [],
+  "segments": [],
+  "containers": [],
+  "parameterConfigurations": [],
+  "remoteConfigParameters": [],
+  "inAppMessages": [
+    {
+      "id": 1,
+      "key": 1,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "CUSTOM",
+        "slots": [
+          {
+            "dayOfWeek": "MONDAY",
+            "startMillisInclusive": 32400000,
+            "endMillisExclusive": 64800000
+          },
+          {
+            "dayOfWeek": "FRIDAY",
+            "startMillisInclusive": 68400000,
+            "endMillisExclusive": 79200000
+          }
+        ]
+      },
+      "eventFrequencyCap": {
+        "identifiers": [
+          {
+            "identifierType": "$sessionId",
+            "countPerIdentifier": 42
+          },
+          {
+            "identifierType": "$deviceId",
+            "countPerIdentifier": 43
+          }
+        ],
+        "duration": {
+          "durationUnit": {
+            "timeUnit": "HOURS",
+            "amount": 320
+          },
+          "countPerDuration": 420
+        }
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": [
+            {
+              "conditions": [
+                {
+                  "key": {
+                    "type": "EVENT_PROPERTY",
+                    "name": "category"
+                  },
+                  "match": {
+                    "type": "MATCH",
+                    "operator": "IN",
+                    "valueType": "STRING",
+                    "values": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "eventTriggerDelay": {
+        "type": "AFTER",
+        "afterCondition": {
+          "duration": {
+            "timeUnit": "SECONDS",
+            "amount": 42
+          }
+        }
+      },
+      "evaluateContext": {
+        "atDeliverTime": true
+      },
+      "targetContext": {
+        "targets": [
+          {
+            "conditions": [
+              {
+                "key": {
+                  "type": "USER_PROPERTY",
+                  "name": "age"
+                },
+                "match": {
+                  "type": "MATCH",
+                  "operator": "GT",
+                  "valueType": "NUMBER",
+                  "values": [
+                    42
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "overrides": [
+          {
+            "identifierType": "$id",
+            "identifiers": [
+              "user"
+            ]
+          }
+        ]
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "ANDROID",
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL",
+          "HORIZONTAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY",
+              "alignment": {
+                "horizontal": "LEFT",
+                "vertical": "TOP"
+              }
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://vertical-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              },
+              {
+                "orientation": "HORIZONTAL",
+                "imagePath": "https://horizontal-image.png",
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://www.hackle.io"
+                }
+              }
+            ],
+            "imageAutoScroll": {
+              "interval": {
+                "timeUnit": "SECONDS",
+                "amount": 42
+              }
+            },
+            "text": {
+              "title": {
+                "text": "title_text",
+                "style": {
+                  "textColor": "#0000FF"
+                }
+              },
+              "body": {
+                "text": "body_text",
+                "style": {
+                  "textColor": "#000000"
+                }
+              }
+            },
+            "buttons": [
+              {
+                "text": "close",
+                "style": {
+                  "textColor": "#000000",
+                  "bgColor": "#FFFFFF",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "HIDDEN",
+                  "value": ""
+                }
+              },
+              {
+                "text": "apply",
+                "style": {
+                  "textColor": "#ffffff",
+                  "bgColor": "#5e5af4",
+                  "borderColor": "#FFFFFF"
+                },
+                "action": {
+                  "behavior": "CLICK",
+                  "type": "WEB_LINK",
+                  "value": "https://dashboard.hackle.io"
+                }
+              }
+            ],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": {
+              "style": {
+                "color": "#000001"
+              },
+              "action": {
+                "behavior": "CLICK",
+                "type": "CLOSE",
+                "value": null
+              }
+            },
+            "action": {
+              "behavior": "CLICK",
+              "type": "LINK_AND_CLOSE",
+              "value": "https://www.hackle.io"
+            },
+            "outerButtons": [
+              {
+                "button": {
+                  "text": "outer",
+                  "style": {
+                    "textColor": "#000000",
+                    "bgColor": "#FFFFFF",
+                    "borderColor": "#FFFFFF"
+                  },
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "CLOSE",
+                    "value": ""
+                  }
+                },
+                "alignment": {
+                  "horizontal": "RIGHT",
+                  "vertical": "BOTTOM"
+                }
+              }
+            ],
+            "innerButtons": [
+              {
+                "button": {
+                  "text": "inner",
+                  "style": {
+                    "textColor": "#000000",
+                    "bgColor": "#FFFFFF",
+                    "borderColor": "#FFFFFF"
+                  },
+                  "action": {
+                    "behavior": "CLICK",
+                    "type": "CLOSE",
+                    "value": ""
+                  }
+                },
+                "alignment": {
+                  "horizontal": "RIGHT",
+                  "vertical": "BOTTOM"
+                }
+              }
+            ],
+            "html": {
+              "resourceType": "PATH",
+              "text": null,
+              "path": "https://hackle.io"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "key": 2,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "ALL",
+        "slots": []
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "key": 3,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "key": 4,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "CUSTOM",
+        "slots": [
+          {
+            "dayOfWeek": "INVALID_DAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "TUESDAY",
+            "startMillisInclusive": 32400000,
+            "endMillisExclusive": 64800000
+          }
+        ]
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "key": 5,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "CUSTOM",
+        "slots": [
+          {
+            "dayOfWeek": "INVALID_DAY_1",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "INVALID_DAY_2",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          }
+        ]
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "key": 6,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "CUSTOM",
+        "slots": []
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "key": 7,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": null,
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "key": 8,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "UNKNOWN_TYPE",
+        "slots": []
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "key": 9,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "CUSTOM",
+        "slots": [
+          {
+            "dayOfWeek": "WEDNESDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          }
+        ]
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "key": 10,
+      "timeUnit": "CUSTOM",
+      "startEpochTime": 42,
+      "endEpochTime": 43,
+      "startEpochTimeMillis": 42000,
+      "endEpochTimeMillis": 43000,
+      "status": "ACTIVE",
+      "timetable": {
+        "type": "CUSTOM",
+        "slots": [
+          {
+            "dayOfWeek": "MONDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "TUESDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "WEDNESDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "THURSDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "FRIDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "SATURDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          },
+          {
+            "dayOfWeek": "SUNDAY",
+            "startMillisInclusive": 0,
+            "endMillisExclusive": 86400000
+          }
+        ]
+      },
+      "eventTriggerRules": [
+        {
+          "eventKey": "view_home",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "MODAL",
+              "layoutType": "IMAGE_ONLY"
+            },
+            "images": [
+              {
+                "orientation": "VERTICAL",
+                "imagePath": "https://image.png"
+              }
+            ],
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "key": 11,
+      "timeUnit": "IMMEDIATE",
+      "startEpochTimeMillis": null,
+      "endEpochTimeMillis": null,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "html_trigger",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "HTML",
+              "layoutType": "TEXT_ONLY",
+              "alignment": null
+            },
+            "images": [],
+            "text": null,
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": null,
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "key": 12,
+      "timeUnit": "IMMEDIATE",
+      "startEpochTimeMillis": null,
+      "endEpochTimeMillis": null,
+      "status": "ACTIVE",
+      "eventTriggerRules": [
+        {
+          "eventKey": "html_trigger",
+          "targets": []
+        }
+      ],
+      "targetContext": {
+        "targets": [],
+        "overrides": []
+      },
+      "messageContext": {
+        "defaultLang": "ko",
+        "platformTypes": [
+          "IOS"
+        ],
+        "exposure": {
+          "type": "DEFAULT",
+          "key": null
+        },
+        "orientations": [
+          "VERTICAL"
+        ],
+        "messages": [
+          {
+            "lang": "ko",
+            "layout": {
+              "displayType": "HTML",
+              "layoutType": "TEXT_ONLY",
+              "alignment": null
+            },
+            "images": [],
+            "text": null,
+            "buttons": [],
+            "background": {
+              "color": "#FFFFFF"
+            },
+            "closeButton": null,
+            "html": {
+              "resourceType": "TEXT",
+              "text": "<h1>Hello</h1>"
+            },
+            "outerButtons": [],
+            "innerButtons": []
+          }
+        ]
+      }
+    }
+  ]
+}

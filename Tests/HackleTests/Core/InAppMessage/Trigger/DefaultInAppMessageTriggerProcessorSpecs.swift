@@ -46,7 +46,7 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
             }
         }
 
-        it("when error occurs during handle trigger then ignore") {
+        it("when handling trigger throws then ignore") {
             // given
             let inAppMessage = InAppMessageEntity.create()
             let event = UserEvents.track("test", timestamp: 42)

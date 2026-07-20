@@ -37,7 +37,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: AsyncSpec {
             expect(actual).to(beIdenticalTo(response))
         }
 
-        it("exception") {
+        it("when deliver throws then process is aborted") {
             // given
             let request = InAppMessageEntity.scheduleRequest()
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)

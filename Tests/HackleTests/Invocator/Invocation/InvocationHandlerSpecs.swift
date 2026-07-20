@@ -61,7 +61,7 @@ class InvocationHandlerSpecs: QuickSpec {
                     sut = CloseInAppMessageViewInvocationHandler(core: core)
                 }
                 
-                it("when parameters viewId is null then throws error") {
+                it("when parameters viewId is null then throws") {
                     let request = reqest(command: .closeInAppMessageView, parameters: [:])
                     expect(try sut.invoke(request: request)).to(throwError())
                 }

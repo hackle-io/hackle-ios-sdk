@@ -34,7 +34,7 @@ extension InAppMessageDto {
         return InAppMessageEntity(
             id: id,
             key: key,
-            order: order,
+            order: order ?? 0,
             status: status,
             period: period,
             timetable: timetable,
@@ -515,7 +515,7 @@ extension ExperimentDto {
             identifierType: identifierType,
             status: experimentStatus,
             version: version,
-            order: order,
+            order: order ?? 0,
             executionVersion: execution.version,
             variations: variation,
             userOverrides: userOverrides,

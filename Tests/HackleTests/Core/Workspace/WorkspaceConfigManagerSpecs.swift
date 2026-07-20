@@ -116,7 +116,7 @@ class WorkspaceConfigManagerSpecs: AsyncSpec {
             expect(actual?.metadata.environmentId) == data.dto.workspace.environment.id
         }
 
-        it("do nothing even http request occours error") {
+        it("do nothing even if http request is rejected") {
             let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository()
             let sut = WorkspaceConfigManager(httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher, repository: repository)
@@ -129,7 +129,7 @@ class WorkspaceConfigManagerSpecs: AsyncSpec {
             expect(repository.value).to(beNil())
         }
 
-        it("do not overwrite workspace value even http request occours error") {
+        it("do not overwrite workspace value even if http request is rejected") {
             let data = loadWorkspaceConfigFromRes()
             let httpWorkspaceConfigFetcher = MockHttpWorkspaceConfigFetcher(returns: [HackleError.error("fail")])
             let repository = MockWorkspaceConfigRepository(value: data)

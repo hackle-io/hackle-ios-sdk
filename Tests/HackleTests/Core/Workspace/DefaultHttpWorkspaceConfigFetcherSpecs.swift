@@ -30,7 +30,7 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             Sdk(key: key, name: "test-sdk", version: "test-version")
         }
 
-        it("when error on http call then complete with error") {
+        it("when http call is rejected then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request, error: HackleError.error("fail")))
             }
@@ -40,7 +40,7 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("fail")))
         }
 
-        it("when url response is empty then complete with error") {
+        it("when url response is empty then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request))
             }
@@ -60,7 +60,7 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(beNil())
         }
 
-        it("when http call is not successful then complete with error") {
+        it("when http status is not successful then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request, statusCode: 500))
             }
@@ -70,7 +70,7 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("Http status code: 500")))
         }
 
-        it("when response body is empty then complete with error") {
+        it("when response body is empty then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request, statusCode: 200, data: nil))
             }
@@ -80,7 +80,7 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("Response body is empty")))
         }
 
-        it("when response body is invalid format then complete with error") {
+        it("when response body is invalid format then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(request: request, statusCode: 200, data: "INVALID".data(using: .utf8)))
             }
@@ -101,6 +101,20 @@ class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
             let context = try actual.get()
             expect(context).toNot(beNil())
             expect(context?.dto).toNot(beNil())
+        }
+
+        it("when response body has no order field then complete with workspace config dto") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response_without_order", ofType: "json")!)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            let context = try actual.get()
+            expect(context).toNot(beNil())
+            expect(context?.dto.experiments.count).to(beGreaterThan(0))
+            expect(context?.dto.experiments.allSatisfy { $0.order == nil }).to(beTrue())
         }
 
         it("url") {

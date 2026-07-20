@@ -134,7 +134,7 @@ class DefaultUserDtoSpecs: QuickSpec {
                     expect(event?.property).to(beNil())
                 }
                 
-                it("When property decoding fails") {
+                it("When property cannot be decoded") {
                     // given
                     let json = """
                     {

@@ -6,6 +6,7 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
     private let partialEvaluator: PartialWorkspaceRemoteEvaluator
     private let repository: WorkspaceEvaluationRepository
     private let cache: WorkspaceEvaluationCache
+    private let recursiveLock = RecursiveLock(label: "io.hackle.WorkspaceEvaluationManager.store")
 
     init(
         fullEvaluator: FullWorkspaceRemoteEvaluator,
@@ -55,12 +56,16 @@ class WorkspaceEvaluationManager: WorkspaceManager, WorkspaceEvaluationFetcher, 
     }
 
     private func store(context: WorkspaceEvaluationContext) {
-        let snapshots = cache.put(context: context)
-        repository.set(contexts: snapshots)
+        recursiveLock.lock {
+            let snapshots = cache.put(context: context)
+            repository.set(contexts: snapshots)
+        }
     }
 
     private func load() {
-        let contexts = repository.get()
-        cache.restore(contexts: contexts)
+        recursiveLock.lock {
+            let contexts = repository.get()
+            cache.restore(contexts: contexts)
+        }
     }
 }

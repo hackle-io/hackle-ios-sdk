@@ -20,7 +20,7 @@ class DefaultUserTargetFetcherSpecs: AsyncSpec {
             sut = DefaultUserTargetEventFetcher(config: HackleConfig.DEFAULT, httpClient: httpClient)
         }
 
-        it("when error on fetch then complete with error") {
+        it("when fetch is rejected then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(statusCode: 500, error: HackleError.error("fail")))
             }
@@ -30,7 +30,7 @@ class DefaultUserTargetFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("fail")))
         }
 
-        it("when response is empty then complete with error") {
+        it("when response is empty then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(HttpResponse(request: request, data: nil, urlResponse: nil, error: nil))
             }
@@ -40,7 +40,7 @@ class DefaultUserTargetFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("Response is empty")))
         }
 
-        it("when failed to fetch then complete with error") {
+        it("when response status is not successful then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(statusCode: 500))
             }
@@ -50,7 +50,7 @@ class DefaultUserTargetFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("Http status code: 500")))
         }
 
-        it("when response body is empty then complete with error") {
+        it("when response body is empty then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(statusCode: 200))
             }
@@ -60,7 +60,7 @@ class DefaultUserTargetFetcherSpecs: AsyncSpec {
             expect(try actual.get()).to(throwError(HackleError.error("Response body is empty")))
         }
 
-        it("when response body is invalid then complete with error") {
+        it("when response body is invalid then result throws") {
             every(httpClient.executeMock).answers { request, completion in
                 completion(response(statusCode: 200, data: "INVALID".data(using: .utf8)))
             }

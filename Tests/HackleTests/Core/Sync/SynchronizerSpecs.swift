@@ -16,7 +16,7 @@ class SynchronizerSpecs: AsyncSpec {
                 expect(counter.count()) == 1
             }
 
-            it("failure - 에러를 삼키고 완료된다") {
+            it("sync가 던져도 삼키고 완료된다") {
                 let counter = CumulativeMetricRegistry().counter(name: "counter")
                 let sut = SynchronizerStub(.failure(HackleError.error("fail")))
                 await awaitCompletion {
