@@ -48,31 +48,26 @@ class DefaultHttpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher {
         if let error = response.error {
             throw error
         }
-
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
+        // statusCode nil == non-HTTP 응답. "Response is empty" 계약 보존(테스트가 잠금)
+        guard let statusCode = response.statusCode else {
             throw HackleError.error("Response is empty")
         }
-
-        if urlResponse.isNotModified {
+        if response.isNotModified {
             Log.debug("Workspace is not modified")
             return nil
         }
-
-        guard urlResponse.isSuccessful else {
-            throw HackleError.error("Http status code: \(urlResponse.statusCode)")
+        guard response.isSuccessful else {
+            throw HackleError.error("Http status code: \(statusCode)")
         }
-
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-
-        let lastModified = urlResponse.header(.lastModified)
+        // lastModified 헤더는 HttpResponse extension에 접근자가 없어 국소 캐스팅 유지
+        let lastModified = (response.urlResponse as? HTTPURLResponse)?.header(.lastModified)
         guard let workspaceDto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
-
         Log.debug("Workspace fetched")
-
         return WorkspaceConfigContext.of(dto: workspaceDto, modifiedAt: lastModified)
     }
 }

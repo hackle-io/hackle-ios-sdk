@@ -47,23 +47,19 @@ class DefaultUserTargetEventFetcher: UserTargetEventFetcher {
         if let error = response.error {
             throw error
         }
-
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
+        // statusCode nil == non-HTTP 응답. "Response is empty" 계약 보존(테스트가 잠금)
+        guard let statusCode = response.statusCode else {
             throw HackleError.error("Response is empty")
         }
-
-        guard urlResponse.isSuccessful else {
-            throw HackleError.error("Http status code: \(urlResponse.statusCode)")
+        guard response.isSuccessful else {
+            throw HackleError.error("Http status code: \(statusCode)")
         }
-
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-
         guard let dto = try? JSONDecoder().decode(UserTargetResponseDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
-
         return UserTargetEvents.from(dto: dto)
     }
 }
