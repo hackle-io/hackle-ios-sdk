@@ -113,6 +113,29 @@ class DefaultUserCohortFetcherSpecs: AsyncSpec {
             expect(request.headers?["X-HACKLE-USER"]).toNot(beNil())
         }
 
+        it("api.call 메트릭을 기록한다") {
+            // given
+            Metrics.clear()
+            let cumulative = CumulativeMetricRegistry()
+            Metrics.addRegistry(registry: cumulative)
+            let json = try! String(contentsOfFile: Bundle(for: DefaultUserCohortFetcherSpecs.self).path(forResource: "workspace_cohorts", ofType: "json")!)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(statusCode: 200, data: json.data(using: .utf8)))
+            }
+
+            // when
+            await awaitCompletion { _ = try await sut.fetch(user: User.builder().id("42").build()) }
+
+            // then
+            let timer = Metrics.timer(name: "api.call", tags: [
+                "operation": "get.cohorts",
+                "success": "true",
+                "status": "200",
+                "exception": "NONE"
+            ])
+            expect(timer.count()) == 1
+        }
+
         func response(statusCode: Int, data: Data? = nil, error: Error? = nil) -> HttpResponse {
             let url = URL(string: "localhost")!
 
