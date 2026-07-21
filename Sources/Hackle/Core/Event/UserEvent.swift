@@ -2,7 +2,7 @@
 
 import Foundation
 
-protocol UserEvent {
+protocol UserEvent: Sendable {
     var insertId: String { get }
     var type: UserEventType { get }
     var timestamp: Date { get }

@@ -5,7 +5,8 @@
 import Foundation
 @testable import Hackle
 
-class MockUserEvent: UserEvent {
+// 테스트 더블 — UserEvent: Sendable 상속을 맞추기 위한 표기.
+class MockUserEvent: UserEvent, @unchecked Sendable {
     var insertId: String
     var type: UserEventType
     var user: HackleUser
