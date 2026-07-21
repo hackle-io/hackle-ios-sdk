@@ -4,6 +4,8 @@ protocol UserManager: Synchronizer, ApplicationLifecycleListener {
 
     var currentUser: User { get }
 
+    var userListeners: [UserListener] { get nonmutating set }
+
     func initialize(user: User?)
 
     func hackleUser(user: User, appContext: HackleAppContext) -> HackleUser
@@ -32,5 +34,20 @@ extension UserManager {
 
     func hackleUser(appContext: HackleAppContext) -> HackleUser {
         hackleUser(user: currentUser, appContext: appContext)
+    }
+}
+
+extension UserManager where Self: AnyObject {
+
+    func addListener(listener: UserListener) {
+        userListeners.append(listener)
+        Log.debug("UserListener added [\(listener)]")
+    }
+
+    func publishUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
+        Log.debug("UserManager.publishUserUpdated()")
+        for listener in userListeners {
+            listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
+        }
     }
 }

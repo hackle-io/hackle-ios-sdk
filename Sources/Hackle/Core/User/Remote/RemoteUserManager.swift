@@ -5,7 +5,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
 
     private let recursiveLock = RecursiveLock(label: "io.hackle.RemoteUserManager")
 
-    private var userListeners: [UserListener]
+    var userListeners: [UserListener]
     private let clock: Clock
     private let device: Device
     private let bundleInfo: BundleInfo
@@ -42,11 +42,6 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         self.evaluationManager = evaluationManager
         self.defaultUser = HackleUserBuilder().deviceId(device.id).build()
         self.context = RemoteUserContext.from(user: defaultUser)
-    }
-
-    func addListener(listener: UserListener) {
-        userListeners.append(listener)
-        Log.debug("UserListener added [\(listener)]")
     }
 
     // Initialize
@@ -153,12 +148,6 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
             }
 
             return UserUpdated(old: old, new: new)
-        }
-    }
-
-    private func publishUserUpdated(oldUser: User, newUser: User, timestamp: Date) {
-        for listener in userListeners {
-            listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
         }
     }
 

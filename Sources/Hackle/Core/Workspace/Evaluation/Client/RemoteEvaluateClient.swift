@@ -30,10 +30,9 @@ class RemoteEvaluateClient {
             throw HackleError.error("Failed to serialize \(operation) request")
         }
         let httpRequest = HttpRequest.post(url: url, body: data)
-        let sample = TimerSample.start()
-        let response = await httpClient.execute(request: httpRequest)
-        ApiCallMetrics.record(operation: operation, sample: sample, response: response)
-        return response
+        return await ApiCallMetrics.record(operation: operation) {
+            await self.httpClient.execute(request: httpRequest)
+        }
     }
 
     private func handleWorkspaceResponse(response: HttpResponse) throws -> WorkspaceEvaluateResponseDto? {

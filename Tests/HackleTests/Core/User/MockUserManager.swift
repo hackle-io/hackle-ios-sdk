@@ -7,6 +7,7 @@ class MockUserManager: Mock, UserManager, @unchecked Sendable {
 
     var currentUser: User
     var lastHackleAppContext: HackleAppContext? = nil
+    var userListeners: [UserListener] = []
 
     init(currentUser: User = HackleUserBuilder().build()) {
         self.currentUser = currentUser

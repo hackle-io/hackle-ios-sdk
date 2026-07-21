@@ -189,6 +189,17 @@ enum ApiCallMetrics {
     }
 }
 
+extension ApiCallMetrics {
+    /// 타이밍 측정 + 기록을 감싸는 HOF. android의 예외-감싸기 HOF를 async response 버전으로 조정한 형태.
+    /// (iOS httpClient.execute는 throw 대신 response.error로 에러를 표현)
+    static func record(operation: String, _ call: () async -> HttpResponse) async -> HttpResponse {
+        let sample = TimerSample.start()
+        let response = await call()
+        record(operation: operation, sample: sample, response: response)
+        return response
+    }
+}
+
 extension URLError.Code {
     fileprivate func toString() -> String {
         switch self {

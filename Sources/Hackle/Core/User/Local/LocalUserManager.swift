@@ -5,7 +5,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     private let recursiveLock = RecursiveLock(label: "io.hackle.LocalUserManager")
 
-    private var userListeners: [UserListener]
+    var userListeners: [UserListener]
     private let repository: UserRepository
     private let cohortFetcher: UserCohortFetcher
     private let targetFetcher: UserTargetEventFetcher
@@ -35,11 +35,6 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         self.bundleInfo = bundleInfo
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
         self.context = LocalUserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
-    }
-
-    func addListener(listener: UserListener) {
-        userListeners.append(listener)
-        Log.debug("UserListener added [\(listener)]")
     }
 
     func initialize(user: User?) {
@@ -210,18 +205,11 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         context = newContext
 
         if !newUser.identifierEquals(other: oldUser) {
-            changeUser(oldUser: oldUser, newUser: newUser, timestamp: clock.now())
+            publishUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: clock.now())
         }
 
         saveUser(user: newUser)
         return UserUpdated(old: oldContext, new: newContext)
-    }
-
-    private func changeUser(oldUser: User, newUser: User, timestamp: Date) {
-        Log.debug("UserManager.publishUserUpdated()")
-        for listener in userListeners {
-            listener.onUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: timestamp)
-        }
     }
 
     private func publishPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date) {

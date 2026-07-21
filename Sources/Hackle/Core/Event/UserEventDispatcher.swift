@@ -68,18 +68,18 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
             return
         }
 
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
+        guard let statusCode = response.statusCode else {
             Log.error("Failed to dispatch events: Response is empty")
             delete(events: events)
             return
         }
 
-        if (200..<300).contains(urlResponse.statusCode) {
+        if (200..<300).contains(statusCode) {
             delete(events: events)
             return
         }
 
-        if (400..<500).contains(urlResponse.statusCode) {
+        if (400..<500).contains(statusCode) {
             delete(events: events)
             return
         }

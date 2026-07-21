@@ -28,9 +28,9 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
 
     func fetch(user: User) async throws -> UserCohorts {
         let request = try createRequest(user: user)
-        let sample = TimerSample.start()
-        let response = await httpClient.execute(request: request, timeout: timeout)
-        ApiCallMetrics.record(operation: "get.cohorts", sample: sample, response: response)
+        let response = await ApiCallMetrics.record(operation: "get.cohorts") {
+            await self.httpClient.execute(request: request, timeout: self.timeout)
+        }
         return try handleResponse(response: response)
     }
 
@@ -47,23 +47,18 @@ class DefaultUserCohortFetcher: UserCohortFetcher {
         if let error = response.error {
             throw error
         }
-
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
+        guard let statusCode = response.statusCode else {
             throw HackleError.error("Response is empty")
         }
-
-        guard urlResponse.isSuccessful else {
-            throw HackleError.error("Http status code: \(urlResponse.statusCode)")
+        guard response.isSuccessful else {
+            throw HackleError.error("Http status code: \(statusCode)")
         }
-
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-
         guard let dto = try? JSONDecoder().decode(UserCohortsResponseDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }
-
         return UserCohorts.from(dto: dto)
     }
 }
