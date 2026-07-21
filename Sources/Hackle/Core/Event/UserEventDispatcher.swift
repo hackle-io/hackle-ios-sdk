@@ -8,7 +8,7 @@ protocol UserEventDispatcher {
     func dispatch(events: [EventEntity])
 }
 
-// 저장 프로퍼티가 모두 let(불변)이라 thread-safe. DB 작업은 eventQueue로 직렬화된다.
+// 저장 프로퍼티가 모두 let(불변)이라 thread-safe.
 final class DefaultUserEventDispatcher: UserEventDispatcher, @unchecked Sendable {
     private let endpoint: URL
     private let eventQueue: DispatchQueue

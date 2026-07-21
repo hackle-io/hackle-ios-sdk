@@ -85,9 +85,6 @@ extension NotificationHandler {
         }
 
         if let url = URL(string: imageUrl) {
-            // URLSession의 completionHandler는 @Sendable이라 non-Sendable `completion`을
-            // 직접 캡처할 수 없다. completion은 정확히 1회만 호출되고 공유 가변 상태가 없으므로
-            // @unchecked Sendable 박스로 세탁해 경계를 안전하게 넘긴다.
             let sink = UncheckedSendableBox(completion)
             URLSession.shared.downloadTask(with: url) { (location, response, error) in
                 guard let response = response,

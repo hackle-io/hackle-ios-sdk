@@ -19,8 +19,7 @@ class TextInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
     }
 }
 
-// 저장 프로퍼티가 httpClient(let) 하나뿐이고 그 외 상태가 없다(stateless).
-// resolve의 [weak self] 캡처를 @Sendable 경계에서 허용하기 위한 표기.
+// 저장 프로퍼티가 httpClient(let) 하나뿐이라 thread-safe(stateless).
 final class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver, @unchecked Sendable {
     private let httpClient: HttpClient
 
