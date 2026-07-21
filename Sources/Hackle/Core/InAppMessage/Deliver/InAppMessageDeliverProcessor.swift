@@ -52,14 +52,14 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
         // evaluate (dedup + re-evaluate)
         let response = try await evaluator.evaluate(request: request, user: user)
-        return try resolve(request: request, user: user, response: response)
+        return await resolve(request: request, user: user, response: response)
     }
 
     private func resolve(
         request: InAppMessageDeliverRequest,
         user: HackleUser,
         response: InAppMessageDeliverEvaluateResponse
-    ) throws -> InAppMessageDeliverResponse {
+    ) async -> InAppMessageDeliverResponse {
         if !response.isEligible {
             return InAppMessageDeliverResponse.of(request: request, code: response.code ?? .ineligible)
         }
@@ -73,7 +73,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
             user: user,
             evaluation: evaluation
         )
-        let presentResponse = try presentProcessor.process(request: presentRequest)
+        let presentResponse = await presentProcessor.process(request: presentRequest)
 
         return InAppMessageDeliverResponse.of(request: request, code: .present, presentResponse: presentResponse)
     }

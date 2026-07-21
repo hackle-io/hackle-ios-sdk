@@ -89,11 +89,10 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
             expect(actual.presentResponse).to(beIdenticalTo(presentResponse))
         }
 
-        it("when present throws then process is aborted") {
+        it("when evaluator throws then exception code") {
             // given
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-            every(evaluator.evaluateMock).returns(eligibleResponse())
-            every(presentProcessor.processMock).answers { _ in
+            every(evaluator.evaluateMock).answers { _ in
                 throw HackleError.error("fail")
             }
 

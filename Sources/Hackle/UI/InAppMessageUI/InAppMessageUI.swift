@@ -39,23 +39,24 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         return view
     }
 
-    func present(context: InAppMessagePresentationContext) {
-        Task { @MainActor in
-            self.presentNow(context: context)
-        }
+    func present(context: InAppMessagePresentationContext) async -> InAppMessagePresentResponse {
+        await presentNow(context: context)
     }
 
-    @MainActor private func presentNow(context: InAppMessagePresentationContext) {
-        guard checkRootViewController(),
-              noMessagePresented(),
-              orientationSupported(context: context)
-        else {
-            return
+    @MainActor private func presentNow(context: InAppMessagePresentationContext) -> InAppMessagePresentResponse {
+        guard checkRootViewController() else {
+            return InAppMessagePresentResponse.of(code: .activityNotFound, context: context)
+        }
+        guard noMessagePresented() else {
+            return InAppMessagePresentResponse.of(code: .alreadyPresented, context: context)
+        }
+        guard orientationSupported(context: context) else {
+            return InAppMessagePresentResponse.of(code: .unsupportedOrientation, context: context)
         }
 
-        // Message View
+        // Message View (미노출 AB 등 view가 생성되지 않는 경우에도 present 한 것으로 간주한다)
         guard let messageView = createMessageView(context: context) else {
-            return
+            return InAppMessagePresentResponse.of(code: .present, context: context)
         }
 
         // ViewController
@@ -77,6 +78,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         } else {
             window.isHidden = false
         }
+        return InAppMessagePresentResponse.of(code: .present, context: context)
     }
 
     @MainActor private func checkRootViewController() -> Bool {

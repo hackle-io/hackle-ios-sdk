@@ -324,11 +324,11 @@ extension InAppMessageEntity {
     }
 
     static func presentResponse(
-        dispatchId: String = UUID().uuidString,
+        code: InAppMessagePresentResponse.Code = .present,
         context: InAppMessagePresentationContext = InAppMessageEntity.context()
     ) -> InAppMessagePresentResponse {
         return InAppMessagePresentResponse(
-            dispatchId: dispatchId,
+            code: code,
             context: context
         )
     }

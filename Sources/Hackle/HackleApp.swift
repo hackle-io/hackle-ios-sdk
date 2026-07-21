@@ -694,6 +694,7 @@ extension HackleApp {
             storage: inAppMessageImpressionStorage
         )
         let inAppMessagePresentProcessor = DefaultInAppMessagePresentProcessor(
+            coreQueue: coreQueue,
             presenter: inAppMessageUI,
             recorder: inAppMessageRecorder
         )
