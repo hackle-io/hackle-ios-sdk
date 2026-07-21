@@ -71,6 +71,7 @@ protocol HackleAppCore: AnyObject {
 
 class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
+    private let evaluationMode: EvaluationMode
     private let coreQueue: DispatchQueue
     private let synchronizer: Synchronizer
     private let applicationLifecycleObserver: ApplicationLifecycleObserver
@@ -114,6 +115,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     init(
         core: HackleCore,
+        evaluationMode: EvaluationMode,
         coreQueue: DispatchQueue,
         synchronizer: Synchronizer,
         applicationLifecycleObserver: ApplicationLifecycleObserver,
@@ -133,6 +135,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         optOutManager: OptOutManager
     ) {
         self.core = core
+        self.evaluationMode = evaluationMode
         self.coreQueue = coreQueue
         self.synchronizer = synchronizer
         self.applicationLifecycleObserver = applicationLifecycleObserver
@@ -192,6 +195,10 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func showUserExplorer() {
+        if evaluationMode == .remote {
+            Log.info("UserExplorer is not supported in EvaluationMode.REMOTE")
+            return
+        }
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }

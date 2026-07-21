@@ -87,6 +87,34 @@ class HackleAppSpecs: QuickSpec {
             sut.showUserExplorer()
         }
 
+        it("showUserExplorer는 REMOTE 모드에서 무시된다") {
+            let registry = CumulativeMetricRegistry()
+            Metrics.addRegistry(registry: registry)
+            let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
+
+            let built = makeHackleApp(
+                core: core,
+                evaluationMode: .remote,
+                coreQueue: eventQueue,
+                synchronizer: synchronizer,
+                userManager: userManager,
+                workspaceManager: workspaceManager,
+                sessionManager: sessionManager,
+                screenManager: screenManager,
+                eventProcessor: eventProcessor,
+                pushTokenRegistry: pushTokenRegistry,
+                notificationManager: notificationManager,
+                platformManager: platformManager,
+                userExplorer: userExplorer,
+                inAppMessageUI: inAppMessageUI,
+                throttler: throttler
+            )
+
+            built.sut.showUserExplorer()
+
+            expect(registry.counter(name: "user.explorer.show").count()) == 0
+        }
+
         it("hideUserExplorer") {
             sut.hideUserExplorer()
         }

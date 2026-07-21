@@ -848,6 +848,7 @@ extension HackleApp {
 
         let hackleAppCore = DefaultHackleAppCore(
             core: core,
+            evaluationMode: config.evaluationMode,
             coreQueue: coreQueue,
             synchronizer: pollingSynchronizer,
             applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
