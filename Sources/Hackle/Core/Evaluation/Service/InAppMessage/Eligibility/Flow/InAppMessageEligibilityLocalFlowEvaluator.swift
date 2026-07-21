@@ -33,23 +33,6 @@ extension InAppMessageEligibilityLocalFlowEvaluator {
     }
 }
 
-/// Platform check
-///
-/// iOS를 지원안하면 UNSUPPORTED_PLATFORM
-class PlatformInAppMessageEligibilityLocalFlowEvaluator: InAppMessageEligibilityLocalFlowEvaluator {
-    func evaluate(
-        request: InAppMessageEligibilityLocalEvaluateRequest,
-        context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityLocalEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
-        guard request.inAppMessage.supports(platform: request.platformType) else {
-            let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.UNSUPPORTED_PLATFORM)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
-        }
-        return try nextFlow.evaluate(request: request, context: context)
-    }
-}
-
 /// Specific User Check
 ///
 /// 테스트 디바이스에서 사용

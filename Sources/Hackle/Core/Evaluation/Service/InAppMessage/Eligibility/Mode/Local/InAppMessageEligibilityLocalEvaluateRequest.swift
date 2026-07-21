@@ -7,7 +7,7 @@ final class InAppMessageEligibilityLocalEvaluateRequest: LocalEvaluateRequest, I
     let user: HackleUser
     let record: Bool
     let scope: InAppMessageEvaluateScope
-    let platformType: PlatformType
+    let platformType: PlatformType?
     let timestamp: Date
 
     var inAppMessage: InAppMessage { inAppMessageConfig }
@@ -18,7 +18,7 @@ final class InAppMessageEligibilityLocalEvaluateRequest: LocalEvaluateRequest, I
         user: HackleUser,
         record: Bool,
         scope: InAppMessageEvaluateScope,
-        platformType: PlatformType,
+        platformType: PlatformType?,
         timestamp: Date
     ) {
         self.workspaceConfig = workspace
@@ -39,7 +39,7 @@ final class InAppMessageEligibilityLocalEvaluateRequest: LocalEvaluateRequest, I
         inAppMessage: InAppMessageConfig,
         user: HackleUser,
         scope: InAppMessageEvaluateScope,
-        platformType: PlatformType,
+        platformType: PlatformType?,
         timestamp: Date,
         record: Bool = true
     ) -> InAppMessageEligibilityLocalEvaluateRequest {

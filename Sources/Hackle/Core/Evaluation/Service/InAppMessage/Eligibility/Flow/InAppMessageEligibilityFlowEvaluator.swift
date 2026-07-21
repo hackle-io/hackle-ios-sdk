@@ -3,6 +3,29 @@ import Foundation
 protocol InAppMessageEligibilityFlowEvaluator: FlowEvaluator {
 }
 
+/// Platform check
+///
+/// 플랫폼을 지원하지 않는 경우 UNSUPPORTED_PLATFORM
+class PlatformInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowEvaluator {
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
+        request: Request,
+        context: EvaluatorContext,
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        guard let iamRequest = request as? InAppMessageEligibilityEvaluateRequest else {
+            throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
+        }
+        guard let platformType = iamRequest.platformType else {
+            throw HackleError.error("platformType")
+        }
+        guard iamRequest.inAppMessage.supports(platform: platformType) else {
+            let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.UNSUPPORTED_PLATFORM)
+            return try evaluation(entity: iamRequest.inAppMessage, result: result)
+        }
+        return try nextFlow.evaluate(request: request, context: context)
+    }
+}
+
 /// Period Check
 ///
 /// IAM의 기간에 포함되지 않는 경우 NOT_IN_IN_APP_MESSAGE_PERIOD

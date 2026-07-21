@@ -18,7 +18,7 @@ class InAppMessageEligibilityRemoteEvaluationFlowFactorySpecs: QuickSpec {
 
         it("trigger flow") {
             sut.get(request: iamRemoteRequest(scope: .trigger))
-                .isDecisionWith(PlatformInAppMessageEligibilityRemoteFlowEvaluator.self)!
+                .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(OverrideInAppMessageEligibilityRemoteFlowEvaluator.self)!
                 .isDecisionWith(IneligibleInAppMessageEligibilityRemoteFlowEvaluator.self)!
                 .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
@@ -41,7 +41,7 @@ class InAppMessageEligibilityRemoteEvaluationFlowFactorySpecs: QuickSpec {
 
         it("deliver flow (re-evaluate)") {
             sut.get(request: iamRemoteRequest(scope: .deliver, atDeliverTime: true))
-                .isDecisionWith(PlatformInAppMessageEligibilityRemoteFlowEvaluator.self)!
+                .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(OverrideInAppMessageEligibilityRemoteFlowEvaluator.self)!
                 .isDecisionWith(IneligibleInAppMessageEligibilityRemoteFlowEvaluator.self)!
                 .isDecisionWith(PeriodInAppMessageEligibilityFlowEvaluator.self)!
