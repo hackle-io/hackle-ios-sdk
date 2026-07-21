@@ -16,7 +16,7 @@ class PlatformInAppMessageEligibilityFlowEvaluator: InAppMessageEligibilityFlowE
             throw HackleError.error("Unsupported request: \(type(of: request)) (expected: InAppMessageEligibilityEvaluateRequest)")
         }
         guard let platformType = iamRequest.platformType else {
-            throw HackleError.error("platformType")
+            throw HackleError.error("platformType is nil")
         }
         guard iamRequest.inAppMessage.supports(platform: platformType) else {
             let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.UNSUPPORTED_PLATFORM)

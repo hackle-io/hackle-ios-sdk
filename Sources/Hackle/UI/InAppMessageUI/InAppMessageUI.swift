@@ -54,7 +54,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
             return InAppMessagePresentResponse.of(code: .unsupportedOrientation, context: context)
         }
 
-        // Message View (미노출 AB 등 view가 생성되지 않는 경우에도 present 한 것으로 간주한다)
+        // Message View
         guard let messageView = createMessageView(context: context) else {
             return InAppMessagePresentResponse.of(code: .present, context: context)
         }

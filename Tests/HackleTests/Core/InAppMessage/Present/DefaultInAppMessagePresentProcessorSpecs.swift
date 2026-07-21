@@ -53,7 +53,7 @@ class DefaultInAppMessagePresentProcessorSpecs: AsyncSpec {
             // when
             let actual = await sut.process(request: request)
 
-            // then (게이팅 자체는 recorder 책임 — processor는 응답을 그대로 전달한다)
+            // then
             expect(actual.code) == InAppMessagePresentResponse.Code.alreadyPresented
             verify(exactly: 1) {
                 recorder.recordMock

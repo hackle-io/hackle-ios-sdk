@@ -82,7 +82,7 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
             it("when platformType is nil then throw") {
                 let request = InAppMessageEntity.eligibilityRequest(platformType: nil)
 
-                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow)).to(throwError())
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow)).to(throwError(errorType: HackleError.self))
             }
         }
 

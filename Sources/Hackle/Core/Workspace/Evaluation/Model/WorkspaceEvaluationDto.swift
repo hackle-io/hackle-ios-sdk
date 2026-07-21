@@ -111,7 +111,7 @@ struct InAppMessageEligibilityEvaluateResultDto: Codable {
     let eventFrequencyCap: InAppMessageDto.EventFrequencyCapDto?
     let eventTriggerDelay: InAppMessageDto.EventTriggerDelayDto?
 
-    // EvaluateContext (구 서버 응답에는 없을 수 있다)
+    // EvaluateContext
     let evaluateContext: InAppMessageDto.EvaluateContextDto?
 
     // MessageContext

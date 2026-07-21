@@ -10,7 +10,6 @@ class InAppMessagePresentResponse {
         self.context = context
     }
 
-    // inProgress/exception은 iOS에서는 도달하지 않지만 플랫폼 간 코드 어휘 통일을 위해 유지한다
     enum Code {
         case present
         case activityNotFound

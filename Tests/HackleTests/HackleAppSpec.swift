@@ -317,7 +317,7 @@ class HackleAppSpecs: QuickSpec {
 
             it("setPhoneNumber") {
                 var count = 0
-                waitUntil(timeout: .seconds(2)) { done in
+                waitUntil { done in
                     sut.setPhoneNumber(phoneNumber: "+821012345678") {
                         count += 1
                         done()
@@ -328,7 +328,7 @@ class HackleAppSpecs: QuickSpec {
 
             it("unsetPhoneNumber") {
                 var count = 0
-                waitUntil(timeout: .seconds(2)) { done in
+                waitUntil { done in
                     sut.unsetPhoneNumber {
                         count += 1
                         done()
