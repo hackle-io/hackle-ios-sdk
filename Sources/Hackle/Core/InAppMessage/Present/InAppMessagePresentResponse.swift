@@ -1,6 +1,6 @@
 import Foundation
 
-class InAppMessagePresentResponse {
+final class InAppMessagePresentResponse: Sendable {
 
     let code: Code
     let context: InAppMessagePresentationContext
