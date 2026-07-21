@@ -4,7 +4,8 @@ protocol NotificationDataReceiver {
     func onNotificationDataReceived(data: NotificationData, timestamp: Date)
 }
 
-class DefaultNotificationDataReceiver: NotificationDataReceiver {
+// 저장 프로퍼티가 모두 let(불변)이고, 저장 작업은 dispatchQueue로 직렬화되어 thread-safe.
+final class DefaultNotificationDataReceiver: NotificationDataReceiver, @unchecked Sendable {
     let dispatchQueue: DispatchQueue
     let repository: NotificationRepository
     
