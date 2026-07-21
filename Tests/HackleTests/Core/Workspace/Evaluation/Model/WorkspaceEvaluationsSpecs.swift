@@ -110,6 +110,15 @@ class WorkspaceEvaluationsSpecs: QuickSpec {
                     expect(result?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
                     expect(result?.eventTrigger.delay.afterCondition).to(beNil())
                 }
+
+                it("evaluateContext가 없으면 atDeliverTime=false로 폴백한다") {
+                    let dto = decodePayload(InAppMessageEligibilityEvaluateResultDto.self, resultType: "IN_APP_MESSAGE", field: "inAppMessage") { it in
+                        it.removeValue(forKey: "evaluateContext")
+                    }
+                    let result = dto.toResultOrNil()
+                    expect(result).toNot(beNil())
+                    expect(result?.evaluateContext.atDeliverTime) == false
+                }
             }
 
             context("해석 불가능한 값은 결과를 드랍한다") {
