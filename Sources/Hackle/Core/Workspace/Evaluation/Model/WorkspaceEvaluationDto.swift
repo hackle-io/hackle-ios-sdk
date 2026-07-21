@@ -208,13 +208,11 @@ struct EntityEvaluateRequestDto {
 }
 
 struct RemoteEvaluateContextDto {
-    let platformType: String // ANDROID, IOS, WEB
     let user: HackleUserDto
     let operations: [String: [String: Any]]
 
     func toBody() -> [String: Any] {
         [
-            "platformType": platformType,
             "user": user.toBody(),
             "operations": operations
         ]

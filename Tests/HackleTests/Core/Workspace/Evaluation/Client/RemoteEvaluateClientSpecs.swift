@@ -11,7 +11,6 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             WorkspaceEvaluateRequestDto(
                 policy: "AUTO",
                 context: RemoteEvaluateContextDto(
-                    platformType: "IOS",
                     user: HackleUserDto(identifiers: ["$id": "id_1"], userProperties: ["age": 30], hackleProperties: [:]),
                     operations: ["$set": ["grade": "GOLD"]]
                 ),
@@ -31,7 +30,6 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
         func entityRequestDto() -> EntityEvaluateRequestDto {
             EntityEvaluateRequestDto(
                 context: RemoteEvaluateContextDto(
-                    platformType: "IOS",
                     user: HackleUserDto(identifiers: ["$id": "id_1"], userProperties: [:], hackleProperties: [:]),
                     operations: [:]
                 ),
