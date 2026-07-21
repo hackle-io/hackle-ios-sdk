@@ -2,7 +2,7 @@ import Foundation
 
 protocol InAppMessageHtmlContentResolver {
     func supports(resourceType: InAppMessage.HtmlResourceType) -> Bool
-    func resolve(html: InAppMessage.Message.Html, completion: @escaping (Result<String, Error>) -> Void)
+    func resolve(html: InAppMessage.Message.Html, completion: @escaping @Sendable (Result<String, Error>) -> Void)
 }
 
 class TextInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
@@ -10,7 +10,7 @@ class TextInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
         return resourceType == .text
     }
 
-    func resolve(html: InAppMessage.Message.Html, completion: @escaping (Result<String, Error>) -> Void) {
+    func resolve(html: InAppMessage.Message.Html, completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         guard let content = html.text else {
             completion(.failure(HackleError.error("Html text is nil")))
             return
@@ -19,7 +19,9 @@ class TextInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
     }
 }
 
-class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
+// 저장 프로퍼티가 httpClient(let) 하나뿐이고 그 외 상태가 없다(stateless).
+// resolve의 [weak self] 캡처를 @Sendable 경계에서 허용하기 위한 표기.
+final class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver, @unchecked Sendable {
     private let httpClient: HttpClient
 
     init(httpClient: HttpClient) {
@@ -32,7 +34,7 @@ class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
         resourceType == .path
     }
 
-    func resolve(html: InAppMessage.Message.Html, completion: @escaping (Result<String, Error>) -> Void) {
+    func resolve(html: InAppMessage.Message.Html, completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         guard let path = html.path, let url = URL(string: path) else {
             completion(.failure(HackleError.error("Html path is nil or invalid")))
             return
