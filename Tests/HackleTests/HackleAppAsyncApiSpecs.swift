@@ -51,7 +51,7 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
                 core: core,
-                eventQueue: eventQueue,
+                coreQueue: eventQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
                 workspaceManager: workspaceManager,

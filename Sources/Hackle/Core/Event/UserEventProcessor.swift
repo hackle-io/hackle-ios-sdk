@@ -28,7 +28,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
     private let eventFilters: [UserEventFilter]
     private let eventDecorator: [UserEventDecorator]
     private let eventPublisher: UserEventPublisher
-    private let eventQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let eventRepository: EventRepository
     private let eventRepositoryMaxSize: Int
     private let eventFlushScheduler: Scheduler
@@ -48,7 +48,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         eventFilters: [UserEventFilter],
         eventDecorator: [UserEventDecorator],
         eventPublisher: UserEventPublisher,
-        eventQueue: DispatchQueue,
+        coreQueue: DispatchQueue,
         eventRepository: EventRepository,
         eventRepositoryMaxSize: Int,
         eventFlushScheduler: Scheduler,
@@ -65,7 +65,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         self.eventFilters = eventFilters
         self.eventDecorator = eventDecorator
         self.eventPublisher = eventPublisher
-        self.eventQueue = eventQueue
+        self.coreQueue = coreQueue
         self.eventRepository = eventRepository
         self.eventRepositoryMaxSize = eventRepositoryMaxSize
         self.eventFlushScheduler = eventFlushScheduler
@@ -84,7 +84,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
         // MARK: screen decorator는 queue에 들어가기 전에 추가해야 한다.
         // - 큐에 들어간 후 처리되기 전에 screen이 바뀔 수 있기 때문
         let decoratedEvent = screenUserEventDecorator.decorate(event: event)
-        eventQueue.async { [weak self] in
+        coreQueue.async { [weak self] in
             guard let self = self else {
                 return
             }
@@ -93,7 +93,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
     }
 
     func flush() {
-        eventQueue.async {
+        coreQueue.async {
             self.flushInternal()
         }
     }

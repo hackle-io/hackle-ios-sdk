@@ -469,13 +469,13 @@ extension HackleApp {
         // - EventProcessor
         let workspaceDatabase = WorkspaceDatabase(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
-        let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
+        let coreQueue = DispatchQueue(label: "io.hackle.CoreQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
         let eventBackoffController = DefaultUserEventBackoffController(userEventRetryInterval: config.eventFlushInterval, clock: SystemClock.shared)
 
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             eventRepository: eventRepository,
             httpQueue: httpQueue,
             httpClient: httpClient,
@@ -499,7 +499,7 @@ extension HackleApp {
             dedupInterval: config.exposureEventDedupInterval
         )
 
-        applicationLifecycleManager.setDispatchQueue(queue: eventQueue)
+        applicationLifecycleManager.setDispatchQueue(queue: coreQueue)
         applicationLifecycleManager.addListener(listener: rcEventDedupDeterminer)
         applicationLifecycleManager.addListener(listener: exposureEventDedupDeterminer)
 
@@ -529,7 +529,7 @@ extension HackleApp {
             eventFilters: eventFilters,
             eventDecorator: eventDecorators,
             eventPublisher: eventPublisher,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
             eventFlushScheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.DefaultUserEventProcessor.flush")),
@@ -820,7 +820,7 @@ extension HackleApp {
             HackleApp.metricConfiguration(
                 config: config,
                 applicationLifecycleManager: applicationLifecycleManager,
-                eventQueue: eventQueue,
+                coreQueue: coreQueue,
                 httpQueue: httpQueue,
                 httpClient: httpClient
             )
@@ -834,7 +834,7 @@ extension HackleApp {
             applicationLifecycleManager.addListener(listener: screenManager)
         }
         viewLifecycleManager.addListener(listener: engagementManager)
-        viewLifecycleManager.setDispatchQueue(queue: eventQueue)
+        viewLifecycleManager.setDispatchQueue(queue: coreQueue)
 
         applicationLifecycleManager.addListener(listener: engagementManager)
 
@@ -843,7 +843,7 @@ extension HackleApp {
 
         let hackleAppCore = DefaultHackleAppCore(
             core: core,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             synchronizer: pollingSynchronizer,
             applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
             viewLifecycleObserver: ViewLifecycleObserver.shared,
@@ -887,13 +887,13 @@ extension HackleApp {
     private static func metricConfiguration(
         config: HackleConfig,
         applicationLifecycleManager: ApplicationLifecycleManager,
-        eventQueue: DispatchQueue,
+        coreQueue: DispatchQueue,
         httpQueue: DispatchQueue,
         httpClient: HttpClient
     ) {
         let monitoringMetricRegistry = MonitoringMetricRegistry(
             monitoringBaseUrl: config.monitoringUrl,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             httpQueue: httpQueue,
             httpClient: httpClient
         )

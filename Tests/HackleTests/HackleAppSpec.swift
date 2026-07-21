@@ -51,7 +51,7 @@ class HackleAppSpecs: QuickSpec {
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
                 core: core,
-                eventQueue: eventQueue,
+                coreQueue: eventQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
                 workspaceManager: workspaceManager,
@@ -604,7 +604,7 @@ class HackleAppSpecs: QuickSpec {
             it("fetch - 스로틀(reject) 시에도 completion이 호출된다") {
                 let rejectingBuilt = makeHackleApp(
                     core: core,
-                    eventQueue: eventQueue,
+                    coreQueue: eventQueue,
                     synchronizer: synchronizer,
                     userManager: userManager,
                     workspaceManager: workspaceManager,

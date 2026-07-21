@@ -30,7 +30,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             //every(eventRepository.deleteMock).returns(())
             sut = DefaultUserEventDispatcher(
                 eventBaseUrl: URL(string: "localhost")!,
-                eventQueue: eventQueue,
+                coreQueue: eventQueue,
                 eventRepository: eventRepository,
                 httpQueue: httpQueue,
                 httpClient: httpClient,

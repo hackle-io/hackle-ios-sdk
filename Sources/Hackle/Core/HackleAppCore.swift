@@ -71,7 +71,7 @@ protocol HackleAppCore: AnyObject {
 
 class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
-    private let eventQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let synchronizer: Synchronizer
     private let applicationLifecycleObserver: ApplicationLifecycleObserver
     private let viewLifecycleObserver: ViewLifecycleObserver
@@ -114,7 +114,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     init(
         core: HackleCore,
-        eventQueue: DispatchQueue,
+        coreQueue: DispatchQueue,
         synchronizer: Synchronizer,
         applicationLifecycleObserver: ApplicationLifecycleObserver,
         viewLifecycleObserver: ViewLifecycleObserver,
@@ -133,7 +133,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         optOutManager: OptOutManager
     ) {
         self.core = core
-        self.eventQueue = eventQueue
+        self.coreQueue = coreQueue
         self.synchronizer = synchronizer
         self.applicationLifecycleObserver = applicationLifecycleObserver
         self.viewLifecycleObserver = viewLifecycleObserver
@@ -160,7 +160,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             self.applicationLifecycleObserver.initialize()
             self.viewLifecycleObserver.initialize()
             await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
-            self.eventQueue.async { [weak self] in
+            self.coreQueue.async { [weak self] in
                 guard let self = self else { return }
                 if let completion = self.onInitializedRef.getAndSet(newValue: nil) {
                     self.initialize(completion: completion)

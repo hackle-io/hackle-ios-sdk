@@ -9,13 +9,13 @@ import UIKit
 class MonitoringMetricRegistry: MetricRegistry, @unchecked Sendable {
 
     private let endpoint: URL
-    private let eventQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let httpQueue: DispatchQueue
     private let httpClient: HttpClient
 
-    init(monitoringBaseUrl: URL, eventQueue: DispatchQueue, httpQueue: DispatchQueue, httpClient: HttpClient) {
+    init(monitoringBaseUrl: URL, coreQueue: DispatchQueue, httpQueue: DispatchQueue, httpClient: HttpClient) {
         self.endpoint = monitoringBaseUrl.appendingPathComponent("/metrics")
-        self.eventQueue = eventQueue
+        self.coreQueue = coreQueue
         self.httpQueue = httpQueue
         self.httpClient = httpClient
         super.init()
@@ -103,7 +103,7 @@ extension MonitoringMetricRegistry: ApplicationLifecycleListener {
     
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("MonitoringMetricRegistry.onBackground")
-        eventQueue.async { [weak self] in
+        coreQueue.async { [weak self] in
             self?.flush()
         }
     }

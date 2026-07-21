@@ -33,7 +33,7 @@ func makeInAppMessageUI(core: HackleCore) -> HackleInAppMessageUI {
 /// DefaultHackleAppCore + HackleApp 배선. 각 테스트는 자신이 참조할 mock을 주입한다.
 func makeHackleApp(
     core: HackleCore,
-    eventQueue: DispatchQueue,
+    coreQueue: DispatchQueue,
     synchronizer: Synchronizer,
     userManager: UserManager,
     workspaceManager: WorkspaceConfigManager,
@@ -54,7 +54,7 @@ func makeHackleApp(
     )
     let hackleAppCore = DefaultHackleAppCore(
         core: core,
-        eventQueue: eventQueue,
+        coreQueue: coreQueue,
         synchronizer: synchronizer,
         applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
         viewLifecycleObserver: ViewLifecycleObserver.shared,
