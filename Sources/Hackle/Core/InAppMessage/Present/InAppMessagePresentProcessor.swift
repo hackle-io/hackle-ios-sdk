@@ -31,10 +31,16 @@ class DefaultInAppMessagePresentProcessor: InAppMessagePresentProcessor {
     // deliver 응답이 반환되는 시점에 impression 기록이 끝나 있어야 한다.
     private func record(request: InAppMessagePresentRequest, response: InAppMessagePresentResponse) async {
         await withCheckedContinuation { continuation in
-            coreQueue.async {
-                self.recorder.record(request: request, response: response)
+            record(request: request, response: response) {
                 continuation.resume()
             }
+        }
+    }
+
+    private func record(request: InAppMessagePresentRequest, response: InAppMessagePresentResponse, completion: @escaping () -> Void) {
+        coreQueue.async {
+            self.recorder.record(request: request, response: response)
+            completion()
         }
     }
 }
