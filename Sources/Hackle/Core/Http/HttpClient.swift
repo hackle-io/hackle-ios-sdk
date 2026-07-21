@@ -5,8 +5,8 @@
 import Foundation
 
 protocol HttpClient {
-    func execute(request: HttpRequest, completion: @escaping (HttpResponse) -> Void)
-    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping (HttpResponse) -> Void)
+    func execute(request: HttpRequest, completion: @escaping @Sendable (HttpResponse) -> Void)
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping @Sendable (HttpResponse) -> Void)
 }
 
 extension HttpClient {
@@ -18,7 +18,7 @@ extension HttpClient {
     ///   answer가 반드시 completion을 1회 호출해야 한다.
     func execute(request: HttpRequest, timeout: TimeInterval? = nil) async -> HttpResponse {
         await withCheckedContinuation { continuation in
-            let completion: (HttpResponse) -> Void = { response in
+            let completion: @Sendable (HttpResponse) -> Void = { response in
                 continuation.resume(returning: response)
             }
             if let timeout {
@@ -43,11 +43,11 @@ class DefaultHttpClient: HttpClient {
         self.session = URLSession(configuration: configuration)
     }
 
-    func execute(request: HttpRequest, completion: @escaping (HttpResponse) -> Void) {
+    func execute(request: HttpRequest, completion: @escaping @Sendable (HttpResponse) -> Void) {
         execute(request: request, timeout: session.configuration.timeoutIntervalForRequest, completion: completion)
     }
-    
-    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping (HttpResponse) -> Void) {
+
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping @Sendable (HttpResponse) -> Void) {
         var req = URLRequest(url: request.url)
         req.httpMethod = request.method
         req.httpBody = request.body

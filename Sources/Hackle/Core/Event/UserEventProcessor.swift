@@ -21,7 +21,8 @@ extension UserEventProcessor {
     }
 }
 
-class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener, OptOutListener {
+// flushingJob은 lock(ReadWriteLock)으로 보호되고 나머지 저장 프로퍼티는 let(불변)이라 thread-safe.
+class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListener, OptOutListener, @unchecked Sendable {
 
     private let lock: ReadWriteLock = ReadWriteLock(label: "io.hackle.DefaultUserEventProcessor.Lock")
 

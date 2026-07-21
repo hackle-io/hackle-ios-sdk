@@ -185,7 +185,7 @@ private class HttpClientStub: HttpClient {
         self.error = error
     }
 
-    func execute(request: HttpRequest, completion: @escaping (HttpResponse) -> ()) {
+    func execute(request: HttpRequest, completion: @escaping @Sendable (HttpResponse) -> ()) {
         var urlResponse: HTTPURLResponse? = nil
         if let statusCode {
             urlResponse = HTTPURLResponse(url: request.url, statusCode: statusCode, httpVersion: nil, headerFields: nil)
@@ -194,7 +194,7 @@ private class HttpClientStub: HttpClient {
         completion(response)
     }
 
-    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping (HttpResponse) -> Void) {
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping @Sendable (HttpResponse) -> Void) {
         execute(request: request, completion: completion)
     }
 }
