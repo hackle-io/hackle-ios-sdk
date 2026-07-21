@@ -75,6 +75,6 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         )
         let presentResponse = await presentProcessor.process(request: presentRequest)
 
-        return InAppMessageDeliverResponse.of(request: request, code: .present, presentResponse: presentResponse)
+        return InAppMessageDeliverResponse.of(request: request, code: .deliver, presentResponse: presentResponse)
     }
 }

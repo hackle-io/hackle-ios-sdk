@@ -397,7 +397,7 @@ extension InAppMessageEntity {
     static func deliverResponse(
         dispatchId: String = UUID().uuidString,
         inAppMessageKey: InAppMessage.Key = 1,
-        code: InAppMessageDeliverResponse.Code = .present,
+        code: InAppMessageDeliverResponse.Code = .deliver,
         presentResponse: InAppMessagePresentResponse? = nil
     ) -> InAppMessageDeliverResponse {
         return InAppMessageDeliverResponse(

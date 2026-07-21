@@ -20,7 +20,7 @@ class InAppMessageDeliverResponse {
     }
 
     enum Code {
-        case present
+        case deliver
         case workspaceNotFound
         case inAppMessageNotFound
         case identifierChanged
