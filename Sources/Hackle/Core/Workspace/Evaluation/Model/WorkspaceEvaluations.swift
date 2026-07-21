@@ -76,7 +76,7 @@ extension InAppMessageEligibilityEvaluateResultDto {
             delay: delay
         )
 
-        let evaluateContext = self.evaluateContext.toEvaluateContext()
+        let evaluateContext = self.evaluateContext?.toEvaluateContext() ?? InAppMessage.EvaluateContext.default
 
         guard let messageContext = messageContext.toMessageContextOrNil() else {
             return nil

@@ -32,7 +32,7 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
 
         it("trigger flow") {
             sut.get(request: request(scope: .trigger))
-                .isDecisionWith(PlatformInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(OverrideInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(DraftInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(PauseInAppMessageEligibilityLocalFlowEvaluator.self)!
@@ -57,7 +57,7 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
 
         it("deliver flow (re-evaluate)") {
             sut.get(request: request(scope: .deliver, atDeliverTime: true))
-                .isDecisionWith(PlatformInAppMessageEligibilityLocalFlowEvaluator.self)!
+                .isDecisionWith(PlatformInAppMessageEligibilityFlowEvaluator.self)!
                 .isDecisionWith(OverrideInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(DraftInAppMessageEligibilityLocalFlowEvaluator.self)!
                 .isDecisionWith(PauseInAppMessageEligibilityLocalFlowEvaluator.self)!

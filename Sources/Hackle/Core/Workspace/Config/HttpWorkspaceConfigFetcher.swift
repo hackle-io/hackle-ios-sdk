@@ -61,8 +61,7 @@ class DefaultHttpWorkspaceConfigFetcher: HttpWorkspaceConfigFetcher {
         guard let responseBody = response.data else {
             throw HackleError.error("Response body is empty")
         }
-        // lastModified 헤더는 HttpResponse extension에 접근자가 없어 국소 캐스팅 유지
-        let lastModified = (response.urlResponse as? HTTPURLResponse)?.header(.lastModified)
+        let lastModified = response.header(.lastModified)
         guard let workspaceDto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: responseBody) else {
             throw HackleError.error("Invalid format")
         }

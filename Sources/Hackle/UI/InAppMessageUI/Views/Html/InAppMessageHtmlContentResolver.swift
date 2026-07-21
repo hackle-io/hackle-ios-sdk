@@ -60,12 +60,12 @@ class PathInAppMessageHtmlContentResolver: InAppMessageHtmlContentResolver {
             throw error
         }
 
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
+        guard let statusCode = response.statusCode else {
             throw HackleError.error("Response is empty")
         }
 
-        guard urlResponse.isSuccessful else {
-            throw HackleError.error("Http status code: \(urlResponse.statusCode)")
+        guard response.isSuccessful else {
+            throw HackleError.error("Http status code: \(statusCode)")
         }
 
         guard let data = response.data else {

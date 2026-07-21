@@ -16,6 +16,10 @@ class DefaultInAppMessageRecorder: InAppMessageRecorder {
     }
 
     func record(request: InAppMessagePresentRequest, response: InAppMessagePresentResponse) {
+        if response.code != .present {
+            return
+        }
+
         if (request.reason == DecisionReason.OVERRIDDEN) {
             return
         }

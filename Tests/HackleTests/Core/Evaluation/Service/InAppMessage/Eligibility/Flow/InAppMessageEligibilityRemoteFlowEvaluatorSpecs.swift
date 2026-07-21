@@ -39,38 +39,6 @@ class InAppMessageEligibilityRemoteFlowEvaluatorSpecs: QuickSpec {
             nextFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(EligibleInAppMessageEligibilityFlowEvaluator())
         }
 
-        describe("PlatformInAppMessageEligibilityRemoteFlowEvaluator") {
-
-            let sut = PlatformInAppMessageEligibilityRemoteFlowEvaluator()
-
-            it("when platform is not supported then ineligible UNSUPPORTED_PLATFORM") {
-                let request = iamRemoteRequest(reason: DecisionReason.IN_APP_MESSAGE_TARGET, platformType: .android)
-
-                let evaluation = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
-
-                expect(evaluation?.eligibilityResult.isEligible).to(beFalse())
-                expect(evaluation?.eligibilityResult.reason).to(equal(DecisionReason.UNSUPPORTED_PLATFORM))
-            }
-
-            it("when platform is supported but server reason is UNSUPPORTED_PLATFORM then ineligible UNSUPPORTED_PLATFORM") {
-                let request = iamRemoteRequest(reason: DecisionReason.UNSUPPORTED_PLATFORM, platformType: .ios)
-
-                let evaluation = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
-
-                expect(evaluation?.eligibilityResult.isEligible).to(beFalse())
-                expect(evaluation?.eligibilityResult.reason).to(equal(DecisionReason.UNSUPPORTED_PLATFORM))
-            }
-
-            it("when platform is supported and server reason is not UNSUPPORTED_PLATFORM then pass through to nextFlow") {
-                let request = iamRemoteRequest(reason: DecisionReason.IN_APP_MESSAGE_TARGET, platformType: .ios)
-
-                let evaluation = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
-
-                expect(evaluation?.eligibilityResult.isEligible).to(beTrue())
-                expect(evaluation?.eligibilityResult.reason).to(equal(DecisionReason.IN_APP_MESSAGE_TARGET))
-            }
-        }
-
         describe("OverrideInAppMessageEligibilityRemoteFlowEvaluator") {
 
             let sut = OverrideInAppMessageEligibilityRemoteFlowEvaluator()

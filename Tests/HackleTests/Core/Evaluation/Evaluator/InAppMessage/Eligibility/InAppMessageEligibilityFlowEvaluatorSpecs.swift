@@ -57,9 +57,9 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("PlatformInAppMessageEligibilityLocalFlowEvaluator") {
+        describe("PlatformInAppMessageEligibilityFlowEvaluator") {
 
-            let sut: PlatformInAppMessageEligibilityLocalFlowEvaluator = PlatformInAppMessageEligibilityLocalFlowEvaluator()
+            let sut = PlatformInAppMessageEligibilityFlowEvaluator()
 
             it("when inAppMessage does not support ios then ineligible") {
                 let inAppMessage = InAppMessageEntity.create(messageContext: InAppMessageEntity.messageContext(platformTypes: []))
@@ -77,6 +77,12 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
                 let actual = try sut.evaluate(request: request, context: context, nextFlow: nextFlow)
 
                 expect(actual).to(beIdenticalTo(evaluation))
+            }
+
+            it("when platformType is nil then throw") {
+                let request = InAppMessageEntity.eligibilityRequest(platformType: nil)
+
+                expect(try sut.evaluate(request: request, context: context, nextFlow: nextFlow)).to(throwError(errorType: HackleError.self))
             }
         }
 

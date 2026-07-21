@@ -7,7 +7,7 @@ final class InAppMessageEligibilityRemoteEvaluateRequest: RemoteEvaluateRequest,
     let user: HackleUser
     let record: Bool
     let scope: InAppMessageEvaluateScope
-    let platformType: PlatformType
+    let platformType: PlatformType?
     let timestamp: Date
 
     var remoteResult: RemoteEvaluateResult { result }
@@ -19,7 +19,7 @@ final class InAppMessageEligibilityRemoteEvaluateRequest: RemoteEvaluateRequest,
         user: HackleUser,
         record: Bool,
         scope: InAppMessageEvaluateScope,
-        platformType: PlatformType,
+        platformType: PlatformType?,
         timestamp: Date
     ) {
         self.evaluationWorkspace = workspace
@@ -40,7 +40,7 @@ final class InAppMessageEligibilityRemoteEvaluateRequest: RemoteEvaluateRequest,
         entity: InAppMessageEligibilityRemoteEvaluateResult,
         user: HackleUser,
         scope: InAppMessageEvaluateScope,
-        platformType: PlatformType,
+        platformType: PlatformType?,
         timestamp: Date,
         record: Bool = true
     ) -> InAppMessageEligibilityRemoteEvaluateRequest {

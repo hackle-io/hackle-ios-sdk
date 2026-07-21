@@ -210,7 +210,7 @@ extension InAppMessageEntity {
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         inAppMessage: InAppMessageConfig = create(),
         scope: InAppMessageEvaluateScope = .trigger,
-        platformType: PlatformType = .ios,
+        platformType: PlatformType? = .ios,
         timestamp: Date = Date()
     ) -> InAppMessageEligibilityLocalEvaluateRequest {
         InAppMessageEligibilityLocalEvaluateRequest.of(
@@ -324,11 +324,11 @@ extension InAppMessageEntity {
     }
 
     static func presentResponse(
-        dispatchId: String = UUID().uuidString,
+        code: InAppMessagePresentResponse.Code = .present,
         context: InAppMessagePresentationContext = InAppMessageEntity.context()
     ) -> InAppMessagePresentResponse {
         return InAppMessagePresentResponse(
-            dispatchId: dispatchId,
+            code: code,
             context: context
         )
     }
@@ -397,7 +397,7 @@ extension InAppMessageEntity {
     static func deliverResponse(
         dispatchId: String = UUID().uuidString,
         inAppMessageKey: InAppMessage.Key = 1,
-        code: InAppMessageDeliverResponse.Code = .present,
+        code: InAppMessageDeliverResponse.Code = .deliver,
         presentResponse: InAppMessagePresentResponse? = nil
     ) -> InAppMessageDeliverResponse {
         return InAppMessageDeliverResponse(

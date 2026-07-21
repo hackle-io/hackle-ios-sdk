@@ -10,7 +10,7 @@ import Nimble
 class DefaultUserEventDispatcherSpec: QuickSpec {
     override class func spec() {
 
-        var eventQueue: DispatchQueue!
+        var coreQueue: DispatchQueue!
         var eventRepository: MockSQLiteEventRepository!
         var httpQueue: DispatchQueue!
         var httpClient: MockHttpClient!
@@ -19,7 +19,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
         var eventBackoffController: MockUserEventBackoffController!
 
         beforeEach {
-            eventQueue = DispatchQueue(label: "test.EventQueue")
+            coreQueue = DispatchQueue(label: "test.CoreQueue")
             eventRepository = MockSQLiteEventRepository()
             httpQueue = DispatchQueue(label: "test.HttpQueue")
             httpClient = MockHttpClient()
@@ -30,7 +30,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
             //every(eventRepository.deleteMock).returns(())
             sut = DefaultUserEventDispatcher(
                 eventBaseUrl: URL(string: "localhost")!,
-                eventQueue: eventQueue,
+                coreQueue: coreQueue,
                 eventRepository: eventRepository,
                 httpQueue: httpQueue,
                 httpClient: httpClient,
@@ -75,7 +75,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 }
 
                 httpClient.executeMock.firstInvokation().arguments.1(response)
-                eventQueue.sync {
+                coreQueue.sync {
                 }
 
                 // then
@@ -96,7 +96,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 }
 
                 httpClient.executeMock.firstInvokation().arguments.1(response)
-                eventQueue.sync {
+                coreQueue.sync {
                 }
 
                 // then
@@ -116,7 +116,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 }
 
                 httpClient.executeMock.firstInvokation().arguments.1(response)
-                eventQueue.sync {
+                coreQueue.sync {
                 }
 
                 // then
@@ -136,7 +136,7 @@ class DefaultUserEventDispatcherSpec: QuickSpec {
                 }
 
                 httpClient.executeMock.firstInvokation().arguments.1(response)
-                eventQueue.sync {
+                coreQueue.sync {
                 }
 
                 // then

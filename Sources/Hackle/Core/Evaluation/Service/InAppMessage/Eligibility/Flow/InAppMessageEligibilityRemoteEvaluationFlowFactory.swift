@@ -15,14 +15,19 @@ class DefaultInAppMessageEligibilityRemoteEvaluationFlowFactory: InAppMessageEli
         hiddenStorage: InAppMessageHiddenStorage,
         layoutEvaluator: InAppMessageLayoutRemoteEvaluator
     ) {
+        let platformFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
+            PlatformInAppMessageEligibilityFlowEvaluator()
+        )
+
         let overrideFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
             OverrideInAppMessageEligibilityRemoteFlowEvaluator()
         )
 
-        let evaluationFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
-            PlatformInAppMessageEligibilityRemoteFlowEvaluator(),
-            OverrideInAppMessageEligibilityRemoteFlowEvaluator(),
-            IneligibleInAppMessageEligibilityRemoteFlowEvaluator(),
+        let ineligibleFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
+            IneligibleInAppMessageEligibilityRemoteFlowEvaluator()
+        )
+
+        let timeFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
             PeriodInAppMessageEligibilityFlowEvaluator(),
             TimetableInAppMessageEligibilityFlowEvaluator()
         )
@@ -31,7 +36,7 @@ class DefaultInAppMessageEligibilityRemoteEvaluationFlowFactory: InAppMessageEli
             LayoutResolveInAppMessageEligibilityRemoteFlowEvaluator(layoutEvaluator: layoutEvaluator)
         )
 
-        let deduplicateFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
+        let dedupFlow: InAppMessageEligibilityRemoteEvaluationFlow = InAppMessageEligibilityRemoteEvaluationFlow.of(
             FrequencyCapInAppMessageEligibilityFlowEvaluator(frequencyCapMatcher: InAppMessageFrequencyCapMatcher(storage: impressionStorage)),
             HiddenInAppMessageEligibilityFlowEvaluator(hiddenMatcher: InAppMessageHiddenMatcher(storage: hiddenStorage))
         )
@@ -40,9 +45,9 @@ class DefaultInAppMessageEligibilityRemoteEvaluationFlowFactory: InAppMessageEli
             EligibleInAppMessageEligibilityFlowEvaluator()
         )
 
-        self.triggerFlow = evaluationFlow + layoutFlow + deduplicateFlow + eligibleFlow
-        self.deliverFlow = overrideFlow + deduplicateFlow + eligibleFlow
-        self.deliverReEvaluationFlow = evaluationFlow + deduplicateFlow + eligibleFlow
+        self.triggerFlow = platformFlow + overrideFlow + ineligibleFlow + timeFlow + layoutFlow + dedupFlow + eligibleFlow
+        self.deliverFlow = overrideFlow + dedupFlow + eligibleFlow
+        self.deliverReEvaluationFlow = platformFlow + overrideFlow + ineligibleFlow + timeFlow + dedupFlow + eligibleFlow
     }
 
     func get(request: InAppMessageEligibilityRemoteEvaluateRequest) -> InAppMessageEligibilityRemoteEvaluationFlow {

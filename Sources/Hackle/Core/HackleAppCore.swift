@@ -71,7 +71,8 @@ protocol HackleAppCore: AnyObject {
 
 class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
-    private let eventQueue: DispatchQueue
+    private let evaluationMode: EvaluationMode
+    private let coreQueue: DispatchQueue
     private let synchronizer: Synchronizer
     private let applicationLifecycleObserver: ApplicationLifecycleObserver
     private let viewLifecycleObserver: ViewLifecycleObserver
@@ -114,7 +115,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     init(
         core: HackleCore,
-        eventQueue: DispatchQueue,
+        evaluationMode: EvaluationMode,
+        coreQueue: DispatchQueue,
         synchronizer: Synchronizer,
         applicationLifecycleObserver: ApplicationLifecycleObserver,
         viewLifecycleObserver: ViewLifecycleObserver,
@@ -133,7 +135,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         optOutManager: OptOutManager
     ) {
         self.core = core
-        self.eventQueue = eventQueue
+        self.evaluationMode = evaluationMode
+        self.coreQueue = coreQueue
         self.synchronizer = synchronizer
         self.applicationLifecycleObserver = applicationLifecycleObserver
         self.viewLifecycleObserver = viewLifecycleObserver
@@ -160,7 +163,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             self.applicationLifecycleObserver.initialize()
             self.viewLifecycleObserver.initialize()
             await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
-            self.eventQueue.async { [weak self] in
+            self.coreQueue.async { [weak self] in
                 guard let self = self else { return }
                 if let completion = self.onInitializedRef.getAndSet(newValue: nil) {
                     self.initialize(completion: completion)
@@ -192,6 +195,10 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func showUserExplorer() {
+        if evaluationMode == .remote {
+            Log.info("UserExplorer is not supported in EvaluationMode.REMOTE")
+            return
+        }
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }

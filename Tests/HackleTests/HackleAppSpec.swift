@@ -6,7 +6,7 @@ import Quick
 class HackleAppSpecs: QuickSpec {
     override class func spec() {
         var core: MockHackleCore!
-        var eventQueue: DispatchQueue!
+        var coreQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
         var platformManager: PlatformManager!
         var userManager: MockUserManager!
@@ -24,7 +24,7 @@ class HackleAppSpecs: QuickSpec {
         beforeEach {
             Metrics.clear()
             core = MockHackleCore()
-            eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
+            coreQueue = DispatchQueue(label: "io.hackle.CoreQueue", qos: .utility)
             synchronizer = MockSynchronizer()
             userManager = MockUserManager()
             workspaceManager = WorkspaceConfigManager(
@@ -51,7 +51,7 @@ class HackleAppSpecs: QuickSpec {
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
                 core: core,
-                eventQueue: eventQueue,
+                coreQueue: coreQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
                 workspaceManager: workspaceManager,
@@ -85,6 +85,34 @@ class HackleAppSpecs: QuickSpec {
 
         it("showUserExplorer") {
             sut.showUserExplorer()
+        }
+
+        it("showUserExplorer는 REMOTE 모드에서 무시된다") {
+            let registry = CumulativeMetricRegistry()
+            Metrics.addRegistry(registry: registry)
+            let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
+
+            let built = makeHackleApp(
+                core: core,
+                evaluationMode: .remote,
+                coreQueue: coreQueue,
+                synchronizer: synchronizer,
+                userManager: userManager,
+                workspaceManager: workspaceManager,
+                sessionManager: sessionManager,
+                screenManager: screenManager,
+                eventProcessor: eventProcessor,
+                pushTokenRegistry: pushTokenRegistry,
+                notificationManager: notificationManager,
+                platformManager: platformManager,
+                userExplorer: userExplorer,
+                inAppMessageUI: inAppMessageUI,
+                throttler: throttler
+            )
+
+            built.sut.showUserExplorer()
+
+            expect(registry.counter(name: "user.explorer.show").count()) == 0
         }
 
         it("hideUserExplorer") {
@@ -289,16 +317,22 @@ class HackleAppSpecs: QuickSpec {
 
             it("setPhoneNumber") {
                 var count = 0
-                sut.setPhoneNumber(phoneNumber: "+821012345678") {
-                    count += 1
+                waitUntil { done in
+                    sut.setPhoneNumber(phoneNumber: "+821012345678") {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
 
             it("unsetPhoneNumber") {
                 var count = 0
-                sut.unsetPhoneNumber {
-                    count += 1
+                waitUntil { done in
+                    sut.unsetPhoneNumber {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
@@ -604,7 +638,7 @@ class HackleAppSpecs: QuickSpec {
             it("fetch - 스로틀(reject) 시에도 completion이 호출된다") {
                 let rejectingBuilt = makeHackleApp(
                     core: core,
-                    eventQueue: eventQueue,
+                    coreQueue: coreQueue,
                     synchronizer: synchronizer,
                     userManager: userManager,
                     workspaceManager: workspaceManager,

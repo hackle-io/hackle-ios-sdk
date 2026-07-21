@@ -28,7 +28,7 @@ class NotificationManagerSpec: QuickSpec {
         it("track push click event when notification data received") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
@@ -77,7 +77,7 @@ class NotificationManagerSpec: QuickSpec {
         it("save notification data if environment is not same") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
@@ -191,7 +191,7 @@ class NotificationManagerSpec: QuickSpec {
         it("save notification data if workspace fetcher returns null") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
@@ -232,7 +232,7 @@ class NotificationManagerSpec: QuickSpec {
         it("flush data until empty") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
@@ -302,7 +302,7 @@ class NotificationManagerSpec: QuickSpec {
         it("flush only same environment data") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
@@ -372,7 +372,7 @@ class NotificationManagerSpec: QuickSpec {
         it("flush only same environment data") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
@@ -442,7 +442,7 @@ class NotificationManagerSpec: QuickSpec {
         it("check null column") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
+                coreQueue: dispatchQueue,
                 workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository

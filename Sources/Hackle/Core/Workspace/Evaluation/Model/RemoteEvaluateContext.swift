@@ -2,7 +2,6 @@ import Foundation
 
 struct RemoteEvaluateContext {
 
-    let platformType: PlatformType
     let user: HackleUser
     let operations: PropertyOperations
 
@@ -11,7 +10,7 @@ struct RemoteEvaluateContext {
     }
 
     static func of(user: HackleUser, operations: PropertyOperations) -> RemoteEvaluateContext {
-        RemoteEvaluateContext(platformType: .ios, user: user, operations: operations)
+        RemoteEvaluateContext(user: user, operations: operations)
     }
 
     static func of(user: HackleUser) -> RemoteEvaluateContext {
@@ -20,7 +19,6 @@ struct RemoteEvaluateContext {
 
     func toDto() -> RemoteEvaluateContextDto {
         RemoteEvaluateContextDto(
-            platformType: platformType.rawValue,
             user: HackleUserDto(
                 identifiers: user.identifiers,
                 userProperties: user.properties,

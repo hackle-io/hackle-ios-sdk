@@ -33,27 +33,6 @@ extension InAppMessageEligibilityRemoteFlowEvaluator {
     }
 }
 
-/// Platform check
-///
-/// 플랫폼을 지원하지 않거나, 서버가 UNSUPPORTED_PLATFORM으로 판단한 경우 UNSUPPORTED_PLATFORM
-class PlatformInAppMessageEligibilityRemoteFlowEvaluator: InAppMessageEligibilityRemoteFlowEvaluator {
-    func evaluate(
-        request: InAppMessageEligibilityRemoteEvaluateRequest,
-        context: EvaluatorContext,
-        nextFlow: InAppMessageEligibilityRemoteEvaluationFlow
-    ) throws -> InAppMessageEligibilityEvaluation? {
-        guard request.inAppMessage.supports(platform: request.platformType) else {
-            let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.UNSUPPORTED_PLATFORM)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
-        }
-        if request.result.reason == DecisionReason.UNSUPPORTED_PLATFORM {
-            let result = InAppMessageEligibilityEvaluateResult.ineligible(reason: DecisionReason.UNSUPPORTED_PLATFORM)
-            return InAppMessageEligibilityEvaluation(entity: request.inAppMessage, result: result)
-        }
-        return try nextFlow.evaluate(request: request, context: context)
-    }
-}
-
 /// Override check
 ///
 /// 서버가 OVERRIDDEN으로 판단한 경우 eligible

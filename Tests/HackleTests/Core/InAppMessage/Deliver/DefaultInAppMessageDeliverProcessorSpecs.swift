@@ -72,7 +72,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
             expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
         }
 
-        it("present") {
+        it("deliver") {
             // given
             every(identifierChecker.isIdentifierChangedMock).returns(false)
             every(evaluator.evaluateMock).returns(eligibleResponse())
@@ -85,15 +85,14 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
             // then
             expect(actual.dispatchId) == "111"
             expect(actual.inAppMessageKey) == 42
-            expect(actual.code) == InAppMessageDeliverResponse.Code.present
+            expect(actual.code) == InAppMessageDeliverResponse.Code.deliver
             expect(actual.presentResponse).to(beIdenticalTo(presentResponse))
         }
 
-        it("when present throws then process is aborted") {
+        it("when evaluator throws then exception code") {
             // given
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-            every(evaluator.evaluateMock).returns(eligibleResponse())
-            every(presentProcessor.processMock).answers { _ in
+            every(evaluator.evaluateMock).answers { _ in
                 throw HackleError.error("fail")
             }
 

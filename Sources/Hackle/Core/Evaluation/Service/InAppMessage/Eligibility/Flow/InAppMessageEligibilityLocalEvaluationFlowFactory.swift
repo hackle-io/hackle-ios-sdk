@@ -22,7 +22,7 @@ class DefaultInAppMessageEligibilityLocalEvaluationFlowFactory: InAppMessageElig
         )
 
         let evaluateFlow: InAppMessageEligibilityLocalEvaluationFlow = InAppMessageEligibilityLocalEvaluationFlow.of(
-            PlatformInAppMessageEligibilityLocalFlowEvaluator(),
+            PlatformInAppMessageEligibilityFlowEvaluator(),
             OverrideInAppMessageEligibilityLocalFlowEvaluator(userOverrideMatcher: InAppMessageUserOverrideMatcher()),
             DraftInAppMessageEligibilityLocalFlowEvaluator(),
             PauseInAppMessageEligibilityLocalFlowEvaluator(),

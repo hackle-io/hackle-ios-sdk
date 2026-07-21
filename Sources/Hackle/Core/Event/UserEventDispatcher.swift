@@ -10,15 +10,15 @@ protocol UserEventDispatcher {
 
 class DefaultUserEventDispatcher: UserEventDispatcher {
     private let endpoint: URL
-    private let eventQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let eventRepository: EventRepository
     private let httpQueue: DispatchQueue
     private let httpClient: HttpClient
     private let eventBackoffController: UserEventBackoffController
 
-    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient, eventBackoffController: UserEventBackoffController) {
+    init(eventBaseUrl: URL, coreQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient, eventBackoffController: UserEventBackoffController) {
         self.endpoint = eventBaseUrl.appendingPathComponent("/api/v2/events")
-        self.eventQueue = eventQueue
+        self.coreQueue = coreQueue
         self.eventRepository = eventRepository
         self.httpQueue = httpQueue
         self.httpClient = httpClient
@@ -32,13 +32,13 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
     }
 
     private func delete(events: [EventEntity]) {
-        eventQueue.async {
+        coreQueue.async {
             self.deleteEventInternal(events: events)
         }
     }
 
     private func updateEventStatusToPending(events: [EventEntity]) {
-        eventQueue.async {
+        coreQueue.async {
             self.updateEventToPendingInternal(events: events)
         }
     }

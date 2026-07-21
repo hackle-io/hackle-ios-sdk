@@ -80,5 +80,17 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
             sut.record(request: request, response: response)
             expect(try storage.get(inAppMessage: inAppMessage).count) == 100
         }
+
+        it("when response code is not present then do not record") {
+            let inAppMessage = InAppMessageEntity.create(id: 42)
+            let request = InAppMessageEntity.presentRequest(inAppMessage: inAppMessage)
+
+            let codes: [InAppMessagePresentResponse.Code] = [.activityNotFound, .alreadyPresented, .unsupportedOrientation, .inProgress, .exception]
+            for code in codes {
+                sut.record(request: request, response: InAppMessageEntity.presentResponse(code: code))
+            }
+
+            expect(try storage.get(inAppMessage: inAppMessage).count) == 0
+        }
     }
 }
