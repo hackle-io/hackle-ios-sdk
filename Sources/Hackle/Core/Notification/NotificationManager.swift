@@ -8,7 +8,7 @@ class DefaultNotificationManager: NotificationManager, @unchecked Sendable {
     private static let DEFAULT_FLUSH_BATCH_SIZE = 5
 
     private let core: HackleCore
-    private let dispatchQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let workspaceManager: WorkspaceManager
     private let userManager: UserManager
     private let repository: NotificationRepository
@@ -17,7 +17,7 @@ class DefaultNotificationManager: NotificationManager, @unchecked Sendable {
 
     init(
         core: HackleCore,
-        dispatchQueue: DispatchQueue,
+        coreQueue: DispatchQueue,
         workspaceManager: WorkspaceManager,
         userManager: UserManager,
         repository: NotificationRepository
@@ -26,11 +26,11 @@ class DefaultNotificationManager: NotificationManager, @unchecked Sendable {
         self.workspaceManager = workspaceManager
         self.userManager = userManager
         self.repository = repository
-        self.dispatchQueue = dispatchQueue
+        self.coreQueue = coreQueue
     }
 
     func flush() {
-        dispatchQueue.async {
+        coreQueue.async {
             self.flushInternal()
         }
     }
@@ -112,7 +112,7 @@ class DefaultNotificationManager: NotificationManager, @unchecked Sendable {
     }
 
     private func saveInLocal(data: NotificationData, timestamp: Date) {
-        dispatchQueue.async {
+        coreQueue.async {
             self.repository.save(data: data, timestamp: timestamp)
             Log.info("Saved notification data: \(String(describing: data.pushMessageId))[\(timestamp)]")
         }

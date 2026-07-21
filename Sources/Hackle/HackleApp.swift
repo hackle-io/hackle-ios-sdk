@@ -793,7 +793,7 @@ extension HackleApp {
         let sharedDatabase = SharedDatabase.shared
         let notificationManager = DefaultNotificationManager(
             core: core,
-            dispatchQueue: DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility),
+            coreQueue: coreQueue,
             workspaceManager: workspaceMode.manager,
             userManager: userManager,
             repository: DefaultNotificationRepository(
