@@ -289,16 +289,22 @@ class HackleAppSpecs: QuickSpec {
 
             it("setPhoneNumber") {
                 var count = 0
-                sut.setPhoneNumber(phoneNumber: "+821012345678") {
-                    count += 1
+                waitUntil(timeout: .seconds(2)) { done in
+                    sut.setPhoneNumber(phoneNumber: "+821012345678") {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }
 
             it("unsetPhoneNumber") {
                 var count = 0
-                sut.unsetPhoneNumber {
-                    count += 1
+                waitUntil(timeout: .seconds(2)) { done in
+                    sut.unsetPhoneNumber {
+                        count += 1
+                        done()
+                    }
                 }
                 expect(count) == 1
             }

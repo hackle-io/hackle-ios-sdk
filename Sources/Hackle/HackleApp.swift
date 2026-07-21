@@ -177,7 +177,9 @@ import WebKit
     ///   - completion: callback to be executed when the operation is complete
     @preconcurrency @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
-        completion()
+        completionQueue.async {
+            completion()
+        }
     }
 
     /// Removes the phone number from the current user with completion.
@@ -185,7 +187,9 @@ import WebKit
     /// - Parameter completion: callback to be executed when the operation is complete
     @preconcurrency @objc public func unsetPhoneNumber(completion: @escaping @Sendable () -> ()) {
         hackleAppCore.unsetPhoneNumber(hackleAppContext: .default)
-        completion()
+        completionQueue.async {
+            completion()
+        }
     }
 
     /// Decide the variation to expose to the user for experiment.
