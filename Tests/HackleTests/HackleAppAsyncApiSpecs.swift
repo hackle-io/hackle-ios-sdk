@@ -6,7 +6,7 @@ import Quick
 class HackleAppAsyncApiSpecs: AsyncSpec {
     override class func spec() {
         var core: MockHackleCore!
-        var eventQueue: DispatchQueue!
+        var coreQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
         var platformManager: PlatformManager!
         var userManager: MockUserManager!
@@ -24,7 +24,7 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
         beforeEach {
             Metrics.clear()
             core = MockHackleCore()
-            eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
+            coreQueue = DispatchQueue(label: "io.hackle.CoreQueue", qos: .utility)
             synchronizer = MockSynchronizer()
             userManager = MockUserManager()
             workspaceManager = WorkspaceConfigManager(
@@ -51,7 +51,7 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
                 core: core,
-                coreQueue: eventQueue,
+                coreQueue: coreQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
                 workspaceManager: workspaceManager,

@@ -6,7 +6,7 @@ import Quick
 class HackleAppSpecs: QuickSpec {
     override class func spec() {
         var core: MockHackleCore!
-        var eventQueue: DispatchQueue!
+        var coreQueue: DispatchQueue!
         var synchronizer: MockSynchronizer!
         var platformManager: PlatformManager!
         var userManager: MockUserManager!
@@ -24,7 +24,7 @@ class HackleAppSpecs: QuickSpec {
         beforeEach {
             Metrics.clear()
             core = MockHackleCore()
-            eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
+            coreQueue = DispatchQueue(label: "io.hackle.CoreQueue", qos: .utility)
             synchronizer = MockSynchronizer()
             userManager = MockUserManager()
             workspaceManager = WorkspaceConfigManager(
@@ -51,7 +51,7 @@ class HackleAppSpecs: QuickSpec {
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
                 core: core,
-                coreQueue: eventQueue,
+                coreQueue: coreQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
                 workspaceManager: workspaceManager,
@@ -95,7 +95,7 @@ class HackleAppSpecs: QuickSpec {
             let built = makeHackleApp(
                 core: core,
                 evaluationMode: .remote,
-                coreQueue: eventQueue,
+                coreQueue: coreQueue,
                 synchronizer: synchronizer,
                 userManager: userManager,
                 workspaceManager: workspaceManager,
@@ -638,7 +638,7 @@ class HackleAppSpecs: QuickSpec {
             it("fetch - 스로틀(reject) 시에도 completion이 호출된다") {
                 let rejectingBuilt = makeHackleApp(
                     core: core,
-                    coreQueue: eventQueue,
+                    coreQueue: coreQueue,
                     synchronizer: synchronizer,
                     userManager: userManager,
                     workspaceManager: workspaceManager,

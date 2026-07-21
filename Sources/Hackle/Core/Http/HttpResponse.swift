@@ -42,6 +42,14 @@ extension HttpResponse {
     var isNotModified: Bool {
         isStatusCode(304)
     }
+
+    func header(_ header: HttpHeader) -> String? {
+        guard let urlResponse = urlResponse as? HTTPURLResponse else {
+            return nil
+        }
+        return urlResponse.header(header)
+    }
+
 }
 
 extension HTTPURLResponse {
