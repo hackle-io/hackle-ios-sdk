@@ -95,10 +95,10 @@ extension Hackle {
         notificationContent: UNMutableNotificationContent,
         contentHandler: @escaping (UNNotificationContent) -> Void
     ) -> Bool {
-        guard let notificationData = NotificationData.from(data: notificationContent.userInfo) else {
+        guard NotificationData.from(data: notificationContent.userInfo) != nil else {
             return false
         }
-        
+
         return resolveRichNotificationContent(notificationContent: notificationContent, completion: { hackleNotificationContent in
             contentHandler(hackleNotificationContent)
         })

@@ -15,7 +15,7 @@ class DelayedInAppMessageScheduler: InAppMessageScheduler {
     }
 
     func deliver(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
-        guard let delay = delayManager.delete(request: request) else {
+        guard delayManager.delete(request: request) != nil else {
             throw HackleError.error("InAppMessageDelay not found (inAppMessageKey: \(request.schedule.inAppMessageKey))")
         }
 
@@ -25,7 +25,7 @@ class DelayedInAppMessageScheduler: InAppMessageScheduler {
     }
 
     func delay(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
-        let delay = try delayManager.delay(request: request)
+        let delay = delayManager.delay(request: request)
         return InAppMessageScheduleResponse.of(request: request, code: .delay, delay: delay)
     }
 
