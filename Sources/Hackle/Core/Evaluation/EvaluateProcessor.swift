@@ -17,7 +17,6 @@ class EvaluateProcessor {
         hiddenStorage: InAppMessageHiddenStorage
     ) -> EvaluateProcessor {
         let evaluatorFactory = EvaluatorFactory()
-        let delegatingEvaluator = DelegatingEvaluator(evaluatorFactory: evaluatorFactory)
 
         let eventFactory = EvaluationEventFactory(clock: clock)
         let eventRecorder = EvaluationEventRecorder(
@@ -27,7 +26,7 @@ class EvaluateProcessor {
 
         let targetMatcher = DefaultTargetMatcher(
             conditionMatcherFactory: DefaultConditionMatcherFactory(
-                evaluator: delegatingEvaluator,
+                evaluatorFactory: evaluatorFactory,
                 clock: clock
             )
         )
@@ -55,9 +54,7 @@ class EvaluateProcessor {
             eventRecorder: eventRecorder
         )
         let inAppMessageLayoutLocalEvaluator = InAppMessageLayoutLocalEvaluator(
-            experimentEvaluator: InAppMessageLayoutExperimentEvaluator(
-                evaluator: delegatingEvaluator
-            ),
+            experimentEvaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: evaluatorFactory),
             selector: InAppMessageLayoutSelector(),
             eventRecorder: eventRecorder
         )

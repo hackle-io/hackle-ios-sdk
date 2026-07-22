@@ -21,7 +21,7 @@ class LocalEvaluatorSpecs: QuickSpec {
                 expect(context.references.count).to(equal(0))
 
                 let evaluation = try sut.evaluate(
-                    sourceRequest: StubLocalEvaluateRequest(),
+                    parentRequest: StubLocalEvaluateRequest(),
                     context: context,
                     reference: reference
                 )
@@ -41,7 +41,7 @@ class LocalEvaluatorSpecs: QuickSpec {
                 expect(context.references.count).to(equal(1))
 
                 let evaluation = try sut.evaluate(
-                    sourceRequest: StubLocalEvaluateRequest(),
+                    parentRequest: StubLocalEvaluateRequest(),
                     context: context,
                     reference: reference
                 )
@@ -70,7 +70,7 @@ class LocalEvaluatorSpecs: QuickSpec {
             context.get(reference) as? StubEvaluation
         }
 
-        func doEvaluate(sourceRequest: LocalEvaluateRequest, context: EvaluatorContext, reference: DefaultEntity) throws -> StubEvaluation {
+        func doEvaluate(parentRequest: LocalEvaluateRequest, context: EvaluatorContext, reference: DefaultEntity) throws -> StubEvaluation {
             doEvaluateCount += 1
             return StubEvaluation(entity: reference)
         }

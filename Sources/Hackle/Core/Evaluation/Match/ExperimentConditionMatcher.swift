@@ -35,7 +35,8 @@ protocol ExperimentMatcher {
     func matches(request: LocalEvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool
 }
 
-protocol ExperimentEvaluatorMatcher: ExperimentMatcher, ExperimentReferenceLocalEvaluator {
+protocol ExperimentEvaluatorMatcher: ExperimentMatcher {
+    var evaluator: ExperimentReferenceLocalEvaluator { get }
     var valueOperatorMatcher: ValueOperatorMatcher { get }
 
     func experiment(request: LocalEvaluateRequest, key: Int64) -> ExperimentConfig?
@@ -53,7 +54,7 @@ extension ExperimentEvaluatorMatcher {
             return false
         }
 
-        let evaluation = try evaluate(sourceRequest: request, context: context, reference: experiment)
+        let evaluation = try evaluator.evaluate(parentRequest: request, context: context, reference: experiment)
         return matches(evaluation: evaluation, condition: condition)
     }
 }
@@ -63,24 +64,19 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
     private static let AB_TEST_MATCHED_REASONS = [
         DecisionReason.OVERRIDDEN,
         DecisionReason.TRAFFIC_ALLOCATED,
-        DecisionReason.EXPERIMENT_COMPLETED,
-        DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
+        DecisionReason.EXPERIMENT_COMPLETED
     ]
 
-    internal let evaluator: Evaluator
+    internal let evaluator: ExperimentReferenceLocalEvaluator
     internal let valueOperatorMatcher: ValueOperatorMatcher
 
-    init(evaluator: Evaluator, valueOperatorMatcher: ValueOperatorMatcher) {
+    init(evaluator: ExperimentReferenceLocalEvaluator, valueOperatorMatcher: ValueOperatorMatcher) {
         self.evaluator = evaluator
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
     func experiment(request: LocalEvaluateRequest, key: Int64) -> ExperimentConfig? {
         request.workspace.getExperimentOrNil(experimentKey: key) as? ExperimentConfig
-    }
-
-    func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation {
-        ExperimentReference.resolve(sourceRequest: sourceRequest, evaluation: experimentResponse.experimentEvaluation)
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
@@ -94,20 +90,16 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
 
 class FeatureFlagConditionMatcher: ExperimentEvaluatorMatcher {
 
-    internal let evaluator: Evaluator
+    internal let evaluator: ExperimentReferenceLocalEvaluator
     internal let valueOperatorMatcher: ValueOperatorMatcher
 
-    init(evaluator: Evaluator, valueOperatorMatcher: ValueOperatorMatcher) {
+    init(evaluator: ExperimentReferenceLocalEvaluator, valueOperatorMatcher: ValueOperatorMatcher) {
         self.evaluator = evaluator
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
     func experiment(request: LocalEvaluateRequest, key: Int64) -> ExperimentConfig? {
         request.workspace.getFeatureFlagOrNil(featureKey: key) as? ExperimentConfig
-    }
-
-    func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation {
-        experimentResponse.experimentEvaluation
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {

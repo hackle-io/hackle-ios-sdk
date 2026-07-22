@@ -5,21 +5,25 @@
 
 import Foundation
 
-protocol ExperimentReferenceLocalEvaluator: ReferenceLocalEvaluator where Reference == ExperimentConfig, ReferenceEvaluation == ExperimentEvaluation {
-    var evaluator: Evaluator { get }
+final class ExperimentReferenceLocalEvaluator: ReferenceLocalEvaluator {
 
-    func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation
-}
+    typealias Reference = ExperimentConfig
+    typealias ReferenceEvaluation = ExperimentEvaluation
 
-extension ExperimentReferenceLocalEvaluator {
+    private let evaluatorFactory: EvaluatorFactory
+
+    init(evaluatorFactory: EvaluatorFactory) {
+        self.evaluatorFactory = evaluatorFactory
+    }
 
     func cachedEvaluation(context: EvaluatorContext, reference: ExperimentConfig) -> ExperimentEvaluation? {
         context.get(reference) as? ExperimentEvaluation
     }
 
-    func doEvaluate(sourceRequest: LocalEvaluateRequest, context: EvaluatorContext, reference: ExperimentConfig) throws -> ExperimentEvaluation {
-        let experimentRequest = ExperimentLocalEvaluateRequest.of(requestedBy: sourceRequest, experiment: reference)
-        let experimentResponse: ExperimentEvaluateResponse = try evaluator.evaluate(request: experimentRequest, context: context)
-        return try resolveEvaluation(sourceRequest: sourceRequest, experimentResponse: experimentResponse)
+    func doEvaluate(parentRequest: LocalEvaluateRequest, context: EvaluatorContext, reference: ExperimentConfig) throws -> ExperimentEvaluation {
+        let experimentRequest = ExperimentLocalEvaluateRequest.of(requestedBy: parentRequest, experiment: reference)
+        let experimentEvaluator = try evaluatorFactory.experiment(experimentRequest)
+        let experimentResponse: ExperimentEvaluateResponse = try experimentEvaluator.evaluate(request: experimentRequest, context: context)
+        return experimentResponse.experimentEvaluation
     }
 }

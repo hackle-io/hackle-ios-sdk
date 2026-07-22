@@ -10,10 +10,10 @@ class DefaultInAppMessageEligibilityFlowFactorySpecs: QuickSpec {
 
         beforeEach {
             let targetMatcher = DefaultTargetMatcher(
-                conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory()), clock: SystemClock.shared)
+                conditionMatcherFactory: DefaultConditionMatcherFactory(evaluatorFactory: EvaluatorFactory(), clock: SystemClock.shared)
             )
             let layoutEvaluator = InAppMessageLayoutLocalEvaluator(
-                experimentEvaluator: InAppMessageLayoutExperimentEvaluator(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory())),
+                experimentEvaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: EvaluatorFactory()),
                 selector: InAppMessageLayoutSelector(),
                 eventRecorder: MockEvaluationEventRecorder()
             )

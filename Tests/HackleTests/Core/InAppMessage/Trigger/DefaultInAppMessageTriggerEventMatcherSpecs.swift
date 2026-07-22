@@ -77,7 +77,7 @@ class DefaultInAppMessageTriggerEventMatcherSpecs: QuickSpec {
                 realSut = DefaultInAppMessageTriggerEventMatcher(
                     targetMatcher: DefaultTargetMatcher(
                         conditionMatcherFactory: DefaultConditionMatcherFactory(
-                            evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory()),
+                            evaluatorFactory: EvaluatorFactory(),
                             clock: FixedClock(date: Date())
                         )
                     )

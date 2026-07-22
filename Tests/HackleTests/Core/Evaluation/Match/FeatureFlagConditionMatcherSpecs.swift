@@ -11,17 +11,23 @@ import MockingKit
 
 
 class FeatureFlagConditionMatcherSpecs: QuickSpec {
+
     override class func spec() {
-        var evaluator: MockEvaluator!
+        var evaluatorStub: StubExperimentEvaluator!
         var valueOperatorMatcher: MockValueOperatorMatcher!
         var sut: FeatureFlagConditionMatcher!
 
         var context: EvaluatorContext!
 
         beforeEach {
-            evaluator = MockEvaluator()
+            evaluatorStub = StubExperimentEvaluator()
+            let factory = EvaluatorFactory()
+            factory.add(evaluatorStub)
             valueOperatorMatcher = MockValueOperatorMatcher()
-            sut = FeatureFlagConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher)
+            sut = FeatureFlagConditionMatcher(
+                evaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: factory),
+                valueOperatorMatcher: valueOperatorMatcher
+            )
             context = Evaluators.context()
         }
 
@@ -30,10 +36,6 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
                 entity: request.experiment,
                 result: ExperimentEvaluateResult.of(reason: reason, variation: request.experimentConfig.variations.first!)
             )
-        }
-
-        func response(request: ExperimentLocalEvaluateRequest, evaluation: ExperimentEvaluation) -> ExperimentEvaluateResponse {
-            ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: [])
         }
 
         func request(experiment: ExperimentConfig) -> ExperimentLocalEvaluateRequest {
@@ -73,13 +75,13 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
             )
 
             let evaluation = evaluation(request: request, reason: DecisionReason.DEFAULT_RULE)
-            evaluator.returns = response(request: request, evaluation: evaluation)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(evaluator.call) == 1
+            expect(evaluatorStub.call) == 1
         }
 
         it("이미 평가된 경우") {
@@ -91,13 +93,13 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
 
             let evaluation = evaluation(request: request, reason: DecisionReason.DEFAULT_RULE)
             context.add(evaluation)
-            evaluator.returns = response(request: request, evaluation: evaluation)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(evaluator.call) == 0
+            expect(evaluatorStub.call) == 0
         }
     }
 }

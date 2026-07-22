@@ -1,5 +1,5 @@
 //
-//  DelegatingEvaluatorSpecs.swift
+//  EvaluatorFactorySpecs.swift
 //  HackleTests
 //
 
@@ -8,7 +8,7 @@ import Quick
 import Nimble
 @testable import Hackle
 
-class DelegatingEvaluatorSpecs: QuickSpec {
+class EvaluatorFactorySpecs: QuickSpec {
     override class func spec() {
 
         var eventRecorder: EvaluationEventRecorder!
@@ -49,32 +49,6 @@ class DelegatingEvaluatorSpecs: QuickSpec {
             }
         }
 
-        describe("DelegatingEvaluator") {
-
-            it("evaluate delegates to matched evaluator") {
-                let factory = EvaluatorFactory()
-
-                let responseA = StubEvaluateResponse(evaluation: StubEvaluation(entity: DefaultEntity(serviceType: .abTest, id: 1)))
-                let responseB = StubEvaluateResponse(evaluation: StubEvaluation(entity: DefaultEntity(serviceType: .featureFlag, id: 2)))
-                factory.add(ContextualEvaluatorStub<RequestA>(response: responseA, eventRecorder: eventRecorder))
-                factory.add(ContextualEvaluatorStub<RequestB>(response: responseB, eventRecorder: eventRecorder))
-
-                let sut = DelegatingEvaluator(evaluatorFactory: factory)
-
-                let actualA: StubEvaluateResponse = try sut.evaluate(request: RequestA(), context: Evaluators.context())
-                expect(actualA.evaluation.entity.id).to(equal(1))
-
-                let actualB: StubEvaluateResponse = try sut.evaluate(request: RequestB(), context: Evaluators.context())
-                expect(actualB.evaluation.entity.id).to(equal(2))
-            }
-
-            it("evaluate throws when no evaluator supports request") {
-                let sut = DelegatingEvaluator(evaluatorFactory: EvaluatorFactory())
-                expect {
-                    let _: StubEvaluateResponse = try sut.evaluate(request: RequestA(), context: Evaluators.context())
-                }.to(throwError())
-            }
-        }
     }
 
     struct RequestA: EvaluateRequest {
