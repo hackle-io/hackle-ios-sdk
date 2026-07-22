@@ -34,7 +34,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
         super.init(reason: reason, variation: variation)
     }
 
-    func toEvaluation() -> Evaluation {
+    func toEvaluation() -> ExperimentEvaluation {
         ExperimentEvaluation(entity: self, result: self)
     }
 

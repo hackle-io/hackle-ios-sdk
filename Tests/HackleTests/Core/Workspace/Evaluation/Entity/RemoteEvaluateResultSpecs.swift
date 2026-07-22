@@ -37,12 +37,8 @@ class RemoteEvaluateResultSpecs: QuickSpec {
 
             it("toEvaluation returns ExperimentEvaluation of itself") {
                 let evaluation = sut.toEvaluation()
-                guard let experimentEvaluation = evaluation as? ExperimentEvaluation else {
-                    fail("expected ExperimentEvaluation")
-                    return
-                }
-                expect(experimentEvaluation.entity.entityKey).to(equal(sut.entityKey))
-                expect(experimentEvaluation.experimentResult.variation.key).to(equal("B"))
+                expect(evaluation.entity.entityKey).to(equal(sut.entityKey))
+                expect(evaluation.experimentResult.variation.key).to(equal("B"))
             }
         }
 
@@ -68,12 +64,8 @@ class RemoteEvaluateResultSpecs: QuickSpec {
 
             it("toEvaluation returns RemoteConfigEvaluation of itself") {
                 let evaluation = sut.toEvaluation()
-                guard let rcEvaluation = evaluation as? RemoteConfigEvaluation else {
-                    fail("expected RemoteConfigEvaluation")
-                    return
-                }
-                expect(rcEvaluation.parameter.id).to(equal(2))
-                expect(rcEvaluation.remoteConfigResult.value?.id).to(equal(7))
+                expect(evaluation.parameter.id).to(equal(2))
+                expect(evaluation.remoteConfigResult.value?.id).to(equal(7))
             }
         }
 
@@ -105,8 +97,8 @@ class RemoteEvaluateResultSpecs: QuickSpec {
                 expect(sut.reason).to(equal(DecisionReason.IN_APP_MESSAGE_TARGET))
                 expect(sut.layout.entityKey).to(equal(layout.entityKey))
                 expect(sut.layout).to(beIdenticalTo(layout))
-                expect((sut.toEvaluation() as? InAppMessageEligibilityEvaluation)?.entity.entityKey).to(equal(sut.entityKey))
-                expect((layout.toEvaluation() as? InAppMessageLayoutEvaluation)?.entity.entityKey).to(equal(layout.entityKey))
+                expect(sut.toEvaluation().entity.entityKey).to(equal(sut.entityKey))
+                expect(layout.toEvaluation().entity.entityKey).to(equal(layout.entityKey))
             }
         }
     }

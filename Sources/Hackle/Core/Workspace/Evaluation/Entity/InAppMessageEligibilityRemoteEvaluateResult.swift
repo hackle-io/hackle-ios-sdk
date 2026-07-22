@@ -40,7 +40,7 @@ final class InAppMessageEligibilityRemoteEvaluateResult: InAppMessageEligibility
         super.init(reason: reason, isEligible: isEligible)
     }
 
-    func toEvaluation() -> Evaluation {
+    func toEvaluation() -> InAppMessageEligibilityEvaluation {
         InAppMessageEligibilityEvaluation(entity: self, result: self)
     }
 }

@@ -22,7 +22,7 @@ final class RemoteConfigParameterRemoteEvaluateResult: RemoteConfigEvaluateResul
         super.init(reason: reason, value: value)
     }
 
-    func toEvaluation() -> Evaluation {
+    func toEvaluation() -> RemoteConfigEvaluation {
         RemoteConfigEvaluation(entity: self, result: self)
     }
 }

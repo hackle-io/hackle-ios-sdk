@@ -15,7 +15,7 @@ protocol WorkspaceEvaluation: Workspace {
     func getRemoteConfigParameterResultOrNil(parameterKey: RemoteConfigParameter.Key) -> RemoteConfigParameterRemoteEvaluateResult?
     func getInAppMessageResultOrNil(inAppMessageKey: InAppMessage.Key) -> InAppMessageEligibilityRemoteEvaluateResult?
 
-    func result(entity: Entity) -> RemoteEvaluateResult?
+    func result(entity: Entity) -> (any RemoteEvaluateResult)?
 }
 
 extension WorkspaceEvaluation {

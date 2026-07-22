@@ -26,8 +26,8 @@ class MockWorkspaceEvaluation: WorkspaceEvaluation {
         inAppMessageResults.first { $0.key == inAppMessageKey }
     }
 
-    func result(entity: Entity) -> RemoteEvaluateResult? {
-        var all: [RemoteEvaluateResult] = []
+    func result(entity: Entity) -> (any RemoteEvaluateResult)? {
+        var all: [any RemoteEvaluateResult] = []
         all.append(contentsOf: experimentResults)
         all.append(contentsOf: featureFlagResults)
         all.append(contentsOf: remoteConfigParameterResults)

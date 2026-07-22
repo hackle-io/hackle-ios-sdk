@@ -10,7 +10,7 @@ final class InAppMessageEligibilityRemoteEvaluateRequest: RemoteEvaluateRequest,
     let platformType: PlatformType?
     let timestamp: Date
 
-    var remoteResult: RemoteEvaluateResult { result }
+    var remoteResult: any RemoteEvaluateResult { result }
     var inAppMessage: InAppMessage { result }
 
     private init(

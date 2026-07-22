@@ -2,7 +2,7 @@ import Foundation
 
 protocol RemoteEvaluateRequest: EvaluateRequest {
     var evaluationWorkspace: WorkspaceEvaluation { get }
-    var remoteResult: RemoteEvaluateResult { get }
+    var remoteResult: any RemoteEvaluateResult { get }
 }
 
 extension RemoteEvaluateRequest {

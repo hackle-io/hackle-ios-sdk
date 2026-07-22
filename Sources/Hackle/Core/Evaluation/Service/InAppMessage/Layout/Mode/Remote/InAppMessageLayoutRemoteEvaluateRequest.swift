@@ -8,7 +8,7 @@ final class InAppMessageLayoutRemoteEvaluateRequest: RemoteEvaluateRequest, InAp
     let scope: InAppMessageEvaluateScope
     let record: Bool
 
-    var remoteResult: RemoteEvaluateResult { result }
+    var remoteResult: any RemoteEvaluateResult { result }
     var inAppMessage: InAppMessage { result }
 
     private init(

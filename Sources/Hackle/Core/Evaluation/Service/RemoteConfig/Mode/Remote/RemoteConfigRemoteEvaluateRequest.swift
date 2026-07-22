@@ -8,7 +8,7 @@ final class RemoteConfigRemoteEvaluateRequest: RemoteEvaluateRequest, RemoteConf
     let record: Bool
     let requiredType: HackleValueType
 
-    var remoteResult: RemoteEvaluateResult { result }
+    var remoteResult: any RemoteEvaluateResult { result }
     var parameter: RemoteConfigParameter { result }
 
     private init(
