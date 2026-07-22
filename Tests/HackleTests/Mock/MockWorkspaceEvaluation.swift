@@ -60,7 +60,7 @@ func experimentRemoteResult(
     references: [Entity] = []
 ) -> ExperimentRemoteEvaluateResult {
     ExperimentRemoteEvaluateResult(
-        id: id, key: key, version: 1, order: order, type: type, executionVersion: 1,
+        id: id, key: key, version: 1, status: .running, order: order, type: type, executionVersion: 1,
         variation: variation, reason: reason, references: references
     )
 }

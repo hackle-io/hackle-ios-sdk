@@ -1,14 +1,18 @@
 import Foundation
 
 extension ExperimentEvaluateResultDto {
-    func toResult(type: ExperimentType) -> ExperimentRemoteEvaluateResult {
+    func toResultOrNil(type: ExperimentType) -> ExperimentRemoteEvaluateResult? {
+        guard let status = ExperimentStatus.from(executionStatus: execution.status) else {
+            return nil
+        }
         return ExperimentRemoteEvaluateResult(
             id: id,
             key: key,
             version: version,
+            status: status,
             order: order,
             type: type,
-            executionVersion: executionVersion,
+            executionVersion: execution.version,
             variation: variation.toVariation(parameterConfiguration: config?.toParameterConfiguration()),
             reason: reason,
             references: references.compactMap { it in

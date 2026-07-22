@@ -79,13 +79,18 @@ struct ExperimentEvaluateResultDto: Codable {
     let key: Int64
     let order: Int64
     let version: Int
-    let executionVersion: Int
+    let execution: ExecutionDto
 
     let variation: VariationDto
     let config: ParameterConfigurationDto?
 
     let reason: String
     let references: [EntityDto]
+
+    struct ExecutionDto: Codable {
+        let status: String
+        let version: Int
+    }
 }
 
 struct RemoteConfigParameterEvaluateResultDto: Codable {

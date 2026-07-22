@@ -40,23 +40,32 @@ class WorkspaceEvaluationsSpecs: QuickSpec {
 
     override class func spec() {
 
-        describe("ExperimentEvaluateResultDto.toResult") {
+        describe("ExperimentEvaluateResultDto.toResultOrNil") {
             it("config가 없으면 parameterConfiguration 없이 매핑한다") {
                 let dto = decodePayload(ExperimentEvaluateResultDto.self, resultType: "AB_TEST", field: "experiment") { it in
                     it["config"] = NSNull()
                 }
-                let result = dto.toResult(type: .abTest)
-                expect(result.key) == 10
-                expect(result.variation.parameterConfiguration).to(beNil())
+                let result = dto.toResultOrNil(type: .abTest)
+                expect(result).toNot(beNil())
+                expect(result?.key) == 10
+                expect(result?.variation.parameterConfiguration).to(beNil())
             }
 
             it("미지의 reference 타입은 그 reference만 제외하고 결과는 유지한다") {
                 let dto = decodePayload(ExperimentEvaluateResultDto.self, resultType: "AB_TEST", field: "experiment")
                 expect(dto.references.count) == 2 // AB_TEST + UNKNOWN_TYPE
 
-                let result = dto.toResult(type: .abTest)
-                expect(result.references.count) == 1
-                expect(result.references[0].serviceType) == ServiceType.abTest
+                let result = dto.toResultOrNil(type: .abTest)
+                expect(result).toNot(beNil())
+                expect(result?.references.count) == 1
+                expect(result?.references[0].serviceType) == ServiceType.abTest
+            }
+
+            it("execution.status가 매핑 불가 값이면 결과를 드랍한다") {
+                let dto = decodePayload(ExperimentEvaluateResultDto.self, resultType: "AB_TEST", field: "experiment") { it in
+                    it["execution"] = ["status": "UNKNOWN", "version": 1]
+                }
+                expect(dto.toResultOrNil(type: .abTest)).to(beNil())
             }
         }
 
