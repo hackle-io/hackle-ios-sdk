@@ -5,40 +5,20 @@ import Quick
 
 class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
 
-    /// Stub experiment evaluator returning a preset ExperimentEvaluation.
-    final class StubExperimentEvaluator: ExperimentEvaluator {
-        let eventRecorder: EvaluationEventRecorder
-        var evaluation: ExperimentEvaluation?
-
-        init() {
-            eventRecorder = MockEvaluationEventRecorder()
-        }
-
-        func doEvaluate(request: ExperimentLocalEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
-            let evaluation = evaluation ?? ExperimentEvaluation(
-                entity: request.experiment,
-                result: ExperimentEvaluateResult.of(reason: DecisionReason.TRAFFIC_ALLOCATED, variation: request.experimentConfig.variations.first!)
-            )
-            return ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: context.references)
-        }
-    }
-
     override class func spec() {
 
         var experimentEvaluatorStub: StubExperimentEvaluator!
-        var delegatingEvaluator: DelegatingEvaluator!
         var eventRecorder: MockEvaluationEventRecorder!
         var sut: InAppMessageLayoutLocalEvaluator!
 
         beforeEach {
-            experimentEvaluatorStub = StubExperimentEvaluator()
+            experimentEvaluatorStub = StubExperimentEvaluator(includeContextReferences: true)
             let evaluatorFactory = EvaluatorFactory()
             evaluatorFactory.add(experimentEvaluatorStub)
-            delegatingEvaluator = DelegatingEvaluator(evaluatorFactory: evaluatorFactory)
 
             eventRecorder = MockEvaluationEventRecorder()
             sut = InAppMessageLayoutLocalEvaluator(
-                experimentEvaluator: InAppMessageLayoutExperimentEvaluator(evaluator: delegatingEvaluator),
+                experimentEvaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: evaluatorFactory),
                 selector: InAppMessageLayoutSelector(),
                 eventRecorder: eventRecorder
             )

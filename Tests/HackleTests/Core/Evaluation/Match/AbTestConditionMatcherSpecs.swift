@@ -11,17 +11,23 @@ import MockingKit
 
 
 class AbTestConditionMatcherSpecs: QuickSpec {
+
     override class func spec() {
-        var evaluator: MockEvaluator!
+        var evaluatorStub: StubExperimentEvaluator!
         var valueOperatorMatcher: MockValueOperatorMatcher!
         var sut: AbTestConditionMatcher!
 
         var context: EvaluatorContext!
 
         beforeEach {
-            evaluator = MockEvaluator()
+            evaluatorStub = StubExperimentEvaluator()
+            let factory = EvaluatorFactory()
+            factory.add(evaluatorStub)
             valueOperatorMatcher = MockValueOperatorMatcher()
-            sut = AbTestConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher)
+            sut = AbTestConditionMatcher(
+                evaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: factory),
+                valueOperatorMatcher: valueOperatorMatcher
+            )
             context = Evaluators.context()
         }
 
@@ -30,10 +36,6 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 entity: request.experiment,
                 result: ExperimentEvaluateResult.of(reason: reason, variation: request.experimentConfig.variations.first!)
             )
-        }
-
-        func response(request: ExperimentLocalEvaluateRequest, evaluation: ExperimentEvaluation) -> ExperimentEvaluateResponse {
-            ExperimentEvaluateResponse(user: request.user, workspace: request.workspace, evaluation: evaluation, references: [])
         }
 
         func request(experiment: ExperimentConfig) -> ExperimentLocalEvaluateRequest {
@@ -76,7 +78,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 )
 
                 let evaluation = evaluation(request: request, reason: reason)
-                evaluator.returns = response(request: request, evaluation: evaluation)
+                evaluatorStub.evaluation = evaluation
 
                 let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
                 expect(actual) == false
@@ -99,7 +101,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
                 )
 
                 let evaluation = evaluation(request: request, reason: reason)
-                evaluator.returns = response(request: request, evaluation: evaluation)
+                evaluatorStub.evaluation = evaluation
                 every(valueOperatorMatcher.matchesMock).returns(true)
 
                 let actual = try sut.matches(request: request, context: Evaluators.context(), condition: condition)
@@ -119,7 +121,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             )
 
             let evaluation = evaluation(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED)
-            evaluator.returns = response(request: request, evaluation: evaluation)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             context.add(evaluation)
@@ -127,7 +129,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(evaluator.call) == 0
+            expect(evaluatorStub.call) == 0
             expect(context.references.count) == 1
         }
 
@@ -139,7 +141,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             )
 
             let evaluation = evaluation(request: request, reason: DecisionReason.TRAFFIC_ALLOCATED)
-            evaluator.returns = response(request: request, evaluation: evaluation)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
@@ -157,7 +159,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             )
 
             let evaluation = evaluation(request: request, reason: DecisionReason.OVERRIDDEN)
-            evaluator.returns = response(request: request, evaluation: evaluation)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
@@ -175,7 +177,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             )
 
             let evaluation = evaluation(request: experimentRequest, reason: DecisionReason.OVERRIDDEN)
-            evaluator.returns = response(request: experimentRequest, evaluation: evaluation)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)

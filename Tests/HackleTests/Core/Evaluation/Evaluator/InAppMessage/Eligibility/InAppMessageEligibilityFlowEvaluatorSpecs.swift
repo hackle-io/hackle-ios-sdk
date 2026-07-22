@@ -269,7 +269,7 @@ class InAppMessageEligibilityFlowEvaluatorSpecs: QuickSpec {
 
             beforeEach {
                 layoutEvaluator = InAppMessageLayoutLocalEvaluator(
-                    experimentEvaluator: InAppMessageLayoutExperimentEvaluator(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory())),
+                    experimentEvaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: EvaluatorFactory()),
                     selector: InAppMessageLayoutSelector(),
                     eventRecorder: MockEvaluationEventRecorder()
                 )

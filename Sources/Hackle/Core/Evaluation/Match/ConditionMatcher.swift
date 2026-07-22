@@ -17,7 +17,8 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
     private let cohortConditionMatcher: ConditionMatcher
     private let targetEventConditionMatcher: ConditionMatcher
 
-    init(evaluator: DelegatingEvaluator, clock: Clock) {
+    init(evaluatorFactory: EvaluatorFactory, clock: Clock) {
+        let experimentReferenceLocalEvaluator = ExperimentReferenceLocalEvaluator(evaluatorFactory: evaluatorFactory)
         let valueOperatorMatcher = DefaultValueOperatorMatcher(
             valueMatcherFactory: ValueMatcherFactory(),
             operatorMatcherFactory: OperatorMatcherFactory()
@@ -38,14 +39,14 @@ class DefaultConditionMatcherFactory: ConditionMatcherFactory {
         )
 
         experimentConditionMatcher = ExperimentConditionMatcher(
-            abTestMatcher: AbTestConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher),
-            featureFlagMatcher: FeatureFlagConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher)
+            abTestMatcher: AbTestConditionMatcher(evaluator: experimentReferenceLocalEvaluator, valueOperatorMatcher: valueOperatorMatcher),
+            featureFlagMatcher: FeatureFlagConditionMatcher(evaluator: experimentReferenceLocalEvaluator, valueOperatorMatcher: valueOperatorMatcher)
         )
 
         cohortConditionMatcher = CohortConditionMatcher(
             valueOperatorMatcher: valueOperatorMatcher
         )
-        
+
         targetEventConditionMatcher = TargetEventConditionMatcher(
             numberOfEventsInDaysMatcher: NumberOfEventsInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock),
             numberOfEventsWithPropertyInDaysMatcher: NumberOfEventsWithPropertyInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock)

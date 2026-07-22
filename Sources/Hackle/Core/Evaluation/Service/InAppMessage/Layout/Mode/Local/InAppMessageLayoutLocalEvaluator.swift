@@ -4,12 +4,12 @@ final class InAppMessageLayoutLocalEvaluator: LocalEvaluator, InAppMessageLayout
     typealias Request = InAppMessageLayoutLocalEvaluateRequest
     typealias Response = InAppMessageLayoutEvaluateResponse
 
-    private let experimentEvaluator: InAppMessageLayoutExperimentEvaluator
+    private let experimentEvaluator: ExperimentReferenceLocalEvaluator
     private let selector: InAppMessageLayoutSelector
     let eventRecorder: EvaluationEventRecorder
 
     init(
-        experimentEvaluator: InAppMessageLayoutExperimentEvaluator,
+        experimentEvaluator: ExperimentReferenceLocalEvaluator,
         selector: InAppMessageLayoutSelector,
         eventRecorder: EvaluationEventRecorder
     ) {
@@ -42,7 +42,7 @@ final class InAppMessageLayoutLocalEvaluator: LocalEvaluator, InAppMessageLayout
         guard let experiment = request.workspaceConfig.getExperimentConfigOrNil(experimentKey: experimentContext.key) else {
             throw HackleError.error("Experiment[key=\(experimentContext.key)]")
         }
-        let experimentEvaluation = try experimentEvaluator.evaluate(sourceRequest: request, context: context, reference: experiment)
+        let experimentEvaluation = try experimentEvaluator.evaluate(parentRequest: request, context: context, reference: experiment)
 
         let langCondition = langCondition(lang: request.inAppMessage.messageContext.defaultLang)
         let experimentCondition = experimentCondition(variationKey: experimentEvaluation.experimentResult.variation.key)

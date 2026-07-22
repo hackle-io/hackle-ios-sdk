@@ -9,7 +9,7 @@ class DefaultExperimentFlowFactorySpecs: QuickSpec {
 
         beforeEach {
             sut = DefaultExperimentLocalEvaluationFlowFactory(
-                targetMatcher: DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluator: DelegatingEvaluator(evaluatorFactory: EvaluatorFactory()), clock: SystemClock.shared)),
+                targetMatcher: DefaultTargetMatcher(conditionMatcherFactory: DefaultConditionMatcherFactory(evaluatorFactory: EvaluatorFactory(), clock: SystemClock.shared)),
                 bucketer: DefaultBucketer(),
                 overrideStorage: DelegatingManualOverrideStorage(storages: [])
             )
