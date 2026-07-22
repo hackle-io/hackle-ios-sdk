@@ -9,6 +9,7 @@ protocol Experiment: Entity, Sendable {
     var id: Id { get }
     var key: Key { get }
     var version: Int { get }
+    var status: ExperimentStatus { get }
     var order: Int64 { get }
     var type: ExperimentType { get }
     var executionVersion: Int { get }

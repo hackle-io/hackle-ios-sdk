@@ -3,7 +3,6 @@ import Foundation
 protocol ExperimentConfig: Experiment, ConfigEntity {
     var name: String? { get }
     var identifierType: String { get }
-    var status: ExperimentStatus { get }
     var variations: [Variation] { get }
     var userOverrides: [User.Id: Variation.Id] { get }
     var segmentOverrides: [TargetRule] { get }
