@@ -12,7 +12,7 @@ class InAppMessageLayoutEvaluatorSpecs: QuickSpec {
         var sut: InAppMessageLayoutLocalEvaluator!
 
         beforeEach {
-            experimentEvaluatorStub = StubExperimentEvaluator(includeContextReferences: true)
+            experimentEvaluatorStub = StubExperimentEvaluator()
             let evaluatorFactory = EvaluatorFactory()
             evaluatorFactory.add(experimentEvaluatorStub)
 

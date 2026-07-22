@@ -1,5 +1,5 @@
 //
-//  DelegatingEvaluatorSpecs.swift
+//  EvaluatorFactorySpecs.swift
 //  HackleTests
 //
 
@@ -8,7 +8,7 @@ import Quick
 import Nimble
 @testable import Hackle
 
-class DelegatingEvaluatorSpecs: QuickSpec {
+class EvaluatorFactorySpecs: QuickSpec {
     override class func spec() {
 
         var eventRecorder: EvaluationEventRecorder!

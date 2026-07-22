@@ -20,7 +20,7 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
         var context: EvaluatorContext!
 
         beforeEach {
-            evaluatorStub = StubExperimentEvaluator(defaultReason: DecisionReason.DEFAULT_RULE)
+            evaluatorStub = StubExperimentEvaluator()
             let factory = EvaluatorFactory()
             factory.add(evaluatorStub)
             valueOperatorMatcher = MockValueOperatorMatcher()
