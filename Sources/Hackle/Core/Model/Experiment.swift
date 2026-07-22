@@ -36,6 +36,22 @@ enum ExperimentStatus: String {
     case running
     case paused
     case completed
+
+    static func from(executionStatus: String) -> ExperimentStatus? {
+        switch executionStatus {
+        case "READY":
+            return .draft
+        case "RUNNING":
+            return .running
+        case "PAUSED":
+            return .paused
+        case "STOPPED":
+            return .completed
+        default:
+            Log.debug("Unsupported experiment status [\(executionStatus)]")
+            return nil
+        }
+    }
 }
 
 final class ExperimentEntity: Experiment, Sendable {

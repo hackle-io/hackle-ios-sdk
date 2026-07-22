@@ -480,7 +480,7 @@ extension VariationDto {
 
 extension ExperimentDto {
     func toExperimentOrNil(type: ExperimentType, parameterConfigurations: [ParameterConfiguration.Id: ParameterConfiguration]) -> Experiment? {
-        guard let experimentStatus = ExperimentDto.experimentStatusOrNil(executionStatus: execution.status) else {
+        guard let experimentStatus = ExperimentStatus.from(executionStatus: execution.status) else {
             return nil
         }
 
@@ -526,22 +526,6 @@ extension ExperimentDto {
             containerId: containerId,
             winnerVariationId: winnerVariationId
         )
-    }
-
-    static func experimentStatusOrNil(executionStatus: String) -> ExperimentStatus? {
-        switch executionStatus {
-        case "READY":
-            return .draft
-        case "RUNNING":
-            return .running
-        case "PAUSED":
-            return .paused
-        case "STOPPED":
-            return .completed
-        default:
-            Log.debug("Unsupported experiment status [\(executionStatus)]")
-            return nil
-        }
     }
 }
 
