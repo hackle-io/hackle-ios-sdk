@@ -5,6 +5,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
     let id: Experiment.Id
     let key: Experiment.Key
     let version: Int
+    let status: ExperimentStatus
     let order: Int64
     let type: ExperimentType
     let executionVersion: Int
@@ -14,6 +15,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
         id: Experiment.Id,
         key: Experiment.Key,
         version: Int,
+        status: ExperimentStatus,
         order: Int64,
         type: ExperimentType,
         executionVersion: Int,
@@ -24,6 +26,7 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
         self.id = id
         self.key = key
         self.version = version
+        self.status = status
         self.order = order
         self.type = type
         self.executionVersion = executionVersion
@@ -31,11 +34,11 @@ final class ExperimentRemoteEvaluateResult: ExperimentEvaluateResult, Experiment
         super.init(reason: reason, variation: variation)
     }
 
-    func toEvaluation() -> Evaluation {
+    func toEvaluation() -> ExperimentEvaluation {
         ExperimentEvaluation(entity: self, result: self)
     }
 
     override var description: String {
-        "ExperimentRemoteEvaluateResult(id=\(id), key=\(key), type=\(type), version=\(version), variation=\(variation), reason=\(reason))"
+        "ExperimentRemoteEvaluateResult(id=\(id), key=\(key), type=\(type), version=\(version), status=\(status), variation=\(variation), reason=\(reason))"
     }
 }

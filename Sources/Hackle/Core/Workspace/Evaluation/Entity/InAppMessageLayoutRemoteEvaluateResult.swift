@@ -37,7 +37,7 @@ final class InAppMessageLayoutRemoteEvaluateResult: InAppMessageLayoutEvaluateRe
         super.init(reason: reason, message: message)
     }
 
-    func toEvaluation() -> Evaluation {
+    func toEvaluation() -> InAppMessageLayoutEvaluation {
         InAppMessageLayoutEvaluation(entity: self, result: self)
     }
 }

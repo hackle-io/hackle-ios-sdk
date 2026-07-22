@@ -7,7 +7,7 @@ final class ExperimentRemoteEvaluateRequest: RemoteEvaluateRequest, ExperimentEv
     let user: HackleUser
     let record: Bool
 
-    var remoteResult: RemoteEvaluateResult { result }
+    var remoteResult: any RemoteEvaluateResult { result }
     var experiment: Experiment { result }
 
     private init(workspace: WorkspaceEvaluation, entity: ExperimentRemoteEvaluateResult, user: HackleUser, record: Bool) {

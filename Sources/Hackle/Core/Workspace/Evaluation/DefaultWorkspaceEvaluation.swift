@@ -74,8 +74,8 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
         _inAppMessages[inAppMessageKey]
     }
 
-    func result(entity: Entity) -> RemoteEvaluateResult? {
-        let results: [RemoteEvaluateResult]
+    func result(entity: Entity) -> (any RemoteEvaluateResult)? {
+        let results: [any RemoteEvaluateResult]
         switch entity.serviceType {
         case .abTest:
             results = experimentResults
@@ -124,11 +124,11 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
             }
             switch serviceType {
             case .abTest:
-                if let it = result.experiment?.toResult(type: .abTest) {
+                if let it = result.experiment?.toResultOrNil(type: .abTest) {
                     experiments.append(it)
                 }
             case .featureFlag:
-                if let it = result.featureFlag?.toResult(type: .featureFlag) {
+                if let it = result.featureFlag?.toResultOrNil(type: .featureFlag) {
                     featureFlags.append(it)
                 }
             case .remoteConfig:

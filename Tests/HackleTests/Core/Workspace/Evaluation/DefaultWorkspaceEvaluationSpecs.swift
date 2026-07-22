@@ -43,6 +43,43 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
                 expect(total) == 4
             }
 
+            it("experiment execution.status가 매핑 불가 값이면 해당 결과를 skip한다") {
+                let json = """
+                {
+                  "workspace": {"id": 1, "environment": {"id": 2}},
+                  "results": [
+                    {
+                      "type": "AB_TEST",
+                      "id": 1,
+                      "hash": 1,
+                      "experiment": {
+                        "id": 1,
+                        "key": 1,
+                        "order": 1,
+                        "version": 1,
+                        "execution": {"status": "UNKNOWN", "version": 1},
+                        "variation": {"id": 1, "key": "A", "status": "ACTIVE", "parameterConfigurationId": null},
+                        "config": null,
+                        "reason": "TRAFFIC_ALLOCATED",
+                        "references": []
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "hash": 1,
+                    "evaluatedAt": 1720000000000,
+                    "user": {"hash": 1},
+                    "config": {"modifiedAt": "Thu, 10 Jul 2026 00:00:00 GMT"}
+                  }
+                }
+                """
+                let data = json.data(using: .utf8)!
+                let dto = try! JSONDecoder().decode(WorkspaceEvaluationDto.self, from: data)
+                let sut = DefaultWorkspaceEvaluation.from(dto: dto, fullEvaluatedAt: 0)
+
+                expect(sut.experimentResults).to(beEmpty())
+            }
+
             it("metadata를 매핑한다") {
                 let dto = decodeResponse().full!
                 let sut = DefaultWorkspaceEvaluation.from(dto: dto, fullEvaluatedAt: 0)
@@ -65,7 +102,7 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
                         "key": \(id),
                         "order": \(order),
                         "version": 1,
-                        "executionVersion": 1,
+                        "execution": {"status": "RUNNING", "version": 1},
                         "variation": {"id": 1, "key": "A", "status": "ACTIVE", "parameterConfigurationId": null},
                         "config": null,
                         "reason": "TRAFFIC_ALLOCATED",

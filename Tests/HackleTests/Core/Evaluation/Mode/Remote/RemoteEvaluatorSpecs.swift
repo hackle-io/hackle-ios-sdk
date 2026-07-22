@@ -63,7 +63,7 @@ class RemoteEvaluatorSpecs: QuickSpec {
         let record: Bool = false
 
         var entity: Entity { result }
-        var remoteResult: RemoteEvaluateResult { result }
+        var remoteResult: any RemoteEvaluateResult { result }
 
         init(evaluationWorkspace: WorkspaceEvaluation, result: ExperimentRemoteEvaluateResult) {
             self.evaluationWorkspace = evaluationWorkspace

@@ -9,6 +9,7 @@ protocol Experiment: Entity, Sendable {
     var id: Id { get }
     var key: Key { get }
     var version: Int { get }
+    var status: ExperimentStatus { get }
     var order: Int64 { get }
     var type: ExperimentType { get }
     var executionVersion: Int { get }
@@ -36,6 +37,22 @@ enum ExperimentStatus: String {
     case running
     case paused
     case completed
+
+    static func from(executionStatus: String) -> ExperimentStatus? {
+        switch executionStatus {
+        case "READY":
+            return .draft
+        case "RUNNING":
+            return .running
+        case "PAUSED":
+            return .paused
+        case "STOPPED":
+            return .completed
+        default:
+            Log.debug("Unsupported experiment status [\(executionStatus)]")
+            return nil
+        }
+    }
 }
 
 final class ExperimentEntity: Experiment, Sendable {

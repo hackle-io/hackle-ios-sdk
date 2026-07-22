@@ -17,7 +17,10 @@
           "key": 10,
           "order": 100,
           "version": 1,
-          "executionVersion": 1,
+          "execution": {
+            "status": "RUNNING",
+            "version": 1
+          },
           "variation": {
             "id": 2001,
             "key": "B",
@@ -59,7 +62,10 @@
           "key": 20,
           "order": 200,
           "version": 1,
-          "executionVersion": 1,
+          "execution": {
+            "status": "RUNNING",
+            "version": 1
+          },
           "variation": {
             "id": 2002,
             "key": "A",
