@@ -42,7 +42,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             expect(response.experimentEvaluation.experimentResult.reason).to(equal(DecisionReason.TRAFFIC_ALLOCATED))
         }
 
-        it("실험 평가 시 AB_TEST reference의 TRAFFIC_ALLOCATED를 BY_TARGETING으로 컨텍스트에 올린다") {
+        it("실험 평가 시 AB_TEST reference의 TRAFFIC_ALLOCATED를 사유 변경 없이 컨텍스트에 올린다") {
             let reference = experimentRemoteResult(id: 2, key: 20, type: .abTest, reason: DecisionReason.TRAFFIC_ALLOCATED)
             let main = experimentRemoteResult(id: 1, key: 10, type: .abTest, reason: DecisionReason.TRAFFIC_ALLOCATED, references: [reference])
             let workspace = MockWorkspaceEvaluation()
@@ -59,7 +59,7 @@ class ExperimentRemoteEvaluatorSpecs: QuickSpec {
             let _: ExperimentEvaluateResponse = try sut.evaluate(request: request, context: context)
 
             let added = context.references.compactMap { $0 as? ExperimentEvaluation }.first!
-            expect(added.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
+            expect(added.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED
         }
 
         it("record delegates to eventRecorder") {

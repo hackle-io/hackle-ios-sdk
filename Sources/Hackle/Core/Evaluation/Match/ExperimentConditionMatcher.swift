@@ -63,8 +63,7 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
     private static let AB_TEST_MATCHED_REASONS = [
         DecisionReason.OVERRIDDEN,
         DecisionReason.TRAFFIC_ALLOCATED,
-        DecisionReason.EXPERIMENT_COMPLETED,
-        DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
+        DecisionReason.EXPERIMENT_COMPLETED
     ]
 
     internal let evaluator: Evaluator
@@ -80,7 +79,7 @@ class AbTestConditionMatcher: ExperimentEvaluatorMatcher {
     }
 
     func resolveEvaluation(sourceRequest: LocalEvaluateRequest, experimentResponse: ExperimentEvaluateResponse) throws -> ExperimentEvaluation {
-        ExperimentReference.resolve(sourceRequest: sourceRequest, evaluation: experimentResponse.experimentEvaluation)
+        experimentResponse.experimentEvaluation
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {

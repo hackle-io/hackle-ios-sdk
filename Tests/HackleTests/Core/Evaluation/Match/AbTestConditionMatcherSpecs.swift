@@ -108,7 +108,6 @@ class AbTestConditionMatcherSpecs: QuickSpec {
 
             try check(reason: DecisionReason.OVERRIDDEN)
             try check(reason: DecisionReason.TRAFFIC_ALLOCATED)
-            try check(reason: DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING)
             try check(reason: DecisionReason.EXPERIMENT_COMPLETED)
         }
 
@@ -132,7 +131,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
             expect(context.references.count) == 1
         }
 
-        it("ExperimentRequest + TRAFFIC_ALLOCATED 인경우 분배 사유를 변경한다") {
+        it("ExperimentRequest + TRAFFIC_ALLOCATED 여도 사유를 변경하지 않고 유지한다") {
             let request = request(experiment: experiment(type: .abTest))
             let condition = Target.Condition(
                 key: Target.Key(type: .abTest, name: "42"),
@@ -147,7 +146,7 @@ class AbTestConditionMatcherSpecs: QuickSpec {
 
             expect(actual) == true
             expect(context.get(request.experiment)).toNot(beNil())
-            expect((context.get(request.experiment) as? ExperimentEvaluation)?.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED_BY_TARGETING
+            expect((context.get(request.experiment) as? ExperimentEvaluation)?.experimentResult.reason) == DecisionReason.TRAFFIC_ALLOCATED
         }
 
         it("ExperimentRequest + TRAFFIC_ALLOCATED 분배 사유가 아니면 evaluation 그대로 사용") {

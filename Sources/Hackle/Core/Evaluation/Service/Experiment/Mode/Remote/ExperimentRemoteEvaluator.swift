@@ -14,12 +14,4 @@ final class ExperimentRemoteEvaluator: RemoteEvaluator, ExperimentEvaluator {
     func remoteEvaluate(request: ExperimentRemoteEvaluateRequest, context: EvaluatorContext) throws -> ExperimentEvaluateResponse {
         ExperimentEvaluateResponse.of(request: request, context: context, result: request.result)
     }
-
-    func resolveReference(request: ExperimentRemoteEvaluateRequest, result: RemoteEvaluateResult) -> Evaluation {
-        let evaluation = result.toEvaluation()
-        guard let experimentEvaluation = evaluation as? ExperimentEvaluation else {
-            return evaluation
-        }
-        return ExperimentReference.resolve(sourceRequest: request, evaluation: experimentEvaluation)
-    }
 }
