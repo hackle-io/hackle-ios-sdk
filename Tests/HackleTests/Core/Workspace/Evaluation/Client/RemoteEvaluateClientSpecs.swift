@@ -151,6 +151,26 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             await expect { try await sut.evaluateIfModified(request: requestDto()) }.to(throwError())
         }
 
+        it("네트워크 오류(response.error)면 workspace-evaluate가 해당 에러를 그대로 throw한다") {
+            let httpClient = MockHttpClient()
+            let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(HttpResponse(request: request, data: nil, urlResponse: nil, error: URLError(.timedOut)))
+            }
+
+            await expect { try await sut.evaluateIfModified(request: requestDto()) }.to(throwError(URLError(.timedOut)))
+        }
+
+        it("네트워크 오류(response.error)면 entity-evaluate가 해당 에러를 그대로 throw한다") {
+            let httpClient = MockHttpClient()
+            let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(HttpResponse(request: request, data: nil, urlResponse: nil, error: URLError(.timedOut)))
+            }
+
+            await expect { try await sut.evaluateEntities(request: entityRequestDto()) }.to(throwError(URLError(.timedOut)))
+        }
+
         it("body가 없으면 throw한다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
