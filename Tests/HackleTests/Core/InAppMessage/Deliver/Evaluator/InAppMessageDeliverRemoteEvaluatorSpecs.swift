@@ -51,6 +51,7 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
         var evaluateProcessor: EvaluateProcessor!
         var workspaceManager: WorkspaceEvaluationManager!
         var cache: LruWorkspaceEvaluationCache!
+        var hiddenStorage: InAppMessageHiddenStorage!
         var sut: InAppMessageDeliverRemoteEvaluator!
 
         beforeEach {
@@ -64,13 +65,16 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
                 repository: FileWorkspaceEvaluationRepository(fileStorage: nil),
                 cache: cache
             )
+            let hiddenRepository = UserDefaultsKeyValueRepository.of(suiteName: "iam_remote_deliver_hidden")
+            hiddenRepository.clear()
+            hiddenStorage = DefaultInAppMessageHiddenStorage(keyValueRepository: hiddenRepository)
             evaluateProcessor = EvaluateProcessor.create(
                 context: HackleCoreContext(),
                 clock: SystemClock.shared,
                 eventProcessor: MockUserEventProcessor(),
                 overrideStorage: DelegatingManualOverrideStorage(storages: []),
                 impressionStorage: DefaultInAppMessageImpressionStorage.create(suiteName: "iam_remote_deliver_impression"),
-                hiddenStorage: DefaultInAppMessageHiddenStorage.create(suiteName: "iam_remote_deliver_hidden")
+                hiddenStorage: hiddenStorage
             )
             sut = InAppMessageDeliverRemoteEvaluator(workspaceManager: workspaceManager, evaluateProcessor: evaluateProcessor)
         }
@@ -114,6 +118,19 @@ class InAppMessageDeliverRemoteEvaluatorSpecs: AsyncSpec {
                 await expect {
                     try await sut.evaluate(request: deliverRequest(inAppMessageKey: 40), user: user())
                 }.to(throwError())
+            }
+
+            it("선평가(record:false)가 ineligible이면 SPECIFIC 재평가 없이 기존 workspace로 ineligible 처리한다") {
+                cacheWorkspace(dto: evaluationDto())
+                let inAppMessage = DefaultWorkspaceEvaluation.from(dto: evaluationDto(), fullEvaluatedAt: 0)
+                    .getInAppMessageResultOrNil(inAppMessageKey: 40)!
+                hiddenStorage.put(inAppMessage: inAppMessage, expireAt: Date(timeIntervalSinceNow: 60))
+
+                let response = try await sut.evaluate(request: deliverRequest(inAppMessageKey: 40), user: user())
+
+                expect(partialEvaluator.requests.count) == 0
+                expect(response.isEligible) == false
+                expect(response.code) == InAppMessageDeliverResponse.Code.ineligible
             }
         }
 

@@ -60,8 +60,11 @@ class DefaultHttpClient: HttpClient {
         req.setValue(sdk.version, forHTTPHeaderField: "X-HACKLE-SDK-VERSION")
         req.setValue(String(Date().epochMillis), forHTTPHeaderField: "X-HACKLE-SDK-TIME")
 
+        Log.debug("--> \(request.method) \(request.url)")
         let task = session.dataTask(with: req) { data, response, error in
-            completion(HttpResponse(request: request, data: data, urlResponse: response, error: error))
+            let httpResponse = HttpResponse(request: request, data: data, urlResponse: response, error: error)
+            Log.debug("<-- \(request.method) \(request.url) status: \(httpResponse.statusCode ?? -1)\(error.map { ", error: \($0)" } ?? "")")
+            completion(httpResponse)
         }
 
         task.resume()
