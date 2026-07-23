@@ -1,5 +1,5 @@
 //
-//  UIImageExtension.swift
+//  UIImage+Extension.swift
 //  Hackle
 //
 

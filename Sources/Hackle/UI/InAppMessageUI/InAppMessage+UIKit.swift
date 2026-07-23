@@ -1,5 +1,5 @@
 //
-//  InAppMessageExt.swift
+//  InAppMessage+UIKit.swift
 //  Hackle
 //
 //  Created by yong on 2023/06/16.
