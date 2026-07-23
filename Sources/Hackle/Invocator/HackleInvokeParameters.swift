@@ -15,20 +15,6 @@ extension HackleInvokeParameters {
         self["user"] as? [String: Any]
     }
 
-    /// id를 사용하는 User 객체를 반환합니다.
-    /// - Returns: User 객체 또는 `nil`
-    func user() -> User? {
-        if let id = self["user"] as? String {
-            return Hackle.user(id: id)
-        }
-
-        guard let data = userAsDictionary() else {
-            return nil
-        }
-
-        return User.from(dto: data)
-    }
-
     /// 사용자 ID를 반환합니다.
     /// - Returns: 사용자 ID 또는 `nil`
     func userId() -> String?? {
