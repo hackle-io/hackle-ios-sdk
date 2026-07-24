@@ -177,8 +177,12 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         sessionManager.initialize()
         eventProcessor.initialize()
         applicationInstallStateManager.initialize()
-        Task { [weak self] in
+        // 초기화 중 들어온 coreQueue 작업(이벤트 처리 등)이 sync 완료 후 처리되도록 큐를 잡아둔다.
+        // suspend는 새 작업의 시작만 막으므로 스레드를 블로킹하지 않는다.
+        coreQueue.suspend()
+        Task { [weak self, coreQueue = self.coreQueue] in
             guard let self = self else {
+                coreQueue.resume()
                 completion()
                 return
             }
@@ -186,6 +190,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             self.pushTokenRegistry.flush()
             self.notificationManager.flush()
             self.applicationInstallStateManager.checkApplicationInstall()
+            coreQueue.resume()
             completion()
         }
     }

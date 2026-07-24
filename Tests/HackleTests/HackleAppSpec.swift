@@ -547,6 +547,25 @@ class HackleAppSpecs: QuickSpec {
             expect(order) == ["sync", "flush"]
         }
 
+        it("initialize — sync 동안 coreQueue에 들어온 작업은 sync 완료 후 실행된다") {
+            // 초기화 중 track된 이벤트는 coreQueue에 enqueue되므로, 이 작업이 sync 완료 전에
+            // 실행되면 빈/stale workspace로 IAM 트리거가 판정된다. android 79df24a와 동일 계약.
+            let executed = AtomicReference<Bool>(value: false)
+            var executedDuringSync = true
+            every(synchronizer.syncMock).answers { _ in
+                coreQueue.async { executed.set(newValue: true) }
+                Thread.sleep(forTimeInterval: 0.2)
+                executedDuringSync = executed.get()
+            }
+
+            waitUntil(timeout: .seconds(10)) { done in
+                sut.initialize(user: nil) { done() }
+            }
+
+            expect(executedDuringSync) == false
+            expect(executed.get()).toEventually(beTrue(), timeout: .seconds(5))
+        }
+
         it("create") {
             let config = HackleConfig.builder()
                 .sdkUrl(URL(string: "http://localhost")!)
