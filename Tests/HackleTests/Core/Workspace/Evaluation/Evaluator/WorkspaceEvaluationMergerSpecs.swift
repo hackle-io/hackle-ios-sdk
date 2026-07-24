@@ -100,6 +100,19 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
             it("빈 리스트는 1이다") {
                 expect(WorkspaceEvaluationMerger.hash(results: [])) == 1
             }
+
+            it("external-sdk EvaluateResultHasher와 동일한 해시를 만든다 (golden 1000케이스)") {
+                let path = Bundle(for: WorkspaceEvaluationMergerSpecs.self).path(forResource: "evaluate_results_hash", ofType: "csv")!
+                let content = try! String(contentsOfFile: path, encoding: .utf8)
+                for line in content.split(separator: "\n") {
+                    let values = line.split(separator: ",").map { Int32($0)! }
+                    let expected = values[0]
+                    let results = values.dropFirst().enumerated().map { index, hash in
+                        result(id: Int64(index), hash: hash)
+                    }
+                    expect(WorkspaceEvaluationMerger.hash(results: results)) == expected
+                }
+            }
         }
     }
 }
