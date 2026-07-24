@@ -417,7 +417,7 @@ extension HackleApp {
                     fullEvaluator: FullWorkspaceRemoteEvaluator(client: evaluateClient),
                     partialEvaluator: PartialWorkspaceRemoteEvaluator(client: evaluateClient),
                     repository: FileWorkspaceEvaluationRepository(fileStorage: fileStorage),
-                    cache: LruWorkspaceEvaluationCache(capacity: 10)
+                    cache: LruWorkspaceEvaluationCache(capacity: 4)
                 )
                 return .remote(evaluationManager)
             }
