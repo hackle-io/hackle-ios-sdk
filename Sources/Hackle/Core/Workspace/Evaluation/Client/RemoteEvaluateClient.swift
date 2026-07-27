@@ -4,6 +4,8 @@ class RemoteEvaluateClient {
 
     private static let WORKSPACE_EVALUATE_PATH = "/api/v1/workspace-evaluate"
     private static let ENTITY_EVALUATE_PATH = "/api/v1/entity-evaluate"
+    // 초기 sync 중 coreQueue가 suspend되므로(813404f) 기본 60초 폴백 금지. iOS 관례(UserCohortFetcher) 10초.
+    private static let TIMEOUT_INTERVAL: TimeInterval = 10
 
     private let workspaceEndpoint: URL
     private let entityEndpoint: URL
@@ -31,7 +33,7 @@ class RemoteEvaluateClient {
         }
         let httpRequest = HttpRequest.post(url: url, body: data)
         return await ApiCallMetrics.record(operation: operation) {
-            await self.httpClient.execute(request: httpRequest)
+            await self.httpClient.execute(request: httpRequest, timeout: RemoteEvaluateClient.TIMEOUT_INTERVAL)
         }
     }
 
