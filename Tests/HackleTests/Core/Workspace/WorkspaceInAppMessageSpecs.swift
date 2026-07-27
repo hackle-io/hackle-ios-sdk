@@ -265,6 +265,25 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(workspace.inAppMessages.count) == 0
         }
 
+        it("events 필드가 없는 config도 디코딩된다") {
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": []
+            }
+            """
+            let dto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
+            expect(dto).toNot(beNil())
+            expect(dto?.inAppMessages.count) == 0
+        }
+
         it("inAppMessages를 order 오름차순으로 정렬한다") {
             func inAppMessageJson(id: Int64, order: Int64) -> String {
                 """

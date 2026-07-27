@@ -10,7 +10,6 @@ class WorkspaceConfigDto: Codable {
     var experiments: [ExperimentDto]
     var featureFlags: [ExperimentDto]
     var buckets: [BucketDto]
-    var events: [EventTypeDto]
     var segments: [SegmentDto]
     var containers: [ContainerDto]
     var parameterConfigurations: [ParameterConfigurationDto]
@@ -75,11 +74,6 @@ class SlotDto: Codable {
     var startInclusive: Int
     var endExclusive: Int
     var variationId: Int64
-}
-
-class EventTypeDto: Codable {
-    var id: Int64
-    var key: String
 }
 
 class TargetDto: Codable {
