@@ -17,7 +17,7 @@ class TriggeredInAppMessageScheduler: InAppMessageScheduler {
     func deliver(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         let deliverRequest = InAppMessageDeliverRequest.of(request: request)
         let deliverResponse = await deliverProcessor.process(request: deliverRequest)
-        return InAppMessageScheduleResponse.of(request: request, code: .deliver, deliverReponse: deliverResponse)
+        return InAppMessageScheduleResponse.of(request: request, code: .deliver, deliverResponse: deliverResponse)
     }
 
     func delay(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {

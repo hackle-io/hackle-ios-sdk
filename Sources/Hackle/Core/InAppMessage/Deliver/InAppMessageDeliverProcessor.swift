@@ -7,20 +7,20 @@ protocol InAppMessageDeliverProcessor {
 class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
     private let userManager: UserManager
-    private let userDecoreator: UserDecorator
+    private let userDecorator: UserDecorator
     private let identifierChecker: InAppMessageIdentifierChecker
     private let evaluator: InAppMessageDeliverEvaluator
     private let presentProcessor: InAppMessagePresentProcessor
 
     init(
         userManager: UserManager,
-        userDecoreator: UserDecorator,
+        userDecorator: UserDecorator,
         identifierChecker: InAppMessageIdentifierChecker,
         evaluator: InAppMessageDeliverEvaluator,
         presentProcessor: InAppMessagePresentProcessor
     ) {
         self.userManager = userManager
-        self.userDecoreator = userDecoreator
+        self.userDecorator = userDecorator
         self.identifierChecker = identifierChecker
         self.evaluator = evaluator
         self.presentProcessor = presentProcessor
@@ -43,7 +43,7 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
         // check User
         let user = userManager.hackleUser()
-            .decorateWith(docorator: userDecoreator)
+            .decorateWith(decorator: userDecorator)
 
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: request.identifiers, new: user.identifiers)
         if isIdentifierChanged {

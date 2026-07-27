@@ -714,7 +714,7 @@ extension HackleApp {
         }
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
             userManager: userManager,
-            userDecoreator: sessionUserDecorator,
+            userDecorator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
             evaluator: inAppMessageDeliverEvaluator,
             presentProcessor: inAppMessagePresentProcessor
@@ -736,7 +736,7 @@ extension HackleApp {
             actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
             schedulerFactory: inAppMessageSchedulerFactory
         )
-        inAppMessageDelayScheduler.setListener(listsner: inAppMessageScheduleProcessor)
+        inAppMessageDelayScheduler.setListener(listener: inAppMessageScheduleProcessor)
 
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
             targetMatcher: coreContext.get(TargetMatcher.self)!

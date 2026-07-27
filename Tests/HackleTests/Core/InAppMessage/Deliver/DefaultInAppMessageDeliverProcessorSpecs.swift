@@ -22,7 +22,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
             sessionManager = MockSessionManager()
             sut = DefaultInAppMessageDeliverProcessor(
                 userManager: userManager,
-                userDecoreator: SessionUserDecorator(sessionManager: sessionManager),
+                userDecorator: SessionUserDecorator(sessionManager: sessionManager),
                 identifierChecker: identifierChecker,
                 evaluator: evaluator,
                 presentProcessor: presentProcessor

@@ -9,15 +9,15 @@ class DefaultInAppMessageDelayScheduler: InAppMessageDelayScheduler {
     private let clock: Clock
     private let scheduler: Scheduler
 
-    private var listsner: InAppMessageScheduleListener? = nil
+    private var listener: InAppMessageScheduleListener? = nil
 
     init(clock: Clock, scheduler: Scheduler) {
         self.clock = clock
         self.scheduler = scheduler
     }
 
-    func setListener(listsner: InAppMessageScheduleListener) {
-        self.listsner = listsner
+    func setListener(listener: InAppMessageScheduleListener) {
+        self.listener = listener
     }
 
     func schedule(delay: InAppMessageDelay) -> InAppMessageDelayTask {
@@ -33,7 +33,7 @@ class DefaultInAppMessageDelayScheduler: InAppMessageDelayScheduler {
     private func command(delay: InAppMessageDelay) {
         let now = clock.now()
         let request = delay.schedule.toRequest(type: .delayed, requestedAt: now)
-        listsner?.onSchedule(request: request)
+        listener?.onSchedule(request: request)
     }
 
     class ScheduledInAppMessageDelayTask: InAppMessageDelayTask {
@@ -48,7 +48,7 @@ class DefaultInAppMessageDelayScheduler: InAppMessageDelayScheduler {
 
         func cancel() {
             job.cancel()
-            Log.debug("InAppMessage Delay canclled: \(delay)")
+            Log.debug("InAppMessage Delay cancelled: \(delay)")
         }
     }
 }
