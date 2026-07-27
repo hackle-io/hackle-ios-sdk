@@ -10,7 +10,7 @@ import WebKit
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
-    private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
+    private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue", attributes: .concurrent)
 
     init(
         hackleAppCore: HackleAppCore,
