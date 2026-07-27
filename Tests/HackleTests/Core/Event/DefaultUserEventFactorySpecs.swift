@@ -112,6 +112,34 @@ class DefaultUserEventFactorySpecs: QuickSpec {
             expect(exposure1.properties["$experiment_version"] as? Int) == 1
             expect(exposure1.properties["$execution_version"] as? Int) == 1
         }
+
+        it("create - 이벤트를 생성할 수 없는 reference는 제외한다") {
+            let sut = EvaluationEventFactory(clock: ClockStub())
+
+            // Experiment/RemoteConfig 평가가 아니므로 이벤트가 생성되지 않는 reference
+            let eligibilityRequest = InAppMessageEntity.eligibilityRequest()
+            let iamReference = InAppMessageEligibilityEvaluation(
+                entity: eligibilityRequest.inAppMessage,
+                result: InAppMessageEligibilityEvaluateResult(reason: DecisionReason.IN_APP_MESSAGE_TARGET, isEligible: true)
+            )
+
+            let request = remoteConfigRequest()
+            let rcEvaluation = RemoteConfigEvaluation(
+                entity: request.parameter,
+                result: RemoteConfigEvaluateResult(reason: DecisionReason.TARGET_RULE_MATCH, value: RemoteConfigParameter.Value(id: 999, rawValue: .string("RC")))
+            )
+            let response = RemoteConfigEvaluateResponse(
+                user: request.user,
+                workspace: request.workspace,
+                evaluation: rcEvaluation,
+                references: [iamReference]
+            )
+
+            let events = sut.create(response: response)
+
+            expect(events.count) == 1
+            expect(events[0]).to(beAnInstanceOf(UserEvents.RemoteConfig.self))
+        }
     }
 
     class ClockStub: Clock {
