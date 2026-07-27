@@ -41,4 +41,11 @@ enum PushEventKey: String, CaseIterable {
             trackEvent.event.key == key.rawValue
         }
     }
+
+    static func isPushTokenEvent(event: UserEvent) -> Bool {
+        guard let trackEvent = event as? UserEvents.Track else {
+            return false
+        }
+        return trackEvent.event.key == PushEventKey.pushToken.rawValue
+    }
 }

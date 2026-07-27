@@ -159,6 +159,25 @@ class DefaultUserEventProcessorSpec: QuickSpec {
                 expect(context.isApplicationStateChange) == false
             }
 
+            it("$push_token 이벤트는 세션 초기화를 시도하지 않는다") {
+                // given
+                let sut = processor()
+                let event = UserEvents.track("$push_token", timestamp: 42)
+
+                // when
+                Nimble.waitUntil(timeout: .seconds(2)) { done in
+                    sut.process(event: event)
+                    coreQueue.sync {
+                        done()
+                    }
+                }
+
+                // then
+                verify(exactly: 0) {
+                    sessionManager.startNewSessionIfNeededMock
+                }
+            }
+
             it("opt-out 상태이면 save 미호출") {
                 // given
                 let optOutManager = OptOutManager(configOptOutTracking: true)
