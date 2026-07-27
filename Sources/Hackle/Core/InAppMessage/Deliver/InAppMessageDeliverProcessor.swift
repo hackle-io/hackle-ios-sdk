@@ -65,7 +65,8 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         }
 
         guard let evaluation = response.evaluation else {
-            return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
+            Log.error("InAppMessageDeliverEvaluateResponse.evaluation must not be nil when eligible")
+            return InAppMessageDeliverResponse.of(request: request, code: .exception)
         }
 
         let presentRequest = InAppMessagePresentRequest.of(

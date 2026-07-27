@@ -60,6 +60,20 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
             expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
         }
 
+        it("eligible인데 evaluation이 없으면 exception 코드를 반환한다") {
+            // given — 내부 불변식 위반 응답
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(
+                InAppMessageDeliverEvaluateResponse(isEligible: true, code: nil, evaluation: nil)
+            )
+
+            // when
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
+
+            // then
+            expect(actual.code) == InAppMessageDeliverResponse.Code.exception
+        }
+
         it("workspaceNotFound 코드 전파 (evaluator → response.code)") {
             // given
             every(identifierChecker.isIdentifierChangedMock).returns(false)
