@@ -284,6 +284,50 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(dto?.inAppMessages.count) == 0
         }
 
+        it("CUSTOM period의 밀리초를 절삭 없이 보존한다") {
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                {
+                  "id": 1,
+                  "key": 1,
+                  "order": 1,
+                  "timeUnit": "CUSTOM",
+                  "startEpochTimeMillis": 42500,
+                  "endEpochTimeMillis": 43500,
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+              ]
+            }
+            """
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+
+            guard case .range(let start, let end) = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!.period else {
+                fail("expected .range")
+                return
+            }
+            expect(start.timeIntervalSince1970) == 42.5
+            expect(end.timeIntervalSince1970) == 43.5
+        }
+
         it("inAppMessages를 order 오름차순으로 정렬한다") {
             func inAppMessageJson(id: Int64, order: Int64) -> String {
                 """
