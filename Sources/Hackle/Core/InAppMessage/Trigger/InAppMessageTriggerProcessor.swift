@@ -20,7 +20,7 @@ class DefaultInAppMessageTriggerProcessor: InAppMessageTriggerProcessor {
             }
             Log.debug("InAppMessage triggered: \(trigger)")
 
-            handler.handle(trigger: trigger)
+            try handler.handle(trigger: trigger)
         } catch {
             Log.error("Failed to process InAppMessage event trigger: \(error)")
         }

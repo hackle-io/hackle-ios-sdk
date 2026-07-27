@@ -24,7 +24,7 @@ class DefaultInAppMessageTriggerHandlerSpecs: QuickSpec {
             let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: event)
 
             // when
-            sut.handle(trigger: trigger)
+            try sut.handle(trigger: trigger)
 
             // then
             expect(scheduleProcessor.processAsyncMock.invokations().count) == 1
@@ -40,8 +40,8 @@ class DefaultInAppMessageTriggerHandlerSpecs: QuickSpec {
             let trigger2 = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: UserEvents.track("e2", timestamp: 2))
 
             // when
-            sut.handle(trigger: trigger1)
-            sut.handle(trigger: trigger2)
+            try sut.handle(trigger: trigger1)
+            try sut.handle(trigger: trigger2)
 
             // then
             let requestedAts = scheduleProcessor.processAsyncMock.invokations().map { $0.arguments.requestedAt }
