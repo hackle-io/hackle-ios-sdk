@@ -6,7 +6,6 @@ protocol InAppMessageEligibilityLocalEvaluationFlowFactory {
 
 class DefaultInAppMessageEligibilityLocalEvaluationFlowFactory: InAppMessageEligibilityLocalEvaluationFlowFactory {
 
-    private let overrideFlow: InAppMessageEligibilityLocalEvaluationFlow
     private let triggerFlow: InAppMessageEligibilityLocalEvaluationFlow
     private let deliverFlow: InAppMessageEligibilityLocalEvaluationFlow
     private let deliverReEvaluateFlow: InAppMessageEligibilityLocalEvaluationFlow
@@ -44,7 +43,6 @@ class DefaultInAppMessageEligibilityLocalEvaluationFlowFactory: InAppMessageElig
             EligibleInAppMessageEligibilityFlowEvaluator()
         )
 
-        self.overrideFlow = overrideFlow
         self.triggerFlow = evaluateFlow + layoutFlow + deduplicateFlow + eligibleFlow
         self.deliverFlow = overrideFlow + deduplicateFlow + eligibleFlow
         self.deliverReEvaluateFlow = evaluateFlow + deduplicateFlow + eligibleFlow
