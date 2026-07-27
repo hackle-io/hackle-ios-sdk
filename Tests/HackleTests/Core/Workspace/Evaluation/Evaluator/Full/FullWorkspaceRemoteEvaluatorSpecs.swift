@@ -36,6 +36,7 @@ class FullWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
 
         func deltaDict(hash: Int32, changed: [[String: Any]] = [], deleted: [[String: Any]] = []) -> [String: Any] {
             [
+                "workspace": ["id": 1, "environment": ["id": 2]],
                 "metadata": [
                     "hash": Int(hash),
                     "evaluatedAt": 1720000001000,

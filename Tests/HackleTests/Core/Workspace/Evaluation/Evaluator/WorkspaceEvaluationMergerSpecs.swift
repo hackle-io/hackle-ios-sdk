@@ -6,8 +6,8 @@ import Nimble
 class WorkspaceEvaluationMergerSpecs: QuickSpec {
     override class func spec() {
 
-        func workspaceDto() -> WorkspaceDto {
-            let json = #"{"id": 1, "environment": {"id": 2}}"#
+        func workspaceDto(id: Int64 = 1) -> WorkspaceDto {
+            let json = #"{"id": \#(id), "environment": {"id": 2}}"#
             return try! JSONDecoder().decode(WorkspaceDto.self, from: json.data(using: .utf8)!)
         }
 
@@ -28,8 +28,13 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
             WorkspaceEvaluationDto(workspace: workspaceDto(), metadata: metadata(), results: results)
         }
 
-        func delta(metadata m: WorkspaceEvaluationMetadataDto, changed: [EvaluateResultDto] = [], deleted: [EntityDto] = []) -> WorkspaceEvaluationDeltaDto {
-            WorkspaceEvaluationDeltaDto(metadata: m, changed: changed, deleted: deleted)
+        func delta(
+            workspace: WorkspaceDto = workspaceDto(),
+            metadata m: WorkspaceEvaluationMetadataDto,
+            changed: [EvaluateResultDto] = [],
+            deleted: [EntityDto] = []
+        ) -> WorkspaceEvaluationDeltaDto {
+            WorkspaceEvaluationDeltaDto(workspace: workspace, metadata: m, changed: changed, deleted: deleted)
         }
 
         describe("merge") {
@@ -39,7 +44,7 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
                     result(id: 2, hash: 20),
                     result(id: 3, hash: 30)
                 ])
-                let d = delta(metadata: metadata(hash: 999), changed: [
+                let d = delta(workspace: workspaceDto(id: 9), metadata: metadata(hash: 999), changed: [
                     result(id: 2, hash: 21),
                     result(id: 4, hash: 40)
                 ])
@@ -49,7 +54,7 @@ class WorkspaceEvaluationMergerSpecs: QuickSpec {
                 expect(merged.results.map { $0.id }) == [1, 2, 3, 4]
                 expect(merged.results.map { $0.hash }) == [10, 21, 30, 40]
                 expect(merged.metadata.hash) == 999 // metadata는 delta 것
-                expect(merged.workspace.id) == 1 // workspace는 기존 것
+                expect(merged.workspace.id) == 9 // workspace도 delta 것
             }
 
             it("type이 다르면 id가 같아도 다른 항목이다") {

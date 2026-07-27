@@ -37,7 +37,7 @@ enum WorkspaceEvaluationMerger {
         }
 
         return WorkspaceEvaluationDto(
-            workspace: evaluation.workspace,
+            workspace: delta.workspace,
             metadata: delta.metadata,
             results: order.compactMap { key in
                 merged[key]

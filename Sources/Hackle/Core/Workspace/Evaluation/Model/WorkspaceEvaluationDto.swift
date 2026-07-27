@@ -23,6 +23,7 @@ struct WorkspaceEvaluationDto: Codable {
 }
 
 struct WorkspaceEvaluationDeltaDto: Codable {
+    let workspace: WorkspaceDto
     let metadata: WorkspaceEvaluationMetadataDto
     let changed: [EvaluateResultDto]
     let deleted: [EntityDto]

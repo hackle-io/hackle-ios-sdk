@@ -100,7 +100,7 @@ extension InAppMessageEligibilityEvaluateResultDto {
             evaluateContext: evaluateContext,
             messageContext: messageContext,
             message: message,
-            reason: reason,
+            reason: layout.reason,
             references: layout.references.compactMap { it in
                 it.toEntityOrNil()
             }
