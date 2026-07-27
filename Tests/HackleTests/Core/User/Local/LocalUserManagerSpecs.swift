@@ -876,7 +876,7 @@ class LocalUserManagerSpecs: AsyncSpec {
         }
 
         describe("resetUser") {
-            it("same") {
+            it("initialize 직후 - 기본 유저(deviceId만)로 리셋되며 $id가 빠진다 (userId·deviceId 불변이라 onUserUpdated는 미발행)") {
                 sut.initialize(user: nil)
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
@@ -885,15 +885,15 @@ class LocalUserManagerSpecs: AsyncSpec {
 
                 await sut.resetUser().value
                 expect(sut.currentUser.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                 ]
+                // identifierEquals는 userId/deviceId만 비교하고 id는 보지 않는다(android 동일) — $id만 빠져서는 발행되지 않는다.
                 verify(exactly: 0) {
                     listener.onUserUpdatedMock
                 }
             }
 
-            it("rest") {
+            it("유저 설정 후 - 기본 유저(deviceId만)로 리셋한다") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
@@ -902,7 +902,6 @@ class LocalUserManagerSpecs: AsyncSpec {
 
                 await sut.resetUser().value
                 expect(sut.currentUser.resolvedIdentifiers) == [
-                    "$id": "hackle_device_id",
                     "$deviceId": "hackle_device_id",
                 ]
                 verify(exactly: 1) {

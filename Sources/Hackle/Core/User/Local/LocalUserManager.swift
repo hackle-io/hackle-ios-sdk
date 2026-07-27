@@ -33,7 +33,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         self.clock = clock
         self.device = device
         self.bundleInfo = bundleInfo
-        self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
+        self.defaultUser = HackleUserBuilder().deviceId(device.id).build()
         self.context = LocalUserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
     }
 
