@@ -602,7 +602,6 @@ extension HackleApp {
         applicationLifecycleManager.addListener(listener: pollingSynchronizer)
         applicationLifecycleManager.addListener(listener: sessionManager)
         applicationLifecycleManager.addListener(listener: userManager)
-        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         // - ApplicationInstallStateManager
 
@@ -843,6 +842,10 @@ extension HackleApp {
         viewLifecycleManager.setDispatchQueue(queue: coreQueue)
 
         applicationLifecycleManager.addListener(listener: engagementManager)
+
+        // 백그라운드 전환 시 flush가 이벤트 생산자(applicationEventTracker·engagementManager)보다 뒤에
+        // 실행되도록 마지막에 등록한다. android는 Ordered.LOWEST - 1로 같은 순서를 보장한다.
+        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
