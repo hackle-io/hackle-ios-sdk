@@ -312,6 +312,42 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             let valid = workspace(delayType: "IMMEDIATE")
             expect(valid.inAppMessages.count) == 1
             expect(valid.getInAppMessageConfigOrNil(inAppMessageKey: 1)?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
+
+            // eventTriggerDelay 키 자체가 없으면 (파싱 실패가 아니라 미설정) 여전히 IMMEDIATE로 폴백한다
+            let jsonWithoutDelay = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                {
+                  "id": 1,
+                  "key": 1,
+                  "order": 1,
+                  "timeUnit": "IMMEDIATE",
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+              ]
+            }
+            """
+            let dtoWithoutDelay = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: jsonWithoutDelay.data(using: .utf8)!)
+            let workspaceWithoutDelay = DefaultWorkspaceConfig.from(dto: dtoWithoutDelay, modifiedAt: nil)
+            expect(workspaceWithoutDelay.inAppMessages.count) == 1
+            expect(workspaceWithoutDelay.getInAppMessageConfigOrNil(inAppMessageKey: 1)?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
         }
 
         it("events 필드가 없는 config도 디코딩된다") {
