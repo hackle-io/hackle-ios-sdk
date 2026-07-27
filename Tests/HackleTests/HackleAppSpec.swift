@@ -87,7 +87,7 @@ class HackleAppSpecs: QuickSpec {
             sut.showUserExplorer()
         }
 
-        it("showUserExplorer는 REMOTE 모드에서 무시된다") {
+        it("showUserExplorer는 REMOTE 모드에서 UI를 붙이지 않지만 메트릭은 기록한다") {
             let registry = CumulativeMetricRegistry()
             Metrics.addRegistry(registry: registry)
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
@@ -112,7 +112,7 @@ class HackleAppSpecs: QuickSpec {
 
             built.sut.showUserExplorer()
 
-            expect(registry.counter(name: "user.explorer.show").count()) == 0
+            expect(registry.counter(name: "user.explorer.show").count()) == 1
         }
 
         it("hideUserExplorer") {

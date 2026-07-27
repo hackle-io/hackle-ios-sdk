@@ -200,6 +200,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func showUserExplorer() {
+        Metrics.counter(name: "user.explorer.show").increment()
         if evaluationMode == .remote {
             Log.info("UserExplorer is not supported in EvaluationMode.REMOTE")
             return
@@ -214,7 +215,6 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             }
             self.userExplorerView?.attach()
         }
-        Metrics.counter(name: "user.explorer.show").increment()
     }
 
     func hideUserExplorer() {
