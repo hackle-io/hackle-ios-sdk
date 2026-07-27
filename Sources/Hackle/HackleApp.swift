@@ -555,11 +555,12 @@ extension HackleApp {
         let ffOverrideStorage = DefaultExperimentManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
         let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
         let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
-        HackleCoreContext.shared.register(inAppMessageHiddenStorage)
-        HackleCoreContext.shared.register(inAppMessageImpressionStorage)
+        let coreContext = HackleCoreContext.create()
+        coreContext.register(inAppMessageHiddenStorage)
+        coreContext.register(inAppMessageImpressionStorage)
 
         let evaluateProcessor = EvaluateProcessor.create(
-            context: HackleCoreContext.shared,
+            context: coreContext,
             clock: clock,
             eventProcessor: eventProcessor,
             overrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage]),
@@ -739,7 +740,7 @@ extension HackleApp {
         inAppMessageDelayScheduler.setListener(listsner: inAppMessageScheduleProcessor)
 
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
-            targetMatcher: HackleCoreContext.shared.get(TargetMatcher.self)!
+            targetMatcher: coreContext.get(TargetMatcher.self)!
         )
         let inAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer = switch workspaceMode {
         case .local(let workspaceConfigManager):

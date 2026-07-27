@@ -12,11 +12,6 @@ import Nimble
 class HackleCoreSpecs: QuickSpec {
     override class func spec() {
 
-        beforeSuite {
-            HackleCoreContext.shared.register(DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository()))
-            HackleCoreContext.shared.register(DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository()))
-        }
-
         /*
          *       RC(1)
          *      /     \
