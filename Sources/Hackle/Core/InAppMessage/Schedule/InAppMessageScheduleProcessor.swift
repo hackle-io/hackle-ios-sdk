@@ -3,12 +3,14 @@ import Foundation
 protocol InAppMessageScheduleProcessor {
     @discardableResult
     func process(request: InAppMessageScheduleRequest) async -> InAppMessageScheduleResponse
+    func processAsync(request: InAppMessageScheduleRequest)
 }
 
 class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InAppMessageScheduleListener, @unchecked Sendable {
 
     private let actionDeterminer: InAppMessageScheduleActionDeterminer
     private let schedulerFactory: InAppMessageSchedulerFactory
+    private let processQueue = SerialTaskQueue()
 
     init(actionDeterminer: InAppMessageScheduleActionDeterminer, schedulerFactory: InAppMessageSchedulerFactory) {
         self.actionDeterminer = actionDeterminer
@@ -35,10 +37,17 @@ class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InApp
         return try await scheduler.schedule(action: action, request: request)
     }
 
-    // InAppMessageScheduleListener의 delay 타이머 콜백
-    func onSchedule(request: InAppMessageScheduleRequest) {
-        Task {
+    // trigger·delay 콜백의 fire-and-forget 진입점.
+    // 제출 순서(FIFO)를 보존해 "먼저 발생한 이벤트의 IAM이 우선"하는 직렬 실행 순서를 유지한다.
+    func processAsync(request: InAppMessageScheduleRequest) {
+        processQueue.enqueue { [weak self] in
+            guard let self else { return }
             await self.process(request: request)
         }
+    }
+
+    // InAppMessageScheduleListener의 delay 타이머 콜백
+    func onSchedule(request: InAppMessageScheduleRequest) {
+        processAsync(request: request)
     }
 }

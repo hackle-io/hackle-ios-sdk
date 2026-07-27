@@ -14,8 +14,6 @@ class DefaultInAppMessageTriggerHandler: InAppMessageTriggerHandler, @unchecked 
     func handle(trigger: InAppMessageTrigger) {
         let schedule = InAppMessageSchedule.create(trigger: trigger)
         let scheduleRequest = schedule.toRequest(type: .triggered, requestedAt: trigger.event.timestamp)
-        Task {
-            await self.scheduleProcessor.process(request: scheduleRequest)
-        }
+        scheduleProcessor.processAsync(request: scheduleRequest)
     }
 }

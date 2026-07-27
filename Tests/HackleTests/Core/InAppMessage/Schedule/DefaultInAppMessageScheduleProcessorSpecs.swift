@@ -65,5 +65,19 @@ class DefaultInAppMessageScheduleProcessorSpecs: AsyncSpec {
             // then — onSchedule은 Task {}로 발사되므로 toEventually로 완료 대기 (AsyncSpec이므로 async 버전 사용)
             await expect(scheduler.deliverMock.invokations().count).toEventually(equal(1), timeout: .seconds(1))
         }
+
+        it("processAsync는 FIFO 큐에서 process를 실행한다") {
+            // given
+            let request = InAppMessageEntity.scheduleRequest()
+            let response = InAppMessageScheduleResponse.of(request: request, code: .deliver)
+            every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
+            every(scheduler.deliverMock).returns(response)
+
+            // when
+            sut.processAsync(request: request)
+
+            // then
+            await expect(scheduler.deliverMock.invokations().count).toEventually(equal(1), timeout: .seconds(5))
+        }
     }
 }
