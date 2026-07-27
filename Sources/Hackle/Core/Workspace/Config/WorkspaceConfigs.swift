@@ -29,7 +29,15 @@ extension InAppMessageDto {
         let timetable = self.timetable?.toTimetableOrNil() ?? .all
         let eventTriggerRules = eventTriggerRules.map { $0.toTriggerRule() }
         let eventFrequencyCap = eventFrequencyCap?.toFrequencyCap()
-        let eventTriggerDelay = eventTriggerDelay?.toDelayOrNil() ?? InAppMessage.EventTrigger.Delay.default
+        let eventTriggerDelay: InAppMessage.EventTrigger.Delay
+        if let delayDto = self.eventTriggerDelay {
+            guard let parsed = delayDto.toDelayOrNil() else {
+                return nil
+            }
+            eventTriggerDelay = parsed
+        } else {
+            eventTriggerDelay = InAppMessage.EventTrigger.Delay.default
+        }
 
         return InAppMessageEntity(
             id: id,
