@@ -77,7 +77,8 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             let context = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 message: message,
-                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+                decisionReason: DecisionReason.IN_APP_MESSAGE_TARGET,
+                properties: ["custom_property": "custom_value"]
             )
 
             // when
@@ -90,6 +91,8 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.key) == "$in_app_close"
             expect(event.properties!["in_app_message_id"] as? Int64) == 42
             expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.properties!["custom_property"] as? String) == "custom_value"
+            expect(event.properties!["decision_reason"] as? String) == "IN_APP_MESSAGE_TARGET"
         }
 
         it("button action") {
