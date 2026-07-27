@@ -959,7 +959,12 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
             }
             it("background") {
+                sut.initialize(user: nil)
+                await sut.setUserId(userId: "user_id").value
+
+                // 유저 변경만으로는 저장하지 않는다 (저장은 onBackground에서만)
                 expect(repository.getData(key: "user")).to(beNil())
+
                 sut.onBackground(nil, timestamp: Date())
                 expect(repository.getData(key: "user")).notTo(beNil())
             }
