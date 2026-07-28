@@ -1,6 +1,6 @@
 import Foundation
 
-struct WorkspaceEvaluationContext: WorkspaceContext {
+struct WorkspaceEvaluationContext {
 
     let workspace: WorkspaceEvaluation
     let key: Key
