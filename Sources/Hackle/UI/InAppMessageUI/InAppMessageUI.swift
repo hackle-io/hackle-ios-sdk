@@ -45,10 +45,10 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
 
     @MainActor private func presentNow(context: InAppMessagePresentationContext) -> InAppMessagePresentResponse {
         guard applicationActive() else {
-            return InAppMessagePresentResponse.of(code: .activityNotFound, context: context)
+            return InAppMessagePresentResponse.of(code: .applicationNotActive, context: context)
         }
         guard checkRootViewController() else {
-            return InAppMessagePresentResponse.of(code: .activityNotFound, context: context)
+            return InAppMessagePresentResponse.of(code: .rootViewControllerNotFound, context: context)
         }
         guard noMessagePresented() else {
             return InAppMessagePresentResponse.of(code: .alreadyPresented, context: context)
@@ -89,7 +89,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
     // 백그라운드에서도 통과하므로 앱 상태를 직접 확인한다.
     @MainActor private func applicationActive() -> Bool {
         guard let application = UIUtils.application else {
-            // app extension 등 조회 불가 환경에서는 기존 동작을 유지한다
+            // app extension 등 application 조회 불가 환경 — 여기서는 통과하지만 checkRootViewController가 keyWindow 부재로 차단한다
             return true
         }
         return application.applicationState == .active

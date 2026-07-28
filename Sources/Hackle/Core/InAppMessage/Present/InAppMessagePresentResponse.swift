@@ -12,7 +12,8 @@ final class InAppMessagePresentResponse: Sendable {
 
     enum Code {
         case present
-        case activityNotFound
+        case applicationNotActive
+        case rootViewControllerNotFound
         case alreadyPresented
         case unsupportedOrientation
         case inProgress
