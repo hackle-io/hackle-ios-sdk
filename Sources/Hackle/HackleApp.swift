@@ -556,8 +556,6 @@ extension HackleApp {
         let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
         let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
         let coreContext = HackleCoreContext.create()
-        coreContext.register(inAppMessageHiddenStorage)
-        coreContext.register(inAppMessageImpressionStorage)
 
         let evaluateProcessor = EvaluateProcessor.create(
             context: coreContext,
