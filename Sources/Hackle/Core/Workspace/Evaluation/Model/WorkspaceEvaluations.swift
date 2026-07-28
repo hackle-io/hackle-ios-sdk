@@ -144,8 +144,8 @@ extension InAppMessageDto.PeriodDto {
                 return nil
             }
             return .range(
-                startInclusive: Date(timeIntervalSince1970: TimeInterval(start) / 1000),
-                endExclusive: Date(timeIntervalSince1970: TimeInterval(end) / 1000)
+                startInclusive: Date(epochMillis: start),
+                endExclusive: Date(epochMillis: end)
             )
         default:
             return nil
