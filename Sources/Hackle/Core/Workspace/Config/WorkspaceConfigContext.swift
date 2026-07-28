@@ -1,7 +1,7 @@
 import Foundation
 
-struct WorkspaceConfigContext {
-    let workspace: WorkspaceConfig
+struct WorkspaceConfigContext: WorkspaceContext {
+    let workspace: WorkspaceConfig   // WorkspaceType = WorkspaceConfig
     let modifiedAt: String?
     let dto: WorkspaceConfigDto
 
