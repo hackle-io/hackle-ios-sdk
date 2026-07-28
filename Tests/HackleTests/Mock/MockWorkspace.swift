@@ -69,14 +69,6 @@ class MockWorkspace: Mock, WorkspaceConfig {
         call(getInAppMessageOrNilMock, args: inAppMessageKey)
     }
 
-    var experimentConfigs: [ExperimentConfig] {
-        experiments.compactMap { $0 as? ExperimentConfig }
-    }
-
-    var featureFlagConfigs: [ExperimentConfig] {
-        featureFlags.compactMap { $0 as? ExperimentConfig }
-    }
-
     func getExperimentConfigOrNil(experimentKey: Experiment.Key) -> ExperimentConfig? {
         getExperimentOrNil(experimentKey: experimentKey) as? ExperimentConfig
     }
