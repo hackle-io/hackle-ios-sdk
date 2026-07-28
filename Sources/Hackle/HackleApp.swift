@@ -10,9 +10,7 @@ import WebKit
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
-    // concurrent: completion을 서로 독립적으로 실행해 한 콜백이 다른 콜백을 막지 않는다.
-    // 이 큐에는 호출자의 completion만 올려야 한다 — SDK 상태를 건드리는 작업을 넣지 말 것.
-    private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue", attributes: .concurrent)
+    private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
 
     init(
         hackleAppCore: HackleAppCore,
