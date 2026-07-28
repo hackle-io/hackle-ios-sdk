@@ -12,6 +12,7 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
         var evaluator: MockInAppMessageDeliverEvaluator!
         var presentProcessor: MockInAppMessagePresentProcessor!
         var sessionManager: MockSessionManager!
+        var lifecycleManager: MockApplicationLifecycleManager!
         var sut: DefaultInAppMessageDeliverProcessor!
 
         beforeEach {
@@ -20,12 +21,14 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
             evaluator = MockInAppMessageDeliverEvaluator()
             presentProcessor = MockInAppMessagePresentProcessor()
             sessionManager = MockSessionManager()
+            lifecycleManager = MockApplicationLifecycleManager(currentState: .foreground)
             sut = DefaultInAppMessageDeliverProcessor(
                 userManager: userManager,
                 userDecorator: SessionUserDecorator(sessionManager: sessionManager),
                 identifierChecker: identifierChecker,
                 evaluator: evaluator,
-                presentProcessor: presentProcessor
+                presentProcessor: presentProcessor,
+                lifecycleManager: lifecycleManager
             )
         }
 
@@ -35,6 +38,20 @@ class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
                 layout: InAppMessageEntity.layoutEvaluateResponse(experiment: experiment)
             )
             return InAppMessageDeliverEvaluateResponse.of(evaluation: evaluation)
+        }
+
+        it("앱이 foreground가 아니면 applicationNotForeground를 반환하고 평가하지 않는다") {
+            // given
+            lifecycleManager.currentState = .background
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+
+            // when
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
+
+            // then — 평가를 타지 않으므로 노출 이벤트도 기록되지 않는다
+            expect(actual.code) == InAppMessageDeliverResponse.Code.applicationNotForeground
+            expect(evaluator.evaluateMock.invokations().count) == 0
+            expect(presentProcessor.processMock.invokations().count) == 0
         }
 
         it("identifierChanged") {

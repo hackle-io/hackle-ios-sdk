@@ -720,7 +720,8 @@ extension HackleApp {
             userDecorator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
             evaluator: inAppMessageDeliverEvaluator,
-            presentProcessor: inAppMessagePresentProcessor
+            presentProcessor: inAppMessagePresentProcessor,
+            lifecycleManager: applicationLifecycleManager
         )
 
         let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
