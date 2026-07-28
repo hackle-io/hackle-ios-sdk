@@ -13,10 +13,4 @@ class MockInAppMessageScheduleProcessor: Mock, InAppMessageScheduleProcessor {
     func process(request: InAppMessageScheduleRequest) async -> InAppMessageScheduleResponse {
         return call(processMock, args: request)
     }
-
-    lazy var processAsyncMock = MockFunction(self, processAsync)
-
-    func processAsync(request: InAppMessageScheduleRequest) {
-        call(processAsyncMock, args: request)
-    }
 }

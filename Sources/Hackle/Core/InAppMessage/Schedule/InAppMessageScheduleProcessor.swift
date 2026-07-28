@@ -3,14 +3,12 @@ import Foundation
 protocol InAppMessageScheduleProcessor {
     @discardableResult
     func process(request: InAppMessageScheduleRequest) async -> InAppMessageScheduleResponse
-    func processAsync(request: InAppMessageScheduleRequest)
 }
 
 class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InAppMessageScheduleListener, @unchecked Sendable {
 
     private let actionDeterminer: InAppMessageScheduleActionDeterminer
     private let schedulerFactory: InAppMessageSchedulerFactory
-    private let processQueue = SerialTaskQueue()
 
     init(actionDeterminer: InAppMessageScheduleActionDeterminer, schedulerFactory: InAppMessageSchedulerFactory) {
         self.actionDeterminer = actionDeterminer
@@ -37,17 +35,10 @@ class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InApp
         return try await scheduler.schedule(action: action, request: request)
     }
 
-    // trigger·delay 콜백의 fire-and-forget 진입점.
-    // 두 진입점을 하나의 FIFO 큐로 합류시켜 제출 순서대로 직렬 처리한다 — 먼저 발생한 이벤트의 IAM이 우선한다.
-    func processAsync(request: InAppMessageScheduleRequest) {
-        processQueue.enqueue { [weak self] in
-            guard let self else { return }
-            await self.process(request: request)
-        }
-    }
-
     // InAppMessageScheduleListener의 delay 타이머 콜백
     func onSchedule(request: InAppMessageScheduleRequest) {
-        processAsync(request: request)
+        Task {
+            await self.process(request: request)
+        }
     }
 }
