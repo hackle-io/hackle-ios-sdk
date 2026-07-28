@@ -10,7 +10,7 @@ import WebKit
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
-    // concurrent: completion을 서로 독립적으로 실행해 한 콜백이 다른 콜백을 막지 않는다(android 스레드 풀과 동일).
+    // concurrent: completion을 서로 독립적으로 실행해 한 콜백이 다른 콜백을 막지 않는다.
     // 이 큐에는 호출자의 completion만 올려야 한다 — SDK 상태를 건드리는 작업을 넣지 말 것.
     private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue", attributes: .concurrent)
 
@@ -848,10 +848,7 @@ extension HackleApp {
 
         applicationLifecycleManager.addListener(listener: engagementManager)
 
-        // 백그라운드 전환 시 flush가 이벤트 생산자(applicationEventTracker·engagementManager)보다 뒤에 실행되도록 등록한다.
-        // monitoringMetricRegistry는 metricConfiguration() 호출 시점에 이미 등록되어 이 리스너보다 먼저 실행된다 —
-        // android(Ordered.LOWEST, 항상 마지막)와는 반대 순서다. 다만 post.events/backoff 메트릭은 httpClient completion
-        // (네트워크 왕복 후)에서 기록돼 이번 사이클 flush엔 어차피 못 실리므로 무해하다 — 카운터는 유실 없이 누적된다.
+        // 백그라운드 전환 시 flush가 이벤트 생산자보다 뒤에 실행되도록 마지막에 등록한다.
         applicationLifecycleManager.addListener(listener: eventProcessor)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)

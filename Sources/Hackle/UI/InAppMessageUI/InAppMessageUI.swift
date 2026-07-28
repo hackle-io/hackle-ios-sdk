@@ -86,7 +86,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
     }
 
     // 백그라운드에서는 노출하지 않는다. checkRootViewController는 activeWindowScene의 fallback 때문에
-    // 백그라운드에서도 통과하므로 앱 상태를 직접 확인한다. android는 deliver 단계에서 ACTIVITY_INACTIVE로 끊는다.
+    // 백그라운드에서도 통과하므로 앱 상태를 직접 확인한다.
     @MainActor private func applicationActive() -> Bool {
         guard let application = UIUtils.application else {
             // app extension 등 조회 불가 환경에서는 기존 동작을 유지한다

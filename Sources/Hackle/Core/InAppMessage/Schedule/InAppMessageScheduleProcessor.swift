@@ -38,9 +38,7 @@ class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InApp
     }
 
     // trigger·delay 콜백의 fire-and-forget 진입점.
-    // android는 trigger는 coreExecutor, delay는 별도 단일 스레드 executor로 처리해 각 경로 내부만 FIFO이고
-    // 두 경로 사이는 서로 직렬화되지 않는다(HackleApps.kt). iOS는 두 진입점을 하나의 FIFO 큐로 합류시켜
-    // 정답지보다 더 강한 보장(전체 직렬화)을 의도적으로 제공한다 — android delta 이식 시 동등하다고 오인하지 말 것.
+    // 두 진입점을 하나의 FIFO 큐로 합류시켜 제출 순서대로 직렬 처리한다 — 먼저 발생한 이벤트의 IAM이 우선한다.
     func processAsync(request: InAppMessageScheduleRequest) {
         processQueue.enqueue { [weak self] in
             guard let self else { return }
