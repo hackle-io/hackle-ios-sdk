@@ -240,12 +240,15 @@ extension InAppMessageEntity {
                 self.afterCondition = afterCondition
             }
 
-            func deliverAt(startedAt: Date) -> Date {
+            func deliverAt(startedAt: Date) throws -> Date {
                 switch type {
                 case .immediate:
                     return startedAt
                 case .after:
-                    return startedAt.addingTimeInterval(afterCondition!.duration)
+                    guard let afterCondition = afterCondition else {
+                        throw HackleError.error("afterCondition must not be nil when delay type is AFTER")
+                    }
+                    return startedAt.addingTimeInterval(afterCondition.duration)
                 }
             }
 

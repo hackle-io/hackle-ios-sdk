@@ -876,7 +876,7 @@ class LocalUserManagerSpecs: AsyncSpec {
         }
 
         describe("resetUser") {
-            it("same") {
+            it("initialize 직후 리셋 - identifier가 그대로라 onUserUpdated를 발행하지 않는다") {
                 sut.initialize(user: nil)
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
@@ -893,7 +893,7 @@ class LocalUserManagerSpecs: AsyncSpec {
                 }
             }
 
-            it("rest") {
+            it("유저 설정 후 리셋 - 기본 유저로 되돌리고 onUserUpdated를 발행한다") {
                 sut.initialize(user: User.builder().deviceId("device_id").build())
                 expect(sut.currentUser.resolvedIdentifiers) == [
                     "$id": "hackle_device_id",
@@ -960,7 +960,12 @@ class LocalUserManagerSpecs: AsyncSpec {
                 sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
             }
             it("background") {
+                sut.initialize(user: nil)
+                await sut.setUserId(userId: "user_id").value
+
+                // 유저 변경만으로는 저장하지 않는다 (저장은 onBackground에서만)
                 expect(repository.getData(key: "user")).to(beNil())
+
                 sut.onBackground(nil, timestamp: Date())
                 expect(repository.getData(key: "user")).notTo(beNil())
             }

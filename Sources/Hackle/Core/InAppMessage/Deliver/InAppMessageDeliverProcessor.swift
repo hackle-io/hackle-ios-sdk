@@ -7,23 +7,26 @@ protocol InAppMessageDeliverProcessor {
 class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
     private let userManager: UserManager
-    private let userDecoreator: UserDecorator
+    private let userDecorator: UserDecorator
     private let identifierChecker: InAppMessageIdentifierChecker
     private let evaluator: InAppMessageDeliverEvaluator
     private let presentProcessor: InAppMessagePresentProcessor
+    private let lifecycleManager: ApplicationLifecycleManager
 
     init(
         userManager: UserManager,
-        userDecoreator: UserDecorator,
+        userDecorator: UserDecorator,
         identifierChecker: InAppMessageIdentifierChecker,
         evaluator: InAppMessageDeliverEvaluator,
-        presentProcessor: InAppMessagePresentProcessor
+        presentProcessor: InAppMessagePresentProcessor,
+        lifecycleManager: ApplicationLifecycleManager
     ) {
         self.userManager = userManager
-        self.userDecoreator = userDecoreator
+        self.userDecorator = userDecorator
         self.identifierChecker = identifierChecker
         self.evaluator = evaluator
         self.presentProcessor = presentProcessor
+        self.lifecycleManager = lifecycleManager
     }
 
     func process(request: InAppMessageDeliverRequest) async -> InAppMessageDeliverResponse {
@@ -41,9 +44,16 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
 
     private func deliver(request: InAppMessageDeliverRequest) async throws -> InAppMessageDeliverResponse {
 
+        // check ApplicationState
+        // 백그라운드에서는 평가 자체를 하지 않는다. 평가는 노출 이벤트를 기록하므로,
+        // 노출되지 않을 메시지를 평가하면 실험 지표가 과계상된다.
+        if lifecycleManager.currentState != .foreground {
+            return InAppMessageDeliverResponse.of(request: request, code: .applicationNotForeground)
+        }
+
         // check User
         let user = userManager.hackleUser()
-            .decorateWith(docorator: userDecoreator)
+            .decorateWith(decorator: userDecorator)
 
         let isIdentifierChanged = identifierChecker.isIdentifierChanged(old: request.identifiers, new: user.identifiers)
         if isIdentifierChanged {
@@ -65,7 +75,8 @@ class DefaultInAppMessageDeliverProcessor: InAppMessageDeliverProcessor {
         }
 
         guard let evaluation = response.evaluation else {
-            return InAppMessageDeliverResponse.of(request: request, code: .ineligible)
+            Log.error("InAppMessageDeliverEvaluateResponse.evaluation must not be nil when eligible")
+            return InAppMessageDeliverResponse.of(request: request, code: .exception)
         }
 
         let presentRequest = InAppMessagePresentRequest.of(

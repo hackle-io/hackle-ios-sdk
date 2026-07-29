@@ -8,8 +8,6 @@ import Foundation
 
 class HackleCoreContext: @unchecked Sendable {
 
-    static let shared = HackleCoreContext()
-
     private var instances = [Any]()
 
     func get<T>(_ type: T.Type) -> T? {

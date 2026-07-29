@@ -175,7 +175,7 @@ class WorkspaceEvaluationsSpecs: QuickSpec {
                 }
             }
 
-            it("CUSTOM period를 range로 매핑한다 (fixture 원본, ms→s 절삭 관례)") {
+            it("CUSTOM period를 range로 매핑한다 (fixture 원본, ms→s 변환)") {
                 let result = iamResult()
                 guard case .range(let start, let end) = result!.period else {
                     fail("expected .range, got \(result!.period)")
@@ -183,6 +183,18 @@ class WorkspaceEvaluationsSpecs: QuickSpec {
                 }
                 expect(start) == Date(timeIntervalSince1970: 42)
                 expect(end) == Date(timeIntervalSince1970: 4_102_444_800)
+            }
+
+            it("CUSTOM period의 밀리초를 절삭 없이 보존한다") {
+                let result = iamResult { it in
+                    it["period"] = ["type": "CUSTOM", "startMillisInclusive": 42500, "endMillisExclusive": 43500]
+                }
+                guard case .range(let start, let end) = result!.period else {
+                    fail("expected .range, got \(result!.period)")
+                    return
+                }
+                expect(start.timeIntervalSince1970) == 42.5
+                expect(end.timeIntervalSince1970) == 43.5
             }
         }
 

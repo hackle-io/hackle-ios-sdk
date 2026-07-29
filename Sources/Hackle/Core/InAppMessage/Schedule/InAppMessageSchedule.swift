@@ -59,12 +59,12 @@ extension InAppMessageSchedule: CustomStringConvertible {
         return InAppMessageScheduleRequest(schedule: self, scheduleType: type, requestedAt: requestedAt)
     }
 
-    static func create(trigger: InAppMessageTrigger) -> InAppMessageSchedule {
+    static func create(trigger: InAppMessageTrigger) throws -> InAppMessageSchedule {
         return InAppMessageSchedule(
             dispatchId: UUID().uuidString,
             inAppMessageKey: trigger.inAppMessage.key,
             identifiers: trigger.event.user.identifiers,
-            time: Time.of(
+            time: try Time.of(
                 inAppMessage: trigger.inAppMessage,
                 startedAt: trigger.event.timestamp
             ),
@@ -82,10 +82,10 @@ extension InAppMessageSchedule.Time: CustomStringConvertible {
         "Time(startedAt: \(startedAt), deliverAt: \(deliverAt))"
     }
 
-    static func of(inAppMessage: InAppMessage, startedAt: Date) -> InAppMessageSchedule.Time {
+    static func of(inAppMessage: InAppMessage, startedAt: Date) throws -> InAppMessageSchedule.Time {
         return InAppMessageSchedule.Time(
             startedAt: startedAt,
-            deliverAt: inAppMessage.eventTrigger.delay.deliverAt(startedAt: startedAt)
+            deliverAt: try inAppMessage.eventTrigger.delay.deliverAt(startedAt: startedAt)
         )
     }
 }

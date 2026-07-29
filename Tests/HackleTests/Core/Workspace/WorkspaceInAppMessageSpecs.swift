@@ -265,6 +265,154 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
             expect(workspace.inAppMessages.count) == 0
         }
 
+        it("eventTriggerDelay 파싱 실패 시 해당 IAM을 드롭한다") {
+            func json(delayType: String) -> String {
+                """
+                {
+                  "workspace": {"id": 1, "environment": {"id": 1}},
+                  "experiments": [],
+                  "featureFlags": [],
+                  "buckets": [],
+                  "segments": [],
+                  "containers": [],
+                  "parameterConfigurations": [],
+                  "remoteConfigParameters": [],
+                  "inAppMessages": [
+                    {
+                      "id": 1,
+                      "key": 1,
+                      "order": 1,
+                      "timeUnit": "IMMEDIATE",
+                      "status": "ACTIVE",
+                      "eventTriggerRules": [],
+                      "eventTriggerDelay": {"type": "\(delayType)"},
+                      "targetContext": {"targets": [], "overrides": []},
+                      "messageContext": {
+                        "defaultLang": "ko",
+                        "exposure": {"type": "DEFAULT", "key": null},
+                        "platformTypes": ["IOS"],
+                        "orientations": ["VERTICAL"],
+                        "messages": []
+                      }
+                    }
+                  ]
+                }
+                """
+            }
+
+            func workspace(delayType: String) -> WorkspaceConfig {
+                let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json(delayType: delayType).data(using: .utf8)!)
+                return DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+            }
+
+            // 미지 delay type → IMMEDIATE 폴백이 아니라 IAM 전체 드롭 (remote 경로·android와 동일)
+            expect(workspace(delayType: "UNKNOWN_DELAY").inAppMessages.count) == 0
+
+            // 알려진 type은 정상 파싱
+            let valid = workspace(delayType: "IMMEDIATE")
+            expect(valid.inAppMessages.count) == 1
+            expect(valid.getInAppMessageConfigOrNil(inAppMessageKey: 1)?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
+
+            // eventTriggerDelay 키 자체가 없으면 (파싱 실패가 아니라 미설정) 여전히 IMMEDIATE로 폴백한다
+            let jsonWithoutDelay = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                {
+                  "id": 1,
+                  "key": 1,
+                  "order": 1,
+                  "timeUnit": "IMMEDIATE",
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+              ]
+            }
+            """
+            let dtoWithoutDelay = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: jsonWithoutDelay.data(using: .utf8)!)
+            let workspaceWithoutDelay = DefaultWorkspaceConfig.from(dto: dtoWithoutDelay, modifiedAt: nil)
+            expect(workspaceWithoutDelay.inAppMessages.count) == 1
+            expect(workspaceWithoutDelay.getInAppMessageConfigOrNil(inAppMessageKey: 1)?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
+        }
+
+        it("events 필드가 없는 config도 디코딩된다") {
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": []
+            }
+            """
+            let dto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
+            expect(dto).toNot(beNil())
+            expect(dto?.inAppMessages.count) == 0
+        }
+
+        it("CUSTOM period의 밀리초를 절삭 없이 보존한다") {
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                {
+                  "id": 1,
+                  "key": 1,
+                  "order": 1,
+                  "timeUnit": "CUSTOM",
+                  "startEpochTimeMillis": 42500,
+                  "endEpochTimeMillis": 43500,
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+              ]
+            }
+            """
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+
+            guard case .range(let start, let end) = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!.period else {
+                fail("expected .range")
+                return
+            }
+            expect(start.timeIntervalSince1970) == 42.5
+            expect(end.timeIntervalSince1970) == 43.5
+        }
+
         it("inAppMessages를 order 오름차순으로 정렬한다") {
             func inAppMessageJson(id: Int64, order: Int64) -> String {
                 """

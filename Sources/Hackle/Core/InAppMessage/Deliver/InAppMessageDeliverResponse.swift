@@ -25,6 +25,7 @@ class InAppMessageDeliverResponse {
         case inAppMessageNotFound
         case identifierChanged
         case ineligible
+        case applicationNotForeground
         case exception
     }
 }

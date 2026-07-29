@@ -22,7 +22,7 @@ extension RemoteEvaluator {
                     "entity.id": String(reference.id)
                 ]
                 Metrics.counter(name: "workspace.evaluation.reference.unresolved", tags: tags).increment()
-                Log.info("Reference result not found (reference=\(reference), root=\(request.remoteResult))")
+                Log.warn("Reference result not found (reference=\(reference), root=\(request.remoteResult))")
                 continue
             }
             context.add(result.toEvaluation())

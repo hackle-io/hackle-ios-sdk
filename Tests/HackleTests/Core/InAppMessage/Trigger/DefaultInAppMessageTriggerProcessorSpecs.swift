@@ -16,7 +16,7 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
             sut = DefaultInAppMessageTriggerProcessor(determiner: determiner, handler: handler)
         }
 
-        it("when trigger not determiend the do not handle") {
+        it("when trigger not determined then do not handle") {
             // given
             every(determiner.determineMock).returns(nil)
             let event = UserEvents.track("test")

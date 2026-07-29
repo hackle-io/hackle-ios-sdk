@@ -555,11 +555,10 @@ extension HackleApp {
         let ffOverrideStorage = DefaultExperimentManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
         let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
         let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
-        HackleCoreContext.shared.register(inAppMessageHiddenStorage)
-        HackleCoreContext.shared.register(inAppMessageImpressionStorage)
+        let coreContext = HackleCoreContext.create()
 
         let evaluateProcessor = EvaluateProcessor.create(
-            context: HackleCoreContext.shared,
+            context: coreContext,
             clock: clock,
             eventProcessor: eventProcessor,
             overrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage]),
@@ -597,11 +596,13 @@ extension HackleApp {
         userManager.addListener(listener: propertiesEventTracker)
 
         // - ApplicationLifecycleListener
+        // addListener는 등록 순서대로 append만 하고, onForeground/onBackground도 그 순서대로 순회한다(정렬 없음).
+        // 즉 아래 등록 위치가 곧 호출 순서 계약이다 — 이벤트 생산자(applicationEventTracker, engagementManager 등)는
+        // eventProcessor보다 반드시 먼저 등록되어야 한다. 리스너 추가 시 의도한 위치에 신중히 삽입할 것.
 
         applicationLifecycleManager.addListener(listener: pollingSynchronizer)
         applicationLifecycleManager.addListener(listener: sessionManager)
         applicationLifecycleManager.addListener(listener: userManager)
-        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         // - ApplicationInstallStateManager
 
@@ -714,10 +715,11 @@ extension HackleApp {
         }
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
             userManager: userManager,
-            userDecoreator: sessionUserDecorator,
+            userDecorator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
             evaluator: inAppMessageDeliverEvaluator,
-            presentProcessor: inAppMessagePresentProcessor
+            presentProcessor: inAppMessagePresentProcessor,
+            lifecycleManager: applicationLifecycleManager
         )
 
         let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
@@ -736,10 +738,10 @@ extension HackleApp {
             actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
             schedulerFactory: inAppMessageSchedulerFactory
         )
-        inAppMessageDelayScheduler.setListener(listsner: inAppMessageScheduleProcessor)
+        inAppMessageDelayScheduler.setListener(listener: inAppMessageScheduleProcessor)
 
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
-            targetMatcher: HackleCoreContext.shared.get(TargetMatcher.self)!
+            targetMatcher: coreContext.get(TargetMatcher.self)!
         )
         let inAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer = switch workspaceMode {
         case .local(let workspaceConfigManager):
@@ -842,6 +844,9 @@ extension HackleApp {
         viewLifecycleManager.setDispatchQueue(queue: coreQueue)
 
         applicationLifecycleManager.addListener(listener: engagementManager)
+
+        // 백그라운드 전환 시 flush가 이벤트 생산자보다 뒤에 실행되도록 마지막에 등록한다.
+        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)

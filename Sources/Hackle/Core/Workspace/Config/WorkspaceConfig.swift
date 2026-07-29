@@ -12,3 +12,13 @@ protocol WorkspaceConfig: Workspace {
     func getSegmentOrNil(segmentKey: Segment.Key) -> Segment?
     func getContainerOrNil(containerId: Container.Id) -> Container?
 }
+
+extension WorkspaceConfig {
+    var experimentConfigs: [ExperimentConfig] {
+        experiments.compactMap { $0 as? ExperimentConfig }
+    }
+
+    var featureFlagConfigs: [ExperimentConfig] {
+        featureFlags.compactMap { $0 as? ExperimentConfig }
+    }
+}

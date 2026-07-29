@@ -61,6 +61,21 @@ public final class PropertyOperations: NSObject, @unchecked Sendable {
         PropertyOperationsBuilder()
     }
 
+    /// Creates a property operations instance that sets every entry in `properties` via `$set`.
+    ///
+    /// - Parameter properties: The properties to set
+    /// - Returns: A ``PropertyOperations`` instance representing the `$set` operations
+    static func set(properties: [String: Any]) -> PropertyOperations {
+        if properties.isEmpty {
+            return empty()
+        }
+        let operationsBuilder = builder()
+        for (key, value) in properties {
+            operationsBuilder.set(key, value)
+        }
+        return operationsBuilder.build()
+    }
+
     /// Creates a property operation that clears all user properties.
     ///
     /// - Returns: A ``PropertyOperations`` instance that will clear all properties

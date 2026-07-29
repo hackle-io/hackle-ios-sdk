@@ -2,20 +2,20 @@ import Foundation
 
 class InAppMessageScheduleResponse: @unchecked Sendable {
     let dispatchId: String
-    let inAppMesasgeKey: InAppMessage.Key
+    let inAppMessageKey: InAppMessage.Key
     let code: Code
     let deliverResponse: InAppMessageDeliverResponse?
     let delay: InAppMessageDelay?
 
     init(
         dispatchId: String,
-        inAppMesasgeKey: InAppMessage.Key,
+        inAppMessageKey: InAppMessage.Key,
         code: Code,
         deliverResponse: InAppMessageDeliverResponse?,
         delay: InAppMessageDelay?
     ) {
         self.dispatchId = dispatchId
-        self.inAppMesasgeKey = inAppMesasgeKey
+        self.inAppMessageKey = inAppMessageKey
         self.code = code
         self.deliverResponse = deliverResponse
         self.delay = delay
@@ -31,20 +31,20 @@ class InAppMessageScheduleResponse: @unchecked Sendable {
 
 extension InAppMessageScheduleResponse: CustomStringConvertible {
     var description: String {
-        "InAppMessageScheduleResponse(dispatchId: \(dispatchId), inAppMesasgeKey: \(inAppMesasgeKey), code: \(code))"
+        "InAppMessageScheduleResponse(dispatchId: \(dispatchId), inAppMessageKey: \(inAppMessageKey), code: \(code))"
     }
 
     static func of(
         request: InAppMessageScheduleRequest,
         code: Code,
-        deliverReponse: InAppMessageDeliverResponse? = nil,
+        deliverResponse: InAppMessageDeliverResponse? = nil,
         delay: InAppMessageDelay? = nil
     ) -> InAppMessageScheduleResponse {
         return InAppMessageScheduleResponse(
             dispatchId: request.schedule.dispatchId,
-            inAppMesasgeKey: request.schedule.inAppMessageKey,
+            inAppMessageKey: request.schedule.inAppMessageKey,
             code: code,
-            deliverResponse: deliverReponse,
+            deliverResponse: deliverResponse,
             delay: delay
         )
     }

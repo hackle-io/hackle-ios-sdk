@@ -181,7 +181,7 @@ class DefaultUserEventProcessor: UserEventProcessor, ApplicationLifecycleListene
     }
 
     private func updateEvent(event: UserEvent) {
-        if SessionEventTracker.isSessionEvent(event: event) {
+        if SessionEventTracker.isSessionEvent(event: event) || PushEventKey.isPushTokenEvent(event: event) {
             return
         }
         let currentUser = userManager.currentUser

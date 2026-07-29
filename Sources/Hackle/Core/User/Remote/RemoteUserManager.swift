@@ -51,7 +51,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
             let initUser = user ?? loadUser() ?? defaultUser
             let initContext = RemoteUserContext.from(user: initUser.with(device: device))
             self.context = initContext
-            self.initSyncContext.set(newValue: SyncContext(userContext: initContext, operations: RemoteUserManager.setOperations(properties: initUser.properties)))
+            self.initSyncContext.set(newValue: SyncContext(userContext: initContext, operations: PropertyOperations.set(properties: initUser.properties)))
         }
         Log.debug("RemoteUserManager initialized [\(currentUser)]")
     }
@@ -92,7 +92,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
     // 네트워크 sync(syncIfNeeded)만 Task<Void, Never>로 반환한다.
 
     func setUser(user: User) -> Task<Void, Never> {
-        updateAndSyncIfNeeded(operations: RemoteUserManager.setOperations(properties: user.properties)) { _ in
+        updateAndSyncIfNeeded(operations: PropertyOperations.set(properties: user.properties)) { _ in
             RemoteUserContext.from(user: user.with(device: self.device))
         }
     }
@@ -179,17 +179,6 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
             await sync(context: syncContext)
             return
         }
-    }
-
-    private static func setOperations(properties: [String: Any]) -> PropertyOperations {
-        if properties.isEmpty {
-            return PropertyOperations.empty()
-        }
-        let builder = PropertyOperations.builder()
-        for (key, value) in properties {
-            builder.set(key, value)
-        }
-        return builder.build()
     }
 }
 

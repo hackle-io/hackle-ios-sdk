@@ -181,6 +181,22 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             await expect { try await sut.evaluateIfModified(request: requestDto()) }.to(throwError())
         }
 
+        it("원격 평가 요청에 10초 타임아웃을 지정한다") {
+            let httpClient = MockHttpClient()
+            let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(httpResponse(request: request, statusCode: 200, data: successBody()))
+            }
+            _ = try await sut.evaluateIfModified(request: requestDto())
+
+            every(httpClient.executeMock).answers { request, completion in
+                completion(httpResponse(request: request, statusCode: 200, data: entityResponseBody()))
+            }
+            _ = try await sut.evaluateEntities(request: entityRequestDto())
+
+            expect(httpClient.capturedTimeouts) == [10, 10]
+        }
+
         it("body 파싱에 실패하면 throw한다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)

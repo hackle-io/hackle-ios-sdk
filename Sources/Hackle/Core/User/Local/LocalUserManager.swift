@@ -208,7 +208,6 @@ class LocalUserManager: UserManager, @unchecked Sendable {
             publishUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: clock.now())
         }
 
-        saveUser(user: newUser)
         return UserUpdated(old: oldContext, new: newContext)
     }
 

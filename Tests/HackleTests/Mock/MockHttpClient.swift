@@ -8,12 +8,14 @@ import MockingKit
 
 class MockHttpClient: Mock, HttpClient {
     lazy var executeMock = MockFunction(self, execute as (HttpRequest, @escaping @Sendable (HttpResponse) -> ()) -> Void)
+    private(set) var capturedTimeouts = [TimeInterval]()
 
     func execute(request: HttpRequest, completion: @escaping @Sendable (HttpResponse) -> ()) {
         call(executeMock, args: (request, completion))
     }
 
     func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping @Sendable (HttpResponse) -> Void) {
+        capturedTimeouts.append(timeout)
         call(executeMock, args: (request, completion))
     }
 

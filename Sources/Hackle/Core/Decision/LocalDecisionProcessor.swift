@@ -33,10 +33,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
         guard let workspace = workspaceFetcher.workspace(user: user) else {
             return decisions
         }
-        for experiment in workspace.experiments {
-            guard let experimentConfig = workspace.getExperimentConfigOrNil(experimentKey: experiment.key) else {
-                continue
-            }
+        for experimentConfig in workspace.experimentConfigs {
             let request = ExperimentLocalEvaluateRequest(
                 workspace: workspace,
                 entity: experimentConfig,
@@ -44,7 +41,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
                 record: false
             )
             let response = try evaluateProcessor.experiment(request)
-            decisions.append((experiment, response.experimentEvaluation.toDecision()))
+            decisions.append((experimentConfig, response.experimentEvaluation.toDecision()))
         }
         return decisions
     }
@@ -72,10 +69,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
         guard let workspace = workspaceFetcher.workspace(user: user) else {
             return decisions
         }
-        for featureFlag in workspace.featureFlags {
-            guard let featureFlagConfig = workspace.getFeatureFlagConfigOrNil(featureKey: featureFlag.key) else {
-                continue
-            }
+        for featureFlagConfig in workspace.featureFlagConfigs {
             let request = ExperimentLocalEvaluateRequest(
                 workspace: workspace,
                 entity: featureFlagConfig,
@@ -83,7 +77,7 @@ final class LocalDecisionProcessor: DecisionProcessor {
                 record: false
             )
             let response = try evaluateProcessor.experiment(request)
-            decisions.append((featureFlag, response.experimentEvaluation.toFeatureFlagDecision()))
+            decisions.append((featureFlagConfig, response.experimentEvaluation.toFeatureFlagDecision()))
         }
         return decisions
     }
