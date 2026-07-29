@@ -67,7 +67,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             )
         }
 
-        it("POST {sdkUrl}/api/v1/workspace-evaluate 로 요청 body를 직렬화해 보낸다") {
+        it("POST {sdkUrl}/api/v1/evaluate/workspace 로 요청 body를 직렬화해 보낸다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             var capturedRequest: HttpRequest?
@@ -78,7 +78,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
 
             _ = try await sut.evaluateIfModified(request: requestDto())
 
-            expect(capturedRequest?.url.absoluteString) == "https://sdk-api.hackle.io/api/v1/workspace-evaluate"
+            expect(capturedRequest?.url.absoluteString) == "https://sdk-api.hackle.io/api/v1/evaluate/workspace"
             expect(capturedRequest?.method.lowercased()) == "post"
 
             let body = try! JSONSerialization.jsonObject(with: capturedRequest!.body!) as! [String: Any]
@@ -94,7 +94,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             expect(entities[0]["hash"] as? Int) == 10
         }
 
-        it("workspace-evaluate 204 응답이면 nil을 반환한다") {
+        it("evaluate/workspace 204 응답이면 nil을 반환한다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             every(httpClient.executeMock).answers { request, completion in
@@ -106,7 +106,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             expect(response).to(beNil())
         }
 
-        it("workspace-evaluate 2xx 응답 body를 신 포맷으로 디코딩한다") {
+        it("evaluate/workspace 2xx 응답 body를 신 포맷으로 디코딩한다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             every(httpClient.executeMock).answers { request, completion in
@@ -120,7 +120,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             expect(response?.delta).to(beNil())
         }
 
-        it("POST {sdkUrl}/api/v1/entity-evaluate 로 entities를 보낸다") {
+        it("POST {sdkUrl}/api/v1/evaluate/entities 로 entities를 보낸다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             var capturedRequest: HttpRequest?
@@ -131,7 +131,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
 
             let response = try await sut.evaluateEntities(request: entityRequestDto())
 
-            expect(capturedRequest?.url.absoluteString) == "https://sdk-api.hackle.io/api/v1/entity-evaluate"
+            expect(capturedRequest?.url.absoluteString) == "https://sdk-api.hackle.io/api/v1/evaluate/entities"
             expect(capturedRequest?.method.lowercased()) == "post"
             let body = try! JSONSerialization.jsonObject(with: capturedRequest!.body!) as! [String: Any]
             let entities = body["entities"] as! [[String: Any]]
@@ -151,7 +151,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             await expect { try await sut.evaluateIfModified(request: requestDto()) }.to(throwError())
         }
 
-        it("네트워크 오류(response.error)면 workspace-evaluate가 해당 에러를 그대로 throw한다") {
+        it("네트워크 오류(response.error)면 evaluate/workspace가 해당 에러를 그대로 throw한다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             every(httpClient.executeMock).answers { request, completion in
@@ -161,7 +161,7 @@ class RemoteEvaluateClientSpecs: AsyncSpec {
             await expect { try await sut.evaluateIfModified(request: requestDto()) }.to(throwError(URLError(.timedOut)))
         }
 
-        it("네트워크 오류(response.error)면 entity-evaluate가 해당 에러를 그대로 throw한다") {
+        it("네트워크 오류(response.error)면 evaluate/entities가 해당 에러를 그대로 throw한다") {
             let httpClient = MockHttpClient()
             let sut = RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient)
             every(httpClient.executeMock).answers { request, completion in

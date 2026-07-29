@@ -2,8 +2,8 @@ import Foundation
 
 class RemoteEvaluateClient {
 
-    private static let WORKSPACE_EVALUATE_PATH = "/api/v1/workspace-evaluate"
-    private static let ENTITY_EVALUATE_PATH = "/api/v1/entity-evaluate"
+    private static let WORKSPACE_EVALUATE_PATH = "/api/v1/evaluate/workspace"
+    private static let ENTITY_EVALUATE_PATH = "/api/v1/evaluate/entities"
     // 초기 sync 중 coreQueue가 suspend되므로(813404f) 기본 60초 폴백 금지. iOS 관례(UserCohortFetcher) 10초.
     private static let TIMEOUT_INTERVAL: TimeInterval = 10
 
@@ -18,12 +18,12 @@ class RemoteEvaluateClient {
     }
 
     func evaluateIfModified(request: WorkspaceEvaluateRequestDto) async throws -> WorkspaceEvaluateResponseDto? {
-        let response = try await execute(url: workspaceEndpoint, body: request.toBody(), operation: "workspace.remote.evaluate")
+        let response = try await execute(url: workspaceEndpoint, body: request.toBody(), operation: "evaluate.workspace")
         return try handleWorkspaceResponse(response: response)
     }
 
     func evaluateEntities(request: EntityEvaluateRequestDto) async throws -> EntityEvaluateResponseDto {
-        let response = try await execute(url: entityEndpoint, body: request.toBody(), operation: "entity.remote.evaluate")
+        let response = try await execute(url: entityEndpoint, body: request.toBody(), operation: "evaluate.entities")
         return try handleResponse(response: response)
     }
 

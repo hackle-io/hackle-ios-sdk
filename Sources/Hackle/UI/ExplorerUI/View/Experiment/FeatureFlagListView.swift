@@ -69,6 +69,6 @@ extension HackleFeatureFlagItem {
 
 private extension Variation {
     var isOn: Bool {
-        key != "A"
+        key != VariationKeys.control
     }
 }

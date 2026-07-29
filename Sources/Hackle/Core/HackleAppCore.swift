@@ -46,7 +46,7 @@ protocol HackleAppCore: AnyObject {
 
     func unsetPhoneNumber(hackleAppContext: HackleAppContext)
 
-    func variationDetail(experimentKey: Int, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
+    func variationDetail(experimentKey: Int, hackleAppContext: HackleAppContext) -> Decision
 
     func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision]
 
@@ -284,7 +284,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         eventProcessor.flush()
     }
 
-    func variationDetail(experimentKey: Int, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
+    func variationDetail(experimentKey: Int, hackleAppContext: HackleAppContext) -> Decision {
         let sample = TimerSample.start()
         let decision: Decision
         do {
@@ -295,7 +295,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             )
         } catch {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
-            decision = Decision.of(experiment: nil, variation: defaultVariation, reason: DecisionReason.EXCEPTION)
+            decision = Decision.of(experiment: nil, variation: VariationKeys.control, reason: DecisionReason.EXCEPTION)
         }
         DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
         return decision

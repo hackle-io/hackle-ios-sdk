@@ -103,7 +103,7 @@ class FeatureFlagConditionMatcher: ExperimentEvaluatorMatcher {
     }
 
     func matches(evaluation: ExperimentEvaluation, condition: Target.Condition) -> Bool {
-        let on = evaluation.experimentResult.variation.key != "A"
+        let on = evaluation.experimentResult.variation.key != VariationKeys.control
         return valueOperatorMatcher.matches(userValue: on, match: condition.match)
     }
 }

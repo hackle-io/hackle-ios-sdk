@@ -63,12 +63,6 @@ extension HackleInvokeParameters {
         self["experimentKey"] as? Int
     }
 
-    /// A/B 테스트의 기본 그룹(variation) 키를 반환합니다.
-    /// - Returns: 기본 그룹 키. `nil`이 아님.
-    func defaultVariation() -> String {
-        (self["defaultVariation"] as? String) ?? "A"
-    }
-
     /// 기능 플래그 키(Feature Key)를 `Int` 타입으로 반환합니다.
     /// - Returns: 기능 플래그 키 또는 `nil`
     func featureKey() -> Int? {

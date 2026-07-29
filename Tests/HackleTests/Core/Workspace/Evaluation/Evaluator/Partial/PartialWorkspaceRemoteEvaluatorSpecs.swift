@@ -36,7 +36,7 @@ class PartialWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
             )
         }
 
-        it("entity-evaluate 엔드포인트로 entities를 직렬화해 보낸다") {
+        it("evaluate/entities 엔드포인트로 entities를 직렬화해 보낸다") {
             let httpClient = MockHttpClient()
             let sut = PartialWorkspaceRemoteEvaluator(client: RemoteEvaluateClient(sdkUrl: URL(string: "https://sdk-api.hackle.io")!, httpClient: httpClient))
             var capturedRequest: HttpRequest?
@@ -51,7 +51,7 @@ class PartialWorkspaceRemoteEvaluatorSpecs: AsyncSpec {
             )
             _ = try await sut.evaluate(request: request)
 
-            expect(capturedRequest?.url.absoluteString) == "https://sdk-api.hackle.io/api/v1/entity-evaluate"
+            expect(capturedRequest?.url.absoluteString) == "https://sdk-api.hackle.io/api/v1/evaluate/entities"
             let body = try! JSONSerialization.jsonObject(with: capturedRequest!.body!) as! [String: Any]
             let entities = body["entities"] as! [[String: Any]]
             expect(entities.count) == 1

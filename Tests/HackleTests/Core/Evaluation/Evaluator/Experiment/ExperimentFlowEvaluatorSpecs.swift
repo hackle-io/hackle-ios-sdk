@@ -415,7 +415,7 @@ class ExperimentFlowEvaluatorSpecs: QuickSpec {
                     .to(throwError(HackleError.error("Experiment type must be featureFlag [42]")))
             }
 
-            it("identifierType에 해당하는 식별자가 없으면 defaultVariation을 리턴한다") {
+            it("identifierType에 해당하는 식별자가 없으면 컨트롤 그룹 A를 리턴한다") {
                 // given
                 let experiment = experiment(id: 42, type: .featureFlag, identifierType: "custom", status: .running)
                 let request = experimentRequest(experiment: experiment)

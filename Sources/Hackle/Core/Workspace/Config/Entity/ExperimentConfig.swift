@@ -19,7 +19,7 @@ protocol ExperimentConfig: Experiment, ConfigEntity {
 extension ExperimentConfig {
     var controlVariation: Variation {
         get throws {
-            guard let variation = getVariationOrNil(variationKey: "A") else {
+            guard let variation = getVariationOrNil(variationKey: VariationKeys.control) else {
                 throw HackleError.error("ControlVariation[\(id)]")
             }
             return variation
