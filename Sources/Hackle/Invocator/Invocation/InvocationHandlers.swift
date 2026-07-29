@@ -239,10 +239,8 @@ extension AbTestInvocationHandler {
         guard let experimentKey = request.parameters.experimentKey() else {
             throw HackleError.error("parameters.experimentKey must be provided.")
         }
-        let defaultVariation = request.parameters.defaultVariation()
         let decision = core.variationDetail(
             experimentKey: experimentKey,
-            defaultVariation: defaultVariation,
             hackleAppContext: request.appContext
         )
         let data = transform(decision: decision)

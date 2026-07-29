@@ -408,10 +408,7 @@ class HackleInvocationSpec: QuickSpec {
             describe("variation") {
                 context("normal") {
                     it("happy case") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "defaultVariation": "D"
-                        ] as [String: Any]
+                        let parameters = ["experimentKey": 123] as [String: Any]
                         let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
@@ -422,7 +419,6 @@ class HackleInvocationSpec: QuickSpec {
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1) == "D"
 
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -430,8 +426,11 @@ class HackleInvocationSpec: QuickSpec {
                         expect(dict["data"] as? String) == "C"
                         expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
-                    it("expect 'A' default variation parameter") {
-                        let parameters = ["experimentKey": 123] as [String: Any]
+                    it("defaultVariation 파라미터는 무시된다") {
+                        let parameters = [
+                            "experimentKey": 123,
+                            "defaultVariation": "D"
+                        ] as [String: Any]
                         let jsonString = createJsonString(command: "variation", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "A", reason: "DEFAULT_RULE"))
@@ -442,7 +441,6 @@ class HackleInvocationSpec: QuickSpec {
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1) == "A"
 
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -465,10 +463,7 @@ class HackleInvocationSpec: QuickSpec {
             describe("variation detail") {
                 context("normal") {
                     it("happy case") {
-                        let parameters = [
-                            "experimentKey": 123,
-                            "defaultVariation": "D"
-                        ] as [String: Any]
+                        let parameters = ["experimentKey": 123] as [String: Any]
                         let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
                             .returns(Decision.of(experiment: nil, variation: "C", reason: "DEFAULT_RULE"))
@@ -479,7 +474,6 @@ class HackleInvocationSpec: QuickSpec {
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1) == "D"
 
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true
@@ -493,9 +487,10 @@ class HackleInvocationSpec: QuickSpec {
                         expect(config["parameters"]).toNot(beNil())
                         expect(core.hackleAppContext?.browserProperties["mock"] as? String) == "mocks"
                     }
-                    it("expect 'A' default variation parameter") {
+                    it("defaultVariation 파라미터는 무시된다") {
                         let parameters = [
-                            "experimentKey": 123
+                            "experimentKey": 123,
+                            "defaultVariation": "D"
                         ] as [String: Any]
                         let jsonString = createJsonString(command: "variationDetail", parameters: parameters)
                         every(core.variationDetailRef)
@@ -507,7 +502,6 @@ class HackleInvocationSpec: QuickSpec {
                         let firstInvokation = core.variationDetailRef.firstInvokation()
                         let arguments = firstInvokation.arguments
                         expect(arguments.0) == 123
-                        expect(arguments.1) == "A"
 
                         let dict = result.jsonObject()!
                         expect(dict["success"] as? Bool) == true

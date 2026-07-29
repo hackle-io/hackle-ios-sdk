@@ -105,10 +105,10 @@ class MockHackleAppCore: Mock, HackleAppCore {
         call(unsetPhoneNumberRef, args: hackleAppContext)
     }
     
-    lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, String, HackleAppContext) -> Decision)
-    func variationDetail(experimentKey: Int, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
+    lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, HackleAppContext) -> Decision)
+    func variationDetail(experimentKey: Int, hackleAppContext: HackleAppContext) -> Decision {
         self.hackleAppContext = hackleAppContext
-        return call(variationDetailRef, args: (experimentKey, defaultVariation, hackleAppContext))
+        return call(variationDetailRef, args: (experimentKey, hackleAppContext))
     }
 
     lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int, HackleAppContext) -> FeatureFlagDecision)

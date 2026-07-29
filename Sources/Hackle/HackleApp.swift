@@ -124,6 +124,7 @@ import WebKit
     ///   - key: the key of the property
     ///   - value: the value of the property
     ///   - completion: callback to be executed when the operation is complete
+    @available(*, deprecated, message: "Use updateUserProperties(operations:completion:) instead.")
     @preconcurrency @objc public func setUserProperty(key: String, value: Any?, completion: @escaping @Sendable () -> ()) {
         let operations = PropertyOperations.builder()
             .set(key, value)
@@ -196,7 +197,7 @@ import WebKit
     ///
     /// - Parameters:
     ///   - experimentKey: the unique key of the experiment
-    /// - Returns: the decided variation for the user, or defaultVariation
+    /// - Returns: the decided variation for the user, or `"A"` if the experiment cannot be decided
     @objc public func variation(experimentKey: Int) -> String {
         variationDetail(experimentKey: experimentKey).variation
     }
@@ -207,7 +208,7 @@ import WebKit
     ///   - experimentKey: the unique key for the experiment
     /// - Returns: a ``Decision`` object
     @objc public func variationDetail(experimentKey: Int) -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, defaultVariation: "A", hackleAppContext: .default)
+        hackleAppCore.variationDetail(experimentKey: experimentKey, hackleAppContext: .default)
     }
 
     /// Decide the variations for all experiments and returns a map of decision results.
@@ -330,6 +331,7 @@ extension HackleApp {
     /// - Parameters:
     ///   - key: the key of the property
     ///   - value: the value of the property
+    @available(*, deprecated, message: "Use updateUserProperties(operations:) instead.")
     public func setUserProperty(key: String, value: Any?) async {
         let operations = PropertyOperations.builder()
             .set(key, value)

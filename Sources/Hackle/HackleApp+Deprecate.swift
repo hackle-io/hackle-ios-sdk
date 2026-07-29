@@ -37,7 +37,7 @@ extension HackleApp {
     /// - Parameters:
     ///   - key: the key of the property
     ///   - value: the value of the property
-    @available(*, deprecated, message: "Use async setUserProperty(key:value:) or setUserProperty(key:value:completion:) instead.")
+    @available(*, deprecated, message: "Use updateUserProperties(operations:) instead.")
     @objc public func setUserProperty(key: String, value: Any?) {
         let operations = PropertyOperations.builder()
             .set(key, value)
@@ -77,22 +77,22 @@ extension HackleApp {
     ///
     /// - Parameters:
     ///   - experimentKey: the unique key of the experiment
-    ///   - defaultVariation: the default variation to return if the experiment cannot be decided
-    /// - Returns: the decided variation for the user, or defaultVariation
+    ///   - defaultVariation: ignored. `"A"` is always used when the experiment cannot be decided
+    /// - Returns: the decided variation for the user, or `"A"` if the experiment cannot be decided
     @available(*, deprecated, message: "Use variation(experimentKey) without defaultVariation instead.")
     @objc public func variation(experimentKey: Int, defaultVariation: String) -> String {
-        variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
+        variation(experimentKey: experimentKey)
     }
 
     /// Decide the variation to expose to the user for experiment and returns an object that describes the way the variation was decided.
     ///
     /// - Parameters:
     ///   - experimentKey: the unique key for the experiment
-    ///   - defaultVariation: the default variation to return if the experiment cannot be decided
+    ///   - defaultVariation: ignored. `"A"` is always used when the experiment cannot be decided
     /// - Returns: a ``Decision`` object
     @available(*, deprecated, message: "Use variationDetail(experimentKey) without defaultVariation instead.")
     @objc public func variationDetail(experimentKey: Int, defaultVariation: String) -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation, hackleAppContext: .default)
+        variationDetail(experimentKey: experimentKey)
     }
 
     /// Updates push notification subscription status.
