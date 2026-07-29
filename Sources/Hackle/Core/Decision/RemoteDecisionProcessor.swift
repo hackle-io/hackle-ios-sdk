@@ -12,10 +12,10 @@ final class RemoteDecisionProcessor: DecisionProcessor {
 
     func experiment(experimentKey: Experiment.Key, user: HackleUser) throws -> Decision {
         guard let workspace = workspaceFetcher.workspace(user: user) else {
-            return Decision.of(experiment: nil, variation: "A", reason: DecisionReason.SDK_NOT_READY)
+            return Decision.of(experiment: nil, variation: VariationKeys.control, reason: DecisionReason.SDK_NOT_READY)
         }
         guard let experiment = workspace.getExperimentResultOrNil(experimentKey: experimentKey) else {
-            return Decision.of(experiment: nil, variation: "A", reason: DecisionReason.EXPERIMENT_NOT_FOUND)
+            return Decision.of(experiment: nil, variation: VariationKeys.control, reason: DecisionReason.EXPERIMENT_NOT_FOUND)
         }
 
         let request = ExperimentRemoteEvaluateRequest.of(workspace: workspace, entity: experiment, user: user)

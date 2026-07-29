@@ -15,6 +15,10 @@ protocol Variation: Sendable {
     var parameterConfiguration: ParameterConfiguration? { get }
 }
 
+enum VariationKeys {
+    static let control: Variation.Key = "A"
+}
+
 final class VariationEntity: Variation, @unchecked Sendable {
 
     let id: Id

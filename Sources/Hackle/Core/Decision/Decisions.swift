@@ -16,7 +16,7 @@ extension ExperimentEvaluation {
     func toFeatureFlagDecision() -> FeatureFlagDecision {
         let result = experimentResult
         let config: ParameterConfig = result.variation.parameterConfiguration ?? EmptyParameterConfig.instance
-        return result.variation.key == "A"
+        return result.variation.key == VariationKeys.control
             ? FeatureFlagDecision.off(featureFlag: experiment, reason: result.reason, config: config)
             : FeatureFlagDecision.on(featureFlag: experiment, reason: result.reason, config: config)
     }

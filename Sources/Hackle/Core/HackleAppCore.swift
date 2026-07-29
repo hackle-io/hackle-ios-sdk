@@ -295,7 +295,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             )
         } catch {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
-            decision = Decision.of(experiment: nil, variation: "A", reason: DecisionReason.EXCEPTION)
+            decision = Decision.of(experiment: nil, variation: VariationKeys.control, reason: DecisionReason.EXCEPTION)
         }
         DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
         return decision
