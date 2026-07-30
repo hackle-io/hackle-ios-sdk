@@ -93,6 +93,7 @@ final class DefaultWorkspaceEvaluation: WorkspaceEvaluation, @unchecked Sendable
 
     func toProperties() -> [String: Any] {
         PropertiesBuilder()
+            .add("evaluation_mode", "REMOTE")
             .add("config_modified_at", modifiedAt)
             .add("remote_evaluated_at", evaluatedAt)
             .add("remote_full_evaluated_at", fullEvaluatedAt)
