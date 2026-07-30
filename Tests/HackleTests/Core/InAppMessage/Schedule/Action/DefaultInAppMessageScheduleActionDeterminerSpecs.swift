@@ -22,8 +22,8 @@ class DefaultInAppMessageScheduleActionDeterminerSpecs: QuickSpec {
         func request(delay: TimeInterval) -> InAppMessageScheduleRequest {
             let startedAt = Date()
             let deliverAt = startedAt.addingTimeInterval(delay)
-            return InAppMessage.scheduleRequest(
-                schedule: InAppMessage.schedule(
+            return InAppMessageEntity.scheduleRequest(
+                schedule: InAppMessageEntity.schedule(
                     time: InAppMessageSchedule.Time(
                         startedAt: startedAt,
                         deliverAt: deliverAt

@@ -13,7 +13,7 @@ protocol HackleAppCore: AnyObject {
     var user: User { get }
     @MainActor var currentInAppMessageView: InAppMessageView? { get }
 
-    func initialize(user: User?, completion: @escaping () -> ())
+    func initialize(user: User?, completion: @escaping @Sendable () -> ())
 
     @MainActor func getInAppMessageView(viewId: String) -> InAppMessageView?
 
@@ -21,13 +21,17 @@ protocol HackleAppCore: AnyObject {
 
     func hideUserExplorer()
 
-    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
 
@@ -35,28 +39,30 @@ protocol HackleAppCore: AnyObject {
 
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext)
 
-    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    @discardableResult
+    func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never>
 
-    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext)
 
-    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ())
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext)
 
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision
+    func variationDetail(experimentKey: Int, hackleAppContext: HackleAppContext) -> Decision
 
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision]
+    func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision]
 
-    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision
+    func featureFlagDetail(featureKey: Int, hackleAppContext: HackleAppContext) -> FeatureFlagDecision
 
-    func track(event: Event, user: User?, hackleAppContext: HackleAppContext)
+    func track(event: Event, hackleAppContext: HackleAppContext)
 
-    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision
+    func remoteConfig(key: String, defaultValue: HackleValue, hackleAppContext: HackleAppContext) -> RemoteConfigDecision
 
     func setCurrentScreen(screen: Screen, hackleAppContext: HackleAppContext)
 
     var isOptOutTracking: Bool { get }
     func setOptOutTracking(optOut: Bool)
 
-    func fetch(completion: @escaping () -> ())
+    @discardableResult
+    func fetch() -> Task<Void, Never>
 
     func setPushToken(deviceToken: Data)
 
@@ -65,7 +71,8 @@ protocol HackleAppCore: AnyObject {
 
 class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
-    private let eventQueue: DispatchQueue
+    private let evaluationMode: EvaluationMode
+    private let coreQueue: DispatchQueue
     private let synchronizer: Synchronizer
     private let applicationLifecycleObserver: ApplicationLifecycleObserver
     private let viewLifecycleObserver: ViewLifecycleObserver
@@ -82,7 +89,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let applicationInstallStateManager: ApplicationInstallStateManager
     private let userExplorer: HackleUserExplorer
     private let optOutManager: OptOutManager
-    private let onInitializedRef = AtomicReference<(() -> ())?>(value: nil)
+    private let onInitializedRef = AtomicReference<(@Sendable () -> ())?>(value: nil)
 
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
 
@@ -108,7 +115,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     init(
         core: HackleCore,
-        eventQueue: DispatchQueue,
+        evaluationMode: EvaluationMode,
+        coreQueue: DispatchQueue,
         synchronizer: Synchronizer,
         applicationLifecycleObserver: ApplicationLifecycleObserver,
         viewLifecycleObserver: ViewLifecycleObserver,
@@ -127,7 +135,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         optOutManager: OptOutManager
     ) {
         self.core = core
-        self.eventQueue = eventQueue
+        self.evaluationMode = evaluationMode
+        self.coreQueue = coreQueue
         self.synchronizer = synchronizer
         self.applicationLifecycleObserver = applicationLifecycleObserver
         self.viewLifecycleObserver = viewLifecycleObserver
@@ -146,7 +155,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         self.optOutManager = optOutManager
     }
 
-    func initialize(user: User?, completion: @escaping () -> ()) {
+    func initialize(user: User?, completion: @escaping @Sendable () -> ()) {
         userManager.initialize(user: user)
         onInitializedRef.set(newValue: completion)
         Task {
@@ -154,7 +163,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
             self.applicationLifecycleObserver.initialize()
             self.viewLifecycleObserver.initialize()
             await DefaultApplicationLifecycleManager.shared.publishWillEnterForegroundIfNeeded()
-            self.eventQueue.async { [weak self] in
+            self.coreQueue.async { [weak self] in
                 guard let self = self else { return }
                 if let completion = self.onInitializedRef.getAndSet(newValue: nil) {
                     self.initialize(completion: completion)
@@ -163,19 +172,25 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
-    private func initialize(completion: @escaping () -> ()) {
+    private func initialize(completion: @escaping @Sendable () -> ()) {
         workspaceManager.initialize()
         sessionManager.initialize()
         eventProcessor.initialize()
         applicationInstallStateManager.initialize()
-        synchronizer.sync { [weak self] in
+        // 초기화 중 들어온 coreQueue 작업(이벤트 처리 등)이 sync 완료 후 처리되도록 큐를 잡아둔다.
+        // suspend는 새 작업의 시작만 막으므로 스레드를 블로킹하지 않는다.
+        coreQueue.suspend()
+        Task { [weak self, coreQueue = self.coreQueue] in
             guard let self = self else {
+                coreQueue.resume()
                 completion()
                 return
             }
+            await self.synchronizer.safeSync()
             self.pushTokenRegistry.flush()
             self.notificationManager.flush()
             self.applicationInstallStateManager.checkApplicationInstall()
+            coreQueue.resume()
             completion()
         }
     }
@@ -185,6 +200,10 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func showUserExplorer() {
+        if evaluationMode == .remote {
+            Log.info("UserExplorer is not supported in EvaluationMode.REMOTE")
+            return
+        }
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }
@@ -205,90 +224,86 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
-    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        let updated = userManager.setUser(user: user)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+    // mutation은 userManager 내부에서 동기적으로 끝난다(동기 프리픽스). 여기서 Task { await ... }로 감싸면
+    // mutation까지 지연되므로, 반환된 Task(네트워크 sync)를 그대로 forward한다.
+    @discardableResult
+    func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
+        return userManager.setUser(user: user)
     }
 
-    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        let updated = userManager.setUserId(userId: userId)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+    @discardableResult
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
+        return userManager.setUserId(userId: userId)
     }
 
-    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        let updated = userManager.setDeviceId(deviceId: deviceId)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+    @discardableResult
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
+        return userManager.setDeviceId(deviceId: deviceId)
     }
 
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        track(event: operations.toEvent(), user: nil, hackleAppContext: hackleAppContext)
-        eventProcessor.flush()
-        userManager.updateProperties(operations: operations)
-        completion()
+    @discardableResult
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
+        return userManager.updateProperties(operations: operations)
     }
 
     func updatePushSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(key: "$push_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
+        track(event: operations.toEvent(key: "$push_subscriptions"), hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
     func updateSmsSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(key: "$sms_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
+        track(event: operations.toEvent(key: "$sms_subscriptions"), hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
     func updateKakaoSubscriptions(operations: HackleSubscriptionOperations, hackleAppContext: HackleAppContext) {
-        track(event: operations.toEvent(key: "$kakao_subscriptions"), user: nil, hackleAppContext: hackleAppContext)
+        track(event: operations.toEvent(key: "$kakao_subscriptions"), hackleAppContext: hackleAppContext)
         eventProcessor.flush()
     }
 
-    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
-        let updated = userManager.resetUser()
-        track(event: PropertyOperations.clearAll().toEvent(), user: nil, hackleAppContext: hackleAppContext)
-        userManager.syncIfNeeded(updated: updated, completion: completion)
+    @discardableResult
+    func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
+        return userManager.resetUser()
     }
 
-    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext) {
         let event = PropertyOperationsBuilder()
             .set(PIIProperty.phoneNumber.rawValue, phoneNumber)
             .build()
             .toSecuredEvent()
-        track(event: event, user: nil, hackleAppContext: hackleAppContext)
+        track(event: event, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
-        completion()
     }
 
-    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext) {
         let event = PropertyOperationsBuilder()
             .unset(PIIProperty.phoneNumber.rawValue)
             .build()
             .toSecuredEvent()
-        track(event: event, user: nil, hackleAppContext: hackleAppContext)
+        track(event: event, hackleAppContext: hackleAppContext)
         eventProcessor.flush()
-        completion()
     }
 
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
+    func variationDetail(experimentKey: Int, hackleAppContext: HackleAppContext) -> Decision {
         let sample = TimerSample.start()
         let decision: Decision
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             decision = try core.experiment(
                 experimentKey: Int64(experimentKey),
-                user: hackleUser,
-                defaultVariationKey: defaultVariation
+                user: hackleUser
             )
         } catch {
             Log.error("Unexpected error while deciding variation for experiment[\(experimentKey)]: \(String(describing: error))")
-            decision = Decision.of(experiment: nil, variation: defaultVariation, reason: DecisionReason.EXCEPTION)
+            decision = Decision.of(experiment: nil, variation: VariationKeys.control, reason: DecisionReason.EXCEPTION)
         }
         DecisionMetrics.experiment(sample: sample, key: experimentKey, decision: decision)
         return decision
     }
 
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
+    func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision] {
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             return try core.experiments(user: hackleUser).associate { experiment, decision in
                 (Int(experiment.key), decision)
             }
@@ -298,11 +313,11 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         }
     }
 
-    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
+    func featureFlagDetail(featureKey: Int, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
         let sample = TimerSample.start()
         let decision: FeatureFlagDecision
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             decision = try core.featureFlag(
                 featureKey: Int64(featureKey),
                 user: hackleUser
@@ -315,16 +330,16 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         return decision
     }
 
-    func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
-        let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+    func track(event: Event, hackleAppContext: HackleAppContext) {
+        let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
         core.track(event: event, user: hackleUser)
     }
 
-    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
+    func remoteConfig(key: String, defaultValue: HackleValue, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
         let sample = TimerSample.start()
         let decision: RemoteConfigDecision
         do {
-            let hackleUser = userManager.resolve(user: user, hackleAppContext: hackleAppContext)
+            let hackleUser = userManager.hackleUser(appContext: hackleAppContext)
             decision = try core.remoteConfig(parameterKey: key, user: hackleUser, defaultValue: defaultValue)
         } catch {
             Log.error("Unexpected exception while deciding remote config parameter[\(key)]. Returning default value: \(String(describing: error))")
@@ -342,16 +357,24 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         optOutManager.setOptOutTracking(optOut: optOut)
     }
 
-    func fetch(completion: @escaping () -> ()) {
+    @discardableResult
+    func fetch() -> Task<Void, Never> {
+        // Throttler.execute는 반환 전에 accept/reject 중 하나를 동기적으로 호출하는 계약이다.
+        // 계약 위반(둘 다 미호출)은 디버그에서 즉시 드러내되, 릴리스에서는 크래시 대신 무해한 no-op Task를 반환한다.
+        var task: Task<Void, Never>? = nil
         fetchThrottler.execute(
             accept: {
-                self.synchronizer.sync(completion: completion)
+                task = Task { await self.synchronizer.safeSync() }
             },
             reject: {
                 Log.debug("Too many quick fetch requests")
-                completion()
+                task = Task {}
             }
         )
+        if task == nil {
+            assertionFailure("Throttler.execute must synchronously call accept or reject before returning")
+        }
+        return task ?? Task {}
     }
 
     func setPushToken(deviceToken: Data) {

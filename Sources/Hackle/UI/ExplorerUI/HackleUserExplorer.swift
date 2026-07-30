@@ -40,16 +40,16 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     private let core: HackleCore
     private let userManager: UserManager
     private let pushTokenManager: PushTokenManager
-    private let abTestOverrideStorage: HackleUserManualOverrideStorage
-    private let featureFlagOverrideStorage: HackleUserManualOverrideStorage
+    private let abTestOverrideStorage: DefaultExperimentManualOverrideStorage
+    private let featureFlagOverrideStorage: DefaultExperimentManualOverrideStorage
     private let devToolsAPI: DevToolsAPI
 
     init(
         core: HackleCore,
         userManager: UserManager,
         pushTokenManager: PushTokenManager,
-        abTestOverrideStorage: HackleUserManualOverrideStorage,
-        featureFlagOverrideStorage: HackleUserManualOverrideStorage,
+        abTestOverrideStorage: DefaultExperimentManualOverrideStorage,
+        featureFlagOverrideStorage: DefaultExperimentManualOverrideStorage,
         devToolsAPI: DevToolsAPI
     ) {
         self.core = core
@@ -61,7 +61,7 @@ class DefaultHackleUserExplorer: HackleUserExplorer {
     }
 
     func currentUser() -> HackleUser {
-        userManager.resolve(user: nil, hackleAppContext: .default)
+        userManager.hackleUser()
     }
 
     func registeredPushToken() -> String? {

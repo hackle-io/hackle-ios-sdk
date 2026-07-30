@@ -12,17 +12,17 @@ class DefaultInAppMessageScheduleActionDeterminer: InAppMessageScheduleActionDet
         let action: InAppMessageScheduleAction
         if delay > 0 {
             action = .delay
-        } else if DefaultInAppMessageScheduleActionDeterminer.deliverDruationRange.contains(delay) {
+        } else if DefaultInAppMessageScheduleActionDeterminer.deliverDurationRange.contains(delay) {
             action = .deliver
         } else if delay < DefaultInAppMessageScheduleActionDeterminer.deliverDurationThreshold {
             action = .ignore
         } else {
-            throw HackleError.error("InAppMessageSchedule cannot be determiend (key: \(request.schedule.inAppMessageKey))")
+            throw HackleError.error("InAppMessageScheduleAction cannot be determined (key: \(request.schedule.inAppMessageKey))")
         }
         Log.debug("InAppMessage ScheduleAction determined. action: \(action), dispatchId: \(request.schedule.dispatchId)")
         return action
     }
 
     private static let deliverDurationThreshold: TimeInterval = -60
-    private static let deliverDruationRange = (deliverDurationThreshold...0)
+    private static let deliverDurationRange = (deliverDurationThreshold...0)
 }

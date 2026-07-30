@@ -155,6 +155,10 @@ extension Mockable {
     func call<T, R>(_ function: MockFunction<T, R?>, args: T) -> R? {
         call(function.mockReference, args: args)
     }
+
+    func call<T, R>(_ function: MockFunction<T, R>, args: T, fallback: @autoclosure () -> R) -> R {
+        call(function.mockReference, args: args, fallback: fallback())
+    }
 }
 
 private func resultF<T, R>(_ function: @escaping (T) throws -> R) -> (T) -> Result<R, Error> {

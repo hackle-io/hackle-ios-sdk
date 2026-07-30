@@ -27,7 +27,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
             it("previousScreen = nil") {
                 // given
                 let screen = Screen.builder(name: "name", className: "class").build()
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: User.builder().build(), timestamp: Date())
@@ -47,7 +47,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
                 // given
                 let previousScreen = Screen.builder(name: "prev_name", className: "prev_class").build()
                 let screen = Screen.builder(name: "name", className: "class").build()
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
 
                 // when
                 sut.onScreenStarted(previousScreen: previousScreen, currentScreen: screen, user: User.builder().build(), timestamp: Date())
@@ -70,7 +70,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
                     .property("entry_point", "push_notification")
                     .property("campaign_id", 12345)
                     .build()
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: User.builder().build(), timestamp: Date())
@@ -91,7 +91,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
             it("includes empty properties when screen has no custom properties") {
                 // given
                 let screen = Screen.builder(name: "EmptyProps", className: "EmptyPropsVC").build()
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: User.builder().build(), timestamp: Date())
@@ -113,7 +113,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
                     .property("product_id", "ABC-123")
                     .property("category", "electronics")
                     .build()
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
 
                 // when
                 sut.onScreenStarted(previousScreen: nil, currentScreen: screen, user: User.builder().build(), timestamp: Date())
@@ -138,7 +138,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
                     .property("session_id", "session-123")
                     .property("user_action", "button_click")
                     .build()
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
 
                 // when
                 sut.onScreenStarted(previousScreen: previousScreen, currentScreen: currentScreen, user: User.builder().build(), timestamp: Date())
@@ -169,7 +169,7 @@ class ScreenEventTrackerSpecs: QuickSpec {
                 let prevScreen = Screen.builder(name: "correct_prev_name", className: "correct_prev_class")
                     .build()
                 
-                every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+                every(userManager.hackleUserMock).returns(HackleUser.builder().build())
                 
                 // when
                 sut.onScreenStarted(previousScreen: prevScreen, currentScreen: currentScreen, user: User.builder().build(), timestamp: Date())

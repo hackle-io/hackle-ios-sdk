@@ -1,10 +1,8 @@
 //
-// Created by yong on 2020/12/11.
-//
 
 import Foundation
 
-protocol UserEvent {
+protocol UserEvent: Sendable {
     var insertId: String { get }
     var type: UserEventType { get }
     var timestamp: Date { get }
@@ -23,6 +21,7 @@ enum UserEvents {
 
     static func exposure(
         user: HackleUser,
+        workspace: Workspace,
         evaluation: ExperimentEvaluation,
         properties: [String: Any],
         timestamp: Date
@@ -31,17 +30,18 @@ enum UserEvents {
             insertId: UUID().uuidString.lowercased(),
             timestamp: timestamp,
             user: user,
+            internalProperties: workspace.toProperties(),
             experiment: evaluation.experiment,
-            variationId: evaluation.variationId,
-            variationKey: evaluation.variationKey,
-            decisionReason: evaluation.reason,
+            variationId: evaluation.experimentResult.variation.id,
+            variationKey: evaluation.experimentResult.variation.key,
+            decisionReason: evaluation.experimentResult.reason,
             properties: properties
         )
     }
 
     static func track(
-        eventType: EventType,
         event: Event,
+        workspace: Workspace?,
         timestamp: Date,
         user: HackleUser
     ) -> UserEvents.Track {
@@ -49,13 +49,14 @@ enum UserEvents {
             insertId: UUID().uuidString.lowercased(),
             timestamp: timestamp,
             user: user,
-            eventType: eventType,
+            internalProperties: workspace?.toProperties() ?? [:],
             event: event
         )
     }
 
     static func remoteConfig(
         user: HackleUser,
+        workspace: Workspace,
         evaluation: RemoteConfigEvaluation,
         properties: [String: Any],
         timestamp: Date
@@ -64,9 +65,10 @@ enum UserEvents {
             insertId: UUID().uuidString.lowercased(),
             timestamp: timestamp,
             user: user,
+            internalProperties: workspace.toProperties(),
             parameter: evaluation.parameter,
-            valueId: evaluation.valueId,
-            decisionReason: evaluation.reason,
+            valueId: evaluation.remoteConfigResult.value?.id,
+            decisionReason: evaluation.remoteConfigResult.reason,
             properties: properties
         )
     }
@@ -76,16 +78,18 @@ enum UserEvents {
         let insertId: String
         let timestamp: Date
         let user: HackleUser
+        let internalProperties: [String: Any]
         let experiment: Experiment
         let variationId: Variation.Id?
         let variationKey: Variation.Key
         let decisionReason: String
         let properties: [String: Any]
 
-        init(insertId: String, timestamp: Date, user: HackleUser, experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String, properties: [String: Any]) {
+        init(insertId: String, timestamp: Date, user: HackleUser, internalProperties: [String: Any], experiment: Experiment, variationId: Variation.Id?, variationKey: Variation.Key, decisionReason: String, properties: [String: Any]) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user
+            self.internalProperties = internalProperties
             self.experiment = experiment
             self.variationId = variationId
             self.variationKey = variationKey
@@ -98,6 +102,7 @@ enum UserEvents {
                 insertId: insertId,
                 timestamp: timestamp,
                 user: user,
+                internalProperties: internalProperties,
                 experiment: experiment,
                 variationId: variationId,
                 variationKey: variationKey,
@@ -112,14 +117,14 @@ enum UserEvents {
         let insertId: String
         let timestamp: Date
         let user: HackleUser
-        let eventType: EventType
+        let internalProperties: [String: Any]
         let event: Event
 
-        init(insertId: String, timestamp: Date, user: HackleUser, eventType: EventType, event: Event) {
+        init(insertId: String, timestamp: Date, user: HackleUser, internalProperties: [String: Any], event: Event) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user
-            self.eventType = eventType
+            self.internalProperties = internalProperties
             self.event = event
         }
 
@@ -128,7 +133,7 @@ enum UserEvents {
                 insertId: insertId,
                 timestamp: timestamp,
                 user: user,
-                eventType: eventType,
+                internalProperties: internalProperties,
                 event: event
             )
         }
@@ -139,15 +144,17 @@ enum UserEvents {
         let insertId: String
         let timestamp: Date
         let user: HackleUser
+        let internalProperties: [String: Any]
         let parameter: RemoteConfigParameter
         let valueId: Int64?
         let decisionReason: String
         let properties: [String: Any]
 
-        init(insertId: String, timestamp: Date, user: HackleUser, parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any]) {
+        init(insertId: String, timestamp: Date, user: HackleUser, internalProperties: [String: Any], parameter: RemoteConfigParameter, valueId: Int64?, decisionReason: String, properties: [String: Any]) {
             self.insertId = insertId
             self.timestamp = timestamp
             self.user = user
+            self.internalProperties = internalProperties
             self.parameter = parameter
             self.valueId = valueId
             self.decisionReason = decisionReason
@@ -159,6 +166,7 @@ enum UserEvents {
                 insertId: insertId,
                 timestamp: timestamp,
                 user: user,
+                internalProperties: internalProperties,
                 parameter: parameter,
                 valueId: valueId,
                 decisionReason: decisionReason,

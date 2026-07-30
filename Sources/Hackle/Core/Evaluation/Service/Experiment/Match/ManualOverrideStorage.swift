@@ -1,0 +1,30 @@
+//
+//  ManualOverrideStorage.swift
+//  Hackle
+//
+
+import Foundation
+
+
+protocol ManualOverrideStorage {
+    func get(experiment: ExperimentConfig, user: HackleUser) -> Variation?
+}
+
+
+class DelegatingManualOverrideStorage: ManualOverrideStorage {
+
+    private let storages: [ManualOverrideStorage]
+
+    init(storages: [ManualOverrideStorage]) {
+        self.storages = storages
+    }
+
+    func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
+        for storage in storages {
+            if let variation = storage.get(experiment: experiment, user: user) {
+                return variation
+            }
+        }
+        return nil
+    }
+}

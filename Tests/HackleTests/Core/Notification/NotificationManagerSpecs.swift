@@ -8,10 +8,10 @@ class NotificationManagerSpec: QuickSpec {
     override class func spec() {
         let dispatchQueue = DispatchQueue(label: "test")
         var core: HackleCoreStub!
-        var workspaceFetcher: MockWorkspaceFetcher!
+        var workspaceManager: MockWorkspaceManager!
         var userManager: MockUserManager!
         var repository: MockNotificationRepository!
-        
+
         beforeSuite {
             // 최초에 버전값을 초기화 해서 강제로 최신테이블 재생성
             UserDefaultsKeyValueRepository.of(suiteName: storageSuiteNameDatabaseVersion).remove(key: "shared_hackle.sqlite")
@@ -19,7 +19,7 @@ class NotificationManagerSpec: QuickSpec {
 
         beforeEach {
             core = HackleCoreStub()
-            workspaceFetcher = MockWorkspaceFetcher()
+            workspaceManager = MockWorkspaceManager()
             userManager = MockUserManager()
             repository = MockNotificationRepository()
             repository.deleteAll()
@@ -28,29 +28,17 @@ class NotificationManagerSpec: QuickSpec {
         it("track push click event when notification data received") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
-                    id: 123,
-                    environmentId: 456,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 456))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let timestamp = Date()
             manager.onNotificationDataReceived(
@@ -89,29 +77,17 @@ class NotificationManagerSpec: QuickSpec {
         it("save notification data if environment is not same") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
-                    id: 123,
-                    environmentId: 456,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 456))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let timestamp = Date()
             let matchData = NotificationData(
@@ -215,16 +191,16 @@ class NotificationManagerSpec: QuickSpec {
         it("save notification data if workspace fetcher returns null") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock).returns(nil)
+            every(workspaceManager.metadataMock).returns(nil)
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             manager.onNotificationDataReceived(
                 data: NotificationData(
@@ -256,29 +232,17 @@ class NotificationManagerSpec: QuickSpec {
         it("flush data until empty") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
-                    id: 123,
-                    environmentId: 222,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 222))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
@@ -338,29 +302,17 @@ class NotificationManagerSpec: QuickSpec {
         it("flush only same environment data") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
-                .returns(WorkspaceEntity(
-                    id: 3,
-                    environmentId: 456,
-                    experiments: [],
-                    featureFlags: [],
-                    buckets: [],
-                    eventTypes: [],
-                    segments: [],
-                    containers: [],
-                    parameterConfigurations: [],
-                    remoteConfigParameters: [],
-                    inAppMessages: []
-                ))
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 3, environmentId: 456))
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
@@ -420,17 +372,17 @@ class NotificationManagerSpec: QuickSpec {
         it("flush only same environment data") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock)
+            every(workspaceManager.metadataMock)
                 .returns(nil)
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
             repository.putAll(entities: [
                 NotificationHistoryEntity(
                     historyId: 0,
@@ -490,16 +442,16 @@ class NotificationManagerSpec: QuickSpec {
         it("check null column") {
             let manager = DefaultNotificationManager(
                 core: core,
-                dispatchQueue: dispatchQueue,
-                workspaceFetcher: workspaceFetcher,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
                 userManager: userManager,
                 repository: repository
             )
-            every(workspaceFetcher.fetchMock).returns(nil)
+            every(workspaceManager.metadataMock).returns(nil)
             let hackleUser = HackleUser.builder()
                 .identifier(.id, "user")
                 .build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let timeStamp = Date()
             manager.onNotificationDataReceived(

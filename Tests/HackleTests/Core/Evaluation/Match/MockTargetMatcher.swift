@@ -8,7 +8,7 @@ class MockTargetMatcher: Mock, TargetMatcher {
 
     lazy var matchesMock = MockFunction(self, matches)
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, target: Target) throws -> Bool {
         call(matchesMock, args: (request, context, target))
     }
 }
@@ -30,7 +30,7 @@ class TargetMatcherStub: TargetMatcher {
         TargetMatcherStub(isMatches: isMatches)
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, target: Target) throws -> Bool {
         let isMatch = isMatches[callCount]
         callCount += 1
         return isMatch

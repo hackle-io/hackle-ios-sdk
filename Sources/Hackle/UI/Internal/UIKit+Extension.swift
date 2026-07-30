@@ -1,0 +1,106 @@
+//
+//  UIKit+Extension.swift
+//  Hackle
+//
+//  Created by yong on 2023/06/12.
+//
+
+import Foundation
+import UIKit
+
+extension UIColor {
+
+    convenience init?(hex: String, alpha: CGFloat = 1.0) {
+        var hexString = hex.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+
+        if hexString.hasPrefix("#") {
+            hexString = String(hexString.dropFirst())
+        }
+
+        guard let color = UInt64(hexString, radix: 16) else {
+            return nil
+        }
+
+        let mask = 0x000000FF
+        let red = CGFloat(Int(color >> 16) & mask) / 255.0
+        let green = CGFloat(Int(color >> 8) & mask) / 255.0
+        let blue = CGFloat(Int(color) & mask) / 255.0
+
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+}
+
+extension UIButton {
+
+    func onClick(_ action: @escaping () -> ()) {
+        @objc final class Listener: NSObject {
+            let action: () -> ()
+
+            init(_ action: @escaping () -> ()) {
+                self.action = action
+            }
+
+            @objc func onClick() {
+                action()
+            }
+        }
+
+        let listener = Listener(action)
+        self.addTarget(listener, action: #selector(Listener.onClick), for: .touchUpInside)
+        objc_setAssociatedObject(self, UUID().uuidString, listener, .OBJC_ASSOCIATION_RETAIN)
+    }
+}
+
+extension UIImageView {
+
+    func loadImage(url: String, completion: (@MainActor () -> Void)? = nil) {
+        let cacheKey = url
+        if let cachedImage = ImageCacheManager.shared.object(forKey: cacheKey) {
+            self.image = cachedImage
+            completion?()
+            return
+        }
+
+        guard let url = URL(string: url) else {
+            Log.error("Invalid url: \(url)")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                if let error = error {
+                    Log.error("Failed to load image [\(url)]: \(error)")
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    if let data = data, let image = UIImage(data: data) {
+                        ImageCacheManager.shared.setObject(image, forKey: cacheKey)
+                        guard let self = self else {
+                            return
+                        }
+                        self.image = image
+                        completion?()
+                    }
+                }
+            }
+            .resume()
+    }
+}
+
+extension UIResponder {
+    var responders: AnySequence<UIResponder> {
+        AnySequence { () -> AnyIterator<UIResponder> in
+            var responder: UIResponder? = self
+            return AnyIterator {
+                responder = responder?.next
+                return responder
+            }
+        }
+    }
+}
+
+extension CGSize {
+    var aspectRatio: Double {
+        width / height
+    }
+}

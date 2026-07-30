@@ -15,7 +15,7 @@ class DefaultInAppMessageImpressionStorageSpecs: QuickSpec {
         }
 
         it("get and set") {
-            let inAppMessage = InAppMessage.create(id: 42)
+            let inAppMessage = InAppMessageEntity.create(id: 42)
             let impression = InAppMessageImpression(identifiers: ["a": "b"], timestamp: 4242)
 
             expect(try sut.get(inAppMessage: inAppMessage).count) == 0

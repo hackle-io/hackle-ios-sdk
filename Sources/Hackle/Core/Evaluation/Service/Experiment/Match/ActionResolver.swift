@@ -1,0 +1,50 @@
+import Foundation
+
+protocol ActionResolver {
+    func resolveOrNil(request: ExperimentLocalEvaluateRequest, action: Action) throws -> Variation?
+}
+
+class DefaultActionResolver: ActionResolver {
+    private let bucketer: Bucketer
+
+    init(bucketer: Bucketer) {
+        self.bucketer = bucketer
+    }
+
+    func resolveOrNil(request: ExperimentLocalEvaluateRequest, action: Action) throws -> Variation? {
+        switch action.type {
+        case .variation:
+            return try resolveVariation(request: request, action: action)
+        case .bucket:
+            return try resolveBucket(request: request, action: action)
+        }
+    }
+
+    private func resolveVariation(request: ExperimentLocalEvaluateRequest, action: Action) throws -> Variation {
+        guard let variationId = action.variationId else {
+            throw HackleError.error("action variation[\(request.experimentConfig.id)]")
+        }
+
+        guard let variation = request.experimentConfig.getVariationOrNil(variationId: variationId) else {
+            throw HackleError.error("variation[\(variationId)]")
+        }
+
+        return variation
+    }
+
+    private func resolveBucket(request: ExperimentLocalEvaluateRequest, action: Action) throws -> Variation? {
+        guard let bucketId = action.bucketId else {
+            throw HackleError.error("action bucket[\(request.experimentConfig.id)]")
+        }
+        guard let bucket = request.workspaceConfig.getBucketOrNil(bucketId: bucketId) else {
+            throw HackleError.error("bucket[\(bucketId)]")
+        }
+        guard let identifier = request.user.identifiers[request.experimentConfig.identifierType] else {
+            return nil
+        }
+        guard let allocatedSlot = bucketer.bucketing(bucket: bucket, identifier: identifier) else {
+            return nil
+        }
+        return request.experimentConfig.getVariationOrNil(variationId: allocatedSlot.variationId)
+    }
+}

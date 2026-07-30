@@ -64,7 +64,8 @@ class TimerBuilder {
     }
 }
 
-class TimerSample {
+// clock, startTick 모두 let(불변)이므로 thread-safe.
+final class TimerSample: @unchecked Sendable {
 
     private let clock: Clock
     private let startTick: UInt64

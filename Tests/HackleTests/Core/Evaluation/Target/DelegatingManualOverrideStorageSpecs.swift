@@ -55,7 +55,7 @@ class DelegatingManualOverrideStorageSpecs: QuickSpec {
             self.returns = returns
         }
 
-        func get(experiment: Experiment, user: HackleUser) -> Variation? {
+        func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
             let variation = returns[count]
             count = count + 1
             return variation

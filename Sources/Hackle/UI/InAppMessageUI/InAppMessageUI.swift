@@ -39,23 +39,28 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         return view
     }
 
-    func present(context: InAppMessagePresentationContext) {
-        Task { @MainActor in
-            self.presentNow(context: context)
-        }
+    func present(context: InAppMessagePresentationContext) async -> InAppMessagePresentResponse {
+        await presentNow(context: context)
     }
 
-    @MainActor private func presentNow(context: InAppMessagePresentationContext) {
-        guard checkRootViewController(),
-              noMessagePresented(),
-              orientationSupported(context: context)
-        else {
-            return
+    @MainActor private func presentNow(context: InAppMessagePresentationContext) -> InAppMessagePresentResponse {
+        guard applicationActive() else {
+            return InAppMessagePresentResponse.of(code: .applicationNotActive, context: context)
+        }
+        guard checkRootViewController() else {
+            return InAppMessagePresentResponse.of(code: .rootViewControllerNotFound, context: context)
+        }
+        guard noMessagePresented() else {
+            return InAppMessagePresentResponse.of(code: .alreadyPresented, context: context)
+        }
+        guard orientationSupported(context: context) else {
+            return InAppMessagePresentResponse.of(code: .unsupportedOrientation, context: context)
         }
 
         // Message View
+        // 미노출 AB 등 view가 생성되지 않는 경우에도 present 한 것으로 간주한다
         guard let messageView = createMessageView(context: context) else {
-            return
+            return InAppMessagePresentResponse.of(code: .present, context: context)
         }
 
         // ViewController
@@ -77,6 +82,17 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         } else {
             window.isHidden = false
         }
+        return InAppMessagePresentResponse.of(code: .present, context: context)
+    }
+
+    // 백그라운드에서는 노출하지 않는다. checkRootViewController는 activeWindowScene의 fallback 때문에
+    // 백그라운드에서도 통과하므로 앱 상태를 직접 확인한다.
+    @MainActor private func applicationActive() -> Bool {
+        guard let application = UIUtils.application else {
+            // app extension 등 application 조회 불가 환경 — 여기서는 통과하지만 checkRootViewController가 keyWindow 부재로 차단한다
+            return true
+        }
+        return application.applicationState == .active
     }
 
     @MainActor private func checkRootViewController() -> Bool {

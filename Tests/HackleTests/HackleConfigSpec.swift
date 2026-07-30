@@ -69,6 +69,28 @@ class HackleConfigSpec: QuickSpec {
             expect(HackleConfig.builder().mode(.web_view_wrapper).build().sessionTracking) == false
         }
 
+        it("evaluationMode 기본값은 local이다") {
+            let config = HackleConfigBuilder().build()
+            expect(config.evaluationMode) == EvaluationMode.local
+        }
+
+        it("builder로 evaluationMode를 remote로 설정할 수 있다") {
+            let config = HackleConfigBuilder()
+                .mode(.remote)
+                .build()
+            expect(config.evaluationMode) == EvaluationMode.remote
+        }
+
+        it("appMode와 evaluationMode는 독립적으로 설정된다") {
+            let config = HackleConfigBuilder()
+                .mode(HackleAppMode.web_view_wrapper)
+                .mode(EvaluationMode.remote)
+                .build()
+            expect(config.appMode) == HackleAppMode.web_view_wrapper
+            expect(config.evaluationMode) == EvaluationMode.remote
+            expect(config.sessionTracking) == false
+        }
+
         context("HackleAppMode") {
             it("description") {
                 expect(HackleAppMode.native.description).to(equal("native"))

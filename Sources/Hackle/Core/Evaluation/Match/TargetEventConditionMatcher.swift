@@ -2,8 +2,6 @@
 //  TargetEventConditionMatcher.swift
 //  Hackle
 //
-//  Created by sungwoo.yeo on 1/31/25.
-//
 
 import Foundation
 
@@ -18,7 +16,7 @@ class TargetEventConditionMatcher: ConditionMatcher {
         self.numberOfEventsWithPropertyInDaysMatcher = numberOfEventsWithPropertyInDaysMatcher
     }
     
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
         switch condition.key.type {
         case .numberOfEventsInDays:
             return try numberOfEventsInDaysMatcher.match(targetEvents: request.user.targetEvents, condition: condition)
@@ -111,11 +109,10 @@ class NumberOfEventsWithPropertyInDaysMatcher: NumberOfEventInDayMatcher {
     ///   - propertyCondition: 조건 프로퍼티
     /// - Returns: 만족 여부
     private func propertyMatch(property: TargetEvent.Property, propertyCondition: Target.Condition) -> Bool {
-        if property.type == propertyCondition.key.type && propertyCondition.key.name != property.key {
-            return false
+        if property.type == propertyCondition.key.type && property.key == propertyCondition.key.name {
+            return valueOperatorMatcher.matches(userValue: property.value, match: propertyCondition.match)
         }
-        
-        return valueOperatorMatcher.matches(userValue: property.value, match: propertyCondition.match)
+        return false
     }
 }
 

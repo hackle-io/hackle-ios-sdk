@@ -22,8 +22,8 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
 
         it("when override info is empty then returns false") {
             // given
-            let inAppMessage = InAppMessage.create()
-            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage)
+            let inAppMessage = InAppMessageEntity.create()
+            let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -35,13 +35,13 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
         it("overridden") {
             // given
             let user = HackleUser.builder().identifier(.user, "a").build()
-            let inAppMessage = InAppMessage.create(
-                targetContext: InAppMessage.targetContext(overrides: [
+            let inAppMessage = InAppMessageEntity.create(
+                targetContext: InAppMessageEntity.targetContext(overrides: [
                     InAppMessage.UserOverride(identifierType: "$id", identifiers: ["a"]),
                     InAppMessage.UserOverride(identifierType: "$userId", identifiers: ["a"])
                 ])
             )
-            let request = InAppMessage.eligibilityRequest(user: user, inAppMessage: inAppMessage)
+            let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -53,13 +53,13 @@ class InAppMessageUserOverrideMatcherSpecs: QuickSpec {
         it("not overridden") {
             // given
             let user = HackleUser.builder().identifier(.device, "a").build()
-            let inAppMessage = InAppMessage.create(
-                targetContext: InAppMessage.targetContext(overrides: [
+            let inAppMessage = InAppMessageEntity.create(
+                targetContext: InAppMessageEntity.targetContext(overrides: [
                     InAppMessage.UserOverride(identifierType: "$id", identifiers: ["a"]),
                     InAppMessage.UserOverride(identifierType: "$userId", identifiers: ["a"])
                 ])
             )
-            let request = InAppMessage.eligibilityRequest(user: user, inAppMessage: inAppMessage)
+            let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -76,7 +76,7 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
         it("when targets is empty when returns true") {
             // given
             let sut = InAppMessageTargetMatcher(targetMatcher: TargetMatcherStub.of())
-            let request = InAppMessage.eligibilityRequest()
+            let request = InAppMessageEntity.eligibilityRequest()
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -89,9 +89,9 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
             // given
             let targetMatcher = TargetMatcherStub.of(false, false, false, true, false)
             let sut = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
-            let request = InAppMessage.eligibilityRequest(
-                inAppMessage: InAppMessage.create(
-                    targetContext: InAppMessage.targetContext(targets: targets()))
+            let request = InAppMessageEntity.eligibilityRequest(
+                inAppMessage: InAppMessageEntity.create(
+                    targetContext: InAppMessageEntity.targetContext(targets: targets()))
             )
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -105,9 +105,9 @@ class InAppMessageTargetMatcherSpecs: QuickSpec {
             // given
             let targetMatcher = TargetMatcherStub.of(false, false, false, false, false)
             let sut = InAppMessageTargetMatcher(targetMatcher: targetMatcher)
-            let request = InAppMessage.eligibilityRequest(
-                inAppMessage: InAppMessage.create(
-                    targetContext: InAppMessage.targetContext(targets: targets()))
+            let request = InAppMessageEntity.eligibilityRequest(
+                inAppMessage: InAppMessageEntity.create(
+                    targetContext: InAppMessageEntity.targetContext(targets: targets()))
             )
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -146,8 +146,8 @@ class InAppMessageHiddenMatcherSpecs: QuickSpec {
 
         it("match") {
             // given
-            let inAppMessage = InAppMessage.create(id: 42)
-            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage)
+            let inAppMessage = InAppMessageEntity.create(id: 42)
+            let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage)
 
             storage.put(inAppMessage: inAppMessage, expireAt: Date() + 10)
 
@@ -160,8 +160,8 @@ class InAppMessageHiddenMatcherSpecs: QuickSpec {
 
         it("not match") {
             // given
-            let inAppMessage = InAppMessage.create(id: 42)
-            let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage)
+            let inAppMessage = InAppMessageEntity.create(id: 42)
+            let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage)
 
             // when
             let actual = try sut.matches(request: request, context: Evaluators.context())
@@ -189,8 +189,8 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
 
         context("frequencyCap이 nil일 때") {
             it("false를 반환한다") {
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger())
-                let request = InAppMessage.eligibilityRequest(inAppMessage: inAppMessage)
+                let inAppMessage = InAppMessageEntity.create(id: 42, eventTrigger: InAppMessageEntity.eventTrigger())
+                let request = InAppMessageEntity.eligibilityRequest(inAppMessage: inAppMessage)
 
                 let result = try? sut.matches(request: request, context: Evaluators.context())
                 expect(result) == false
@@ -201,13 +201,13 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("impression이 identifierCap 조건을 만족하면 true") {
                 let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessageEntity.create(id: 42, eventTrigger: InAppMessageEntity.eventTrigger(rules: [], frequencyCap: frequencyCap))
                 
 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
                 try storage.set(inAppMessage: inAppMessage, impressions: [impression])
                 
-                let request = InAppMessage.eligibilityRequest(user: user, inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
                 let result = try? sut.matches(request: request, context: Evaluators.context())
                 expect(result) == true
@@ -216,14 +216,14 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("impression이 identifierCap 조건을 만족하지 않으면 false") {
                 let identifierCap = InAppMessage.EventTrigger.IdentifierCap(identifierType: "$id", count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [identifierCap], durationCap: nil)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessageEntity.create(id: 42, eventTrigger: InAppMessageEntity.eventTrigger(rules: [], frequencyCap: frequencyCap))
                 user = HackleUser.builder().identifier(.id, "user1").build()
                 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970)
                 try storage.set(inAppMessage: inAppMessage, impressions: [impression])
 
                 user = HackleUser.builder().identifier(.id, "user2").build()
-                let request = InAppMessage.eligibilityRequest(user: user, inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
                 let result = try? sut.matches(request: request, context: Evaluators.context())
                 expect(result) == false
@@ -232,12 +232,12 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("durationCap이 만족하면 true") {
                 let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessageEntity.create(id: 42, eventTrigger: InAppMessageEntity.eventTrigger(rules: [], frequencyCap: frequencyCap))
 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 30)
                 try storage.set(inAppMessage: inAppMessage, impressions: [impression])
 
-                let request = InAppMessage.eligibilityRequest(user: user, inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
                 let result = try? sut.matches(request: request, context: Evaluators.context())
                 expect(result) == true
@@ -246,12 +246,12 @@ class InAppMessageFrequencyCapMatcherSpecs: QuickSpec {
             it("durationCap이 만족하지 않으면 false") {
                 let durationCap = InAppMessage.EventTrigger.DurationCap(duration: 60, count: 1)
                 let frequencyCap = InAppMessage.EventTrigger.FrequencyCap(identifierCaps: [], durationCap: durationCap)
-                let inAppMessage = InAppMessage.create(id: 42, eventTrigger: InAppMessage.eventTrigger(rules: [], frequencyCap: frequencyCap))
+                let inAppMessage = InAppMessageEntity.create(id: 42, eventTrigger: InAppMessageEntity.eventTrigger(rules: [], frequencyCap: frequencyCap))
 
                 let impression = InAppMessageImpression(identifiers: user.identifiers, timestamp: now.timeIntervalSince1970 - 120)
                 try storage.set(inAppMessage: inAppMessage, impressions: [impression])
 
-                let request = InAppMessage.eligibilityRequest(user: user, inAppMessage: inAppMessage)
+                let request = InAppMessageEntity.eligibilityRequest(user: user, inAppMessage: inAppMessage)
 
                 let result = try? sut.matches(request: request, context: Evaluators.context())
                 expect(result) == false

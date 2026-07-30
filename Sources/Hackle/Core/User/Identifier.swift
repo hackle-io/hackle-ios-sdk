@@ -98,8 +98,3 @@ class IdentifiersBuilder {
     }
 }
 
-extension User {
-    var resolvedIdentifiers: Identifiers {
-        Identifiers.from(user: self)
-    }
-}

@@ -10,8 +10,8 @@ class InAppMessageScheduleRequestSpecs: QuickSpec {
             let startedAt = Date(timeIntervalSince1970: 10)
             let deliverAt = Date(timeIntervalSince1970: 50)
             let requestedAt = Date(timeIntervalSince1970: 25)
-            let request = InAppMessage.scheduleRequest(
-                schedule: InAppMessage.schedule(
+            let request = InAppMessageEntity.scheduleRequest(
+                schedule: InAppMessageEntity.schedule(
                     time: InAppMessageSchedule.Time(
                         startedAt: startedAt,
                         deliverAt: deliverAt

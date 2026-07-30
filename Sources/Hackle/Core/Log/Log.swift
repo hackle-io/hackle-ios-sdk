@@ -21,6 +21,11 @@ class Log {
         increment(.info)
     }
 
+    static func warn(_ msg: @autoclosure () -> String) {
+        os_log("%{public}@", log: .hackle, type: .default, msg())
+        increment(.warn)
+    }
+
     static func error(_ msg: @autoclosure () -> String) {
         os_log("%{public}@", log: .hackle, type: .error, msg())
         increment(.error)
@@ -39,5 +44,6 @@ extension OSLog {
 enum LogLevel: String, CaseIterable {
     case debug = "DEBUG"
     case info = "INFO"
+    case warn = "WARN"
     case error = "ERROR"
 }

@@ -138,7 +138,7 @@ class SessionUserDecoratorSpecs: QuickSpec {
                     .build()
 
                 // when
-                let decorated = user.decorateWith(docorator: sut)
+                let decorated = user.decorateWith(decorator: sut)
 
                 // then
                 expect(decorated.sessionId) == "session-ext-123"
