@@ -14,7 +14,7 @@ class RemoteEvaluationModeSpecs: AsyncSpec {
 
         it("HackleApp.create가 REMOTE mode로 생성된다") {
             let config = HackleConfigBuilder()
-                .mode(EvaluationMode.remote)
+                .evaluationMode(EvaluationMode.remote)
                 .build()
 
             let app = await MainActor.run {

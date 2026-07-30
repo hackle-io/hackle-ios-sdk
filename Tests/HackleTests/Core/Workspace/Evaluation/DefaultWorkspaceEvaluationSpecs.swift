@@ -265,10 +265,11 @@ class DefaultWorkspaceEvaluationSpecs: QuickSpec {
         }
 
         describe("toProperties") {
-            it("config_modified_at과 remote_evaluated_at을 포함한다") {
+            it("evaluation_mode, config_modified_at과 remote_evaluated_at을 포함한다") {
                 let sut = DefaultWorkspaceEvaluation.from(dto: decodeResponse().full!, fullEvaluatedAt: 0)
                 let properties = sut.toProperties()
 
+                expect(properties["evaluation_mode"] as? String) == "REMOTE"
                 expect(properties["config_modified_at"] as? String) == "Thu, 10 Jul 2026 00:00:00 GMT"
                 expect(properties["remote_evaluated_at"] as? Int64) == 1720000000000
             }

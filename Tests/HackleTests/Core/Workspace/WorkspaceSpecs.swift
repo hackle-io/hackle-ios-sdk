@@ -59,6 +59,14 @@ class WorkspaceSpecs: QuickSpec {
             expect(variation.parameterConfiguration?.id) != variation.id
         }
 
+        it("toProperties는 evaluation_mode LOCAL과 config_modified_at을 포함한다") {
+            let workspace = DefaultWorkspaceConfig.create(modifiedAt: "Thu, 10 Jul 2026 00:00:00 GMT")
+            let properties = workspace.toProperties()
+
+            expect(properties["evaluation_mode"] as? String) == "LOCAL"
+            expect(properties["config_modified_at"] as? String) == "Thu, 10 Jul 2026 00:00:00 GMT"
+        }
+
         it("experiments와 featureFlags를 order 오름차순으로 정렬한다") {
             func experimentJson(id: Int64, order: Int64) -> String {
                 """

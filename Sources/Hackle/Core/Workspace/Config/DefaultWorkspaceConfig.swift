@@ -161,6 +161,7 @@ class DefaultWorkspaceConfig: WorkspaceConfig {
 extension DefaultWorkspaceConfig {
     func toProperties() -> [String: Any] {
         PropertiesBuilder()
+            .add("evaluation_mode", "LOCAL")
             .add("config_modified_at", modifiedAt)
             .build()
     }

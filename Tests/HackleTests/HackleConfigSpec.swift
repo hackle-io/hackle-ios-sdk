@@ -76,7 +76,7 @@ class HackleConfigSpec: QuickSpec {
 
         it("builder로 evaluationMode를 remote로 설정할 수 있다") {
             let config = HackleConfigBuilder()
-                .mode(.remote)
+                .evaluationMode(.remote)
                 .build()
             expect(config.evaluationMode) == EvaluationMode.remote
         }
@@ -84,7 +84,7 @@ class HackleConfigSpec: QuickSpec {
         it("appMode와 evaluationMode는 독립적으로 설정된다") {
             let config = HackleConfigBuilder()
                 .mode(HackleAppMode.web_view_wrapper)
-                .mode(EvaluationMode.remote)
+                .evaluationMode(EvaluationMode.remote)
                 .build()
             expect(config.appMode) == HackleAppMode.web_view_wrapper
             expect(config.evaluationMode) == EvaluationMode.remote
