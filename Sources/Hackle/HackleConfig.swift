@@ -166,7 +166,7 @@ public class HackleConfigBuilder: NSObject {
     ///
     /// - Parameter evaluationMode: The ``EvaluationMode`` to use
     /// - Returns: This builder instance for method chaining
-    @objc(evaluationMode:) public func mode(_ evaluationMode: EvaluationMode) -> HackleConfigBuilder {
+    @objc public func evaluationMode(_ evaluationMode: EvaluationMode) -> HackleConfigBuilder {
         self.evaluationMode = evaluationMode
         return self
     }
