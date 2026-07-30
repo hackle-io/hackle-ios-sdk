@@ -51,11 +51,6 @@ public final class HackleConfig: NSObject, Sendable {
         super.init()
     }
 
-    @available(*, deprecated, message: "Use sessionPolicy.timeoutCondition.timeoutIntervalSeconds instead.")
-    var sessionTimeoutInterval: TimeInterval {
-        sessionPolicy.timeoutCondition.timeoutIntervalSeconds
-    }
-
     static let NO_POLLING: TimeInterval = -1
     static let NO_DEDUP: TimeInterval = -1
     static let DEFAULT_EVENT_FLUSH_INTERVAL: TimeInterval = 10
@@ -153,15 +148,6 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
-    /// Sets the application mode.
-    ///
-    /// - Parameter mode: The ``HackleAppMode`` to use
-    /// - Returns: This builder instance for method chaining
-    @objc public func mode(_ mode: HackleAppMode) -> HackleConfigBuilder {
-        self.appMode = mode
-        return self
-    }
-
     /// Sets the evaluation mode.
     ///
     /// - Parameter evaluationMode: The ``EvaluationMode`` to use
@@ -186,16 +172,6 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func automaticAppLifecycleTracking(_ automaticAppLifecycleTracking: Bool) -> HackleConfigBuilder {
         self.automaticAppLifecycleTracking = automaticAppLifecycleTracking
-        return self
-    }
-
-    /// Sets the session timeout interval in seconds.
-    ///
-    /// - Parameter sessionTimeoutInterval: The timeout interval after which a session expires
-    /// - Returns: This builder instance for method chaining
-    @available(*, deprecated, message: "Use sessionPolicy(_:) instead.")
-    @objc public func sessionTimeoutIntervalSeconds(_ sessionTimeoutInterval: TimeInterval) -> HackleConfigBuilder {
-        self.sessionPolicy = sessionPolicy.withTimeoutInterval(sessionTimeoutInterval)
         return self
     }
 
