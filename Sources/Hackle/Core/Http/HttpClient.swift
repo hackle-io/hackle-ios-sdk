@@ -32,6 +32,8 @@ extension HttpClient {
 
 class DefaultHttpClient: HttpClient {
 
+    private static let sdkKeyMask = "****"
+
     private let sdk: Sdk
     private let session: URLSession
 
@@ -60,13 +62,27 @@ class DefaultHttpClient: HttpClient {
         req.setValue(sdk.version, forHTTPHeaderField: "X-HACKLE-SDK-VERSION")
         req.setValue(String(Date().epochMillis), forHTTPHeaderField: "X-HACKLE-SDK-TIME")
 
-        Log.debug("--> \(request.method) \(request.url)")
+        let url = maskSdkKey(request.url)
+        Log.debug("--> \(request.method) \(url)")
         let task = session.dataTask(with: req) { data, response, error in
             let httpResponse = HttpResponse(request: request, data: data, urlResponse: response, error: error)
-            Log.debug("<-- \(request.method) \(request.url) status: \(httpResponse.statusCode ?? -1)\(error.map { ", error: \($0)" } ?? "")")
+            Log.debug("<-- \(request.method) \(url) status: \(httpResponse.statusCode ?? -1)\(error.map { ", error: \($0)" } ?? "")")
             completion(httpResponse)
         }
 
         task.resume()
+    }
+
+    private func maskSdkKey(_ url: URL) -> String {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url.absoluteString
+        }
+        var segments = components.path.components(separatedBy: "/")
+        guard let index = segments.firstIndex(of: "workspaces"), index + 1 < segments.count else {
+            return url.absoluteString
+        }
+        segments[index + 1] = DefaultHttpClient.sdkKeyMask
+        components.path = segments.joined(separator: "/")
+        return components.string ?? url.absoluteString
     }
 }
