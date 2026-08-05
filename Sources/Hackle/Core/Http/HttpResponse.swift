@@ -27,12 +27,29 @@ extension HttpResponse {
         }
         return urlResponse.isSuccessful
     }
-    var isNotModified: Bool {
+
+    func isStatusCode(_ code: Int) -> Bool {
         guard let urlResponse = urlResponse as? HTTPURLResponse, error == nil else {
             return false
         }
-        return urlResponse.isNotModified
+        return urlResponse.statusCode == code
     }
+
+    var isNoContent: Bool {
+        isStatusCode(204)
+    }
+
+    var isNotModified: Bool {
+        isStatusCode(304)
+    }
+
+    func header(_ header: HttpHeader) -> String? {
+        guard let urlResponse = urlResponse as? HTTPURLResponse else {
+            return nil
+        }
+        return urlResponse.header(header)
+    }
+
 }
 
 extension HTTPURLResponse {

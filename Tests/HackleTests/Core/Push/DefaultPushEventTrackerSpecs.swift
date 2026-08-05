@@ -18,7 +18,7 @@ class DefaultPushEventTrackerSpecs: QuickSpec {
 
         it("track push token") {
             // given
-            every(userManager.toHackleUserMock).returns(HackleUser.builder().build())
+            every(userManager.hackleUserMock).returns(HackleUser.builder().build())
             let user = User.builder().deviceId("device_id").build()
             let pushToken = PushToken(platformType: .ios, providerType: .apn, value: "token_42")
 

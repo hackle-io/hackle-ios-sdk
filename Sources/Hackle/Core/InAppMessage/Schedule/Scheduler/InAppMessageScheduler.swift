@@ -2,20 +2,20 @@ import Foundation
 
 protocol InAppMessageScheduler {
     func support(scheduleType: InAppMessageScheduleType) -> Bool
-    func deliver(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse
-    func delay(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse
-    func ignore(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse
+    func deliver(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse
+    func delay(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse
+    func ignore(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse
 }
 
 extension InAppMessageScheduler {
-    func schedule(action: InAppMessageScheduleAction, request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    func schedule(action: InAppMessageScheduleAction, request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         switch action {
         case .deliver:
-            return try deliver(request: request)
+            return try await deliver(request: request)
         case .delay:
-            return try delay(request: request)
+            return try await delay(request: request)
         case .ignore:
-            return try ignore(request: request)
+            return try await ignore(request: request)
         }
     }
 }

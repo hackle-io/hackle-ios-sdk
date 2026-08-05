@@ -27,7 +27,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             numberOfEventsWithPropertyInDaysMatcher: NumberOfEventsWithPropertyInDaysMatcher(valueOperatorMatcher: valueOperatorMatcher, clock: clock)
         )
         
-        it("when unsupported TargetKeyType, fail") {
+        it("when unsupported TargetKeyType, throws") {
             let request = experimentRequest()
             let condition = Target.Condition(
                 key: Target.Key(type: .featureFlag, name: "purchase"),
@@ -36,11 +36,11 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             expect { try sut.matches(request: request, context: Evaluators.context(), condition: condition) }.to(throwError(HackleError.error("Unsupported TargetKeyType [featureFlag]")))
         }
         
-        it("when unsupport propertyType, fail") {
+        it("when unsupport propertyType, not matched") {
             let targetEvents = [
-                TargetEvent(eventKey: "purchase", stats: [], property: TargetEvent.Property(key: "purchase", type: .eventProperty, value: HackleValue(value: "1")))
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "purchase", type: .eventProperty, value: HackleValue(value: "1")))
             ]
-            
+
             verify(
                 targetEvents: targetEvents,
                 key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
@@ -53,8 +53,44 @@ class TargetEventConditionMatchSpecs: QuickSpec {
                 expected: false
             )
         }
-        
-        it("when target event is empty in 30 days, fail") {
+
+        it("when property type mismatches, do not count event even if key and value match") {
+            let targetEvents = [
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk")))
+            ]
+
+            verify(
+                targetEvents: targetEvents,
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                    key: Target.Key(type: .hackleProperty, name: "productName"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk")])
+                )),
+                operator: .gte,
+                valueType: .number,
+                targetValue: 1,
+                expected: false
+            )
+        }
+
+        it("when property type matches but key name mismatches, do not count event") {
+            let targetEvents = [
+                TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
+            ]
+
+            verify(
+                targetEvents: targetEvents,
+                key: try getKeyString(eventKey: "purchase", days: 7, filter: Target.Condition(
+                    key: Target.Key(type: .eventProperty, name: "productName"),
+                    match: Target.Match(type: .match, matchOperator: ._in, valueType: .string, values: [HackleValue(value: "milk")])
+                )),
+                operator: .gte,
+                valueType: .number,
+                targetValue: 1,
+                expected: false
+            )
+        }
+
+        it("when target event is empty in 30 days, not matched") {
             verify(
                 targetEvents: [],
                 key: try getKeyString(eventKey: "purchase", days: 30),
@@ -65,7 +101,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             )
         }
         
-        it("when eventkey is not match, fail") {
+        it("when eventkey is different, not matched") {
             let targetEvents = [
                 TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1), property: nil)
             ]
@@ -123,7 +159,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             )
         }
         
-        it("when login event occur 3 yesterday and match condition is login event in 1 day and target value is 3 at today 14:00, fail") {
+        it("when login event occur 3 yesterday and match condition is login event in 1 day and target value is 3 at today 14:00, not matched") {
             clock.setKstTime(14)
             let targetEvents = [
                 TargetEvent(eventKey: "login", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 1, count: 3), property: nil),
@@ -139,7 +175,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             )
         }
         
-        it("when purchase event occur 3 every 30 days and match condition is purchase 100, fail") {
+        it("when purchase event occur 3 every 30 days and match condition is purchase 100, not matched") {
             let targetEvents = [
                 TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 30, count: 3), property: nil)
             ]
@@ -170,7 +206,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             )
         }
         
-        it("when purchase event with milk property occur 1 at 5 days ago and match condition is purchase event with milk property in 7 days and target value is grater then 1, fail") {
+        it("when purchase event with milk property occur 1 at 5 days ago and match condition is purchase event with milk property in 7 days and target value is grater then 1, not matched") {
             let targetEvents = [
                 TargetEvent(eventKey: "purchase", stats: makeSingleTargetEventStat(clock: clock, daysAgo: 5), property: TargetEvent.Property(key: "product", type: .eventProperty, value: HackleValue(value: "milk")))
             ]
@@ -225,7 +261,7 @@ class TargetEventConditionMatchSpecs: QuickSpec {
             )
         }
 
-        it("when events have properties but filter is empty then fail") {
+        it("when events have properties but filter is empty then not matched") {
             let targetEvents = [
                 TargetEvent(eventKey: "purchase", stats: makeTargetEventStat(clock: clock, daysAgo: 30, count: 1), property: TargetEvent.Property(key: "productName", type: .eventProperty, value: HackleValue(value: "milk")))
             ]

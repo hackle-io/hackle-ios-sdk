@@ -29,7 +29,7 @@ class DefaultInvocationProcessorSpecs: QuickSpec {
             expect(actual.isSuccess).to(equal(true))
         }
         
-        it("when failed to process invocation then returns failed response") {
+        it("when handler rejects invocation then returns unsuccessful response") {
             // given
             let request = InvocationRequest(command: .getSessionId, parameters: [:], browserProperties: [:])
             every(handler.invokeMock).returns(.error(error: HackleError.error("failed")))

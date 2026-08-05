@@ -17,7 +17,7 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
                 clock: clock,
                 scheduler: scheduler
             )
-            sut.setListener(listsner: listener)
+            sut.setListener(listener: listener)
 
             let job = MockScheduledJob()
             every(scheduler.scheduleMock).answers { (delay, task) in
@@ -25,7 +25,7 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
                 return job
             }
 
-            let schedule = InAppMessage.schedule(
+            let schedule = InAppMessageEntity.schedule(
                 time: InAppMessageSchedule.Time(
                     startedAt: Date(timeIntervalSince1970: 1001),
                     deliverAt: Date(timeIntervalSince1970: 2000)
@@ -59,9 +59,9 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
         it("task complete") {
             let sut = DefaultInAppMessageDelayScheduler(clock: SystemClock.shared, scheduler: Schedulers.dispatch())
             let listener = MockInAppMessageScheduleListener()
-            sut.setListener(listsner: listener)
+            sut.setListener(listener: listener)
 
-            let schedule = InAppMessage.schedule(
+            let schedule = InAppMessageEntity.schedule(
                 time: InAppMessageSchedule.Time(
                     startedAt: Date(timeIntervalSince1970: 1.001),
                     deliverAt: Date(timeIntervalSince1970: 2.0)
@@ -88,9 +88,9 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
         it("task cancel") {
             let sut = DefaultInAppMessageDelayScheduler(clock: SystemClock.shared, scheduler: Schedulers.dispatch())
             let listener = MockInAppMessageScheduleListener()
-            sut.setListener(listsner: listener)
+            sut.setListener(listener: listener)
 
-            let schedule = InAppMessage.schedule(
+            let schedule = InAppMessageEntity.schedule(
                 time: InAppMessageSchedule.Time(
                     startedAt: Date(timeIntervalSince1970: 1.001),
                     deliverAt: Date(timeIntervalSince1970: 2.0)

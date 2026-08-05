@@ -118,7 +118,7 @@ class NotificationHandlerSpecs: QuickSpec {
                 expect(resultAttachment).toNot(beNil())
             }
             
-            it("should return a nil attachment on download failure") {
+            it("should return a nil attachment when download is unsuccessful") {
                 let imageUrl = "https://notexistfake/notfound.jpg"
                 let notificationData = mockNotificationData(imageUrl: imageUrl)
                 var resultAttachment: UNNotificationAttachment?

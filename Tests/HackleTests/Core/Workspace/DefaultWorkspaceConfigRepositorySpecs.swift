@@ -7,7 +7,7 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
     static func readTextFromRes(filename: String) -> String {
         return try! String(contentsOfFile: Bundle(for: DefaultWorkspaceConfigRepositorySpecs.self).path(forResource: filename, ofType: "json")!)
     }
-    
+
     override class func spec() {
         it("get") {
             let initialData = readTextFromRes(filename: "workspace_config")
@@ -15,56 +15,81 @@ class DefaultWorkspaceConfigRepositorySpecs: QuickSpec {
                 initialData: ["workspace.json": initialData.data(using: .utf8)!]
             )
             let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
-            
-            
-            expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
-            expect(repository.get()?.config.workspace.id) == 3
-            expect(repository.get()?.config.workspace.environment.id) == 5
+
+
+            expect(repository.get()?.modifiedAt) == "Tue, 16 Jan 2024 07:39:44 GMT"
+            expect(repository.get()?.dto.workspace.id) == 3
+            expect(repository.get()?.dto.workspace.environment.id) == 5
         }
-        
+
         it("get nil") {
             let mockFileStorage = MockFileStorage()
             let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
             expect(repository.get()).to(beNil())
         }
-        
+
         it("set") {
             let mockFileStorage = MockFileStorage()
             let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
-            
+
             expect(repository.get()).to(beNil())
-            
+
             let json = readTextFromRes(filename: "workspace_config")
-            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: json.data(using: .utf8)!)
+            let recordDto = try! JSONDecoder().decode(WorkspaceConfigRecordDto.self, from: json.data(using: .utf8)!)
+            let data = WorkspaceConfigContext.from(dto: recordDto)
             repository.set(value: data)
-            
-            expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
+
+            expect(repository.get()?.modifiedAt) == "Tue, 16 Jan 2024 07:39:44 GMT"
         }
-        
+
         it("overwrite") {
             let initialData = readTextFromRes(filename: "workspace_config")
             let mockFileStorage = MockFileStorage(
                 initialData: ["workspace.json": initialData.data(using: .utf8)!]
             )
             let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
-            
-            expect(repository.get()?.lastModified) == "Tue, 16 Jan 2024 07:39:44 GMT"
-            
+
+            expect(repository.get()?.modifiedAt) == "Tue, 16 Jan 2024 07:39:44 GMT"
+
             let modifiedData = readTextFromRes(filename: "workspace_config_modified")
-            let data = try! JSONDecoder().decode(WorkspaceConfig.self, from: modifiedData.data(using: .utf8)!)
+            let recordDto = try! JSONDecoder().decode(WorkspaceConfigRecordDto.self, from: modifiedData.data(using: .utf8)!)
+            let data = WorkspaceConfigContext.from(dto: recordDto)
             repository.set(value: data)
-            
-            expect(repository.get()?.lastModified) == "Mon, 22 Jan 2024 08:37:33 GMT"
+
+            expect(repository.get()?.modifiedAt) == "Mon, 22 Jan 2024 08:37:33 GMT"
         }
-        
+
         it("delete file if invalid json file exists") {
             let mockFileStorage = MockFileStorage(
                 initialData: ["workspace.json": "{!".data(using: .utf8)!]
             )
             let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
-            
+
             expect(repository.get()).to(beNil())
             expect(mockFileStorage.data["workspace.json"]).to(beNil())
+        }
+
+        it("persist round-trip keeps legacy lastModified key") {
+            let mockFileStorage = MockFileStorage()
+            let repository = DefaultWorkspaceConfigRepository(fileStorage: mockFileStorage)
+
+            let json = readTextFromRes(filename: "workspace_config")
+            let recordDto = try! JSONDecoder().decode(WorkspaceConfigRecordDto.self, from: json.data(using: .utf8)!)
+            let context = WorkspaceConfigContext.from(dto: recordDto)
+            repository.set(value: context)
+
+            // 영속 JSON 스키마: 인메모리 모델명은 modifiedAt이지만 저장 키는 lastModified 유지 (하위호환)
+            let persisted = mockFileStorage.data["workspace.json"]!
+            let object = try! JSONSerialization.jsonObject(with: persisted) as! [String: Any]
+            expect(object["lastModified"] as? String) == "Tue, 16 Jan 2024 07:39:44 GMT"
+            expect(object["modifiedAt"]).to(beNil())
+
+            // 라운드트립
+            let roundTripped = repository.get()
+            expect(roundTripped?.modifiedAt) == context.modifiedAt
+            expect(roundTripped?.workspace.metadata.id) == 3
+            expect(roundTripped?.workspace.metadata.environmentId) == 5
+            expect(roundTripped?.dto.workspace.id) == 3
         }
     }
 }

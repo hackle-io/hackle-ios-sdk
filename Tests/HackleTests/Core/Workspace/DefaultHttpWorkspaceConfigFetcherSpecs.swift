@@ -1,0 +1,200 @@
+//
+//  DefaultHttpWorkspaceConfigFetcherSpecs.swift
+//  HackleTests
+//
+
+import Foundation
+import Quick
+import Nimble
+@testable import Hackle
+
+class DefaultHttpWorkspaceConfigFetcherSpecs: AsyncSpec {
+
+    override class func spec() {
+
+        var httpClient: MockHttpClient!
+
+        beforeEach {
+            httpClient = MockHttpClient()
+        }
+
+        func response(request: HttpRequest, statusCode: Int? = nil, data: Data? = nil, headers: [String: String] = [:], error: Error? = nil) -> HttpResponse {
+            var urlResponse: HTTPURLResponse? = nil
+            if let statusCode {
+                urlResponse = HTTPURLResponse(url: request.url, statusCode: statusCode, httpVersion: nil, headerFields: headers)
+            }
+            return HttpResponse(request: request, data: data, urlResponse: urlResponse, error: error)
+        }
+
+        func sdk(key: String) -> Sdk {
+            Sdk(key: key, name: "test-sdk", version: "test-version")
+        }
+
+        it("when http call is rejected then result throws") {
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, error: HackleError.error("fail")))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            expect(try actual.get()).to(throwError(HackleError.error("fail")))
+        }
+
+        it("when url response is empty then result throws") {
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            expect(try actual.get()).to(throwError(HackleError.error("Response is empty")))
+        }
+
+        it("when workspace config is not modified then complete with nil") {
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 304))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified(lastModified: "LAST_MODIFIED_HEADER_VALUE") }
+            expect(try actual.get()).to(beNil())
+        }
+
+        it("when http status is not successful then result throws") {
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 500))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            expect(try actual.get()).to(throwError(HackleError.error("Http status code: 500")))
+        }
+
+        it("when response body is empty then result throws") {
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: nil))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            expect(try actual.get()).to(throwError(HackleError.error("Response body is empty")))
+        }
+
+        it("when response body is invalid format then result throws") {
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: "INVALID".data(using: .utf8)))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            expect(try actual.get()).to(throwError(HackleError.error("Invalid format")))
+        }
+
+        it("when success to get workspace then complete with workspace config dto") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            let context = try actual.get()
+            expect(context).toNot(beNil())
+            expect(context?.dto).toNot(beNil())
+        }
+
+        it("when response body has no order field then complete with workspace config dto") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response_without_order", ofType: "json")!)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
+            }
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "test-key"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            let context = try actual.get()
+            expect(context).toNot(beNil())
+            expect(context?.dto.experiments.count).to(beGreaterThan(0))
+            expect(context?.dto.experiments.allSatisfy { $0.order == nil }).to(beTrue())
+        }
+
+        it("url") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
+            every(httpClient.executeMock).answers { request, completion in
+                completion(response(request: request, statusCode: 200, data: json.data(using: .utf8)))
+            }
+            let config = HackleConfig.builder()
+                .sdkUrl(URL(string: "localhost")!)
+                .build()
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: config, sdk: sdk(key: "SDK_KEY"), httpClient: httpClient)
+
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+            expect(try actual.get()).toNot(beNil())
+
+            expect(httpClient.executeMock.firstInvokation().arguments.0.url) == URL(string: "localhost/api/v2/workspaces/SDK_KEY/config")
+        }
+
+        it("last modified") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self).path(forResource: "workspace_response", ofType: "json")!)
+            var isModified = true
+            every(httpClient.executeMock).answers { request, completion in
+                if isModified {
+                    completion(response(request: request, statusCode: 200, data: json.data(using: .utf8), headers: ["Last-Modified": "LAST_MODIFIED_HEADER_VALUE"]))
+                    isModified = false
+                } else {
+                    completion(response(request: request, statusCode: 304, data: nil))
+                }
+            }
+
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "SDK_KEY"), httpClient: httpClient)
+            let first = await awaitResult { try await sut.fetchIfModified() }
+            expect(try first.get()).toNot(beNil())
+            let second = await awaitResult { try await sut.fetchIfModified(lastModified: "LAST_MODIFIED_HEADER_VALUE") }
+            expect(try second.get()).to(beNil())
+
+            let invokes = httpClient.executeMock.invokations()
+            expect(invokes[0].arguments.0.headers).to(beNil())
+            expect(invokes[1].arguments.0.headers!["If-Modified-Since"]) == "LAST_MODIFIED_HEADER_VALUE"
+        }
+
+        it("result value contains last modified value") {
+            let json = try! String(contentsOfFile: Bundle(for: DefaultHttpWorkspaceConfigFetcherSpecs.self)
+                .path(forResource: "workspace_response", ofType: "json")!)
+            every(httpClient.executeMock)
+                .answers { request, completion in
+                    completion(response(request: request, statusCode: 200, data: json.data(using: .utf8), headers: ["Last-Modified": "LAST_MODIFIED_HEADER_VALUE"]))
+                }
+
+            let sut = DefaultHttpWorkspaceConfigFetcher(config: HackleConfig.DEFAULT, sdk: sdk(key: "SDK_KEY"), httpClient: httpClient)
+            let actual = await awaitResult { try await sut.fetchIfModified() }
+
+            let context = try actual.get()
+            expect(context).toNot(beNil())
+            expect(context?.modifiedAt) == "LAST_MODIFIED_HEADER_VALUE"
+        }
+    }
+}
+
+private class HttpClientStub: HttpClient {
+    private let statusCode: Int?
+    private let data: Data?
+    private let error: Error?
+
+    init(statusCode: Int? = nil, data: Data? = nil, error: Error? = nil) {
+        self.statusCode = statusCode
+        self.data = data
+        self.error = error
+    }
+
+    func execute(request: HttpRequest, completion: @escaping @Sendable (HttpResponse) -> ()) {
+        var urlResponse: HTTPURLResponse? = nil
+        if let statusCode {
+            urlResponse = HTTPURLResponse(url: request.url, statusCode: statusCode, httpVersion: nil, headerFields: nil)
+        }
+        let response = HttpResponse(request: request, data: data, urlResponse: urlResponse, error: error)
+        completion(response)
+    }
+
+    func execute(request: HttpRequest, timeout: TimeInterval, completion: @escaping @Sendable (HttpResponse) -> Void) {
+        execute(request: request, completion: completion)
+    }
+}

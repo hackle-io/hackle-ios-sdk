@@ -23,7 +23,7 @@ class DefaultPushEventTracker: PushEventTracker {
     }
 
     private func track(event: Event, user: User, timestamp: Date) {
-        let hackleUser = userManager.toHackleUser(user: user)
+        let hackleUser = userManager.hackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
         Log.info("Push token event queued.")
     }
@@ -40,5 +40,12 @@ enum PushEventKey: String, CaseIterable {
         return PushEventKey.allCases.contains { key in
             trackEvent.event.key == key.rawValue
         }
+    }
+
+    static func isPushTokenEvent(event: UserEvent) -> Bool {
+        guard let trackEvent = event as? UserEvents.Track else {
+            return false
+        }
+        return trackEvent.event.key == PushEventKey.pushToken.rawValue
     }
 }

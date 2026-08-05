@@ -10,7 +10,7 @@ protocol UserDecorator {
 }
 
 extension HackleUser {
-    func decorateWith(docorator: UserDecorator) -> HackleUser {
-        docorator.decorate(user: self)
+    func decorateWith(decorator: UserDecorator) -> HackleUser {
+        decorator.decorate(user: self)
     }
 }

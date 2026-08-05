@@ -18,6 +18,7 @@
     {
       "id": 1,
       "key": 1,
+      "order": 1,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -291,6 +292,7 @@
     {
       "id": 2,
       "key": 2,
+      "order": 2,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -349,6 +351,7 @@
     {
       "id": 3,
       "key": 3,
+      "order": 3,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -403,6 +406,7 @@
     {
       "id": 4,
       "key": 4,
+      "order": 4,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -472,6 +476,7 @@
     {
       "id": 5,
       "key": 5,
+      "order": 5,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -541,6 +546,7 @@
     {
       "id": 6,
       "key": 6,
+      "order": 6,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -599,6 +605,7 @@
     {
       "id": 7,
       "key": 7,
+      "order": 7,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -654,6 +661,7 @@
     {
       "id": 8,
       "key": 8,
+      "order": 8,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -712,6 +720,7 @@
     {
       "id": 9,
       "key": 9,
+      "order": 9,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -776,6 +785,7 @@
     {
       "id": 10,
       "key": 10,
+      "order": 10,
       "timeUnit": "CUSTOM",
       "startEpochTime": 42,
       "endEpochTime": 43,
@@ -870,6 +880,7 @@
     {
       "id": 11,
       "key": 11,
+      "order": 11,
       "timeUnit": "IMMEDIATE",
       "startEpochTimeMillis": null,
       "endEpochTimeMillis": null,
@@ -916,6 +927,7 @@
     {
       "id": 12,
       "key": 12,
+      "order": 12,
       "timeUnit": "IMMEDIATE",
       "startEpochTimeMillis": null,
       "endEpochTimeMillis": null,

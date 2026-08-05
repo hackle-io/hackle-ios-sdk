@@ -4,7 +4,7 @@ import Quick
 
 @testable import Hackle
 
-class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
+class DefaultInAppMessageScheduleProcessorSpecs: AsyncSpec {
     override class func spec() {
 
         var actionDeterminer: MockInAppMessageScheduleActionDeterminer!
@@ -25,28 +25,28 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
 
         it("schedule") {
             // given
-            let request = InAppMessage.scheduleRequest()
+            let request = InAppMessageEntity.scheduleRequest()
             let response = InAppMessageScheduleResponse.of(request: request, code: .deliver)
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
             every(scheduler.deliverMock).returns(response)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: request)
 
             // then
             expect(actual).to(beIdenticalTo(response))
         }
 
-        it("exception") {
+        it("when deliver throws then process is aborted") {
             // given
-            let request = InAppMessage.scheduleRequest()
+            let request = InAppMessageEntity.scheduleRequest()
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
             every(scheduler.deliverMock).answers { _ in
                 throw HackleError.error("tail")
             }
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: request)
 
             // then
             expect(actual.code) == .exception
@@ -54,7 +54,7 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
 
         it("onSchedule") {
             // given
-            let request = InAppMessage.scheduleRequest()
+            let request = InAppMessageEntity.scheduleRequest()
             let response = InAppMessageScheduleResponse.of(request: request, code: .deliver)
             every(actionDeterminer.determineMock).returns(InAppMessageScheduleAction.deliver)
             every(scheduler.deliverMock).returns(response)
@@ -62,10 +62,8 @@ class DefaultInAppMessageScheduleProcessorSpecs: QuickSpec {
             // when
             sut.onSchedule(request: request)
 
-            // then
-            verify(exactly: 1) {
-                scheduler.deliverMock
-            }
+            // then — onSchedule은 Task {}로 발사되므로 toEventually로 완료 대기 (AsyncSpec이므로 async 버전 사용)
+            await expect(scheduler.deliverMock.invokations().count).toEventually(equal(1), timeout: .seconds(1))
         }
     }
 }

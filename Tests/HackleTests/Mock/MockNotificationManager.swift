@@ -3,8 +3,10 @@ import Foundation
 
 class MockNotificationManager: NotificationManager {
 
-    func flush() {
+    var onFlush: (() -> Void)? = nil
 
+    func flush() {
+        onFlush?()
     }
 
     func onNotificationDataReceived(data: NotificationData, timestamp: Date) {

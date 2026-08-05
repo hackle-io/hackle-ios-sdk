@@ -16,12 +16,12 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
 
         it("when override then do not record") {
             // given
-            let inAppMessage = InAppMessage.create()
-            let request = InAppMessage.presentRequest(
+            let inAppMessage = InAppMessageEntity.create()
+            let request = InAppMessageEntity.presentRequest(
                 inAppMessage: inAppMessage,
                 reason: DecisionReason.OVERRIDDEN
             )
-            let response = InAppMessage.presentResponse()
+            let response = InAppMessageEntity.presentResponse()
 
             // when
             sut.record(request: request, response: response)
@@ -37,20 +37,20 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
                 .identifier("a", "1")
                 .identifier("b", "2")
                 .build()
-            let inAppMessage = InAppMessage.create(
+            let inAppMessage = InAppMessageEntity.create(
                 id: 42
             )
-            let presentationContext = InAppMessage.context(
+            let presentationContext = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 user: user
             )
-            let request = InAppMessage.presentRequest(
+            let request = InAppMessageEntity.presentRequest(
                 inAppMessage: inAppMessage,
                 user: user,
                 requestedAt: Date(timeIntervalSince1970: 320),
                 reason: DecisionReason.IN_APP_MESSAGE_TARGET
             )
-            let response = InAppMessage.presentResponse(
+            let response = InAppMessageEntity.presentResponse(
                 context: presentationContext
             )
 
@@ -65,11 +65,11 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
         }
 
         it("when exceed record limit then remove first") {
-            let inAppMessage = InAppMessage.create(id: 42)
-            let request = InAppMessage.presentRequest(
+            let inAppMessage = InAppMessageEntity.create(id: 42)
+            let request = InAppMessageEntity.presentRequest(
                 inAppMessage: inAppMessage
             )
-            let response = InAppMessage.presentResponse()
+            let response = InAppMessageEntity.presentResponse()
 
 
             for _ in 0..<100 {
@@ -79,6 +79,18 @@ class DefaultInAppMessageRecorderSpecs: QuickSpec {
 
             sut.record(request: request, response: response)
             expect(try storage.get(inAppMessage: inAppMessage).count) == 100
+        }
+
+        it("when response code is not present then do not record") {
+            let inAppMessage = InAppMessageEntity.create(id: 42)
+            let request = InAppMessageEntity.presentRequest(inAppMessage: inAppMessage)
+
+            let codes: [InAppMessagePresentResponse.Code] = [.applicationNotActive, .rootViewControllerNotFound, .alreadyPresented, .unsupportedOrientation, .inProgress, .exception]
+            for code in codes {
+                sut.record(request: request, response: InAppMessageEntity.presentResponse(code: code))
+            }
+
+            expect(try storage.get(inAppMessage: inAppMessage).count) == 0
         }
     }
 }

@@ -17,7 +17,8 @@ public final class HackleConfig: NSObject, Sendable {
     let apiUrl: URL
     let monitoringUrl: URL
     let monitoringEnabled: Bool
-    let mode: HackleAppMode
+    let appMode: HackleAppMode
+    let evaluationMode: EvaluationMode
     let automaticScreenTracking: Bool
     let automaticAppLifecycleTracking: Bool
     let sessionTracking: Bool
@@ -35,10 +36,11 @@ public final class HackleConfig: NSObject, Sendable {
         apiUrl = builder.apiUrl
         monitoringUrl = builder.monitoringUrl
         monitoringEnabled = builder.monitoringEnabled
-        mode = builder.mode
+        appMode = builder.appMode
+        evaluationMode = builder.evaluationMode
         automaticScreenTracking = builder.automaticScreenTracking
         automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
-        sessionTracking = (mode == .native && builder.sessionTracking)
+        sessionTracking = (appMode == .native && builder.sessionTracking)
         sessionPolicy = builder.sessionPolicy
         pollingInterval = builder.pollingInterval
         eventFlushInterval = builder.eventFlushInterval
@@ -47,11 +49,6 @@ public final class HackleConfig: NSObject, Sendable {
         optOutTracking = builder.optOutTracking
         extra = builder.extra
         super.init()
-    }
-
-    @available(*, deprecated, message: "Use sessionPolicy.timeoutCondition.timeoutIntervalSeconds instead.")
-    var sessionTimeoutInterval: TimeInterval {
-        sessionPolicy.timeoutCondition.timeoutIntervalSeconds
     }
 
     static let NO_POLLING: TimeInterval = -1
@@ -86,7 +83,8 @@ public class HackleConfigBuilder: NSObject {
     var monitoringUrl: URL = URL(string: "https://monitoring.hackle.io")!
     var monitoringEnabled: Bool = true
 
-    var mode: HackleAppMode = .native
+    var appMode: HackleAppMode = .native
+    var evaluationMode: EvaluationMode = .local
 
     var automaticScreenTracking: Bool = true
     var automaticAppLifecycleTracking: Bool = true
@@ -150,12 +148,12 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
-    /// Sets the application mode.
+    /// Sets the evaluation mode.
     ///
-    /// - Parameter mode: The ``HackleAppMode`` to use
+    /// - Parameter evaluationMode: The ``EvaluationMode`` to use
     /// - Returns: This builder instance for method chaining
-    @objc public func mode(_ mode: HackleAppMode) -> HackleConfigBuilder {
-        self.mode = mode
+    @objc public func evaluationMode(_ evaluationMode: EvaluationMode) -> HackleConfigBuilder {
+        self.evaluationMode = evaluationMode
         return self
     }
 
@@ -174,16 +172,6 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func automaticAppLifecycleTracking(_ automaticAppLifecycleTracking: Bool) -> HackleConfigBuilder {
         self.automaticAppLifecycleTracking = automaticAppLifecycleTracking
-        return self
-    }
-
-    /// Sets the session timeout interval in seconds.
-    ///
-    /// - Parameter sessionTimeoutInterval: The timeout interval after which a session expires
-    /// - Returns: This builder instance for method chaining
-    @available(*, deprecated, message: "Use sessionPolicy(_:) instead.")
-    @objc public func sessionTimeoutIntervalSeconds(_ sessionTimeoutInterval: TimeInterval) -> HackleConfigBuilder {
-        self.sessionPolicy = sessionPolicy.withTimeoutInterval(sessionTimeoutInterval)
         return self
     }
 

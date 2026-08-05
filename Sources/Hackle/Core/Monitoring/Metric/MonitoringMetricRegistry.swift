@@ -9,13 +9,13 @@ import UIKit
 class MonitoringMetricRegistry: MetricRegistry, @unchecked Sendable {
 
     private let endpoint: URL
-    private let eventQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let httpQueue: DispatchQueue
     private let httpClient: HttpClient
 
-    init(monitoringBaseUrl: URL, eventQueue: DispatchQueue, httpQueue: DispatchQueue, httpClient: HttpClient) {
+    init(monitoringBaseUrl: URL, coreQueue: DispatchQueue, httpQueue: DispatchQueue, httpClient: HttpClient) {
         self.endpoint = monitoringBaseUrl.appendingPathComponent("/metrics")
-        self.eventQueue = eventQueue
+        self.coreQueue = coreQueue
         self.httpQueue = httpQueue
         self.httpClient = httpClient
         super.init()
@@ -103,7 +103,7 @@ extension MonitoringMetricRegistry: ApplicationLifecycleListener {
     
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("MonitoringMetricRegistry.onBackground")
-        eventQueue.async { [weak self] in
+        coreQueue.async { [weak self] in
             self?.flush()
         }
     }
@@ -186,6 +186,18 @@ enum ApiCallMetrics {
         }
 
         return String(describing: type(of: error))
+    }
+}
+
+extension ApiCallMetrics {
+    /// 타이밍 측정 + 기록을 감싸는 헬퍼
+    ///
+    /// httpClient.execute는 throw 대신 response.error로 에러를 표현
+    static func record(operation: String, _ call: () async -> HttpResponse) async -> HttpResponse {
+        let sample = TimerSample.start()
+        let response = await call()
+        record(operation: operation, sample: sample, response: response)
+        return response
     }
 }
 

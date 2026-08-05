@@ -31,7 +31,7 @@ extension WKWebView {
     }
 
     /// Evaluates the script on the current page.
-    func evaluate(script: WebViewUserScript, completion: ((Any?, Error?) -> Void)? = nil) {
+    func evaluate(script: WebViewUserScript, completion: (@MainActor @Sendable (Any?, Error?) -> Void)? = nil) {
         evaluateJavaScript(script.source, completionHandler: completion)
     }
 }

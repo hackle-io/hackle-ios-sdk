@@ -4,7 +4,7 @@ import Quick
 
 @testable import Hackle
 
-class DelayedInAppMessageSchedulerSpecs: QuickSpec {
+class DelayedInAppMessageSchedulerSpecs: AsyncSpec {
     override class func spec() {
 
         var deliverProcessor: MockInAppMessageDeliverProcessor!
@@ -26,28 +26,28 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
         }
 
         describe("deliver") {
-            it("when delay not found then throw error") {
-                let request = InAppMessage.scheduleRequest()
+            it("when delay not found then throws") {
+                let request = InAppMessageEntity.scheduleRequest()
                 every(delayManager.deleteMock).returns(nil)
 
-                expect {
-                    try sut.schedule(action: .deliver, request: request)
+                await expect {
+                    try await sut.schedule(action: .deliver, request: request)
                 }
                     .to(throwError())
             }
 
             it("deliver") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.deleteMock).returns(delay)
 
-                let deliverResponse = InAppMessage.deliverResponse()
+                let deliverResponse = InAppMessageEntity.deliverResponse()
                 every(deliverProcessor.processMock).returns(deliverResponse)
 
                 // when
-                let actual = try sut.schedule(
+                let actual = try await sut.schedule(
                     action: .deliver,
                     request: request
                 )
@@ -61,13 +61,13 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
         describe("delay") {
             it("delay") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.delayMock).returns(delay)
 
                 // when
-                let actual = try sut.schedule(action: .delay, request: request)
+                let actual = try await sut.schedule(action: .delay, request: request)
 
                 // then
                 expect(actual.code) == .delay
@@ -78,13 +78,13 @@ class DelayedInAppMessageSchedulerSpecs: QuickSpec {
         describe("ignore") {
             it("delete delay") {
                 // given
-                let request = InAppMessage.scheduleRequest()
+                let request = InAppMessageEntity.scheduleRequest()
 
                 let delay = InAppMessageDelay.from(request: request)
                 every(delayManager.deleteMock).returns(delay)
 
                 // when
-                let actual = try sut.schedule(action: .ignore, request: request)
+                let actual = try await sut.schedule(action: .ignore, request: request)
 
                 // then
                 expect(actual.code) == .ignore

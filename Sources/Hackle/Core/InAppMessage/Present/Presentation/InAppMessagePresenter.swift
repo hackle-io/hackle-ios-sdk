@@ -8,5 +8,5 @@
 import Foundation
 
 protocol InAppMessagePresenter {
-    func present(context: InAppMessagePresentationContext)
+    func present(context: InAppMessagePresentationContext) async -> InAppMessagePresentResponse
 }

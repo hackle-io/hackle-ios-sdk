@@ -2,8 +2,6 @@
 //  UserConditionMatcher.swift
 //  Hackle
 //
-//  Created by yong on 2023/04/17.
-//
 
 import Foundation
 
@@ -17,7 +15,7 @@ class UserConditionMatcher: ConditionMatcher {
         self.valueOperatorMatcher = valueOperatorMatcher
     }
 
-    func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+    func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
         let userValue = try userValueResolver.resolveOrNil(user: request.user, key: condition.key)
         return valueOperatorMatcher.matches(userValue: userValue, match: condition.match)
     }

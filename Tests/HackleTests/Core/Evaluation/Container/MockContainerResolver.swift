@@ -6,7 +6,7 @@ class MockContainerResolver: Mock, ContainerResolver {
 
     lazy var isUserInContainerGroupMock = MockFunction(self, isUserInContainerGroup)
 
-    func isUserInContainerGroup(request: ExperimentRequest, container: Container) throws -> Bool {
+    func isUserInContainerGroup(request: ExperimentLocalEvaluateRequest, container: Container) throws -> Bool {
         call(isUserInContainerGroupMock, args: (request, container))
     }
 }

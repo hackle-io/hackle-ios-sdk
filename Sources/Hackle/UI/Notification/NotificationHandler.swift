@@ -85,12 +85,13 @@ extension NotificationHandler {
         }
 
         if let url = URL(string: imageUrl) {
+            let sink = UncheckedSendableBox(completion)
             URLSession.shared.downloadTask(with: url) { (location, response, error) in
                 guard let response = response,
                       let location = location,
                       error == nil else {
                     Log.info("Push Image download error: \(error?.localizedDescription ?? "")")
-                    completion(nil)
+                    sink.value(nil)
                     return
                 }
 
@@ -99,7 +100,7 @@ extension NotificationHandler {
                       let fileExtension = MimeType.preferredFileExtension(mimeType: mimeType)
                 else {
                     Log.info("Image type check error: \(response.mimeType ?? "")")
-                    completion(nil)
+                    sink.value(nil)
                     return
                 }
 
@@ -107,10 +108,10 @@ extension NotificationHandler {
                     let destinationURL = location.appendingPathExtension(fileExtension)
                     try FileManager.default.moveItem(at: location, to: destinationURL)
                     // NOTE: 이미지 저장 된 url을 리턴
-                    completion(destinationURL)
+                    sink.value(destinationURL)
                 } catch {
                     Log.info("Image rename error")
-                    completion(nil)
+                    sink.value(nil)
                 }
             }.resume()
         } else {
@@ -118,4 +119,11 @@ extension NotificationHandler {
             completion(nil)
         }
     }
+}
+
+/// non-Sendable 값을 `@Sendable` 클로저 경계 너머로 손으로 나른다.
+/// 값이 정확히 1회 넘겨지고 동시 접근이 없는 경우에만 안전하다.
+private final class UncheckedSendableBox<T>: @unchecked Sendable {
+    let value: T
+    init(_ value: T) { self.value = value }
 }

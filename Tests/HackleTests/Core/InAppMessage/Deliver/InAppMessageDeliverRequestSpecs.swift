@@ -6,12 +6,12 @@ import Nimble
 class InAppMessageDeliverRequestSpecs: QuickSpec {
     override class func spec() {
         it("create") {
-            let schedule = InAppMessage.schedule(
+            let schedule = InAppMessageEntity.schedule(
                 dispatchId: "111",
                 inAppMessageKey: 42,
                 eventBasedContext: InAppMessageSchedule.EventBasedContext(insertId: "insert_id", event: Event.builder("test").build())
             )
-            let scheduleRequest = InAppMessage.scheduleRequest(
+            let scheduleRequest = InAppMessageEntity.scheduleRequest(
                 schedule: schedule
             )
 
@@ -23,10 +23,10 @@ class InAppMessageDeliverRequestSpecs: QuickSpec {
 
         it("trigger event is taken from schedule.eventBasedContext.event") {
             let event = Event.builder("purchase").value(19.99).property("plan", "premium").build()
-            let schedule = InAppMessage.schedule(
+            let schedule = InAppMessageEntity.schedule(
                 eventBasedContext: InAppMessageSchedule.EventBasedContext(insertId: "ins", event: event)
             )
-            let scheduleRequest = InAppMessage.scheduleRequest(schedule: schedule)
+            let scheduleRequest = InAppMessageEntity.scheduleRequest(schedule: schedule)
 
             let deliverRequest = InAppMessageDeliverRequest.of(request: scheduleRequest)
 

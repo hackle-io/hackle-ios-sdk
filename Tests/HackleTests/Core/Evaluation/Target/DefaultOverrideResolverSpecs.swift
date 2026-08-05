@@ -234,7 +234,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
         private var matches = [(Target, Bool)]()
         var callCount = 0
 
-        func matches(request: EvaluatorRequest, context: EvaluatorContext, target: Target) throws -> Bool {
+        func matches(request: EvaluateRequest, context: EvaluatorContext, target: Target) throws -> Bool {
             callCount = callCount + 1
             guard let match = matches.first(where: { $0.0 === target }) else {
                 throw HackleError.error("error")
@@ -251,7 +251,7 @@ class DefaultOverrideResolverSpecs: QuickSpec {
 
         var returns: Variation? = nil
 
-        func get(experiment: Experiment, user: HackleUser) -> Variation? {
+        func get(experiment: ExperimentConfig, user: HackleUser) -> Variation? {
             returns
         }
     }

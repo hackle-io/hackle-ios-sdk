@@ -9,5 +9,8 @@ import Foundation
 
 protocol UserListener {
     func onUserUpdated(oldUser: User, newUser: User, timestamp: Date)
+
+    // for $properties (only Local)
+    func onPropertyOperations(user: User, operations: PropertyOperations, timestamp: Date)
 }
 

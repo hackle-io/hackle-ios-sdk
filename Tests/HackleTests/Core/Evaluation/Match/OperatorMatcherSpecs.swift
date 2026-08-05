@@ -315,7 +315,7 @@ class OperatorMatcherSpecs: QuickSpec {
         describe("ExistMatcher") {
             let sut = ExistsMatcher()
             
-            it("if null fail") {
+            it("if null not matched") {
                 assertFalse(sut.matches(valueMatcher: StringMatcher(), userValue: nil, matchValues: []))
                 assertFalse(sut.matches(valueMatcher: NumberMatcher(), userValue: nil, matchValues: []))
                 assertFalse(sut.matches(valueMatcher: BoolMatcher(), userValue: nil, matchValues: []))

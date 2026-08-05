@@ -20,7 +20,7 @@ class InAppMessageUIHtmlViewSpecs: QuickSpec {
                 hackleInvocator: DefaultHackleInvocator(processor: MockInvocationProcessor())
             )
             return HtmlView(
-                context: InAppMessage.context(),
+                context: InAppMessageEntity.context(),
                 app: app,
                 contentResolverFactory: DefaultInAppMessageHtmlContentResolverFactory(
                     resolvers: [TextInAppMessageHtmlContentResolver()]

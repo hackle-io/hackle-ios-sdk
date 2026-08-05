@@ -70,7 +70,7 @@ class InAppMessageViewEventActorSpecs: QuickSpec {
                 it("when cannot found action handler then do nothing") {
                     // given
                     let view = MockInAppMessageView()
-                    let event = InAppMessageViewActionEvent.action(timestamp: Date(), action: InAppMessage.action(), area: nil)
+                    let event = InAppMessageViewActionEvent.action(timestamp: Date(), action: InAppMessageEntity.action(), area: nil)
                     
                     // when
                     MainActor.assumeIsolated {
@@ -86,7 +86,7 @@ class InAppMessageViewEventActorSpecs: QuickSpec {
                 it("when view is closed then do nothing") {
                     // given
                     let view = MockInAppMessageView(presented: false)
-                    let event = InAppMessageViewActionEvent.action(timestamp: Date(), action: InAppMessage.action(), area: nil)
+                    let event = InAppMessageViewActionEvent.action(timestamp: Date(), action: InAppMessageEntity.action(), area: nil)
                     
                     // when
                     MainActor.assumeIsolated {
@@ -102,7 +102,7 @@ class InAppMessageViewEventActorSpecs: QuickSpec {
                 it("when view is opened then handle event") {
                     // given
                     let view = MockInAppMessageView(presented: true)
-                    let event = InAppMessageViewActionEvent.action(timestamp: Date(), action: InAppMessage.action(), area: nil)
+                    let event = InAppMessageViewActionEvent.action(timestamp: Date(), action: InAppMessageEntity.action(), area: nil)
                     
                     // when
                     MainActor.assumeIsolated {
