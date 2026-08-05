@@ -27,7 +27,7 @@ class VersionSpecs: QuickSpec {
                 expect(Version.tryParse(value: "1.0.0-beta_4")).to(beNil())
             }
 
-            it("numeric overflow returns nil instead of crashing") {
+            it("numeric overflow returns nil safely") {
                 expect(Version.tryParse(value: "99999999999999999999.0.0")).to(beNil())
                 expect(Version.tryParse(value: "1.99999999999999999999.0")).to(beNil())
                 expect(Version.tryParse(value: "1.0.99999999999999999999")).to(beNil())

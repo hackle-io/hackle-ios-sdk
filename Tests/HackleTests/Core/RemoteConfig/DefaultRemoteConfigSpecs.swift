@@ -11,16 +11,14 @@ import Nimble
 
 class DefaultRemoteConfigSpecs: QuickSpec {
     override class func spec() {
-        var user: User?
         var hackleAppCore: MockHackleAppCore!
         var userManager: MockUserManager!
         var config: DefaultRemoteConfig!
 
         beforeEach {
-            user = User.builder().id("user").build()
             hackleAppCore = MockHackleAppCore()
             userManager = MockUserManager()
-            config = DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: user)
+            config = DefaultRemoteConfig(hackleAppCore: hackleAppCore)
         }
 
         it("getString이 remoteConfig 값을 반환한다") {

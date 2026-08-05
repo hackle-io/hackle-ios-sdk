@@ -8,6 +8,7 @@ class DefaultInAppMessageRecorder: InAppMessageRecorder {
 
     private static let STORE_MAX_SIZE = 100
 
+    private let lock = ReadWriteLock(label: "io.hackle.DefaultInAppMessageRecorder.Lock")
     private let storage: InAppMessageImpressionStorage
 
     init(storage: InAppMessageImpressionStorage) {
@@ -15,6 +16,10 @@ class DefaultInAppMessageRecorder: InAppMessageRecorder {
     }
 
     func record(request: InAppMessagePresentRequest, response: InAppMessagePresentResponse) {
+        if response.code != .present {
+            return
+        }
+
         if (request.reason == DecisionReason.OVERRIDDEN) {
             return
         }
@@ -27,15 +32,17 @@ class DefaultInAppMessageRecorder: InAppMessageRecorder {
     }
 
     private func doRecord(request: InAppMessagePresentRequest) throws {
-        var impressions = try storage.get(inAppMessage: request.inAppMessage)
-        let impression = InAppMessageImpression(identifiers: request.user.identifiers, timestamp: request.requestedAt.timeIntervalSince1970)
-        impressions.append(impression)
+        try lock.write {
+            var impressions = try storage.get(inAppMessage: request.inAppMessage)
+            let impression = InAppMessageImpression(identifiers: request.user.identifiers, timestamp: request.requestedAt.timeIntervalSince1970)
+            impressions.append(impression)
 
-        if impressions.count > Self.STORE_MAX_SIZE {
-            impressions.removeFirst(impressions.count - Self.STORE_MAX_SIZE)
+            if impressions.count > Self.STORE_MAX_SIZE {
+                impressions.removeFirst(impressions.count - Self.STORE_MAX_SIZE)
+            }
+
+            try storage.set(inAppMessage: request.inAppMessage, impressions: impressions)
+            Log.debug("InAppMessage Impression recorded. dispatchId: \(request.dispatchId), inAppMessageKey: \(request.inAppMessage.key), impression: \(impression)")
         }
-
-        try storage.set(inAppMessage: request.inAppMessage, impressions: impressions)
-        Log.debug("InAppMessage Impression recorded. dispatchId: \(request.dispatchId), inAppMessageKey: \(request.inAppMessage.key), impression: \(impression)")
     }
 }

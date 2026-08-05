@@ -2,18 +2,17 @@
 //  InAppMessageTestExt.swift
 //  HackleTests
 //
-//  Created by yong on 2023/06/25.
-//
 
 import Foundation
 
 @testable import Hackle
 
-extension InAppMessage {
+extension InAppMessageEntity {
 
     static func create(
         id: Id = 1,
         key: Key = 1,
+        order: Int64 = 0,
         status: Status = .active,
         period: Period = .always,
         timetable: Timetable = .all,
@@ -21,10 +20,11 @@ extension InAppMessage {
         evaluateContext: EvaluateContext = evaluateContext(),
         targetContext: TargetContext = targetContext(),
         messageContext: MessageContext = messageContext()
-    ) -> InAppMessage {
-        InAppMessage(
+    ) -> InAppMessageEntity {
+        InAppMessageEntity(
             id: id,
             key: key,
+            order: order,
             status: status,
             period: period,
             timetable: timetable,
@@ -37,12 +37,12 @@ extension InAppMessage {
 
     static func eventTrigger(
         rules: [InAppMessage.EventTrigger.Rule] = [
-            InAppMessage.EventTrigger.Rule(eventKey: "test", targets: [])
+            InAppMessageEntity.EventTrigger.Rule(eventKey: "test", targets: [])
         ],
         frequencyCap: InAppMessage.EventTrigger.FrequencyCap? = nil,
         delay: InAppMessage.EventTrigger.Delay = delay()
     ) -> InAppMessage.EventTrigger {
-        InAppMessage.EventTrigger(
+        InAppMessageEntity.EventTrigger(
             rules: rules,
             frequencyCap: frequencyCap,
             delay: delay
@@ -53,7 +53,7 @@ extension InAppMessage {
         identifierCaps: [InAppMessage.EventTrigger.IdentifierCap] = [],
         durationCap: InAppMessage.EventTrigger.DurationCap? = nil
     ) -> InAppMessage.EventTrigger.FrequencyCap {
-        InAppMessage.EventTrigger.FrequencyCap(
+        InAppMessageEntity.EventTrigger.FrequencyCap(
             identifierCaps: identifierCaps,
             durationCap: durationCap
         )
@@ -63,7 +63,7 @@ extension InAppMessage {
         type: InAppMessage.DelayType = .immediate,
         afterCondition: InAppMessage.EventTrigger.Delay.AfterCondition? = nil
     ) -> InAppMessage.EventTrigger.Delay {
-        return InAppMessage.EventTrigger.Delay(
+        return InAppMessageEntity.EventTrigger.Delay(
             type: type,
             afterCondition: afterCondition
         )
@@ -73,7 +73,7 @@ extension InAppMessage {
         identifierType: String = "$id",
         count: Int64 = 1
     ) -> InAppMessage.EventTrigger.IdentifierCap {
-        InAppMessage.EventTrigger.IdentifierCap(
+        InAppMessageEntity.EventTrigger.IdentifierCap(
             identifierType: identifierType,
             count: count
         )
@@ -83,7 +83,7 @@ extension InAppMessage {
         duration: TimeInterval = 60,
         count: Int64 = 1
     ) -> InAppMessage.EventTrigger.DurationCap {
-        InAppMessage.EventTrigger.DurationCap(duration: duration, count: count)
+        InAppMessageEntity.EventTrigger.DurationCap(duration: duration, count: count)
     }
 
     static func evaluateContext(
@@ -206,67 +206,85 @@ extension InAppMessage {
     }
 
     static func eligibilityRequest(
-        workspace: Workspace = MockWorkspace(),
+        workspace: WorkspaceConfig = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        inAppMessage: InAppMessage = create(),
+        inAppMessage: InAppMessageConfig = create(),
+        scope: InAppMessageEvaluateScope = .trigger,
+        platformType: PlatformType? = .ios,
         timestamp: Date = Date()
-    ) -> InAppMessageEligibilityRequest {
-        InAppMessageEligibilityRequest(
+    ) -> InAppMessageEligibilityLocalEvaluateRequest {
+        InAppMessageEligibilityLocalEvaluateRequest.of(
             workspace: workspace,
-            user: user,
             inAppMessage: inAppMessage,
+            user: user,
+            scope: scope,
+            platformType: platformType,
             timestamp: timestamp
         )
     }
 
     static func layoutRequest(
-        workspace: Workspace = MockWorkspace(),
+        workspace: WorkspaceConfig = MockWorkspace(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
-        inAppMessage: InAppMessage = create()
-    ) -> InAppMessageLayoutRequest {
-        return InAppMessageLayoutRequest(
+        inAppMessage: InAppMessageConfig = create(),
+        scope: InAppMessageEvaluateScope = .trigger,
+        record: Bool = true
+    ) -> InAppMessageLayoutLocalEvaluateRequest {
+        return InAppMessageLayoutLocalEvaluateRequest.of(
             workspace: workspace,
+            inAppMessage: inAppMessage,
             user: user,
-            inAppMessage: inAppMessage
+            scope: scope,
+            record: record
         )
     }
 
     static func layoutEvaluation(
-        request: InAppMessageLayoutRequest = layoutRequest(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        targetEvaluations: [EvaluatorEvaluation] = [],
-        message: InAppMessage.Message = message(),
-        properties: [String: Any] = [:]
+        inAppMessage: InAppMessage = create(),
+        message: InAppMessage.Message = message()
     ) -> InAppMessageLayoutEvaluation {
         return InAppMessageLayoutEvaluation(
-            request: request,
-            reason: reason,
-            targetEvaluations: targetEvaluations,
-            message: message,
-            properties: properties
+            entity: inAppMessage,
+            result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message)
+        )
+    }
+
+    static func layoutEvaluateResponse(
+        inAppMessage: InAppMessage = create(),
+        user: HackleUser = HackleUser.of(userId: "test"),
+        workspace: Workspace = DefaultWorkspaceConfig.create(),
+        reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
+        message: InAppMessage.Message = message(),
+        experiment: ExperimentEvaluation? = nil
+    ) -> InAppMessageLayoutEvaluateResponse {
+        return InAppMessageLayoutEvaluateResponse(
+            user: user,
+            workspace: workspace,
+            evaluation: InAppMessageLayoutEvaluation(
+                entity: inAppMessage,
+                result: InAppMessageLayoutEvaluateResult.of(reason: reason, message: message)
+            ),
+            references: [],
+            experiment: experiment
         )
     }
 
     static func eligibilityEvaluation(
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
-        targetEvaluations: [EvaluatorEvaluation] = [],
         inAppMessage: InAppMessage = create(),
-        isEligible: Bool = true,
-        layoutEvaluation: InAppMessageLayoutEvaluation? = nil
+        isEligible: Bool = true
     ) -> InAppMessageEligibilityEvaluation {
         InAppMessageEligibilityEvaluation(
-            reason: reason,
-            targetEvaluations: targetEvaluations,
-            inAppMessage: inAppMessage,
-            isEligible: isEligible,
-            layoutEvaluation: layoutEvaluation
+            entity: inAppMessage,
+            result: InAppMessageEligibilityEvaluateResult(reason: reason, isEligible: isEligible)
         )
     }
 
     static func context(
         dispatchId: String = UUID().uuidString,
-        inAppMessage: InAppMessage = .create(),
-        message: InAppMessage.Message = InAppMessage.message(),
+        inAppMessage: InAppMessage = InAppMessageEntity.create(),
+        message: InAppMessage.Message = InAppMessageEntity.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         decisionReason: String = DecisionReason.DEFAULT_RULE,
         properties: [String: Any] = [:],
@@ -285,8 +303,8 @@ extension InAppMessage {
 
     static func presentRequest(
         dispatchId: String = UUID().uuidString,
-        inAppMessage: InAppMessage = InAppMessage.create(),
-        message: InAppMessage.Message = InAppMessage.message(),
+        inAppMessage: InAppMessage = InAppMessageEntity.create(),
+        message: InAppMessage.Message = InAppMessageEntity.message(),
         user: HackleUser = HackleUser.builder().identifier(.id, "user").build(),
         requestedAt: Date = Date(),
         reason: String = DecisionReason.IN_APP_MESSAGE_TARGET,
@@ -306,11 +324,11 @@ extension InAppMessage {
     }
 
     static func presentResponse(
-        dispatchId: String = UUID().uuidString,
-        context: InAppMessagePresentationContext = InAppMessage.context()
+        code: InAppMessagePresentResponse.Code = .present,
+        context: InAppMessagePresentationContext = InAppMessageEntity.context()
     ) -> InAppMessagePresentResponse {
         return InAppMessagePresentResponse(
-            dispatchId: dispatchId,
+            code: code,
             context: context
         )
     }
@@ -379,7 +397,7 @@ extension InAppMessage {
     static func deliverResponse(
         dispatchId: String = UUID().uuidString,
         inAppMessageKey: InAppMessage.Key = 1,
-        code: InAppMessageDeliverResponse.Code = .present,
+        code: InAppMessageDeliverResponse.Code = .deliver,
         presentResponse: InAppMessagePresentResponse? = nil
     ) -> InAppMessageDeliverResponse {
         return InAppMessageDeliverResponse(

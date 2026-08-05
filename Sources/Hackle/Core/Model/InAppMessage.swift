@@ -2,17 +2,55 @@
 //  InAppMessage.swift
 //  Hackle
 //
-//  Created by yong on 2023/05/31.
-//
 
 import Foundation
 
-final class InAppMessage: HackleInAppMessage, Sendable {
+protocol InAppMessage: Entity, HackleInAppMessage, Sendable {
     typealias Id = Int64
     typealias Key = Int64
+    typealias Status = InAppMessageEntity.Status
+    typealias Period = InAppMessageEntity.Period
+    typealias Timetable = InAppMessageEntity.Timetable
+    typealias TimetableSlot = InAppMessageEntity.TimetableSlot
+    typealias EventTrigger = InAppMessageEntity.EventTrigger
+    typealias EvaluateContext = InAppMessageEntity.EvaluateContext
+    typealias TargetContext = InAppMessageEntity.TargetContext
+    typealias UserOverride = InAppMessageEntity.UserOverride
+    typealias DisplayType = InAppMessageEntity.DisplayType
+    typealias LayoutType = InAppMessageEntity.LayoutType
+    typealias Orientation = InAppMessageEntity.Orientation
+    typealias Behavior = InAppMessageEntity.Behavior
+    typealias ActionType = InAppMessageEntity.ActionType
+    typealias ActionArea = InAppMessageEntity.ActionArea
+    typealias VerticalAlignment = InAppMessageEntity.VerticalAlignment
+    typealias HorizontalAlignment = InAppMessageEntity.HorizontalAlignment
+    typealias DelayType = InAppMessageEntity.DelayType
+    typealias HtmlResourceType = InAppMessageEntity.HtmlResourceType
+    typealias MessageContext = InAppMessageEntity.MessageContext
+    typealias ExperimentContext = InAppMessageEntity.ExperimentContext
+    typealias Message = InAppMessageEntity.Message
+    typealias Action = InAppMessageEntity.Action
 
+    var id: Id { get }
+    var key: Key { get }
+    var order: Int64 { get }
+    var period: Period { get }
+    var timetable: Timetable { get }
+    var eventTrigger: EventTrigger { get }
+    var evaluateContext: EvaluateContext { get }
+    var messageContext: MessageContext { get }
+}
+
+extension InAppMessage {
+    var serviceType: ServiceType {
+        .inAppMessage
+    }
+}
+
+final class InAppMessageEntity: InAppMessageConfig, Sendable {
     let id: Id
     let key: Key
+    let order: Int64
     let status: Status
     let period: Period
     let timetable: Timetable
@@ -24,6 +62,7 @@ final class InAppMessage: HackleInAppMessage, Sendable {
     init(
         id: Id,
         key: Key,
+        order: Int64,
         status: Status,
         period: Period,
         timetable: Timetable,
@@ -34,6 +73,7 @@ final class InAppMessage: HackleInAppMessage, Sendable {
     ) {
         self.id = id
         self.key = key
+        self.order = order
         self.status = status
         self.period = period
         self.timetable = timetable
@@ -44,7 +84,7 @@ final class InAppMessage: HackleInAppMessage, Sendable {
     }
 }
 
-extension InAppMessage {
+extension InAppMessageEntity {
     enum Status: String, Codable {
         case initialized = "INITIALIZED"
         case draft = "DRAFT"
@@ -53,9 +93,28 @@ extension InAppMessage {
         case finished = "FINISHED"
     }
 
+    enum PeriodType: String {
+        case immediate = "IMMEDIATE"
+        case custom = "CUSTOM"
+    }
+
+    enum TimetableType: String {
+        case all = "ALL"
+        case custom = "CUSTOM"
+    }
+
     enum Period {
         case always
         case range(startInclusive: Date, endExclusive: Date)
+
+        var type: PeriodType {
+            switch self {
+            case .always:
+                return .immediate
+            case .range:
+                return .custom
+            }
+        }
 
         func within(date: Date) -> Bool {
             switch self {
@@ -70,6 +129,15 @@ extension InAppMessage {
     enum Timetable {
         case all
         case custom(slots: [TimetableSlot])
+
+        var type: TimetableType {
+            switch self {
+            case .all:
+                return .all
+            case .custom:
+                return .custom
+            }
+        }
 
         func within(date: Date) -> Bool {
             switch self {
@@ -172,12 +240,15 @@ extension InAppMessage {
                 self.afterCondition = afterCondition
             }
 
-            func deliverAt(startedAt: Date) -> Date {
+            func deliverAt(startedAt: Date) throws -> Date {
                 switch type {
                 case .immediate:
                     return startedAt
                 case .after:
-                    return startedAt.addingTimeInterval(afterCondition!.duration)
+                    guard let afterCondition = afterCondition else {
+                        throw HackleError.error("afterCondition must not be nil when delay type is AFTER")
+                    }
+                    return startedAt.addingTimeInterval(afterCondition.duration)
                 }
             }
 
@@ -235,12 +306,6 @@ extension InAppMessage {
         case imageOnly = "IMAGE_ONLY"
         case textOnly = "TEXT_ONLY"
         case image = "IMAGE"
-    }
-
-    enum PlatformType: String, Codable {
-        case web = "WEB"
-        case ios = "IOS"
-        case android = "ANDROID"
     }
 
     enum Orientation: String, Codable {
@@ -546,11 +611,13 @@ extension InAppMessage {
     }
 }
 
-extension InAppMessage: CustomStringConvertible {
+extension InAppMessageEntity: CustomStringConvertible {
     var description: String {
         return "InAppMessage(id: \(id), key: \(key), status: \(status))"
     }
+}
 
+extension InAppMessage {
     func supports(platform: PlatformType) -> Bool {
         messageContext.platformTypes.contains(platform)
     }

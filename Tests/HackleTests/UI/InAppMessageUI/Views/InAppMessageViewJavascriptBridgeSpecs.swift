@@ -18,7 +18,7 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
             let view = MainActor.assumeIsolated {
                 MockInAppMessageView(
                     id: viewId,
-                    context: InAppMessage.context(triggerEvent: event)
+                    context: InAppMessageEntity.context(triggerEvent: event)
                 )
             }
             return InAppMessageViewJavascriptBridge(app: app, view: view)
@@ -86,7 +86,7 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
                 expect(sut.source).to(contain("C:\\\\\\\\Users"))
             }
 
-            it("returns empty string when JSON serialization fails") {
+            it("returns empty string when JSON is not serializable") {
                 let event = Event(key: "hello", value: nil, properties: ["badDate": Date()])
                 let sut = bridge(event: event)
                 expect(sut.source).to(contain("getInAppMessageTriggerEvent: function() { return '' }"))

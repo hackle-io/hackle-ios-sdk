@@ -9,7 +9,7 @@ class MockInAppMessageView: UIView, InAppMessageView {
 
     init(
         id: String = UUID().uuidString,
-        context: InAppMessagePresentationContext = InAppMessage.context(),
+        context: InAppMessagePresentationContext = InAppMessageEntity.context(),
         presented: Bool = false
     ) {
         self.id = id

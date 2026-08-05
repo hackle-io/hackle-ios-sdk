@@ -17,9 +17,14 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
         
         beforeEach {
             repository = UserDefaultsKeyValueRepository.of(suiteName: "unittest_exposure_repo_abcd1234")
+            repository.clear()
             exposureEventDedupDeterminerSut = ExposureEventDedupDeterminer(repository: repository, dedupInterval: 1)
         }
-        
+
+        afterEach {
+            repository.clear()
+        }
+
         describe("isDedupTarget") {
             it("dedupInterval 이 -1 이면 중복제거 하지 않는다") {
                 // given
@@ -43,6 +48,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser.of(userId: "test_id"),
+                    internalProperties: [:],
                     experiment: MockExperiment(),
                     variationId: 14,
                     variationKey: "A",
@@ -65,6 +71,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -76,6 +83,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -95,6 +103,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -106,6 +115,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -125,6 +135,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser.of(userId: "test_id_01"),
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -136,6 +147,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser.of(userId: "test_id_02"),
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -154,6 +166,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -165,6 +178,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 2),
                     variationId: 14,
                     variationKey: "A",
@@ -183,6 +197,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "B",
@@ -194,6 +209,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -210,6 +226,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser(identifiers: ["id": "test_id_01"], properties: [:], hackleProperties: [:]),
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -221,6 +238,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: HackleUser(identifiers: ["id": "test_id_01"], properties: ["age": 30], hackleProperties: [:]),
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -240,6 +258,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -251,6 +270,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -273,6 +293,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -284,6 +305,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: user,
+                    internalProperties: [:],
                     experiment: MockExperiment(id: 1),
                     variationId: 14,
                     variationKey: "A",
@@ -299,6 +321,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                         insertId: "insertId",
                         timestamp: Date(),
                         user: user,
+                        internalProperties: [:],
                         experiment: MockExperiment(id: Int64(i+2)),
                         variationId: 14,
                         variationKey: "A",
@@ -309,8 +332,9 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                 }
                 
                 sut.cache().saveToRepository()
-                sut.cache().loadFromRepository()
-                expect(sut.isDedupTarget(event: firstEvent)) == false
+                // 앱 재시작 모사: 새 인스턴스가 빈 repository에서 init 시 로드 → 저장된 값 없음 → 중복제거 안 함
+                let reloaded = ExposureEventDedupDeterminer(repository: repository, dedupInterval: 100)
+                expect(reloaded.isDedupTarget(event: firstEvent)) == false
             }
 
             it("TC1") {
@@ -323,6 +347,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -334,6 +359,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -345,6 +371,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userB,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -356,6 +383,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -379,6 +407,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -390,6 +419,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -401,6 +431,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userAA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -412,6 +443,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment,
                     variationId: 14,
                     variationKey: "A",
@@ -435,6 +467,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment1,
                     variationId: 14,
                     variationKey: "A",
@@ -446,6 +479,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment2,
                     variationId: 14,
                     variationKey: "A",
@@ -457,6 +491,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment1,
                     variationId: 14,
                     variationKey: "A",
@@ -468,6 +503,7 @@ class ExposureEventDedupDeterminerSpec: QuickSpec {
                     insertId: "insertId",
                     timestamp: Date(),
                     user: userA,
+                    internalProperties: [:],
                     experiment: experiment2,
                     variationId: 14,
                     variationKey: "A",

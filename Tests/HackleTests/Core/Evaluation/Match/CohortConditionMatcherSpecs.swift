@@ -13,7 +13,7 @@ class CohortConditionMatcherSpecs: QuickSpec {
 
         let sut = CohortConditionMatcher(valueOperatorMatcher: valueOperatorMatcher)
 
-        it("when condition key type is not COHORT then throw error") {
+        it("when condition key type is not COHORT then throws") {
             let request = experimentRequest()
             let condition = Target.Condition(
                 key: Target.Key(type: .userProperty, name: "age"),

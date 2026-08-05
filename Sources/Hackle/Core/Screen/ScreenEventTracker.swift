@@ -24,7 +24,7 @@ class ScreenEventTracker: ScreenListener {
             .property(Self.PREVIOUS_SCREEN_NAME_PROPERTY_KEY, previousScreen?.name)
             .property(Self.PREVIOUS_SCREEN_CLASS_PROPERTY_KEY, previousScreen?.className)
             .build()
-        let hackleUser = userManager.toHackleUser(user: user)
+        let hackleUser = userManager.hackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
     }
 

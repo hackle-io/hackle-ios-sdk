@@ -2,8 +2,6 @@
 //  FeatureFlagConditionMatcherSpecs.swift
 //  HackleTests
 //
-//  Created by yong on 2023/04/20.
-//
 
 import Foundation
 import Quick
@@ -13,18 +11,37 @@ import MockingKit
 
 
 class FeatureFlagConditionMatcherSpecs: QuickSpec {
+
     override class func spec() {
-        var evaluator: MockEvaluator!
+        var evaluatorStub: StubExperimentEvaluator!
         var valueOperatorMatcher: MockValueOperatorMatcher!
         var sut: FeatureFlagConditionMatcher!
 
         var context: EvaluatorContext!
 
         beforeEach {
-            evaluator = MockEvaluator()
+            evaluatorStub = StubExperimentEvaluator()
+            let factory = EvaluatorFactory()
+            factory.add(evaluatorStub)
             valueOperatorMatcher = MockValueOperatorMatcher()
-            sut = FeatureFlagConditionMatcher(evaluator: evaluator, valueOperatorMatcher: valueOperatorMatcher)
+            sut = FeatureFlagConditionMatcher(
+                evaluator: ExperimentReferenceLocalEvaluator(evaluatorFactory: factory),
+                valueOperatorMatcher: valueOperatorMatcher
+            )
             context = Evaluators.context()
+        }
+
+        func evaluation(request: ExperimentLocalEvaluateRequest, reason: String) -> ExperimentEvaluation {
+            ExperimentEvaluation(
+                entity: request.experiment,
+                result: ExperimentEvaluateResult.of(reason: reason, variation: request.experimentConfig.variations.first!)
+            )
+        }
+
+        func request(experiment: ExperimentConfig) -> ExperimentLocalEvaluateRequest {
+            let workspace = MockWorkspace()
+            every(workspace.getFeatureFlagOrNilMock).returns(experiment)
+            return experimentRequest(workspace: workspace, experiment: experiment)
         }
 
         it("key 가 number 가 아닌경우") {
@@ -41,23 +58,13 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
         it("experiment 가 없는 경우 false") {
             let workspace = MockWorkspace()
             every(workspace.getFeatureFlagOrNilMock).returns(nil)
-            let request = experimentRequest(experiment: experiment(type: .featureFlag))
+            let request = experimentRequest(workspace: workspace, experiment: experiment(type: .featureFlag))
             let condition = Target.Condition(
                 key: Target.Key(type: .featureFlag, name: "42"),
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .bool, values: [.bool(true)])
             )
             let actual = try sut.matches(request: request, context: context, condition: condition)
             expect(actual) == false
-        }
-
-        func request(experiment: Experiment) -> ExperimentRequest {
-            let workspace = MockWorkspace()
-            every(workspace.getFeatureFlagOrNilMock).returns(experiment)
-            return experimentRequest(workspace: workspace, experiment: experiment)
-        }
-
-        func evaluation(request: ExperimentRequest, reason: String) throws -> ExperimentEvaluation {
-            try ExperimentEvaluation.of(request: request, context: context, variation: request.experiment.variations.first!, reason: reason)
         }
 
         it("신규 평가") {
@@ -67,14 +74,14 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .bool, values: [.bool(true)])
             )
 
-            let evaluation = try evaluation(request: request, reason: DecisionReason.DEFAULT_RULE)
-            evaluator.returns = evaluation
+            let evaluation = evaluation(request: request, reason: DecisionReason.DEFAULT_RULE)
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(evaluator.call) == 1
+            expect(evaluatorStub.call) == 1
         }
 
         it("이미 평가된 경우") {
@@ -84,16 +91,15 @@ class FeatureFlagConditionMatcherSpecs: QuickSpec {
                 match: Target.Match(type: .match, matchOperator: ._in, valueType: .bool, values: [.bool(true)])
             )
 
-            let evaluation = try evaluation(request: request, reason: DecisionReason.DEFAULT_RULE)
+            let evaluation = evaluation(request: request, reason: DecisionReason.DEFAULT_RULE)
             context.add(evaluation)
-            evaluator.returns = evaluation
+            evaluatorStub.evaluation = evaluation
             every(valueOperatorMatcher.matchesMock).returns(true)
 
             let actual = try sut.matches(request: request, context: context, condition: condition)
 
             expect(actual) == true
-            expect(evaluator.call) == 0
+            expect(evaluatorStub.call) == 0
         }
-
     }
 }

@@ -70,7 +70,7 @@ class ViewLifecycleManager: ViewLifecyclePublisher, @unchecked Sendable {
         }
     }
     
-    private func execute(_ action: @escaping () -> Void) {
+    private func execute(_ action: @escaping @Sendable () -> Void) {
         if let queue = queue {
             queue.async(execute: action)
         } else {

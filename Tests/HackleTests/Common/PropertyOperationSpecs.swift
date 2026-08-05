@@ -34,6 +34,19 @@ class PropertyOperationSpecs: QuickSpec {
                 expect(PropertyOperations.empty().count) == 0
             }
 
+            it("set(properties:) - 전체 properties를 $set 연산으로 만든다") {
+                let operations = PropertyOperations.set(properties: ["age": 30, "grade": "GOLD"])
+                let dictionary = operations.asDictionary()
+                expect(dictionary.count) == 1
+                expect(dictionary[.set]?["age"] as? Int) == 30
+                expect(dictionary[.set]?["grade"] as? String) == "GOLD"
+            }
+
+            it("set(properties:) - 빈 properties는 empty") {
+                let operations = PropertyOperations.set(properties: [:])
+                expect(operations.count) == 0
+            }
+
             it("clearAll") {
                 let operations = PropertyOperations.clearAll()
                 expect(operations.count) == 1

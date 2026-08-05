@@ -81,7 +81,7 @@ class DefaultSegmentMatcherSpecs: QuickSpec {
         private var matches = [(Target.Condition, Bool)]()
         var callCount = 0
 
-        func matches(request: EvaluatorRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
+        func matches(request: EvaluateRequest, context: EvaluatorContext, condition: Target.Condition) throws -> Bool {
             callCount = callCount + 1
             guard let match = matches.first(where: { $0.0 === condition }) else {
                 throw HackleError.error("error")

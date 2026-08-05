@@ -19,7 +19,7 @@ class SessionEventTrackerSpecs: QuickSpec {
 
         it("onSessionStarted") {
             let hackleUser = HackleUser.builder().identifier(.id, "user").build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let session = Session(id: "42.ffffffff")
             let user = User.builder().id("user_id").build()
@@ -33,7 +33,7 @@ class SessionEventTrackerSpecs: QuickSpec {
 
         it("onSessionEnded") {
             let hackleUser = HackleUser.builder().identifier(.id, "user").build()
-            every(userManager.toHackleUserMock).returns(hackleUser)
+            every(userManager.hackleUserMock).returns(hackleUser)
 
             let session = Session(id: "42.ffffffff")
             let user = User.builder().id("user_id").build()
@@ -53,7 +53,7 @@ class SessionEventTrackerSpecs: QuickSpec {
         }
 
         func trackEvent(key: String) -> UserEvent {
-            UserEvents.track(eventType: UndefinedEventType(key: key), event: Hackle.event(key: key), timestamp: Date(), user: HackleUser.builder().build())
+            UserEvents.track(event: Hackle.event(key: key), workspace: nil, timestamp: Date(), user: HackleUser.builder().build())
         }
     }
 }

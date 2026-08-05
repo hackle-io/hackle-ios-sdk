@@ -140,11 +140,11 @@ class ApplicationEventTrackerSpec: QuickSpec {
 
                 // then
                 verify(exactly: 1) {
-                    userManager.resolveMock
+                    userManager.hackleUserMock
                 }
 
-                let (user, hackleAppContext) = userManager.resolveMock.firstInvokation().arguments
-                expect(user).to(beNil())
+                let (user, hackleAppContext) = userManager.hackleUserMock.firstInvokation().arguments
+                expect(user).to(beIdenticalTo(userManager.currentUser))
                 expect(hackleAppContext.browserProperties.count).to(equal(0))
             }
         }

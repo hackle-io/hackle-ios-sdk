@@ -1,10 +1,11 @@
 import Foundation
 
 protocol InAppMessageScheduleProcessor {
-    func process(request: InAppMessageScheduleRequest) -> InAppMessageScheduleResponse
+    @discardableResult
+    func process(request: InAppMessageScheduleRequest) async -> InAppMessageScheduleResponse
 }
 
-class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InAppMessageScheduleListener {
+class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InAppMessageScheduleListener, @unchecked Sendable {
 
     private let actionDeterminer: InAppMessageScheduleActionDeterminer
     private let schedulerFactory: InAppMessageSchedulerFactory
@@ -14,11 +15,12 @@ class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InApp
         self.schedulerFactory = schedulerFactory
     }
 
-    func process(request: InAppMessageScheduleRequest) -> InAppMessageScheduleResponse {
+    @discardableResult
+    func process(request: InAppMessageScheduleRequest) async -> InAppMessageScheduleResponse {
         Log.debug("InAppMessage Schedule Request: \(request)")
 
         do {
-            let response = try schedule(request: request)
+            let response = try await schedule(request: request)
             Log.debug("InAppMessage Schedule Response: \(response)")
             return response
         } catch {
@@ -27,13 +29,16 @@ class DefaultInAppMessageScheduleProcessor: InAppMessageScheduleProcessor, InApp
         }
     }
 
-    private func schedule(request: InAppMessageScheduleRequest) throws -> InAppMessageScheduleResponse {
+    private func schedule(request: InAppMessageScheduleRequest) async throws -> InAppMessageScheduleResponse {
         let action = try actionDeterminer.determine(request: request)
         let scheduler = try schedulerFactory.get(scheduleType: request.scheduleType)
-        return try scheduler.schedule(action: action, request: request)
+        return try await scheduler.schedule(action: action, request: request)
     }
 
+    // InAppMessageScheduleListener의 delay 타이머 콜백
     func onSchedule(request: InAppMessageScheduleRequest) {
-        process(request: request)
+        Task {
+            await self.process(request: request)
+        }
     }
 }

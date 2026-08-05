@@ -78,3 +78,11 @@ extension Array {
         return result
     }
 }
+
+extension Dictionary {
+
+    // 동일 키는 우측(new) 우선
+    func append(_ new: [Key: Value]) -> [Key: Value] {
+        merging(new) { _, new in new }
+    }
+}

@@ -8,17 +8,18 @@ protocol UserEventDispatcher {
     func dispatch(events: [EventEntity])
 }
 
-class DefaultUserEventDispatcher: UserEventDispatcher {
+// 저장 프로퍼티가 모두 let(불변)이라 thread-safe.
+final class DefaultUserEventDispatcher: UserEventDispatcher, @unchecked Sendable {
     private let endpoint: URL
-    private let eventQueue: DispatchQueue
+    private let coreQueue: DispatchQueue
     private let eventRepository: EventRepository
     private let httpQueue: DispatchQueue
     private let httpClient: HttpClient
     private let eventBackoffController: UserEventBackoffController
 
-    init(eventBaseUrl: URL, eventQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient, eventBackoffController: UserEventBackoffController) {
+    init(eventBaseUrl: URL, coreQueue: DispatchQueue, eventRepository: EventRepository, httpQueue: DispatchQueue, httpClient: HttpClient, eventBackoffController: UserEventBackoffController) {
         self.endpoint = eventBaseUrl.appendingPathComponent("/api/v2/events")
-        self.eventQueue = eventQueue
+        self.coreQueue = coreQueue
         self.eventRepository = eventRepository
         self.httpQueue = httpQueue
         self.httpClient = httpClient
@@ -32,13 +33,13 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
     }
 
     private func delete(events: [EventEntity]) {
-        eventQueue.async {
+        coreQueue.async {
             self.deleteEventInternal(events: events)
         }
     }
 
     private func updateEventStatusToPending(events: [EventEntity]) {
-        eventQueue.async {
+        coreQueue.async {
             self.updateEventToPendingInternal(events: events)
         }
     }
@@ -68,18 +69,18 @@ class DefaultUserEventDispatcher: UserEventDispatcher {
             return
         }
 
-        guard let urlResponse = response.urlResponse as? HTTPURLResponse else {
+        guard let statusCode = response.statusCode else {
             Log.error("Failed to dispatch events: Response is empty")
             delete(events: events)
             return
         }
 
-        if (200..<300).contains(urlResponse.statusCode) {
+        if (200..<300).contains(statusCode) {
             delete(events: events)
             return
         }
 
-        if (400..<500).contains(urlResponse.statusCode) {
+        if (400..<500).contains(statusCode) {
             delete(events: events)
             return
         }
@@ -144,6 +145,7 @@ extension UserEvents.Exposure {
         dto["variationKey"] = variationKey
         dto["decisionReason"] = decisionReason
         dto["properties"] = properties
+        dto["internalProperties"] = internalProperties
 
         return dto
     }
@@ -161,8 +163,9 @@ extension UserEvents.Track {
         dto["userProperties"] = user.properties
         dto["hackleProperties"] = user.hackleProperties
 
-        dto["eventTypeId"] = eventType.id
-        dto["eventTypeKey"] = eventType.key
+        dto["internalProperties"] = internalProperties
+        dto["eventTypeId"] = 0
+        dto["eventTypeKey"] = event.key
         if let value = event.value {
             dto["value"] = value
         }
@@ -191,6 +194,7 @@ extension UserEvents.RemoteConfig {
         dto["valueId"] = valueId
         dto["decisionReason"] = decisionReason
         dto["properties"] = properties
+        dto["internalProperties"] = internalProperties
 
         return dto
     }

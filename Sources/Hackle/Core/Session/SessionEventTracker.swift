@@ -27,7 +27,7 @@ class SessionEventTracker: SessionListener {
 
     private func track(eventKey: String, session: Session, user: User, timestamp: Date) {
         let event = Event.builder(eventKey).build()
-        let hackleUser = userManager.toHackleUser(user: user)
+        let hackleUser = userManager.hackleUser(user: user)
             .toBuilder()
             .identifier(.session, session.id, overwrite: false)
             .build()

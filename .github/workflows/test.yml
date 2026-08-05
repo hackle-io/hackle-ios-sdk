@@ -10,13 +10,13 @@ permissions:
 
 jobs:
   ios-sdk-test:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
       
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.1.1'
+          xcode-version: '26.5'
 
       - name: Install xcbeautify
         run: brew install xcbeautify
@@ -26,7 +26,7 @@ jobs:
             set -o pipefail && xcodebuild build-for-testing \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
                 -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 SWIFT_STRICT_CONCURRENCY=complete \
                 | xcbeautify --renderer github-actions --quiet 
@@ -55,7 +55,7 @@ jobs:
             set -o pipefail && xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
                 -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 -retry-tests-on-failure \
                 -test-iterations 3 \
@@ -73,13 +73,13 @@ jobs:
           comment_mode: changes
 
   swift6-build:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.1.1'
+          xcode-version: '26.5'
 
       - name: Install xcbeautify
         run: brew install xcbeautify
@@ -90,18 +90,18 @@ jobs:
             set -o pipefail && xcodebuild build \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
                 SWIFT_VERSION=6 \
                 | xcbeautify --renderer github-actions --quiet
 
   thread-sanitizer-test:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.1.1'
+          xcode-version: '26.5'
 
       - name: Install xcbeautify
         run: brew install xcbeautify
@@ -111,7 +111,7 @@ jobs:
             set -o pipefail && xcodebuild build-for-testing \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
                 -enableThreadSanitizer YES \
                 | xcbeautify --renderer github-actions --quiet
 
@@ -120,7 +120,7 @@ jobs:
             set -o pipefail && xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
                 -enableThreadSanitizer YES \
                 -only-testing:HackleTests/MetricRegistryRaceSpecs \
                 -only-testing:HackleTests/ConcurrentArrayRaceSpecs \
@@ -128,5 +128,6 @@ jobs:
                 -only-testing:HackleTests/DelegatingMetricRegistrySpecs/concurrency \
                 -only-testing:HackleTests/MetricsRaceSpecs \
                 -only-testing:HackleTests/UserManagerRaceSpecs \
+                -only-testing:HackleTests/WorkspaceConfigManagerRaceSpecs \
                 -parallel-testing-enabled NO \
                 | xcbeautify --renderer github-actions --quiet

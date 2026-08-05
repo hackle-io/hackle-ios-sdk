@@ -3,7 +3,7 @@ import Nimble
 import Quick
 @testable import Hackle
 
-class CompositeSynchronizerSpecs: QuickSpec {
+class CompositeSynchronizerSpecs: AsyncSpec {
     override class func spec() {
 
         var workspaceSynchronizer: MockSynchronizer!
@@ -13,7 +13,7 @@ class CompositeSynchronizerSpecs: QuickSpec {
         beforeEach {
             workspaceSynchronizer = MockSynchronizer()
             cohortSynchronizer = MockSynchronizer()
-            sut = CompositeSynchronizer(dispatchQueue: DispatchQueue(label: "test", attributes: .concurrent))
+            sut = CompositeSynchronizer()
             sut.add(synchronizer: workspaceSynchronizer)
             sut.add(synchronizer: cohortSynchronizer)
         }
@@ -22,10 +22,10 @@ class CompositeSynchronizerSpecs: QuickSpec {
             // given
             var count = 0
             // when
-            sut.sync { _ in
+            await awaitCompletion {
+                try? await sut.sync()
                 count += 1
             }
-            Thread.sleep(forTimeInterval: 0.1)
 
             // then
             expect(count) == 1
@@ -37,26 +37,27 @@ class CompositeSynchronizerSpecs: QuickSpec {
             }
         }
 
-        it("async") {
-            // given
-            every(workspaceSynchronizer.syncMock).answers { completion in
-                Thread.sleep(forTimeInterval: 0.1)
-                completion(.success(()))
-            }
-            every(cohortSynchronizer.syncMock).answers { completion in
-                Thread.sleep(forTimeInterval: 0.1)
-                completion(.success(()))
-            }
-            var count = 0
+        it("child들을 동시에 dispatch한다 (결정적 병렬성 증명)") {
+            // given: 두 child가 모두 sync()에 진입해야만 통과하는 배리어(count 2)
+            let barrier = Barrier(count: 2)
+            let parallelSut = CompositeSynchronizer()
+            let a = BarrierSynchronizer(barrier: barrier)
+            let b = BarrierSynchronizer(barrier: barrier)
+            parallelSut.add(synchronizer: a)
+            parallelSut.add(synchronizer: b)
 
-            // when
-            sut.sync {
-                count += 1
+            // when: 순차 await로 dispatch하면 첫 child가 배리어에서 영구 대기 → 타임아웃 실패.
+            //       TaskGroup 팬아웃이면 둘 다 진입 → 배리어 통과 → 완료.
+            var completed = false
+            await awaitCompletion {
+                try await parallelSut.sync()
+                completed = true
             }
-            Thread.sleep(forTimeInterval: 0.15)
 
             // then
-            expect(count) == 1
+            expect(completed) == true
+            expect(a.synced) == true
+            expect(b.synced) == true
         }
 
         it("safe") {
@@ -64,26 +65,28 @@ class CompositeSynchronizerSpecs: QuickSpec {
             let registry = CumulativeMetricRegistry()
             let counter = registry.counter(name: "workspace")
 
-            every(workspaceSynchronizer.syncMock).answers { completion in
+            every(workspaceSynchronizer.syncMock).answers { _ in
                 Thread.sleep(forTimeInterval: 0.1)
                 counter.increment()
-                completion(.success(()))
             }
 
-            every(cohortSynchronizer.syncMock).answers { completion in
+            every(cohortSynchronizer.syncMock).answers { _ in
                 Thread.sleep(forTimeInterval: 0.05)
-                completion(.failure(HackleError.error("fail")))
+                throw HackleError.error("fail")
             }
 
             // when
-            var actual: Result<Void, Error>!
-            sut.sync { result in
-                actual = result
+            var thrown: Error?
+            await awaitCompletion {
+                do {
+                    try await sut.sync()
+                } catch {
+                    thrown = error
+                }
             }
-            Thread.sleep(forTimeInterval: 0.15)
 
             // then
-            try actual.get()
+            expect(thrown).to(beNil())
             expect(counter.count()) == 1
         }
     }

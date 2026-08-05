@@ -5,7 +5,7 @@
 import Foundation
 @testable import Hackle
 
-class MockUserEvent: UserEvent {
+class MockUserEvent: UserEvent, @unchecked Sendable {
     var insertId: String
     var type: UserEventType
     var user: HackleUser

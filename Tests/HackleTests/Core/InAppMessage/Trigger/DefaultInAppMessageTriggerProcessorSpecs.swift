@@ -16,7 +16,7 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
             sut = DefaultInAppMessageTriggerProcessor(determiner: determiner, handler: handler)
         }
 
-        it("when trigger not determiend the do not handle") {
+        it("when trigger not determined then do not handle") {
             // given
             every(determiner.determineMock).returns(nil)
             let event = UserEvents.track("test")
@@ -32,7 +32,7 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
 
         it("when trigger determined then handle trigger") {
             // given
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             let event = UserEvents.track("test", timestamp: 42)
             let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: event)
             every(determiner.determineMock).returns(trigger)
@@ -46,9 +46,9 @@ class DefaultInAppMessageTriggerProcessorSpecs: QuickSpec {
             }
         }
 
-        it("when error occurs during handle trigger then ignore") {
+        it("when handling trigger throws then ignore") {
             // given
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             let event = UserEvents.track("test", timestamp: 42)
             let trigger = InAppMessageTrigger(inAppMessage: inAppMessage, reason: DecisionReason.IN_APP_MESSAGE_TARGET, event: event)
             every(determiner.determineMock).returns(trigger)
