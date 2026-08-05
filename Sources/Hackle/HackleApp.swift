@@ -1,6 +1,4 @@
 //
-// Created by yong on 2020/12/11.
-//
 
 import Foundation
 import UIKit
@@ -8,10 +6,11 @@ import WebKit
 
 /// Entry point of Hackle SDK.
 @objc public final class HackleApp: NSObject {
-    private let hackleAppCore: HackleAppCore
+    let hackleAppCore: HackleAppCore
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
+    private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
 
     init(
         hackleAppCore: HackleAppCore,
@@ -89,27 +88,14 @@ import WebKit
         hackleAppCore.hideUserExplorer()
     }
 
-    /// Sets or replaces the current user.
-    ///
-    /// - Parameter user: the ``User`` to set
-    @objc public func setUser(user: User) {
-        setUser(user: user, completion: {})
-    }
-
     /// Sets or replaces the current user with completion.
     ///
     /// - Parameters:
     ///   - user: the ``User`` to set
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setUser(user: User, completion: @escaping () -> ()) {
-        hackleAppCore.setUser(user: user, hackleAppContext: .default, completion: completion)
-    }
-
-    /// Sets the userId for the current user.
-    ///
-    /// - Parameter userId: the userId to set for the user. Can be null to identify an anonymous user
-    @objc public func setUserId(userId: String?) {
-        setUserId(userId: userId, completion: {})
+    @preconcurrency @objc public func setUser(user: User, completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.setUser(user: user, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets the userId for the current user with completion.
@@ -117,15 +103,9 @@ import WebKit
     /// - Parameters:
     ///   - userId: the userId to set for the user. Can be null to identify an anonymous user
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setUserId(userId: String?, completion: @escaping () -> ()) {
-        hackleAppCore.setUserId(userId: userId, hackleAppContext: .default, completion: completion)
-    }
-
-    /// Sets a custom device ID.
-    ///
-    /// - Parameter deviceId: the custom device ID to set
-    @objc public func setDeviceId(deviceId: String) {
-        setDeviceId(deviceId: deviceId, completion: {})
+    @preconcurrency @objc public func setUserId(userId: String?, completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.setUserId(userId: userId, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets a custom device ID with completion.
@@ -133,20 +113,9 @@ import WebKit
     /// - Parameters:
     ///   - deviceId: the custom device ID to set
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setDeviceId(deviceId: String, completion: @escaping () -> ()) {
-        hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default, completion: completion)
-    }
-
-    /// Sets a single user property.
-    ///
-    /// - Parameters:
-    ///   - key: the key of the property
-    ///   - value: the value of the property
-    @objc public func setUserProperty(key: String, value: Any?) {
-        let operations = PropertyOperations.builder()
-            .set(key, value)
-            .build()
-        updateUserProperties(operations: operations)
+    @preconcurrency @objc public func setDeviceId(deviceId: String, completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets a single user property with completion.
@@ -155,18 +124,12 @@ import WebKit
     ///   - key: the key of the property
     ///   - value: the value of the property
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setUserProperty(key: String, value: Any?, completion: @escaping () -> ()) {
+    @available(*, deprecated, message: "Use updateUserProperties(operations:completion:) instead.")
+    @preconcurrency @objc public func setUserProperty(key: String, value: Any?, completion: @escaping @Sendable () -> ()) {
         let operations = PropertyOperations.builder()
             .set(key, value)
             .build()
         updateUserProperties(operations: operations, completion: completion)
-    }
-
-    /// Updates user properties with a set of operations.
-    ///
-    /// - Parameter operations: a set of ``PropertyOperations`` to apply to user properties
-    @objc public func updateUserProperties(operations: PropertyOperations) {
-        updateUserProperties(operations: operations, completion: {})
     }
 
     /// Updates user properties with a set of operations with completion.
@@ -174,8 +137,9 @@ import WebKit
     /// - Parameters:
     ///   - operations: a set of ``PropertyOperations`` to apply to user properties
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping () -> ()) {
-        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default, completion: completion)
+    @preconcurrency @objc public func updateUserProperties(operations: PropertyOperations, completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Updates push notification subscription status.
@@ -199,23 +163,12 @@ import WebKit
         hackleAppCore.updateKakaoSubscriptions(operations: operations, hackleAppContext: .default)
     }
 
-    /// Resets the current user.
-    @objc public func resetUser() {
-        resetUser(completion: {})
-    }
-
     /// Resets the current user with completion.
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
-    @objc public func resetUser(completion: @escaping () -> ()) {
-        hackleAppCore.resetUser(hackleAppContext: .default, completion: completion)
-    }
-
-    /// Sets the phone number for the current user.
-    ///
-    /// - Parameter phoneNumber: the phone number to set
-    @objc public func setPhoneNumber(phoneNumber: String) {
-        setPhoneNumber(phoneNumber: phoneNumber, completion: {})
+    @preconcurrency @objc public func resetUser(completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.resetUser(hackleAppContext: .default)
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets the phone number for the current user with completion.
@@ -223,47 +176,46 @@ import WebKit
     /// - Parameters:
     ///   - phoneNumber: the phone number to set
     ///   - completion: callback to be executed when the operation is complete
-    @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping () -> ()) {
-        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default, completion: completion)
-    }
-
-    /// Removes the phone number from the current user.
-    @objc public func unsetPhoneNumber() {
-        unsetPhoneNumber(completion: {})
+    @preconcurrency @objc public func setPhoneNumber(phoneNumber: String, completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
+        completionQueue.async {
+            completion()
+        }
     }
 
     /// Removes the phone number from the current user with completion.
     ///
     /// - Parameter completion: callback to be executed when the operation is complete
-    @objc public func unsetPhoneNumber(completion: @escaping () -> ()) {
-        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default, completion: completion)
+    @preconcurrency @objc public func unsetPhoneNumber(completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default)
+        completionQueue.async {
+            completion()
+        }
     }
 
     /// Decide the variation to expose to the user for experiment.
     ///
     /// - Parameters:
     ///   - experimentKey: the unique key of the experiment
-    ///   - defaultVariation: the default variation of the experiment
-    /// - Returns: the decided variation for the user, or defaultVariation
-    @objc public func variation(experimentKey: Int, defaultVariation: String = "A") -> String {
-        variationDetail(experimentKey: experimentKey, defaultVariation: defaultVariation).variation
+    /// - Returns: the decided variation for the user, or `"A"` if the experiment cannot be decided
+    @objc public func variation(experimentKey: Int) -> String {
+        variationDetail(experimentKey: experimentKey).variation
     }
 
     /// Decide the variation to expose to the user for experiment and returns an object that describes the way the variation was decided.
     ///
     /// - Parameters:
     ///   - experimentKey: the unique key for the experiment
-    ///   - defaultVariation: the default variation of the experiment
     /// - Returns: a ``Decision`` object
-    @objc public func variationDetail(experimentKey: Int, defaultVariation: String = "A") -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: nil, defaultVariation: defaultVariation, hackleAppContext: .default)
+    @objc public func variationDetail(experimentKey: Int) -> Decision {
+        hackleAppCore.variationDetail(experimentKey: experimentKey, hackleAppContext: .default)
     }
 
     /// Decide the variations for all experiments and returns a map of decision results.
     ///
     /// - Returns: a dictionary where key is experimentKey and value is ``Decision`` result
     @objc public func allVariationDetails() -> [Int: Decision] {
-        hackleAppCore.allVariationDetails(user: nil, hackleAppContext: .default)
+        hackleAppCore.allVariationDetails(hackleAppContext: .default)
     }
 
     /// Decide whether the feature is turned on to the user.
@@ -279,7 +231,7 @@ import WebKit
     /// - Parameter featureKey: the unique key for the feature
     /// - Returns: a ``FeatureFlagDecision`` object
     @objc public func featureFlagDetail(featureKey: Int) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: nil, hackleAppContext: .default)
+        hackleAppCore.featureFlagDetail(featureKey: featureKey, hackleAppContext: .default)
     }
 
     /// Records the event that occurred by the user.
@@ -293,14 +245,14 @@ import WebKit
     ///
     /// - Parameter event: the ``Event`` that occurred
     @objc public func track(event: Event) {
-        hackleAppCore.track(event: event, user: nil, hackleAppContext: .default)
+        hackleAppCore.track(event: event, hackleAppContext: .default)
     }
 
     /// Returns an instance of Hackle Remote Config.
     ///
     /// - Returns: a ``HackleRemoteConfig`` instance
     @objc public func remoteConfig() -> HackleRemoteConfig {
-        DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: nil)
+        DefaultRemoteConfig(hackleAppCore: hackleAppCore)
     }
 
     /// Injects the supplied object into this WebView.
@@ -310,7 +262,7 @@ import WebKit
     ///   - uiDelegate: Optional UI delegate for the WebView. If not provided, the WebView's existing delegate will be used
     ///   - webViewConfig: Configuration for WebView integration behavior. Defaults to ``HackleWebViewConfig/DEFAULT``
     @MainActor @objc public func setWebViewBridge(_ webView: WKWebView, _ uiDelegate: WKUIDelegate? = nil, _ webViewConfig: HackleWebViewConfig = HackleWebViewConfig.DEFAULT) {
-        let javascriptBridge = HackleJavascriptBridge(invocator: invocator(), sdkKey: sdk.key, mode: config.mode, webViewConfig: webViewConfig)
+        let javascriptBridge = HackleJavascriptBridge(invocator: invocator(), sdkKey: sdk.key, mode: config.appMode, webViewConfig: webViewConfig)
         javascriptBridge.apply(to: webView, uiDelegate: uiDelegate)
     }
 
@@ -331,8 +283,9 @@ import WebKit
     /// Fetches the latest configuration from the Hackle servers with completion.
     ///
     /// - Parameter completion: callback to be executed when the fetch is complete
-    @objc public func fetch(_ completion: @escaping () -> ()) {
-        hackleAppCore.fetch(completion: completion)
+    @preconcurrency @objc public func fetch(_ completion: @escaping @Sendable () -> ()) {
+        hackleAppCore.fetch()
+            .onComplete(queue: completionQueue, completion)
     }
 
     /// Sets the current screen for screen tracking.
@@ -341,85 +294,85 @@ import WebKit
     @objc public func setCurrentScreen(screen: Screen) {
         hackleAppCore.setCurrentScreen(screen: screen, hackleAppContext: .default)
     }
+}
 
-    @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
-    @objc public func variation(experimentKey: Int, userId: String, defaultVariation: String = "A") -> String {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation, hackleAppContext: .default).variation
+// MARK: async interaction
+extension HackleApp {
+
+    /// Sets or replaces the current user, and suspends until the user synchronization completes.
+    ///
+    /// The user is updated synchronously before the first suspension point.
+    ///
+    /// - Parameter user: the ``User`` to set
+    public func setUser(user: User) async {
+        await hackleAppCore.setUser(user: user, hackleAppContext: .default).value
     }
 
-    @available(*, deprecated, message: "Use variation(experimentKey) with setUser(user) instead.")
-    @objc public func variation(experimentKey: Int, user: User, defaultVariation: String = "A") -> String {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation, hackleAppContext: .default).variation
+    /// Sets the userId for the current user, and suspends until the user synchronization completes.
+    ///
+    /// The user is updated synchronously before the first suspension point.
+    ///
+    /// - Parameter userId: the userId to set for the user. Can be null to identify an anonymous user
+    public func setUserId(userId: String?) async {
+        await hackleAppCore.setUserId(userId: userId, hackleAppContext: .default).value
     }
 
-    @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
-    @objc public func variationDetail(experimentKey: Int, userId: String, defaultVariation: String = "A") -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: Hackle.user(id: userId), defaultVariation: defaultVariation, hackleAppContext: .default)
+    /// Sets a custom device ID, and suspends until the user synchronization completes.
+    ///
+    /// The user is updated synchronously before the first suspension point.
+    ///
+    /// - Parameter deviceId: the custom device ID to set
+    public func setDeviceId(deviceId: String) async {
+        await hackleAppCore.setDeviceId(deviceId: deviceId, hackleAppContext: .default).value
     }
 
-    @available(*, deprecated, message: "Use variationDetail(experimentKey) with setUser(user) instead,")
-    @objc public func variationDetail(experimentKey: Int, user: User, defaultVariation: String = "A") -> Decision {
-        hackleAppCore.variationDetail(experimentKey: experimentKey, user: user, defaultVariation: defaultVariation, hackleAppContext: .default)
+    /// Sets a single user property.
+    ///
+    /// - Parameters:
+    ///   - key: the key of the property
+    ///   - value: the value of the property
+    @available(*, deprecated, message: "Use updateUserProperties(operations:) instead.")
+    public func setUserProperty(key: String, value: Any?) async {
+        let operations = PropertyOperations.builder()
+            .set(key, value)
+            .build()
+        await updateUserProperties(operations: operations)
     }
 
-    @available(*, deprecated, message: "Use allVariationDetails() with setUser(user) instead.")
-    @objc public func allVariationDetails(user: User) -> [Int: Decision] {
-        hackleAppCore.allVariationDetails(user: user, hackleAppContext: .default)
+    /// Updates user properties with a set of operations.
+    ///
+    /// - Parameter operations: a set of ``PropertyOperations`` to apply to user properties
+    public func updateUserProperties(operations: PropertyOperations) async {
+        await hackleAppCore.updateUserProperties(operations: operations, hackleAppContext: .default).value
     }
 
-    @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
-    @objc public func isFeatureOn(featureKey: Int, userId: String) -> Bool {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId), hackleAppContext: .default).isOn
+    /// Resets the current user, and suspends until the user synchronization completes.
+    ///
+    /// The user is updated synchronously before the first suspension point.
+    public func resetUser() async {
+        await hackleAppCore.resetUser(hackleAppContext: .default).value
     }
 
-    @available(*, deprecated, message: "Use isFeatureOn(featureKey) with setUser(user) instead.")
-    @objc public func isFeatureOn(featureKey: Int, user: User) -> Bool {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: .default).isOn
+    /// Sets the phone number for the current user.
+    ///
+    /// - Parameter phoneNumber: the phone number to set
+    public func setPhoneNumber(phoneNumber: String) async {
+        hackleAppCore.setPhoneNumber(phoneNumber: phoneNumber, hackleAppContext: .default)
     }
 
-    @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
-    @objc public func featureFlagDetail(featureKey: Int, userId: String) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: Hackle.user(id: userId), hackleAppContext: .default)
+    /// Removes the phone number from the current user.
+    public func unsetPhoneNumber() async {
+        hackleAppCore.unsetPhoneNumber(hackleAppContext: .default)
     }
 
-    @available(*, deprecated, message: "Use featureFlagDetail(featureKey) with setUser(user) instead.")
-    @objc public func featureFlagDetail(featureKey: Int, user: User) -> FeatureFlagDecision {
-        hackleAppCore.featureFlagDetail(featureKey: featureKey, user: user, hackleAppContext: .default)
-    }
-
-    @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
-    @objc public func track(eventKey: String, userId: String) {
-        hackleAppCore.track(event: Hackle.event(key: eventKey), user: Hackle.user(id: userId), hackleAppContext: .default)
-    }
-
-    @available(*, deprecated, message: "Use track(eventKey) with setUser(user) instead.")
-    @objc public func track(eventKey: String, user: User) {
-        hackleAppCore.track(event: Hackle.event(key: eventKey), user: user, hackleAppContext: .default)
-    }
-
-    @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
-    @objc public func track(event: Event, userId: String) {
-        hackleAppCore.track(event: event, user: Hackle.user(id: userId), hackleAppContext: .default)
-    }
-
-    @available(*, deprecated, message: "Use track(event) with setUser(user) instead.")
-    @objc public func track(event: Event, user: User) {
-        hackleAppCore.track(event: event, user: user, hackleAppContext: .default)
-    }
-
-    @available(*, deprecated, message: "Use remoteConfig() with setUser(user) instead.")
-    @objc public func remoteConfig(user: User) -> HackleRemoteConfig {
-        DefaultRemoteConfig(hackleAppCore: hackleAppCore, user: user)
-    }
-
-    @available(*, deprecated, message: "Do not use this method because it does nothing. Use `updatePushSubscriptions(operations)` instead.")
-    @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
-        Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
+    /// Fetches the latest configuration from the Hackle servers, and suspends until the fetch completes.
+    public func fetch() async {
+        await hackleAppCore.fetch().value
     }
 }
 
 extension HackleApp {
-    func initialize(user: User? = nil, completion: @escaping () -> ()) {
+    func initialize(user: User? = nil, completion: @escaping @Sendable () -> ()) {
         hackleAppCore.initialize(user: user, completion: completion)
     }
 
@@ -437,47 +390,65 @@ extension HackleApp {
 
         // - Synchronizer
 
-        let compositeSynchronizer = CompositeSynchronizer(
-            dispatchQueue: DispatchQueue(label: "io.hackle.DelegatingSynchronizer", attributes: .concurrent)
-        )
+        let compositeSynchronizer = CompositeSynchronizer()
         let pollingSynchronizer = PollingSynchronizer(
             delegate: compositeSynchronizer,
             scheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.PollingSynchronizer")),
             interval: config.pollingInterval
         )
 
-        // - WorkspaceFetcher
-
-        let httpWorkspaceFetcher = DefaultHttpWorkspaceFetcher(
-            config: config,
-            sdk: sdk,
-            httpClient: httpClient
-        )
-
-        let workspaceManager = WorkspaceManager(
-            httpWorkspaceFetcher: httpWorkspaceFetcher,
-            repository: DefaultWorkspaceConfigRepository(
-                fileStorage: try? DefaultFileStorage(sdkKey: sdkKey)
-            )
-        )
-        compositeSynchronizer.add(synchronizer: workspaceManager)
+        // - WorkspaceManager
+        let fileStorage = try? DefaultFileStorage(sdkKey: sdkKey)
+        let workspaceMode: WorkspaceMode = {
+            switch config.evaluationMode {
+            case .local:
+                let httpWorkspaceConfigFetcher = DefaultHttpWorkspaceConfigFetcher(
+                    config: config,
+                    sdk: sdk,
+                    httpClient: httpClient
+                )
+                let workspaceConfigManager = WorkspaceConfigManager(
+                    httpWorkspaceConfigFetcher: httpWorkspaceConfigFetcher,
+                    repository: DefaultWorkspaceConfigRepository(fileStorage: fileStorage)
+                )
+                compositeSynchronizer.add(synchronizer: workspaceConfigManager)
+                return .local(workspaceConfigManager)
+            case .remote:
+                let evaluateClient = RemoteEvaluateClient(sdkUrl: config.sdkUrl, httpClient: httpClient)
+                let evaluationManager = WorkspaceEvaluationManager(
+                    fullEvaluator: FullWorkspaceRemoteEvaluator(client: evaluateClient),
+                    partialEvaluator: PartialWorkspaceRemoteEvaluator(client: evaluateClient),
+                    repository: FileWorkspaceEvaluationRepository(fileStorage: fileStorage),
+                    cache: LruWorkspaceEvaluationCache(capacity: 4)
+                )
+                return .remote(evaluationManager)
+            }
+        }()
 
         // - UserManager
-        let cohortFetcher = DefaultUserCohortFetcher(config: config, httpClient: httpClient)
-        let targetFetcher = DefaultUserTargetEventsFetcher(config: config, httpClient: httpClient)
-
-        let userManager = DefaultUserManager(
-            device: platformManager.device,
-            bundleInfo: platformManager.bundleInfo,
-            repository: keyValueRepositoryBySdkKey,
-            cohortFetcher: cohortFetcher,
-            targetFetcher: targetFetcher,
-            clock: clock
-        )
+        let userRepository = UserRepository(repository: keyValueRepositoryBySdkKey)
+        let userManager: UserManager = switch workspaceMode {
+        case .local:
+            LocalUserManager(
+                device: platformManager.device,
+                bundleInfo: platformManager.bundleInfo,
+                repository: userRepository,
+                cohortFetcher: DefaultUserCohortFetcher(config: config, httpClient: httpClient),
+                targetFetcher: DefaultUserTargetEventFetcher(config: config, httpClient: httpClient),
+                clock: clock
+            )
+        case .remote(let evaluationManager):
+            RemoteUserManager(
+                clock: clock,
+                device: platformManager.device,
+                bundleInfo: platformManager.bundleInfo,
+                repository: userRepository,
+                evaluationManager: evaluationManager
+            )
+        }
         compositeSynchronizer.add(synchronizer: userManager)
 
         // - SessionManager
-
         let sessionManager = DefaultSessionManager(
             userManager: userManager,
             keyValueRepository: globalKeyValueRepository,
@@ -489,13 +460,11 @@ extension HackleApp {
         let sessionUserDecorator = SessionUserDecorator(sessionManager: sessionManager)
 
         // - ScreenManager
-
         let screenManager = DefaultScreenManager(
             userManager: userManager
         )
 
         // - EngagementManager
-
         let engagementManager = EngagementManager(
             userManager: userManager,
             screenManager: screenManager,
@@ -504,16 +473,15 @@ extension HackleApp {
         screenManager.addListener(listener: engagementManager)
 
         // - EventProcessor
-
         let workspaceDatabase = WorkspaceDatabase(sdkKey: sdkKey)
         let eventRepository = SQLiteEventRepository(database: workspaceDatabase)
-        let eventQueue = DispatchQueue(label: "io.hackle.EventQueue", qos: .utility)
+        let coreQueue = DispatchQueue(label: "io.hackle.CoreQueue", qos: .utility)
         let httpQueue = DispatchQueue(label: "io.hackle.HttpQueue", qos: .utility)
         let eventBackoffController = DefaultUserEventBackoffController(userEventRetryInterval: config.eventFlushInterval, clock: SystemClock.shared)
 
         let eventDispatcher = DefaultUserEventDispatcher(
             eventBaseUrl: config.eventUrl,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             eventRepository: eventRepository,
             httpQueue: httpQueue,
             httpClient: httpClient,
@@ -537,7 +505,7 @@ extension HackleApp {
             dedupInterval: config.exposureEventDedupInterval
         )
 
-        applicationLifecycleManager.setDispatchQueue(queue: eventQueue)
+        applicationLifecycleManager.setDispatchQueue(queue: coreQueue)
         applicationLifecycleManager.addListener(listener: rcEventDedupDeterminer)
         applicationLifecycleManager.addListener(listener: exposureEventDedupDeterminer)
 
@@ -556,7 +524,7 @@ extension HackleApp {
         let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
 
-        if config.mode == .web_view_wrapper {
+        if config.appMode == .web_view_wrapper {
             eventFilters.append(WebViewWrapperUserEventFilter())
             eventDecorators.append(WebViewWrapperUserEventDecorator())
         }
@@ -567,7 +535,7 @@ extension HackleApp {
             eventFilters: eventFilters,
             eventDecorator: eventDecorators,
             eventPublisher: eventPublisher,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             eventRepository: eventRepository,
             eventRepositoryMaxSize: HackleConfig.DEFAULT_EVENT_REPOSITORY_MAX_SIZE,
             eventFlushScheduler: Schedulers.dispatch(queue: DispatchQueue(label: "io.hackle.scheduler.DefaultUserEventProcessor.flush")),
@@ -583,39 +551,60 @@ extension HackleApp {
         )
         optOutManager.addListener(listener: eventProcessor)
 
-        // - Evaluation Event
+        // - Core
 
-        let eventFactory = DefaultUserEventFactory(
+        let abOverrideStorage = DefaultExperimentManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
+        let ffOverrideStorage = DefaultExperimentManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
+        let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
+        let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
+        let coreContext = HackleCoreContext.create()
+
+        let evaluateProcessor = EvaluateProcessor.create(
+            context: coreContext,
+            clock: clock,
+            eventProcessor: eventProcessor,
+            overrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage]),
+            impressionStorage: inAppMessageImpressionStorage,
+            hiddenStorage: inAppMessageHiddenStorage
+        )
+
+        let decisionProcessor: DecisionProcessor = switch workspaceMode {
+        case .local(let workspaceConfigManager):
+            LocalDecisionProcessor(
+                workspaceFetcher: workspaceConfigManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        case .remote(let workspaceEvaluationManager):
+            RemoteDecisionProcessor(
+                workspaceFetcher: workspaceEvaluationManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        }
+
+        let core = DefaultHackleCore(
+            workspaceManager: workspaceMode.manager,
+            decisionProcessor: decisionProcessor,
+            eventProcessor: eventProcessor,
             clock: clock
         )
 
-        let evaluationEventRecorder = DefaultEvaluationEventRecorder(
-            eventFactory: eventFactory,
-            eventProcessor: eventProcessor
-        )
+        // - PropertiesEventTracker
 
-        // - Core
-
-        let abOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameAB, sdkKey))
-        let ffOverrideStorage = HackleUserManualOverrideStorage.create(suiteName: String(format: storageSuiteNameFF, sdkKey))
-        let inAppMessageHiddenStorage = DefaultInAppMessageHiddenStorage.create(suiteName: String(format: storageSuiteNameIAM, sdkKey))
-        let inAppMessageImpressionStorage = DefaultInAppMessageImpressionStorage.create(suiteName: String(format: storageSuiteNameIAMImpression, sdkKey))
-        EvaluationContext.shared.register(inAppMessageHiddenStorage)
-        EvaluationContext.shared.register(inAppMessageImpressionStorage)
-
-        let core = DefaultHackleCore.create(
-            workspaceFetcher: workspaceManager,
-            eventFactory: eventFactory,
+        let propertiesEventTracker = PropertiesEventTracker(
+            core: core,
             eventProcessor: eventProcessor,
-            manualOverrideStorage: DelegatingManualOverrideStorage(storages: [abOverrideStorage, ffOverrideStorage])
+            userManager: userManager
         )
+        userManager.addListener(listener: propertiesEventTracker)
 
         // - ApplicationLifecycleListener
+        // addListener는 등록 순서대로 append만 하고, onForeground/onBackground도 그 순서대로 순회한다(정렬 없음).
+        // 즉 아래 등록 위치가 곧 호출 순서 계약이다 — 이벤트 생산자(applicationEventTracker, engagementManager 등)는
+        // eventProcessor보다 반드시 먼저 등록되어야 한다. 리스너 추가 시 의도한 위치에 신중히 삽입할 것.
 
         applicationLifecycleManager.addListener(listener: pollingSynchronizer)
         applicationLifecycleManager.addListener(listener: sessionManager)
         applicationLifecycleManager.addListener(listener: userManager)
-        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         // - ApplicationInstallStateManager
 
@@ -708,42 +697,31 @@ extension HackleApp {
             storage: inAppMessageImpressionStorage
         )
         let inAppMessagePresentProcessor = DefaultInAppMessagePresentProcessor(
+            coreQueue: coreQueue,
             presenter: inAppMessageUI,
             recorder: inAppMessageRecorder
         )
 
-        let inAppMessageExperimentEvaluator = InAppMessageExperimentEvaluator(
-            evaluator: EvaluationContext.shared.get(Evaluator.self)!
-        )
-        let inAppMessageLayoutEvaluator = InAppMessageLayoutEvaluator(
-            experimentEvaluator: inAppMessageExperimentEvaluator,
-            selector: InAppMessageLayoutSelector(),
-            eventRecorder: evaluationEventRecorder
-        )
-        let inAppMessageEligibilityFlowFactory = DefaultInAppMessageEligibilityFlowFactory(
-            context: EvaluationContext.shared,
-            layoutEvaluator: inAppMessageLayoutEvaluator
-        )
-
-        let inAppMessageEvaluateProcessor = DefaultInAppMessageEvaluateProcessor(
-            core: core,
-            flowFactory: inAppMessageEligibilityFlowFactory,
-            eventRecorder: evaluationEventRecorder
-        )
         let inAppMessageIdentifierChecker = DefaultInAppMessageIdentifierChecker()
-        let inAppMessageLayoutResolver = DefaultInAppMessageLayoutResolver(
-            core: core,
-            layoutEvaluator: inAppMessageLayoutEvaluator
-        )
-
+        let inAppMessageDeliverEvaluator: InAppMessageDeliverEvaluator = switch workspaceMode {
+        case .local(let workspaceConfigManager):
+            InAppMessageDeliverLocalEvaluator(
+                workspaceFetcher: workspaceConfigManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        case .remote(let workspaceEvaluationManager):
+            InAppMessageDeliverRemoteEvaluator(
+                workspaceManager: workspaceEvaluationManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        }
         let inAppMessageDeliverProcessor = DefaultInAppMessageDeliverProcessor(
-            workspaceFetcher: workspaceManager,
             userManager: userManager,
-            userDecoreator: sessionUserDecorator,
+            userDecorator: sessionUserDecorator,
             identifierChecker: inAppMessageIdentifierChecker,
-            layoutResolver: inAppMessageLayoutResolver,
-            evaluateProcessor: inAppMessageEvaluateProcessor,
-            presentProcessor: inAppMessagePresentProcessor
+            evaluator: inAppMessageDeliverEvaluator,
+            presentProcessor: inAppMessagePresentProcessor,
+            lifecycleManager: applicationLifecycleManager
         )
 
         let inAppMessageDelayScheduler = DefaultInAppMessageDelayScheduler(
@@ -762,16 +740,25 @@ extension HackleApp {
             actionDeterminer: DefaultInAppMessageScheduleActionDeterminer(),
             schedulerFactory: inAppMessageSchedulerFactory
         )
-        inAppMessageDelayScheduler.setListener(listsner: inAppMessageScheduleProcessor)
+        inAppMessageDelayScheduler.setListener(listener: inAppMessageScheduleProcessor)
 
         let inAppMessageTriggerEventMatcher = DefaultInAppMessageTriggerEventMatcher(
-            targetMatcher: EvaluationContext.shared.get(TargetMatcher.self)!
+            targetMatcher: coreContext.get(TargetMatcher.self)!
         )
-        let inAppMessageTriggerDeterminer = DefaultInAppMessageTriggerDeterminer(
-            workspaceFetcher: workspaceManager,
-            eventMatcher: inAppMessageTriggerEventMatcher,
-            evaluateProcessor: inAppMessageEvaluateProcessor
-        )
+        let inAppMessageTriggerDeterminer: InAppMessageTriggerDeterminer = switch workspaceMode {
+        case .local(let workspaceConfigManager):
+            LocalInAppMessageTriggerDeterminer(
+                eventMatcher: inAppMessageTriggerEventMatcher,
+                workspaceFetcher: workspaceConfigManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        case .remote(let workspaceEvaluationManager):
+            RemoteInAppMessageTriggerDeterminer(
+                eventMatcher: inAppMessageTriggerEventMatcher,
+                workspaceManager: workspaceEvaluationManager,
+                evaluateProcessor: evaluateProcessor
+            )
+        }
         let inAppMessageTriggerHandler = DefaultInAppMessageTriggerHandler(
             scheduleProcessor: inAppMessageScheduleProcessor
         )
@@ -815,8 +802,8 @@ extension HackleApp {
         let sharedDatabase = SharedDatabase.shared
         let notificationManager = DefaultNotificationManager(
             core: core,
-            dispatchQueue: DispatchQueue(label: "io.hackle.NotificationManager", qos: .utility),
-            workspaceFetcher: workspaceManager,
+            coreQueue: coreQueue,
+            workspaceManager: workspaceMode.manager,
             userManager: userManager,
             repository: DefaultNotificationRepository(
                 sharedDatabase: sharedDatabase
@@ -842,7 +829,7 @@ extension HackleApp {
             HackleApp.metricConfiguration(
                 config: config,
                 applicationLifecycleManager: applicationLifecycleManager,
-                eventQueue: eventQueue,
+                coreQueue: coreQueue,
                 httpQueue: httpQueue,
                 httpClient: httpClient
             )
@@ -856,21 +843,25 @@ extension HackleApp {
             applicationLifecycleManager.addListener(listener: screenManager)
         }
         viewLifecycleManager.addListener(listener: engagementManager)
-        viewLifecycleManager.setDispatchQueue(queue: eventQueue)
+        viewLifecycleManager.setDispatchQueue(queue: coreQueue)
 
         applicationLifecycleManager.addListener(listener: engagementManager)
+
+        // 백그라운드 전환 시 flush가 이벤트 생산자보다 뒤에 실행되도록 마지막에 등록한다.
+        applicationLifecycleManager.addListener(listener: eventProcessor)
 
         let throttleLimiter = ScopingThrottleLimiter(interval: 60, limit: 1, clock: SystemClock.shared)
         let throttler = DefaultThrottler(limiter: throttleLimiter)
 
         let hackleAppCore = DefaultHackleAppCore(
             core: core,
-            eventQueue: eventQueue,
+            evaluationMode: config.evaluationMode,
+            coreQueue: coreQueue,
             synchronizer: pollingSynchronizer,
             applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
             viewLifecycleObserver: ViewLifecycleObserver.shared,
             userManager: userManager,
-            workspaceManager: workspaceManager,
+            workspaceManager: workspaceMode.manager,
             sessionManager: sessionManager,
             screenManager: screenManager,
             eventProcessor: eventProcessor,
@@ -909,13 +900,13 @@ extension HackleApp {
     private static func metricConfiguration(
         config: HackleConfig,
         applicationLifecycleManager: ApplicationLifecycleManager,
-        eventQueue: DispatchQueue,
+        coreQueue: DispatchQueue,
         httpQueue: DispatchQueue,
         httpClient: HttpClient
     ) {
         let monitoringMetricRegistry = MonitoringMetricRegistry(
             monitoringBaseUrl: config.monitoringUrl,
-            eventQueue: eventQueue,
+            coreQueue: coreQueue,
             httpQueue: httpQueue,
             httpClient: httpClient
         )
@@ -923,4 +914,18 @@ extension HackleApp {
         applicationLifecycleManager.addListener(listener: monitoringMetricRegistry)
         Metrics.addRegistry(registry: monitoringMetricRegistry)
     }
+}
+
+fileprivate enum WorkspaceMode {
+    case local(WorkspaceConfigManager)
+    case remote(WorkspaceEvaluationManager)
+    
+    var manager: WorkspaceManager {
+            switch self {
+            case .local(let manager):
+                return manager
+            case .remote(let manager):
+                return manager
+            }
+        }
 }

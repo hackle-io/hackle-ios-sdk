@@ -16,7 +16,7 @@ class DefaultInAppMessageDelayManagerSpecs: QuickSpec {
         }
 
         it("flow") {
-            let request1 = InAppMessage.schedule(dispatchId: "1").toRequest(
+            let request1 = InAppMessageEntity.schedule(dispatchId: "1").toRequest(
                 type: .triggered,
                 requestedAt: Date(timeIntervalSince1970: 42)
             )
@@ -31,7 +31,7 @@ class DefaultInAppMessageDelayManagerSpecs: QuickSpec {
             let _ = try sut.delay(request: request1)
 
             // delay 2
-            let request2 = InAppMessage.schedule(dispatchId: "2").toRequest(
+            let request2 = InAppMessageEntity.schedule(dispatchId: "2").toRequest(
                 type: .triggered,
                 requestedAt: Date(timeIntervalSince1970: 42)
             )

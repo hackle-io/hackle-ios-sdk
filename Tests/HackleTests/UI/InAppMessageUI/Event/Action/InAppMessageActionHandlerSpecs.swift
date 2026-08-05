@@ -14,14 +14,14 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("supports") {
                 for actionType in InAppMessage.ActionType.allCases {
-                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal(actionType == .close))
+                    expect(sut.supports(action: InAppMessageEntity.action(type: actionType))).to(equal(actionType == .close))
                 }
             }
 
             it("handle close") {
                 let view = MockInAppMessageView(presented: true)
                 MainActor.assumeIsolated {
-                    sut.handle(view: view, action: InAppMessage.action(type: .close))
+                    sut.handle(view: view, action: InAppMessageEntity.action(type: .close))
                     expect(view.presented) == false
                 }
             }
@@ -39,14 +39,14 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("supports") {
                 for actionType in InAppMessage.ActionType.allCases {
-                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal([.webLink, .linkNewTab, .linkNewWindow].contains(actionType)))
+                    expect(sut.supports(action: InAppMessageEntity.action(type: actionType))).to(equal([.webLink, .linkNewTab, .linkNewWindow].contains(actionType)))
                 }
             }
 
             it("when action value is nil then do nothing") {
                 // given
                 let view = MockInAppMessageView(presented: true)
-                let action = InAppMessage.action(type: .webLink, value: nil)
+                let action = InAppMessageEntity.action(type: .webLink, value: nil)
 
                 // when
                 MainActor.assumeIsolated {
@@ -61,7 +61,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             it("when invalid url then do nothing") {
                 // given
                 let view = MockInAppMessageView(presented: true)
-                let action = InAppMessage.action(type: .webLink, value: "")
+                let action = InAppMessageEntity.action(type: .webLink, value: "")
 
                 // when
                 MainActor.assumeIsolated {
@@ -76,7 +76,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             it("hackle link") {
                 // given
                 let view = MockInAppMessageView(presented: true)
-                let action = InAppMessage.action(type: .webLink, value: "https://www.hackle.io")
+                let action = InAppMessageEntity.action(type: .webLink, value: "https://www.hackle.io")
 
                 // when
                 MainActor.assumeIsolated {
@@ -101,14 +101,14 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("supports") {
                 for actionType in InAppMessage.ActionType.allCases {
-                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal([.linkAndClose, .linkNewTabAndClose, .linkNewWindowAndClose].contains(actionType)))
+                    expect(sut.supports(action: InAppMessageEntity.action(type: actionType))).to(equal([.linkAndClose, .linkNewTabAndClose, .linkNewWindowAndClose].contains(actionType)))
                 }
             }
 
             it("when action value is nil then do nothing") {
                 // given
                 let view = MockInAppMessageView(presented: true)
-                let action = InAppMessage.action(type: .linkAndClose, value: nil)
+                let action = InAppMessageEntity.action(type: .linkAndClose, value: nil)
 
                 // when
                 MainActor.assumeIsolated {
@@ -126,7 +126,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             it("when invalid url then do nothing") {
                 // given
                 let view = MockInAppMessageView(presented: true)
-                let action = InAppMessage.action(type: .linkAndClose, value: "")
+                let action = InAppMessageEntity.action(type: .linkAndClose, value: "")
 
                 // when
                 MainActor.assumeIsolated {
@@ -144,7 +144,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             it("hackle link and close") {
                 // given
                 let view = MockInAppMessageView(presented: true)
-                let action = InAppMessage.action(type: .linkAndClose, value: "https://www.hackle.io")
+                let action = InAppMessageEntity.action(type: .linkAndClose, value: "https://www.hackle.io")
 
                 // when
                 MainActor.assumeIsolated {
@@ -171,15 +171,15 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("supports") {
                 for actionType in InAppMessage.ActionType.allCases {
-                    expect(sut.supports(action: InAppMessage.action(type: actionType))).to(equal(actionType == .hidden))
+                    expect(sut.supports(action: InAppMessageEntity.action(type: actionType))).to(equal(actionType == .hidden))
                 }
             }
 
             it("handle - default") {
                 // given
-                let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42))
+                let context = InAppMessageEntity.context(inAppMessage: InAppMessageEntity.create(key: 42))
                 let view = MockInAppMessageView(context: context, presented: true)
-                let action = InAppMessage.action(type: .hidden)
+                let action = InAppMessageEntity.action(type: .hidden)
 
                 // when
                 MainActor.assumeIsolated {
@@ -192,9 +192,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("handle - custom") {
                 // given
-                let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42))
+                let context = InAppMessageEntity.context(inAppMessage: InAppMessageEntity.create(key: 42))
                 let view = MockInAppMessageView(context: context, presented: true)
-                let action = InAppMessage.action(type: .hidden, value: "100000")
+                let action = InAppMessageEntity.action(type: .hidden, value: "100000")
 
                 // when
                 MainActor.assumeIsolated {
@@ -207,9 +207,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("when override, do not save hidden info") {
                 // given
-                let context = InAppMessage.context(inAppMessage: InAppMessage.create(key: 42), decisionReason: DecisionReason.OVERRIDDEN)
+                let context = InAppMessageEntity.context(inAppMessage: InAppMessageEntity.create(key: 42), decisionReason: DecisionReason.OVERRIDDEN)
                 let view = MockInAppMessageView(context: context, presented: true)
-                let action = InAppMessage.action(type: .hidden)
+                let action = InAppMessageEntity.action(type: .hidden)
 
                 // when
                 MainActor.assumeIsolated {

@@ -23,13 +23,13 @@ class DefaultInAppMessageHiddenStorageSpecs: QuickSpec {
         }
 
         it("데이터가 없는경우 false") {
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             let actual = sut.exist(inAppMessage: inAppMessage, now: Date(timeIntervalSince1970: 0))
             expect(actual) == false
         }
 
         it("데이터가 있지만 만료시간이 넘은경우 false") {
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             sut.put(inAppMessage: inAppMessage, expireAt: Date(timeIntervalSince1970: 42))
             expect(keyValueRepository.getDouble(key: "1")) == 42
 
@@ -39,7 +39,7 @@ class DefaultInAppMessageHiddenStorageSpecs: QuickSpec {
         }
 
         it("데이터가 있고 만료시간 이내인 경우 true") {
-            let inAppMessage = InAppMessage.create()
+            let inAppMessage = InAppMessageEntity.create()
             sut.put(inAppMessage: inAppMessage, expireAt: Date(timeIntervalSince1970: 42))
             expect(keyValueRepository.getDouble(key: "1")) == 42
 

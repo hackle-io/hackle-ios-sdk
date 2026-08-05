@@ -23,7 +23,7 @@ class DefaultInAppMessageSchedulerFactorySpecs: QuickSpec {
             expect(actual as? MockInAppMessageScheduler).to(beIdenticalTo(scheduler2))
         }
 
-        it("exception") {
+        it("when no scheduler supports the type then throws") {
             let scheduler1 = MockInAppMessageScheduler()
             every(scheduler1.supportMock).returns(false)
 

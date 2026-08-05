@@ -1,6 +1,6 @@
 import Foundation
 
-class InAppMessageScheduleRequest {
+class InAppMessageScheduleRequest: @unchecked Sendable {
 
     let schedule: InAppMessageSchedule
     let scheduleType: InAppMessageScheduleType

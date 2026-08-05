@@ -20,7 +20,7 @@ class EngagementEventTracker: EngagementListener {
             .property(ScreenEventTracker.SCREEN_NAME_PROPERTY_KEY, engagement.screen.name)
             .property(ScreenEventTracker.SCREEN_CLASS_PROPERTY_KEY, engagement.screen.className)
             .build()
-        let hackleUser = userManager.toHackleUser(user: user)
+        let hackleUser = userManager.hackleUser(user: user)
         core.track(event: event, user: hackleUser, timestamp: timestamp)
     }
 }

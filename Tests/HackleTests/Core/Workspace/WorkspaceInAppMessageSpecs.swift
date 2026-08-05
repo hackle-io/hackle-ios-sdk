@@ -14,11 +14,11 @@ import Nimble
 class WorkspaceInAppMessageSpecs: QuickSpec {
     override class func spec() {
         it("valid") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
 
             expect(workspace.inAppMessages.count) == 11
 
-            let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
+            let iam = workspace.getInAppMessageConfigOrNil(inAppMessageKey: 1)!
             expect(iam.id) == 1
             expect(iam.key) == 1
             expect(iam.status) == .active
@@ -124,7 +124,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - custom with multiple slots") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!
 
             switch iam.timetable {
@@ -142,7 +142,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - all type") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 2)!
 
             switch iam.timetable {
@@ -154,7 +154,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - missing field defaults to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 3)!
 
             switch iam.timetable {
@@ -166,7 +166,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - invalid dayOfWeek skipped") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 4)!
 
             switch iam.timetable {
@@ -179,7 +179,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - all invalid slots fallback to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 5)!
 
             switch iam.timetable {
@@ -191,7 +191,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - empty slots fallback to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 6)!
 
             switch iam.timetable {
@@ -203,7 +203,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - null value defaults to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 7)!
 
             switch iam.timetable {
@@ -215,7 +215,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - unknown type defaults to all") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 8)!
 
             switch iam.timetable {
@@ -227,7 +227,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - boundary time full day") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 9)!
 
             switch iam.timetable {
@@ -242,7 +242,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("timetable - all days of week") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 10)!
 
             switch iam.timetable {
@@ -261,12 +261,207 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("invalid") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam_invalid").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam_invalid").workspaceConfig
             expect(workspace.inAppMessages.count) == 0
         }
 
+        it("eventTriggerDelay 파싱 실패 시 해당 IAM을 드롭한다") {
+            func json(delayType: String) -> String {
+                """
+                {
+                  "workspace": {"id": 1, "environment": {"id": 1}},
+                  "experiments": [],
+                  "featureFlags": [],
+                  "buckets": [],
+                  "segments": [],
+                  "containers": [],
+                  "parameterConfigurations": [],
+                  "remoteConfigParameters": [],
+                  "inAppMessages": [
+                    {
+                      "id": 1,
+                      "key": 1,
+                      "order": 1,
+                      "timeUnit": "IMMEDIATE",
+                      "status": "ACTIVE",
+                      "eventTriggerRules": [],
+                      "eventTriggerDelay": {"type": "\(delayType)"},
+                      "targetContext": {"targets": [], "overrides": []},
+                      "messageContext": {
+                        "defaultLang": "ko",
+                        "exposure": {"type": "DEFAULT", "key": null},
+                        "platformTypes": ["IOS"],
+                        "orientations": ["VERTICAL"],
+                        "messages": []
+                      }
+                    }
+                  ]
+                }
+                """
+            }
+
+            func workspace(delayType: String) -> WorkspaceConfig {
+                let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json(delayType: delayType).data(using: .utf8)!)
+                return DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+            }
+
+            // 미지 delay type → IMMEDIATE 폴백이 아니라 IAM 전체 드롭 (remote 경로·android와 동일)
+            expect(workspace(delayType: "UNKNOWN_DELAY").inAppMessages.count) == 0
+
+            // 알려진 type은 정상 파싱
+            let valid = workspace(delayType: "IMMEDIATE")
+            expect(valid.inAppMessages.count) == 1
+            expect(valid.getInAppMessageConfigOrNil(inAppMessageKey: 1)?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
+
+            // eventTriggerDelay 키 자체가 없으면 (파싱 실패가 아니라 미설정) 여전히 IMMEDIATE로 폴백한다
+            let jsonWithoutDelay = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                {
+                  "id": 1,
+                  "key": 1,
+                  "order": 1,
+                  "timeUnit": "IMMEDIATE",
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+              ]
+            }
+            """
+            let dtoWithoutDelay = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: jsonWithoutDelay.data(using: .utf8)!)
+            let workspaceWithoutDelay = DefaultWorkspaceConfig.from(dto: dtoWithoutDelay, modifiedAt: nil)
+            expect(workspaceWithoutDelay.inAppMessages.count) == 1
+            expect(workspaceWithoutDelay.getInAppMessageConfigOrNil(inAppMessageKey: 1)?.eventTrigger.delay.type) == InAppMessage.DelayType.immediate
+        }
+
+        it("events 필드가 없는 config도 디코딩된다") {
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": []
+            }
+            """
+            let dto = try? JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
+            expect(dto).toNot(beNil())
+            expect(dto?.inAppMessages.count) == 0
+        }
+
+        it("CUSTOM period의 밀리초를 절삭 없이 보존한다") {
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                {
+                  "id": 1,
+                  "key": 1,
+                  "order": 1,
+                  "timeUnit": "CUSTOM",
+                  "startEpochTimeMillis": 42500,
+                  "endEpochTimeMillis": 43500,
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+              ]
+            }
+            """
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: json.data(using: .utf8)!)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+
+            guard case .range(let start, let end) = workspace.getInAppMessageOrNil(inAppMessageKey: 1)!.period else {
+                fail("expected .range")
+                return
+            }
+            expect(start.timeIntervalSince1970) == 42.5
+            expect(end.timeIntervalSince1970) == 43.5
+        }
+
+        it("inAppMessages를 order 오름차순으로 정렬한다") {
+            func inAppMessageJson(id: Int64, order: Int64) -> String {
+                """
+                {
+                  "id": \(id),
+                  "key": \(id),
+                  "order": \(order),
+                  "timeUnit": "IMMEDIATE",
+                  "status": "ACTIVE",
+                  "eventTriggerRules": [],
+                  "targetContext": {"targets": [], "overrides": []},
+                  "messageContext": {
+                    "defaultLang": "ko",
+                    "exposure": {"type": "DEFAULT", "key": null},
+                    "platformTypes": ["IOS"],
+                    "orientations": ["VERTICAL"],
+                    "messages": []
+                  }
+                }
+                """
+            }
+
+            let json = """
+            {
+              "workspace": {"id": 1, "environment": {"id": 1}},
+              "experiments": [],
+              "featureFlags": [],
+              "buckets": [],
+              "events": [],
+              "segments": [],
+              "containers": [],
+              "parameterConfigurations": [],
+              "remoteConfigParameters": [],
+              "inAppMessages": [
+                \(inAppMessageJson(id: 1, order: 3)),
+                \(inAppMessageJson(id: 2, order: 1)),
+                \(inAppMessageJson(id: 3, order: 2))
+              ]
+            }
+            """
+            let data = json.data(using: .utf8)!
+            let dto = try! JSONDecoder().decode(WorkspaceConfigDto.self, from: data)
+            let workspace = DefaultWorkspaceConfig.from(dto: dto, modifiedAt: nil)
+
+            expect(workspace.inAppMessages.map { $0.order }) == [1, 2, 3]
+        }
+
         it("html - displayType HTML with valid html data") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 12)!
             expect(iam.messageContext.messages.count) == 1
             expect(iam.messageContext.messages[0].layout.displayType) == .html
@@ -275,7 +470,7 @@ class WorkspaceInAppMessageSpecs: QuickSpec {
         }
 
         it("html - displayType HTML without html data should exclude message") {
-            let workspace = ResourcesWorkspaceFetcher(fileName: "iam").fetch()!
+            let workspace = ResourcesWorkspaceManager(fileName: "iam").workspaceConfig
             let iam = workspace.getInAppMessageOrNil(inAppMessageKey: 11)
             expect(iam).to(beNil())
         }

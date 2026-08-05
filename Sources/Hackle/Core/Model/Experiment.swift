@@ -1,32 +1,29 @@
 //
-// Created by yong on 2020/12/11.
-//
 
 import Foundation
 
-protocol Experiment: Sendable {
+protocol Experiment: Entity, Sendable {
     typealias Id = Int64
     typealias Key = Int64
 
     var id: Id { get }
     var key: Key { get }
-    var name: String? { get }
-    var type: ExperimentType { get }
-    var identifierType: String { get }
-    var status: ExperimentStatus { get }
     var version: Int { get }
+    var status: ExperimentStatus { get }
+    var order: Int64 { get }
+    var type: ExperimentType { get }
     var executionVersion: Int { get }
-    var variations: [Variation] { get }
-    var userOverrides: [User.Id: Variation.Id] { get }
-    var segmentOverrides: [TargetRule] { get }
-    var targetAudiences: [Target] { get }
-    var targetRules: [TargetRule] { get }
-    var defaultRule: Action { get }
-    var containerId: Container.Id? { get }
-    var winnerVariation: Variation? { get }
+}
 
-    func getVariationOrNil(variationId: Variation.Id) -> Variation?
-    func getVariationOrNil(variationKey: Variation.Key) -> Variation?
+extension Experiment {
+    var serviceType: ServiceType {
+        switch type {
+        case .abTest:
+            return .abTest
+        case .featureFlag:
+            return .featureFlag
+        }
+    }
 }
 
 
@@ -40,6 +37,22 @@ enum ExperimentStatus: String {
     case running
     case paused
     case completed
+
+    static func from(executionStatus: String) -> ExperimentStatus? {
+        switch executionStatus {
+        case "READY":
+            return .draft
+        case "RUNNING":
+            return .running
+        case "PAUSED":
+            return .paused
+        case "STOPPED":
+            return .completed
+        default:
+            Log.debug("Unsupported experiment status [\(executionStatus)]")
+            return nil
+        }
+    }
 }
 
 final class ExperimentEntity: Experiment, Sendable {
@@ -50,6 +63,7 @@ final class ExperimentEntity: Experiment, Sendable {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
+    let order: Int64
     let executionVersion: Int
     let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
@@ -68,6 +82,7 @@ final class ExperimentEntity: Experiment, Sendable {
         identifierType: String,
         status: ExperimentStatus,
         version: Int,
+        order: Int64,
         executionVersion: Int,
         variations: [Variation],
         userOverrides: [User.Id: Variation.Id],
@@ -85,6 +100,7 @@ final class ExperimentEntity: Experiment, Sendable {
         self.identifierType = identifierType
         self.status = status
         self.version = version
+        self.order = order
         self.executionVersion = executionVersion
         self.variations = variations
         self.userOverrides = userOverrides

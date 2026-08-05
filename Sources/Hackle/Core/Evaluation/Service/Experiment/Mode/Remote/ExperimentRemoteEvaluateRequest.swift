@@ -1,0 +1,44 @@
+import Foundation
+
+final class ExperimentRemoteEvaluateRequest: RemoteEvaluateRequest, ExperimentEvaluateRequest, CustomStringConvertible {
+
+    let evaluationWorkspace: WorkspaceEvaluation
+    let result: ExperimentRemoteEvaluateResult
+    let user: HackleUser
+    let record: Bool
+
+    var remoteResult: any RemoteEvaluateResult { result }
+    var experiment: Experiment { result }
+
+    private init(workspace: WorkspaceEvaluation, entity: ExperimentRemoteEvaluateResult, user: HackleUser, record: Bool) {
+        self.evaluationWorkspace = workspace
+        self.result = entity
+        self.user = user
+        self.record = record
+    }
+
+    var description: String {
+        "ExperimentRemoteEvaluateRequest(type=\(result.type.rawValue), key=\(result.key))"
+    }
+
+    static func of(
+        workspace: WorkspaceEvaluation,
+        entity: ExperimentRemoteEvaluateResult,
+        user: HackleUser,
+        record: Bool = true
+    ) -> ExperimentRemoteEvaluateRequest {
+        ExperimentRemoteEvaluateRequest(workspace: workspace, entity: entity, user: user, record: record)
+    }
+
+    static func of(
+        request: RemoteEvaluateRequest,
+        experiment: ExperimentRemoteEvaluateResult
+    ) -> ExperimentRemoteEvaluateRequest {
+        ExperimentRemoteEvaluateRequest(
+            workspace: request.evaluationWorkspace,
+            entity: experiment,
+            user: request.user,
+            record: request.record
+        )
+    }
+}

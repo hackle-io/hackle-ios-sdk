@@ -4,18 +4,18 @@ import MockingKit
 
 class FlowEvaluatorStub: FlowEvaluator {
 
-    private let evaluation: EvaluatorEvaluation
+    private let evaluation: Evaluation
 
-    init(evaluation: EvaluatorEvaluation) {
+    init(evaluation: Evaluation) {
         self.evaluation = evaluation
     }
 
-    func evaluate<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
         request: Request,
         context: EvaluatorContext,
-        nextFlow: EvaluationFlow<Request, Evaluation>
-    ) throws -> Evaluation? {
-        evaluation as? Evaluation
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
+        evaluation as? E
     }
 }
 
@@ -23,11 +23,11 @@ class FlowEvaluatorStub: FlowEvaluator {
 class NextFlowEvaluator: FlowEvaluator {
     var callCount = 0
 
-    func evaluate<Request: EvaluatorRequest, Evaluation: EvaluatorEvaluation>(
+    func evaluate<Request: EvaluateRequest, E: Evaluation>(
         request: Request,
         context: EvaluatorContext,
-        nextFlow: EvaluationFlow<Request, Evaluation>
-    ) throws -> Evaluation? {
+        nextFlow: EvaluationFlow<Request, E>
+    ) throws -> E? {
         callCount += 1
         return try nextFlow.evaluate(request: request, context: context)
     }

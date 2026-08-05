@@ -46,10 +46,7 @@ class DefaultInAppMessageEventTracker: InAppMessageEventTracker {
                 .build()
         case .close:
             return Event.builder(DefaultInAppMessageEventTracker.CLOSE_EVENT_KEY)
-                .properties(context.properties)
-                .property("in_app_message_id", context.inAppMessage.id)
-                .property("in_app_message_key", context.inAppMessage.key)
-                .property("in_app_message_display_type", context.message.layout.displayType.rawValue)
+                .properties(context: context)
                 .build()
         case .action:
             guard let event = event as? InAppMessageViewActionEvent else { return nil }

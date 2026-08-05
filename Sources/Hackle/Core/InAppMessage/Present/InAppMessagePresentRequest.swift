@@ -39,19 +39,17 @@ extension InAppMessagePresentRequest: CustomStringConvertible {
 
     static func of(
         request: InAppMessageDeliverRequest,
-        inAppMessage: InAppMessage,
         user: HackleUser,
-        eligibilityEvaluation: InAppMessageEligibilityEvaluation,
-        layoutEvaluation: InAppMessageLayoutEvaluation
+        evaluation: InAppMessageDeliverEvaluation
     ) -> InAppMessagePresentRequest {
-        return InAppMessagePresentRequest(
+        InAppMessagePresentRequest(
             dispatchId: request.dispatchId,
-            inAppMessage: inAppMessage,
-            message: layoutEvaluation.message,
+            inAppMessage: evaluation.eligibility.inAppMessage,
+            message: evaluation.layout.layoutEvaluation.layoutResult.message,
             user: user,
             requestedAt: request.requestedAt,
-            reason: eligibilityEvaluation.reason,
-            properties: PropertiesBuilder().add(request.properties).add(layoutEvaluation.properties).build(),
+            reason: evaluation.eligibility.eligibilityResult.reason,
+            properties: PropertiesBuilder().add(request.properties).add(evaluation.toProperties()).build(),
             triggerEvent: request.triggerEvent
         )
     }

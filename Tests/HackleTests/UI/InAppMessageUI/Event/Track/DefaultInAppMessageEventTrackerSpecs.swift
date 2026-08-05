@@ -22,20 +22,20 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
         it("impression") {
             // given
-            let message = InAppMessage.message(
-                images: [InAppMessage.image(imagePath: "image_path")],
-                text: InAppMessage.text(title: "text_title", body: "text_body"),
+            let message = InAppMessageEntity.message(
+                images: [InAppMessageEntity.image(imagePath: "image_path")],
+                text: InAppMessageEntity.text(title: "text_title", body: "text_body"),
                 buttons: [
-                    InAppMessage.button(text: "button_1"),
-                    InAppMessage.button(text: "button_2")
+                    InAppMessageEntity.button(text: "button_1"),
+                    InAppMessageEntity.button(text: "button_2")
                 ]
             )
-            let inAppMessage = InAppMessage.create(
+            let inAppMessage = InAppMessageEntity.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.messageContext(messages: [message])
+                messageContext: InAppMessageEntity.messageContext(messages: [message])
             )
-            let context = InAppMessage.context(
+            let context = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 decisionReason: DecisionReason.IN_APP_MESSAGE_TARGET,
@@ -61,23 +61,24 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
         it("close") {
             // given
-            let message = InAppMessage.message(
-                images: [InAppMessage.image(imagePath: "image_path")],
-                text: InAppMessage.text(title: "text_title", body: "text_body"),
+            let message = InAppMessageEntity.message(
+                images: [InAppMessageEntity.image(imagePath: "image_path")],
+                text: InAppMessageEntity.text(title: "text_title", body: "text_body"),
                 buttons: [
-                    InAppMessage.button(text: "button_1"),
-                    InAppMessage.button(text: "button_2")
+                    InAppMessageEntity.button(text: "button_1"),
+                    InAppMessageEntity.button(text: "button_2")
                 ]
             )
-            let inAppMessage = InAppMessage.create(
+            let inAppMessage = InAppMessageEntity.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.messageContext(messages: [message])
+                messageContext: InAppMessageEntity.messageContext(messages: [message])
             )
-            let context = InAppMessage.context(
+            let context = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 message: message,
-                properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
+                decisionReason: DecisionReason.IN_APP_MESSAGE_TARGET,
+                properties: ["custom_property": "custom_value"]
             )
 
             // when
@@ -90,25 +91,27 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
             expect(event.key) == "$in_app_close"
             expect(event.properties!["in_app_message_id"] as? Int64) == 42
             expect(event.properties!["in_app_message_key"] as? Int64) == 320
+            expect(event.properties!["custom_property"] as? String) == "custom_value"
+            expect(event.properties!["decision_reason"] as? String) == "IN_APP_MESSAGE_TARGET"
         }
 
         it("button action") {
             // given
-            let action = InAppMessage.action(type: .webLink, value: "button_link_click")
-            let message = InAppMessage.message(
-                images: [InAppMessage.image(imagePath: "image_path")],
-                text: InAppMessage.text(title: "text_title", body: "text_body"),
+            let action = InAppMessageEntity.action(type: .webLink, value: "button_link_click")
+            let message = InAppMessageEntity.message(
+                images: [InAppMessageEntity.image(imagePath: "image_path")],
+                text: InAppMessageEntity.text(title: "text_title", body: "text_body"),
                 buttons: [
-                    InAppMessage.button(text: "button_1", action: action),
-                    InAppMessage.button(text: "button_2")
+                    InAppMessageEntity.button(text: "button_1", action: action),
+                    InAppMessageEntity.button(text: "button_2")
                 ]
             )
-            let inAppMessage = InAppMessage.create(
+            let inAppMessage = InAppMessageEntity.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.messageContext(messages: [message])
+                messageContext: InAppMessageEntity.messageContext(messages: [message])
             )
-            let context = InAppMessage.context(
+            let context = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
@@ -134,21 +137,21 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
         it("image action") {
             // given
-            let action = InAppMessage.action(type: .webLink, value: "image_link_click")
-            let message = InAppMessage.message(
-                images: [InAppMessage.image(imagePath: "image_path")],
-                text: InAppMessage.text(title: "text_title", body: "text_body"),
+            let action = InAppMessageEntity.action(type: .webLink, value: "image_link_click")
+            let message = InAppMessageEntity.message(
+                images: [InAppMessageEntity.image(imagePath: "image_path")],
+                text: InAppMessageEntity.text(title: "text_title", body: "text_body"),
                 buttons: [
-                    InAppMessage.button(text: "button_1", action: action),
-                    InAppMessage.button(text: "button_2")
+                    InAppMessageEntity.button(text: "button_1", action: action),
+                    InAppMessageEntity.button(text: "button_2")
                 ]
             )
-            let inAppMessage = InAppMessage.create(
+            let inAppMessage = InAppMessageEntity.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.messageContext(messages: [message])
+                messageContext: InAppMessageEntity.messageContext(messages: [message])
             )
-            let context = InAppMessage.context(
+            let context = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]
@@ -174,21 +177,21 @@ class DefaultInAppMessageEventTrackerSpecs: QuickSpec {
 
         it("image impression") {
             // given
-            let action = InAppMessage.action(type: .webLink, value: "image_link_click")
-            let message = InAppMessage.message(
-                images: [InAppMessage.image(imagePath: "image_path")],
-                text: InAppMessage.text(title: "text_title", body: "text_body"),
+            let action = InAppMessageEntity.action(type: .webLink, value: "image_link_click")
+            let message = InAppMessageEntity.message(
+                images: [InAppMessageEntity.image(imagePath: "image_path")],
+                text: InAppMessageEntity.text(title: "text_title", body: "text_body"),
                 buttons: [
-                    InAppMessage.button(text: "button_1", action: action),
-                    InAppMessage.button(text: "button_2")
+                    InAppMessageEntity.button(text: "button_1", action: action),
+                    InAppMessageEntity.button(text: "button_2")
                 ]
             )
-            let inAppMessage = InAppMessage.create(
+            let inAppMessage = InAppMessageEntity.create(
                 id: 42,
                 key: 320,
-                messageContext: InAppMessage.messageContext(messages: [message])
+                messageContext: InAppMessageEntity.messageContext(messages: [message])
             )
-            let context = InAppMessage.context(
+            let context = InAppMessageEntity.context(
                 inAppMessage: inAppMessage,
                 message: message,
                 properties: ["decision_reason": DecisionReason.IN_APP_MESSAGE_TARGET]

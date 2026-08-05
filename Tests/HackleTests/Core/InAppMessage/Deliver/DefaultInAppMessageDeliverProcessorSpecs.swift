@@ -4,163 +4,131 @@ import Quick
 
 @testable import Hackle
 
-class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
+class DefaultInAppMessageDeliverProcessorSpecs: AsyncSpec {
     override class func spec() {
 
-        var workspaceFetcher: MockWorkspaceFetcher!
         var userManager: MockUserManager!
         var identifierChecker: MockInAppMessageIdentifierChecker!
-        var layoutResolver: MockInAppMessageLayoutResolver!
-        var evaluateProcessor: MockInAppMessageEvaluateProcessor!
+        var evaluator: MockInAppMessageDeliverEvaluator!
         var presentProcessor: MockInAppMessagePresentProcessor!
-        var sut: DefaultInAppMessageDeliverProcessor!
         var sessionManager: MockSessionManager!
+        var lifecycleManager: MockApplicationLifecycleManager!
+        var sut: DefaultInAppMessageDeliverProcessor!
 
         beforeEach {
-            workspaceFetcher = MockWorkspaceFetcher()
             userManager = MockUserManager()
             identifierChecker = MockInAppMessageIdentifierChecker()
-            layoutResolver = MockInAppMessageLayoutResolver()
-            evaluateProcessor = MockInAppMessageEvaluateProcessor()
+            evaluator = MockInAppMessageDeliverEvaluator()
             presentProcessor = MockInAppMessagePresentProcessor()
             sessionManager = MockSessionManager()
+            lifecycleManager = MockApplicationLifecycleManager(currentState: .foreground)
             sut = DefaultInAppMessageDeliverProcessor(
-                workspaceFetcher: workspaceFetcher,
                 userManager: userManager,
-                userDecoreator: SessionUserDecorator(sessionManager: sessionManager),
+                userDecorator: SessionUserDecorator(sessionManager: sessionManager),
                 identifierChecker: identifierChecker,
-                layoutResolver: layoutResolver,
-                evaluateProcessor: evaluateProcessor,
-                presentProcessor: presentProcessor
+                evaluator: evaluator,
+                presentProcessor: presentProcessor,
+                lifecycleManager: lifecycleManager
             )
         }
 
-        it("workspaceNotFound") {
-            // given
-            let request = InAppMessage.deliverRequest()
-            every(workspaceFetcher.fetchMock).returns(nil)
-
-            // when
-            let actual = sut.process(request: request)
-
-            // then
-            expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
+        func eligibleResponse(experiment: ExperimentEvaluation? = nil) -> InAppMessageDeliverEvaluateResponse {
+            let evaluation = InAppMessageDeliverEvaluation(
+                eligibility: InAppMessageEntity.eligibilityEvaluation(isEligible: true),
+                layout: InAppMessageEntity.layoutEvaluateResponse(experiment: experiment)
+            )
+            return InAppMessageDeliverEvaluateResponse.of(evaluation: evaluation)
         }
 
-        it("inAppMessageNotFound") {
+        it("앱이 foreground가 아니면 applicationNotForeground를 반환하고 평가하지 않는다") {
             // given
-            let request = InAppMessage.deliverRequest()
-            let workspace = WorkspaceEntity.create()
-            every(workspaceFetcher.fetchMock).returns(workspace)
+            lifecycleManager.currentState = .background
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
 
-            // then
-            expect(actual.code) == InAppMessageDeliverResponse.Code.inAppMessageNotFound
+            // then — 평가를 타지 않으므로 노출 이벤트도 기록되지 않는다
+            expect(actual.code) == InAppMessageDeliverResponse.Code.applicationNotForeground
+            expect(evaluator.evaluateMock.invokations().count) == 0
+            expect(presentProcessor.processMock.invokations().count) == 0
         }
 
         it("identifierChanged") {
             // given
-            let inAppMessage = InAppMessage.create()
-            let request = InAppMessage.deliverRequest()
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(true)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.identifierChanged
         }
 
-        it("ineligible") {
+        it("ineligible (evaluator가 ineligible 반환)") {
             // given
-            let inAppMessage = InAppMessage.create(
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: true)
-            )
-            let request = InAppMessage.deliverRequest(
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: false)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
+            every(evaluator.evaluateMock).returns(InAppMessageDeliverEvaluateResponse.ineligible(code: .ineligible))
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.ineligible
         }
 
-        it("present") {
-            // given
-            let inAppMessage = InAppMessage.create(
-                key: 42,
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
-            )
-            let request = InAppMessage.deliverRequest(
-                dispatchId: "111",
-                inAppMessageKey: 42,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
+        it("eligible인데 evaluation이 없으면 exception 코드를 반환한다") {
+            // given — 내부 불변식 위반 응답
             every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(
+                InAppMessageDeliverEvaluateResponse(isEligible: true, code: nil, evaluation: nil)
+            )
 
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
+            // when
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
 
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
+            // then
+            expect(actual.code) == InAppMessageDeliverResponse.Code.exception
+        }
 
-            let presentResponse = InAppMessage.presentResponse()
+        it("workspaceNotFound 코드 전파 (evaluator → response.code)") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(InAppMessageDeliverEvaluateResponse.ineligible(code: .workspaceNotFound))
+
+            // when
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
+
+            // then
+            expect(actual.code) == InAppMessageDeliverResponse.Code.workspaceNotFound
+        }
+
+        it("deliver") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(eligibleResponse())
+            let presentResponse = InAppMessageEntity.presentResponse()
             every(presentProcessor.processMock).returns(presentResponse)
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest(dispatchId: "111", inAppMessageKey: 42))
 
             // then
             expect(actual.dispatchId) == "111"
             expect(actual.inAppMessageKey) == 42
-            expect(actual.code) == InAppMessageDeliverResponse.Code.present
+            expect(actual.code) == InAppMessageDeliverResponse.Code.deliver
             expect(actual.presentResponse).to(beIdenticalTo(presentResponse))
         }
 
-        it("exception") {
+        it("when evaluator throws then exception code") {
             // given
-            let inAppMessage = InAppMessage.create(
-                key: 42,
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
-            )
-            let request = InAppMessage.deliverRequest(
-                dispatchId: "111",
-                inAppMessageKey: 42,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
-
-            every(presentProcessor.processMock).answers { _ in
+            every(evaluator.evaluateMock).answers { _ in
                 throw HackleError.error("fail")
             }
 
             // when
-            let actual = sut.process(request: request)
+            let actual = await sut.process(request: InAppMessageEntity.deliverRequest())
 
             // then
             expect(actual.code) == InAppMessageDeliverResponse.Code.exception
@@ -168,39 +136,64 @@ class DefaultInAppMessageDeliverProcessorSpecs: QuickSpec {
 
         it("userDecorator_injects_session_into_user_context_when_session_exists") {
             // given
-            let inAppMessage = InAppMessage.create(
-                key: 300,
-                evaluateContext: InAppMessage.evaluateContext(atDeliverTime: false)
-            )
-            let request = InAppMessage.deliverRequest(
-                dispatchId: "sess-deco-1",
-                inAppMessageKey: 300,
-                reason: DecisionReason.IN_APP_MESSAGE_TARGET
-            )
-            let workspace = WorkspaceEntity.create(inAppMessages: [inAppMessage])
-            every(workspaceFetcher.fetchMock).returns(workspace)
             every(identifierChecker.isIdentifierChangedMock).returns(false)
-
-            let layoutEvaluation = InAppMessage.layoutEvaluation()
-            every(layoutResolver.resolveMock).returns(layoutEvaluation)
-
-            let eligibilityEvaluation = InAppMessage.eligibilityEvaluation(isEligible: true)
-            every(evaluateProcessor.processMock).returns(eligibilityEvaluation)
-
+            every(evaluator.evaluateMock).returns(eligibleResponse())
             var capturedRequest: InAppMessagePresentRequest?
             every(presentProcessor.processMock).answers { args in
                 capturedRequest = args
-                return InAppMessage.presentResponse()
+                return InAppMessageEntity.presentResponse()
             }
             let mockSession = Session(id: "0.ffffffff")
             sessionManager.currentSession = mockSession
 
             // when
-            _ = sut.process(request: request)
+            _ = await sut.process(request: InAppMessageEntity.deliverRequest())
 
+            // then
             expect(capturedRequest).toNot(beNil())
             let user = capturedRequest?.user
             expect(user?.identifiers.keys.contains(IdentifierType.session.rawValue)).to(beTrue())
+        }
+
+        it("present_request_carries_experiment_properties_when_experiment_backed") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            let experiment = experimentEvaluation(variationId: 320, variationKey: "B")
+            every(evaluator.evaluateMock).returns(eligibleResponse(experiment: experiment))
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessageEntity.presentResponse()
+            }
+
+            // when
+            _ = await sut.process(request: InAppMessageEntity.deliverRequest())
+
+            // then
+            let props = capturedRequest?.properties
+            expect(props?["experiment_key"] as? Int64).toNot(beNil())
+            expect(props?["variation_id"] as? Int64) == 320
+            expect(props?["variation_key"] as? String) == "B"
+            expect(props?["experiment_decision_reason"] as? String) == DecisionReason.TRAFFIC_ALLOCATED
+        }
+
+        it("present_request_has_no_experiment_properties_when_not_experiment_backed") {
+            // given
+            every(identifierChecker.isIdentifierChangedMock).returns(false)
+            every(evaluator.evaluateMock).returns(eligibleResponse(experiment: nil))
+            var capturedRequest: InAppMessagePresentRequest?
+            every(presentProcessor.processMock).answers { args in
+                capturedRequest = args
+                return InAppMessageEntity.presentResponse()
+            }
+
+            // when
+            _ = await sut.process(request: InAppMessageEntity.deliverRequest())
+
+            // then
+            let props = capturedRequest?.properties
+            expect(props?["experiment_key"]).to(beNil())
+            expect(props?["variation_key"]).to(beNil())
         }
     }
 }

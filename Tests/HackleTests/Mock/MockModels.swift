@@ -1,6 +1,4 @@
 //
-// Created by yong on 2020/12/16.
-//
 
 import Foundation
 import MockingKit
@@ -40,7 +38,7 @@ class MockSlot: Mock, Slot {
     }
 }
 
-final class MockExperiment: Mock, Experiment, @unchecked Sendable {
+final class MockExperiment: Mock, ExperimentConfig, @unchecked Sendable {
     let id: Id
     let key: Key
     let name: String?
@@ -48,6 +46,7 @@ final class MockExperiment: Mock, Experiment, @unchecked Sendable {
     let identifierType: String
     let status: ExperimentStatus
     let version: Int
+    let order: Int64
     let executionVersion: Int
     let variations: [Variation]
     let userOverrides: [User.Id: Variation.Id]
@@ -66,6 +65,7 @@ final class MockExperiment: Mock, Experiment, @unchecked Sendable {
         identifierType: String = IdentifierType.id.rawValue,
         status: ExperimentStatus = .running,
         version: Int = 1,
+        order: Int64 = 0,
         executionVersion: Int = 1,
         variations: [Variation] = [],
         userOverrides: [User.Id: Variation.Id] = [:],
@@ -83,6 +83,7 @@ final class MockExperiment: Mock, Experiment, @unchecked Sendable {
         self.identifierType = identifierType
         self.status = status
         self.version = version
+        self.order = order
         self.executionVersion = executionVersion
         self.variations = variations
         self.userOverrides = userOverrides
@@ -117,14 +118,14 @@ final class MockVariation: Mock, Variation, @unchecked Sendable {
     let id: Id
     let key: Key
     let isDropped: Bool
-    let parameterConfigurationId: ParameterConfiguration.Id?
+    let parameterConfiguration: ParameterConfiguration?
 
 
-    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfigurationId: ParameterConfiguration.Id? = nil) {
+    init(id: Id = 42, key: Key = "A", isDropped: Bool = false, parameterConfiguration: ParameterConfiguration? = nil) {
         self.id = id
         self.key = key
         self.isDropped = isDropped
-        self.parameterConfigurationId = parameterConfigurationId
+        self.parameterConfiguration = parameterConfiguration
         super.init()
     }
 }

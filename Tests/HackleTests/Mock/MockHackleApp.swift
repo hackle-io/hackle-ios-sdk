@@ -20,13 +20,20 @@ class MockHackleAppCore: Mock, HackleAppCore {
         self.sessionId = sessonId
         self.deviceId = deviceId
         self.user = user
+        super.init()
+        every(setUserRef).answers { _ in Task {} }
+        every(setUserIdRef).answers { _ in Task {} }
+        every(setDeviceIdRef).answers { _ in Task {} }
+        every(resetUserRef).answers { _ in Task {} }
+        every(updateUserPropertiesRef).answers { _ in Task {} }
+        every(fetchRef).answers { _ in Task {} }
     }
 
     lazy var getInAppMessageViewRef = MockFunction(self, getInAppMessageView)
     func getInAppMessageView(viewId: String) -> InAppMessageView? {
         call(getInAppMessageViewRef, args: viewId)
     }
-    
+
     lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
     func showUserExplorer() {
         call(showUserExplorerRef, args: ())
@@ -36,29 +43,30 @@ class MockHackleAppCore: Mock, HackleAppCore {
     func hideUserExplorer() {
         call(hideUserExplorerRef, args: ())
     }
-    
+
     lazy var setDeviceIdRef = MockFunction(self, setDeviceId)
-    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setDeviceId(deviceId: String, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(setDeviceIdRef, args: (deviceId, hackleAppContext, completion))
+        return call(setDeviceIdRef, args: (deviceId, hackleAppContext))
     }
-    
+
     lazy var setUserRef = MockFunction(self, setUser)
-    func setUser(user: User, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(setUserRef, args: (user, hackleAppContext, completion))
+        return call(setUserRef, args: (user, hackleAppContext))
     }
-    
+
     lazy var setUserIdRef = MockFunction(self, setUserId)
-    func setUserId(userId: String?, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setUserId(userId: String?, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(setUserIdRef, args: (userId, hackleAppContext, completion))
+        return call(setUserIdRef, args: (userId, hackleAppContext))
     }
-    
+
     lazy var updateUserPropertiesRef = MockFunction(self, updateUserProperties)
-    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    @discardableResult
+    func updateUserProperties(operations: PropertyOperations, hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(updateUserPropertiesRef, args: (operations, hackleAppContext, completion))
+        return call(updateUserPropertiesRef, args: (operations, hackleAppContext))
     }
     
     lazy var updatePushSubscriptionsRef = MockFunction(self, updatePushSubscriptions as (HackleSubscriptionOperations, HackleAppContext) -> ())
@@ -80,45 +88,45 @@ class MockHackleAppCore: Mock, HackleAppCore {
     }
     
     lazy var resetUserRef = MockFunction(self, resetUser)
-    func resetUser(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func resetUser(hackleAppContext: HackleAppContext) -> Task<Void, Never> {
         self.hackleAppContext = hackleAppContext
-        call(resetUserRef, args: (hackleAppContext, completion))
+        return call(resetUserRef, args: hackleAppContext)
     }
-    
+
     lazy var setPhoneNumberRef = MockFunction(self, setPhoneNumber)
-    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func setPhoneNumber(phoneNumber: String, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(setPhoneNumberRef, args: (phoneNumber, hackleAppContext, completion))
+        call(setPhoneNumberRef, args: (phoneNumber, hackleAppContext))
     }
-    
+
     lazy var unsetPhoneNumberRef = MockFunction(self, unsetPhoneNumber)
-    func unsetPhoneNumber(hackleAppContext: HackleAppContext, completion: @escaping () -> ()) {
+    func unsetPhoneNumber(hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(unsetPhoneNumberRef, args: (hackleAppContext, completion))
+        call(unsetPhoneNumberRef, args: hackleAppContext)
     }
     
-    lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, User?, String, HackleAppContext) -> Decision)
-    func variationDetail(experimentKey: Int, user: User?, defaultVariation: String, hackleAppContext: HackleAppContext) -> Decision {
+    lazy var variationDetailRef = MockFunction(self, variationDetail as (Int, HackleAppContext) -> Decision)
+    func variationDetail(experimentKey: Int, hackleAppContext: HackleAppContext) -> Decision {
         self.hackleAppContext = hackleAppContext
-        return call(variationDetailRef, args: (experimentKey, user, defaultVariation, hackleAppContext))
+        return call(variationDetailRef, args: (experimentKey, hackleAppContext))
     }
-    
-    lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int, User?, HackleAppContext) -> FeatureFlagDecision)
-    func featureFlagDetail(featureKey: Int, user: User?, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
+
+    lazy var featureFlagDetailRef = MockFunction(self, featureFlagDetail as (Int, HackleAppContext) -> FeatureFlagDecision)
+    func featureFlagDetail(featureKey: Int, hackleAppContext: HackleAppContext) -> FeatureFlagDecision {
         self.hackleAppContext = hackleAppContext
-        return call(featureFlagDetailRef, args: (featureKey, user, hackleAppContext))
+        return call(featureFlagDetailRef, args: (featureKey, hackleAppContext))
     }
-    
-    lazy var trackRef = MockFunction(self, track as (Event, User?, HackleAppContext) -> ())
-    func track(event: Event, user: User?, hackleAppContext: HackleAppContext) {
+
+    lazy var trackRef = MockFunction(self, track as (Event, HackleAppContext) -> ())
+    func track(event: Event, hackleAppContext: HackleAppContext) {
         self.hackleAppContext = hackleAppContext
-        call(trackRef, args: (event, user, hackleAppContext))
+        call(trackRef, args: (event, hackleAppContext))
     }
-    
-    lazy var remoteConfigRef = MockFunction(self, remoteConfig as (String, HackleValue, User?, HackleAppContext) -> RemoteConfigDecision)
-    func remoteConfig(key: String, defaultValue: HackleValue, user: User?, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
+
+    lazy var remoteConfigRef = MockFunction(self, remoteConfig as (String, HackleValue, HackleAppContext) -> RemoteConfigDecision)
+    func remoteConfig(key: String, defaultValue: HackleValue, hackleAppContext: HackleAppContext) -> RemoteConfigDecision {
         self.hackleAppContext = hackleAppContext
-        return call(remoteConfigRef, args: (key, defaultValue, user, hackleAppContext))
+        return call(remoteConfigRef, args: (key, defaultValue, hackleAppContext))
     }
     
     lazy var setCurrentScreenRef = MockFunction(self, setCurrentScreen as (Screen, HackleAppContext) -> ())
@@ -128,19 +136,15 @@ class MockHackleAppCore: Mock, HackleAppCore {
     }
     
     lazy var fetchRef = MockFunction(self, fetch)
-    func fetch(completion: @escaping () -> ()) {
-        call(fetchRef, args: completion)
+    func fetch() -> Task<Void, Never> {
+        call(fetchRef, args: ())
     }
 
     func initialize(user: User?, completion: @escaping () -> ()) {
         fatalError("NOT IMPLEMENTED")
     }
     
-    func allVariationDetails(user: User?) -> [Int: Decision] {
-        fatalError("NOT IMPLEMENTED")
-    }
-    
-    func allVariationDetails(user: User?, hackleAppContext: HackleAppContext) -> [Int: Decision] {
+    func allVariationDetails(hackleAppContext: HackleAppContext) -> [Int: Decision] {
         fatalError("NOT IMPLEMENTED")
     }
     

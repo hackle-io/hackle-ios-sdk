@@ -16,11 +16,11 @@ final class ImageCacheManager: @unchecked Sendable {
     private init() {
     }
 
-    func object(forKey key: NSString) -> UIImage? {
-        cache.object(forKey: key)
+    func object(forKey key: String) -> UIImage? {
+        cache.object(forKey: NSString(string: key))
     }
 
-    func setObject(_ obj: UIImage, forKey key: NSString) {
-        cache.setObject(obj, forKey: key)
+    func setObject(_ obj: UIImage, forKey key: String) {
+        cache.setObject(obj, forKey: NSString(string: key))
     }
 }

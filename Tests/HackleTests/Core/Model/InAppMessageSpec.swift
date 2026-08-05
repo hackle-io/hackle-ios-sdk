@@ -14,6 +14,11 @@ class InAppMessageSpec: QuickSpec {
     override class func spec() {
 
         describe("InAppMessage.Period") {
+            it("Period type은 always=IMMEDIATE, range=CUSTOM이다") {
+                expect(InAppMessage.Period.always.type) == InAppMessageEntity.PeriodType.immediate
+                expect(InAppMessage.Period.range(startInclusive: Date(), endExclusive: Date()).type) == InAppMessageEntity.PeriodType.custom
+            }
+
             context("when period is ALWAYS") {
                 let period = InAppMessage.Period.always
 
@@ -71,6 +76,11 @@ class InAppMessageSpec: QuickSpec {
         }
 
         describe("InAppMessage.Timetable") {
+            it("Timetable type은 all=ALL, custom=CUSTOM이다") {
+                expect(InAppMessage.Timetable.all.type) == InAppMessageEntity.TimetableType.all
+                expect(InAppMessage.Timetable.custom(slots: []).type) == InAppMessageEntity.TimetableType.custom
+            }
+
             context("when timetable is ALL") {
                 let timetable = InAppMessage.Timetable.all
 

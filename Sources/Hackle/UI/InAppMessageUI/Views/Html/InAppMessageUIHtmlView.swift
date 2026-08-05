@@ -128,7 +128,7 @@ extension HackleInAppMessageUI {
 
                 let resolver = try contentResolverFactory.get(resourceType: html.resourceType)
                 resolver.resolve(html: html) { [weak self] result in
-                    Task { @MainActor in
+                    Task { @MainActor [weak self] in
                         guard let self, !self.isDismissed else {
                             return
                         }
