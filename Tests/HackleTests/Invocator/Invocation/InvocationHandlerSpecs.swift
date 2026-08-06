@@ -48,7 +48,23 @@ class InvocationHandlerSpecs: QuickSpec {
                     // then
                     expect(actual.isSuccess).to(equal(true))
                     expect(actual.data).toNot(beNil())
-                    expect(actual.data?.id).to(equal("42"))
+                    expect(actual.data?["id"] as? String).to(equal("42"))
+                }
+
+                it("when current view exists then serializes to success json") {
+                    // given
+                    let view = MockInAppMessageView(id: "42")
+                    core.currentInAppMessageView = view
+                    let request = reqest(command: .getCurrentInAppMessageView)
+
+                    // when
+                    let actual = try sut.handle(request: request).toJsonString()
+
+                    // then
+                    expect(actual).to(contain("\"success\":true"))
+                    expect(actual).to(contain("\"id\":\"42\""))
+                    expect(actual).to(contain("\"inAppMessage\""))
+                    expect(actual).toNot(contain("Error occurs while parsing response."))
                 }
             }
         }
