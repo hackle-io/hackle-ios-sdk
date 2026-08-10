@@ -33,7 +33,8 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppSdkKey: function() { return '{{SDK_KEY}}' },
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
-    ///   getInvocationType: function() { return 'prompt' }
+    ///   getInvocationType: function() { return 'prompt' },
+    ///   getBridgeCapabilities: function() { return '["prompt", "message"]' }
     /// }
     /// ```
     final var source: String {
@@ -48,7 +49,9 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getAppSdkKey", value: sdkKey),
             Property(name: "getAppMode", value: mode.description),
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
+            // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 값 공간은 동결이다.
             Property(name: "getInvocationType", value: "prompt"),
+            Property(name: "getBridgeCapabilities", value: "[\"prompt\", \"message\"]"),
         ]
     }
 

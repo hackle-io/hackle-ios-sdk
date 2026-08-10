@@ -168,6 +168,24 @@ class HackleWebBridgeSpecs: QuickSpec {
                         expect(hackleScriptCountAfterSecond) == 1
                     }
                 }
+
+                it("should expose bridge capabilities without changing invocationType") {
+                    MainActor.assumeIsolated {
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: HackleWebViewConfig.DEFAULT
+                        )
+
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let hackleScript = scripts.first { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }
+
+                        // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 이 값은 동결이다.
+                        expect(hackleScript?.source).to(contain("getInvocationType: function() { return 'prompt' }"))
+                        expect(hackleScript?.source).to(contain("getBridgeCapabilities: function() { return '[\"prompt\", \"message\"]' }"))
+                    }
+                }
             }
         }
     }
