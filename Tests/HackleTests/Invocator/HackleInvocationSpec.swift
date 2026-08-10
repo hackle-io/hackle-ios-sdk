@@ -907,5 +907,40 @@ class HackleInvocationSpec: QuickSpec {
                 }
             }
         }
+
+        describe("invokeAsync(string:completionHandler:)") {
+            it("mutation이 아닌 명령은 completion을 동기로 호출한다") {
+                let jsonString = createJsonString(command: "track", parameters: ["event": "abcd1234"])
+
+                let response = AtomicReference<String?>(value: nil)
+                sut.invokeAsync(string: jsonString) { response.set(newValue: $0) }
+
+                expect(core.trackRef.invokations().count) == 1
+                expect(response.get()).toNot(beNil())
+                expect(response.get()?.jsonObject()?["success"] as? Bool) == true
+            }
+
+            it("user mutation 명령은 core의 Task 완료 후 completion을 호출한다") {
+                every(core.setUserRef).answers { _ in
+                    Task { try? await Task.sleep(nanoseconds: 200_000_000) }
+                }
+                let jsonString = createJsonString(command: "setUser", parameters: ["user": ["id": "42"]])
+
+                let response = AtomicReference<String?>(value: nil)
+                sut.invokeAsync(string: jsonString) { response.set(newValue: $0) }
+
+                expect(core.setUserRef.invokations().count) == 1
+                expect(response.get()).to(beNil())
+                expect(response.get()).toEventuallyNot(beNil(), timeout: .seconds(3))
+                expect(response.get()?.jsonObject()?["success"] as? Bool) == true
+            }
+
+            it("파싱 실패는 에러 응답으로 즉시 completion을 호출한다") {
+                let response = AtomicReference<String?>(value: nil)
+                sut.invokeAsync(string: "{\"_hackle\":{\"command\":\"unknown\"}}") { response.set(newValue: $0) }
+
+                expect(response.get()?.jsonObject()?["success"] as? Bool) == false
+            }
+        }
     }
 }

@@ -133,6 +133,11 @@ private class MockInvocator: NSObject, HackleInvocator {
         invokedString = string
         completionHandler(invokeResult)
     }
+
+    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
+        invokedString = string
+        completionHandler(invokeResult)
+    }
 }
 
 private class MockWKUIDelegate: NSObject, WKUIDelegate {
