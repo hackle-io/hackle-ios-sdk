@@ -186,6 +186,37 @@ class HackleWebBridgeSpecs: QuickSpec {
                         expect(hackleScript?.source).to(contain("getBridgeCapabilities: function() { return '[\"prompt\", \"message\"]' }"))
                     }
                 }
+
+                it("should not crash when applied multiple times") {
+                    MainActor.assumeIsolated {
+                        let config = HackleWebViewConfig.DEFAULT
+
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        )
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        )
+
+                        expect(webView.uiDelegate).toNot(beNil())
+                    }
+                }
+
+                it("should be re-appliable after detaching the script message handler") {
+                    MainActor.assumeIsolated {
+                        let config = HackleWebViewConfig.DEFAULT
+
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        )
+                        webView.detachHackleScriptMessageHandler()
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        )
+
+                        expect(webView.uiDelegate).toNot(beNil())
+                    }
+                }
             }
         }
     }

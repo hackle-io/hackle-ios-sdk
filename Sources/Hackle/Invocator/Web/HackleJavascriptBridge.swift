@@ -70,7 +70,9 @@ class HackleJavascriptBridge: WebViewUserScript {
 }
 
 extension HackleJavascriptBridge {
-    /// Injects `window._hackleApp` script and sets up HackleUIDelegate for invoke handling.
+    /// Injects `window._hackleApp` script and sets up invoke handling.
+    /// - prompt: synchronous queries and getters (``HackleUIDelegate``)
+    /// - message: user mutation, track and commands (``HackleScriptMessageHandler``)
     @MainActor
     func apply(to webView: WKWebView, uiDelegate: WKUIDelegate? = nil) {
         // 1. Inject bridge script
@@ -80,6 +82,25 @@ extension HackleJavascriptBridge {
         let originalDelegate = uiDelegate ?? webView.uiDelegate
         webView._uiDelegate = HackleUIDelegate(invocator: invocator, uiDelegate: originalDelegate)
         webView.uiDelegate = webView._uiDelegate
+
+        // 3. Set up postMessage() interception for invoke
+        webView.detachHackleScriptMessageHandler()
+        let messageHandler = HackleScriptMessageHandler(invocator: invocator)
+        webView._messageHandler = messageHandler
+        webView.configuration.userContentController.add(
+            WeakScriptMessageHandler(messageHandler),
+            name: HackleScriptMessageHandler.name
+        )
+    }
+}
+
+extension WKWebView {
+    /// Removes the Hackle script message handler.
+    /// `WKUserContentController` raises when the same name is registered twice, so this must be called before adding.
+    @MainActor
+    func detachHackleScriptMessageHandler() {
+        configuration.userContentController.removeScriptMessageHandler(forName: HackleScriptMessageHandler.name)
+        _messageHandler = nil
     }
 }
 
@@ -121,6 +142,11 @@ private extension WKWebView {
             let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
             return UnsafeRawPointer(key)
         }()
+
+        static let _messageHandler: UnsafeRawPointer = {
+            let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
+            return UnsafeRawPointer(key)
+        }()
     }
 
     var _uiDelegate: HackleUIDelegate? {
@@ -134,6 +160,24 @@ private extension WKWebView {
             objc_setAssociatedObject(
                 self,
                 AssociatedKeys._uiDelegate,
+                newValue,
+                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+    }
+
+    /// The WebView owns the handler; `WKUserContentController` only holds a weak proxy.
+    var _messageHandler: HackleScriptMessageHandler? {
+        get {
+            objc_getAssociatedObject(
+                self,
+                AssociatedKeys._messageHandler
+            ) as? HackleScriptMessageHandler
+        }
+        set {
+            objc_setAssociatedObject(
+                self,
+                AssociatedKeys._messageHandler,
                 newValue,
                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC
             )
