@@ -25,7 +25,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             it("메인 프레임이 아닌 메시지는 무시한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
-                    let message = MockScriptMessage(body: mutationBody, frameInfo: MockFrameInfo(isMainFrame: false), webView: webView)
+                    let message = MockScriptMessage(body: mutationBody, frameInfo: MockFrameInfo.subFrame, webView: webView)
 
                     sut.userContentController(WKUserContentController(), didReceive: message)
 
@@ -108,6 +108,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
             it("message 채널 사용 카운터를 증가시킨다") {
                 MainActor.assumeIsolated {
+                    Metrics.clear()
                     let registry = CumulativeMetricRegistry()
                     Metrics.addRegistry(registry: registry)
                     let sut = HackleScriptMessageHandler(invocator: invocator)
