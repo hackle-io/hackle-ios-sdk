@@ -11,8 +11,8 @@ class WebViewBridgeContractSpecs: QuickSpec {
     override class func spec() {
 
         let requestId = "11111111-2222-3333-4444-555555555555"
-        let mutationInvoke = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{\"user\":{\"id\":\"42\"}}},\"requestId\":\"\(requestId)\",\"protocolVersion\":1}"
-        let trackInvoke = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}},\"protocolVersion\":1}"
+        let mutationInvoke = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{\"user\":{\"id\":\"42\"}}},\"requestId\":\"\(requestId)\"}"
+        let trackInvoke = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}}}"
 
         var core: MockHackleAppCore!
         var invocator: DefaultHackleInvocator!
@@ -28,7 +28,7 @@ class WebViewBridgeContractSpecs: QuickSpec {
             }
         }
 
-        it("requestId·protocolVersion이 붙어도 기존 invocator가 그대로 파싱한다") {
+        it("requestId가 붙어도 기존 invocator가 그대로 파싱한다") {
             expect(invocator.isInvocableString(string: mutationInvoke)) == true
             expect(invocator.isInvocableString(string: trackInvoke)) == true
 
