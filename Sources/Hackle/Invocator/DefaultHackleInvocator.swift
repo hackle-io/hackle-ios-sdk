@@ -23,8 +23,9 @@ class DefaultHackleInvocator: NSObject, HackleInvocator {
             completionHandler(json)
             return
         }
+        let completion = InvocationCompletion(completionHandler)
         task.onComplete(queue: .main) {
-            completionHandler(json)
+            completion.handler(json)
         }
     }
 
@@ -39,5 +40,15 @@ class DefaultHackleInvocator: NSObject, HackleInvocator {
         } catch {
             return InvocationResponse<Any>.error(error: error)
         }
+    }
+}
+
+/// Bridges an Objective-C-compatible completion handler across a `@Sendable` boundary.
+/// This is safe because the immutable handler is transferred once and invoked once.
+private final class InvocationCompletion: @unchecked Sendable {
+    let handler: (String?) -> Void
+
+    init(_ handler: @escaping (String?) -> Void) {
+        self.handler = handler
     }
 }
