@@ -38,6 +38,6 @@ extension InvocationResponse {
     }
 
     private func errorJson(message: String) -> String {
-        return "{\"success\": false,\"message\":\"\(message)\"}"
+        return #"{"success": false,"message":"\#(message)"}"#
     }
 }
