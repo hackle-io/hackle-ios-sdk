@@ -34,7 +34,7 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
     ///   getInvocationType: function() { return 'prompt' },
-    ///   getBridgeCapabilities: function() { return '["prompt", "message"]' }
+    ///   getBridgeCapabilities: function() { return '{"evaluation":["prompt"],"event":["prompt","message"]}' }
     /// }
     /// ```
     final var source: String {
@@ -51,7 +51,8 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
             // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 값 공간은 동결이다.
             Property(name: "getInvocationType", value: "prompt"),
-            Property(name: "getBridgeCapabilities", value: "[\"prompt\", \"message\"]"),
+            // 호출 축별 지원 채널. evaluation=동기 반환이 필요한 조회·getter, event=반환값이 불필요한 mutation·track·명령.
+            Property(name: "getBridgeCapabilities", value: #"{"evaluation":["prompt"],"event":["prompt","message"]}"#),
         ]
     }
 

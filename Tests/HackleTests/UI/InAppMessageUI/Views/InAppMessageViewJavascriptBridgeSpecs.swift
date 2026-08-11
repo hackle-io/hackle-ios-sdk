@@ -132,7 +132,7 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
         describe("getBridgeCapabilities property in source") {
             it("advertises the hybrid channel on the in-app message webview as well") {
                 let sut = bridge(event: Event.builder("hello").build())
-                expect(sut.source).to(contain("getBridgeCapabilities: function() { return '[\"prompt\", \"message\"]' }"))
+                expect(sut.source).to(contain(#"getBridgeCapabilities: function() { return '{"evaluation":["prompt"],"event":["prompt","message"]}' }"#))
                 expect(sut.source).to(contain("getInvocationType: function() { return 'prompt' }"))
             }
         }
