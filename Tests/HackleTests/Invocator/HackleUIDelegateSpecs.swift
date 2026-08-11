@@ -13,6 +13,54 @@ class HackleUIDelegateSpecs: QuickSpec {
             mockInvocator = MockInvocator()
         }
 
+        describe("runJavaScriptTextInputPanelWithPrompt") {
+
+            it("invocable prompt는 동기로 invoke 결과를 반환한다") {
+                MainActor.assumeIsolated {
+                    let webView = WKWebView()
+                    mockInvocator.invocable = true
+                    mockInvocator.invokeResult = "{\"success\":true,\"data\":\"A\"}"
+                    let sut = HackleUIDelegate(invocator: mockInvocator)
+                    let json = "{\"_hackle\":{\"command\":\"variation\",\"parameters\":{\"experimentKey\":42}}}"
+
+                    let result = AtomicReference<String?>(value: nil)
+                    sut.webView(
+                        webView,
+                        runJavaScriptTextInputPanelWithPrompt: json,
+                        defaultText: nil,
+                        initiatedByFrame: MockFrameInfo.mainFrame
+                    ) { result.set(newValue: $0) }
+
+                    expect(mockInvocator.invokedString) == json
+                    expect(result.get()) == "{\"success\":true,\"data\":\"A\"}"
+                }
+            }
+
+            it("invocable하지 않은 prompt는 위임 delegate가 없으면 nil을 반환한다") {
+                MainActor.assumeIsolated {
+                    let webView = WKWebView()
+                    mockInvocator.invocable = false
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: nil)
+
+                    let called = AtomicReference(value: false)
+                    let result = AtomicReference<String?>(value: nil)
+                    sut.webView(
+                        webView,
+                        runJavaScriptTextInputPanelWithPrompt: "hello",
+                        defaultText: nil,
+                        initiatedByFrame: MockFrameInfo.mainFrame
+                    ) {
+                        called.set(newValue: true)
+                        result.set(newValue: $0)
+                    }
+
+                    expect(called.get()) == true
+                    expect(result.get()).to(beNil())
+                    expect(mockInvocator.invokedString).to(beNil())
+                }
+            }
+        }
+
         describe("responds(to:)") {
 
             it("should return true for selectors HackleUIDelegate responds to") {
@@ -130,6 +178,11 @@ private class MockInvocator: NSObject, HackleInvocator {
     }
 
     func invoke(string: String, completionHandler: (String?) -> Void) {
+        invokedString = string
+        completionHandler(invokeResult)
+    }
+
+    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
         invokedString = string
         completionHandler(invokeResult)
     }
