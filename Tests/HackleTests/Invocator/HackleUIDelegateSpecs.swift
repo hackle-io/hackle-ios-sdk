@@ -31,7 +31,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                         initiatedByFrame: MockFrameInfo.mainFrame
                     ) { result.set(newValue: $0) }
 
-                    expect(mockInvocator.invokedString) == json
+                    expect(mockInvocator.invokedStrings) == [json]
                     expect(result.get()) == "{\"success\":true,\"data\":\"A\"}"
                 }
             }
@@ -56,7 +56,7 @@ class HackleUIDelegateSpecs: QuickSpec {
 
                     expect(called.get()) == true
                     expect(result.get()).to(beNil())
-                    expect(mockInvocator.invokedString).to(beNil())
+                    expect(mockInvocator.invokedStrings).to(beEmpty())
                 }
             }
         }
@@ -162,31 +162,6 @@ class HackleUIDelegateSpecs: QuickSpec {
 }
 
 // MARK: - Test Doubles
-
-private class MockInvocator: NSObject, HackleInvocator {
-    var invocable = false
-    var invokeResult = ""
-    var invokedString: String?
-
-    func isInvocableString(string: String) -> Bool {
-        invocable
-    }
-
-    func invoke(string: String) -> String {
-        invokedString = string
-        return invokeResult
-    }
-
-    func invoke(string: String, completionHandler: (String?) -> Void) {
-        invokedString = string
-        completionHandler(invokeResult)
-    }
-
-    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
-        invokedString = string
-        completionHandler(invokeResult)
-    }
-}
 
 private class MockWKUIDelegate: NSObject, WKUIDelegate {
     var promptCalled = false

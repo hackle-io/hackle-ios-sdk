@@ -240,26 +240,3 @@ class HackleWebBridgeSpecs: QuickSpec {
         }
     }
 }
-
-private final class MockInvocator: NSObject, HackleInvocator {
-    var invokedStrings: [String] = []
-
-    func isInvocableString(string: String) -> Bool {
-        true
-    }
-
-    func invoke(string: String) -> String {
-        invokedStrings.append(string)
-        return #"{"success":true,"message":"OK"}"#
-    }
-
-    func invoke(string: String, completionHandler: (String?) -> Void) {
-        let response = invoke(string: string)
-        completionHandler(response)
-    }
-
-    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
-        let response = invoke(string: string)
-        completionHandler(response)
-    }
-}

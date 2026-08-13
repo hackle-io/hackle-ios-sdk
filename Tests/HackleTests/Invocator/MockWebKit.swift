@@ -48,8 +48,6 @@ class MockWebView: WKWebView {
 
 @MainActor
 class MockUserContentController: WKUserContentController {
-    var addedHandlerNames: [String] = []
-    var removedHandlerNames: [String] = []
     /// Names added while already registered. The real `WKUserContentController` raises in this case.
     var duplicatedHandlerNames: [String] = []
     private var handlers: [String: any WKScriptMessageHandler] = [:]
@@ -58,12 +56,10 @@ class MockUserContentController: WKUserContentController {
         if handlers[name] != nil {
             duplicatedHandlerNames.append(name)
         }
-        addedHandlerNames.append(name)
         handlers[name] = scriptMessageHandler
     }
 
     override func removeScriptMessageHandler(forName name: String) {
-        removedHandlerNames.append(name)
         handlers[name] = nil
     }
 

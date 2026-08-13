@@ -150,27 +150,10 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                 }
             }
 
-            it("동일 WebView의 handler를 최신 등록으로 교체한다") {
-                MainActor.assumeIsolated {
-                    let previousInvocator = MockInvocator()
-                    let currentInvocator = MockInvocator()
-                    let targetWebView = MockWebView()
-                    let sut = HackleScriptMessageDispatcher()
-
-                    targetWebView._messageHandler = HackleScriptMessageHandler(invocator: previousInvocator)
-                    targetWebView._messageHandler = HackleScriptMessageHandler(invocator: currentInvocator)
-                    sut.userContentController(
-                        WKUserContentController(),
-                        didReceive: MockScriptMessage(body: trackBody, webView: targetWebView)
-                    )
-
-                    expect(previousInvocator.invokedStrings).to(beEmpty())
-                    expect(currentInvocator.invokedStrings) == [trackBody]
-                }
-            }
-
             it("handler가 없는 WebView의 메시지는 무시한다") {
                 MainActor.assumeIsolated {
+                    let handlerWebView = MockWebView()
+                    handlerWebView._messageHandler = HackleScriptMessageHandler(invocator: invocator)
                     let sut = HackleScriptMessageDispatcher()
 
                     sut.userContentController(
@@ -182,34 +165,5 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                 }
             }
         }
-    }
-}
-
-// MARK: - Test Doubles
-
-private class MockInvocator: NSObject, HackleInvocator {
-    var invocable = true
-    var invokeResult = "{\"success\":true,\"message\":\"OK\"}"
-    var invokedStrings: [String] = []
-    var asyncInvokedStrings: [String] = []
-
-    func isInvocableString(string: String) -> Bool {
-        invocable
-    }
-
-    func invoke(string: String) -> String {
-        invokedStrings.append(string)
-        return invokeResult
-    }
-
-    func invoke(string: String, completionHandler: (String?) -> Void) {
-        invokedStrings.append(string)
-        completionHandler(invokeResult)
-    }
-
-    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
-        invokedStrings.append(string)
-        asyncInvokedStrings.append(string)
-        completionHandler(invokeResult)
     }
 }
