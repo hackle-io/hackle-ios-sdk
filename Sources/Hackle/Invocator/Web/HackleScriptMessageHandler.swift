@@ -47,31 +47,11 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
-/// Routes messages from a shared user content controller to the handler for the originating WebView.
+/// Routes messages from a shared user content controller to the handler of the originating WebView.
+/// Each WebView owns its handler, so a single stateless router serves every WebView on the controller.
 @MainActor
 final class HackleScriptMessageRouter: NSObject, WKScriptMessageHandler {
-    private var handlers: [ObjectIdentifier: WeakHandler] = [:]
-
-    func register(webView: WKWebView, handler: HackleScriptMessageHandler) {
-        handlers = handlers.filter { $0.value.handler != nil }
-        handlers[ObjectIdentifier(webView)] = WeakHandler(handler)
-    }
-
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        handlers = handlers.filter { $0.value.handler != nil }
-        guard let webView = message.webView,
-              let handler = handlers[ObjectIdentifier(webView)]?.handler
-        else {
-            return
-        }
-        handler.userContentController(userContentController, didReceive: message)
-    }
-
-    private final class WeakHandler {
-        weak var handler: HackleScriptMessageHandler?
-
-        init(_ handler: HackleScriptMessageHandler) {
-            self.handler = handler
-        }
+        message.webView?._messageHandler?.userContentController(userContentController, didReceive: message)
     }
 }

@@ -85,56 +85,19 @@ extension HackleJavascriptBridge {
         webView.uiDelegate = webView._uiDelegate
 
         // 3. Set up postMessage() interception for invoke
-        let messageHandler = HackleScriptMessageHandler(invocator: invocator)
-        webView._messageHandler = messageHandler
-        webView.configuration.userContentController.registerHackleScriptMessageHandler(
-            messageHandler,
-            for: webView
-        )
+        webView._messageHandler = HackleScriptMessageHandler(invocator: invocator)
+        webView.configuration.userContentController.installHackleScriptMessageRouter()
     }
 }
 
 private extension WKUserContentController {
+    /// Installs the router that forwards messages to the handler of each WebView.
+    /// `WKUserContentController` raises when the same name is registered twice, so the previous registration
+    /// is removed first. The router is stateless, so reinstalling it keeps sibling WebViews working.
     @MainActor
-    struct AssociatedKeys {
-        static let messageRouter: UnsafeRawPointer = {
-            let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
-            return UnsafeRawPointer(key)
-        }()
-    }
-
-    @MainActor
-    func registerHackleScriptMessageHandler(
-        _ handler: HackleScriptMessageHandler,
-        for webView: WKWebView
-    ) {
-        let router: HackleScriptMessageRouter
-        if let messageRouter {
-            router = messageRouter
-        } else {
-            router = HackleScriptMessageRouter()
-            add(router, name: HackleScriptMessageHandler.name)
-            messageRouter = router
-        }
-        router.register(webView: webView, handler: handler)
-    }
-
-    @MainActor
-    var messageRouter: HackleScriptMessageRouter? {
-        get {
-            objc_getAssociatedObject(
-                self,
-                AssociatedKeys.messageRouter
-            ) as? HackleScriptMessageRouter
-        }
-        set {
-            objc_setAssociatedObject(
-                self,
-                AssociatedKeys.messageRouter,
-                newValue,
-                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
-            )
-        }
+    func installHackleScriptMessageRouter() {
+        removeScriptMessageHandler(forName: HackleScriptMessageHandler.name)
+        add(HackleScriptMessageRouter(), name: HackleScriptMessageHandler.name)
     }
 }
 
@@ -199,8 +162,10 @@ private extension WKWebView {
             )
         }
     }
+}
 
-    /// The WebView owns the handler; the controller router references it weakly.
+extension WKWebView {
+    /// The WebView owns its message handler; ``HackleScriptMessageRouter`` looks it up to route messages.
     var _messageHandler: HackleScriptMessageHandler? {
         get {
             objc_getAssociatedObject(

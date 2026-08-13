@@ -130,18 +130,16 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
         describe("HackleScriptMessageRouter") {
 
-            it("message.webView에 등록된 handler로만 전달한다") {
+            it("message.webView의 handler로만 전달한다") {
                 MainActor.assumeIsolated {
                     let firstInvocator = MockInvocator()
                     let secondInvocator = MockInvocator()
                     let firstWebView = MockWebView()
                     let secondWebView = MockWebView()
-                    let firstHandler = HackleScriptMessageHandler(invocator: firstInvocator)
-                    let secondHandler = HackleScriptMessageHandler(invocator: secondInvocator)
+                    firstWebView._messageHandler = HackleScriptMessageHandler(invocator: firstInvocator)
+                    secondWebView._messageHandler = HackleScriptMessageHandler(invocator: secondInvocator)
                     let sut = HackleScriptMessageRouter()
 
-                    sut.register(webView: firstWebView, handler: firstHandler)
-                    sut.register(webView: secondWebView, handler: secondHandler)
                     sut.userContentController(
                         WKUserContentController(),
                         didReceive: MockScriptMessage(body: trackBody, webView: firstWebView)
@@ -159,12 +157,8 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let targetWebView = MockWebView()
                     let sut = HackleScriptMessageRouter()
 
-                    sut.register(
-                        webView: targetWebView,
-                        handler: HackleScriptMessageHandler(invocator: previousInvocator)
-                    )
-                    let currentHandler = HackleScriptMessageHandler(invocator: currentInvocator)
-                    sut.register(webView: targetWebView, handler: currentHandler)
+                    targetWebView._messageHandler = HackleScriptMessageHandler(invocator: previousInvocator)
+                    targetWebView._messageHandler = HackleScriptMessageHandler(invocator: currentInvocator)
                     sut.userContentController(
                         WKUserContentController(),
                         didReceive: MockScriptMessage(body: trackBody, webView: targetWebView)
@@ -175,21 +169,15 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                 }
             }
 
-            it("handler가 해제되면 해당 WebView의 메시지를 무시한다") {
+            it("handler가 없는 WebView의 메시지는 무시한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageRouter()
-                    let targetWebView = MockWebView()
-                    let weakHandler = registerTemporaryHandler(
-                        on: sut,
-                        webView: targetWebView,
-                        invocator: invocator
-                    )
 
-                    expect(weakHandler.value).to(beNil())
                     sut.userContentController(
                         WKUserContentController(),
-                        didReceive: MockScriptMessage(body: trackBody, webView: targetWebView)
+                        didReceive: MockScriptMessage(body: trackBody, webView: webView)
                     )
+
                     expect(invocator.invokedStrings).to(beEmpty())
                 }
             }
@@ -198,28 +186,6 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 }
 
 // MARK: - Test Doubles
-
-@MainActor
-private func registerTemporaryHandler(
-    on router: HackleScriptMessageRouter,
-    webView: WKWebView,
-    invocator: HackleInvocator
-) -> WeakReference<HackleScriptMessageHandler> {
-    return autoreleasepool {
-        let handler = HackleScriptMessageHandler(invocator: invocator)
-        let weakHandler = WeakReference(handler)
-        router.register(webView: webView, handler: handler)
-        return weakHandler
-    }
-}
-
-private final class WeakReference<T: AnyObject> {
-    weak var value: T?
-
-    init(_ value: T) {
-        self.value = value
-    }
-}
 
 private class MockInvocator: NSObject, HackleInvocator {
     var invocable = true

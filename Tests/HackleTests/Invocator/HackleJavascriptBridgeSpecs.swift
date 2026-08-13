@@ -196,8 +196,8 @@ class HackleWebBridgeSpecs: QuickSpec {
                         configuration.userContentController = controller
                         let firstWebView = WKWebView(frame: .zero, configuration: configuration)
                         let secondWebView = WKWebView(frame: .zero, configuration: configuration)
-                        let firstInvocator = RecordingInvocator()
-                        let secondInvocator = RecordingInvocator()
+                        let firstInvocator = MockInvocator()
+                        let secondInvocator = MockInvocator()
 
                         firstWebView.prepareForHackleJavascriptBridge(
                             invocator: firstInvocator, sdkKey: "key1", mode: .native, webViewConfig: .DEFAULT
@@ -210,8 +210,7 @@ class HackleWebBridgeSpecs: QuickSpec {
 
                         expect(firstInvocator.invokedStrings) == [trackBody]
                         expect(secondInvocator.invokedStrings) == [trackBody]
-                        expect(controller.addedHandlerNames) == [HackleScriptMessageHandler.name]
-                        expect(controller.removedHandlerNames).to(beEmpty())
+                        expect(controller.duplicatedHandlerNames).to(beEmpty())
                     }
                 }
 
@@ -221,8 +220,8 @@ class HackleWebBridgeSpecs: QuickSpec {
                         let configuration = WKWebViewConfiguration()
                         configuration.userContentController = controller
                         let targetWebView = WKWebView(frame: .zero, configuration: configuration)
-                        let previousInvocator = RecordingInvocator()
-                        let currentInvocator = RecordingInvocator()
+                        let previousInvocator = MockInvocator()
+                        let currentInvocator = MockInvocator()
 
                         targetWebView.prepareForHackleJavascriptBridge(
                             invocator: previousInvocator, sdkKey: "key1", mode: .native, webViewConfig: .DEFAULT
@@ -234,8 +233,7 @@ class HackleWebBridgeSpecs: QuickSpec {
 
                         expect(previousInvocator.invokedStrings).to(beEmpty())
                         expect(currentInvocator.invokedStrings) == [trackBody]
-                        expect(controller.addedHandlerNames) == [HackleScriptMessageHandler.name]
-                        expect(controller.removedHandlerNames).to(beEmpty())
+                        expect(controller.duplicatedHandlerNames).to(beEmpty())
                     }
                 }
             }
@@ -243,7 +241,7 @@ class HackleWebBridgeSpecs: QuickSpec {
     }
 }
 
-private final class RecordingInvocator: NSObject, HackleInvocator {
+private final class MockInvocator: NSObject, HackleInvocator {
     var invokedStrings: [String] = []
 
     func isInvocableString(string: String) -> Bool {
