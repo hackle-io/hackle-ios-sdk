@@ -85,23 +85,19 @@ extension HackleJavascriptBridge {
         webView.uiDelegate = webView._uiDelegate
 
         // 3. Set up postMessage() interception for invoke
-        webView.detachHackleScriptMessageHandler()
-        let messageHandler = HackleScriptMessageHandler(invocator: invocator)
-        webView._messageHandler = messageHandler
-        webView.configuration.userContentController.add(
-            WeakScriptMessageHandler(messageHandler),
-            name: HackleScriptMessageHandler.name
-        )
+        webView._messageHandler = HackleScriptMessageHandler(invocator: invocator)
+        webView.configuration.userContentController.installHackleScriptMessageDispatcher()
     }
 }
 
-extension WKWebView {
-    /// Removes the Hackle script message handler.
-    /// `WKUserContentController` raises when the same name is registered twice, so this must be called before adding.
+private extension WKUserContentController {
+    /// Installs the dispatcher that forwards messages to the handler of each WebView.
+    /// `WKUserContentController` raises when the same name is registered twice, so the previous registration
+    /// is removed first. The dispatcher is stateless, so reinstalling it keeps sibling WebViews working.
     @MainActor
-    func detachHackleScriptMessageHandler() {
-        configuration.userContentController.removeScriptMessageHandler(forName: HackleScriptMessageHandler.name)
-        _messageHandler = nil
+    func installHackleScriptMessageDispatcher() {
+        removeScriptMessageHandler(forName: HackleScriptMessageHandler.name)
+        add(HackleScriptMessageDispatcher(), name: HackleScriptMessageHandler.name)
     }
 }
 
@@ -166,8 +162,10 @@ private extension WKWebView {
             )
         }
     }
+}
 
-    /// The WebView owns the handler; `WKUserContentController` only holds a weak proxy.
+extension WKWebView {
+    /// The WebView owns its message handler; ``HackleScriptMessageDispatcher`` looks it up to dispatch messages.
     var _messageHandler: HackleScriptMessageHandler? {
         get {
             objc_getAssociatedObject(

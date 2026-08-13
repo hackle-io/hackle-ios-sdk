@@ -20,14 +20,14 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             }
         }
 
-        describe("userContentController(_:didReceive:)") {
+        describe("didReceive(_:)") {
 
             it("메인 프레임이 아닌 메시지는 무시한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
                     let message = MockScriptMessage(body: mutationBody, frameInfo: MockFrameInfo.subFrame, webView: webView)
 
-                    sut.userContentController(WKUserContentController(), didReceive: message)
+                    sut.didReceive(message)
 
                     expect(invocator.invokedStrings).to(beEmpty())
                 }
@@ -38,7 +38,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
                     let message = MockScriptMessage(body: ["_hackle": ["command": "setUser"]], webView: webView)
 
-                    sut.userContentController(WKUserContentController(), didReceive: message)
+                    sut.didReceive(message)
 
                     expect(invocator.invokedStrings).to(beEmpty())
                 }
@@ -49,7 +49,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
                     let message = MockScriptMessage(body: trackBody, webView: webView)
 
-                    sut.userContentController(WKUserContentController(), didReceive: message)
+                    sut.didReceive(message)
 
                     expect(invocator.invokedStrings) == [trackBody]
                 }
@@ -128,61 +128,42 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             }
         }
 
-        describe("WeakScriptMessageHandler") {
+        describe("HackleScriptMessageDispatcher") {
 
-            it("핸들러를 강하게 참조하지 않는다") {
+            it("message.webView의 handler로만 전달한다") {
                 MainActor.assumeIsolated {
-                    var handler: HackleScriptMessageHandler? = HackleScriptMessageHandler(invocator: invocator)
-                    weak var weakHandler = handler
-                    let proxy = WeakScriptMessageHandler(handler!)
+                    let firstInvocator = MockInvocator()
+                    let secondInvocator = MockInvocator()
+                    let firstWebView = MockWebView()
+                    let secondWebView = MockWebView()
+                    firstWebView._messageHandler = HackleScriptMessageHandler(invocator: firstInvocator)
+                    secondWebView._messageHandler = HackleScriptMessageHandler(invocator: secondInvocator)
+                    let sut = HackleScriptMessageDispatcher()
 
-                    handler = nil
+                    sut.userContentController(
+                        WKUserContentController(),
+                        didReceive: MockScriptMessage(body: trackBody, webView: firstWebView)
+                    )
 
-                    expect(weakHandler).to(beNil())
-                    _ = proxy
+                    expect(firstInvocator.invokedStrings) == [trackBody]
+                    expect(secondInvocator.invokedStrings).to(beEmpty())
                 }
             }
 
-            it("핸들러가 살아있으면 메시지를 전달한다") {
+            it("handler가 없는 WebView의 메시지는 무시한다") {
                 MainActor.assumeIsolated {
-                    let handler = HackleScriptMessageHandler(invocator: invocator)
-                    let proxy = WeakScriptMessageHandler(handler)
-                    let message = MockScriptMessage(body: trackBody, webView: webView)
+                    let handlerWebView = MockWebView()
+                    handlerWebView._messageHandler = HackleScriptMessageHandler(invocator: invocator)
+                    let sut = HackleScriptMessageDispatcher()
 
-                    proxy.userContentController(WKUserContentController(), didReceive: message)
+                    sut.userContentController(
+                        WKUserContentController(),
+                        didReceive: MockScriptMessage(body: trackBody, webView: webView)
+                    )
 
-                    expect(invocator.invokedStrings) == [trackBody]
+                    expect(invocator.invokedStrings).to(beEmpty())
                 }
             }
         }
-    }
-}
-
-// MARK: - Test Doubles
-
-private class MockInvocator: NSObject, HackleInvocator {
-    var invocable = true
-    var invokeResult = "{\"success\":true,\"message\":\"OK\"}"
-    var invokedStrings: [String] = []
-    var asyncInvokedStrings: [String] = []
-
-    func isInvocableString(string: String) -> Bool {
-        invocable
-    }
-
-    func invoke(string: String) -> String {
-        invokedStrings.append(string)
-        return invokeResult
-    }
-
-    func invoke(string: String, completionHandler: (String?) -> Void) {
-        invokedStrings.append(string)
-        completionHandler(invokeResult)
-    }
-
-    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
-        invokedStrings.append(string)
-        asyncInvokedStrings.append(string)
-        completionHandler(invokeResult)
     }
 }

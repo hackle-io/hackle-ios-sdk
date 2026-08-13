@@ -1,10 +1,11 @@
 import Foundation
 import WebKit
 
-/// Receives `postMessage` invocations from the web SDK (user mutation · track · commands).
+/// Receives `postMessage` invocations from the web SDK (user mutation · track · commands),
+/// dispatched by ``HackleScriptMessageDispatcher``.
 /// Synchronous queries stay on the prompt path (``HackleUIDelegate``).
 @MainActor
-class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
+class HackleScriptMessageHandler: NSObject {
 
     /// `window.webkit.messageHandlers.hackle`
     static let name = "hackle"
@@ -15,7 +16,7 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
         self.invocator = invocator
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    func didReceive(_ message: WKScriptMessage) {
         guard message.frameInfo.isMainFrame, let body = message.body as? String else {
             return
         }
@@ -36,6 +37,7 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
         invocator.invokeAsync(string: body) { [weak webView] response in
             guard let webView = webView, let response = response else {
+                Log.debug("Skipped bridge resolve. [requestId=\(requestId), webViewReleased=\(webView == nil)]")
                 return
             }
             webView.evaluateJavaScript(Self.resolveScript(requestId: requestId, response: response))
@@ -47,18 +49,15 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
-/// `WKUserContentController` strongly retains message handlers.
-/// The actual handler is owned by the WebView, so it is registered through this weak proxy.
+/// Dispatches messages from a shared user content controller to the handler of the originating WebView.
+/// Each WebView owns its handler, so a single stateless dispatcher serves every WebView on the controller.
 @MainActor
-final class WeakScriptMessageHandler: NSObject, WKScriptMessageHandler {
-
-    private weak var handler: (any WKScriptMessageHandler)?
-
-    init(_ handler: any WKScriptMessageHandler) {
-        self.handler = handler
-    }
-
+final class HackleScriptMessageDispatcher: NSObject, WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        handler?.userContentController(userContentController, didReceive: message)
+        guard let handler = message.webView?._messageHandler else {
+            Log.debug("Bridge is not applied to the WebView that sent the message.")
+            return
+        }
+        handler.didReceive(message)
     }
 }
