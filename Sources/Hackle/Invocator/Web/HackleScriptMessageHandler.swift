@@ -36,7 +36,7 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
         invocator.invokeAsync(string: body) { [weak webView] response in
             guard let webView = webView, let response = response else {
-                Log.debug("Skipped bridge resolve. [requestId=\(requestId), webViewReleased=\(webView == nil), hasResponse=\(response != nil)]")
+                Log.debug("Skipped bridge resolve. [requestId=\(requestId), webViewReleased=\(webView == nil)]")
                 return
             }
             webView.evaluateJavaScript(Self.resolveScript(requestId: requestId, response: response))
