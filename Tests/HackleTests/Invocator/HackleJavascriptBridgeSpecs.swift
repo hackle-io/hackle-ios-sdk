@@ -13,6 +13,8 @@ import WebKit
 
 class HackleWebBridgeSpecs: QuickSpec {
     override class func spec() {
+        let trackBody = #"{"_hackle":{"command":"track","parameters":{"event":"purchase"}}}"#
+
         describe("WKWebView+HackleJavascriptBridge") {
 
             var webView: WKWebView!
@@ -187,37 +189,79 @@ class HackleWebBridgeSpecs: QuickSpec {
                     }
                 }
 
-                it("should not crash when applied multiple times") {
+                it("should route each message to its WebView invocator when userContentController is shared") {
                     MainActor.assumeIsolated {
-                        let config = HackleWebViewConfig.DEFAULT
+                        let controller = MockUserContentController()
+                        let configuration = WKWebViewConfiguration()
+                        configuration.userContentController = controller
+                        let firstWebView = WKWebView(frame: .zero, configuration: configuration)
+                        let secondWebView = WKWebView(frame: .zero, configuration: configuration)
+                        let firstInvocator = RecordingInvocator()
+                        let secondInvocator = RecordingInvocator()
 
-                        webView.prepareForHackleJavascriptBridge(
-                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        firstWebView.prepareForHackleJavascriptBridge(
+                            invocator: firstInvocator, sdkKey: "key1", mode: .native, webViewConfig: .DEFAULT
                         )
-                        webView.prepareForHackleJavascriptBridge(
-                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        secondWebView.prepareForHackleJavascriptBridge(
+                            invocator: secondInvocator, sdkKey: "key2", mode: .native, webViewConfig: .DEFAULT
                         )
+                        controller.send(MockScriptMessage(body: trackBody, webView: firstWebView))
+                        controller.send(MockScriptMessage(body: trackBody, webView: secondWebView))
 
-                        expect(webView.uiDelegate).toNot(beNil())
+                        expect(firstInvocator.invokedStrings) == [trackBody]
+                        expect(secondInvocator.invokedStrings) == [trackBody]
+                        expect(controller.addedHandlerNames) == [HackleScriptMessageHandler.name]
+                        expect(controller.removedHandlerNames).to(beEmpty())
                     }
                 }
 
-                it("should be re-appliable after detaching the script message handler") {
+                it("should replace only the current WebView handler when applied repeatedly") {
                     MainActor.assumeIsolated {
-                        let config = HackleWebViewConfig.DEFAULT
+                        let controller = MockUserContentController()
+                        let configuration = WKWebViewConfiguration()
+                        configuration.userContentController = controller
+                        let targetWebView = WKWebView(frame: .zero, configuration: configuration)
+                        let previousInvocator = RecordingInvocator()
+                        let currentInvocator = RecordingInvocator()
 
-                        webView.prepareForHackleJavascriptBridge(
-                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        targetWebView.prepareForHackleJavascriptBridge(
+                            invocator: previousInvocator, sdkKey: "key1", mode: .native, webViewConfig: .DEFAULT
                         )
-                        webView.detachHackleScriptMessageHandler()
-                        webView.prepareForHackleJavascriptBridge(
-                            invocator: invocator, sdkKey: "test-sdk-key", mode: .native, webViewConfig: config
+                        targetWebView.prepareForHackleJavascriptBridge(
+                            invocator: currentInvocator, sdkKey: "key2", mode: .native, webViewConfig: .DEFAULT
                         )
+                        controller.send(MockScriptMessage(body: trackBody, webView: targetWebView))
 
-                        expect(webView.uiDelegate).toNot(beNil())
+                        expect(previousInvocator.invokedStrings).to(beEmpty())
+                        expect(currentInvocator.invokedStrings) == [trackBody]
+                        expect(controller.addedHandlerNames) == [HackleScriptMessageHandler.name]
+                        expect(controller.removedHandlerNames).to(beEmpty())
                     }
                 }
             }
         }
+    }
+}
+
+private final class RecordingInvocator: NSObject, HackleInvocator {
+    var invokedStrings: [String] = []
+
+    func isInvocableString(string: String) -> Bool {
+        true
+    }
+
+    func invoke(string: String) -> String {
+        invokedStrings.append(string)
+        return #"{"success":true,"message":"OK"}"#
+    }
+
+    func invoke(string: String, completionHandler: (String?) -> Void) {
+        let response = invoke(string: string)
+        completionHandler(response)
+    }
+
+    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
+        let response = invoke(string: string)
+        completionHandler(response)
     }
 }

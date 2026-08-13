@@ -128,30 +128,69 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             }
         }
 
-        describe("WeakScriptMessageHandler") {
+        describe("HackleScriptMessageRouter") {
 
-            it("핸들러를 강하게 참조하지 않는다") {
+            it("message.webView에 등록된 handler로만 전달한다") {
                 MainActor.assumeIsolated {
-                    var handler: HackleScriptMessageHandler? = HackleScriptMessageHandler(invocator: invocator)
-                    weak var weakHandler = handler
-                    let proxy = WeakScriptMessageHandler(handler!)
+                    let firstInvocator = MockInvocator()
+                    let secondInvocator = MockInvocator()
+                    let firstWebView = MockWebView()
+                    let secondWebView = MockWebView()
+                    let firstHandler = HackleScriptMessageHandler(invocator: firstInvocator)
+                    let secondHandler = HackleScriptMessageHandler(invocator: secondInvocator)
+                    let sut = HackleScriptMessageRouter()
 
-                    handler = nil
+                    sut.register(webView: firstWebView, handler: firstHandler)
+                    sut.register(webView: secondWebView, handler: secondHandler)
+                    sut.userContentController(
+                        WKUserContentController(),
+                        didReceive: MockScriptMessage(body: trackBody, webView: firstWebView)
+                    )
 
-                    expect(weakHandler).to(beNil())
-                    _ = proxy
+                    expect(firstInvocator.invokedStrings) == [trackBody]
+                    expect(secondInvocator.invokedStrings).to(beEmpty())
                 }
             }
 
-            it("핸들러가 살아있으면 메시지를 전달한다") {
+            it("동일 WebView의 handler를 최신 등록으로 교체한다") {
                 MainActor.assumeIsolated {
-                    let handler = HackleScriptMessageHandler(invocator: invocator)
-                    let proxy = WeakScriptMessageHandler(handler)
-                    let message = MockScriptMessage(body: trackBody, webView: webView)
+                    let previousInvocator = MockInvocator()
+                    let currentInvocator = MockInvocator()
+                    let targetWebView = MockWebView()
+                    let sut = HackleScriptMessageRouter()
 
-                    proxy.userContentController(WKUserContentController(), didReceive: message)
+                    sut.register(
+                        webView: targetWebView,
+                        handler: HackleScriptMessageHandler(invocator: previousInvocator)
+                    )
+                    let currentHandler = HackleScriptMessageHandler(invocator: currentInvocator)
+                    sut.register(webView: targetWebView, handler: currentHandler)
+                    sut.userContentController(
+                        WKUserContentController(),
+                        didReceive: MockScriptMessage(body: trackBody, webView: targetWebView)
+                    )
 
-                    expect(invocator.invokedStrings) == [trackBody]
+                    expect(previousInvocator.invokedStrings).to(beEmpty())
+                    expect(currentInvocator.invokedStrings) == [trackBody]
+                }
+            }
+
+            it("handler가 해제되면 해당 WebView의 메시지를 무시한다") {
+                MainActor.assumeIsolated {
+                    let sut = HackleScriptMessageRouter()
+                    let targetWebView = MockWebView()
+                    let weakHandler = registerTemporaryHandler(
+                        on: sut,
+                        webView: targetWebView,
+                        invocator: invocator
+                    )
+
+                    expect(weakHandler.value).to(beNil())
+                    sut.userContentController(
+                        WKUserContentController(),
+                        didReceive: MockScriptMessage(body: trackBody, webView: targetWebView)
+                    )
+                    expect(invocator.invokedStrings).to(beEmpty())
                 }
             }
         }
@@ -159,6 +198,28 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 }
 
 // MARK: - Test Doubles
+
+@MainActor
+private func registerTemporaryHandler(
+    on router: HackleScriptMessageRouter,
+    webView: WKWebView,
+    invocator: HackleInvocator
+) -> WeakReference<HackleScriptMessageHandler> {
+    return autoreleasepool {
+        let handler = HackleScriptMessageHandler(invocator: invocator)
+        let weakHandler = WeakReference(handler)
+        router.register(webView: webView, handler: handler)
+        return weakHandler
+    }
+}
+
+private final class WeakReference<T: AnyObject> {
+    weak var value: T?
+
+    init(_ value: T) {
+        self.value = value
+    }
+}
 
 private class MockInvocator: NSObject, HackleInvocator {
     var invocable = true

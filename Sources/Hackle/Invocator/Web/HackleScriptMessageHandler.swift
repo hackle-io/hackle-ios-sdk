@@ -47,18 +47,31 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
-/// `WKUserContentController` strongly retains message handlers.
-/// The actual handler is owned by the WebView, so it is registered through this weak proxy.
+/// Routes messages from a shared user content controller to the handler for the originating WebView.
 @MainActor
-final class WeakScriptMessageHandler: NSObject, WKScriptMessageHandler {
+final class HackleScriptMessageRouter: NSObject, WKScriptMessageHandler {
+    private var handlers: [ObjectIdentifier: WeakHandler] = [:]
 
-    private weak var handler: (any WKScriptMessageHandler)?
-
-    init(_ handler: any WKScriptMessageHandler) {
-        self.handler = handler
+    func register(webView: WKWebView, handler: HackleScriptMessageHandler) {
+        handlers = handlers.filter { $0.value.handler != nil }
+        handlers[ObjectIdentifier(webView)] = WeakHandler(handler)
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        handler?.userContentController(userContentController, didReceive: message)
+        handlers = handlers.filter { $0.value.handler != nil }
+        guard let webView = message.webView,
+              let handler = handlers[ObjectIdentifier(webView)]?.handler
+        else {
+            return
+        }
+        handler.userContentController(userContentController, didReceive: message)
+    }
+
+    private final class WeakHandler {
+        weak var handler: HackleScriptMessageHandler?
+
+        init(_ handler: HackleScriptMessageHandler) {
+            self.handler = handler
+        }
     }
 }

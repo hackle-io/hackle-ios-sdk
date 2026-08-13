@@ -45,3 +45,24 @@ class MockWebView: WKWebView {
         evaluatedScripts.append(javaScriptString)
     }
 }
+
+@MainActor
+class MockUserContentController: WKUserContentController {
+    var addedHandlerNames: [String] = []
+    var removedHandlerNames: [String] = []
+    private var handlers: [String: any WKScriptMessageHandler] = [:]
+
+    override func add(_ scriptMessageHandler: any WKScriptMessageHandler, name: String) {
+        addedHandlerNames.append(name)
+        handlers[name] = scriptMessageHandler
+    }
+
+    override func removeScriptMessageHandler(forName name: String) {
+        removedHandlerNames.append(name)
+        handlers[name] = nil
+    }
+
+    func send(_ message: WKScriptMessage, name: String = "hackle") {
+        handlers[name]?.userContentController(self, didReceive: message)
+    }
+}
