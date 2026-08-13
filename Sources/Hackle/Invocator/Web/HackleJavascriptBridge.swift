@@ -86,18 +86,18 @@ extension HackleJavascriptBridge {
 
         // 3. Set up postMessage() interception for invoke
         webView._messageHandler = HackleScriptMessageHandler(invocator: invocator)
-        webView.configuration.userContentController.installHackleScriptMessageRouter()
+        webView.configuration.userContentController.installHackleScriptMessageDispatcher()
     }
 }
 
 private extension WKUserContentController {
-    /// Installs the router that forwards messages to the handler of each WebView.
+    /// Installs the dispatcher that forwards messages to the handler of each WebView.
     /// `WKUserContentController` raises when the same name is registered twice, so the previous registration
-    /// is removed first. The router is stateless, so reinstalling it keeps sibling WebViews working.
+    /// is removed first. The dispatcher is stateless, so reinstalling it keeps sibling WebViews working.
     @MainActor
-    func installHackleScriptMessageRouter() {
+    func installHackleScriptMessageDispatcher() {
         removeScriptMessageHandler(forName: HackleScriptMessageHandler.name)
-        add(HackleScriptMessageRouter(), name: HackleScriptMessageHandler.name)
+        add(HackleScriptMessageDispatcher(), name: HackleScriptMessageHandler.name)
     }
 }
 
@@ -165,7 +165,7 @@ private extension WKWebView {
 }
 
 extension WKWebView {
-    /// The WebView owns its message handler; ``HackleScriptMessageRouter`` looks it up to route messages.
+    /// The WebView owns its message handler; ``HackleScriptMessageDispatcher`` looks it up to dispatch messages.
     var _messageHandler: HackleScriptMessageHandler? {
         get {
             objc_getAssociatedObject(

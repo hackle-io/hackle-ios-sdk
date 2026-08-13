@@ -189,7 +189,7 @@ class HackleWebBridgeSpecs: QuickSpec {
                     }
                 }
 
-                it("should route each message to its WebView invocator when userContentController is shared") {
+                it("should dispatch each message to its WebView invocator when userContentController is shared") {
                     MainActor.assumeIsolated {
                         let controller = MockUserContentController()
                         let configuration = WKWebViewConfiguration()

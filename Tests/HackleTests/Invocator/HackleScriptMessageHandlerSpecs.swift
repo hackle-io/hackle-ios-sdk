@@ -128,7 +128,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             }
         }
 
-        describe("HackleScriptMessageRouter") {
+        describe("HackleScriptMessageDispatcher") {
 
             it("message.webView의 handler로만 전달한다") {
                 MainActor.assumeIsolated {
@@ -138,7 +138,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let secondWebView = MockWebView()
                     firstWebView._messageHandler = HackleScriptMessageHandler(invocator: firstInvocator)
                     secondWebView._messageHandler = HackleScriptMessageHandler(invocator: secondInvocator)
-                    let sut = HackleScriptMessageRouter()
+                    let sut = HackleScriptMessageDispatcher()
 
                     sut.userContentController(
                         WKUserContentController(),
@@ -155,7 +155,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let previousInvocator = MockInvocator()
                     let currentInvocator = MockInvocator()
                     let targetWebView = MockWebView()
-                    let sut = HackleScriptMessageRouter()
+                    let sut = HackleScriptMessageDispatcher()
 
                     targetWebView._messageHandler = HackleScriptMessageHandler(invocator: previousInvocator)
                     targetWebView._messageHandler = HackleScriptMessageHandler(invocator: currentInvocator)
@@ -171,7 +171,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
             it("handler가 없는 WebView의 메시지는 무시한다") {
                 MainActor.assumeIsolated {
-                    let sut = HackleScriptMessageRouter()
+                    let sut = HackleScriptMessageDispatcher()
 
                     sut.userContentController(
                         WKUserContentController(),

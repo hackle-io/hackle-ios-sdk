@@ -48,10 +48,10 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
-/// Routes messages from a shared user content controller to the handler of the originating WebView.
-/// Each WebView owns its handler, so a single stateless router serves every WebView on the controller.
+/// Dispatches messages from a shared user content controller to the handler of the originating WebView.
+/// Each WebView owns its handler, so a single stateless dispatcher serves every WebView on the controller.
 @MainActor
-final class HackleScriptMessageRouter: NSObject, WKScriptMessageHandler {
+final class HackleScriptMessageDispatcher: NSObject, WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let handler = message.webView?._messageHandler else {
             Log.debug("Bridge is not applied to the WebView that sent the message.")
