@@ -1,10 +1,11 @@
 import Foundation
 import WebKit
 
-/// Receives `postMessage` invocations from the web SDK (user mutation · track · commands).
+/// Receives `postMessage` invocations from the web SDK (user mutation · track · commands),
+/// dispatched by ``HackleScriptMessageDispatcher``.
 /// Synchronous queries stay on the prompt path (``HackleUIDelegate``).
 @MainActor
-class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
+class HackleScriptMessageHandler: NSObject {
 
     /// `window.webkit.messageHandlers.hackle`
     static let name = "hackle"
@@ -15,7 +16,7 @@ class HackleScriptMessageHandler: NSObject, WKScriptMessageHandler {
         self.invocator = invocator
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    func didReceive(_ message: WKScriptMessage) {
         guard message.frameInfo.isMainFrame, let body = message.body as? String else {
             return
         }
@@ -57,6 +58,6 @@ final class HackleScriptMessageDispatcher: NSObject, WKScriptMessageHandler {
             Log.debug("Bridge is not applied to the WebView that sent the message.")
             return
         }
-        handler.userContentController(userContentController, didReceive: message)
+        handler.didReceive(message)
     }
 }

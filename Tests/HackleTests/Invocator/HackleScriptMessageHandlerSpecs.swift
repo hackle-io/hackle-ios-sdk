@@ -20,14 +20,14 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             }
         }
 
-        describe("userContentController(_:didReceive:)") {
+        describe("didReceive(_:)") {
 
             it("메인 프레임이 아닌 메시지는 무시한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
                     let message = MockScriptMessage(body: mutationBody, frameInfo: MockFrameInfo.subFrame, webView: webView)
 
-                    sut.userContentController(WKUserContentController(), didReceive: message)
+                    sut.didReceive(message)
 
                     expect(invocator.invokedStrings).to(beEmpty())
                 }
@@ -38,7 +38,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
                     let message = MockScriptMessage(body: ["_hackle": ["command": "setUser"]], webView: webView)
 
-                    sut.userContentController(WKUserContentController(), didReceive: message)
+                    sut.didReceive(message)
 
                     expect(invocator.invokedStrings).to(beEmpty())
                 }
@@ -49,7 +49,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
                     let message = MockScriptMessage(body: trackBody, webView: webView)
 
-                    sut.userContentController(WKUserContentController(), didReceive: message)
+                    sut.didReceive(message)
 
                     expect(invocator.invokedStrings) == [trackBody]
                 }
