@@ -34,7 +34,7 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
     ///   getInvocationType: function() { return 'prompt' },
-    ///   getBridgeCapabilities: function() { return '{"evaluation":["prompt"],"event":["prompt","message"]}' }
+    ///   getBridgeCapabilities: function() { return '{"sync":["prompt"],"async":["prompt","message"]}' }
     /// }
     /// ```
     final var source: String {
@@ -51,8 +51,8 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
             // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 값 공간은 동결이다.
             Property(name: "getInvocationType", value: "prompt"),
-            // 호출 축별 지원 채널. evaluation=동기 반환이 필요한 조회·getter, event=반환값이 불필요한 mutation·track·명령.
-            Property(name: "getBridgeCapabilities", value: #"{"evaluation":["prompt"],"event":["prompt","message"]}"#),
+            // 호출 축별 지원 채널. sync=동기 반환이 필요한 조회·getter, async=반환값이 불필요한 mutation·track·명령.
+            Property(name: "getBridgeCapabilities", value: #"{"sync":["prompt"],"async":["prompt","message"]}"#),
         ]
     }
 
@@ -72,8 +72,8 @@ class HackleJavascriptBridge: WebViewUserScript {
 
 extension HackleJavascriptBridge {
     /// Injects `window._hackleApp` script and sets up invoke handling.
-    /// - prompt: synchronous queries and getters (``HackleUIDelegate``)
-    /// - message: user mutation, track and commands (``HackleScriptMessageHandler``)
+    /// - prompt: sync invocations that need a return value (``HackleUIDelegate``)
+    /// - message: async invocations without a return value (``HackleScriptMessageHandler``)
     @MainActor
     func apply(to webView: WKWebView, uiDelegate: WKUIDelegate? = nil) {
         // 1. Inject bridge script
