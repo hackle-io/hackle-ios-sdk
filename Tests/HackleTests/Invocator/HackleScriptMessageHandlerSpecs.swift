@@ -7,7 +7,7 @@ import WebKit
 class HackleScriptMessageHandlerSpecs: QuickSpec {
     override class func spec() {
 
-        let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{}},\"requestId\":\"req-1\"}"
+        let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{},\"requestId\":\"req-1\"}}"
         let trackBody = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}}}"
 
         var invocator: MockInvocator!

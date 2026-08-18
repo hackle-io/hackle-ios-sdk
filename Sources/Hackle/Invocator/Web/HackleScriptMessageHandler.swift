@@ -29,8 +29,10 @@ class HackleScriptMessageHandler: NSObject {
         }
         Metrics.counter(name: "webview.bridge.message").increment()
 
-        // requestId가 있는 요청(user mutation)만 완료 시그널을 회신한다.
-        guard let requestId = body.jsonObject()?["requestId"] as? String else {
+        // requestId가 있는 요청(user mutation)만 완료 시그널을 회신한다. requestId는 `_hackle` 안에 실린다.
+        guard let invocation = body.jsonObject()?["_hackle"] as? [String: Any],
+              let requestId = invocation["requestId"] as? String
+        else {
             _ = invocator.invoke(string: body)
             return
         }
