@@ -44,6 +44,19 @@ extension InvocationRequest {
 
         return !command.isEmpty
     }
+
+    static func requestId(string: String) -> String? {
+        guard let invocation = string.jsonObject()?["_hackle"] as? [String: Any],
+              let requestId = invocation["requestId"]
+        else {
+            return nil
+        }
+        guard let requestId = requestId as? String else {
+            Log.debug("requestId must be a string. [requestId=\(requestId)]")
+            return nil
+        }
+        return requestId
+    }
 }
 
 extension InvocationRequest: CustomStringConvertible {

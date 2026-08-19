@@ -3,7 +3,7 @@ import WebKit
 
 /// Sets up `window._hackleApp` on a WKWebView.
 /// - injects the bridge script
-/// - sets up HackleUIDelegate for invoke handling.
+/// - sets up HackleUIDelegate and HackleScriptMessageHandler for invoke handling.
 class HackleJavascriptBridge: WebViewUserScript {
     private let invocator: HackleInvocator
     private let sdkKey: String
@@ -33,8 +33,8 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppSdkKey: function() { return '{{SDK_KEY}}' },
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
-    ///   getInvocationType: function() { return 'prompt' },
-    ///   getBridgeCapabilities: function() { return '{"sync":["prompt"],"async":["prompt","message"]}' }
+    ///   getInvocationType: function() { return 'prompt' },                    // legacy
+    ///   getBridgeCapabilities: function() { return '["prompt","message"]' }   // bridge spec
     /// }
     /// ```
     final var source: String {
@@ -49,10 +49,8 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getAppSdkKey", value: sdkKey),
             Property(name: "getAppMode", value: mode.description),
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
-            // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 값 공간은 동결이다.
             Property(name: "getInvocationType", value: "prompt"),
-            // 호출 축별 지원 채널. sync=동기 반환이 필요한 조회·getter, async=반환값이 불필요한 mutation·track·명령.
-            Property(name: "getBridgeCapabilities", value: #"{"sync":["prompt"],"async":["prompt","message"]}"#),
+            Property(name: "getBridgeCapabilities", value: #"["prompt","message"]"#),
         ]
     }
 

@@ -34,7 +34,11 @@ extension InvocationResponse {
             "data": data as Any?
         ]
         let sanitized = dict.compactMapValues { $0 }
-        return sanitized.toJson() ?? errorJson(message: "Error occurs while parsing response.")
+        guard let json = sanitized.toJson() else {
+            Log.error("Failed to serialize invocation response. [data: \(type(of: data))]")
+            return errorJson(message: "Error occurs while parsing response.")
+        }
+        return json
     }
 
     private func errorJson(message: String) -> String {

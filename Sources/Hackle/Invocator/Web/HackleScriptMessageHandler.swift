@@ -17,7 +17,7 @@ class HackleScriptMessageHandler: NSObject {
     }
 
     func didReceive(_ message: WKScriptMessage) {
-        guard message.frameInfo.isMainFrame, let body = message.body as? String else {
+        guard let body = message.body as? String else {
             return
         }
         handle(body: body, webView: message.webView)
@@ -30,7 +30,7 @@ class HackleScriptMessageHandler: NSObject {
         Metrics.counter(name: "webview.bridge.message").increment()
 
         // requestId가 있는 요청(user mutation)만 완료 시그널을 회신한다.
-        guard let requestId = body.jsonObject()?["requestId"] as? String else {
+        guard let requestId = InvocationRequest.requestId(string: body) else {
             _ = invocator.invoke(string: body)
             return
         }

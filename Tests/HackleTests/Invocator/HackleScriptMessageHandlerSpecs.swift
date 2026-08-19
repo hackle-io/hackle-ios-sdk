@@ -7,7 +7,7 @@ import WebKit
 class HackleScriptMessageHandlerSpecs: QuickSpec {
     override class func spec() {
 
-        let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{}},\"requestId\":\"req-1\"}"
+        let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{},\"requestId\":\"req-1\"}}"
         let trackBody = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}}}"
 
         var invocator: MockInvocator!
@@ -22,14 +22,14 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
         describe("didReceive(_:)") {
 
-            it("메인 프레임이 아닌 메시지는 무시한다") {
+            it("메인 프레임이 아닌 메시지도 처리한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
-                    let message = MockScriptMessage(body: mutationBody, frameInfo: MockFrameInfo.subFrame, webView: webView)
+                    let message = MockScriptMessage(body: trackBody, frameInfo: MockFrameInfo.subFrame, webView: webView)
 
                     sut.didReceive(message)
 
-                    expect(invocator.invokedStrings).to(beEmpty())
+                    expect(invocator.invokedStrings) == [trackBody]
                 }
             }
 

@@ -31,11 +31,3 @@ class InAppMessageViewJavascriptBridge: HackleJavascriptBridge {
         .automaticEngagementTracking(false)
         .build()
 }
-
-private extension String {
-    func escapedForJsSingleQuotedLiteral() -> String {
-        self
-            .replacingOccurrences(of: #"\"#, with: #"\\"#)
-            .replacingOccurrences(of: "'", with: #"\'"#)
-    }
-}

@@ -15,4 +15,10 @@ extension String {
             .replacingOccurrences(of: "\u{2028}", with: #"\u2028"#)
             .replacingOccurrences(of: "\u{2029}", with: #"\u2029"#)
     }
+
+    func escapedForJsSingleQuotedLiteral() -> String {
+        self
+            .replacingOccurrences(of: #"\"#, with: #"\\"#)
+            .replacingOccurrences(of: "'", with: #"\'"#)
+    }
 }
