@@ -28,6 +28,10 @@ class WebViewBridgeContractSpecs: QuickSpec {
             }
         }
 
+        it("message 채널 핸들러 이름은 hackle로 고정이다") {
+            expect(HackleScriptMessageHandler.name) == "hackle"
+        }
+
         it("requestId가 붙어도 기존 invocator가 그대로 파싱한다") {
             expect(invocator.isInvocableString(string: mutationInvoke)) == true
             expect(invocator.isInvocableString(string: trackInvoke)) == true

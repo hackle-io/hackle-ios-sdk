@@ -3,7 +3,7 @@ import WebKit
 
 /// Sets up `window._hackleApp` on a WKWebView.
 /// - injects the bridge script
-/// - sets up HackleUIDelegate for invoke handling.
+/// - sets up HackleUIDelegate and HackleScriptMessageHandler for invoke handling.
 class HackleJavascriptBridge: WebViewUserScript {
     private let invocator: HackleInvocator
     private let sdkKey: String
