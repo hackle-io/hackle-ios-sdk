@@ -17,7 +17,7 @@ class HackleScriptMessageHandler: NSObject {
     }
 
     func didReceive(_ message: WKScriptMessage) {
-        guard message.frameInfo.isMainFrame, let body = message.body as? String else {
+        guard let body = message.body as? String else {
             return
         }
         handle(body: body, webView: message.webView)
