@@ -27,7 +27,6 @@ class HackleScriptMessageHandler: NSObject {
         guard invocator.isInvocableString(string: body) else {
             return
         }
-        Metrics.counter(name: "webview.bridge.message").increment()
 
         // requestId가 있는 요청(user mutation)만 완료 시그널을 회신한다.
         guard let requestId = InvocationRequest.requestId(string: body) else {

@@ -105,19 +105,6 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     expect(invocator.asyncInvokedStrings) == [mutationBody]
                 }
             }
-
-            it("message 채널 사용 카운터를 증가시킨다") {
-                MainActor.assumeIsolated {
-                    Metrics.clear()
-                    let registry = CumulativeMetricRegistry()
-                    Metrics.addRegistry(registry: registry)
-                    let sut = HackleScriptMessageHandler(invocator: invocator)
-
-                    sut.handle(body: trackBody, webView: webView)
-
-                    expect(registry.counter(name: "webview.bridge.message").count()) == 1
-                }
-            }
         }
 
         describe("resolveScript") {
