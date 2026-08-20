@@ -34,7 +34,8 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
     ///   getInvocationType: function() { return 'prompt' },                    // legacy
-    ///   getBridgeCapabilities: function() { return '["prompt","message"]' }   // bridge spec
+    ///   getBridgeCapabilities: function() { return '["prompt","message"]' },  // bridge spec
+    ///   postMessage: function(message) { ... }                                // message channel
     /// }
     /// ```
     final var source: String {
@@ -51,6 +52,11 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
             Property(name: "getInvocationType", value: "prompt"),
             Property(name: "getBridgeCapabilities", value: #"["prompt","message"]"#),
+            Property(
+                name: "postMessage",
+                parameter: "message",
+                body: "window.webkit.messageHandlers.\(HackleScriptMessageHandler.name).postMessage(message)"
+            ),
         ]
     }
 
@@ -59,11 +65,16 @@ class HackleJavascriptBridge: WebViewUserScript {
     }
 
     struct Property {
-        let name: String
-        let value: String
+        let source: String
 
-        var source: String {
-            return "\(name): function() { return '\(value)' }"
+        /// `name: function() { return 'value' }`
+        init(name: String, value: String) {
+            self.source = "\(name): function() { return '\(value)' }"
+        }
+
+        /// `name: function(parameter) { body }`
+        init(name: String, parameter: String, body: String) {
+            self.source = "\(name): function(\(parameter)) { \(body) }"
         }
     }
 }

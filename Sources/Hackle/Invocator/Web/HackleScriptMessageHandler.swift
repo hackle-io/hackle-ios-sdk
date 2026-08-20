@@ -8,7 +8,7 @@ import WebKit
 class HackleScriptMessageHandler: NSObject {
 
     /// `window.webkit.messageHandlers.hackle`
-    static let name = "hackle"
+    nonisolated static let name = "hackle"
 
     private let invocator: HackleInvocator
 

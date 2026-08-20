@@ -189,6 +189,22 @@ class HackleWebBridgeSpecs: QuickSpec {
                     }
                 }
 
+                it("should expose postMessage that forwards to the hackle message handler") {
+                    MainActor.assumeIsolated {
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: HackleWebViewConfig.DEFAULT
+                        )
+
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let hackleScript = scripts.first { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }
+
+                        expect(hackleScript?.source).to(contain("postMessage: function(message) { window.webkit.messageHandlers.hackle.postMessage(message) }"))
+                    }
+                }
+
                 it("should dispatch each message to its WebView invocator when userContentController is shared") {
                     MainActor.assumeIsolated {
                         let controller = MockUserContentController()
