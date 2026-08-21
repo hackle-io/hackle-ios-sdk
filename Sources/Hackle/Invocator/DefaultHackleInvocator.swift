@@ -38,6 +38,7 @@ class DefaultHackleInvocator: NSObject, HackleInvocator {
             let request = try InvocationRequest.parse(string: string)
             return processor.process(request: request)
         } catch {
+            Log.error("Failed to parse Invocation: \(String(describing: error))")
             return InvocationResponse<Any>.error(error: error)
         }
     }
