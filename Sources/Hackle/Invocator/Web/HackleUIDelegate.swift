@@ -12,7 +12,61 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         self.uiDelegate = uiDelegate
     }
 
-    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable (String?) -> Void) {
+    func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        guard let delegateCreateWebView = uiDelegate?.webView(
+            _:createWebViewWith:for:windowFeatures:
+        ) else {
+            return nil
+        }
+        return delegateCreateWebView(webView, configuration, navigationAction, windowFeatures)
+    }
+
+    func webViewDidClose(_ webView: WKWebView) {
+        uiDelegate?.webViewDidClose?(webView)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        runJavaScriptAlertPanelWithMessage message: String,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping @MainActor @Sendable () -> Void
+    ) {
+        guard let delegateAlert = uiDelegate?.webView(
+            _:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:
+        ) else {
+            completionHandler()
+            return
+        }
+        delegateAlert(webView, message, frame, completionHandler)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        runJavaScriptConfirmPanelWithMessage message: String,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping @MainActor @Sendable (Bool) -> Void
+    ) {
+        guard let delegateConfirm = uiDelegate?.webView(
+            _:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:
+        ) else {
+            completionHandler(false)
+            return
+        }
+        delegateConfirm(webView, message, frame, completionHandler)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        runJavaScriptTextInputPanelWithPrompt prompt: String,
+        defaultText: String?,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping @MainActor @Sendable (String?) -> Void
+    ) {
         let processable = invocator.isInvocableString(string: prompt)
         if (processable) {
             let result = invocator.invoke(string: prompt)
