@@ -28,23 +28,23 @@ class HackleScriptMessageHandler: NSObject {
             return
         }
 
-        // requestId가 있는 요청(user mutation)만 완료 시그널을 회신한다.
-        guard let requestId = InvocationRequest.requestId(string: body) else {
+        // messageId가 있는 요청만 완료 시그널을 회신한다.
+        guard let messageId = InvocationRequest.messageId(string: body) else {
             _ = invocator.invoke(string: body)
             return
         }
 
         invocator.invokeAsync(string: body) { [weak webView] response in
             guard let webView = webView, let response = response else {
-                Log.debug("Skipped bridge resolve. [requestId=\(requestId), webViewReleased=\(webView == nil)]")
+                Log.debug("Skipped bridge resolve. [messageId=\(messageId), webViewReleased=\(webView == nil)]")
                 return
             }
-            webView.evaluateJavaScript(Self.resolveScript(requestId: requestId, response: response))
+            webView.evaluateJavaScript(Self.resolveScript(messageId: messageId, response: response))
         }
     }
 
-    static func resolveScript(requestId: String, response: String) -> String {
-        return "window._hackleBridge && window._hackleBridge.resolve(\(requestId.javascriptStringLiteral()), \(response.javascriptStringLiteral()))"
+    static func resolveScript(messageId: String, response: String) -> String {
+        return "window._hackleBridge && window._hackleBridge.resolveMessage(\(messageId.javascriptStringLiteral()), \(response.javascriptStringLiteral()))"
     }
 }
 

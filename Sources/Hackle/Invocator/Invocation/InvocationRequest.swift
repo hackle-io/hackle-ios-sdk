@@ -45,17 +45,17 @@ extension InvocationRequest {
         return !command.isEmpty
     }
 
-    static func requestId(string: String) -> String? {
+    static func messageId(string: String) -> String? {
         guard let invocation = string.jsonObject()?["_hackle"] as? [String: Any],
-              let requestId = invocation["requestId"]
+              let messageId = invocation["messageId"]
         else {
             return nil
         }
-        guard let requestId = requestId as? String else {
-            Log.debug("requestId must be a string. [requestId=\(requestId)]")
+        guard let messageId = messageId as? String else {
+            Log.debug("messageId must be a string. [messageId=\(messageId)]")
             return nil
         }
-        return requestId
+        return messageId
     }
 }
 

@@ -7,7 +7,7 @@ import WebKit
 class HackleScriptMessageHandlerSpecs: QuickSpec {
     override class func spec() {
 
-        let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{},\"requestId\":\"req-1\"}}"
+        let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{},\"messageId\":\"req-1\"}}"
         let trackBody = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}}}"
 
         var invocator: MockInvocator!
@@ -70,7 +70,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                 }
             }
 
-            it("requestId가 없으면 invoke만 하고 resolve하지 않는다") {
+            it("messageId가 없으면 invoke만 하고 resolve하지 않는다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
 
@@ -82,7 +82,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                 }
             }
 
-            it("requestId가 있으면 completion 시점에 resolve를 발송한다") {
+            it("messageId가 있으면 completion 시점에 resolve를 발송한다") {
                 MainActor.assumeIsolated {
                     invocator.invokeResult = "{\"success\":true,\"message\":\"OK\"}"
                     let sut = HackleScriptMessageHandler(invocator: invocator)
@@ -92,7 +92,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                     expect(invocator.asyncInvokedStrings) == [mutationBody]
                     expect(webView.evaluatedScripts.count) == 1
                     expect(webView.evaluatedScripts.first)
-                        == "window._hackleBridge && window._hackleBridge.resolve(\"req-1\", \"{\\\"success\\\":true,\\\"message\\\":\\\"OK\\\"}\")"
+                        == "window._hackleBridge && window._hackleBridge.resolveMessage(\"req-1\", \"{\\\"success\\\":true,\\\"message\\\":\\\"OK\\\"}\")"
                 }
             }
 
@@ -109,9 +109,9 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
         describe("resolveScript") {
 
-            it("requestId와 response를 이스케이프해 담는다") {
-                expect(HackleScriptMessageHandler.resolveScript(requestId: "req-1", response: "{\"success\":true}"))
-                    == "window._hackleBridge && window._hackleBridge.resolve(\"req-1\", \"{\\\"success\\\":true}\")"
+            it("messageId와 response를 이스케이프해 담는다") {
+                expect(HackleScriptMessageHandler.resolveScript(messageId: "req-1", response: "{\"success\":true}"))
+                    == "window._hackleBridge && window._hackleBridge.resolveMessage(\"req-1\", \"{\\\"success\\\":true}\")"
             }
         }
 

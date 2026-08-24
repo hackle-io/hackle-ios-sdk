@@ -185,7 +185,7 @@ class HackleWebBridgeSpecs: QuickSpec {
 
                         // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 이 값은 동결이다.
                         expect(hackleScript?.source).to(contain("getInvocationType: function() { return 'prompt' }"))
-                        expect(hackleScript?.source).to(contain(#"getBridgeCapabilities: function() { return '["prompt","message"]' }"#))
+                        expect(hackleScript?.source).to(contain(#"getSupportedInvocationTypes: function() { return '["prompt","message"]' }"#))
                     }
                 }
 

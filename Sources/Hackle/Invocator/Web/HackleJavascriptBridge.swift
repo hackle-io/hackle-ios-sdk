@@ -33,9 +33,9 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppSdkKey: function() { return '{{SDK_KEY}}' },
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
-    ///   getInvocationType: function() { return 'prompt' },                    // legacy
-    ///   getBridgeCapabilities: function() { return '["prompt","message"]' },  // bridge spec
-    ///   postMessage: function(message) { ... }                                // message channel
+    ///   getInvocationType: function() { return 'prompt' },                          // legacy
+    ///   getSupportedInvocationTypes: function() { return '["prompt","message"]' },  // bridge spec
+    ///   postMessage: function(message) { ... }                                      // message channel
     /// }
     /// ```
     final var source: String {
@@ -51,7 +51,7 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getAppMode", value: mode.description),
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
             Property(name: "getInvocationType", value: "prompt"),
-            Property(name: "getBridgeCapabilities", value: #"["prompt","message"]"#),
+            Property(name: "getSupportedInvocationTypes", value: #"["prompt","message"]"#),
             Property(
                 name: "postMessage",
                 parameter: "message",
