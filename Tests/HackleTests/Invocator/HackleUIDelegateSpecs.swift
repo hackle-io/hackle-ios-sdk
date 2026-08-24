@@ -331,7 +331,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                         result = $0
                     }
 
-                    expect(mockInvocator.invokedString) == "hackle-prompt"
+                    expect(mockInvocator.invokedStrings) == ["hackle-prompt"]
                     expect(mockUIDelegate.promptCallCount) == 0
                     expect(completionCallCount) == 1
                     expect(result) == "hackle-result"
@@ -344,6 +344,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     let frame = fakeObject(WKFrameInfo.self)
                     let mockUIDelegate = MockWKUIDelegate()
                     mockUIDelegate.promptResult = "delegate-result"
+                    mockInvocator.invocable = false
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
                     var completionCallCount = 0
                     var result: String?
@@ -372,6 +373,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                 MainActor.assumeIsolated {
                     let webView = WKWebView()
                     var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    mockInvocator.invocable = false
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
                     mockUIDelegate = nil
                     var completionCallCount = 0
