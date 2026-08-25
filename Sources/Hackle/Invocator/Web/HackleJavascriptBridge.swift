@@ -3,7 +3,7 @@ import WebKit
 
 /// Sets up `window._hackleApp` on a WKWebView.
 /// - injects the bridge script
-/// - sets up HackleUIDelegate for invoke handling.
+/// - sets up HackleUIDelegate and HackleScriptMessageHandler for invoke handling.
 class HackleJavascriptBridge: WebViewUserScript {
     private let invocator: HackleInvocator
     private let sdkKey: String
@@ -33,7 +33,9 @@ class HackleJavascriptBridge: WebViewUserScript {
     ///   getAppSdkKey: function() { return '{{SDK_KEY}}' },
     ///   getAppMode: function() { return 'native' },
     ///   getWebViewConfig: function() { return '{...}' },
-    ///   getInvocationType: function() { return 'prompt' }
+    ///   getInvocationType: function() { return 'prompt' },                          // legacy
+    ///   getSupportedInvocationTypes: function() { return '["prompt","message"]' },  // bridge spec
+    ///   postMessage: function(message) { ... }                                      // message channel
     /// }
     /// ```
     final var source: String {
@@ -49,6 +51,12 @@ class HackleJavascriptBridge: WebViewUserScript {
             Property(name: "getAppMode", value: mode.description),
             Property(name: "getWebViewConfig", value: webViewConfig.toJsonString()),
             Property(name: "getInvocationType", value: "prompt"),
+            Property(name: "getSupportedInvocationTypes", value: #"["prompt","message"]"#),
+            Property(
+                name: "postMessage",
+                parameter: "message",
+                body: "window.webkit.messageHandlers.\(HackleScriptMessageHandler.name).postMessage(message)"
+            ),
         ]
     }
 
@@ -57,17 +65,24 @@ class HackleJavascriptBridge: WebViewUserScript {
     }
 
     struct Property {
-        let name: String
-        let value: String
+        let source: String
 
-        var source: String {
-            return "\(name): function() { return '\(value)' }"
+        /// `name: function() { return 'value' }`
+        init(name: String, value: String) {
+            self.source = "\(name): function() { return '\(value)' }"
+        }
+
+        /// `name: function(parameter) { body }`
+        init(name: String, parameter: String, body: String) {
+            self.source = "\(name): function(\(parameter)) { \(body) }"
         }
     }
 }
 
 extension HackleJavascriptBridge {
-    /// Injects `window._hackleApp` script and sets up HackleUIDelegate for invoke handling.
+    /// Injects `window._hackleApp` script and sets up invoke handling.
+    /// - prompt: sync invocations that need a return value (``HackleUIDelegate``)
+    /// - message: async invocations without a return value (``HackleScriptMessageHandler``)
     @MainActor
     func apply(to webView: WKWebView, uiDelegate: WKUIDelegate? = nil) {
         // 1. Inject bridge script
@@ -77,6 +92,21 @@ extension HackleJavascriptBridge {
         let originalDelegate = uiDelegate ?? webView.uiDelegate
         webView._uiDelegate = HackleUIDelegate(invocator: invocator, uiDelegate: originalDelegate)
         webView.uiDelegate = webView._uiDelegate
+
+        // 3. Set up postMessage() interception for invoke
+        webView._messageHandler = HackleScriptMessageHandler(invocator: invocator)
+        webView.configuration.userContentController.installHackleScriptMessageDispatcher()
+    }
+}
+
+private extension WKUserContentController {
+    /// Installs the dispatcher that forwards messages to the handler of each WebView.
+    /// `WKUserContentController` raises when the same name is registered twice, so the previous registration
+    /// is removed first. The dispatcher is stateless, so reinstalling it keeps sibling WebViews working.
+    @MainActor
+    func installHackleScriptMessageDispatcher() {
+        removeScriptMessageHandler(forName: HackleScriptMessageHandler.name)
+        add(HackleScriptMessageDispatcher(), name: HackleScriptMessageHandler.name)
     }
 }
 
@@ -118,6 +148,11 @@ private extension WKWebView {
             let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
             return UnsafeRawPointer(key)
         }()
+
+        static let _messageHandler: UnsafeRawPointer = {
+            let key = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
+            return UnsafeRawPointer(key)
+        }()
     }
 
     var _uiDelegate: HackleUIDelegate? {
@@ -131,6 +166,26 @@ private extension WKWebView {
             objc_setAssociatedObject(
                 self,
                 AssociatedKeys._uiDelegate,
+                newValue,
+                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+    }
+}
+
+extension WKWebView {
+    /// The WebView owns its message handler; ``HackleScriptMessageDispatcher`` looks it up to dispatch messages.
+    var _messageHandler: HackleScriptMessageHandler? {
+        get {
+            objc_getAssociatedObject(
+                self,
+                AssociatedKeys._messageHandler
+            ) as? HackleScriptMessageHandler
+        }
+        set {
+            objc_setAssociatedObject(
+                self,
+                AssociatedKeys._messageHandler,
                 newValue,
                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC
             )

@@ -13,6 +13,54 @@ class HackleUIDelegateSpecs: QuickSpec {
             mockInvocator = MockInvocator()
         }
 
+        describe("runJavaScriptTextInputPanelWithPrompt") {
+
+            it("invocable prompt는 동기로 invoke 결과를 반환한다") {
+                MainActor.assumeIsolated {
+                    let webView = WKWebView()
+                    mockInvocator.invocable = true
+                    mockInvocator.invokeResult = "{\"success\":true,\"data\":\"A\"}"
+                    let sut = HackleUIDelegate(invocator: mockInvocator)
+                    let json = "{\"_hackle\":{\"command\":\"variation\",\"parameters\":{\"experimentKey\":42}}}"
+
+                    let result = AtomicReference<String?>(value: nil)
+                    sut.webView(
+                        webView,
+                        runJavaScriptTextInputPanelWithPrompt: json,
+                        defaultText: nil,
+                        initiatedByFrame: MockFrameInfo.mainFrame
+                    ) { result.set(newValue: $0) }
+
+                    expect(mockInvocator.invokedStrings) == [json]
+                    expect(result.get()) == "{\"success\":true,\"data\":\"A\"}"
+                }
+            }
+
+            it("invocable하지 않은 prompt는 위임 delegate가 없으면 nil을 반환한다") {
+                MainActor.assumeIsolated {
+                    let webView = WKWebView()
+                    mockInvocator.invocable = false
+                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: nil)
+
+                    let called = AtomicReference(value: false)
+                    let result = AtomicReference<String?>(value: nil)
+                    sut.webView(
+                        webView,
+                        runJavaScriptTextInputPanelWithPrompt: "hello",
+                        defaultText: nil,
+                        initiatedByFrame: MockFrameInfo.mainFrame
+                    ) {
+                        called.set(newValue: true)
+                        result.set(newValue: $0)
+                    }
+
+                    expect(called.get()) == true
+                    expect(result.get()).to(beNil())
+                    expect(mockInvocator.invokedStrings).to(beEmpty())
+                }
+            }
+        }
+
         describe("responds(to:)") {
 
             it("should return true for selectors HackleUIDelegate responds to") {
@@ -283,7 +331,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                         result = $0
                     }
 
-                    expect(mockInvocator.invokedString) == "hackle-prompt"
+                    expect(mockInvocator.invokedStrings) == ["hackle-prompt"]
                     expect(mockUIDelegate.promptCallCount) == 0
                     expect(completionCallCount) == 1
                     expect(result) == "hackle-result"
@@ -296,6 +344,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     let frame = fakeObject(WKFrameInfo.self)
                     let mockUIDelegate = MockWKUIDelegate()
                     mockUIDelegate.promptResult = "delegate-result"
+                    mockInvocator.invocable = false
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
                     var completionCallCount = 0
                     var result: String?
@@ -324,6 +373,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                 MainActor.assumeIsolated {
                     let webView = WKWebView()
                     var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    mockInvocator.invocable = false
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
                     mockUIDelegate = nil
                     var completionCallCount = 0
@@ -396,26 +446,6 @@ class HackleUIDelegateSpecs: QuickSpec {
 }
 
 // MARK: - Test Doubles
-
-private class MockInvocator: NSObject, HackleInvocator {
-    var invocable = false
-    var invokeResult = ""
-    var invokedString: String?
-
-    func isInvocableString(string: String) -> Bool {
-        invocable
-    }
-
-    func invoke(string: String) -> String {
-        invokedString = string
-        return invokeResult
-    }
-
-    func invoke(string: String, completionHandler: (String?) -> Void) {
-        invokedString = string
-        completionHandler(invokeResult)
-    }
-}
 
 private class MockWKUIDelegate: NSObject, WKUIDelegate {
     var promptCallCount = 0

@@ -43,8 +43,7 @@ class SetUserInvocationHandler: InvocationHandler {
             throw HackleError.error("parameters.user must be provided.")
         }
         let user = User.from(dto: data)
-        core.setUser(user: user, hackleAppContext: request.appContext)
-        return .success()
+        return .success(task: core.setUser(user: user, hackleAppContext: request.appContext))
     }
 }
 
@@ -57,8 +56,7 @@ class ResetUserInvocationHandler: InvocationHandler {
     }
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
-        core.resetUser(hackleAppContext: request.appContext)
-        return .success()
+        return .success(task: core.resetUser(hackleAppContext: request.appContext))
     }
 }
 
@@ -76,8 +74,7 @@ class SetUserIdInvocationHandler: InvocationHandler {
         guard let userId = request.parameters.userId() else {
             throw HackleError.error("parameters.userId must be provided.")
         }
-        core.setUserId(userId: userId, hackleAppContext: request.appContext)
-        return .success()
+        return .success(task: core.setUserId(userId: userId, hackleAppContext: request.appContext))
     }
 }
 
@@ -93,8 +90,7 @@ class SetDeviceIdInvocationHandler: InvocationHandler {
         guard let deviceId = request.parameters.deviceId() else {
             throw HackleError.error("parameters.deviceId must be provided.")
         }
-        core.setDeviceId(deviceId: deviceId, hackleAppContext: request.appContext)
-        return .success()
+        return .success(task: core.setDeviceId(deviceId: deviceId, hackleAppContext: request.appContext))
     }
 }
 
@@ -119,8 +115,7 @@ class SetUserPropertyInvocationHandler: InvocationHandler {
             .set(key, value)
             .build()
 
-        core.updateUserProperties(operations: operations, hackleAppContext: request.appContext)
-        return .success()
+        return .success(task: core.updateUserProperties(operations: operations, hackleAppContext: request.appContext))
     }
 }
 
@@ -137,8 +132,7 @@ class UpdateUserPropertiesInvocationHandler: InvocationHandler {
             throw HackleError.error("parameters.operations must be provided.")
         }
         let operations = PropertyOperations.from(dto: dto)
-        core.updateUserProperties(operations: operations, hackleAppContext: request.appContext)
-        return .success()
+        return .success(task: core.updateUserProperties(operations: operations, hackleAppContext: request.appContext))
     }
 }
 
