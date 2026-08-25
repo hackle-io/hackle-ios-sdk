@@ -3,6 +3,7 @@
 xcuserdata
 /.swiftpm
 /.build
+/.worktrees
 /Packages
 /Release
 /.idea
