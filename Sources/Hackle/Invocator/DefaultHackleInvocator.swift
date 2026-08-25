@@ -16,13 +16,30 @@ class DefaultHackleInvocator: NSObject, HackleInvocator {
         completionHandler(result)
     }
 
+    func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void) {
+        let response = response(string: string)
+        let json = response.toJsonString()
+        guard let task = response.task else {
+            completionHandler(json)
+            return
+        }
+        let completion = UncheckedSendableBox(completionHandler)
+        task.onComplete(queue: .main) {
+            completion.value(json)
+        }
+    }
+
     func invoke(string: String) -> String {
+        return response(string: string).toJsonString()
+    }
+
+    private func response(string: String) -> InvocationResponse<Any> {
         do {
             let request = try InvocationRequest.parse(string: string)
-            let response = processor.process(request: request)
-            return response.toJsonString()
+            return processor.process(request: request)
         } catch {
-            return InvocationResponse<Any>.error(error: error).toJsonString()
+            Log.error("Failed to parse Invocation: \(String(describing: error))")
+            return InvocationResponse<Any>.error(error: error)
         }
     }
 }

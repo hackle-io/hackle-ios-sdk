@@ -13,6 +13,8 @@ import WebKit
 
 class HackleWebBridgeSpecs: QuickSpec {
     override class func spec() {
+        let trackBodyWithMessageId = #"{"_hackle":{"command":"track","parameters":{"event":"purchase"},"messageId":"req-1"}}"#
+
         describe("WKWebView+HackleJavascriptBridge") {
 
             var webView: WKWebView!
@@ -166,6 +168,88 @@ class HackleWebBridgeSpecs: QuickSpec {
                         // Hackle UserScript는 항상 1개만 존재해야 함
                         expect(hackleScriptCountAfterFirst) == 1
                         expect(hackleScriptCountAfterSecond) == 1
+                    }
+                }
+
+                it("should expose bridge capabilities without changing invocationType") {
+                    MainActor.assumeIsolated {
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: HackleWebViewConfig.DEFAULT
+                        )
+
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let hackleScript = scripts.first { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }
+
+                        // 구 js-sdk는 invocationType이 {prompt, function} 외면 throw한다. 이 값은 동결이다.
+                        expect(hackleScript?.source).to(contain("getInvocationType: function() { return 'prompt' }"))
+                        expect(hackleScript?.source).to(contain(#"getSupportedInvocationTypes: function() { return '["prompt","message"]' }"#))
+                    }
+                }
+
+                it("should expose postMessage that forwards to the hackle message handler") {
+                    MainActor.assumeIsolated {
+                        webView.prepareForHackleJavascriptBridge(
+                            invocator: invocator,
+                            sdkKey: "test-sdk-key",
+                            mode: .native,
+                            webViewConfig: HackleWebViewConfig.DEFAULT
+                        )
+
+                        let scripts = webView.configuration.userContentController.userScripts
+                        let hackleScript = scripts.first { $0.source.contains("/* Hackle:HackleJavascriptBridge */") }
+
+                        expect(hackleScript?.source).to(contain("postMessage: function(message) { window.webkit.messageHandlers.hackle.postMessage(message) }"))
+                    }
+                }
+
+                it("should dispatch each message to its WebView invocator when userContentController is shared") {
+                    MainActor.assumeIsolated {
+                        let controller = MockUserContentController()
+                        let configuration = WKWebViewConfiguration()
+                        configuration.userContentController = controller
+                        let firstWebView = WKWebView(frame: .zero, configuration: configuration)
+                        let secondWebView = WKWebView(frame: .zero, configuration: configuration)
+                        let firstInvocator = MockInvocator()
+                        let secondInvocator = MockInvocator()
+
+                        firstWebView.prepareForHackleJavascriptBridge(
+                            invocator: firstInvocator, sdkKey: "key1", mode: .native, webViewConfig: .DEFAULT
+                        )
+                        secondWebView.prepareForHackleJavascriptBridge(
+                            invocator: secondInvocator, sdkKey: "key2", mode: .native, webViewConfig: .DEFAULT
+                        )
+                        controller.send(MockScriptMessage(body: trackBodyWithMessageId, webView: firstWebView))
+                        controller.send(MockScriptMessage(body: trackBodyWithMessageId, webView: secondWebView))
+
+                        expect(firstInvocator.invokedStrings) == [trackBodyWithMessageId]
+                        expect(secondInvocator.invokedStrings) == [trackBodyWithMessageId]
+                        expect(controller.duplicatedHandlerNames).to(beEmpty())
+                    }
+                }
+
+                it("should replace only the current WebView handler when applied repeatedly") {
+                    MainActor.assumeIsolated {
+                        let controller = MockUserContentController()
+                        let configuration = WKWebViewConfiguration()
+                        configuration.userContentController = controller
+                        let targetWebView = WKWebView(frame: .zero, configuration: configuration)
+                        let previousInvocator = MockInvocator()
+                        let currentInvocator = MockInvocator()
+
+                        targetWebView.prepareForHackleJavascriptBridge(
+                            invocator: previousInvocator, sdkKey: "key1", mode: .native, webViewConfig: .DEFAULT
+                        )
+                        targetWebView.prepareForHackleJavascriptBridge(
+                            invocator: currentInvocator, sdkKey: "key2", mode: .native, webViewConfig: .DEFAULT
+                        )
+                        controller.send(MockScriptMessage(body: trackBodyWithMessageId, webView: targetWebView))
+
+                        expect(previousInvocator.invokedStrings).to(beEmpty())
+                        expect(currentInvocator.invokedStrings) == [trackBodyWithMessageId]
+                        expect(controller.duplicatedHandlerNames).to(beEmpty())
                     }
                 }
             }

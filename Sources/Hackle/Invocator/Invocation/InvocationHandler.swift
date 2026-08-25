@@ -8,6 +8,6 @@ protocol InvocationHandler {
 extension InvocationHandler {
     func handle(request: InvocationRequest) throws -> InvocationResponse<Any> {
         let response = try invoke(request: request)
-        return InvocationResponse<Any>(isSuccess: response.isSuccess, message: response.message, data: response.data)
+        return InvocationResponse<Any>(isSuccess: response.isSuccess, message: response.message, data: response.data, task: response.task)
     }
 }
