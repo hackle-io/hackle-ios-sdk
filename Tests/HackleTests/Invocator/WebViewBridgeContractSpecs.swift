@@ -12,7 +12,8 @@ class WebViewBridgeContractSpecs: QuickSpec {
 
         let messageId = "11111111-2222-3333-4444-555555555555"
         let mutationInvoke = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{\"user\":{\"id\":\"42\"}},\"messageId\":\"\(messageId)\"}}"
-        let trackInvoke = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"},\"messageId\":\"\(messageId)\"}}"
+        let trackInvoke = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}}}"
+        let trackInvokeWithMessageId = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"},\"messageId\":\"\(messageId)\"}}"
 
         var core: MockHackleAppCore!
         var invocator: DefaultHackleInvocator!
@@ -58,11 +59,22 @@ class WebViewBridgeContractSpecs: QuickSpec {
             }
         }
 
-        it("track 메시지도 core를 호출하고 완료 후 resolve를 발송한다") {
+        it("messageId가 없는 메시지는 core를 호출하지 않고 무시한다") {
             MainActor.assumeIsolated {
                 let sut = HackleScriptMessageHandler(invocator: invocator)
 
                 sut.handle(body: trackInvoke, webView: webView)
+
+                expect(core.trackRef.invokations()).to(beEmpty())
+                expect(webView.evaluatedScripts).to(beEmpty())
+            }
+        }
+
+        it("mutation이 아닌 메시지도 messageId가 있으면 core를 호출하고 완료 후 resolve를 발송한다") {
+            MainActor.assumeIsolated {
+                let sut = HackleScriptMessageHandler(invocator: invocator)
+
+                sut.handle(body: trackInvokeWithMessageId, webView: webView)
 
                 expect(core.trackRef.invokations().count) == 1
                 expect(core.trackRef.firstInvokation().arguments.0.key) == "purchase"

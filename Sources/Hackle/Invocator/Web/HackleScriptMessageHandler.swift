@@ -4,6 +4,7 @@ import WebKit
 /// Receives `postMessage` invocations from the web SDK (user mutation · track · commands),
 /// dispatched by ``HackleScriptMessageDispatcher``.
 /// Synchronous queries stay on the prompt path (``HackleUIDelegate``).
+/// Every message channel request must carry a `messageId`; requests without one are not handled.
 @MainActor
 class HackleScriptMessageHandler: NSObject {
 
@@ -28,9 +29,8 @@ class HackleScriptMessageHandler: NSObject {
             return
         }
 
-        // messageId가 있는 요청만 완료 시그널을 회신한다.
         guard let messageId = InvocationRequest.messageId(string: body) else {
-            _ = invocator.invoke(string: body)
+            Log.error("Invalid invocation format (missing: messageId). [message=\(body)]")
             return
         }
 

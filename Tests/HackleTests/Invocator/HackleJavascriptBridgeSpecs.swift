@@ -13,7 +13,7 @@ import WebKit
 
 class HackleWebBridgeSpecs: QuickSpec {
     override class func spec() {
-        let trackBody = #"{"_hackle":{"command":"track","parameters":{"event":"purchase"}}}"#
+        let trackBodyWithMessageId = #"{"_hackle":{"command":"track","parameters":{"event":"purchase"},"messageId":"req-1"}}"#
 
         describe("WKWebView+HackleJavascriptBridge") {
 
@@ -221,11 +221,11 @@ class HackleWebBridgeSpecs: QuickSpec {
                         secondWebView.prepareForHackleJavascriptBridge(
                             invocator: secondInvocator, sdkKey: "key2", mode: .native, webViewConfig: .DEFAULT
                         )
-                        controller.send(MockScriptMessage(body: trackBody, webView: firstWebView))
-                        controller.send(MockScriptMessage(body: trackBody, webView: secondWebView))
+                        controller.send(MockScriptMessage(body: trackBodyWithMessageId, webView: firstWebView))
+                        controller.send(MockScriptMessage(body: trackBodyWithMessageId, webView: secondWebView))
 
-                        expect(firstInvocator.invokedStrings) == [trackBody]
-                        expect(secondInvocator.invokedStrings) == [trackBody]
+                        expect(firstInvocator.invokedStrings) == [trackBodyWithMessageId]
+                        expect(secondInvocator.invokedStrings) == [trackBodyWithMessageId]
                         expect(controller.duplicatedHandlerNames).to(beEmpty())
                     }
                 }
@@ -245,10 +245,10 @@ class HackleWebBridgeSpecs: QuickSpec {
                         targetWebView.prepareForHackleJavascriptBridge(
                             invocator: currentInvocator, sdkKey: "key2", mode: .native, webViewConfig: .DEFAULT
                         )
-                        controller.send(MockScriptMessage(body: trackBody, webView: targetWebView))
+                        controller.send(MockScriptMessage(body: trackBodyWithMessageId, webView: targetWebView))
 
                         expect(previousInvocator.invokedStrings).to(beEmpty())
-                        expect(currentInvocator.invokedStrings) == [trackBody]
+                        expect(currentInvocator.invokedStrings) == [trackBodyWithMessageId]
                         expect(controller.duplicatedHandlerNames).to(beEmpty())
                     }
                 }

@@ -9,6 +9,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
         let mutationBody = "{\"_hackle\":{\"command\":\"setUser\",\"parameters\":{},\"messageId\":\"req-1\"}}"
         let trackBody = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"}}}"
+        let trackBodyWithMessageId = "{\"_hackle\":{\"command\":\"track\",\"parameters\":{\"event\":\"purchase\"},\"messageId\":\"req-2\"}}"
 
         var invocator: MockInvocator!
         var webView: MockWebView!
@@ -25,11 +26,11 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             it("메인 프레임이 아닌 메시지도 처리한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
-                    let message = MockScriptMessage(body: trackBody, frameInfo: MockFrameInfo.subFrame, webView: webView)
+                    let message = MockScriptMessage(body: trackBodyWithMessageId, frameInfo: MockFrameInfo.subFrame, webView: webView)
 
                     sut.didReceive(message)
 
-                    expect(invocator.invokedStrings) == [trackBody]
+                    expect(invocator.invokedStrings) == [trackBodyWithMessageId]
                 }
             }
 
@@ -47,11 +48,11 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
             it("메인 프레임의 문자열 메시지는 invocator에 위임한다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
-                    let message = MockScriptMessage(body: trackBody, webView: webView)
+                    let message = MockScriptMessage(body: trackBodyWithMessageId, webView: webView)
 
                     sut.didReceive(message)
 
-                    expect(invocator.invokedStrings) == [trackBody]
+                    expect(invocator.invokedStrings) == [trackBodyWithMessageId]
                 }
             }
         }
@@ -70,13 +71,13 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
                 }
             }
 
-            it("messageId가 없으면 invoke만 하고 resolve하지 않는다") {
+            it("messageId가 없으면 처리하지 않는다") {
                 MainActor.assumeIsolated {
                     let sut = HackleScriptMessageHandler(invocator: invocator)
 
                     sut.handle(body: trackBody, webView: webView)
 
-                    expect(invocator.invokedStrings) == [trackBody]
+                    expect(invocator.invokedStrings).to(beEmpty())
                     expect(invocator.asyncInvokedStrings).to(beEmpty())
                     expect(webView.evaluatedScripts).to(beEmpty())
                 }
@@ -129,10 +130,10 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
                     sut.userContentController(
                         WKUserContentController(),
-                        didReceive: MockScriptMessage(body: trackBody, webView: firstWebView)
+                        didReceive: MockScriptMessage(body: trackBodyWithMessageId, webView: firstWebView)
                     )
 
-                    expect(firstInvocator.invokedStrings) == [trackBody]
+                    expect(firstInvocator.invokedStrings) == [trackBodyWithMessageId]
                     expect(secondInvocator.invokedStrings).to(beEmpty())
                 }
             }
@@ -145,7 +146,7 @@ class HackleScriptMessageHandlerSpecs: QuickSpec {
 
                     sut.userContentController(
                         WKUserContentController(),
-                        didReceive: MockScriptMessage(body: trackBody, webView: webView)
+                        didReceive: MockScriptMessage(body: trackBodyWithMessageId, webView: webView)
                     )
 
                     expect(invocator.invokedStrings).to(beEmpty())
