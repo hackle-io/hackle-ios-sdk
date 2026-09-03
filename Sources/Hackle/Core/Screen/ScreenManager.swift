@@ -10,6 +10,7 @@ protocol ScreenManager {
 class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
 
     private let userManager: UserManager
+    private let screenViewDedupEnabled: Bool
     private var listeners = [ScreenListener]()
 
     private let _currentScreen: AtomicReference<Screen?> = AtomicReference(value: nil)
@@ -17,8 +18,9 @@ class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
         _currentScreen.get()
     }
 
-    init(userManager: UserManager) {
+    init(userManager: UserManager, screenViewDedupEnabled: Bool) {
         self.userManager = userManager
+        self.screenViewDedupEnabled = screenViewDedupEnabled
     }
 
     func addListener(listener: ScreenListener) {
@@ -32,7 +34,7 @@ class DefaultScreenManager: ScreenManager, ViewLifecycleListener {
     func updateScreen(screen: Screen, timestamp: Date) {
         Log.debug("ScreenManager.updateScreen(screen: \(screen))")
         let previousScreen = _currentScreen.get()
-        if screen == previousScreen {
+        if screenViewDedupEnabled, screen == previousScreen {
             return
         }
         let user = userManager.currentUser

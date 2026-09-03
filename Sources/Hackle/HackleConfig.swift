@@ -21,6 +21,7 @@ public final class HackleConfig: NSObject, Sendable {
     let evaluationMode: EvaluationMode
     let automaticScreenTracking: Bool
     let automaticAppLifecycleTracking: Bool
+    let screenViewDedupEnabled: Bool
     let sessionTracking: Bool
     let sessionPolicy: HackleSessionPolicy
     let pollingInterval: TimeInterval
@@ -40,6 +41,7 @@ public final class HackleConfig: NSObject, Sendable {
         evaluationMode = builder.evaluationMode
         automaticScreenTracking = builder.automaticScreenTracking
         automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
+        screenViewDedupEnabled = builder.screenViewDedupEnabled
         sessionTracking = (appMode == .native && builder.sessionTracking)
         sessionPolicy = builder.sessionPolicy
         pollingInterval = builder.pollingInterval
@@ -88,6 +90,7 @@ public class HackleConfigBuilder: NSObject {
 
     var automaticScreenTracking: Bool = true
     var automaticAppLifecycleTracking: Bool = true
+    var screenViewDedupEnabled: Bool = true
 
     var sessionTracking: Bool = true
     var sessionPolicy: HackleSessionPolicy = .default
@@ -172,6 +175,21 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func automaticAppLifecycleTracking(_ automaticAppLifecycleTracking: Bool) -> HackleConfigBuilder {
         self.automaticAppLifecycleTracking = automaticAppLifecycleTracking
+        return self
+    }
+
+    /// Enables or disables deduplication of repeated screen view events.
+    ///
+    /// When disabled, re-entering the same screen publishes `$page_view` again, along with
+    /// `$engagement`'s `$engagement_time_ms` property once the minimum engagement duration is met.
+    /// This also affects automatic screen tracking: because a navigation triggers both the
+    /// destination's `viewDidAppear` and the outgoing screen's `viewDidDisappear`, a single screen
+    /// change can publish `$page_view` twice for the destination.
+    ///
+    /// - Parameter enabled: Whether to deduplicate repeated screen view events (default: true)
+    /// - Returns: This builder instance for method chaining
+    @objc public func screenViewDedupEnabled(_ enabled: Bool) -> HackleConfigBuilder {
+        self.screenViewDedupEnabled = enabled
         return self
     }
 
