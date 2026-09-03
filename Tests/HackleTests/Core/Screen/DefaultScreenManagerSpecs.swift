@@ -176,6 +176,9 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 verify(exactly: 2) {
                     dedupListener.onScreenStartedMock
                 }
+                verify(exactly: 1) {
+                    dedupListener.onScreenEndedMock
+                }
             }
 
             it("when screenViewDedupEnabled is false, current screen and new screen are different then start new screen") {

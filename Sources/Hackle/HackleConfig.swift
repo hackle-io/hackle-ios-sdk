@@ -180,10 +180,13 @@ public class HackleConfigBuilder: NSObject {
 
     /// Enables or disables deduplication of repeated screen view events.
     ///
-    /// When disabled, the same screen re-entered in succession publishes `$page_view` and
-    /// `$engagement_time_ms` again, including on the automatic screen tracking path.
+    /// When disabled, re-entering the same screen publishes `$page_view` again, along with
+    /// `$engagement`'s `$engagement_time_ms` property once the minimum engagement duration is met.
+    /// This also affects automatic screen tracking: because a navigation triggers both the
+    /// destination's `viewDidAppear` and the outgoing screen's `viewDidDisappear`, a single screen
+    /// change can publish `$page_view` twice for the destination.
     ///
-    /// - Parameter enabled: Whether to deduplicate repeated screen view events
+    /// - Parameter enabled: Whether to deduplicate repeated screen view events (default: true)
     /// - Returns: This builder instance for method chaining
     @objc public func screenViewDedupEnabled(_ enabled: Bool) -> HackleConfigBuilder {
         self.screenViewDedupEnabled = enabled
