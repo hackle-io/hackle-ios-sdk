@@ -13,7 +13,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
         beforeEach {
             userManager = MockUserManager()
             listener = MockScreenListener()
-            sut = DefaultScreenManager(userManager: userManager)
+            sut = DefaultScreenManager(userManager: userManager, screenViewDedupEnabled: true)
             sut.addListener(listener: listener)
         }
         
@@ -131,6 +131,75 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 sut.onLifecycle(lifecycle: .viewWillAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
                 sut.onLifecycle(lifecycle: .viewWillDisappear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
                 expect(sut.currentScreen).to(beNil())
+            }
+        }
+
+        describe("screenViewDedupEnabled") {
+            it("when screenViewDedupEnabled is false, current screen and new screen are same then publish again") {
+                // given
+                let dedupUserManager = MockUserManager()
+                let dedupListener = MockScreenListener()
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, screenViewDedupEnabled: false)
+                dedupSut.addListener(listener: dedupListener)
+
+                let screen = Screen.builder(name: "name", className: "class").build()
+                dedupSut.setCurrentScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
+
+                // when
+                dedupSut.setCurrentScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 43))
+
+                // then
+                verify(exactly: 2) {
+                    dedupListener.onScreenStartedMock
+                }
+                verify(exactly: 1) {
+                    dedupListener.onScreenEndedMock
+                }
+
+                let (previousScreen, currentScreen, _, _) = dedupListener.onScreenStartedMock.invokations()[1].arguments
+                expect(previousScreen).to(equal(screen))
+                expect(currentScreen).to(equal(screen))
+
+                let (endScreen, _, _) = dedupListener.onScreenEndedMock.firstInvokation().arguments
+                expect(endScreen).to(equal(screen))
+            }
+
+            it("when screenViewDedupEnabled is false, same top view appears again then publish every time") {
+                let dedupUserManager = MockUserManager()
+                let dedupListener = MockScreenListener()
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, screenViewDedupEnabled: false)
+                dedupSut.addListener(listener: dedupListener)
+
+                dedupSut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
+                dedupSut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
+
+                verify(exactly: 2) {
+                    dedupListener.onScreenStartedMock
+                }
+            }
+
+            it("when screenViewDedupEnabled is false, current screen and new screen are different then start new screen") {
+                // given
+                let dedupUserManager = MockUserManager()
+                let dedupListener = MockScreenListener()
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, screenViewDedupEnabled: false)
+                dedupSut.addListener(listener: dedupListener)
+
+                let screen = Screen.builder(name: "name", className: "class").build()
+                let newScreen = Screen.builder(name: "new_name", className: "new_class").build()
+                dedupSut.updateScreen(screen: screen, timestamp: Date(timeIntervalSince1970: 42))
+
+                // when
+                dedupSut.updateScreen(screen: newScreen, timestamp: Date(timeIntervalSince1970: 43))
+
+                // then
+                expect(dedupSut.currentScreen).to(equal(newScreen))
+                verify(exactly: 2) {
+                    dedupListener.onScreenStartedMock
+                }
+                verify(exactly: 1) {
+                    dedupListener.onScreenEndedMock
+                }
             }
         }
     }
