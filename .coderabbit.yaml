@@ -11,12 +11,13 @@ reviews:
   # ---------------------------------------------------------------- organization settings
   profile: "quiet"
   high_level_summary_in_walkthrough: true
+  collapse_walkthrough: false
   changed_files_summary: false
   assess_linked_issues: false
   related_issues: false
   related_prs: false
   suggested_labels: false
-  auto_apply_labels: true
+  auto_apply_labels: false
   suggested_reviewers: false
 
   finishing_touches:
