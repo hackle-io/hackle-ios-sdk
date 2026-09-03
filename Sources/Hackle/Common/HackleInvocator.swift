@@ -32,4 +32,15 @@ import Foundation
     /// Use `invoke(string:)` instead.
     @available(*, deprecated, message: "Use invoke(string:) instead. Passing @MainActor completionHandler loses actor isolation in Swift 6.")
     @objc func invoke(string: String, completionHandler: (String?) -> Void)
+
+    /// Invokes an operation with the given string and calls the completion handler when the operation is complete.
+    ///
+    /// - Parameters:
+    ///   - string: the string to invoke
+    ///   - completionHandler: callback to be executed when the operation has been fully processed
+    ///
+    /// For user mutation commands (`setUser`, `setUserId`, `setDeviceId`, `resetUser`, `setUserProperty`,
+    /// `updateUserProperties`) the completion is called on the main thread after the user context
+    /// synchronization is complete. For every other command the completion is called synchronously.
+    @objc func invokeAsync(string: String, completionHandler: @escaping (String?) -> Void)
 }

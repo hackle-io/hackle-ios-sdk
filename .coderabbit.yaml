@@ -1,0 +1,169 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# NOTE: a repository .coderabbit.yaml REPLACES organization UI settings outright —
+# sources are not merged unless Configuration Inheritance is turned on.
+# The "organization settings" block below mirrors the Hackle org configuration.
+# Keep the two in sync; anything omitted here falls back to CodeRabbit defaults, not to the org.
+
+language: "ko-KR"
+
+reviews:
+  # ---------------------------------------------------------------- organization settings
+  profile: "quiet"
+  high_level_summary_in_walkthrough: true
+  changed_files_summary: false
+  assess_linked_issues: false
+  related_issues: false
+  related_prs: false
+  suggested_labels: false
+  auto_apply_labels: true
+  suggested_reviewers: false
+
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+
+  pre_merge_checks:
+    docstrings:
+      mode: "off"
+    title:
+      mode: "off"
+    description:
+      mode: "off"
+    issue_assessment:
+      mode: "off"
+
+  # ---------------------------------------------------------------- repository specific
+  path_filters:
+    - "!**/*.pbxproj"
+    - "!**/*.xcworkspacedata"
+    - "!**/xcshareddata/**"
+    - "!Package.resolved"
+    - "!Sources/Hackle/Resources/**"
+    - "!**/*.min.js"
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "master"
+      - "^dev-.*"
+      - "^release-.*"
+      - "^[0-9]+\\.[0-9]+\\.x$"
+
+  tools:
+    # Defaults to true. Disabled because this repository has no .swiftlint.yml, so SwiftLint would
+    # report against its own default rule set. Enable this together with adopting the linter.
+    swiftlint:
+      enabled: false
+
+  path_instructions:
+    - path: "**"
+      instructions: |
+        # Context
+        Hackle iOS SDK — a public SDK that ships inside customer applications.
+        Two concerns outrank everything else: not breaking the host app, and not breaking public API
+        backward compatibility.
+
+        # Priority
+        1. Anything that can crash the host app
+        2. Public API backward-compatibility breaks
+        3. Data races and thread-safety defects
+        4. Renames or typos in field names, event property keys, and metric names — these break
+           server-side aggregation
+        5. Other correctness problems
+
+        # Do not raise
+        The following are already settled team policy. Do not leave review comments about them.
+        - Rewriting ported code to be "more idiomatic Swift". Parts of this codebase deliberately mirror
+          the structure and naming of Hackle's other SDKs so that behavior stays identical across platforms.
+        - Adding optionality, nil checks, or defensive branches for cases that cannot actually occur (YAGNI).
+          This applies especially to code that already ships in released versions.
+        - Asking for explanatory or rationale comments. Requesting `///` documentation comments on public
+          API is fine.
+        - Proposing new end-to-end or integration test harnesses. This repository has no such infrastructure.
+        - Formatting, line breaks, import ordering, and other style preferences.
+        - Anything on lines that are not part of the diff.
+
+        # When you do raise something
+        - Give a concrete failure scenario: the inputs or state, then the wrong result or crash.
+        - If you are not certain, ask a question rather than asserting a defect.
+
+    - path: "Sources/**/*.swift"
+      instructions: |
+        # Public API compatibility
+        - Treat signature changes, removals, and renames of `public` and `open` symbols as blocking,
+          especially when they are not routed through `@available(*, deprecated)` first.
+        - Flag any change to the Objective-C selector of an `@objc` symbol — method name, argument labels,
+          or `@objc(name)`. It breaks Objective-C callers at runtime.
+        - Never add `@Sendable` to a public completion-handler closure. `@Sendable` is part of the closure
+          type, so adding it makes Swift 6 user code fail to compile.
+        - Check source compatibility when adding a case to a public enum or a requirement to a public protocol.
+
+        # Concurrency
+        - `nonisolated(unsafe)` is banned; it hides data races. The sole exception is where the compiler
+          cannot infer isolation but the runtime guarantees safety — for example an ARC weak reference in
+          an Objective-C override on a `@MainActor` class.
+        - `@preconcurrency import` is banned. Use an explicit `@MainActor` instead.
+        - `DispatchQueue.sync` is banned in production code. It blocks the calling thread and risks
+          deadlock. Use async dispatch with a callback instead.
+        - `@MainActor` belongs on UI code only (UIKit/SwiftUI components, view logic). Flag it on database,
+          network, or business logic, and flag applications made only to silence Swift 6 warnings.
+          `actor`, `Sendable`, or a lock should be considered first.
+        - `@unchecked Sendable` is reserved for what the compiler cannot verify, such as legacy C or
+          Objective-C interop, and only alongside a lock or serial queue that manually guarantees safety.
+        - Only ask for a lock where concurrent access actually happens. Properties written once during
+          setup and read-only afterwards do not need one — check the call sites before suggesting
+          synchronization.
+
+        # Crash safety
+        - Flag force unwraps (`!`), `try!`, and unchecked array indexing. A crash in the SDK is a crash in
+          the customer's app.
+        - Flag newly added `fatalError`. UIKit `required init?(coder:)` stubs are the exception.
+        - Flag force casts and force decoding of server responses or persisted data.
+
+        # Minimum OS
+        - The deployment target is iOS 13. Check for `@available` or `#available` guards around newer APIs.
+
+        # Logging and privacy
+        - `print` is banned; use `Log.debug`, `Log.info`, or `Log.error`.
+        - Never log user identifiers, event property values, or the SDK key verbatim — mask them.
+        - Keep debug logging minimal. Do not add full request or response payload dumps.
+
+        # Dependencies
+        - This SDK has no third-party runtime dependencies. Always ask for justification when one is
+          added to `Package.swift` or `Hackle.podspec`.
+
+    - path: "Sources/Hackle/Core/**/*.swift"
+      instructions: |
+        # Cross-SDK behavioral parity
+        This directory implements the same evaluation and event-processing logic as Hackle's other SDKs.
+        - Changes or typos in DTO field names, event property keys, metric names, and decision reason
+          strings break server-side aggregation. Treat them as critical and always flag them.
+        - When a branch or a default in the evaluation logic changes — default variation, fallback
+          behavior, and the like — ask whether the other platform SDKs need the same change.
+        - Class and method structure here deliberately mirrors the other SDKs. Do not propose
+          restructuring or refactoring.
+
+    - path: "Sources/Hackle/UI/**/*.swift"
+      instructions: |
+        # UI
+        - This is the only area where `@MainActor` is appropriate. Check that UI updates happen on the
+          main thread.
+        - Check for retain cycles and missing teardown on views, gesture recognizers, timers, and
+          NotificationCenter observers. In particular, verify that delegate properties are `weak`.
+        - Flag code that mutates the host app's view hierarchy or global state without restoring it when
+          an in-app message is dismissed.
+
+    - path: "Tests/**/*.swift"
+      instructions: |
+        # Test conventions
+        - Tests use Quick and Nimble: `QuickSpec`, `describe`, `it`, `expect`. `XCTestCase` is not used.
+          Mocks use MockingKit.
+        - Production code is never modified for the sake of tests. Do not propose dependency injection,
+          protocol extraction, or relaxed access control for testability.
+        - Do not propose new end-to-end or integration test harnesses.
+        - Do flag defects in the tests themselves: wrong assertions, tests that can never fail, and
+          reliance on non-deterministic timing.

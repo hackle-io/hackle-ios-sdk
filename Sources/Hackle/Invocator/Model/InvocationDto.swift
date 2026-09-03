@@ -11,6 +11,8 @@ typealias DecisionDto = [String: Any]
 typealias FeatureFlagDecisionDto = [String: Any]
 typealias PropertyOperationsDto = [String: [String: Any]]
 typealias HackleSubscriptionOperationsDto = [String: String]
+typealias HackleInAppMessageDto = [String: Any]
+typealias HackleInAppMessageViewDto = [String: Any]
 
 extension User {
     func toDto() -> UserDto {
@@ -166,29 +168,20 @@ extension HackleSubscriptionOperations {
     }
 }
 
-struct HackleInAppMessageDto: Codable {
-    let key: Int64
-}
-
-struct HackleInAppMessageViewDto: Codable {
-    let id: String
-    let inAppMessage: HackleInAppMessageDto
-}
-
 extension InAppMessageView {
     nonisolated func toDto() -> HackleInAppMessageViewDto {
-        return HackleInAppMessageViewDto(
-            id: id,
-            inAppMessage: inAppMessage.toDto()
-        )
+        return [
+            "id": id,
+            "inAppMessage": inAppMessage.toDto()
+        ]
     }
 }
 
 extension HackleInAppMessage {
     func toDto() -> HackleInAppMessageDto {
-        return HackleInAppMessageDto(
-            key: key
-        )
+        return [
+            "key": key
+        ]
     }
 }
 
