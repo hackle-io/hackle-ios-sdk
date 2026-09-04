@@ -157,6 +157,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     func initialize(user: User?, completion: @escaping @Sendable () -> ()) {
         userManager.initialize(user: user)
+        sessionManager.initialize()
         onInitializedRef.set(newValue: completion)
         Task {
             await self.platformManager.initialize()
@@ -174,7 +175,6 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     private func initialize(completion: @escaping @Sendable () -> ()) {
         workspaceManager.initialize()
-        sessionManager.initialize()
         eventProcessor.initialize()
         applicationInstallStateManager.initialize()
         // 초기화 중 들어온 coreQueue 작업(이벤트 처리 등)이 sync 완료 후 처리되도록 큐를 잡아둔다.
