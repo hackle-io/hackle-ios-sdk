@@ -49,10 +49,7 @@ reviews:
     enabled: true
     drafts: false
     base_branches:
-      - "master"
-      - "^dev-.*"
-      - "^release-.*"
-      - "^[0-9]+\\.[0-9]+\\.x$"
+      - "^dev-[0-9]+\\.[0-9]+\\.[0-9]+$"
 
   tools:
     # Defaults to true. Disabled because this repository has no .swiftlint.yml, so SwiftLint would
