@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "5D18498D-7302-4B0B-BD16-56E9D040E1E8",
+      "name" : "Thread Sanitizer",
+      "options" : {
+        "threadSanitizerEnabled" : true
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "selectedTests" : [
+        "AtomicReferenceRaceSpecs",
+        "ConcurrentArrayRaceSpecs",
+        "DelegatingMetricRegistrySpecs\/concurrency",
+        "MetricRegistryRaceSpecs",
+        "MetricsRaceSpecs",
+        "UserManagerRaceSpecs",
+        "WorkspaceConfigManagerRaceSpecs"
+      ],
+      "target" : {
+        "containerPath" : "container:Hackle.xcodeproj",
+        "identifier" : "Hackle::HackleTests",
+        "name" : "HackleTests"
+      }
+    }
+  ],
+  "version" : 1
+}
