@@ -21,7 +21,7 @@ public final class HackleConfig: NSObject, Sendable {
     let evaluationMode: EvaluationMode
     let automaticScreenTracking: Bool
     let automaticAppLifecycleTracking: Bool
-    let screenViewDedupEnabled: Bool
+    let manualScreenViewDedupEnabled: Bool
     let sessionTracking: Bool
     let sessionPolicy: HackleSessionPolicy
     let pollingInterval: TimeInterval
@@ -41,7 +41,7 @@ public final class HackleConfig: NSObject, Sendable {
         evaluationMode = builder.evaluationMode
         automaticScreenTracking = builder.automaticScreenTracking
         automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
-        screenViewDedupEnabled = builder.screenViewDedupEnabled
+        manualScreenViewDedupEnabled = builder.manualScreenViewDedupEnabled
         sessionTracking = (appMode == .native && builder.sessionTracking)
         sessionPolicy = builder.sessionPolicy
         pollingInterval = builder.pollingInterval
@@ -90,7 +90,7 @@ public class HackleConfigBuilder: NSObject {
 
     var automaticScreenTracking: Bool = true
     var automaticAppLifecycleTracking: Bool = true
-    var screenViewDedupEnabled: Bool = true
+    var manualScreenViewDedupEnabled: Bool = true
 
     var sessionTracking: Bool = true
     var sessionPolicy: HackleSessionPolicy = .default
@@ -178,16 +178,16 @@ public class HackleConfigBuilder: NSObject {
         return self
     }
 
-    /// Enables or disables deduplication of repeated screen view events.
+    /// Enables or disables deduplication of repeated screen views set via `setCurrentScreen`.
     ///
-    /// When disabled, re-entering the same screen publishes `$page_view` again, along with
-    /// `$engagement`'s `$engagement_time_ms` property once the minimum engagement duration is met.
-    /// This applies to the automatic screen tracking path as well.
+    /// When disabled, calling `setCurrentScreen` with the current screen publishes `$page_view` again,
+    /// along with `$engagement`'s `$engagement_time_ms` property once the minimum engagement duration is met.
+    /// Automatic screen tracking always deduplicates regardless of this setting.
     ///
-    /// - Parameter enabled: Whether to deduplicate repeated screen view events (default: true)
+    /// - Parameter enabled: Whether to deduplicate repeated screen views set via `setCurrentScreen` (default: true)
     /// - Returns: This builder instance for method chaining
-    @objc public func screenViewDedupEnabled(_ enabled: Bool) -> HackleConfigBuilder {
-        self.screenViewDedupEnabled = enabled
+    @objc public func manualScreenViewDedupEnabled(_ enabled: Bool) -> HackleConfigBuilder {
+        self.manualScreenViewDedupEnabled = enabled
         return self
     }
 

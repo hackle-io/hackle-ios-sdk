@@ -464,7 +464,7 @@ extension HackleApp {
         // - ScreenManager
         let screenManager = DefaultScreenManager(
             userManager: userManager,
-            screenViewDedupEnabled: config.screenViewDedupEnabled
+            manualScreenViewDedupEnabled: config.manualScreenViewDedupEnabled
         )
 
         // - EngagementManager

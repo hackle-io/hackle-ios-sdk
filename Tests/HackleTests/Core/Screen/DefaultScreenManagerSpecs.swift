@@ -13,7 +13,7 @@ class DefaultScreenManagerSpecs: QuickSpec {
         beforeEach {
             userManager = MockUserManager()
             listener = MockScreenListener()
-            sut = DefaultScreenManager(userManager: userManager, screenViewDedupEnabled: true)
+            sut = DefaultScreenManager(userManager: userManager, manualScreenViewDedupEnabled: true)
             sut.addListener(listener: listener)
         }
         
@@ -134,12 +134,12 @@ class DefaultScreenManagerSpecs: QuickSpec {
             }
         }
 
-        describe("screenViewDedupEnabled") {
-            it("when screenViewDedupEnabled is false, current screen and new screen are same then publish again") {
+        describe("manualScreenViewDedupEnabled") {
+            it("when manualScreenViewDedupEnabled is false, current screen and new screen are same then publish again") {
                 // given
                 let dedupUserManager = MockUserManager()
                 let dedupListener = MockScreenListener()
-                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, screenViewDedupEnabled: false)
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, manualScreenViewDedupEnabled: false)
                 dedupSut.addListener(listener: dedupListener)
 
                 let screen = Screen.builder(name: "name", className: "class").build()
@@ -164,28 +164,45 @@ class DefaultScreenManagerSpecs: QuickSpec {
                 expect(endScreen).to(equal(screen))
             }
 
-            it("when screenViewDedupEnabled is false, same top view appears again then publish every time") {
+            it("when manualScreenViewDedupEnabled is false, same top view appears again then do nothing") {
                 let dedupUserManager = MockUserManager()
                 let dedupListener = MockScreenListener()
-                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, screenViewDedupEnabled: false)
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, manualScreenViewDedupEnabled: false)
                 dedupSut.addListener(listener: dedupListener)
 
                 dedupSut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
                 dedupSut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
 
-                verify(exactly: 2) {
+                verify(exactly: 1) {
                     dedupListener.onScreenStartedMock
                 }
-                verify(exactly: 1) {
+                verify(exactly: 0) {
                     dedupListener.onScreenEndedMock
                 }
             }
 
-            it("when screenViewDedupEnabled is false, current screen and new screen are different then start new screen") {
+            it("when manualScreenViewDedupEnabled is false, foreground with same top view then do nothing") {
+                let dedupUserManager = MockUserManager()
+                let dedupListener = MockScreenListener()
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, manualScreenViewDedupEnabled: false)
+                dedupSut.addListener(listener: dedupListener)
+
+                dedupSut.onLifecycle(lifecycle: .viewDidAppear(vc: TestViewController(), top: TopViewController()), timestamp: Date())
+                dedupSut.onForeground(TopViewController(), timestamp: Date(), isFromBackground: true)
+
+                verify(exactly: 1) {
+                    dedupListener.onScreenStartedMock
+                }
+                verify(exactly: 0) {
+                    dedupListener.onScreenEndedMock
+                }
+            }
+
+            it("when manualScreenViewDedupEnabled is false, current screen and new screen are different then start new screen") {
                 // given
                 let dedupUserManager = MockUserManager()
                 let dedupListener = MockScreenListener()
-                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, screenViewDedupEnabled: false)
+                let dedupSut = DefaultScreenManager(userManager: dedupUserManager, manualScreenViewDedupEnabled: false)
                 dedupSut.addListener(listener: dedupListener)
 
                 let screen = Screen.builder(name: "name", className: "class").build()
