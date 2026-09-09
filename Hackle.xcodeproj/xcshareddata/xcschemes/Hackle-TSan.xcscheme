@@ -30,7 +30,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Hackle-TSan.xctestplan"
+            reference = "container:Tests/Hackle-TSan.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
