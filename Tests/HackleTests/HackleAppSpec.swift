@@ -528,6 +528,20 @@ class HackleAppSpecs: QuickSpec {
             expect(platformManager.device.properties.count) == 13
         }
 
+        it("initialize — 세션 복원은 initialize 직후 coreQueue 에 들어온 작업보다 먼저 실행된다") {
+            var order: [String] = []
+            every(sessionManager.initializeMock).answers { _ in
+                order.append("sessionManager.initialize")
+            }
+
+            sut.initialize(user: nil) {}
+            coreQueue.sync {
+                order.append("coreQueue")
+            }
+
+            expect(order) == ["sessionManager.initialize", "coreQueue"]
+        }
+
         it("initialize — sync 완료 후에 flush가 실행된다") {
             var order: [String] = []
             every(synchronizer.syncMock).answers { _ in
