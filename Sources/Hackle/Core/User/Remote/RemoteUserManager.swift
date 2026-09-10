@@ -13,15 +13,13 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
     private let evaluationManager: WorkspaceEvaluationManager
 
     private let defaultUser: User
-    private var context: RemoteUserContext
+    private let context: AtomicReference<RemoteUserContext>
 
     // 초기 sync용 컨텍스트 — sync()가 1회 소비한다.
     private let initSyncContext = AtomicReference<SyncContext?>(value: nil)
 
     private var currentContext: RemoteUserContext {
-        recursiveLock.lock {
-            context
-        }
+        context.get()
     }
     var currentUser: User {
         currentContext.user
@@ -41,7 +39,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         self.repository = repository
         self.evaluationManager = evaluationManager
         self.defaultUser = HackleUserBuilder().deviceId(device.id).build()
-        self.context = RemoteUserContext.from(user: defaultUser)
+        self.context = AtomicReference(value: RemoteUserContext.from(user: defaultUser))
     }
 
     // Initialize
@@ -50,7 +48,7 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
         recursiveLock.lock {
             let initUser = user ?? loadUser() ?? defaultUser
             let initContext = RemoteUserContext.from(user: initUser.with(device: device))
-            self.context = initContext
+            self.context.set(newValue: initContext)
             self.initSyncContext.set(newValue: SyncContext(userContext: initContext, operations: PropertyOperations.set(properties: initUser.properties)))
         }
         Log.debug("RemoteUserManager initialized [\(currentUser)]")
@@ -139,9 +137,9 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
 
     private func updateContext(update: (RemoteUserContext) -> RemoteUserContext) -> UserUpdated<RemoteUserContext> {
         recursiveLock.lock {
-            let old = context
+            let old = context.get()
             let new = update(old)
-            context = new
+            context.set(newValue: new)
 
             if !old.user.identifierEquals(other: new.user) {
                 publishUserUpdated(oldUser: old.user, newUser: new.user, timestamp: clock.now())
