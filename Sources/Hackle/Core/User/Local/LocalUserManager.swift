@@ -17,7 +17,9 @@ class LocalUserManager: UserManager, @unchecked Sendable {
     private let context: AtomicReference<LocalUserContext>
 
     private var currentContext: LocalUserContext {
-        context.get()
+        recursiveLock.lock {
+            context.get()
+        }
     }
     var currentUser: User {
         currentContext.user

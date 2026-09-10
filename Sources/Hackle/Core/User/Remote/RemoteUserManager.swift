@@ -19,7 +19,9 @@ class RemoteUserManager: UserManager, @unchecked Sendable {
     private let initSyncContext = AtomicReference<SyncContext?>(value: nil)
 
     private var currentContext: RemoteUserContext {
-        context.get()
+        recursiveLock.lock {
+            context.get()
+        }
     }
     var currentUser: User {
         currentContext.user
