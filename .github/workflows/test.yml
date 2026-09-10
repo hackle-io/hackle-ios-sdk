@@ -1,0 +1,73 @@
+name: test
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  ios-sdk-test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.5'
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Prebuild before test # 테스트 전에 빌드
+        run: |
+            set -o pipefail && xcodebuild build-for-testing \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+                -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+                SWIFT_STRICT_CONCURRENCY=complete \
+                | xcbeautify --renderer github-actions --quiet 
+
+      - name: Verify framework resources
+        run: |
+            FRAMEWORK_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/Hackle.framework"
+            if [[ ! -d "$FRAMEWORK_PATH" ]]; then
+                echo "::error::Hackle.framework not found at $FRAMEWORK_PATH"
+                exit 1
+            fi
+
+            missing=0
+            while IFS= read -r resource; do
+                file_name="$(basename "$resource")"
+                if [[ ! -f "$FRAMEWORK_PATH/$file_name" ]]; then
+                    echo "::error file=$resource::Missing framework resource: $file_name"
+                    missing=1
+                fi
+            done < <(find Sources/Hackle/Resources -type f | sort)
+
+            exit "$missing"
+
+      - name: Test
+        run: |
+            set -o pipefail && xcodebuild test-without-building \
+                -project Hackle.xcodeproj \
+                -scheme Hackle-Package \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+                -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+                -retry-tests-on-failure \
+                -test-iterations 3 \
+                -parallel-testing-enabled NO \
+                -resultBundlePath TestResults \
+                | xcbeautify --renderer github-actions --quiet --report junit
+
+      - name: Publish Test Report
+        uses: EnricoMi/publish-unit-test-result-action/macos@v2
+        if: success() || failure()
+        with:
+          files: build/reports/junit.xml
+          check_name: Test Results
+          comment_title: Test Results
+          comment_mode: changes
