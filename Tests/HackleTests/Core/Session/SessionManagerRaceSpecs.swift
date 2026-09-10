@@ -12,9 +12,10 @@ class SessionManagerRaceSpecs: QuickSpec {
 
         it("DefaultSessionManager: concurrent startNewSessionIfNeeded (setUserId thread vs coreQueue)") {
             let listener = RaceSessionListener()
+            let repository = MemoryKeyValueRepository()
             let sut = DefaultSessionManager(
                 userManager: MockUserManager(),
-                keyValueRepository: MemoryKeyValueRepository(),
+                keyValueRepository: repository,
                 applicationLifecycleManager: MockApplicationLifecycleManager(currentState: .foreground),
                 sessionPolicy: HackleSessionPolicy.builder().persistCondition(.alwaysNewSession).build()
             )
@@ -31,16 +32,29 @@ class SessionManagerRaceSpecs: QuickSpec {
                     sut.startNewSessionIfNeeded(context: SessionContext.of(oldUser: user, newUser: newUser, timestamp: timestamp))
                     _ = sut.currentSession
                     _ = sut.lastEventTime
+                    if i % 50 == 0 {
+                        sut.onBackground(nil, timestamp: timestamp)
+                    }
                 }
             }
 
-            let started = listener.startedSessions
-            let ended = listener.endedSessions
-            expect(started.count) == 1 + threads * iterations
-            expect(ended.count) == started.count - 1
-            expect(Set(ended.map { $0.id }).count) == ended.count
-            expect(Set(ended.map { $0.id })) == Set(started.dropLast().map { $0.id })
-            expect(started.last) == sut.currentSession
+            let records = listener.records
+            let startedIds = records.filter { $0.hasPrefix("start:") }.map { String($0.dropFirst("start:".count)) }
+
+            var expected = [String]()
+            for (index, id) in startedIds.enumerated() {
+                expected.append("start:\(id)")
+                if index < startedIds.count - 1 {
+                    expected.append("end:\(id)")
+                }
+            }
+
+            expect(startedIds.count) == 1 + threads * iterations
+            expect(Set(startedIds).count) == startedIds.count
+            expect(records.count) == 2 * startedIds.count - 1
+            expect(records) == expected
+            expect(startedIds.last) == sut.currentSession?.id
+            expect(repository.getString(key: "session_id")) == sut.currentSession?.id
         }
     }
 }
@@ -48,23 +62,25 @@ class SessionManagerRaceSpecs: QuickSpec {
 private class RaceSessionListener: SessionListener {
 
     private let lock = NSLock()
-    private var started = [Session]()
-    private var ended = [Session]()
+    private var recorded = [String]()
 
-    var startedSessions: [Session] { sync { started } }
-    var endedSessions: [Session] { sync { ended } }
+    var records: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return recorded
+    }
 
     func onSessionStarted(session: Session, user: User, timestamp: Date) {
-        sync { started.append(session) }
+        append("start:\(session.id)")
     }
 
     func onSessionEnded(session: Session, user: User, timestamp: Date) {
-        sync { ended.append(session) }
+        append("end:\(session.id)")
     }
 
-    private func sync<T>(_ block: () -> T) -> T {
+    private func append(_ record: String) {
         lock.lock()
         defer { lock.unlock() }
-        return block()
+        recorded.append(record)
     }
 }
