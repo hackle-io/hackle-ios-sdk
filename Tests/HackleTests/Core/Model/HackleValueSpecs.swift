@@ -38,6 +38,17 @@ class HackleValueSpecs: QuickSpec {
      
         }
 
+        it("unsigned integer within Int64 range is int") {
+            expect(HackleValue(value: UInt64(Int64.max))) == .int(Int64.max)
+            expect(HackleValue(value: UInt(42))) == .int(42)
+        }
+
+        it("unsigned integer exceeding Int64 range falls back to double") {
+            expect(HackleValue(value: NSNumber(value: 1e19))) == .double(1e19)
+            expect(HackleValue(value: UInt64.max)) == .double(Double(UInt64.max))
+            expect(HackleValue(value: UInt64(Int64.max) + 1)) == .double(9223372036854775808.0)
+        }
+
         it("doubleValue") {
             expect(HackleValue.string("42").doubleOrNil).to(beNil())
             expect(HackleValue.int(42).doubleOrNil) == 42.0
