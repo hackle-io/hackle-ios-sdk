@@ -14,12 +14,10 @@ class LocalUserManager: UserManager, @unchecked Sendable {
     private let device: Device
     private let bundleInfo: BundleInfo
     private let defaultUser: User
-    private var context: LocalUserContext
+    private let context: AtomicReference<LocalUserContext>
 
     private var currentContext: LocalUserContext {
-        recursiveLock.lock {
-            context
-        }
+        context.get()
     }
     var currentUser: User {
         currentContext.user
@@ -34,7 +32,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         self.device = device
         self.bundleInfo = bundleInfo
         self.defaultUser = HackleUserBuilder().id(device.id).deviceId(device.id).build()
-        self.context = LocalUserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+        self.context = AtomicReference(value: LocalUserContext.of(user: defaultUser, cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty()))
     }
 
     func initialize(user: User?) {
@@ -44,7 +42,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
                 return
             }
             let initUser = (user ?? self.loadUser() ?? self.defaultUser)
-            self.context = LocalUserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty())
+            self.context.set(newValue: LocalUserContext.of(user: initUser.with(device: device), cohorts: UserCohorts.empty(), targetEvents: UserTargetEvents.empty()))
         }
         Log.debug("UserManager initialized [\(currentUser)]")
     }
@@ -52,9 +50,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
     // HackleUser resolve
 
     func hackleUser(user: User, appContext: HackleAppContext) -> HackleUser {
-        let context = recursiveLock.lock {
-            self.context.with(user: user)
-        }
+        let context = self.context.get().with(user: user)
         return toHackleUser(context: context, hackleAppContext: appContext)
     }
 
@@ -113,7 +109,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         do {
             let cohorts = try await cohortFetcher.fetch(user: user)
             recursiveLock.lock {
-                context = context.update(cohorts: cohorts)
+                context.set(newValue: context.get().update(cohorts: cohorts))
             }
         } catch {
             Log.error("Cohort sync failed: \(error)")
@@ -124,7 +120,7 @@ class LocalUserManager: UserManager, @unchecked Sendable {
         do {
             let targetEvents = try await targetFetcher.fetch(user: user)
             recursiveLock.lock {
-                context = context.update(targetEvents: targetEvents)
+                context.set(newValue: context.get().update(targetEvents: targetEvents))
             }
         } catch {
             Log.error("Target event sync failed: \(error)")
@@ -152,14 +148,14 @@ class LocalUserManager: UserManager, @unchecked Sendable {
 
     func setUserId(userId: String?) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
-            updateUser(user: context.user.toBuilder().userId(userId).build())
+            updateUser(user: context.get().user.toBuilder().userId(userId).build())
         }
         return Task { await self.syncIfNeeded(updated: updated) }
     }
 
     func setDeviceId(deviceId: String) -> Task<Void, Never> {
         let updated = recursiveLock.lock {
-            updateUser(user: context.user.toBuilder().deviceId(deviceId).build())
+            updateUser(user: context.get().user.toBuilder().deviceId(deviceId).build())
         }
         return Task { await self.syncIfNeeded(updated: updated) }
     }
@@ -197,12 +193,12 @@ class LocalUserManager: UserManager, @unchecked Sendable {
     }
 
     private func updateContext(updater: (User) -> User) -> UserUpdated<LocalUserContext> {
-        let oldContext = context
+        let oldContext = context.get()
         let oldUser = oldContext.user
         let newUser = updater(oldUser)
 
-        let newContext = context.with(user: newUser)
-        context = newContext
+        let newContext = oldContext.with(user: newUser)
+        context.set(newValue: newContext)
 
         if !newUser.identifierEquals(other: oldUser) {
             publishUserUpdated(oldUser: oldUser, newUser: newUser, timestamp: clock.now())
