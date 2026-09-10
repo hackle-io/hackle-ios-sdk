@@ -136,7 +136,7 @@ class PropertiesBuilder {
         switch element {
         case let value as String:
             return value.count <= PropertiesBuilder.MAX_PROPERTY_VALUE_LENGTH
-        case is Int, is Double, is Float:
+        case is Int, is Int8, is Int16, is Int32, is Int64, is UInt, is UInt8, is UInt16, is UInt32, is UInt64, is Double, is Float:
             return true
         default:
             return false
