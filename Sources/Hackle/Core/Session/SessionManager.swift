@@ -30,6 +30,8 @@ protocol SessionManager {
 
 class DefaultSessionManager: SessionManager, UserListener {
 
+    private let lock = RecursiveLock(label: "io.hackle.DefaultSessionManager")
+
     private let userManager: UserManager
     private let keyValueRepository: KeyValueRepository
     private let applicationLifecycleManager: ApplicationLifecycleManager
@@ -40,8 +42,20 @@ class DefaultSessionManager: SessionManager, UserListener {
         currentSession ?? Session.UNKNOWN
     }
 
-    private(set) var currentSession: Session? = nil
-    private(set) var lastEventTime: Date? = nil
+    private var _currentSession: Session? = nil
+    private var _lastEventTime: Date? = nil
+
+    var currentSession: Session? {
+        lock.lock {
+            _currentSession
+        }
+    }
+
+    var lastEventTime: Date? {
+        lock.lock {
+            _lastEventTime
+        }
+    }
 
     init(
         userManager: UserManager,
@@ -60,8 +74,10 @@ class DefaultSessionManager: SessionManager, UserListener {
     private static let LAST_EVENT_TIME_KEY = "last_event_time"
 
     func initialize() {
-        loadSession()
-        loadLastEventTime()
+        lock.lock {
+            loadSession()
+            loadLastEventTime()
+        }
         Log.debug("SessionManager initialized.")
     }
 
@@ -71,27 +87,33 @@ class DefaultSessionManager: SessionManager, UserListener {
     }
 
     func startNewSession(oldUser: User, newUser: User, timestamp: Date) -> Session {
-        endSession(user: oldUser)
-        return newSession(user: newUser, timestamp: timestamp)
+        lock.lock {
+            endSession(user: oldUser)
+            return newSession(user: newUser, timestamp: timestamp)
+        }
     }
 
     @discardableResult
     func startNewSessionIfNeeded(context: SessionContext) -> Session {
-        if shouldStartNewSession(context: context) {
-            return startNewSession(oldUser: context.oldUser, newUser: context.newUser, timestamp: context.timestamp)
-        }
+        lock.lock {
+            if shouldStartNewSession(context: context) {
+                return startNewSession(oldUser: context.oldUser, newUser: context.newUser, timestamp: context.timestamp)
+            }
 
-        updateLastEventTime(timestamp: context.timestamp)
-        return requiredSession
+            updateLastEventTime(timestamp: context.timestamp)
+            return requiredSession
+        }
     }
 
     func updateLastEventTime(timestamp: Date) {
-        lastEventTime = timestamp
-        keyValueRepository.putDouble(key: DefaultSessionManager.LAST_EVENT_TIME_KEY, value: timestamp.timeIntervalSince1970)
+        lock.lock {
+            _lastEventTime = timestamp
+            keyValueRepository.putDouble(key: DefaultSessionManager.LAST_EVENT_TIME_KEY, value: timestamp.timeIntervalSince1970)
+        }
     }
 
     private func shouldStartNewSession(context: SessionContext) -> Bool {
-        if currentSession == nil {
+        if _currentSession == nil {
             return true
         }
 
@@ -116,14 +138,14 @@ class DefaultSessionManager: SessionManager, UserListener {
     }
 
     private func isSessionTimedOut(timestamp: Date) -> Bool {
-        guard let lastEventTime = lastEventTime else {
+        guard let lastEventTime = _lastEventTime else {
             return true
         }
         return timestamp.timeIntervalSince1970 - lastEventTime.timeIntervalSince1970 >= sessionPolicy.timeoutCondition.timeoutIntervalSeconds
     }
 
     private func endSession(user: User) {
-        guard let oldSession = currentSession, let lastEventTime = lastEventTime else {
+        guard let oldSession = _currentSession, let lastEventTime = _lastEventTime else {
             return
         }
 
@@ -136,7 +158,7 @@ class DefaultSessionManager: SessionManager, UserListener {
     @discardableResult
     private func newSession(user: User, timestamp: Date) -> Session {
         let newSession = Session.create(timestamp: timestamp)
-        currentSession = newSession
+        _currentSession = newSession
         saveSession(session: newSession)
 
         updateLastEventTime(timestamp: timestamp)
@@ -154,15 +176,15 @@ class DefaultSessionManager: SessionManager, UserListener {
 
     private func loadSession() {
         if let sessionId = keyValueRepository.getString(key: DefaultSessionManager.SESSION_ID_KEY) {
-            currentSession = Session(id: sessionId)
+            _currentSession = Session(id: sessionId)
         }
-        Log.debug("Session loaded [\(currentSession?.id ?? "nil")]")
+        Log.debug("Session loaded [\(_currentSession?.id ?? "nil")]")
     }
 
     private func loadLastEventTime() {
         let lastEventTime = keyValueRepository.getDouble(key: DefaultSessionManager.LAST_EVENT_TIME_KEY)
         if lastEventTime > 0 {
-            self.lastEventTime = Date(timeIntervalSince1970: lastEventTime)
+            self._lastEventTime = Date(timeIntervalSince1970: lastEventTime)
         }
         Log.debug("LastEventTime loaded [\(lastEventTime)]")
     }
@@ -184,10 +206,12 @@ extension DefaultSessionManager: ApplicationLifecycleListener {
 
     func onBackground(_ topViewController: UIViewController?, timestamp: Date) {
         Log.debug("SessionManager.onBackground")
-        updateLastEventTime(timestamp: timestamp)
-        guard let session = currentSession else {
-            return
+        lock.lock {
+            updateLastEventTime(timestamp: timestamp)
+            guard let session = _currentSession else {
+                return
+            }
+            saveSession(session: session)
         }
-        saveSession(session: session)
     }
 }
