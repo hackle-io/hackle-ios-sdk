@@ -12,6 +12,7 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         self.uiDelegate = uiDelegate
     }
 
+    @objc(webView:createWebViewWithConfiguration:forNavigationAction:windowFeatures:)
     func webView(
         _ webView: WKWebView,
         createWebViewWith configuration: WKWebViewConfiguration,
@@ -26,10 +27,12 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         return delegateCreateWebView(webView, configuration, navigationAction, windowFeatures)
     }
 
+    @objc(webViewDidClose:)
     func webViewDidClose(_ webView: WKWebView) {
         uiDelegate?.webViewDidClose?(webView)
     }
 
+    @objc(webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:)
     func webView(
         _ webView: WKWebView,
         runJavaScriptAlertPanelWithMessage message: String,
@@ -45,6 +48,7 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         delegateAlert(webView, message, frame, completionHandler)
     }
 
+    @objc(webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:)
     func webView(
         _ webView: WKWebView,
         runJavaScriptConfirmPanelWithMessage message: String,
@@ -60,6 +64,7 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
         delegateConfirm(webView, message, frame, completionHandler)
     }
 
+    @objc(webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:)
     func webView(
         _ webView: WKWebView,
         runJavaScriptTextInputPanelWithPrompt prompt: String,
