@@ -156,6 +156,35 @@ class HackleConfigSpec: QuickSpec {
             }
         }
 
+        describe("manualScreenViewDedupEnabled") {
+            it("default value should be true") {
+                let config = HackleConfigBuilder().build()
+                expect(config.manualScreenViewDedupEnabled) == true
+            }
+
+            it("should be able to set to false") {
+                let config = HackleConfigBuilder()
+                    .manualScreenViewDedupEnabled(false)
+                    .build()
+                expect(config.manualScreenViewDedupEnabled) == false
+            }
+
+            it("should be able to set to true explicitly") {
+                let config = HackleConfigBuilder()
+                    .manualScreenViewDedupEnabled(true)
+                    .build()
+                expect(config.manualScreenViewDedupEnabled) == true
+            }
+
+            it("last value should take precedence when called multiple times") {
+                let config = HackleConfigBuilder()
+                    .manualScreenViewDedupEnabled(false)
+                    .manualScreenViewDedupEnabled(true)
+                    .build()
+                expect(config.manualScreenViewDedupEnabled) == true
+            }
+        }
+
         describe("sessionPolicy") {
             it("기본값은 default 이다") {
                 let config = HackleConfigBuilder().build()
