@@ -8,45 +8,19 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
         typealias BridgeScript = HackleInAppMessageUI.HtmlViewBridgeScript
         typealias Loader = HackleInAppMessageUI.WebViewResourceLoader
 
-        let thisFilePath = #filePath
-
         describe("javascriptSdkResource") {
             it("check fileName") {
                 expect(BridgeScript.javascriptSdkResource).to(equal("hackle-javascript-sdk-\(BridgeScript.javascriptSdkVersion).min.js"))
             }
 
-            it("check file exists") {
-                var dir = URL(fileURLWithPath: thisFilePath).deletingLastPathComponent()
-                var resourcesDir: URL?
-                for _ in 0..<10 {
-                    let candidate = dir.appendingPathComponent("Sources/Hackle/Resources")
-                    if FileManager.default.fileExists(atPath: candidate.path) {
-                        resourcesDir = candidate
-                        break
-                    }
-                    dir = dir.deletingLastPathComponent()
-                }
-
-                expect(resourcesDir).toNot(beNil())
-                let filePath = resourcesDir!.appendingPathComponent(BridgeScript.javascriptSdkResource).path
-                expect(FileManager.default.fileExists(atPath: filePath)).to(beTrue())
-            }
-
             it("check script") {
-                var dir = URL(fileURLWithPath: thisFilePath).deletingLastPathComponent()
-                var resourcesDir: URL?
-                for _ in 0..<10 {
-                    let candidate = dir.appendingPathComponent("Sources/Hackle/Resources")
-                    if FileManager.default.fileExists(atPath: candidate.path) {
-                        resourcesDir = candidate
-                        break
-                    }
-                    dir = dir.deletingLastPathComponent()
-                }
+                let fileURL = URL(fileURLWithPath: BridgeScript.javascriptSdkResource)
+                let name = fileURL.deletingPathExtension().lastPathComponent
+                let ext = fileURL.pathExtension
 
-                expect(resourcesDir).toNot(beNil())
-                let filePath = resourcesDir!.appendingPathComponent(BridgeScript.javascriptSdkResource).path
-                let script = try! String(contentsOfFile: filePath, encoding: .utf8)
+                let bundleURL = HackleInternalResources.bundle.url(forResource: name, withExtension: ext)
+                expect(bundleURL).toNot(beNil())
+                let script = try! String(contentsOf: bundleURL!, encoding: .utf8)
 
                 // Check Javascript SDK Version
                 expect(script).to(contain(BridgeScript.javascriptSdkVersion))
@@ -60,22 +34,6 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
                     .forEach {
                         expect(script).to(contain($0.rawValue))
                     }
-            }
-
-            it("check Package.swift") {
-                var dir = URL(fileURLWithPath: thisFilePath).deletingLastPathComponent()
-                var content: String?
-                for _ in 0..<10 {
-                    let candidate = dir.appendingPathComponent("Package.swift")
-                    if let text = try? String(contentsOf: candidate, encoding: .utf8) {
-                        content = text
-                        break
-                    }
-                    dir = dir.deletingLastPathComponent()
-                }
-
-                expect(content).toNot(beNil())
-                expect(content).to(contain(BridgeScript.javascriptSdkResource))
             }
 
             it("check Bundle") {

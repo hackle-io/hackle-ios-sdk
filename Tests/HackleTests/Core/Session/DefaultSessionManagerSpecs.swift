@@ -367,6 +367,18 @@ class DefaultSessionManagerSpecs: QuickSpec {
             }
         }
 
+        describe("리스너 발행") {
+            it("리스너 안에서 currentSession 을 읽으면 새 세션이 보인다") {
+                let listener = CurrentSessionReadingListener()
+                let sut = manager(listener)
+                listener.sessionManager = sut
+
+                let session = sut.startNewSession(oldUser: user, newUser: user, timestamp: Date(timeIntervalSince1970: 42))
+
+                expect(listener.observedOnStarted) == session
+            }
+        }
+
         describe("onForeground") {
             it("lastEventTime 이 없으면 새 세션을 시작한다") {
                 let sut = manager()
@@ -736,6 +748,19 @@ fileprivate class SessionListenerStub: SessionListener {
 
     func onSessionEnded(session: Session, user: User, timestamp: Date) {
         ended.append((session, user, timestamp))
+    }
+}
+
+fileprivate class CurrentSessionReadingListener: SessionListener {
+
+    weak var sessionManager: DefaultSessionManager?
+    var observedOnStarted: Session?
+
+    func onSessionStarted(session: Session, user: User, timestamp: Date) {
+        observedOnStarted = sessionManager?.currentSession
+    }
+
+    func onSessionEnded(session: Session, user: User, timestamp: Date) {
     }
 }
 
