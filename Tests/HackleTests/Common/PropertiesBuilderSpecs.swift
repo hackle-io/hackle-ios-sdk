@@ -21,6 +21,12 @@ class PropertiesBuilderSpecs: QuickSpec {
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", false).build()).isEqual(to: ["key": false])).to(beTrue())
         }
 
+        it("unsigned integer value") {
+            expect(NSDictionary(dictionary: PropertiesBuilder().add("key", UInt(1)).build()).isEqual(to: ["key": 1])).to(beTrue())
+            expect(NSDictionary(dictionary: PropertiesBuilder().add("key", UInt64.max).build()).isEqual(to: ["key": UInt64.max])).to(beTrue())
+            expect(NSDictionary(dictionary: PropertiesBuilder().add("key", [UInt(1), UInt64.max]).build()).isEqual(to: ["key": [UInt(1), UInt64.max]])).to(beTrue())
+        }
+
         it("invalid raw value") {
             expect(PropertiesBuilder().add("key", nil).build().count) == 0
             expect(PropertiesBuilder().add("key", User.builder().build()).build().count) == 0
@@ -28,6 +34,7 @@ class PropertiesBuilderSpecs: QuickSpec {
 
         it("array value") {
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", [1, 2, 3]).build()).isEqual(to: ["key": [1, 2, 3]])).to(beTrue())
+            expect(NSDictionary(dictionary: PropertiesBuilder().add("key", [Int8(1), Int16(2), Int32(3), Int64(4)]).build()).isEqual(to: ["key": [1, 2, 3, 4]])).to(beTrue())
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", ["1", "2", "3"]).build()).isEqual(to: ["key": ["1", "2", "3"]])).to(beTrue())
             expect(NSDictionary(dictionary: PropertiesBuilder().add("key", ["1", 2, "3"]).build()).isEqual(to: ["key": ["1", 2, "3"]])).to(beTrue())
 
