@@ -72,7 +72,12 @@ jobs:
     uses: ./.github/workflows/create_dev_branch.yml
     with:
       new_version: ${{ needs.calculate-version.outputs.new_version }}
-    secrets: inherit
+
+  update-sdk-version:
+    needs: prepare-dev-branch
+    uses: ./.github/workflows/update_sdk_version.yml
+    with:
+      branch: ${{ needs.prepare-dev-branch.outputs.branch_name }}
 
   update-js-sdk:
     needs: [check-js-sdk-version, calculate-version, prepare-dev-branch]
