@@ -88,7 +88,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                 }
             }
 
-            it("should keep responding to every selector used by PayApp after uiDelegate is deallocated") {
+            it("should keep responding to every selector implemented by the host uiDelegate after it is deallocated") {
                 MainActor.assumeIsolated {
                     var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
