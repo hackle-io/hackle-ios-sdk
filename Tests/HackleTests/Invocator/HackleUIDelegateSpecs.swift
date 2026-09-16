@@ -209,106 +209,6 @@ class HackleUIDelegateSpecs: QuickSpec {
             }
         }
 
-        describe("JavaScript alert delegate") {
-
-            it("should forward to uiDelegate while it is alive") {
-                MainActor.assumeIsolated {
-                    let webView = WKWebView()
-                    let frame = fakeObject(WKFrameInfo.self)
-                    let mockUIDelegate = MockWKUIDelegate()
-                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
-                    var completionCallCount = 0
-
-                    sut.webView(
-                        webView,
-                        runJavaScriptAlertPanelWithMessage: "message",
-                        initiatedByFrame: frame
-                    ) {
-                        completionCallCount += 1
-                    }
-
-                    expect(mockUIDelegate.alertCallCount) == 1
-                    expect(mockUIDelegate.receivedAlertWebView).to(beIdenticalTo(webView))
-                    expect(mockUIDelegate.receivedAlertMessage) == "message"
-                    expect(mockUIDelegate.receivedAlertFrame).to(beIdenticalTo(frame))
-                    expect(completionCallCount) == 1
-                }
-            }
-
-            it("should complete immediately after uiDelegate is deallocated") {
-                MainActor.assumeIsolated {
-                    let webView = WKWebView()
-                    var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
-                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
-                    mockUIDelegate = nil
-                    var completionCallCount = 0
-
-                    sut.webView(
-                        webView,
-                        runJavaScriptAlertPanelWithMessage: "message",
-                        initiatedByFrame: fakeObject(WKFrameInfo.self)
-                    ) {
-                        completionCallCount += 1
-                    }
-
-                    expect(completionCallCount) == 1
-                }
-            }
-        }
-
-        describe("JavaScript confirm delegate") {
-
-            it("should forward to uiDelegate while it is alive") {
-                MainActor.assumeIsolated {
-                    let webView = WKWebView()
-                    let frame = fakeObject(WKFrameInfo.self)
-                    let mockUIDelegate = MockWKUIDelegate()
-                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
-                    var completionCallCount = 0
-                    var result = false
-
-                    sut.webView(
-                        webView,
-                        runJavaScriptConfirmPanelWithMessage: "message",
-                        initiatedByFrame: frame
-                    ) {
-                        completionCallCount += 1
-                        result = $0
-                    }
-
-                    expect(mockUIDelegate.confirmCallCount) == 1
-                    expect(mockUIDelegate.receivedConfirmWebView).to(beIdenticalTo(webView))
-                    expect(mockUIDelegate.receivedConfirmMessage) == "message"
-                    expect(mockUIDelegate.receivedConfirmFrame).to(beIdenticalTo(frame))
-                    expect(completionCallCount) == 1
-                    expect(result) == true
-                }
-            }
-
-            it("should complete with false after uiDelegate is deallocated") {
-                MainActor.assumeIsolated {
-                    let webView = WKWebView()
-                    var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
-                    let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
-                    mockUIDelegate = nil
-                    var completionCallCount = 0
-                    var result = true
-
-                    sut.webView(
-                        webView,
-                        runJavaScriptConfirmPanelWithMessage: "message",
-                        initiatedByFrame: fakeObject(WKFrameInfo.self)
-                    ) {
-                        completionCallCount += 1
-                        result = $0
-                    }
-
-                    expect(completionCallCount) == 1
-                    expect(result) == false
-                }
-            }
-        }
-
         describe("JavaScript prompt delegate") {
 
             it("should intercept a Hackle prompt without forwarding to uiDelegate") {
@@ -446,6 +346,110 @@ class HackleUIDelegateSpecs: QuickSpec {
 }
 
 // MARK: - Test Doubles
+
+class HackleUIDelegateAsyncSpecs: AsyncSpec {
+    override class func spec() {
+
+        describe("JavaScript alert delegate") {
+
+            it("should forward to uiDelegate through the Objective-C entry point while it is alive") {
+                await Task { @MainActor in
+                    let webView = WKWebView()
+                    let frame = fakeObject(WKFrameInfo.self)
+                    let mockUIDelegate = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: MockInvocator(), uiDelegate: mockUIDelegate)
+                    let delegate: WKUIDelegate = sut
+
+                    await withCheckedContinuation { continuation in
+                        delegate.webView?(
+                            webView,
+                            runJavaScriptAlertPanelWithMessage: "message",
+                            initiatedByFrame: frame
+                        ) {
+                            continuation.resume()
+                        }
+                    }
+
+                    expect(mockUIDelegate.alertCallCount) == 1
+                    expect(mockUIDelegate.receivedAlertWebView).to(beIdenticalTo(webView))
+                    expect(mockUIDelegate.receivedAlertMessage) == "message"
+                    expect(mockUIDelegate.receivedAlertFrame).to(beIdenticalTo(frame))
+                }.value
+            }
+
+            it("should complete through the Objective-C entry point after uiDelegate is deallocated") {
+                await Task { @MainActor in
+                    let webView = WKWebView()
+                    var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: MockInvocator(), uiDelegate: mockUIDelegate)
+                    let delegate: WKUIDelegate = sut
+                    mockUIDelegate = nil
+
+                    await withCheckedContinuation { continuation in
+                        delegate.webView?(
+                            webView,
+                            runJavaScriptAlertPanelWithMessage: "message",
+                            initiatedByFrame: fakeObject(WKFrameInfo.self)
+                        ) {
+                            continuation.resume()
+                        }
+                    }
+                }.value
+            }
+        }
+
+        describe("JavaScript confirm delegate") {
+
+            it("should forward to uiDelegate through the Objective-C entry point while it is alive") {
+                await Task { @MainActor in
+                    let webView = WKWebView()
+                    let frame = fakeObject(WKFrameInfo.self)
+                    let mockUIDelegate = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: MockInvocator(), uiDelegate: mockUIDelegate)
+                    let delegate: WKUIDelegate = sut
+
+                    let result = await withCheckedContinuation { continuation in
+                        delegate.webView?(
+                            webView,
+                            runJavaScriptConfirmPanelWithMessage: "message",
+                            initiatedByFrame: frame
+                        ) {
+                            continuation.resume(returning: $0)
+                        }
+                    }
+
+                    expect(mockUIDelegate.confirmCallCount) == 1
+                    expect(mockUIDelegate.receivedConfirmWebView).to(beIdenticalTo(webView))
+                    expect(mockUIDelegate.receivedConfirmMessage) == "message"
+                    expect(mockUIDelegate.receivedConfirmFrame).to(beIdenticalTo(frame))
+                    expect(result) == true
+                }.value
+            }
+
+            it("should complete with false through the Objective-C entry point after uiDelegate is deallocated") {
+                await Task { @MainActor in
+                    let webView = WKWebView()
+                    var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
+                    let sut = HackleUIDelegate(invocator: MockInvocator(), uiDelegate: mockUIDelegate)
+                    let delegate: WKUIDelegate = sut
+                    mockUIDelegate = nil
+
+                    let result = await withCheckedContinuation { continuation in
+                        delegate.webView?(
+                            webView,
+                            runJavaScriptConfirmPanelWithMessage: "message",
+                            initiatedByFrame: fakeObject(WKFrameInfo.self)
+                        ) {
+                            continuation.resume(returning: $0)
+                        }
+                    }
+
+                    expect(result) == false
+                }.value
+            }
+        }
+    }
+}
 
 private class MockWKUIDelegate: NSObject, WKUIDelegate {
     var promptCallCount = 0
