@@ -88,7 +88,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                 }
             }
 
-            it("should keep responding to every selector used by PayApp after uiDelegate is deallocated") {
+            it("should keep responding to every selector implemented by the host uiDelegate after it is deallocated") {
                 MainActor.assumeIsolated {
                     var mockUIDelegate: MockWKUIDelegate? = MockWKUIDelegate()
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
@@ -219,7 +219,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     let sut = HackleUIDelegate(invocator: mockInvocator, uiDelegate: mockUIDelegate)
                     var completionCallCount = 0
 
-                    sut.webView(
+                    (sut as WKUIDelegate).webView?(
                         webView,
                         runJavaScriptAlertPanelWithMessage: "message",
                         initiatedByFrame: frame
@@ -243,7 +243,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     mockUIDelegate = nil
                     var completionCallCount = 0
 
-                    sut.webView(
+                    (sut as WKUIDelegate).webView?(
                         webView,
                         runJavaScriptAlertPanelWithMessage: "message",
                         initiatedByFrame: fakeObject(WKFrameInfo.self)
@@ -267,7 +267,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     var completionCallCount = 0
                     var result = false
 
-                    sut.webView(
+                    (sut as WKUIDelegate).webView?(
                         webView,
                         runJavaScriptConfirmPanelWithMessage: "message",
                         initiatedByFrame: frame
@@ -294,7 +294,7 @@ class HackleUIDelegateSpecs: QuickSpec {
                     var completionCallCount = 0
                     var result = true
 
-                    sut.webView(
+                    (sut as WKUIDelegate).webView?(
                         webView,
                         runJavaScriptConfirmPanelWithMessage: "message",
                         initiatedByFrame: fakeObject(WKFrameInfo.self)
