@@ -499,31 +499,24 @@ private class MockWKUIDelegate: NSObject, WKUIDelegate {
     func webView(
         _ webView: WKWebView,
         runJavaScriptAlertPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping @MainActor @Sendable () -> Void
-    ) {
+        initiatedByFrame frame: WKFrameInfo
+    ) async {
         alertCallCount += 1
         receivedAlertWebView = webView
         receivedAlertMessage = message
         receivedAlertFrame = frame
-        MainActor.assumeIsolated {
-            completionHandler()
-        }
     }
 
     func webView(
         _ webView: WKWebView,
         runJavaScriptConfirmPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping @MainActor @Sendable (Bool) -> Void
-    ) {
+        initiatedByFrame frame: WKFrameInfo
+    ) async -> Bool {
         confirmCallCount += 1
         receivedConfirmWebView = webView
         receivedConfirmMessage = message
         receivedConfirmFrame = frame
-        MainActor.assumeIsolated {
-            completionHandler(true)
-        }
+        return true
     }
 
     func webView(
