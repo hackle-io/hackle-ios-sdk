@@ -36,32 +36,32 @@ class HackleUIDelegate: NSObject, WKUIDelegate {
     func webView(
         _ webView: WKWebView,
         runJavaScriptAlertPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping @MainActor @Sendable () -> Void
-    ) {
+        initiatedByFrame frame: WKFrameInfo
+    ) async {
         guard let delegateAlert = uiDelegate?.webView(
             _:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:
         ) else {
-            completionHandler()
             return
         }
-        delegateAlert(webView, message, frame, completionHandler)
+        await withCheckedContinuation { continuation in
+            delegateAlert(webView, message, frame) { continuation.resume() }
+        }
     }
 
     @objc(webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:)
     func webView(
         _ webView: WKWebView,
         runJavaScriptConfirmPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping @MainActor @Sendable (Bool) -> Void
-    ) {
+        initiatedByFrame frame: WKFrameInfo
+    ) async -> Bool {
         guard let delegateConfirm = uiDelegate?.webView(
             _:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:
         ) else {
-            completionHandler(false)
-            return
+            return false
         }
-        delegateConfirm(webView, message, frame, completionHandler)
+        return await withCheckedContinuation { continuation in
+            delegateConfirm(webView, message, frame) { continuation.resume(returning: $0) }
+        }
     }
 
     @objc(webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:)
