@@ -1,9 +1,7 @@
 name: update sdk version
 
 on:
-  push:
-    branches:
-      - 'dev-*'
+  create:
   workflow_call:
     inputs:
       branch:
@@ -13,7 +11,7 @@ on:
 
 jobs:
   create-dev-branch:
-    if: inputs.branch != '' || github.event.created
+    if: inputs.branch != '' || (github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/dev-'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
