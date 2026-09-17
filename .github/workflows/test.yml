@@ -14,7 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode-version: ['26.3', '26.6']
+        include:
+          - xcode-version: '26.3'
+            simulator-os: '26.2'
+          - xcode-version: '26.6'
+            simulator-os: '26.5'
     steps:
       - uses: actions/checkout@v3
 
@@ -30,7 +34,7 @@ jobs:
             set -o pipefail && xcodebuild build-for-testing \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Release \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=${{ matrix.simulator-os }}' \
                 -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 | xcbeautify --renderer github-actions --quiet
 
@@ -58,7 +62,7 @@ jobs:
             set -o pipefail && xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
                 -scheme Hackle-Release \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=${{ matrix.simulator-os }}' \
                 -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 -retry-tests-on-failure \
                 -test-iterations 3 \
