@@ -5,12 +5,17 @@ on:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches x.y.z format
 
+permissions:
+  contents: write
+
 jobs:
   create_prerelease:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0  # Fetch full history for release notes
 
@@ -49,7 +54,7 @@ jobs:
 
       - name: Generate Release Notes
         id: generate_notes
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const { data } = await github.rest.repos.generateReleaseNotes({
@@ -60,12 +65,26 @@ jobs:
             core.setOutput('changelog', data.body);
 
       - name: Create Prerelease
-        uses: actions/create-release@v1
+        uses: actions/github-script@v9
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          VERSION: ${{ steps.version.outputs.version }}
+          CHANGELOG: ${{ steps.generate_notes.outputs.changelog }}
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: ${{ steps.version.outputs.version }}
-          body: ${{ steps.generate_notes.outputs.changelog }}
-          draft: false
-          prerelease: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: process.env.VERSION,
+              name: process.env.VERSION,
+              body: process.env.CHANGELOG,
+              draft: false,
+              prerelease: true
+            });
+
+  publish_to_cocoapods:
+    needs: create_prerelease
+    uses: ./.github/workflows/publish_to_cocoapods.yml
+    with:
+      version: ${{ needs.create_prerelease.outputs.version }}
+    secrets: inherit

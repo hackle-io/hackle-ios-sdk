@@ -12,7 +12,7 @@ jobs:
       should_update: ${{ steps.check.outputs.should_update }}
       js_sdk_version: ${{ steps.check.outputs.js_sdk_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check latest JS SDK version
         id: check
@@ -52,7 +52,7 @@ jobs:
     outputs:
       new_version: ${{ steps.version.outputs.new_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Calculate next minor version
         id: version
@@ -86,15 +86,10 @@ jobs:
       JS_SDK_VERSION: ${{ needs.check-js-sdk-version.outputs.js_sdk_version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.prepare-dev-branch.outputs.branch_name }}
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
 
       - name: Download JS SDK from npm
         run: |

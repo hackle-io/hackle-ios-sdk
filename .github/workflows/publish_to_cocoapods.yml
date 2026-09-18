@@ -5,11 +5,33 @@ on:
     types:
       - prereleased
 
+  workflow_call:
+    inputs:
+      version:
+        description: 'Release version to publish (e.g. 4.2.1)'
+        required: true
+        type: string
+
 jobs:
   publish:
     runs-on: macos-26
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Resolve version
+        id: resolve
+        env:
+          VERSION: ${{ inputs.version || github.event.release.tag_name }}
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: version must be in X.Y.Z format: $VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.resolve.outputs.version }}
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -17,7 +39,7 @@ jobs:
         
       - name: Verify Versions
         run: |
-          RELEASE_NAME="${{ github.event.release.name }}"
+          RELEASE_NAME="${{ steps.resolve.outputs.version }}"
           
           # podspec 버전 추출
           POD_VERSION=$(grep -E 'spec\.version\s*=' Hackle.podspec | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
@@ -52,17 +74,22 @@ jobs:
 
       - name: Promote Prerelease to Release
         if: success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
+        env:
+          VERSION: ${{ steps.resolve.outputs.version }}
         with:
-          github-token: ${{ secrets.PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const releaseId = ${{ github.event.release.id }};
-            
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: process.env.VERSION
+            });
+
             await github.rest.repos.updateRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: releaseId,
+              release_id: release.id,
               prerelease: false,
               make_latest: true
             });
-            
