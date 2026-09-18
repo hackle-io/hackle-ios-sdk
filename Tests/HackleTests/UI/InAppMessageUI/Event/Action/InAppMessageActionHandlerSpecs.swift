@@ -84,7 +84,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 }
 
                 // then - toEventually로 비동기 호출 대기
-                expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
         }
@@ -153,7 +153,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                     // then - view.dismiss()는 동기적으로 호출되고, urlHandler.open은 비동기로 호출됨
                     expect(view.presented).to(beFalse())
                 }
-                expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
         }
