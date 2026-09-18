@@ -5,6 +5,8 @@
 //  Created by sungwoo.yeo on 8/12/25.
 //
 
+import Foundation
+
 typealias HackleBrowserProperties = [String: Any]
 typealias HackleInvokeParameters = [String: Any?]
 
@@ -16,9 +18,18 @@ extension HackleInvokeParameters {
     }
 
     /// 사용자 ID를 반환합니다.
-    /// - Returns: 사용자 ID 또는 `nil`
+    /// - Returns: 문자열은 `.some(userId)`, 명시적 null은 `.some(nil)`, 누락 또는 잘못된 타입은 `nil`
     func userId() -> String?? {
-        self["userId"] as? String?
+        guard let value = self["userId"] else {
+            return nil
+        }
+        if value == nil || value is NSNull {
+            return .some(nil)
+        }
+        guard let userId = value as? String else {
+            return nil
+        }
+        return .some(userId)
     }
 
     /// 기기 ID를 반환합니다.

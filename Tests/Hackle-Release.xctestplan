@@ -1,0 +1,33 @@
+{
+  "configurations": [
+    {
+      "id": "8F2C6A41-5B0E-4D3A-9C7E-2A61D4F0B9E3",
+      "name": "Release",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {
+    "testTimeoutsEnabled": false
+  },
+  "testTargets": [
+    {
+      "parallelizable": false,
+      "skippedTests": [
+        "AtomicReferenceRaceSpecs",
+        "ConcurrentArrayRaceSpecs",
+        "DelegatingMetricRegistrySpecs/concurrency",
+        "MetricRegistryRaceSpecs",
+        "MetricsRaceSpecs",
+        "SessionManagerRaceSpecs",
+        "UserManagerRaceSpecs",
+        "WorkspaceConfigManagerRaceSpecs"
+      ],
+      "target": {
+        "containerPath": "container:Hackle.xcodeproj",
+        "identifier": "Hackle::HackleTests",
+        "name": "HackleTests"
+      }
+    }
+  ],
+  "version": 1
+}
