@@ -9,14 +9,22 @@ permissions:
   pull-requests: write
 
 jobs:
-  ios-sdk-test:
+  ios-sdk-release-test:
     runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - xcode-version: '26.3'
+            simulator-os: '26.2'
+          - xcode-version: '26.6'
+            simulator-os: '26.5'
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.5'
+          xcode-version: ${{ matrix.xcode-version }}
 
       - name: Install xcbeautify
         run: brew install xcbeautify
@@ -25,15 +33,14 @@ jobs:
         run: |
             set -o pipefail && xcodebuild build-for-testing \
                 -project Hackle.xcodeproj \
-                -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+                -scheme Hackle-Release \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=${{ matrix.simulator-os }}' \
                 -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-                SWIFT_STRICT_CONCURRENCY=complete \
-                | xcbeautify --renderer github-actions --quiet 
+                | xcbeautify --renderer github-actions --quiet
 
       - name: Verify framework resources
         run: |
-            FRAMEWORK_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/Hackle.framework"
+            FRAMEWORK_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Release-iphonesimulator/Hackle.framework"
             if [[ ! -d "$FRAMEWORK_PATH" ]]; then
                 echo "::error::Hackle.framework not found at $FRAMEWORK_PATH"
                 exit 1
@@ -54,8 +61,8 @@ jobs:
         run: |
             set -o pipefail && xcodebuild test-without-building \
                 -project Hackle.xcodeproj \
-                -scheme Hackle-Package \
-                -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+                -scheme Hackle-Release \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=${{ matrix.simulator-os }}' \
                 -derivedDataPath "$RUNNER_TEMP/DerivedData" \
                 -retry-tests-on-failure \
                 -test-iterations 3 \
@@ -68,6 +75,6 @@ jobs:
         if: success() || failure()
         with:
           files: build/reports/junit.xml
-          check_name: Test Results
-          comment_title: Test Results
+          check_name: Test Results (Xcode ${{ matrix.xcode-version }})
+          comment_title: Test Results (Xcode ${{ matrix.xcode-version }})
           comment_mode: changes

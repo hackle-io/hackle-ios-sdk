@@ -165,11 +165,27 @@ class HackleInvocationSpec: QuickSpec {
                     let result = sut.invoke(string: jsonString)
                     
                     expect(core.setUserIdRef.invokations().count) == 1
+                    expect(core.setUserIdRef.invokations().first?.arguments.0).to(beNil())
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == true
                     expect(dict["message"]).toNot(beNil())
                     expect(dict["data"]).to(beNil())
+                }
+                it("JSON null은 사용자 ID를 초기화한다") {
+                    let jsonString = #"{"_hackle":{"command":"setUserId","parameters":{"userId":null}}}"#
+                    let result = sut.invoke(string: jsonString)
+
+                    expect(core.setUserIdRef.invokations().count) == 1
+                    expect(core.setUserIdRef.invokations().first?.arguments.0).to(beNil())
+                    expect(result.jsonObject()?["success"] as? Bool) == true
+                }
+                it("문자열이 아닌 사용자 ID는 거부한다") {
+                    let jsonString = createJsonString(command: "setUserId", parameters: ["userId": 123])
+                    let result = sut.invoke(string: jsonString)
+
+                    expect(core.setUserIdRef.invokations().count) == 0
+                    expect(result.jsonObject()?["success"] as? Bool) == false
                 }
             }
             context("set device id") {

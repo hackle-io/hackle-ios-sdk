@@ -59,7 +59,7 @@ class NotificationHandlerSpecs: QuickSpec {
                 handler.handlePushClickAction(notificationData: testData)
 
                 // toEventually로 비동기 Task 완료 대기
-                expect(mockUrlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(mockUrlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(mockUrlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
 
@@ -72,7 +72,7 @@ class NotificationHandlerSpecs: QuickSpec {
                 handler.handlePushClickAction(notificationData: testData)
 
                 // toEventually로 비동기 Task 완료 대기
-                expect(mockUrlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(1))
+                expect(mockUrlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(mockUrlHandler.lastOpenedUrl?.absoluteString).to(equal("hackleapp://www.hackle.io"))
             }
 

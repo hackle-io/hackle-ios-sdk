@@ -1,11 +1,53 @@
 name: update javascript sdk
 
 on:
-  repository_dispatch:
-    types: [update-javascript-sdk]
+  schedule:
+    - cron: '0 23 * * 0' # 매주 월요일 08:00 KST
+  workflow_dispatch:
 
 jobs:
+  check-js-sdk-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should_update: ${{ steps.check.outputs.should_update }}
+      js_sdk_version: ${{ steps.check.outputs.js_sdk_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check latest JS SDK version
+        id: check
+        run: |
+          JS_SDK_VERSION=$(curl -sSf "https://registry.npmjs.org/-/package/@hackler%2Fjavascript-sdk/dist-tags" | jq -r '.latest')
+          if [[ ! "$JS_SDK_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: js_sdk_version must be in X.Y.Z format: $JS_SDK_VERSION"
+            exit 1
+          fi
+          echo "js_sdk_version=$JS_SDK_VERSION" >> $GITHUB_OUTPUT
+
+          CURRENT=$(sed -n -E 's/.*static let javascriptSdkVersion = "([^"]+)".*/\1/p' Sources/Hackle/UI/InAppMessageUI/Views/Html/InAppMessageUIHtmlViewBridgeScript.swift)
+          if [[ -z "$CURRENT" ]]; then
+            echo "Error: Failed to parse current JS SDK version"
+            exit 1
+          fi
+          echo "current: $CURRENT, latest: $JS_SDK_VERSION"
+
+          if [[ "$CURRENT" == "$JS_SDK_VERSION" ]]; then
+            echo "JS SDK is already up to date"
+            echo "should_update=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if git ls-remote --heads origin "update-javascript-sdk-$JS_SDK_VERSION" | grep -q .; then
+            echo "Branch update-javascript-sdk-$JS_SDK_VERSION already exists"
+            echo "should_update=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "should_update=true" >> $GITHUB_OUTPUT
+
   calculate-version:
+    needs: check-js-sdk-version
+    if: needs.check-js-sdk-version.outputs.should_update == 'true'
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.version.outputs.new_version }}
@@ -30,27 +72,20 @@ jobs:
     uses: ./.github/workflows/create_dev_branch.yml
     with:
       new_version: ${{ needs.calculate-version.outputs.new_version }}
-    secrets: inherit
+
+  update-sdk-version:
+    needs: prepare-dev-branch
+    uses: ./.github/workflows/update_sdk_version.yml
+    with:
+      branch: ${{ needs.prepare-dev-branch.outputs.branch_name }}
 
   update-js-sdk:
-    needs: [calculate-version, prepare-dev-branch]
+    needs: [check-js-sdk-version, calculate-version, prepare-dev-branch]
     runs-on: ubuntu-latest
     env:
-      JS_SDK_VERSION: ${{ github.event.client_payload.js_sdk_version }}
+      JS_SDK_VERSION: ${{ needs.check-js-sdk-version.outputs.js_sdk_version }}
 
     steps:
-      - name: Validate input
-        run: |
-          if [[ -z "$JS_SDK_VERSION" ]]; then
-            echo "Error: js_sdk_version is required"
-            exit 1
-          fi
-          if [[ ! "$JS_SDK_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Error: js_sdk_version must be in X.Y.Z format"
-            exit 1
-          fi
-          echo "JS SDK version: $JS_SDK_VERSION"
-
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.prepare-dev-branch.outputs.branch_name }}
