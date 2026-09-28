@@ -1,0 +1,35 @@
+name: notify release
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  notify_native_sdk_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.DEPLOY_CLIENT_ID }}
+          private-key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: hackle-react-native-sdk,hackle-flutter-sdk
+          permission-actions: write
+
+      - name: Trigger hackle-react-native-sdk workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update native sdk
+          repo: ${{ github.repository_owner }}/hackle-react-native-sdk
+          ref: master
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Trigger hackle-flutter-sdk workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update native sdk
+          repo: ${{ github.repository_owner }}/hackle-flutter-sdk
+          ref: master
+          token: ${{ steps.app-token.outputs.token }}

@@ -88,3 +88,8 @@ jobs:
     with:
       version: ${{ needs.create_prerelease.outputs.version }}
     secrets: inherit
+
+  notify_release:
+    needs: publish_to_cocoapods
+    uses: ./.github/workflows/notify_release.yml
+    secrets: inherit

@@ -1,8 +1,8 @@
 name: update javascript sdk
 
 on:
-  schedule:
-    - cron: '0 23 * * 0' # 매주 월요일 08:00 KST
+  repository_dispatch:
+    types: [update-javascript-sdk]
   workflow_dispatch:
 
 jobs:
