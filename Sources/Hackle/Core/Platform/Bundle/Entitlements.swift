@@ -1,5 +1,42 @@
 import Foundation
 
+struct Entitlements: Sendable {
+    let applinks: Set<String>?
+
+    init(applinks: Set<String>?) {
+        self.applinks = applinks
+    }
+
+    static let main: Entitlements = {
+        guard let url = Bundle.main.executableURL else {
+            return Entitlements(applinks: nil)
+        }
+        return from(executableURL: url)
+    }()
+
+    static func from(executableURL url: URL) -> Entitlements {
+        let applinks = (try? Data(contentsOf: url, options: .alwaysMapped))
+            .flatMap { EntitlementsParser.applinks(data: $0) }
+        return Entitlements(applinks: applinks)
+    }
+
+    func isApplink(_ url: URL) -> Bool? {
+        guard let applinks else {
+            return nil
+        }
+        guard let host = url.host?.lowercased(), !host.isEmpty else {
+            return false
+        }
+        return applinks.contains { pattern in
+            if pattern.hasPrefix("*.") {
+                let suffix = pattern.dropFirst(1)
+                return host.hasSuffix(suffix) && host.count > suffix.count
+            }
+            return pattern == host
+        }
+    }
+}
+
 enum EntitlementsParser {
     private static let machMagic64: UInt32 = 0xfeedfacf
     private static let fatMagic: UInt32 = 0xcafebabe

@@ -306,5 +306,67 @@ class EntitlementsSpecs: QuickSpec {
             }
         }
 
+        describe("Entitlements.isApplink") {
+            let entitlements = Entitlements(applinks: ["example.com", "*.hackle.io"])
+
+            it("정확 항목은 정확 일치만") {
+                expect(entitlements.isApplink(URL(string: "https://example.com/p")!)) == true
+                expect(entitlements.isApplink(URL(string: "http://EXAMPLE.com")!)) == true
+                expect(entitlements.isApplink(URL(string: "https://www.example.com")!)) == false
+                expect(entitlements.isApplink(URL(string: "https://example.com.evil.io")!)) == false
+            }
+
+            it("와일드카드는 서브도메인만 매칭하고 루트는 제외") {
+                expect(entitlements.isApplink(URL(string: "https://a.hackle.io")!)) == true
+                expect(entitlements.isApplink(URL(string: "https://A.B.Hackle.IO/x?y=1")!)) == true
+                expect(entitlements.isApplink(URL(string: "https://hackle.io")!)) == false
+                expect(entitlements.isApplink(URL(string: "https://nothackle.io")!)) == false
+            }
+
+            it("host가 없으면 false") {
+                expect(entitlements.isApplink(URL(fileURLWithPath: "/tmp/x"))) == false
+                expect(entitlements.isApplink(URL(string: "mailto:a@b.io")!)) == false
+            }
+
+            it("빈 집합이면 모두 false") {
+                expect(Entitlements(applinks: []).isApplink(URL(string: "https://example.com")!)) == false
+            }
+
+            it("판별 불가면 nil") {
+                expect(Entitlements(applinks: nil).isApplink(URL(string: "https://example.com")!)).to(beNil())
+            }
+        }
+
+        describe("Entitlements.from(executableURL:)") {
+            func tempFile(_ data: Data) -> URL {
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("entitlements-\(UUID().uuidString)")
+                try? data.write(to: url)
+                return url
+            }
+
+            it("파일에 쓴 합성 Mach-O를 매핑해 끝까지 파싱한다") {
+                let url = tempFile(MachOFixture.thin(signature: MachOFixture.entitlementsSignature(associatedDomains: ["applinks:f.io"])))
+                defer { try? FileManager.default.removeItem(at: url) }
+                expect(Entitlements.from(executableURL: url).applinks) == Set(["f.io"])
+            }
+
+            it("없는 파일이면 판별 불가") {
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("missing-\(UUID().uuidString)")
+                expect(Entitlements.from(executableURL: url).applinks).to(beNil())
+            }
+
+            it("빈 파일이면 판별 불가") {
+                let url = tempFile(Data())
+                defer { try? FileManager.default.removeItem(at: url) }
+                expect(Entitlements.from(executableURL: url).applinks).to(beNil())
+            }
+        }
+
+        describe("Entitlements.main") {
+            it("테스트 러너 실행 파일에서 크래시 없이 초기화된다") {
+                _ = Entitlements.main.applinks
+            }
+        }
+
     }
 }
