@@ -64,17 +64,22 @@ class NotificationHandlerSpecs: QuickSpec {
             }
 
             it("setUrlHandler로 교체한 핸들러가 deepLink를 연다") {
+                let initial = MockUrlHandler()
+                let sut = NotificationHandler(
+                    dispatchQueue: DispatchQueue(label: "test.queue"),
+                    urlHandler: initial
+                )
                 let replaced = MockUrlHandler()
-                handler.setUrlHandler(replaced)
+                sut.setUrlHandler(replaced)
                 let testData = mockNotificationData(
                     clickAction: .deepLink,
                     link: "https://www.hackle.io"
                 )
 
-                handler.handlePushClickAction(notificationData: testData)
+                sut.handlePushClickAction(notificationData: testData)
 
-                expect(replaced.openCallCount).toEventually(equal(1))
-                expect(mockUrlHandler.openCallCount) == 0
+                expect(replaced.openCallCount).toEventually(equal(1), timeout: .seconds(5))
+                expect(initial.openCallCount) == 0
             }
 
             it("handlePushClickAction이 deepLink이고 custom scheme이면 urlHandler.open을 호출한다") {
