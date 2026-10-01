@@ -22,6 +22,7 @@ public final class HackleConfig: NSObject, Sendable {
     let automaticScreenTracking: Bool
     let automaticAppLifecycleTracking: Bool
     let manualScreenViewDedupEnabled: Bool
+    let universalLinkDomainCheckEnabled: Bool
     let sessionTracking: Bool
     let sessionPolicy: HackleSessionPolicy
     let pollingInterval: TimeInterval
@@ -42,6 +43,7 @@ public final class HackleConfig: NSObject, Sendable {
         automaticScreenTracking = builder.automaticScreenTracking
         automaticAppLifecycleTracking = builder.automaticAppLifecycleTracking
         manualScreenViewDedupEnabled = builder.manualScreenViewDedupEnabled
+        universalLinkDomainCheckEnabled = builder.universalLinkDomainCheckEnabled
         sessionTracking = (appMode == .native && builder.sessionTracking)
         sessionPolicy = builder.sessionPolicy
         pollingInterval = builder.pollingInterval
@@ -91,6 +93,7 @@ public class HackleConfigBuilder: NSObject {
     var automaticScreenTracking: Bool = true
     var automaticAppLifecycleTracking: Bool = true
     var manualScreenViewDedupEnabled: Bool = true
+    var universalLinkDomainCheckEnabled: Bool = true
 
     var sessionTracking: Bool = true
     var sessionPolicy: HackleSessionPolicy = .default
@@ -188,6 +191,21 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func manualScreenViewDedupEnabled(_ enabled: Bool) -> HackleConfigBuilder {
         self.manualScreenViewDedupEnabled = enabled
+        return self
+    }
+
+    /// Enables or disables checking the app's associated domains before forwarding http/https links.
+    ///
+    /// When enabled, links whose host matches an `applinks:` entry in the app's associated-domains
+    /// entitlement are forwarded to the scene delegate (`scene(_:continue:)`) or the app delegate
+    /// (`application(_:continue:restorationHandler:)`), and other links are opened with `UIApplication.open`.
+    /// When disabled, every http/https link is forwarded to the delegates regardless of the entitlement.
+    /// Custom scheme links are unaffected.
+    ///
+    /// - Parameter enabled: Whether to check associated domains before forwarding http/https links (default: true)
+    /// - Returns: This builder instance for method chaining
+    @objc public func universalLinkDomainCheckEnabled(_ enabled: Bool) -> HackleConfigBuilder {
+        self.universalLinkDomainCheckEnabled = enabled
         return self
     }
 
