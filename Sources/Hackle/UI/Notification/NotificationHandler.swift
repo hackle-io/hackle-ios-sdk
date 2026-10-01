@@ -12,7 +12,8 @@ class NotificationHandler: @unchecked Sendable {
     )
 
     private var receiver: NotificationDataReceiver
-    private let urlHandler: UrlHandler
+    private let urlHandlerLock = NSLock()
+    private var urlHandler: UrlHandler
 
     init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
         self.urlHandler = urlHandler
@@ -24,6 +25,18 @@ class NotificationHandler: @unchecked Sendable {
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
+    }
+
+    func setUrlHandler(_ urlHandler: UrlHandler) {
+        urlHandlerLock.lock()
+        defer { urlHandlerLock.unlock() }
+        self.urlHandler = urlHandler
+    }
+
+    private func currentUrlHandler() -> UrlHandler {
+        urlHandlerLock.lock()
+        defer { urlHandlerLock.unlock() }
+        return urlHandler
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -67,6 +80,7 @@ extension NotificationHandler {
             }
 
             if let url = URL(string: link) {
+                let urlHandler = currentUrlHandler()
                 Task { @MainActor in
                     urlHandler.open(url: url)
                 }
