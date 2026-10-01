@@ -249,7 +249,7 @@ class EntitlementsSpecs: QuickSpec {
 
                 it("blob length가 서명 영역을 넘으면 nil") {
                     var sig = [UInt8](validSignature)
-                    sig.replaceSubrange(24..<28, with: MachOFixture.be32(0x7fff_ffff))
+                    sig.replaceSubrange(24..<28, with: MachOFixture.be32(0x1000))
                     expect(parse(MachOFixture.thin(signature: Data(sig)))).to(beNil())
                 }
 
