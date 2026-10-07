@@ -815,7 +815,9 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        NotificationHandler.shared.setUrlHandler(urlHandler)
+        Task { @MainActor in
+            NotificationHandler.shared.setUrlHandler(urlHandler)
+        }
 
         // - UserExplorer
 

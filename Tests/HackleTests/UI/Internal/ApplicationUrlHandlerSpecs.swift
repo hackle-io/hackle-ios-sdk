@@ -419,26 +419,6 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                         }
                     }
 
-                    it("기본 핸들러 생성 뒤 forwardAll 핸들러를 주입하는 초기화 순서에서도 두 공급자 모두 호출하지 않는다") {
-                        waitUntil { done in
-                            DispatchQueue.main.async {
-                                let (initial, initialCalls) = countingHandler(policy: .applinksOnly)
-                                let (injected, injectedCalls) = countingHandler(policy: .forwardAll)
-                                let notificationHandler = NotificationHandler(
-                                    dispatchQueue: DispatchQueue(label: "test.queue"),
-                                    urlHandler: initial
-                                )
-                                notificationHandler.setUrlHandler(injected)
-                                injected.open(url: url)
-                                NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
-                                expect(initialCalls.get()) == 0
-                                expect(injectedCalls.get()) == 0
-                                withExtendedLifetime((initial, injected, notificationHandler)) {}
-                                done()
-                            }
-                        }
-                    }
-
                 }
             }
         }

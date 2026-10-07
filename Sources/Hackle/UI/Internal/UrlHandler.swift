@@ -12,6 +12,34 @@ protocol UrlHandler: Sendable {
     @MainActor func open(url: URL)
 }
 
+enum UrlSchemes {
+    static func isHttp(_ scheme: String) -> Bool {
+        return scheme == "http" || scheme == "https"
+    }
+}
+
+final class PendingUrlHandler: UrlHandler, @unchecked Sendable {
+    @MainActor private(set) var pendingUrl: URL?
+
+    @MainActor func open(url: URL) {
+        guard let scheme = url.scheme else {
+            return
+        }
+        guard UrlSchemes.isHttp(scheme) else {
+            UIUtils.application?.open(url, options: [:]) { success in
+                Log.debug("Redirected to: \(url.absoluteString) [success=\(success)]")
+            }
+            return
+        }
+        pendingUrl = url
+    }
+
+    @MainActor func drain() -> URL? {
+        defer { pendingUrl = nil }
+        return pendingUrl
+    }
+}
+
 enum UniversalLinkPolicy: Sendable {
     case applinksOnly
     case forwardAll
@@ -96,7 +124,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
             return
         }
 
-        guard isHttpScheme(scheme) else {
+        guard UrlSchemes.isHttp(scheme) else {
             openLink(url)
             return
         }
@@ -107,10 +135,6 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         case .continueUserActivity(let includingScene):
             openUniversalLink(url, includingScene: includingScene)
         }
-    }
-
-    private func isHttpScheme(_ scheme: String) -> Bool {
-        return scheme == "http" || scheme == "https"
     }
 
     @MainActor private func route(_ url: URL) -> Route {
