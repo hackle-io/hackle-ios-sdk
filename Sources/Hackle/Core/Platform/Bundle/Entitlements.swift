@@ -108,7 +108,7 @@ enum EntitlementsParser {
             return Region(offset: 0, size: data.count)
         }
         guard data.uint32(at: 0, bigEndian: true) == fatMagic,
-              let count = data.uint32(at: 4, bigEndian: true).map({ Int($0) }),
+              let count = data.uint32AsInt(at: 4, bigEndian: true),
               count > 0, count <= maxCount,
               count * fatArchSize <= data.count - fatHeaderSize
         else {
@@ -117,8 +117,8 @@ enum EntitlementsParser {
         for i in 0..<count {
             let base = fatHeaderSize + i * fatArchSize
             guard let cpuType = data.uint32(at: base, bigEndian: true),
-                  let offset = data.uint32(at: base + 8, bigEndian: true).map({ Int($0) }),
-                  let size = data.uint32(at: base + 12, bigEndian: true).map({ Int($0) })
+                  let offset = data.uint32AsInt(at: base + 8, bigEndian: true),
+                  let size = data.uint32AsInt(at: base + 12, bigEndian: true)
             else {
                 return nil
             }
@@ -137,8 +137,8 @@ enum EntitlementsParser {
 
     private static func codeSignatureRegion(_ data: Data, slice: Region) -> Region? {
         guard slice.size >= machHeader64Size,
-              let ncmds = data.uint32(at: slice.offset + 16, bigEndian: false).map({ Int($0) }),
-              let sizeofcmds = data.uint32(at: slice.offset + 20, bigEndian: false).map({ Int($0) }),
+              let ncmds = data.uint32AsInt(at: slice.offset + 16, bigEndian: false),
+              let sizeofcmds = data.uint32AsInt(at: slice.offset + 20, bigEndian: false),
               ncmds <= maxCount,
               sizeofcmds <= slice.size - machHeader64Size
         else {
@@ -149,15 +149,15 @@ enum EntitlementsParser {
         for _ in 0..<ncmds {
             guard loadCommandHeaderSize <= sizeofcmds - cursor,
                   let cmd = data.uint32(at: commandsStart + cursor, bigEndian: false),
-                  let cmdsize = data.uint32(at: commandsStart + cursor + 4, bigEndian: false).map({ Int($0) }),
+                  let cmdsize = data.uint32AsInt(at: commandsStart + cursor + 4, bigEndian: false),
                   cmdsize >= loadCommandHeaderSize, cmdsize <= sizeofcmds - cursor
             else {
                 return nil
             }
             if cmd == lcCodeSignature {
                 guard cmdsize >= linkeditDataCommandSize,
-                      let dataoff = data.uint32(at: commandsStart + cursor + 8, bigEndian: false).map({ Int($0) }),
-                      let datasize = data.uint32(at: commandsStart + cursor + 12, bigEndian: false).map({ Int($0) }),
+                      let dataoff = data.uint32AsInt(at: commandsStart + cursor + 8, bigEndian: false),
+                      let datasize = data.uint32AsInt(at: commandsStart + cursor + 12, bigEndian: false),
                       datasize >= superBlobHeaderSize,
                       dataoff <= slice.size,
                       datasize <= slice.size - dataoff
@@ -173,9 +173,9 @@ enum EntitlementsParser {
 
     private static func entitlementsPlist(_ data: Data, signature: Region) -> [String: Any]? {
         guard data.uint32(at: signature.offset, bigEndian: true) == superBlobMagic,
-              let superBlobSize = data.uint32(at: signature.offset + 4, bigEndian: true).map({ Int($0) }),
+              let superBlobSize = data.uint32AsInt(at: signature.offset + 4, bigEndian: true),
               superBlobSize >= superBlobHeaderSize, superBlobSize <= signature.size,
-              let count = data.uint32(at: signature.offset + 8, bigEndian: true).map({ Int($0) }),
+              let count = data.uint32AsInt(at: signature.offset + 8, bigEndian: true),
               count <= maxCount,
               count * blobIndexSize <= superBlobSize - superBlobHeaderSize
         else {
@@ -184,7 +184,7 @@ enum EntitlementsParser {
         for i in 0..<count {
             let indexOffset = signature.offset + superBlobHeaderSize + i * blobIndexSize
             guard let type = data.uint32(at: indexOffset, bigEndian: true),
-                  let offset = data.uint32(at: indexOffset + 4, bigEndian: true).map({ Int($0) })
+                  let offset = data.uint32AsInt(at: indexOffset + 4, bigEndian: true)
             else {
                 return nil
             }
@@ -194,7 +194,7 @@ enum EntitlementsParser {
             guard offset >= superBlobHeaderSize + count * blobIndexSize,
                   offset <= superBlobSize - blobHeaderSize,
                   data.uint32(at: signature.offset + offset, bigEndian: true) == entitlementsMagic,
-                  let length = data.uint32(at: signature.offset + offset + 4, bigEndian: true).map({ Int($0) }),
+                  let length = data.uint32AsInt(at: signature.offset + offset + 4, bigEndian: true),
                   length >= blobHeaderSize,
                   length <= maxBlobLength,
                   length <= superBlobSize - offset
@@ -212,6 +212,10 @@ enum EntitlementsParser {
 }
 
 private extension Data {
+    func uint32AsInt(at offset: Int, bigEndian: Bool) -> Int? {
+        uint32(at: offset, bigEndian: bigEndian).map { Int($0) }
+    }
+
     func uint32(at offset: Int, bigEndian: Bool) -> UInt32? {
         guard offset >= 0, offset <= count - 4 else {
             return nil
