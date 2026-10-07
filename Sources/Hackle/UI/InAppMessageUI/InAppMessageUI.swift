@@ -75,13 +75,7 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         self.window = window
 
         // Display
-        if #available(iOS 15.0, *) {
-            UIView.animate(withDuration: 0.25) {
-                window.isHidden = false
-            }
-        } else {
-            window.isHidden = false
-        }
+        window.isHidden = false
         return InAppMessagePresentResponse.of(code: .present, context: context)
     }
 
