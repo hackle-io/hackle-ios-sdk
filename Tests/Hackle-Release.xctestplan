@@ -27,6 +27,14 @@
         "identifier": "Hackle::HackleTests",
         "name": "HackleTests"
       }
+    },
+    {
+      "parallelizable": false,
+      "target": {
+        "containerPath": "container:Hackle.xcodeproj",
+        "identifier": "Hackle::HackleNotificationServiceTests",
+        "name": "HackleNotificationServiceTests"
+      }
     }
   ],
   "version": 1
