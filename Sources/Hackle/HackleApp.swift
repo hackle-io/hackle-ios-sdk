@@ -658,7 +658,9 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let urlHandler = ApplicationUrlHandler()
+        let urlHandler = ApplicationUrlHandler(
+            policy: config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll
+        )
         let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlHandler: urlHandler),
@@ -813,6 +815,9 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
+        Task { @MainActor in
+            NotificationHandler.shared.setUrlHandler(urlHandler)
+        }
 
         // - UserExplorer
 

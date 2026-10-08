@@ -8,11 +8,11 @@ class NotificationHandler: @unchecked Sendable {
             label: "io.hackle.NotificationHandler",
             qos: .utility
         ),
-        urlHandler: ApplicationUrlHandler()
+        urlHandler: PendingUrlHandler()
     )
 
     private var receiver: NotificationDataReceiver
-    private let urlHandler: UrlHandler
+    @MainActor private var urlHandler: UrlHandler
 
     init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
         self.urlHandler = urlHandler
@@ -24,6 +24,15 @@ class NotificationHandler: @unchecked Sendable {
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
+    }
+
+    @MainActor func setUrlHandler(_ urlHandler: UrlHandler) {
+        let previous = self.urlHandler
+        self.urlHandler = urlHandler
+        guard let pending = previous as? PendingUrlHandler, let url = pending.drain() else {
+            return
+        }
+        urlHandler.open(url: url)
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -68,7 +77,7 @@ extension NotificationHandler {
 
             if let url = URL(string: link) {
                 Task { @MainActor in
-                    urlHandler.open(url: url)
+                    self.urlHandler.open(url: url)
                 }
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")

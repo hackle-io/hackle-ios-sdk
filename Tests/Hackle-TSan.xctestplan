@@ -20,6 +20,7 @@
         "DelegatingMetricRegistrySpecs\/concurrency",
         "MetricRegistryRaceSpecs",
         "MetricsRaceSpecs",
+        "NotificationHandlerRaceSpecs",
         "SessionManagerRaceSpecs",
         "UserManagerRaceSpecs",
         "WorkspaceConfigManagerRaceSpecs"
