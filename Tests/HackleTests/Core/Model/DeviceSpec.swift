@@ -90,6 +90,28 @@ class DeviceSpec : QuickSpec {
             assertDevicePropertiesStructure(properties: device.properties)
         }
 
+        it("timeZone should follow system time zone change after initialize") {
+            let original = getenv("TZ").map { String(cString: $0) }
+            defer {
+                if let original = original {
+                    setenv("TZ", original, 1)
+                } else {
+                    unsetenv("TZ")
+                }
+                NSTimeZone.resetSystemTimeZone()
+            }
+
+            setenv("TZ", "Asia/Seoul", 1)
+            NSTimeZone.resetSystemTimeZone()
+            let device = DeviceImpl(deviceId: UUID().uuidString)
+            MainActor.assumeIsolated { device.initialize() }
+            expect(device.properties["timeZone"] as? String) == "Asia/Seoul"
+
+            setenv("TZ", "America/New_York", 1)
+            NSTimeZone.resetSystemTimeZone()
+            expect(device.properties["timeZone"] as? String) == "America/New_York"
+        }
+
         it("multiple initialize calls should be safe") {
             let device = DeviceImpl(deviceId: UUID().uuidString)
             MainActor.assumeIsolated {
