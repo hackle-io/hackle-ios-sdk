@@ -22,43 +22,9 @@ import UserNotifications
             return false
         }
 
-        return handleRichNotification(notificationContent: baseNotificationContent, contentHandler: contentHandler)
-    }
-
-    /// Handles rich notifications with mutable content.
-    ///
-    /// - Parameters:
-    ///   - notificationContent: The mutable notification content
-    ///   - contentHandler: Handler to process the notification content
-    /// - Returns: True if the notification was handled by Hackle, false otherwise
-    @objc static public func handleRichNotification(
-        notificationContent: UNMutableNotificationContent,
-        contentHandler: @escaping (UNNotificationContent) -> Void
-    ) -> Bool {
-        guard NotificationData.from(data: notificationContent.userInfo) != nil else {
-            return false
-        }
-
-        return resolveRichNotificationContent(notificationContent: notificationContent, completion: { hackleNotificationContent in
+        return resolveRichNotificationContent(notificationContent: baseNotificationContent, completion: { hackleNotificationContent in
             contentHandler(hackleNotificationContent)
         })
-    }
-
-    /// Resolves rich notification content from a notification request.
-    ///
-    /// - Parameters:
-    ///   - request: The notification request
-    ///   - completion: Completion handler with resolved content
-    /// - Returns: True if the notification was handled by Hackle, false otherwise
-    @objc static public func resolveRichNotificationContent(
-        request: UNNotificationRequest,
-        completion: @escaping (UNMutableNotificationContent) -> Void
-    ) -> Bool {
-        guard let baseNotificationContent: UNMutableNotificationContent = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
-            return false
-        }
-
-        return resolveRichNotificationContent(notificationContent: baseNotificationContent, completion: completion)
     }
 
     /// Resolves rich notification content from mutable content.

@@ -92,7 +92,7 @@ extension Hackle {
     ///   - notificationContent: The mutable notification content
     ///   - contentHandler: Handler to process the notification content
     /// - Returns: True if the notification was handled by Hackle, false otherwise
-    @available(*, deprecated, message: "Use HackleNotificationService.handleRichNotification(request:contentHandler:) (SPM product 'HackleNotificationService') instead. Hackle should not be linked into app extensions.")
+    @available(*, deprecated, message: "Use HackleNotificationService.resolveRichNotificationContent(notificationContent:completion:) (SPM product 'HackleNotificationService') instead. Hackle should not be linked into app extensions.")
     @objc static public func handleRichNotification(
         notificationContent: UNMutableNotificationContent,
         contentHandler: @escaping (UNNotificationContent) -> Void
@@ -112,7 +112,7 @@ extension Hackle {
     ///   - request: The notification request
     ///   - completion: Completion handler with resolved content
     /// - Returns: True if the notification was handled by Hackle, false otherwise
-    @available(*, deprecated, message: "Use HackleNotificationService.resolveRichNotificationContent(request:completion:) (SPM product 'HackleNotificationService') instead. Hackle should not be linked into app extensions.")
+    @available(*, deprecated, message: "Use HackleNotificationService.resolveRichNotificationContent(notificationContent:completion:) (SPM product 'HackleNotificationService') instead. Hackle should not be linked into app extensions.")
     @objc static public func resolveRichNotificationContent(
         request: UNNotificationRequest,
         completion: @escaping (UNMutableNotificationContent) -> Void
@@ -130,7 +130,7 @@ extension Hackle {
     ///   - notificationContent: The mutable notification content
     ///   - completion: Completion handler with resolved content
     /// - Returns: True if the notification was handled by Hackle, false otherwise
-    @available(*, deprecated, message: "Use HackleNotificationService.resolveRichNotificationContent(request:completion:) (SPM product 'HackleNotificationService') instead. Hackle should not be linked into app extensions.")
+    @available(*, deprecated, message: "Use HackleNotificationService.resolveRichNotificationContent(notificationContent:completion:) (SPM product 'HackleNotificationService') instead. Hackle should not be linked into app extensions.")
     @objc static public func resolveRichNotificationContent(
         notificationContent: UNMutableNotificationContent,
         completion: @escaping (UNMutableNotificationContent) -> Void
