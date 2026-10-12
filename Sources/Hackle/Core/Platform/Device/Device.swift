@@ -28,7 +28,7 @@ class DeviceImpl : Device, @unchecked Sendable {
             brand: "Apple",
             manufacturer: "Apple",
             locale: DeviceImpl.getPreferredLocale(),
-            timezone: TimeZone.current,
+            timezone: TimeZone.autoupdatingCurrent,
             screenInfo: screenInfo
         )
         _deviceInfo.set(newValue: info)

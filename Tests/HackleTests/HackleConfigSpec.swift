@@ -185,6 +185,27 @@ class HackleConfigSpec: QuickSpec {
             }
         }
 
+        describe("universalLinkDomainCheckEnabled") {
+            it("default value should be true") {
+                let config = HackleConfigBuilder().build()
+                expect(config.universalLinkDomainCheckEnabled) == true
+            }
+
+            it("should be able to set to false") {
+                let config = HackleConfigBuilder()
+                    .universalLinkDomainCheckEnabled(false)
+                    .build()
+                expect(config.universalLinkDomainCheckEnabled) == false
+            }
+
+            it("should be able to set to true explicitly") {
+                let config = HackleConfigBuilder()
+                    .universalLinkDomainCheckEnabled(true)
+                    .build()
+                expect(config.universalLinkDomainCheckEnabled) == true
+            }
+        }
+
         describe("sessionPolicy") {
             it("기본값은 default 이다") {
                 let config = HackleConfigBuilder().build()
