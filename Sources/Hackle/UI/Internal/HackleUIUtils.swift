@@ -13,6 +13,8 @@ class UIUtils {
 
     static var application: UIApplication? {
         // NOTE: app extension에서 항상 nil
+        //  다음 메이저에서 `UIApplication.shared` 직접 호출·non-optional로 전환한다.
+        //  그때부터 extension 타겟에 Hackle을 링크하면 컴파일 에러가 나며, extension은 HackleNotificationService를 사용해야 한다.
         UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication
     }
 

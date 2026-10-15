@@ -1,13 +1,13 @@
 //
 //  MimeTypeResolverSpecs.swift
-//  Hackle
+//  HackleNotificationServiceTests
 //
 //  Created by sungwoo.yeo on 8/21/25.
 //
 
 import Quick
 import Nimble
-@testable import Hackle
+@testable import HackleNotificationService
 
 class MimeTypeResolverSpec: QuickSpec {
     override class func spec() {
