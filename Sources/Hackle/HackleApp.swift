@@ -782,10 +782,8 @@ extension HackleApp {
             resetProcessor: inAppMessageResetProcessor
         )
 
-        if !inAppMessageDisabled(config: config) {
-            eventPublisher.addListener(listener: inAppMessageManager)
-            userManager.addListener(listener: inAppMessageManager)
-        }
+        eventPublisher.addListener(listener: inAppMessageManager)
+        userManager.addListener(listener: inAppMessageManager)
 
         // - Push
 
@@ -893,16 +891,6 @@ extension HackleApp {
             config: config,
             hackleInvocator: hackleInvocator
         )
-    }
-
-    private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
-        if let disableInAppMessage = config.extra["$disable_inappmessage"],
-           disableInAppMessage == "true"
-        {
-            return true
-        }
-
-        return false
     }
 
     private static func metricConfiguration(
