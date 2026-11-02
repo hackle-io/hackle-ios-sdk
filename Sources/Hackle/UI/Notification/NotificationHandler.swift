@@ -12,10 +12,12 @@ class NotificationHandler: @unchecked Sendable {
     )
 
     private var receiver: NotificationDataReceiver
+    private let delegateRegistry: HackleDelegateRegistry
     @MainActor private var urlHandler: UrlHandler
 
-    init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
+    init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler, delegateRegistry: HackleDelegateRegistry = .shared) {
         self.urlHandler = urlHandler
+        self.delegateRegistry = delegateRegistry
         self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
@@ -32,7 +34,7 @@ class NotificationHandler: @unchecked Sendable {
         guard let pending = previous as? PendingUrlHandler, let url = pending.drain() else {
             return
         }
-        urlHandler.open(url: url)
+        delegateRegistry.open(url: url, channel: .push, urlHandler: urlHandler)
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -77,7 +79,11 @@ extension NotificationHandler {
 
             if let url = URL(string: link) {
                 Task { @MainActor in
-                    self.urlHandler.open(url: url)
+                    if let pending = self.urlHandler as? PendingUrlHandler {
+                        pending.open(url: url)
+                    } else {
+                        self.delegateRegistry.open(url: url, channel: .push, urlHandler: self.urlHandler)
+                    }
                 }
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")
