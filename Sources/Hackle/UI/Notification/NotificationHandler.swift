@@ -7,17 +7,14 @@ class NotificationHandler: @unchecked Sendable {
         dispatchQueue: DispatchQueue(
             label: "io.hackle.NotificationHandler",
             qos: .utility
-        ),
-        urlHandler: PendingUrlHandler()
+        )
     )
 
     private var receiver: NotificationDataReceiver
-    private let delegateRegistry: HackleDelegateRegistry
-    @MainActor private var urlHandler: UrlHandler
+    private let urlHandler: HackleUrlHandler
 
-    init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler, delegateRegistry: HackleDelegateRegistry = .shared) {
+    init(dispatchQueue: DispatchQueue, urlHandler: HackleUrlHandler = .shared) {
         self.urlHandler = urlHandler
-        self.delegateRegistry = delegateRegistry
         self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
@@ -26,15 +23,6 @@ class NotificationHandler: @unchecked Sendable {
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
-    }
-
-    @MainActor func setUrlHandler(_ urlHandler: UrlHandler) {
-        let previous = self.urlHandler
-        self.urlHandler = urlHandler
-        guard let pending = previous as? PendingUrlHandler, let url = pending.drain() else {
-            return
-        }
-        delegateRegistry.open(url: url, channel: .push, urlHandler: urlHandler)
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -79,11 +67,7 @@ extension NotificationHandler {
 
             if let url = URL(string: link) {
                 Task { @MainActor in
-                    if let pending = self.urlHandler as? PendingUrlHandler {
-                        pending.open(url: url)
-                    } else {
-                        self.delegateRegistry.open(url: url, channel: .push, urlHandler: self.urlHandler)
-                    }
+                    self.urlHandler.open(url: url, channel: .push)
                 }
             } else {
                 Log.info("Landing url is not a valid URL: \(link)")

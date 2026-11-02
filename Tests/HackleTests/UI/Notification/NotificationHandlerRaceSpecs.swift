@@ -12,9 +12,10 @@ class NotificationHandlerRaceSpecs: QuickSpec {
 
         it("installing the url handler concurrently with push clicks never duplicates or strands a link") {
             let pendingHandler = PendingUrlHandler()
+            let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
             let handler = NotificationHandler(
                 dispatchQueue: DispatchQueue(label: "test.race.queue"),
-                urlHandler: pendingHandler
+                urlHandler: hackleUrlHandler
             )
             let installed = MockUrlHandler()
             let writerCount = 4
@@ -52,7 +53,8 @@ class NotificationHandlerRaceSpecs: QuickSpec {
                     }
                 }
                 Task { @MainActor in
-                    handler.setUrlHandler(installed)
+                    hackleUrlHandler.setHandler(installed)
+                    hackleUrlHandler.openPendingUrl()
                 }
 
                 group.notify(queue: .main) {

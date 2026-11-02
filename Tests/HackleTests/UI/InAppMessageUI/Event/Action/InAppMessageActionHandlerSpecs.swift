@@ -34,7 +34,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             beforeEach {
                 urlHandler = MockUrlHandler()
                 urlHandler.reset()
-                sut = InAppMessageLinkActionHandler(urlHandler: urlHandler)
+                sut = InAppMessageLinkActionHandler(urlHandler: HackleUrlHandler(handler: urlHandler))
             }
 
             it("supports") {
@@ -90,10 +90,10 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("delegate가 있으면 delegate만 호출한다") {
                 let delegate = MockHackleDelegate()
-                let registry = HackleDelegateRegistry()
-                registry.setDelegate(delegate)
                 let urlHandler = MockUrlHandler()
-                let sut = InAppMessageLinkActionHandler(urlHandler: urlHandler, delegateRegistry: registry)
+                let hackleUrlHandler = HackleUrlHandler(handler: urlHandler)
+                hackleUrlHandler.setDelegate(delegate)
+                let sut = InAppMessageLinkActionHandler(urlHandler: hackleUrlHandler)
                 let view = MockInAppMessageView(presented: true)
                 let action = InAppMessageEntity.action(type: .webLink, value: "myapp://home")
 
@@ -112,9 +112,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("delegate가 있어도 url이 유효하지 않으면 호출하지 않는다") {
                 let delegate = MockHackleDelegate()
-                let registry = HackleDelegateRegistry()
-                registry.setDelegate(delegate)
-                let sut = InAppMessageLinkActionHandler(urlHandler: MockUrlHandler(), delegateRegistry: registry)
+                let hackleUrlHandler = HackleUrlHandler(handler: MockUrlHandler())
+                hackleUrlHandler.setDelegate(delegate)
+                let sut = InAppMessageLinkActionHandler(urlHandler: hackleUrlHandler)
                 let view = MockInAppMessageView(presented: true)
                 let action = InAppMessageEntity.action(type: .webLink, value: "")
 
@@ -134,7 +134,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
             beforeEach {
                 urlHandler = MockUrlHandler()
                 urlHandler.reset()
-                sut = InAppMessageLinkAndCloseHandler(urlHandler: urlHandler)
+                sut = InAppMessageLinkAndCloseHandler(urlHandler: HackleUrlHandler(handler: urlHandler))
             }
 
             it("supports") {
@@ -197,10 +197,10 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("delegate가 있으면 닫고 delegate만 호출한다") {
                 let delegate = MockHackleDelegate()
-                let registry = HackleDelegateRegistry()
-                registry.setDelegate(delegate)
                 let urlHandler = MockUrlHandler()
-                let sut = InAppMessageLinkAndCloseHandler(urlHandler: urlHandler, delegateRegistry: registry)
+                let hackleUrlHandler = HackleUrlHandler(handler: urlHandler)
+                hackleUrlHandler.setDelegate(delegate)
+                let sut = InAppMessageLinkAndCloseHandler(urlHandler: hackleUrlHandler)
                 let view = MockInAppMessageView(presented: true)
                 let action = InAppMessageEntity.action(type: .linkAndClose, value: "myapp://home")
 
@@ -216,9 +216,9 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
 
             it("delegate가 있어도 value가 nil이면 닫지도 호출하지도 않는다") {
                 let delegate = MockHackleDelegate()
-                let registry = HackleDelegateRegistry()
-                registry.setDelegate(delegate)
-                let sut = InAppMessageLinkAndCloseHandler(urlHandler: MockUrlHandler(), delegateRegistry: registry)
+                let hackleUrlHandler = HackleUrlHandler(handler: MockUrlHandler())
+                hackleUrlHandler.setDelegate(delegate)
+                let sut = InAppMessageLinkAndCloseHandler(urlHandler: hackleUrlHandler)
                 let view = MockInAppMessageView(presented: true)
                 let action = InAppMessageEntity.action(type: .linkAndClose, value: nil)
 

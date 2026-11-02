@@ -34,7 +34,7 @@ class NotificationHandlerSpecs: QuickSpec {
                 mockUrlHandler.reset()
                 handler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.queue"),
-                    urlHandler: mockUrlHandler
+                    urlHandler: HackleUrlHandler(handler: mockUrlHandler)
                 )
                 mockReceiver = MockNotificationDataReceiver()
                 handler.setNotificationDataReceiver(receiver: mockReceiver)
@@ -104,13 +104,12 @@ class NotificationHandlerSpecs: QuickSpec {
             
             it("delegate가 있으면 deepLink 클릭 시 delegate만 호출한다") {
                 let localUrlHandler = MockUrlHandler()
-                let registry = HackleDelegateRegistry()
+                let hackleUrlHandler = HackleUrlHandler(handler: localUrlHandler)
                 let delegate = MockHackleDelegate()
-                registry.setDelegate(delegate)
+                hackleUrlHandler.setDelegate(delegate)
                 let delegateHandler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.delegate.queue"),
-                    urlHandler: localUrlHandler,
-                    delegateRegistry: registry
+                    urlHandler: hackleUrlHandler
                 )
 
                 delegateHandler.handlePushClickAction(
@@ -125,13 +124,12 @@ class NotificationHandlerSpecs: QuickSpec {
 
             it("delegate가 있어도 appOpen이면 호출하지 않는다") {
                 let localUrlHandler = MockUrlHandler()
-                let registry = HackleDelegateRegistry()
+                let hackleUrlHandler = HackleUrlHandler(handler: localUrlHandler)
                 let delegate = MockHackleDelegate()
-                registry.setDelegate(delegate)
+                hackleUrlHandler.setDelegate(delegate)
                 let delegateHandler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.delegate.appopen.queue"),
-                    urlHandler: localUrlHandler,
-                    delegateRegistry: registry
+                    urlHandler: hackleUrlHandler
                 )
 
                 delegateHandler.handlePushClickAction(

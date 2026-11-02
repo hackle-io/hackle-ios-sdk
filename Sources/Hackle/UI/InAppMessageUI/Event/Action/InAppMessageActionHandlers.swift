@@ -11,12 +11,10 @@ class InAppMessageCloseActionHandler: InAppMessageActionHandler {
 }
 
 final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
-    private let urlHandler: UrlHandler
-    private let delegateRegistry: HackleDelegateRegistry
+    private let urlHandler: HackleUrlHandler
 
-    init(urlHandler: UrlHandler, delegateRegistry: HackleDelegateRegistry = .shared) {
+    init(urlHandler: HackleUrlHandler = .shared) {
         self.urlHandler = urlHandler
-        self.delegateRegistry = delegateRegistry
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
@@ -29,18 +27,16 @@ final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
             return
         }
         Task { @MainActor in
-            delegateRegistry.open(url: url, channel: .inAppMessage, urlHandler: urlHandler)
+            urlHandler.open(url: url, channel: .inAppMessage)
         }
     }
 }
 
 final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable {
-    private let urlHandler: UrlHandler
-    private let delegateRegistry: HackleDelegateRegistry
+    private let urlHandler: HackleUrlHandler
 
-    init(urlHandler: UrlHandler, delegateRegistry: HackleDelegateRegistry = .shared) {
+    init(urlHandler: HackleUrlHandler = .shared) {
         self.urlHandler = urlHandler
-        self.delegateRegistry = delegateRegistry
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
@@ -54,7 +50,7 @@ final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable
         }
         view.dismiss()
         Task { @MainActor in
-            delegateRegistry.open(url: url, channel: .inAppMessage, urlHandler: urlHandler)
+            urlHandler.open(url: url, channel: .inAppMessage)
         }
     }
 }

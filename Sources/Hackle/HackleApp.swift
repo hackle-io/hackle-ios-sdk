@@ -663,8 +663,8 @@ extension HackleApp {
         )
         let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
-            InAppMessageLinkActionHandler(urlHandler: urlHandler),
-            InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
+            InAppMessageLinkActionHandler(),
+            InAppMessageLinkAndCloseHandler(),
             InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
@@ -814,7 +814,8 @@ extension HackleApp {
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
         Task { @MainActor in
-            NotificationHandler.shared.setUrlHandler(urlHandler)
+            HackleUrlHandler.shared.setHandler(urlHandler)
+            HackleUrlHandler.shared.openPendingUrl()
         }
 
         // - UserExplorer

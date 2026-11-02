@@ -175,14 +175,13 @@ extension Hackle {
 extension Hackle {
     /// Sets the delegate that handles links from push notifications and in-app messages.
     ///
-    /// Call this before `Hackle.initialize`.
-    /// Links tapped before initialization are delivered after initialization.
+    /// Call this before `Hackle.initialize` to also receive links tapped before initialization.
     /// While a delegate is registered, the SDK does not open links itself.
     /// The delegate is called on the main thread. Pass nil to remove it.
     /// The SDK keeps a strong reference to the delegate until nil is passed.
     ///
     /// - Parameter delegate: The ``HackleDelegate``, or nil to remove it
     @objc static public func setDelegate(_ delegate: HackleDelegate?) {
-        HackleDelegateRegistry.shared.setDelegate(delegate)
+        HackleUrlHandler.shared.setDelegate(delegate)
     }
 }

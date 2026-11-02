@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Placeholder handler used until the host app installs its own via `setUrlHandler`.
+/// Placeholder handler used until the host app installs its own via `setHandler`.
 /// Links are held regardless of scheme until initialization.
 /// Only the most recent link is kept.
 final class PendingUrlHandler: UrlHandler, @unchecked Sendable {

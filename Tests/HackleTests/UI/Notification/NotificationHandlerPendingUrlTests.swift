@@ -8,9 +8,10 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     @MainActor
     func testUnmatchedLinkBeforeInitializationIsDeliveredAfterForwardAllHandlerInstalled() async throws {
         let pendingHandler = PendingUrlHandler()
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let notificationHandler = NotificationHandler(
             dispatchQueue: DispatchQueue(label: "test.pending.push"),
-            urlHandler: pendingHandler
+            urlHandler: hackleUrlHandler
         )
         let activityHandler = MockUserActivityHandler()
         activityHandler.sceneSupported = true
@@ -24,7 +25,9 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         try await waitUntil { pendingHandler.pendingUrl == self.url }
         XCTAssertTrue(activityHandler.sceneUrls.isEmpty)
 
-        notificationHandler.setUrlHandler(configured)
+        hackleUrlHandler.setHandler(configured)
+
+        hackleUrlHandler.openPendingUrl()
         XCTAssertNil(pendingHandler.pendingUrl)
         XCTAssertTrue(configured.hasPendingUrl)
         XCTAssertTrue(activityHandler.sceneUrls.isEmpty)
@@ -38,10 +41,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     @MainActor
     func testDrainOpensLastLinkOnInstalledHandler() {
         let pendingHandler = PendingUrlHandler()
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.drain.last"),
-            urlHandler: pendingHandler
-        )
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let urls = (1...3).map { URL(string: "https://example.com/\($0)")! }
         for url in urls {
             pendingHandler.open(url: url)
@@ -49,7 +49,8 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         XCTAssertEqual(pendingHandler.pendingUrl, urls.last)
 
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        hackleUrlHandler.setHandler(installed)
+        hackleUrlHandler.openPendingUrl()
         XCTAssertEqual(installed.openedUrls, [urls.last!])
         XCTAssertNil(pendingHandler.pendingUrl)
     }
@@ -57,12 +58,14 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     @MainActor
     func testClickAfterInstallGoesDirectlyToInstalledHandler() async throws {
         let pendingHandler = PendingUrlHandler()
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let notificationHandler = NotificationHandler(
             dispatchQueue: DispatchQueue(label: "test.direct.push"),
-            urlHandler: pendingHandler
+            urlHandler: hackleUrlHandler
         )
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        hackleUrlHandler.setHandler(installed)
+        hackleUrlHandler.openPendingUrl()
 
         notificationHandler.handlePushClickAction(notificationData: notificationData())
         try await waitUntil { installed.openCallCount == 1 }
@@ -73,13 +76,11 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     @MainActor
     func testReplacingNonPendingHandlerDoesNotReplay() {
         let first = MockUrlHandler()
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.replace"),
-            urlHandler: first
-        )
+        let hackleUrlHandler = HackleUrlHandler(handler: first)
         first.open(url: url)
         let second = MockUrlHandler()
-        notificationHandler.setUrlHandler(second)
+        hackleUrlHandler.setHandler(second)
+        hackleUrlHandler.openPendingUrl()
         XCTAssertEqual(second.openCallCount, 0)
     }
 
@@ -94,48 +95,41 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     }
 
     @MainActor
-    func testDelegateReceivesPendingCustomSchemeOnInstall() async throws {
+    func testDelegateReceivesCustomSchemeBeforeInitializationImmediately() async throws {
         let pendingHandler = PendingUrlHandler()
-        let registry = HackleDelegateRegistry()
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let delegate = MockHackleDelegate()
-        registry.setDelegate(delegate)
+        hackleUrlHandler.setDelegate(delegate)
         let notificationHandler = NotificationHandler(
             dispatchQueue: DispatchQueue(label: "test.delegate.custom"),
-            urlHandler: pendingHandler,
-            delegateRegistry: registry
+            urlHandler: hackleUrlHandler
         )
         let custom = URL(string: "myapp://home")!
 
         notificationHandler.handlePushClickAction(notificationData: notificationData(link: custom.absoluteString))
-        try await waitUntil { pendingHandler.pendingUrl == custom }
-        XCTAssertTrue(delegate.contexts.isEmpty)
-
-        let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
-        XCTAssertEqual(delegate.contexts.count, 1)
+        try await waitUntil { delegate.contexts.count == 1 }
         XCTAssertEqual(delegate.contexts.first?.url, custom)
         XCTAssertEqual(delegate.contexts.first?.channel, .push)
-        XCTAssertEqual(installed.openCallCount, 0)
         XCTAssertNil(pendingHandler.pendingUrl)
     }
 
     @MainActor
     func testPendingLinkGoesToDelegateRegisteredBeforeInstall() async throws {
         let pendingHandler = PendingUrlHandler()
-        let registry = HackleDelegateRegistry()
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let notificationHandler = NotificationHandler(
             dispatchQueue: DispatchQueue(label: "test.delegate.late"),
-            urlHandler: pendingHandler,
-            delegateRegistry: registry
+            urlHandler: hackleUrlHandler
         )
 
         notificationHandler.handlePushClickAction(notificationData: notificationData())
         try await waitUntil { pendingHandler.pendingUrl == self.url }
 
         let delegate = MockHackleDelegate()
-        registry.setDelegate(delegate)
+        hackleUrlHandler.setDelegate(delegate)
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        hackleUrlHandler.setHandler(installed)
+        hackleUrlHandler.openPendingUrl()
         XCTAssertEqual(delegate.contexts.map(\.url), [url])
         XCTAssertEqual(installed.openCallCount, 0)
     }
@@ -143,10 +137,10 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     @MainActor
     func testPendingCustomSchemeOpensOnInstalledHandlerWithoutDelegate() async throws {
         let pendingHandler = PendingUrlHandler()
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let notificationHandler = NotificationHandler(
             dispatchQueue: DispatchQueue(label: "test.no.delegate.custom"),
-            urlHandler: pendingHandler,
-            delegateRegistry: HackleDelegateRegistry()
+            urlHandler: hackleUrlHandler
         )
         let custom = URL(string: "myapp://home")!
 
@@ -154,28 +148,25 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         try await waitUntil { pendingHandler.pendingUrl == custom }
 
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        hackleUrlHandler.setHandler(installed)
+        hackleUrlHandler.openPendingUrl()
         XCTAssertEqual(installed.openedUrls, [custom])
     }
 
     @MainActor
     func testOnlyLastPendingLinkReachesDelegateOnce() {
         let pendingHandler = PendingUrlHandler()
-        let registry = HackleDelegateRegistry()
+        let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
         let delegate = MockHackleDelegate()
-        registry.setDelegate(delegate)
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.delegate.last"),
-            urlHandler: pendingHandler,
-            delegateRegistry: registry
-        )
+        hackleUrlHandler.setDelegate(delegate)
         let urls = (1...3).map { URL(string: "https://example.com/\($0)")! }
         for url in urls {
             pendingHandler.open(url: url)
         }
 
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        hackleUrlHandler.setHandler(installed)
+        hackleUrlHandler.openPendingUrl()
         XCTAssertEqual(delegate.contexts.map(\.url), [urls.last!])
         XCTAssertEqual(installed.openCallCount, 0)
     }
