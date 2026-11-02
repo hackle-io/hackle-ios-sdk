@@ -98,6 +98,9 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
     }
 
     @MainActor private func orientationSupported(context: InAppMessagePresentationContext) -> Bool {
-        context.inAppMessage.supports(orientation: UIUtils.interfaceOrientation)
+        guard let windowSize = UIUtils.windowSize else {
+            return false
+        }
+        return context.inAppMessage.supports(orientation: InAppMessage.Orientation(size: windowSize))
     }
 }
