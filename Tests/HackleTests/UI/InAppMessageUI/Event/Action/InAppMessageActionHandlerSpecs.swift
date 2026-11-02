@@ -87,6 +87,44 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
             }
+
+            it("delegate가 있으면 delegate만 호출한다") {
+                let delegate = MockHackleDelegate()
+                let registry = HackleDelegateRegistry()
+                registry.setDelegate(delegate)
+                let urlHandler = MockUrlHandler()
+                let sut = InAppMessageLinkActionHandler(urlHandler: urlHandler, delegateRegistry: registry)
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessageEntity.action(type: .webLink, value: "myapp://home")
+
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                }
+
+                expect(delegate.contexts.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(delegate.contexts.first?.channel) == .inAppMessage
+                expect(delegate.contexts.first?.url.absoluteString) == "myapp://home"
+                expect(urlHandler.openCallCount) == 0
+                MainActor.assumeIsolated {
+                    expect(view.presented) == true
+                }
+            }
+
+            it("delegate가 있어도 url이 유효하지 않으면 호출하지 않는다") {
+                let delegate = MockHackleDelegate()
+                let registry = HackleDelegateRegistry()
+                registry.setDelegate(delegate)
+                let sut = InAppMessageLinkActionHandler(urlHandler: MockUrlHandler(), delegateRegistry: registry)
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessageEntity.action(type: .webLink, value: "")
+
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                }
+
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(delegate.contexts.isEmpty) == true
+            }
         }
 
         describe("InAppMessageLinkAndCloseHandler") {
@@ -155,6 +193,44 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 }
                 expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
+            }
+
+            it("delegate가 있으면 닫고 delegate만 호출한다") {
+                let delegate = MockHackleDelegate()
+                let registry = HackleDelegateRegistry()
+                registry.setDelegate(delegate)
+                let urlHandler = MockUrlHandler()
+                let sut = InAppMessageLinkAndCloseHandler(urlHandler: urlHandler, delegateRegistry: registry)
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessageEntity.action(type: .linkAndClose, value: "myapp://home")
+
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                    expect(view.presented) == false
+                }
+
+                expect(delegate.contexts.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(delegate.contexts.first?.channel) == .inAppMessage
+                expect(urlHandler.openCallCount) == 0
+            }
+
+            it("delegate가 있어도 value가 nil이면 닫지도 호출하지도 않는다") {
+                let delegate = MockHackleDelegate()
+                let registry = HackleDelegateRegistry()
+                registry.setDelegate(delegate)
+                let sut = InAppMessageLinkAndCloseHandler(urlHandler: MockUrlHandler(), delegateRegistry: registry)
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessageEntity.action(type: .linkAndClose, value: nil)
+
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                }
+
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                MainActor.assumeIsolated {
+                    expect(view.presented) == true
+                }
+                expect(delegate.contexts.isEmpty) == true
             }
         }
 
