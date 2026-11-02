@@ -320,6 +320,7 @@ extension HackleInAppMessageUI {
                 return nil
             }
             let container = UIScrollView()
+            container.insetsLayoutMarginsFromSafeArea = false
             container.addSubview(textView)
             return container
         }()
@@ -347,6 +348,7 @@ extension HackleInAppMessageUI {
             container.stack.spacing = 8
             container.stack.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
             container.stack.isLayoutMarginsRelativeArrangement = true
+            container.stack.insetsLayoutMarginsFromSafeArea = false
             container.isHidden = false
             return container
         }()
@@ -377,6 +379,7 @@ extension HackleInAppMessageUI {
             view.stack.axis = .vertical
             view.stack.distribution = .fill
             view.stack.isLayoutMarginsRelativeArrangement = true
+            view.stack.insetsLayoutMarginsFromSafeArea = false
             view.layer.masksToBounds = true
             if let closeButton = closeButton {
                 view.addSubview(closeButton)
