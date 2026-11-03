@@ -26,7 +26,7 @@ import UIKit
         entitlements: { Entitlements(applinks: applinks) },
         userActivityHandler: mock
     )
-    handler.open(url: url)
+    handler.open(url: url, channel: .push)
     NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
     withExtendedLifetime(handler) {}
     return mock
@@ -88,7 +88,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
 
                         waitUntil { done in
                             DispatchQueue.main.async {
-                                sut.open(url: url)
+                                sut.open(url: url, channel: .push)
                                 done()
                             }
                         }
@@ -101,7 +101,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
 
                         waitUntil { done in
                             DispatchQueue.main.async {
-                                sut.open(url: url)
+                                sut.open(url: url, channel: .push)
                                 done()
                             }
                         }
@@ -114,7 +114,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
 
                         waitUntil { done in
                             DispatchQueue.main.async {
-                                sut.open(url: url)
+                                sut.open(url: url, channel: .push)
                                 done()
                             }
                         }
@@ -127,7 +127,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
 
                         waitUntil { done in
                             DispatchQueue.main.async {
-                                sut.open(url: url)
+                                sut.open(url: url, channel: .push)
                                 done()
                             }
                         }
@@ -140,7 +140,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
 
                         waitUntil { done in
                             DispatchQueue.main.async {
-                                sut.open(url: url)
+                                sut.open(url: url, channel: .push)
                                 done()
                             }
                         }
@@ -158,7 +158,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                         waitUntil { done in
                             DispatchQueue.main.async {
                                 for url in urls {
-                                    sut.open(url: url)
+                                    sut.open(url: url, channel: .push)
                                 }
                                 done()
                             }
@@ -300,7 +300,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                                     entitlements: { Entitlements(applinks: nil) },
                                     userActivityHandler: mock
                                 )
-                                handler.open(url: url)
+                                handler.open(url: url, channel: .push)
                                 expect(handler.hasPendingUrl) == false
                                 expect(mock.applicationUrls).to(beEmpty())
                                 done()
@@ -357,7 +357,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                                         entitlements: { Entitlements(applinks: ["example.com"]) },
                                         userActivityHandler: mock
                                     )
-                                    handler.open(url: URL(string: "hackle://example.com/x")!)
+                                    handler.open(url: URL(string: "hackle://example.com/x")!, channel: .push)
                                     NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
                                     expect(mock.sceneUrls).to(beEmpty())
                                     expect(mock.applicationUrls).to(beEmpty())
@@ -385,7 +385,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                         waitUntil { done in
                             DispatchQueue.main.async {
                                 let (handler, calls) = countingHandler(policy: .forwardAll)
-                                handler.open(url: url)
+                                handler.open(url: url, channel: .push)
                                 NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
                                 expect(calls.get()) == 0
                                 withExtendedLifetime(handler) {}
@@ -398,7 +398,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                         waitUntil { done in
                             DispatchQueue.main.async {
                                 let (handler, calls) = countingHandler(policy: .applinksOnly)
-                                handler.open(url: URL(string: "hackle://example.com/x")!)
+                                handler.open(url: URL(string: "hackle://example.com/x")!, channel: .push)
                                 expect(calls.get()) == 0
                                 withExtendedLifetime(handler) {}
                                 done()
@@ -410,7 +410,7 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                         waitUntil { done in
                             DispatchQueue.main.async {
                                 let (handler, calls) = countingHandler(policy: .applinksOnly)
-                                handler.open(url: url)
+                                handler.open(url: url, channel: .push)
                                 NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
                                 expect(calls.get()) == 1
                                 withExtendedLifetime(handler) {}

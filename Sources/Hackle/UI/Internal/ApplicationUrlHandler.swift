@@ -43,7 +43,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         pending != nil
     }
 
-    @MainActor func open(url: URL) {
+    @MainActor func open(url: URL, channel: HackleURLChannel) {
         guard let scheme = url.scheme else {
             return
         }

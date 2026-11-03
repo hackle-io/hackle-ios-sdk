@@ -32,9 +32,10 @@ class NotificationHandlerSpecs: QuickSpec {
             beforeEach {
                 mockUrlHandler = MockUrlHandler()
                 mockUrlHandler.reset()
+                let urlDispatcher = HackleUrlDispatcher(urlHandler: mockUrlHandler)
                 handler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.queue"),
-                    urlHandler: HackleUrlHandler(handler: mockUrlHandler)
+                    urlDispatcher: { urlDispatcher }
                 )
                 mockReceiver = MockNotificationDataReceiver()
                 handler.setNotificationDataReceiver(receiver: mockReceiver)
@@ -103,13 +104,11 @@ class NotificationHandlerSpecs: QuickSpec {
             }
             
             it("delegate가 있으면 deepLink 클릭 시 delegate만 호출한다") {
-                let localUrlHandler = MockUrlHandler()
-                let hackleUrlHandler = HackleUrlHandler(handler: localUrlHandler)
                 let delegate = MockHackleDelegate()
-                hackleUrlHandler.setDelegate(delegate)
+                let urlDispatcher = HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate))
                 let delegateHandler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.delegate.queue"),
-                    urlHandler: hackleUrlHandler
+                    urlDispatcher: { urlDispatcher }
                 )
 
                 delegateHandler.handlePushClickAction(
@@ -119,17 +118,14 @@ class NotificationHandlerSpecs: QuickSpec {
                 expect(delegate.contexts.count).toEventually(equal(1), timeout: .seconds(5))
                 expect(delegate.contexts[0].url.absoluteString).to(equal("myapp://home"))
                 expect(delegate.contexts[0].channel).to(equal(.push))
-                expect(localUrlHandler.openCallCount).to(equal(0))
             }
 
             it("delegate가 있어도 appOpen이면 호출하지 않는다") {
-                let localUrlHandler = MockUrlHandler()
-                let hackleUrlHandler = HackleUrlHandler(handler: localUrlHandler)
                 let delegate = MockHackleDelegate()
-                hackleUrlHandler.setDelegate(delegate)
+                let urlDispatcher = HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate))
                 let delegateHandler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.delegate.appopen.queue"),
-                    urlHandler: hackleUrlHandler
+                    urlDispatcher: { urlDispatcher }
                 )
 
                 delegateHandler.handlePushClickAction(

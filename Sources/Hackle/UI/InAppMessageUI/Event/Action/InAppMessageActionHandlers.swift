@@ -11,10 +11,10 @@ class InAppMessageCloseActionHandler: InAppMessageActionHandler {
 }
 
 final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
-    private let urlHandler: HackleUrlHandler
+    private let urlDispatcher: HackleUrlDispatcher
 
-    init(urlHandler: HackleUrlHandler = .shared) {
-        self.urlHandler = urlHandler
+    init(urlDispatcher: HackleUrlDispatcher) {
+        self.urlDispatcher = urlDispatcher
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
@@ -27,16 +27,16 @@ final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
             return
         }
         Task { @MainActor in
-            urlHandler.open(url: url, channel: .inAppMessage)
+            urlDispatcher.open(url: url, channel: .inAppMessage)
         }
     }
 }
 
 final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable {
-    private let urlHandler: HackleUrlHandler
+    private let urlDispatcher: HackleUrlDispatcher
 
-    init(urlHandler: HackleUrlHandler = .shared) {
-        self.urlHandler = urlHandler
+    init(urlDispatcher: HackleUrlDispatcher) {
+        self.urlDispatcher = urlDispatcher
     }
 
     func supports(action: InAppMessage.Action) -> Bool {
@@ -50,7 +50,7 @@ final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable
         }
         view.dismiss()
         Task { @MainActor in
-            urlHandler.open(url: url, channel: .inAppMessage)
+            urlDispatcher.open(url: url, channel: .inAppMessage)
         }
     }
 }

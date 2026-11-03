@@ -10,18 +10,24 @@ import WebKit
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
+    let urlDispatcher: HackleUrlDispatcher
+    let applicationUrlHandler: ApplicationUrlHandler
     private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
 
     init(
         hackleAppCore: HackleAppCore,
         sdk: Sdk,
         config: HackleConfig,
-        hackleInvocator: HackleInvocator
+        hackleInvocator: HackleInvocator,
+        urlDispatcher: HackleUrlDispatcher,
+        applicationUrlHandler: ApplicationUrlHandler
     ) {
         self.hackleAppCore = hackleAppCore
         self.sdk = sdk
         self.config = config
         self.hackleInvocator = hackleInvocator
+        self.urlDispatcher = urlDispatcher
+        self.applicationUrlHandler = applicationUrlHandler
         super.init()
     }
 
@@ -658,13 +664,14 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let urlHandler = ApplicationUrlHandler(
+        let applicationUrlHandler = ApplicationUrlHandler(
             policy: config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll
         )
+        let urlDispatcher = HackleUrlDispatcher(urlHandler: config.delegateUrlHandler ?? applicationUrlHandler)
         let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
-            InAppMessageLinkActionHandler(),
-            InAppMessageLinkAndCloseHandler(),
+            InAppMessageLinkActionHandler(urlDispatcher: urlDispatcher),
+            InAppMessageLinkAndCloseHandler(urlDispatcher: urlDispatcher),
             InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
@@ -813,10 +820,6 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        Task { @MainActor in
-            HackleUrlHandler.shared.setHandler(urlHandler)
-            HackleUrlHandler.shared.openPendingUrl()
-        }
 
         // - UserExplorer
 
@@ -890,7 +893,9 @@ extension HackleApp {
             hackleAppCore: hackleAppCore,
             sdk: sdk,
             config: config,
-            hackleInvocator: hackleInvocator
+            hackleInvocator: hackleInvocator,
+            urlDispatcher: urlDispatcher,
+            applicationUrlHandler: applicationUrlHandler
         )
     }
 

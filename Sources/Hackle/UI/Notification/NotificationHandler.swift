@@ -11,10 +11,16 @@ class NotificationHandler: @unchecked Sendable {
     )
 
     private var receiver: NotificationDataReceiver
-    private let urlHandler: HackleUrlHandler
+    private let storage: PendingUrlStorage
+    private let urlDispatcher: @Sendable () -> HackleUrlDispatcher?
 
-    init(dispatchQueue: DispatchQueue, urlHandler: HackleUrlHandler = .shared) {
-        self.urlHandler = urlHandler
+    init(
+        dispatchQueue: DispatchQueue,
+        storage: PendingUrlStorage = .shared,
+        urlDispatcher: @escaping @Sendable () -> HackleUrlDispatcher? = { Hackle.currentApp()?.urlDispatcher }
+    ) {
+        self.storage = storage
+        self.urlDispatcher = urlDispatcher
         self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
@@ -65,12 +71,17 @@ extension NotificationHandler {
                 return
             }
 
-            if let url = URL(string: link) {
-                Task { @MainActor in
-                    self.urlHandler.open(url: url, channel: .push)
-                }
-            } else {
+            guard let url = URL(string: link), url.scheme != nil else {
                 Log.info("Landing url is not a valid URL: \(link)")
+                return
+            }
+
+            Task { @MainActor in
+                if let dispatcher = self.urlDispatcher() {
+                    dispatcher.open(url: url, channel: .push)
+                } else {
+                    self.storage.store(url: url)
+                }
             }
         }
     }

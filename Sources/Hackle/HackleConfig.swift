@@ -30,6 +30,7 @@ public final class HackleConfig: NSObject, Sendable {
     let eventFlushThreshold: Int
     let exposureEventDedupInterval: TimeInterval
     let optOutTracking: Bool
+    let delegateUrlHandler: DelegateUrlHandler?
     let extra: [String: String]
 
     init(builder: HackleConfigBuilder) {
@@ -51,6 +52,7 @@ public final class HackleConfig: NSObject, Sendable {
         eventFlushThreshold = builder.eventFlushThreshold
         exposureEventDedupInterval = builder.exposureEventDedupInterval
         optOutTracking = builder.optOutTracking
+        delegateUrlHandler = builder.delegate.map(DelegateUrlHandler.init)
         extra = builder.extra
         super.init()
     }
@@ -106,6 +108,8 @@ public class HackleConfigBuilder: NSObject {
     var exposureEventDedupInterval: TimeInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
 
     var optOutTracking: Bool = false
+
+    var delegate: HackleDelegate?
 
     var extra: [String: String] = [:]
 
@@ -275,6 +279,17 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func add(_ key: String, _ value: String) -> HackleConfigBuilder {
         self.extra[key] = value
+        return self
+    }
+
+    /// Sets the delegate that handles links from push notifications and in-app messages.
+    ///
+    /// Unlike ``Hackle/setDelegate(_:)``, this also receives links tapped before initialization.
+    ///
+    /// - Parameter delegate: The ``HackleDelegate`` to handle links
+    /// - Returns: This builder instance for method chaining
+    @objc public func delegate(_ delegate: HackleDelegate) -> HackleConfigBuilder {
+        self.delegate = delegate
         return self
     }
 

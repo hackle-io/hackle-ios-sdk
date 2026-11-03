@@ -11,11 +11,12 @@ class NotificationHandlerRaceSpecs: QuickSpec {
     override class func spec() {
 
         it("installing the url handler concurrently with push clicks never duplicates or strands a link") {
-            let pendingHandler = PendingUrlHandler()
-            let hackleUrlHandler = HackleUrlHandler(pending: pendingHandler)
+            let storage = PendingUrlStorage()
+            let current = AtomicReference<HackleUrlDispatcher?>(value: nil)
             let handler = NotificationHandler(
                 dispatchQueue: DispatchQueue(label: "test.race.queue"),
-                urlHandler: hackleUrlHandler
+                storage: storage,
+                urlDispatcher: { current.get() }
             )
             let installed = MockUrlHandler()
             let writerCount = 4
@@ -53,8 +54,11 @@ class NotificationHandlerRaceSpecs: QuickSpec {
                     }
                 }
                 Task { @MainActor in
-                    hackleUrlHandler.setHandler(installed)
-                    hackleUrlHandler.openPendingUrl()
+                    let dispatcher = HackleUrlDispatcher(urlHandler: installed)
+                    current.set(newValue: dispatcher)
+                    if let url = storage.drain() {
+                        dispatcher.open(url: url, channel: .push)
+                    }
                 }
 
                 group.notify(queue: .main) {
@@ -70,7 +74,7 @@ class NotificationHandlerRaceSpecs: QuickSpec {
                         expect(Set(opened).count) == opened.count
                         expect(opened.count) >= 2
                         expect(opened.count) <= total + 1
-                        expect(pendingHandler.pendingUrl).to(beNil())
+                        expect(storage.pendingUrl).to(beNil())
                         done()
                     }
                 }
