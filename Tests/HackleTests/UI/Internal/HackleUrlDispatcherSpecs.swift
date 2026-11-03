@@ -66,10 +66,10 @@ class HackleUrlDispatcherSpecs: QuickSpec {
                     sut.setUrlHandler(MockUrlHandler())
                     deinitCalled.set(newValue: true)
                 }))
-                DispatchQueue.global().async {
+                DispatchQueue.global().sync {
                     sut.setUrlHandler(MockUrlHandler())
                 }
-                expect(deinitCalled.get()).toEventually(beTrue(), timeout: .seconds(2))
+                expect(deinitCalled.get()) == true
             }
         }
     }
