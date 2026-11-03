@@ -26,37 +26,46 @@ class PollingSynchronizerSpecs: AsyncSpec {
             it("no polling") {
                 // given
                 let delegate = MockSynchronizer()
-                let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: -1)
+                let scheduler = MockScheduler()
+                let sut = PollingSynchronizer(delegate: delegate, scheduler: scheduler, interval: -1)
 
                 // when
                 sut.start()
-                Thread.sleep(forTimeInterval: 0.2)
 
                 // then
                 verify(exactly: 0) {
-                    delegate.syncMock
+                    scheduler.schedulePeriodicallyMock
                 }
             }
 
             it("start scheduling") {
                 // given
                 let delegate = MockSynchronizer()
-                let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
+                let scheduler = MockScheduler()
+                every(scheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+                let sut = PollingSynchronizer(delegate: delegate, scheduler: scheduler, interval: 0.1)
 
                 // when
                 sut.start()
-                Thread.sleep(forTimeInterval: 0.25)
 
                 // then
-                verify(exactly: 2) {
-                    delegate.syncMock
+                verify(exactly: 1) {
+                    scheduler.schedulePeriodicallyMock
                 }
+                let (delay, period, task) = scheduler.schedulePeriodicallyMock.firstInvokation().arguments
+                expect(delay) == 0.1
+                expect(period) == 0.1
+
+                task()
+                await expect(delegate.syncMock.invokations().count).toEventually(equal(1), timeout: .seconds(5))
             }
 
             it("start once") {
                 // given
                 let delegate = MockSynchronizer()
-                let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
+                let scheduler = MockScheduler()
+                every(scheduler.schedulePeriodicallyMock).returns(MockScheduledJob())
+                let sut = PollingSynchronizer(delegate: delegate, scheduler: scheduler, interval: 0.1)
 
                 // when
                 let q = DispatchQueue(label: "test")
@@ -65,11 +74,11 @@ class PollingSynchronizerSpecs: AsyncSpec {
                         sut.start()
                     }
                 }
-                Thread.sleep(forTimeInterval: 0.25)
+                q.sync {}
 
                 // then
-                verify(exactly: 2) {
-                    delegate.syncMock
+                verify(exactly: 1) {
+                    scheduler.schedulePeriodicallyMock
                 }
             }
         }
@@ -88,34 +97,40 @@ class PollingSynchronizerSpecs: AsyncSpec {
             it("cancel polling job") {
                 // given
                 let delegate = MockSynchronizer()
-                let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.1)
+                let scheduler = MockScheduler()
+                let job = MockScheduledJob()
+                every(scheduler.schedulePeriodicallyMock).returns(job)
+                let sut = PollingSynchronizer(delegate: delegate, scheduler: scheduler, interval: 0.1)
 
                 // when
                 sut.start()
-                Thread.sleep(forTimeInterval: 0.25)
                 sut.stop()
-                Thread.sleep(forTimeInterval: 0.25)
 
                 // then
-                verify(exactly: 2) {
-                    delegate.syncMock
+                verify(exactly: 1) {
+                    job.cancelMock
                 }
             }
         }
 
         it("onChanged") {
             let delegate = MockSynchronizer()
-            let sut = PollingSynchronizer(delegate: delegate, scheduler: Schedulers.dispatch(), interval: 0.5)
+            let scheduler = MockScheduler()
+            let job = MockScheduledJob()
+            every(scheduler.schedulePeriodicallyMock).returns(job)
+            let sut = PollingSynchronizer(delegate: delegate, scheduler: scheduler, interval: 0.5)
 
             sut.onForeground(nil, timestamp: Date(), isFromBackground: true)
-            Thread.sleep(forTimeInterval: 1.25)
-            verify(exactly: 2) {
-                delegate.syncMock
+            verify(exactly: 1) {
+                scheduler.schedulePeriodicallyMock
             }
+            verify(exactly: 0) {
+                job.cancelMock
+            }
+
             sut.onBackground(nil, timestamp: Date())
-            Thread.sleep(forTimeInterval: 1.25)
-            verify(exactly: 2) {
-                delegate.syncMock
+            verify(exactly: 1) {
+                job.cancelMock
             }
         }
     }
