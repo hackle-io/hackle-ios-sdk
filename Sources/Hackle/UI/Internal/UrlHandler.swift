@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol UrlHandler: Sendable {
-    @MainActor func open(url: URL)
+    @MainActor func open(url: URL, channel: HackleURLChannel)
 }
 
 enum UrlSchemes {

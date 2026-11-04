@@ -7,15 +7,20 @@ class NotificationHandler: @unchecked Sendable {
         dispatchQueue: DispatchQueue(
             label: "io.hackle.NotificationHandler",
             qos: .utility
-        ),
-        urlHandler: PendingUrlHandler()
+        )
     )
 
     private var receiver: NotificationDataReceiver
-    @MainActor private var urlHandler: UrlHandler
+    private let storage: PendingUrlStorage
+    private let urlDispatcher: @Sendable () -> HackleUrlDispatcher?
 
-    init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
-        self.urlHandler = urlHandler
+    init(
+        dispatchQueue: DispatchQueue,
+        storage: PendingUrlStorage = .shared,
+        urlDispatcher: @escaping @Sendable () -> HackleUrlDispatcher? = { Hackle.currentApp()?.urlDispatcher }
+    ) {
+        self.storage = storage
+        self.urlDispatcher = urlDispatcher
         self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
@@ -24,15 +29,6 @@ class NotificationHandler: @unchecked Sendable {
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
-    }
-
-    @MainActor func setUrlHandler(_ urlHandler: UrlHandler) {
-        let previous = self.urlHandler
-        self.urlHandler = urlHandler
-        guard let pending = previous as? PendingUrlHandler, let url = pending.drain() else {
-            return
-        }
-        urlHandler.open(url: url)
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -75,12 +71,17 @@ extension NotificationHandler {
                 return
             }
 
-            if let url = URL(string: link) {
-                Task { @MainActor in
-                    self.urlHandler.open(url: url)
-                }
-            } else {
+            guard let url = URL(string: link), url.scheme != nil else {
                 Log.info("Landing url is not a valid URL: \(link)")
+                return
+            }
+
+            Task { @MainActor in
+                if let dispatcher = self.urlDispatcher() {
+                    dispatcher.open(url: url, channel: .push)
+                } else {
+                    self.storage.store(url: url)
+                }
             }
         }
     }

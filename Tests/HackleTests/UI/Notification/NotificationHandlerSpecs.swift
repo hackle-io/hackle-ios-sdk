@@ -32,9 +32,10 @@ class NotificationHandlerSpecs: QuickSpec {
             beforeEach {
                 mockUrlHandler = MockUrlHandler()
                 mockUrlHandler.reset()
+                let urlDispatcher = HackleUrlDispatcher(urlHandler: mockUrlHandler)
                 handler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.queue"),
-                    urlHandler: mockUrlHandler
+                    urlDispatcher: { urlDispatcher }
                 )
                 mockReceiver = MockNotificationDataReceiver()
                 handler.setNotificationDataReceiver(receiver: mockReceiver)
@@ -102,6 +103,39 @@ class NotificationHandlerSpecs: QuickSpec {
                 expect(mockUrlHandler.openCallCount).to(equal(0))
             }
             
+            it("delegate가 있으면 deepLink 클릭 시 delegate만 호출한다") {
+                let delegate = MockHackleDelegate()
+                let urlDispatcher = HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate))
+                let delegateHandler = NotificationHandler(
+                    dispatchQueue: DispatchQueue(label: "test.delegate.queue"),
+                    urlDispatcher: { urlDispatcher }
+                )
+
+                delegateHandler.handlePushClickAction(
+                    notificationData: mockNotificationData(clickAction: .deepLink, link: "myapp://home")
+                )
+
+                expect(delegate.contexts.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(delegate.contexts[0].url.absoluteString).to(equal("myapp://home"))
+                expect(delegate.contexts[0].channel).to(equal(.push))
+            }
+
+            it("delegate가 있어도 appOpen이면 호출하지 않는다") {
+                let delegate = MockHackleDelegate()
+                let urlDispatcher = HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate))
+                let delegateHandler = NotificationHandler(
+                    dispatchQueue: DispatchQueue(label: "test.delegate.appopen.queue"),
+                    urlDispatcher: { urlDispatcher }
+                )
+
+                delegateHandler.handlePushClickAction(
+                    notificationData: mockNotificationData(clickAction: .appOpen, link: "")
+                )
+
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(delegate.contexts.isEmpty).to(beTrue())
+            }
+
             func mockNotificationData(
                 imageUrl: String? = nil,
                 clickAction: NotificationClickAction = .appOpen,

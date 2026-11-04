@@ -65,6 +65,12 @@ import Foundation
                     readyToUse(completion: completion)
                 }
                 container.app = app
+                let urlDispatcher = app.urlDispatcher
+                Task { @MainActor in
+                    if let url = PendingUrlStorage.shared.drain() {
+                        urlDispatcher.open(url: url, channel: .push)
+                    }
+                }
             }
         }
     }
@@ -79,11 +85,16 @@ import Foundation
     ///
     /// - Returns: The HackleApp instance or `nil` if not initialized
     @objc public static func app() -> HackleApp? {
+        let app = currentApp()
+        if app == nil {
+            Log.error("HackleApp is not initialized. Make sure to call Hackle.initialize() first")
+        }
+        return app
+    }
+
+    static func currentApp() -> HackleApp? {
         lock.read {
-            if container.app == nil {
-                Log.error("HackleApp is not initialized. Make sure to call Hackle.initialize() first")
-            }
-            return container.app
+            container.app
         }
     }
 }
