@@ -18,12 +18,8 @@ class UIUtils {
         UIApplication.value(forKeyPath: #keyPath(UIApplication.shared)) as? UIApplication
     }
 
-    static var interfaceOrientation: UIInterfaceOrientation {
-        if let windowScene = activeWindowScene {
-            return windowScene.interfaceOrientation
-        } else {
-            return .unknown
-        }
+    static var windowSize: CGSize? {
+        activeWindowScene?.coordinateSpace.bounds.size
     }
 
     static var activeWindowScene: UIWindowScene? {
