@@ -11,16 +11,10 @@ class NotificationHandler: @unchecked Sendable {
     )
 
     private var receiver: NotificationDataReceiver
-    private let storage: PendingUrlStorage
-    private let urlDispatcher: @Sendable () -> HackleUrlDispatcher?
+    let storage = PendingUrlStorage()
+    @MainActor private var urlDispatcher: HackleUrlDispatcher?
 
-    init(
-        dispatchQueue: DispatchQueue,
-        storage: PendingUrlStorage = .shared,
-        urlDispatcher: @escaping @Sendable () -> HackleUrlDispatcher? = { Hackle.currentApp()?.urlDispatcher }
-    ) {
-        self.storage = storage
-        self.urlDispatcher = urlDispatcher
+    init(dispatchQueue: DispatchQueue) {
         self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
@@ -29,6 +23,13 @@ class NotificationHandler: @unchecked Sendable {
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
         self.receiver = receiver
+    }
+
+    @MainActor func setUrlDispatcher(_ urlDispatcher: HackleUrlDispatcher) {
+        self.urlDispatcher = urlDispatcher
+        if let url = storage.drain() {
+            urlDispatcher.open(url: url, channel: .push)
+        }
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -77,7 +78,7 @@ extension NotificationHandler {
             }
 
             Task { @MainActor in
-                if let dispatcher = self.urlDispatcher() {
+                if let dispatcher = self.urlDispatcher {
                     dispatcher.open(url: url, channel: .push)
                 } else {
                     self.storage.store(url: url)

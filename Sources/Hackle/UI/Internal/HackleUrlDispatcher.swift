@@ -12,7 +12,7 @@ final class HackleUrlDispatcher: @unchecked Sendable {
     }
 
     func setDelegate(_ delegate: HackleDelegate?) {
-        let handler = delegate.map(DelegateUrlHandler.init) ?? defaultHandler
+        let handler: UrlHandler = delegate.map(DelegateUrlHandler.init) ?? defaultHandler
         let old = lock.write { () -> UrlHandler in
             let old = urlHandler
             urlHandler = handler

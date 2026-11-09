@@ -67,9 +67,7 @@ import Foundation
                 container.app = app
                 let urlDispatcher = app.urlDispatcher
                 Task { @MainActor in
-                    if let url = PendingUrlStorage.shared.drain() {
-                        urlDispatcher.open(url: url, channel: .push)
-                    }
+                    NotificationHandler.shared.setUrlDispatcher(urlDispatcher)
                 }
             }
         }

@@ -116,27 +116,14 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
 
     @MainActor
     private final class Sut {
-        let storage: PendingUrlStorage
-        let current: AtomicReference<HackleUrlDispatcher?>
-        let notificationHandler: NotificationHandler
+        let notificationHandler = NotificationHandler(dispatchQueue: DispatchQueue(label: "test.pending.push"))
 
-        init() {
-            let storage = PendingUrlStorage()
-            let current = AtomicReference<HackleUrlDispatcher?>(value: nil)
-            self.storage = storage
-            self.current = current
-            self.notificationHandler = NotificationHandler(
-                dispatchQueue: DispatchQueue(label: "test.pending.push"),
-                storage: storage,
-                urlDispatcher: { current.get() }
-            )
+        var storage: PendingUrlStorage {
+            notificationHandler.storage
         }
 
         func initialize(_ dispatcher: HackleUrlDispatcher) {
-            current.set(newValue: dispatcher)
-            if let url = storage.drain() {
-                dispatcher.open(url: url, channel: .push)
-            }
+            notificationHandler.setUrlDispatcher(dispatcher)
         }
 
         func click(_ url: URL) async throws {

@@ -1,8 +1,6 @@
 import Foundation
 
 final class PendingUrlStorage: @unchecked Sendable {
-    static let shared = PendingUrlStorage()
-
     @MainActor private(set) var pendingUrl: URL?
 
     @MainActor func store(url: URL) {
