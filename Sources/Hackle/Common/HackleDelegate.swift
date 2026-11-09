@@ -24,7 +24,8 @@ import Foundation
 
 /// Delegate protocol for handling links from push notifications and in-app messages.
 ///
-/// Register it with ``Hackle/setDelegate(_:)``. While a delegate is registered, the SDK does not open links itself.
+/// Register it with ``HackleConfigBuilder/delegate(_:)`` or ``Hackle/setDelegate(_:)``.
+/// The SDK does not open links passed to the delegate.
 /// The SDK keeps a strong reference to the registered delegate until nil is passed.
 @objc public protocol HackleDelegate: AnyObject {
     /// Called on the main thread when a link should be opened.

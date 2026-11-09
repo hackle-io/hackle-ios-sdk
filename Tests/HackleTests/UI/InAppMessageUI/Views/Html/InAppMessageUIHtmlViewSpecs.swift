@@ -13,14 +13,12 @@ class InAppMessageUIHtmlViewSpecs: QuickSpec {
 
         @MainActor
         func makeView(scheduler: Scheduler) -> HtmlView {
-            let applicationUrlHandler = ApplicationUrlHandler()
             let app = HackleApp(
                 hackleAppCore: MockHackleAppCore(sdkKey: sdkKey),
                 sdk: Sdk.of(sdkKey: sdkKey, config: HackleConfig.DEFAULT),
                 config: HackleConfig.DEFAULT,
                 hackleInvocator: DefaultHackleInvocator(processor: MockInvocationProcessor()),
-                urlDispatcher: HackleUrlDispatcher(urlHandler: applicationUrlHandler),
-                applicationUrlHandler: applicationUrlHandler
+                urlDispatcher: HackleUrlDispatcher(defaultHandler: ApplicationUrlHandler())
             )
             return HtmlView(
                 context: InAppMessageEntity.context(),

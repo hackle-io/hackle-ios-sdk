@@ -11,7 +11,6 @@ import WebKit
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
     let urlDispatcher: HackleUrlDispatcher
-    let applicationUrlHandler: ApplicationUrlHandler
     private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
 
     init(
@@ -19,15 +18,13 @@ import WebKit
         sdk: Sdk,
         config: HackleConfig,
         hackleInvocator: HackleInvocator,
-        urlDispatcher: HackleUrlDispatcher,
-        applicationUrlHandler: ApplicationUrlHandler
+        urlDispatcher: HackleUrlDispatcher
     ) {
         self.hackleAppCore = hackleAppCore
         self.sdk = sdk
         self.config = config
         self.hackleInvocator = hackleInvocator
         self.urlDispatcher = urlDispatcher
-        self.applicationUrlHandler = applicationUrlHandler
         super.init()
     }
 
@@ -667,7 +664,8 @@ extension HackleApp {
         let applicationUrlHandler = ApplicationUrlHandler(
             policy: config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll
         )
-        let urlDispatcher = HackleUrlDispatcher(urlHandler: config.delegateUrlHandler ?? applicationUrlHandler)
+        let urlDispatcher = HackleUrlDispatcher(defaultHandler: applicationUrlHandler)
+        urlDispatcher.setDelegate(config.delegate.getAndSet(newValue: nil))
         let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
             InAppMessageLinkActionHandler(urlDispatcher: urlDispatcher),
@@ -894,8 +892,7 @@ extension HackleApp {
             sdk: sdk,
             config: config,
             hackleInvocator: hackleInvocator,
-            urlDispatcher: urlDispatcher,
-            applicationUrlHandler: applicationUrlHandler
+            urlDispatcher: urlDispatcher
         )
     }
 

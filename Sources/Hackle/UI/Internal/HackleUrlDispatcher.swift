@@ -3,13 +3,16 @@ import Foundation
 final class HackleUrlDispatcher: @unchecked Sendable {
 
     private let lock = ReadWriteLock(label: "io.hackle.HackleUrlDispatcher")
+    private let defaultHandler: UrlHandler
     private var urlHandler: UrlHandler
 
-    init(urlHandler: UrlHandler) {
-        self.urlHandler = urlHandler
+    init(defaultHandler: UrlHandler) {
+        self.defaultHandler = defaultHandler
+        self.urlHandler = defaultHandler
     }
 
-    func setUrlHandler(_ handler: UrlHandler) {
+    func setDelegate(_ delegate: HackleDelegate?) {
+        let handler = delegate.map(DelegateUrlHandler.init) ?? defaultHandler
         let old = lock.write { () -> UrlHandler in
             let old = urlHandler
             urlHandler = handler
@@ -21,7 +24,7 @@ final class HackleUrlDispatcher: @unchecked Sendable {
     @MainActor
     func open(url: URL, channel: HackleURLChannel) {
         let handler = lock.read { urlHandler }
-        Log.debug("Dispatch url: \(url) via \(type(of: handler))")
+        Log.debug("Dispatch url via \(type(of: handler)) [channel=\(channel)]")
         handler.open(url: url, channel: channel)
     }
 }

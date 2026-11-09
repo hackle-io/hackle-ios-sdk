@@ -32,7 +32,7 @@ class NotificationHandlerSpecs: QuickSpec {
             beforeEach {
                 mockUrlHandler = MockUrlHandler()
                 mockUrlHandler.reset()
-                let urlDispatcher = HackleUrlDispatcher(urlHandler: mockUrlHandler)
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: mockUrlHandler)
                 handler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.queue"),
                     urlDispatcher: { urlDispatcher }
@@ -105,7 +105,7 @@ class NotificationHandlerSpecs: QuickSpec {
             
             it("delegate가 있으면 deepLink 클릭 시 delegate만 호출한다") {
                 let delegate = MockHackleDelegate()
-                let urlDispatcher = HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate))
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate))
                 let delegateHandler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.delegate.queue"),
                     urlDispatcher: { urlDispatcher }
@@ -122,7 +122,7 @@ class NotificationHandlerSpecs: QuickSpec {
 
             it("delegate가 있어도 appOpen이면 호출하지 않는다") {
                 let delegate = MockHackleDelegate()
-                let urlDispatcher = HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate))
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate))
                 let delegateHandler = NotificationHandler(
                     dispatchQueue: DispatchQueue(label: "test.delegate.appopen.queue"),
                     urlDispatcher: { urlDispatcher }

@@ -9,14 +9,12 @@ class InAppMessageViewJavascriptBridgeSpecs: QuickSpec {
         let viewId = "view-id-1"
 
         func bridge(event: Event) -> InAppMessageViewJavascriptBridge {
-            let applicationUrlHandler = ApplicationUrlHandler()
             let app = HackleApp(
                 hackleAppCore: MockHackleAppCore(sdkKey: sdkKey),
                 sdk: Sdk.of(sdkKey: sdkKey, config: HackleConfig.DEFAULT),
                 config: HackleConfig.DEFAULT,
                 hackleInvocator: DefaultHackleInvocator(processor: MockInvocationProcessor()),
-                urlDispatcher: HackleUrlDispatcher(urlHandler: applicationUrlHandler),
-                applicationUrlHandler: applicationUrlHandler
+                urlDispatcher: HackleUrlDispatcher(defaultHandler: ApplicationUrlHandler())
             )
             let view = MainActor.assumeIsolated {
                 MockInAppMessageView(

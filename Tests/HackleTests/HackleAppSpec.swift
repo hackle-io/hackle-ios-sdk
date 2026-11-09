@@ -606,6 +606,27 @@ class HackleAppSpecs: QuickSpec {
             expect(delegate.contexts.map(\.url)) == [url]
         }
 
+        it("config의 delegate를 dispatcher로 넘기고 config에서 해제한다") {
+            weak var weakDelegate: MockHackleDelegate?
+            let config: HackleConfig
+            do {
+                let delegate = MockHackleDelegate()
+                weakDelegate = delegate
+                config = HackleConfig.builder()
+                    .sdkUrl(URL(string: "http://localhost")!)
+                    .eventUrl(URL(string: "http://localhost")!)
+                    .monitoringUrl(URL(string: "http://localhost")!)
+                    .delegate(delegate)
+                    .build()
+            }
+            let app = HackleApp.create(sdkKey: "sdk_key", config: config)
+            expect(config.delegate.get()).to(beNil())
+            expect(weakDelegate).toNot(beNil())
+
+            app.urlDispatcher.setDelegate(nil)
+            expect(weakDelegate).to(beNil())
+        }
+
         describe("updateMarketingSubscriptionStatus") {
             it("set push subscribed") {
                 sut.updatePushSubscriptions(

@@ -6,9 +6,9 @@ import Nimble
 class HackleUrlDispatcherSpecs: QuickSpec {
     override class func spec() {
         describe("HackleUrlDispatcher") {
-            it("주입한 handler로 channel과 함께 연다") {
+            it("기본 handler로 channel과 함께 연다") {
                 let urlHandler = MockUrlHandler()
-                let sut = HackleUrlDispatcher(urlHandler: urlHandler)
+                let sut = HackleUrlDispatcher(defaultHandler: urlHandler)
                 let url = URL(string: "https://www.hackle.io")!
                 MainActor.assumeIsolated {
                     sut.open(url: url, channel: .push)
@@ -17,12 +17,12 @@ class HackleUrlDispatcherSpecs: QuickSpec {
                 expect(urlHandler.channels) == [.push]
             }
 
-            it("DelegateUrlHandler로 교체하면 delegate만 호출한다") {
+            it("delegate를 등록하면 delegate만 호출한다") {
                 let urlHandler = MockUrlHandler()
-                let sut = HackleUrlDispatcher(urlHandler: urlHandler)
+                let sut = HackleUrlDispatcher(defaultHandler: urlHandler)
                 let delegate = MockHackleDelegate()
                 let url = URL(string: "myapp://home")!
-                sut.setUrlHandler(DelegateUrlHandler(delegate: delegate))
+                sut.setDelegate(delegate)
                 MainActor.assumeIsolated {
                     sut.open(url: url, channel: .inAppMessage)
                 }
@@ -32,13 +32,13 @@ class HackleUrlDispatcherSpecs: QuickSpec {
                 expect(urlHandler.openCallCount) == 0
             }
 
-            it("다시 기본 handler로 교체하면 복귀한다") {
+            it("delegate를 nil로 등록하면 기본 handler로 복귀한다") {
                 let urlHandler = MockUrlHandler()
-                let sut = HackleUrlDispatcher(urlHandler: urlHandler)
+                let sut = HackleUrlDispatcher(defaultHandler: urlHandler)
                 let delegate = MockHackleDelegate()
                 let url = URL(string: "https://www.hackle.io")!
-                sut.setUrlHandler(DelegateUrlHandler(delegate: delegate))
-                sut.setUrlHandler(urlHandler)
+                sut.setDelegate(delegate)
+                sut.setDelegate(nil)
                 MainActor.assumeIsolated {
                     sut.open(url: url, channel: .push)
                 }
@@ -46,28 +46,28 @@ class HackleUrlDispatcherSpecs: QuickSpec {
                 expect(delegate.contexts.isEmpty) == true
             }
 
-            it("백그라운드에서 교체한 handler가 메인 open에서 보인다") {
-                let initial = MockUrlHandler()
-                let installed = MockUrlHandler()
-                let sut = HackleUrlDispatcher(urlHandler: initial)
+            it("백그라운드에서 등록한 delegate가 메인 open에서 보인다") {
+                let urlHandler = MockUrlHandler()
+                let delegate = MockHackleDelegate()
+                let sut = HackleUrlDispatcher(defaultHandler: urlHandler)
                 let url = URL(string: "https://example.com")!
-                DispatchQueue.global().sync { sut.setUrlHandler(installed) }
+                DispatchQueue.global().sync { sut.setDelegate(delegate) }
                 MainActor.assumeIsolated {
                     sut.open(url: url, channel: .push)
                 }
-                expect(installed.openedUrls) == [url]
-                expect(initial.openCallCount) == 0
+                expect(delegate.contexts.map(\.url)) == [url]
+                expect(urlHandler.openCallCount) == 0
             }
 
-            it("교체된 handler의 delegate deinit에서 setUrlHandler로 재진입할 수 있다") {
-                let sut = HackleUrlDispatcher(urlHandler: MockUrlHandler())
+            it("교체된 delegate의 deinit에서 setDelegate로 재진입할 수 있다") {
+                let sut = HackleUrlDispatcher(defaultHandler: MockUrlHandler())
                 let deinitCalled = AtomicReference(value: false)
-                sut.setUrlHandler(DelegateUrlHandler(delegate: DeinitHackleDelegate {
-                    sut.setUrlHandler(MockUrlHandler())
+                sut.setDelegate(DeinitHackleDelegate {
+                    sut.setDelegate(nil)
                     deinitCalled.set(newValue: true)
-                }))
+                })
                 DispatchQueue.global().sync {
-                    sut.setUrlHandler(MockUrlHandler())
+                    sut.setDelegate(nil)
                 }
                 expect(deinitCalled.get()) == true
             }

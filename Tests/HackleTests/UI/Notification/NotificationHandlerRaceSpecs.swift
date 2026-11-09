@@ -54,7 +54,7 @@ class NotificationHandlerRaceSpecs: QuickSpec {
                     }
                 }
                 Task { @MainActor in
-                    let dispatcher = HackleUrlDispatcher(urlHandler: installed)
+                    let dispatcher = HackleUrlDispatcher(defaultHandler: installed)
                     current.set(newValue: dispatcher)
                     if let url = storage.drain() {
                         dispatcher.open(url: url, channel: .push)

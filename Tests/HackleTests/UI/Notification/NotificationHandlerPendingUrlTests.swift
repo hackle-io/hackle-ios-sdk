@@ -19,7 +19,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         try await sut.click(url)
         XCTAssertTrue(activityHandler.sceneUrls.isEmpty)
 
-        sut.initialize(HackleUrlDispatcher(urlHandler: configured))
+        sut.initialize(HackleUrlDispatcher(defaultHandler: configured))
 
         XCTAssertNil(sut.storage.pendingUrl)
         XCTAssertTrue(configured.hasPendingUrl)
@@ -39,7 +39,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         }
 
         let installed = MockUrlHandler()
-        sut.initialize(HackleUrlDispatcher(urlHandler: installed))
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
         XCTAssertEqual(installed.openedUrls, [urls.last!])
         XCTAssertEqual(installed.channels, [.push])
         XCTAssertNil(sut.storage.drain())
@@ -49,7 +49,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     func testClickAfterInitializationGoesDirectlyToDispatcher() async throws {
         let sut = Sut()
         let installed = MockUrlHandler()
-        sut.initialize(HackleUrlDispatcher(urlHandler: installed))
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
 
         sut.notificationHandler.handlePushClickAction(notificationData: notificationData())
         try await waitUntil { installed.openCallCount == 1 }
@@ -68,7 +68,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         XCTAssertEqual(sut.storage.pendingUrl, custom)
         XCTAssertTrue(delegate.contexts.isEmpty)
 
-        sut.initialize(HackleUrlDispatcher(urlHandler: DelegateUrlHandler(delegate: delegate)))
+        sut.initialize(HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate)))
         XCTAssertEqual(delegate.contexts.map(\.url), [custom])
         XCTAssertEqual(delegate.contexts.first?.channel, .push)
         XCTAssertNil(sut.storage.pendingUrl)
@@ -81,7 +81,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         try await sut.click(custom)
 
         let installed = MockUrlHandler()
-        sut.initialize(HackleUrlDispatcher(urlHandler: installed))
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
         XCTAssertEqual(installed.openedUrls, [custom])
     }
 
@@ -106,7 +106,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
     func testSchemelessLinkAfterInitializationIsDropped() async throws {
         let sut = Sut()
         let installed = MockUrlHandler()
-        sut.initialize(HackleUrlDispatcher(urlHandler: installed))
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
 
         sut.notificationHandler.handlePushClickAction(notificationData: notificationData(link: "example.com"))
         try await Task.sleep(nanoseconds: 100_000_000)

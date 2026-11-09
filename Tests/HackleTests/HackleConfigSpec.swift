@@ -209,19 +209,15 @@ class HackleConfigSpec: QuickSpec {
         describe("delegate") {
             it("기본값은 nil 이다") {
                 let config = HackleConfigBuilder().build()
-                expect(config.delegateUrlHandler).to(beNil())
+                expect(config.delegate.get()).to(beNil())
             }
 
-            it("설정한 delegate로 링크를 전달한다") {
+            it("설정한 delegate를 보관한다") {
                 let delegate = MockHackleDelegate()
                 let config = HackleConfigBuilder()
                     .delegate(delegate)
                     .build()
-                let url = URL(string: "myapp://home")!
-                MainActor.assumeIsolated {
-                    config.delegateUrlHandler?.open(url: url, channel: .push)
-                }
-                expect(delegate.contexts.map(\.url)) == [url]
+                expect(config.delegate.get()) === delegate
             }
         }
 

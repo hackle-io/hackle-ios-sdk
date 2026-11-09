@@ -74,7 +74,6 @@ func makeHackleApp(
         userExplorer: userExplorer,
         optOutManager: OptOutManager(configOptOutTracking: false)
     )
-    let applicationUrlHandler = ApplicationUrlHandler()
     let sut = HackleApp(
         hackleAppCore: hackleAppCore,
         sdk: Sdk.of(sdkKey: "abcd1234", config: HackleConfig.DEFAULT),
@@ -84,8 +83,7 @@ func makeHackleApp(
                 handlerFactory: DefaultInvocationHandlerFactory(core: hackleAppCore)
             )
         ),
-        urlDispatcher: HackleUrlDispatcher(urlHandler: applicationUrlHandler),
-        applicationUrlHandler: applicationUrlHandler
+        urlDispatcher: HackleUrlDispatcher(defaultHandler: ApplicationUrlHandler())
     )
     return (hackleAppCore, sut)
 }
