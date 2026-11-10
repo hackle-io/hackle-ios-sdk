@@ -176,7 +176,8 @@ extension Hackle {
     /// Sets the delegate that handles links from push notifications and in-app messages.
     ///
     /// Call this after `Hackle.initialize`. Calls made before initialization are ignored.
-    /// Pending push links are received if the delegate is registered before replay.
+    /// Push links held until initialization are received if the delegate is registered before replay.
+    /// Links are held only when `HackleDeferPushLinkUntilInitialized` is `YES` in Info.plist.
     ///
     /// - Parameter delegate: The ``HackleDelegate``, or nil to remove it
     @objc static public func setDelegate(_ delegate: HackleDelegate?) {
