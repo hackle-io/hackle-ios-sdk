@@ -55,7 +55,8 @@ extension Hackle {
         response: UNNotificationResponse,
         handleAction: Bool = true
     ) -> HackleNotification? {
-        guard let notificationData = NotificationData.from(data: response.notification.request.content.userInfo) else {
+        guard let notificationData = NotificationData.from(data: response.notification.request.content.userInfo)?
+            .clicked(actionIdentifier: response.actionIdentifier) else {
             return nil
         }
         

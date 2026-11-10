@@ -28,6 +28,8 @@ extension NotificationData {
             .property("journey_node_id", journeyNodeId)
             .property("campaign_type", campaignType)
             .property("debug", debug)
+            .property("push_message_action_type", clickAction.rawValue)
+            .property("push_message_action_value", link ?? "")
             .build()
     }
 }
@@ -44,6 +46,8 @@ extension NotificationHistoryEntity {
             .property("journey_node_id", journeyNodeId)
             .property("campaign_type", campaignType)
             .property("debug", debug)
+            .property("push_message_action_type", actionType)
+            .property("push_message_action_value", actionValue)
             .build()
     }
 }

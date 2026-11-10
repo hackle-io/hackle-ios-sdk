@@ -15,6 +15,8 @@ class NotificationHistoryEntity {
     let journeyKey: Int64?
     let journeyNodeId: Int64?
     let campaignType: String?
+    let actionType: String?
+    let actionValue: String?
     
     let timestamp: Date
     let debug: Bool
@@ -32,7 +34,9 @@ class NotificationHistoryEntity {
         journeyId: Int64?,
         journeyKey: Int64?,
         journeyNodeId: Int64?,
-        campaignType: String?
+        campaignType: String?,
+        actionType: String? = nil,
+        actionValue: String? = nil
     ) {
         self.historyId = historyId
         self.workspaceId = workspaceId
@@ -47,6 +51,8 @@ class NotificationHistoryEntity {
         self.journeyKey = journeyKey
         self.journeyNodeId = journeyNodeId
         self.campaignType = campaignType
+        self.actionType = actionType
+        self.actionValue = actionValue
     }
 }
 
@@ -66,6 +72,8 @@ extension NotificationHistoryEntity {
     static let JOURNEY_KEY_COLUMN_NAME = "journey_key"
     static let JOURNEY_NODE_ID_COLUMN_NAME = "journey_node_id"
     static let CAMPAIGN_TYPE_COLUMN_NAME = "campaign_type"
+    static let ACTION_TYPE_COLUMN_NAME = "action_type"
+    static let ACTION_VALUE_COLUMN_NAME = "action_value"
     
     static let DDL_LIST = [
         DatabaseDDL(
@@ -92,7 +100,14 @@ extension NotificationHistoryEntity {
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER",
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) TEXT"
             ]
-         )
+         ),
+        DatabaseDDL(
+            version: 3,
+            statements: [
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(ACTION_TYPE_COLUMN_NAME) TEXT",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(ACTION_VALUE_COLUMN_NAME) TEXT"
+            ]
+        )
     ]
 
     static let DROP_TABLE =
@@ -112,7 +127,9 @@ extension NotificationHistoryEntity {
             journeyId: cursor.getInt64OrNil(9),
             journeyKey: cursor.getInt64OrNil(10),
             journeyNodeId: cursor.getInt64OrNil(11),
-            campaignType: cursor.getStringOrNil(12)
+            campaignType: cursor.getStringOrNil(12),
+            actionType: cursor.getStringOrNil(13),
+            actionValue: cursor.getStringOrNil(14)
         )
     }
 }

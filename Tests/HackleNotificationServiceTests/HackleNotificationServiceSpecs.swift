@@ -104,5 +104,50 @@ class HackleNotificationServiceSpecs: QuickSpec {
                 expect(callCount).toEventually(equal(1), timeout: .seconds(5))
             }
         }
+
+        describe("buttons") {
+            func buttonsPayload(_ buttons: Any) -> [AnyHashable: Any] {
+                ["hackle": ["workspaceId": 123, "environmentId": 456, "buttons": buttons]]
+            }
+
+            it("sets categoryIdentifier and registers the category") {
+                let center = MockNotificationCategoryCenter()
+                let notificationContent = content(userInfo: buttonsPayload(["categoryId": "hackle_marketing_push_deny", "items": [["title": "수신거부"]]]))
+                var received: [UNMutableNotificationContent] = []
+                let handled = HackleNotificationService.resolveRichNotificationContent(notificationContent: notificationContent, center: center) { result in
+                    received.append(result)
+                }
+                expect(handled).to(beTrue())
+                expect(received.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(received.first?.categoryIdentifier).to(equal("hackle_marketing_push_deny"))
+                expect(center.categories.map { $0.identifier }).to(contain("hackle_marketing_push_deny"))
+            }
+
+            it("keeps categoryIdentifier untouched without buttons") {
+                let center = MockNotificationCategoryCenter()
+                let notificationContent = content(userInfo: hacklePayload())
+                notificationContent.categoryIdentifier = "app_category"
+                var received: [UNMutableNotificationContent] = []
+                let handled = HackleNotificationService.resolveRichNotificationContent(notificationContent: notificationContent, center: center) { result in
+                    received.append(result)
+                }
+                expect(handled).to(beTrue())
+                expect(received.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(received.first?.categoryIdentifier).to(equal("app_category"))
+                expect(center.setCount).to(equal(0))
+            }
+
+            it("calls back once with malformed buttons") {
+                let center = MockNotificationCategoryCenter()
+                let notificationContent = content(userInfo: buttonsPayload("x"))
+                var received: [UNMutableNotificationContent] = []
+                let handled = HackleNotificationService.resolveRichNotificationContent(notificationContent: notificationContent, center: center) { result in
+                    received.append(result)
+                }
+                expect(handled).to(beTrue())
+                expect(received.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(received.first?.categoryIdentifier).to(equal(""))
+            }
+        }
     }
 }

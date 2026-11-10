@@ -1,8 +1,8 @@
 import Foundation
 
 class SharedDatabase: Database, @unchecked Sendable {
-    static let DATABASE_VERSION = 2
-    static let MAX_DATABASE_VERSION = 2
+    static let DATABASE_VERSION = 3
+    static let MAX_DATABASE_VERSION = 3
 
     static let shared = SharedDatabase()
 

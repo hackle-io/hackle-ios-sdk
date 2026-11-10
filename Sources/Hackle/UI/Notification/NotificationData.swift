@@ -42,6 +42,8 @@ final class NotificationData: HackleNotification, Sendable {
     }
     
     private let _link: String?
+
+    let buttons: [NotificationButton]
     
     init(
         workspaceId: Int64,
@@ -58,7 +60,8 @@ final class NotificationData: HackleNotification, Sendable {
         journeyKey: Int64?,
         journeyNodeId: Int64?,
         campaignType: String?,
-        debug: Bool
+        debug: Bool,
+        buttons: [NotificationButton] = []
     ) {
         self.workspaceId = workspaceId
         self.environmentId = environmentId
@@ -75,6 +78,7 @@ final class NotificationData: HackleNotification, Sendable {
         self.journeyNodeId = journeyNodeId
         self.campaignType = campaignType
         self.debug = debug
+        self.buttons = buttons
     }
 }
 
@@ -95,6 +99,9 @@ extension NotificationData {
     static let KEY_JOURNEY_NODE_ID = "journeyNodeId"
     static let KEY_CAMPAIGN_TYPE = "campaignType"
     static let KEY_DEBUG = "debug"
+    static let KEY_BUTTONS = "buttons"
+    static let KEY_ITEMS = "items"
+    static let ACTION_IDENTIFIER_PREFIX = "hackle_action_"
     
     static func from(data: [AnyHashable: Any]) -> NotificationData? {
         guard let hackle = data[KEY_HACKLE] as? [AnyHashable: Any] else {
@@ -119,10 +126,52 @@ extension NotificationData {
                 journeyKey: hackle[KEY_JOURNEY_KEY].asIntOrNil(),
                 journeyNodeId: hackle[KEY_JOURNEY_NODE_ID].asIntOrNil(),
                 campaignType: hackle[KEY_CAMPAIGN_TYPE] as? String,
-                debug: hackle[KEY_DEBUG] as? Bool ?? false
+                debug: hackle[KEY_DEBUG] as? Bool ?? false,
+                buttons: parseButtons(hackle[KEY_BUTTONS])
             )
         } catch {
             return nil
         }
+    }
+
+    private static func parseButtons(_ value: Any?) -> [NotificationButton] {
+        guard let buttons = value as? [AnyHashable: Any],
+              let items = buttons[KEY_ITEMS] as? [Any] else {
+            return []
+        }
+        return items.map { item in
+            let item = item as? [AnyHashable: Any]
+            return NotificationButton(
+                clickAction: NotificationClickAction.from(rawValue: item?[KEY_CLICK_ACTION] as? String),
+                link: item?[KEY_LINK] as? String
+            )
+        }
+    }
+
+    func clicked(actionIdentifier: String) -> NotificationData {
+        guard actionIdentifier.hasPrefix(NotificationData.ACTION_IDENTIFIER_PREFIX),
+              let index = Int(actionIdentifier.dropFirst(NotificationData.ACTION_IDENTIFIER_PREFIX.count)),
+              buttons.indices.contains(index) else {
+            return self
+        }
+        let button = buttons[index]
+        return NotificationData(
+            workspaceId: workspaceId,
+            environmentId: environmentId,
+            pushMessageId: pushMessageId,
+            pushMessageKey: pushMessageKey,
+            pushMessageExecutionId: pushMessageExecutionId,
+            pushMessageDeliveryId: pushMessageDeliveryId,
+            showForeground: showForeground,
+            imageUrl: imageUrl,
+            clickAction: button.clickAction,
+            link: button.link,
+            journeyId: journeyId,
+            journeyKey: journeyKey,
+            journeyNodeId: journeyNodeId,
+            campaignType: campaignType,
+            debug: debug,
+            buttons: buttons
+        )
     }
 }

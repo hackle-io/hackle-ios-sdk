@@ -439,6 +439,55 @@ class NotificationManagerSpec: QuickSpec {
             }
         }
         
+        it("save action type and value") {
+            let core = HackleCoreStub()
+            let workspaceManager = MockWorkspaceManager()
+            let userManager = MockUserManager()
+            let repository = MockNotificationRepository()
+            let manager = DefaultNotificationManager(
+                core: core,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
+                userManager: userManager,
+                repository: repository
+            )
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 222))
+            let hackleUser = HackleUser.builder()
+                .identifier(.id, "user")
+                .build()
+            every(userManager.hackleUserMock).returns(hackleUser)
+
+            manager.onNotificationDataReceived(
+                data: NotificationData(
+                    workspaceId: 123,
+                    environmentId: 456,
+                    pushMessageId: 1,
+                    pushMessageKey: 2,
+                    pushMessageExecutionId: 3,
+                    pushMessageDeliveryId: 4,
+                    showForeground: true,
+                    imageUrl: nil,
+                    clickAction: .deepLink,
+                    link: "myapp://settings/marketing",
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
+                    debug: true
+                ),
+                timestamp: Date()
+            )
+
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 0
+                let entities = repository.getEntities(workspaceId: 123, environmentId: 456)
+                expect(entities.count) == 1
+                expect(entities[0].actionType) == "DEEP_LINK"
+                expect(entities[0].actionValue) == "myapp://settings/marketing"
+            }
+        }
+
         it("check null column") {
             let manager = DefaultNotificationManager(
                 core: core,
@@ -511,6 +560,8 @@ class NotificationManagerSpec: QuickSpec {
                 expect(entity.journeyKey).to(beNil())
                 expect(entity.journeyNodeId).to(beNil())
                 expect(entity.campaignType).to(beNil())
+                expect(entity.actionType) == "APP_OPEN"
+                expect(entity.actionValue) == ""
                 expect(entity.debug) == true
                 expect(entity.workspaceId) == 123
                 expect(entity.environmentId) == 456
