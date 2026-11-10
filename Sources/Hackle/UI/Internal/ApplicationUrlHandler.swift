@@ -43,7 +43,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         pending != nil
     }
 
-    @MainActor func open(url: URL) {
+    @MainActor func open(url: URL, channel: HackleURLChannel) {
         guard let scheme = url.scheme else {
             return
         }
@@ -131,12 +131,12 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         userActivity.webpageURL = url
 
         if includingScene, userActivityHandler.continueInScene(userActivity) {
-            Log.debug("Redirected to universal link via scene: \(url.absoluteString)")
+            Log.debug("Redirected to universal link via scene.")
             return
         }
 
         let success = userActivityHandler.continueInApplication(userActivity)
-        Log.debug("Redirected to universal link: \(url.absoluteString) [success=\(success ?? false)]")
+        Log.debug("Redirected to universal link [success=\(success ?? false)]")
 
         if success != true {
             Log.info("Attempt to open URL alternative")
@@ -146,7 +146,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
 
     @MainActor private func openLink(_ url: URL) {
         UIUtils.application?.open(url, options: [:]) { success in
-            Log.debug("Redirected to: \(url.absoluteString) [success=\(success)]")
+            Log.debug("Redirected to link [success=\(success)]")
         }
     }
 }

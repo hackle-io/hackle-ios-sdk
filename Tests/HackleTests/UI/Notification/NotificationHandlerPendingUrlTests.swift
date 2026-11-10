@@ -7,11 +7,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
 
     @MainActor
     func testUnmatchedLinkBeforeInitializationIsDeliveredAfterForwardAllHandlerInstalled() async throws {
-        let pendingHandler = PendingUrlHandler()
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.pending.push"),
-            urlHandler: pendingHandler
-        )
+        let sut = Sut()
         let activityHandler = MockUserActivityHandler()
         activityHandler.sceneSupported = true
         let configured = ApplicationUrlHandler(
@@ -20,75 +16,124 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
             userActivityHandler: activityHandler
         )
 
-        notificationHandler.handlePushClickAction(notificationData: notificationData())
-        try await waitUntil { pendingHandler.pendingUrl == self.url }
+        try await sut.click(url)
         XCTAssertTrue(activityHandler.sceneUrls.isEmpty)
 
-        notificationHandler.setUrlHandler(configured)
-        XCTAssertNil(pendingHandler.pendingUrl)
+        sut.initialize(HackleUrlDispatcher(defaultHandler: configured))
+
+        XCTAssertNil(sut.storage.pendingUrl)
         XCTAssertTrue(configured.hasPendingUrl)
         XCTAssertTrue(activityHandler.sceneUrls.isEmpty)
 
         activateTwice()
         XCTAssertEqual(activityHandler.sceneUrls, [url])
         XCTAssertFalse(configured.hasPendingUrl)
-        withExtendedLifetime(notificationHandler) {}
     }
 
     @MainActor
-    func testDrainOpensLastLinkOnInstalledHandler() {
-        let pendingHandler = PendingUrlHandler()
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.drain.last"),
-            urlHandler: pendingHandler
-        )
+    func testDrainOpensLastLinkOnce() async throws {
+        let sut = Sut()
         let urls = (1...3).map { URL(string: "https://example.com/\($0)")! }
         for url in urls {
-            pendingHandler.open(url: url)
+            try await sut.click(url)
         }
-        XCTAssertEqual(pendingHandler.pendingUrl, urls.last)
 
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
         XCTAssertEqual(installed.openedUrls, [urls.last!])
-        XCTAssertNil(pendingHandler.pendingUrl)
+        XCTAssertEqual(installed.channels, [.push])
+        XCTAssertNil(sut.storage.drain())
     }
 
     @MainActor
-    func testClickAfterInstallGoesDirectlyToInstalledHandler() async throws {
-        let pendingHandler = PendingUrlHandler()
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.direct.push"),
-            urlHandler: pendingHandler
-        )
+    func testClickAfterInitializationGoesDirectlyToDispatcher() async throws {
+        let sut = Sut()
         let installed = MockUrlHandler()
-        notificationHandler.setUrlHandler(installed)
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
 
-        notificationHandler.handlePushClickAction(notificationData: notificationData())
+        sut.notificationHandler.handlePushClickAction(notificationData: notificationData())
         try await waitUntil { installed.openCallCount == 1 }
         XCTAssertEqual(installed.openedUrls, [url])
-        XCTAssertNil(pendingHandler.pendingUrl)
+        XCTAssertEqual(installed.channels, [.push])
+        XCTAssertNil(sut.storage.pendingUrl)
     }
 
     @MainActor
-    func testReplacingNonPendingHandlerDoesNotReplay() {
-        let first = MockUrlHandler()
-        let notificationHandler = NotificationHandler(
-            dispatchQueue: DispatchQueue(label: "test.replace"),
-            urlHandler: first
-        )
-        first.open(url: url)
-        let second = MockUrlHandler()
-        notificationHandler.setUrlHandler(second)
-        XCTAssertEqual(second.openCallCount, 0)
+    func testTapBeforeInitializationIsStoredEvenWithDelegateAndDeliveredOnDrain() async throws {
+        let sut = Sut()
+        let delegate = MockHackleDelegate()
+        let custom = URL(string: "myapp://home")!
+
+        try await sut.click(custom)
+        XCTAssertEqual(sut.storage.pendingUrl, custom)
+        XCTAssertTrue(delegate.contexts.isEmpty)
+
+        sut.initialize(HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate)))
+        XCTAssertEqual(delegate.contexts.map(\.url), [custom])
+        XCTAssertEqual(delegate.contexts.first?.channel, .push)
+        XCTAssertNil(sut.storage.pendingUrl)
     }
 
     @MainActor
-    func testPendingHandlerDoesNotHoldCustomSchemeLinks() {
-        let pendingHandler = PendingUrlHandler()
-        pendingHandler.open(url: URL(string: "hackle://example.com/x")!)
-        pendingHandler.open(url: URL(string: "example.com")!)
-        XCTAssertNil(pendingHandler.pendingUrl)
+    func testPendingCustomSchemeOpensOnDefaultHandlerWithoutDelegate() async throws {
+        let sut = Sut()
+        let custom = URL(string: "myapp://home")!
+        try await sut.click(custom)
+
+        let installed = MockUrlHandler()
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
+        XCTAssertEqual(installed.openedUrls, [custom])
+    }
+
+    @MainActor
+    func testPendingUrlHoldsCustomSchemeAndDropsSchemelessLinks() async throws {
+        let sut = Sut()
+        let custom = URL(string: "hackle://example.com/x")!
+        try await sut.click(custom)
+
+        sut.notificationHandler.handlePushClickAction(notificationData: notificationData(link: "example.com"))
+        await Task.yield()
+        XCTAssertEqual(sut.storage.pendingUrl, custom)
+
+        let home = URL(string: "myapp://home")!
+        try await sut.click(home)
+        sut.notificationHandler.handlePushClickAction(notificationData: notificationData(link: "example.com"))
+        await Task.yield()
+        XCTAssertEqual(sut.storage.pendingUrl, home)
+    }
+
+    @MainActor
+    func testSchemelessLinkAfterInitializationIsDropped() async throws {
+        let sut = Sut()
+        let installed = MockUrlHandler()
+        sut.initialize(HackleUrlDispatcher(defaultHandler: installed))
+
+        sut.notificationHandler.handlePushClickAction(notificationData: notificationData(link: "example.com"))
+        try await Task.sleep(nanoseconds: 100_000_000)
+        XCTAssertEqual(installed.openCallCount, 0)
+        XCTAssertNil(sut.storage.pendingUrl)
+    }
+
+    @MainActor
+    private final class Sut {
+        let notificationHandler = NotificationHandler(dispatchQueue: DispatchQueue(label: "test.pending.push"))
+
+        var storage: PendingUrlStorage {
+            notificationHandler.storage
+        }
+
+        func initialize(_ dispatcher: HackleUrlDispatcher) {
+            notificationHandler.setUrlDispatcher(dispatcher)
+        }
+
+        func click(_ url: URL) async throws {
+            notificationHandler.handlePushClickAction(notificationData: NotificationHandlerPendingUrlTests.data(link: url.absoluteString))
+            let deadline = Date().addingTimeInterval(3)
+            while storage.pendingUrl != url && Date() < deadline {
+                try await Task.sleep(nanoseconds: 1_000_000)
+            }
+            XCTAssertEqual(storage.pendingUrl, url)
+        }
     }
 
     @MainActor
@@ -107,7 +152,11 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
         }
     }
 
-    private func notificationData() -> NotificationData {
+    private func notificationData(link: String? = nil) -> NotificationData {
+        Self.data(link: link ?? url.absoluteString)
+    }
+
+    fileprivate static func data(link: String) -> NotificationData {
         NotificationData(
             workspaceId: 123,
             environmentId: 456,
@@ -118,7 +167,7 @@ final class NotificationHandlerPendingUrlTests: XCTestCase {
             showForeground: true,
             imageUrl: nil,
             clickAction: .deepLink,
-            link: url.absoluteString,
+            link: link,
             journeyId: nil,
             journeyKey: nil,
             journeyNodeId: nil,

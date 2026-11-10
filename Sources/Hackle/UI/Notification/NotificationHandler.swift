@@ -7,15 +7,14 @@ class NotificationHandler: @unchecked Sendable {
         dispatchQueue: DispatchQueue(
             label: "io.hackle.NotificationHandler",
             qos: .utility
-        ),
-        urlHandler: PendingUrlHandler()
+        )
     )
 
     private var receiver: NotificationDataReceiver
-    @MainActor private var urlHandler: UrlHandler
+    let storage = PendingUrlStorage()
+    @MainActor private var urlDispatcher: HackleUrlDispatcher?
 
-    init(dispatchQueue: DispatchQueue, urlHandler: UrlHandler) {
-        self.urlHandler = urlHandler
+    init(dispatchQueue: DispatchQueue) {
         self.receiver = DefaultNotificationDataReceiver(
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
@@ -26,13 +25,11 @@ class NotificationHandler: @unchecked Sendable {
         self.receiver = receiver
     }
 
-    @MainActor func setUrlHandler(_ urlHandler: UrlHandler) {
-        let previous = self.urlHandler
-        self.urlHandler = urlHandler
-        guard let pending = previous as? PendingUrlHandler, let url = pending.drain() else {
-            return
+    @MainActor func setUrlDispatcher(_ urlDispatcher: HackleUrlDispatcher) {
+        self.urlDispatcher = urlDispatcher
+        if let url = storage.drain() {
+            urlDispatcher.open(url: url, channel: .push)
         }
-        urlHandler.open(url: url)
     }
 
     func trackPushClickEvent(notificationData: NotificationData, timestamp: Date = Date()) {
@@ -75,12 +72,17 @@ extension NotificationHandler {
                 return
             }
 
-            if let url = URL(string: link) {
-                Task { @MainActor in
-                    self.urlHandler.open(url: url)
-                }
-            } else {
+            guard let url = URL(string: link), url.scheme != nil else {
                 Log.info("Landing url is not a valid URL: \(link)")
+                return
+            }
+
+            Task { @MainActor in
+                if let dispatcher = self.urlDispatcher {
+                    dispatcher.open(url: url, channel: .push)
+                } else {
+                    self.storage.store(url: url)
+                }
             }
         }
     }

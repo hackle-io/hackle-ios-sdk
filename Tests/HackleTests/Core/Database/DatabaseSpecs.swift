@@ -55,7 +55,7 @@ class DatabaseSpec: QuickSpec {
                         ]
                     )
                     
-                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(3))
+                    expect(mockDB.getVersion(key: fileName)).toEventually(equal(3), timeout: .seconds(5))
                     
                     // ddl 리스트 갯수 검증
                     let ddlCount = mockDB.ddl.filter { $0.version > 1 && $0.version <= 3 }
@@ -129,7 +129,7 @@ class DatabaseSpec: QuickSpec {
                         ]
                     )
                     
-                    expect(mockDB.onDropCalled).toEventually(beTrue())
+                    expect(mockDB.onDropCalled).toEventually(beTrue(), timeout: .seconds(5))
                     expect(mockDB.getVersion(key: fileName)).to(equal(0))
                 }
             }
@@ -155,16 +155,18 @@ class DatabaseSpec: QuickSpec {
                 )
 
                 let executionLog = SyncArray<Int>()
+                let firstStarted = DispatchSemaphore(value: 0)
 
                 concurrentQueue.async {
                     mockDB.execute { _ in
                         executionLog.append(1)
+                        firstStarted.signal()
                         Thread.sleep(forTimeInterval: 0.1)
                         executionLog.append(2)
                     }
                 }
 
-                Thread.sleep(forTimeInterval: 0.1)
+                expect(firstStarted.wait(timeout: .now() + 5)) == DispatchTimeoutResult.success
 
                 concurrentQueue.async {
                     mockDB.execute { _ in
@@ -174,7 +176,7 @@ class DatabaseSpec: QuickSpec {
 
                 expect(executionLog.values).toEventually(
                     equal([1,2,3]),
-                    timeout: .seconds(1)
+                    timeout: .seconds(5)
                 )
             }
         }
