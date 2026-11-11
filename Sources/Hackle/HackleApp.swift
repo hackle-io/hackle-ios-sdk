@@ -10,18 +10,21 @@ import WebKit
     let sdk: Sdk
     let config: HackleConfig
     let hackleInvocator: HackleInvocator
+    let urlDispatcher: HackleUrlDispatcher
     private let completionQueue = DispatchQueue(label: "io.hackle.HackleApp.CompletionQueue")
 
     init(
         hackleAppCore: HackleAppCore,
         sdk: Sdk,
         config: HackleConfig,
-        hackleInvocator: HackleInvocator
+        hackleInvocator: HackleInvocator,
+        urlDispatcher: HackleUrlDispatcher
     ) {
         self.hackleAppCore = hackleAppCore
         self.sdk = sdk
         self.config = config
         self.hackleInvocator = hackleInvocator
+        self.urlDispatcher = urlDispatcher
         super.init()
     }
 
@@ -658,13 +661,14 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let urlHandler = ApplicationUrlHandler(
-            policy: config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll
-        )
+        let applicationUrlHandler = ApplicationUrlHandler.shared
+        applicationUrlHandler.setPolicy(config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll)
+        let urlDispatcher = HackleUrlDispatcher(defaultHandler: applicationUrlHandler)
+        urlDispatcher.setDelegate(config.delegate.getAndSet(newValue: nil))
         let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
             InAppMessageCloseActionHandler(),
-            InAppMessageLinkActionHandler(urlHandler: urlHandler),
-            InAppMessageLinkAndCloseHandler(urlHandler: urlHandler),
+            InAppMessageLinkActionHandler(urlDispatcher: urlDispatcher),
+            InAppMessageLinkAndCloseHandler(urlDispatcher: urlDispatcher),
             InAppMessageHiddenActionHandler(clock: clock, storage: inAppMessageHiddenStorage)
         ])
         let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
@@ -782,10 +786,8 @@ extension HackleApp {
             resetProcessor: inAppMessageResetProcessor
         )
 
-        if !inAppMessageDisabled(config: config) {
-            eventPublisher.addListener(listener: inAppMessageManager)
-            userManager.addListener(listener: inAppMessageManager)
-        }
+        eventPublisher.addListener(listener: inAppMessageManager)
+        userManager.addListener(listener: inAppMessageManager)
 
         // - Push
 
@@ -815,9 +817,6 @@ extension HackleApp {
             )
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
-        Task { @MainActor in
-            NotificationHandler.shared.setUrlHandler(urlHandler)
-        }
 
         // - UserExplorer
 
@@ -891,18 +890,9 @@ extension HackleApp {
             hackleAppCore: hackleAppCore,
             sdk: sdk,
             config: config,
-            hackleInvocator: hackleInvocator
+            hackleInvocator: hackleInvocator,
+            urlDispatcher: urlDispatcher
         )
-    }
-
-    private static func inAppMessageDisabled(config: HackleConfig) -> Bool {
-        if let disableInAppMessage = config.extra["$disable_inappmessage"],
-           disableInAppMessage == "true"
-        {
-            return true
-        }
-
-        return false
     }
 
     private static func metricConfiguration(

@@ -36,12 +36,28 @@ jobs:
             -derivedDataPath /tmp/docbuild \
             -destination 'generic/platform=iOS'
       
+      - name: Verify DocC Archives
+        run: |
+          for archive in Hackle HackleNotificationService; do
+            if [[ ! -d "/tmp/docbuild/Build/Products/Release-iphoneos/$archive.doccarchive" ]]; then
+              echo "::error::$archive.doccarchive not found"
+              exit 1
+            fi
+          done
+
       - name: Process DocC Archive for Static Hosting
         run: |
           $(xcrun --find docc) process-archive \
           transform-for-static-hosting /tmp/docbuild/Build/Products/Release-iphoneos/Hackle.doccarchive \
           --hosting-base-path hackle-ios-sdk \
           --output-path docs
+
+      - name: Process HackleNotificationService DocC Archive for Static Hosting
+        run: |
+          $(xcrun --find docc) process-archive \
+          transform-for-static-hosting /tmp/docbuild/Build/Products/Release-iphoneos/HackleNotificationService.doccarchive \
+          --hosting-base-path hackle-ios-sdk/notification-service \
+          --output-path docs/notification-service
       
       - name: Create Index HTML for Auto-redirect
         run: |

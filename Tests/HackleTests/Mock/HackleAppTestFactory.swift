@@ -82,7 +82,8 @@ func makeHackleApp(
             processor: DefaultInvocationProcessor(
                 handlerFactory: DefaultInvocationHandlerFactory(core: hackleAppCore)
             )
-        )
+        ),
+        urlDispatcher: HackleUrlDispatcher(defaultHandler: ApplicationUrlHandler())
     )
     return (hackleAppCore, sut)
 }
