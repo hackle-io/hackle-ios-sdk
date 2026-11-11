@@ -206,6 +206,21 @@ class HackleConfigSpec: QuickSpec {
             }
         }
 
+        describe("delegate") {
+            it("기본값은 nil 이다") {
+                let config = HackleConfigBuilder().build()
+                expect(config.delegate.get()).to(beNil())
+            }
+
+            it("설정한 delegate를 보관한다") {
+                let delegate = MockHackleDelegate()
+                let config = HackleConfigBuilder()
+                    .delegate(delegate)
+                    .build()
+                expect(config.delegate.get()) === delegate
+            }
+        }
+
         describe("sessionPolicy") {
             it("기본값은 default 이다") {
                 let config = HackleConfigBuilder().build()

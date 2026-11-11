@@ -69,7 +69,7 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
             )
             let delay = InAppMessageDelay(
                 schedule: schedule,
-                requestedAt: Date(timeIntervalSince1970: 1.95)
+                requestedAt: Date(timeIntervalSince1970: 1.5)
             )
 
             let task = sut.schedule(delay: delay)
@@ -78,11 +78,8 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
                 listener.onScheduleMock
             }
 
-            Thread.sleep(forTimeInterval: 0.2)
-
-            verify(exactly: 1) {
-                listener.onScheduleMock
-            }
+            expect(listener.onScheduleMock.invokations().count).toEventually(equal(1), timeout: .seconds(5))
+            withExtendedLifetime(sut) {}
         }
 
         it("task cancel") {
@@ -98,7 +95,7 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
             )
             let delay = InAppMessageDelay(
                 schedule: schedule,
-                requestedAt: Date(timeIntervalSince1970: 1.95)
+                requestedAt: Date(timeIntervalSince1970: 1.5)
             )
 
             let task = sut.schedule(delay: delay)
@@ -112,7 +109,7 @@ class DefaultInAppMessageDelaySchedulerSpecs: QuickSpec {
                 listener.onScheduleMock
             }
 
-            Thread.sleep(forTimeInterval: 0.2)
+            Thread.sleep(forTimeInterval: 0.7)
             verify(exactly: 0) {
                 listener.onScheduleMock
             }

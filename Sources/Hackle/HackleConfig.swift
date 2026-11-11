@@ -30,6 +30,7 @@ public final class HackleConfig: NSObject, Sendable {
     let eventFlushThreshold: Int
     let exposureEventDedupInterval: TimeInterval
     let optOutTracking: Bool
+    let delegate: AtomicReference<HackleDelegate?>
     let extra: [String: String]
 
     init(builder: HackleConfigBuilder) {
@@ -51,6 +52,7 @@ public final class HackleConfig: NSObject, Sendable {
         eventFlushThreshold = builder.eventFlushThreshold
         exposureEventDedupInterval = builder.exposureEventDedupInterval
         optOutTracking = builder.optOutTracking
+        delegate = AtomicReference(value: builder.delegate)
         extra = builder.extra
         super.init()
     }
@@ -106,6 +108,8 @@ public class HackleConfigBuilder: NSObject {
     var exposureEventDedupInterval: TimeInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
 
     var optOutTracking: Bool = false
+
+    var delegate: HackleDelegate?
 
     var extra: [String: String] = [:]
 
@@ -202,6 +206,9 @@ public class HackleConfigBuilder: NSObject {
     /// When disabled, every http/https link is forwarded to the delegates regardless of the entitlement.
     /// Custom scheme links are unaffected.
     ///
+    /// Push links tapped before initialization always check the associated domains,
+    /// unless they are held with `HackleDeferPushLinkUntilInitialized` in Info.plist.
+    ///
     /// - Parameter enabled: Whether to check associated domains before forwarding http/https links (default: true)
     /// - Returns: This builder instance for method chaining
     @objc public func universalLinkDomainCheckEnabled(_ enabled: Bool) -> HackleConfigBuilder {
@@ -275,6 +282,19 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func add(_ key: String, _ value: String) -> HackleConfigBuilder {
         self.extra[key] = value
+        return self
+    }
+
+    /// Sets the delegate that handles links from push notifications and in-app messages.
+    ///
+    /// Registers the delegate before push links held until initialization are replayed.
+    /// ``Hackle/setDelegate(_:)`` can also receive them if called before replay.
+    /// Links are held only when `HackleDeferPushLinkUntilInitialized` is `YES` in Info.plist.
+    ///
+    /// - Parameter delegate: The ``HackleDelegate`` to handle links
+    /// - Returns: This builder instance for method chaining
+    @objc public func delegate(_ delegate: HackleDelegate) -> HackleConfigBuilder {
+        self.delegate = delegate
         return self
     }
 

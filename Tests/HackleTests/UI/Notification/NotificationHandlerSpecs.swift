@@ -32,10 +32,12 @@ class NotificationHandlerSpecs: QuickSpec {
             beforeEach {
                 mockUrlHandler = MockUrlHandler()
                 mockUrlHandler.reset()
-                handler = NotificationHandler(
-                    dispatchQueue: DispatchQueue(label: "test.queue"),
-                    urlHandler: mockUrlHandler
-                )
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: mockUrlHandler)
+                let notificationHandler = NotificationHandler(dispatchQueue: DispatchQueue(label: "test.queue"))
+                MainActor.assumeIsolated {
+                    notificationHandler.setUrlDispatcher(urlDispatcher)
+                }
+                handler = notificationHandler
                 mockReceiver = MockNotificationDataReceiver()
                 handler.setNotificationDataReceiver(receiver: mockReceiver)
             }
@@ -102,66 +104,39 @@ class NotificationHandlerSpecs: QuickSpec {
                 expect(mockUrlHandler.openCallCount).to(equal(0))
             }
             
-            it("should return a attachment on download success") {
-                let imageUrl = "https://raw.githubusercontent.com/hackle-io/hackle-ios-sdk/refs/heads/master/Sources/Hackle/Resources/Images/hackle_banner.png"
-                let notificationData = mockNotificationData(imageUrl: imageUrl)
-                var resultAttachment: UNNotificationAttachment?
-                
-                // Act & Assert
-                waitUntil(timeout: .seconds(10)) { done in
-                    handler.handlePushImage(notificationData: notificationData) { attachment in
-                        resultAttachment = attachment
-                        done()
-                    }
+            it("delegate가 있으면 deepLink 클릭 시 delegate만 호출한다") {
+                let delegate = MockHackleDelegate()
+                let delegateHandler = NotificationHandler(dispatchQueue: DispatchQueue(label: "test.delegate.queue"))
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate))
+                MainActor.assumeIsolated {
+                    delegateHandler.setUrlDispatcher(urlDispatcher)
                 }
-                
-                expect(resultAttachment).toNot(beNil())
+
+                delegateHandler.handlePushClickAction(
+                    notificationData: mockNotificationData(clickAction: .deepLink, link: "myapp://home")
+                )
+
+                expect(delegate.contexts.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(delegate.contexts[0].url.absoluteString).to(equal("myapp://home"))
+                expect(delegate.contexts[0].channel).to(equal(.push))
             }
-            
-            it("should return a nil attachment when download is unsuccessful") {
-                let imageUrl = "https://notexistfake/notfound.jpg"
-                let notificationData = mockNotificationData(imageUrl: imageUrl)
-                var resultAttachment: UNNotificationAttachment?
-                
-                // Act & Assert
-                waitUntil(timeout: .seconds(10)) { done in
-                    handler.handlePushImage(notificationData: notificationData) { attachment in
-                        resultAttachment = attachment
-                        done()
-                    }
+
+            it("delegate가 있어도 appOpen이면 호출하지 않는다") {
+                let delegate = MockHackleDelegate()
+                let delegateHandler = NotificationHandler(dispatchQueue: DispatchQueue(label: "test.delegate.appopen.queue"))
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate))
+                MainActor.assumeIsolated {
+                    delegateHandler.setUrlDispatcher(urlDispatcher)
                 }
-                
-                expect(resultAttachment).to(beNil())
+
+                delegateHandler.handlePushClickAction(
+                    notificationData: mockNotificationData(clickAction: .appOpen, link: "")
+                )
+
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(delegate.contexts.isEmpty).to(beTrue())
             }
-            
-            it("should return a nil attachment for an empty URL") {
-                let notificationData = mockNotificationData(imageUrl: "")
-                var resultAttachment: UNNotificationAttachment?
-                
-                waitUntil { done in
-                    handler.handlePushImage(notificationData: notificationData) { attachment in
-                        resultAttachment = attachment
-                        done()
-                    }
-                }
-                
-                expect(resultAttachment).to(beNil())
-            }
-            
-            it("should return a nil attachment for an nil URL") {
-                let notificationData = mockNotificationData(imageUrl: nil)
-                var resultAttachment: UNNotificationAttachment?
-                
-                waitUntil { done in
-                    handler.handlePushImage(notificationData: notificationData) { attachment in
-                        resultAttachment = attachment
-                        done()
-                    }
-                }
-                
-                expect(resultAttachment).to(beNil())
-            }
-            
+
             func mockNotificationData(
                 imageUrl: String? = nil,
                 clickAction: NotificationClickAction = .appOpen,

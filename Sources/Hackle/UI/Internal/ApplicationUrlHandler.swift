@@ -10,12 +10,14 @@ import UIKit
 /// scene/app delegate as universal links and opens everything else with `UIApplication`.
 /// Universal links received while the app is inactive are deferred until it becomes active.
 final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
+    static let shared = ApplicationUrlHandler()
+
     private enum Route {
         case openLink
         case continueUserActivity(includingScene: Bool)
     }
 
-    private let policy: UniversalLinkPolicy
+    private let policy: AtomicReference<UniversalLinkPolicy>
     private let entitlements: @Sendable () -> Entitlements
     private let userActivityHandler: any UserActivityHandler
     @MainActor private var pending: (url: URL, includingScene: Bool)?
@@ -25,10 +27,14 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         entitlements: @escaping @Sendable () -> Entitlements = { Entitlements.main },
         userActivityHandler: UserActivityHandler? = nil
     ) {
-        self.policy = policy
+        self.policy = AtomicReference(value: policy)
         self.entitlements = entitlements
         self.userActivityHandler = userActivityHandler ?? ApplicationUserActivityHandler()
         super.init()
+    }
+
+    func setPolicy(_ policy: UniversalLinkPolicy) {
+        self.policy.set(newValue: policy)
     }
 
     deinit {
@@ -43,7 +49,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         pending != nil
     }
 
-    @MainActor func open(url: URL) {
+    @MainActor func open(url: URL, channel: HackleURLChannel) {
         guard let scheme = url.scheme else {
             return
         }
@@ -62,7 +68,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
     }
 
     @MainActor private func route(_ url: URL) -> Route {
-        switch policy {
+        switch policy.get() {
         case .forwardAll:
             return .continueUserActivity(includingScene: true)
         case .applinksOnly:
@@ -131,12 +137,12 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         userActivity.webpageURL = url
 
         if includingScene, userActivityHandler.continueInScene(userActivity) {
-            Log.debug("Redirected to universal link via scene: \(url.absoluteString)")
+            Log.debug("Redirected to universal link via scene.")
             return
         }
 
         let success = userActivityHandler.continueInApplication(userActivity)
-        Log.debug("Redirected to universal link: \(url.absoluteString) [success=\(success ?? false)]")
+        Log.debug("Redirected to universal link [success=\(success ?? false)]")
 
         if success != true {
             Log.info("Attempt to open URL alternative")
@@ -146,7 +152,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
 
     @MainActor private func openLink(_ url: URL) {
         UIUtils.application?.open(url, options: [:]) { success in
-            Log.debug("Redirected to: \(url.absoluteString) [success=\(success)]")
+            Log.debug("Redirected to link [success=\(success)]")
         }
     }
 }

@@ -7,7 +7,8 @@ extension HackleInAppMessageUI {
         case (.none, _):
             return nil
         case (.modal, _):
-            let attributes = ModalView.Attributes(orientation: InAppMessage.Orientation(UIUtils.interfaceOrientation))
+            let orientation = UIUtils.windowSize.map { InAppMessage.Orientation(size: $0) } ?? .vertical
+            let attributes = ModalView.Attributes(orientation: orientation)
             return ModalView(context: context, attributes: attributes)
         case (.banner, .imageText), (.banner, .textOnly):
             guard let alignment = context.message.layout.alignment else {

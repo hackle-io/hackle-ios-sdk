@@ -226,6 +226,7 @@ extension HackleInAppMessageUI {
             view.stack.axis = .vertical
             view.stack.distribution = .fill
             view.stack.isLayoutMarginsRelativeArrangement = true
+            view.stack.insetsLayoutMarginsFromSafeArea = false
             view.layer.masksToBounds = true
             if let closeButton = closeButton {
                 view.addSubview(closeButton)

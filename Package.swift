@@ -10,6 +10,7 @@ let package = Package(
     ],
     products: [
         .library(name: "Hackle", targets: ["Hackle"]),
+        .library(name: "HackleNotificationService", targets: ["HackleNotificationService"]),
     ],
     dependencies: [
         .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "7.6.0")),
@@ -44,6 +45,13 @@ let package = Package(
             resources: [
                 .copy("Resources")
             ]
+        ),
+        .target(
+            name: "HackleNotificationService"
+        ),
+        .testTarget(
+            name: "HackleNotificationServiceTests",
+            dependencies: ["HackleNotificationService", "Quick", "Nimble"]
         ),
     ]
 )
