@@ -54,6 +54,9 @@ extension HackleInAppMessageUI {
         // Orientation
         override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
+            if InAppMessage.Orientation(size: size) == InAppMessage.Orientation(size: view.bounds.size) {
+                return
+            }
             coordinator.animate { _ in
                 self.messageView.dismiss()
             }

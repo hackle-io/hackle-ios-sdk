@@ -278,6 +278,7 @@ extension HackleInAppMessageUI {
             view.stack.distribution = .fill
             view.stack.alignment = .leading
             view.stack.isLayoutMarginsRelativeArrangement = true
+            view.stack.insetsLayoutMarginsFromSafeArea = false
             return view
         }()
     }

@@ -1,0 +1,44 @@
+name: Hackle Check
+
+# PR 브랜치로 tester 앱을 빌드해 QA hub E2E를 돌린다 (hackle-tester의 ios-drive.yml).
+# 여기서는 head 커밋에 Check run "Hackle Check"를 in_progress로 만들고 tester에 디스패치만 한다.
+# 결과(✓/✗)는 tester 워크플로가 같은 Check를 갱신해 남긴다.
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  request:
+    name: Request
+    # 포크 PR은 시크릿을 쓸 수 없다.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.DEPLOY_CLIENT_ID }}
+          private-key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }},hackle-tester
+          permission-checks: write
+          permission-contents: write
+
+      - name: Create check and dispatch to tester
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          OWNER: ${{ github.repository_owner }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          check_run_id=$(gh api "repos/$GITHUB_REPOSITORY/check-runs" \
+            -f name="Hackle Check" -f head_sha="$SHA" -f status=in_progress \
+            -f "output[title]=tester 빌드 대기 중" -f "output[summary]=hackle-tester로 디스패치했습니다." \
+            --jq .id)
+          echo "check run: $check_run_id"
+          jq -n --arg branch "$BRANCH" --arg sha "$SHA" --argjson pr "$PR" --argjson check_run_id "$check_run_id" \
+            '{event_type: "ios-sdk-pr", client_payload: {branch: $branch, sha: $sha, pr: $pr, check_run_id: $check_run_id}}' \
+            | gh api "repos/$OWNER/hackle-tester/dispatches" --input -

@@ -29,6 +29,16 @@ jobs:
       - name: Install xcbeautify
         run: brew install xcbeautify
 
+      - name: Build HackleNotificationService as extension-only API
+        run: |
+            set -o pipefail && xcodebuild build \
+                -project Hackle.xcodeproj \
+                -scheme HackleNotificationService \
+                -destination 'platform=iOS Simulator,name=iPhone 17,OS=${{ matrix.simulator-os }}' \
+                -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+                APPLICATION_EXTENSION_API_ONLY=YES \
+                | xcbeautify --renderer github-actions --quiet
+
       - name: Prebuild before test # 테스트 전에 빌드
         run: |
             set -o pipefail && xcodebuild build-for-testing \

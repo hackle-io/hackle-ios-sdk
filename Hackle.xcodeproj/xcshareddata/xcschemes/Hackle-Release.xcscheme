@@ -21,6 +21,20 @@
                ReferencedContainer = "container:Hackle.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Hackle::HackleNotificationService"
+               BuildableName = "HackleNotificationService.framework"
+               BlueprintName = "HackleNotificationService"
+               ReferencedContainer = "container:Hackle.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

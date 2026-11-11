@@ -9,12 +9,6 @@ import Foundation
 import UIKit
 
 extension InAppMessage {
-    func supports(orientation: UIInterfaceOrientation) -> Bool {
-        messageContext.orientations.contains {
-            $0.supports(orientation)
-        }
-    }
-
     func supports(orientation: Orientation) -> Bool {
         messageContext.orientations.contains(orientation)
     }
@@ -27,23 +21,6 @@ extension InAppMessage.Orientation {
             return
         }
         self = .horizontal
-    }
-
-    init(_ orientation: UIInterfaceOrientation) {
-        if orientation.isLandscape {
-            self = .horizontal
-            return
-        }
-        self = .vertical
-    }
-
-    func supports(_ orientation: UIInterfaceOrientation) -> Bool {
-        switch self {
-        case .vertical:
-            return orientation.isPortrait
-        case .horizontal:
-            return orientation.isLandscape
-        }
     }
 }
 

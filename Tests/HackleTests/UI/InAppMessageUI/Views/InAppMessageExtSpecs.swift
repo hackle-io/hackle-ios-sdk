@@ -49,7 +49,7 @@ class InAppMessageExtSpecs: QuickSpec {
         }
 
         describe("InAppMessage.Orientation 생성/지원") {
-            it("CGSize, UIInterfaceOrientation, supports(_:) 동작 확인") {
+            it("CGSize로 orientation 생성") {
                 expect(
                     InAppMessage.Orientation(
                         size: CGSize(width: 100, height: 200)
@@ -60,12 +60,6 @@ class InAppMessageExtSpecs: QuickSpec {
                         size: CGSize(width: 200, height: 100)
                     )
                 ) == .horizontal
-                expect(InAppMessage.Orientation(.portrait)) == .vertical
-                expect(InAppMessage.Orientation(.landscapeLeft)) == .horizontal
-                expect(InAppMessage.Orientation.vertical.supports(.portrait))
-                    .to(beTrue())
-                expect(InAppMessage.Orientation.horizontal.supports(.portrait))
-                    .to(beFalse())
             }
         }
 
