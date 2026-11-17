@@ -1,4 +1,5 @@
 import Foundation
+import WebKit
 import Quick
 import Nimble
 import MockingKit
@@ -36,6 +37,45 @@ class InAppMessageUIHtmlViewSpecs: QuickSpec {
                 let view = makeView(scheduler: MockScheduler())
 
                 expect(view.webView.configuration.websiteDataStore.isPersistent) == false
+            }
+        }
+
+        it("isolates cookies in both directions from the host app web view") {
+            MainActor.assumeIsolated {
+                let view = makeView(scheduler: MockScheduler())
+                let hostStore = WKWebsiteDataStore.default().httpCookieStore
+                let messageStore = view.webView.configuration.websiteDataStore.httpCookieStore
+                let name = "iam_isolation_" + UUID().uuidString
+                let hostCookie = HTTPCookie(properties: [
+                    .domain: "iam-isolation.example", .path: "/",
+                    .name: name, .value: "host"
+                ])!
+                let messageCookie = HTTPCookie(properties: [
+                    .domain: "iam-isolation.example", .path: "/",
+                    .name: name, .value: "message"
+                ])!
+
+                waitUntil(timeout: .seconds(10)) { done in
+                    hostStore.setCookie(hostCookie) {
+                        hostStore.getAllCookies { hostCookies in
+                            expect(hostCookies.first { $0.name == name }?.value) == "host"
+                            messageStore.getAllCookies { messageCookies in
+                                expect(messageCookies.contains { $0.name == name }).to(beFalse())
+                                messageStore.setCookie(messageCookie) {
+                                    messageStore.getAllCookies { updatedMessageCookies in
+                                        expect(updatedMessageCookies.first { $0.name == name }?.value) == "message"
+                                        hostStore.getAllCookies { unchangedHostCookies in
+                                            expect(unchangedHostCookies.first { $0.name == name }?.value) == "host"
+                                            hostStore.delete(hostCookie) {
+                                                messageStore.delete(messageCookie) { done() }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
