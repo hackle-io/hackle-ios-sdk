@@ -108,6 +108,43 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 }
             }
 
+            it("허용되지 않는 스킴의 링크는 열지 않는다") {
+                // given
+                let view = MockInAppMessageView(presented: true)
+                let links = [
+                    "javascript:alert(1)",
+                    "file:///private/var/mobile/secret.txt",
+                    "data:text/html,hello",
+                    "about:blank",
+                ]
+
+                // when
+                MainActor.assumeIsolated {
+                    for link in links {
+                        sut.handle(view: view, action: InAppMessageEntity.action(type: .webLink, value: link))
+                    }
+                }
+
+                // then
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(urlHandler.openedUrls.map { $0.absoluteString }) == []
+            }
+
+            it("delegate가 있어도 허용되지 않는 스킴의 링크는 전달하지 않는다") {
+                let delegate = MockHackleDelegate()
+                let urlDispatcher = HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate))
+                let sut = InAppMessageLinkActionHandler(urlDispatcher: urlDispatcher)
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessageEntity.action(type: .webLink, value: "javascript:alert(1)")
+
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                }
+
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(delegate.contexts.map { $0.url.absoluteString }) == []
+            }
+
             it("delegate가 있어도 url이 유효하지 않으면 호출하지 않는다") {
                 let delegate = MockHackleDelegate()
                 let urlDispatcher = HackleUrlDispatcher(defaultHandler: DelegateUrlHandler(delegate: delegate))
@@ -191,6 +228,24 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 expect(urlHandler.openCallCount).toEventually(equal(1), timeout: .seconds(5))
                 expect(urlHandler.lastOpenedUrl?.absoluteString).to(equal("https://www.hackle.io"))
                 expect(urlHandler.channels) == [.inAppMessage]
+            }
+
+            it("허용되지 않는 스킴의 링크는 닫지도 열지도 않는다") {
+                // given
+                let view = MockInAppMessageView(presented: true)
+                let action = InAppMessageEntity.action(type: .linkAndClose, value: "javascript:alert(1)")
+
+                // when
+                MainActor.assumeIsolated {
+                    sut.handle(view: view, action: action)
+                }
+
+                // then
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+                expect(urlHandler.openedUrls.map { $0.absoluteString }) == []
+                MainActor.assumeIsolated {
+                    expect(view.presented).to(beTrue())
+                }
             }
 
             it("delegate가 있으면 닫고 delegate만 호출한다") {

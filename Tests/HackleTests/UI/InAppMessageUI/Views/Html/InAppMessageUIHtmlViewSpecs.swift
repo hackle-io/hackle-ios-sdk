@@ -31,6 +31,14 @@ class InAppMessageUIHtmlViewSpecs: QuickSpec {
             )
         }
 
+        it("keeps web data out of the persistent store shared with the host app's web views") {
+            MainActor.assumeIsolated {
+                let view = makeView(scheduler: MockScheduler())
+
+                expect(view.webView.configuration.websiteDataStore.isPersistent) == false
+            }
+        }
+
         it("schedules a load timeout with the configured 30s delay") {
             MainActor.assumeIsolated {
                 let scheduler = MockScheduler()
