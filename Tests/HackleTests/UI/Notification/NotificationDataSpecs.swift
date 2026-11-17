@@ -120,7 +120,7 @@ class NotificationDataSpecs: QuickSpec {
             return [
                 "categoryId": "hackle_marketing_push_deny",
                 "items": [
-                    ["title": "수신거부", "clickAction": "DEEP_LINK", "link": "myapp://settings/marketing"],
+                    ["type": "UNSUBSCRIBE", "title": "수신거부", "clickAction": "DEEP_LINK", "link": "myapp://settings/marketing"],
                     ["title": "열기", "clickAction": "APP_OPEN", "link": "myapp://ignored"]
                 ]
             ]
@@ -133,7 +133,9 @@ class NotificationDataSpecs: QuickSpec {
                 expect(result?.buttons.count) == 2
                 expect(result?.buttons[0].clickAction) == NotificationClickAction.deepLink
                 expect(result?.buttons[0].link) == "myapp://settings/marketing"
+                expect(result?.buttons[0].type) == "UNSUBSCRIBE"
                 expect(result?.buttons[1].clickAction) == NotificationClickAction.appOpen
+                expect(result?.buttons[1].type).to(beNil())
             }
             it("has no buttons") {
                 let payloads: [[String: Any]] = [
@@ -176,10 +178,14 @@ class NotificationDataSpecs: QuickSpec {
                 expect(result.link) == "myapp://settings/marketing"
                 expect(result.pushMessageId) == 10
                 expect(result.buttons.count) == 2
+                expect(result.clickArea) == NotificationClickArea.button
+                expect(result.buttonType) == "UNSUBSCRIBE"
 
                 let event = result.toTrackEvent()
-                expect(event.properties?["push_message_action_type"] as? String) == "DEEP_LINK"
-                expect(event.properties?["push_message_action_value"] as? String) == "myapp://settings/marketing"
+                expect(event.properties?["push_message_click_area"] as? String) == "BUTTON"
+                expect(event.properties?["push_message_click_action"] as? String) == "DEEP_LINK"
+                expect(event.properties?["push_message_click_value"] as? String) == "myapp://settings/marketing"
+                expect(event.properties?["push_message_button_type"] as? String) == "UNSUBSCRIBE"
             }
             it("applies an APP_OPEN button") {
                 let data = NotificationData.from(data: payload(buttons: makeButtons()))!
@@ -188,6 +194,8 @@ class NotificationDataSpecs: QuickSpec {
 
                 expect(result.actionType) == HackleNotificationClickActionType.appOpen
                 expect(result.link).to(beNil())
+                expect(result.clickArea) == NotificationClickArea.button
+                expect(result.buttonType).to(beNil())
             }
             it("keeps the body action for the default identifier") {
                 let data = NotificationData.from(data: payload(buttons: makeButtons()))!
@@ -196,6 +204,8 @@ class NotificationDataSpecs: QuickSpec {
 
                 expect(result === data) == true
                 expect(result.link) == "myapp://home"
+                expect(result.clickArea) == NotificationClickArea.message
+                expect(result.buttonType).to(beNil())
             }
             it("falls back to the body action for other identifiers") {
                 let data = NotificationData.from(data: payload(buttons: makeButtons()))!

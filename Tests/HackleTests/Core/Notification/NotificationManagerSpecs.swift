@@ -439,7 +439,7 @@ class NotificationManagerSpec: QuickSpec {
             }
         }
         
-        it("save action type and value") {
+        it("save click area, action, value and button type") {
             let core = HackleCoreStub()
             let workspaceManager = MockWorkspaceManager()
             let userManager = MockUserManager()
@@ -474,7 +474,9 @@ class NotificationManagerSpec: QuickSpec {
                     journeyKey: nil,
                     journeyNodeId: nil,
                     campaignType: "PUSH_MESSAGE",
-                    debug: true
+                    debug: true,
+                    clickArea: .button,
+                    buttonType: "UNSUBSCRIBE"
                 ),
                 timestamp: Date()
             )
@@ -483,8 +485,10 @@ class NotificationManagerSpec: QuickSpec {
                 expect(core.tracked.count) == 0
                 let entities = repository.getEntities(workspaceId: 123, environmentId: 456)
                 expect(entities.count) == 1
-                expect(entities[0].actionType) == "DEEP_LINK"
-                expect(entities[0].actionValue) == "myapp://settings/marketing"
+                expect(entities[0].clickArea) == "BUTTON"
+                expect(entities[0].clickAction) == "DEEP_LINK"
+                expect(entities[0].clickValue) == "myapp://settings/marketing"
+                expect(entities[0].buttonType) == "UNSUBSCRIBE"
             }
         }
 
@@ -560,8 +564,10 @@ class NotificationManagerSpec: QuickSpec {
                 expect(entity.journeyKey).to(beNil())
                 expect(entity.journeyNodeId).to(beNil())
                 expect(entity.campaignType).to(beNil())
-                expect(entity.actionType) == "APP_OPEN"
-                expect(entity.actionValue) == ""
+                expect(entity.clickArea) == "MESSAGE"
+                expect(entity.clickAction) == "APP_OPEN"
+                expect(entity.clickValue).to(beNil())
+                expect(entity.buttonType).to(beNil())
                 expect(entity.debug) == true
                 expect(entity.workspaceId) == 123
                 expect(entity.environmentId) == 456

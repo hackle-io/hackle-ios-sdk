@@ -15,7 +15,7 @@ class NotificationHistoryEntitySpec: QuickSpec {
             }
         }
 
-        it("migrates v2 rows to v3 with null action columns") {
+        it("migrates v2 rows to v3 with null click columns") {
             let v2 = DatabaseSpec.MockDatabase(
                 label: "NotificationHistoryTest",
                 filename: filename,
@@ -49,8 +49,10 @@ class NotificationHistoryEntitySpec: QuickSpec {
             expect(entities.count) == 1
             expect(entities[0].workspaceId) == 1
             expect(entities[0].campaignType) == "PUSH_MESSAGE"
-            expect(entities[0].actionType).to(beNil())
-            expect(entities[0].actionValue).to(beNil())
+            expect(entities[0].clickArea).to(beNil())
+            expect(entities[0].clickAction).to(beNil())
+            expect(entities[0].clickValue).to(beNil())
+            expect(entities[0].buttonType).to(beNil())
             expect(v3.getVersion(key: filename)) == 3
         }
 

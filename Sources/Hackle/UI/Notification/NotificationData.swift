@@ -44,6 +44,8 @@ final class NotificationData: HackleNotification, Sendable {
     private let _link: String?
 
     let buttons: [NotificationButton]
+    let clickArea: NotificationClickArea
+    let buttonType: String?
     
     init(
         workspaceId: Int64,
@@ -61,7 +63,9 @@ final class NotificationData: HackleNotification, Sendable {
         journeyNodeId: Int64?,
         campaignType: String?,
         debug: Bool,
-        buttons: [NotificationButton] = []
+        buttons: [NotificationButton] = [],
+        clickArea: NotificationClickArea = .message,
+        buttonType: String? = nil
     ) {
         self.workspaceId = workspaceId
         self.environmentId = environmentId
@@ -79,6 +83,8 @@ final class NotificationData: HackleNotification, Sendable {
         self.campaignType = campaignType
         self.debug = debug
         self.buttons = buttons
+        self.clickArea = clickArea
+        self.buttonType = buttonType
     }
 }
 
@@ -101,6 +107,7 @@ extension NotificationData {
     static let KEY_DEBUG = "debug"
     static let KEY_BUTTONS = "buttons"
     static let KEY_ITEMS = "items"
+    static let KEY_TYPE = "type"
     static let ACTION_IDENTIFIER_PREFIX = "hackle_action_"
     
     static func from(data: [AnyHashable: Any]) -> NotificationData? {
@@ -142,6 +149,7 @@ extension NotificationData {
         return items.map { item in
             let item = item as? [AnyHashable: Any]
             return NotificationButton(
+                type: item?[KEY_TYPE] as? String,
                 clickAction: NotificationClickAction.from(rawValue: item?[KEY_CLICK_ACTION] as? String),
                 link: item?[KEY_LINK] as? String
             )
@@ -171,7 +179,9 @@ extension NotificationData {
             journeyNodeId: journeyNodeId,
             campaignType: campaignType,
             debug: debug,
-            buttons: buttons
+            buttons: buttons,
+            clickArea: .button,
+            buttonType: button.type
         )
     }
 }

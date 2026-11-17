@@ -45,9 +45,11 @@ class DefaultNotificationRepository: NotificationRepository {
                     "\(NotificationHistoryEntity.JOURNEY_KEY_COLUMN_NAME)," +
                     "\(NotificationHistoryEntity.JOURNEY_NODE_ID_COLUMN_NAME)," +
                     "\(NotificationHistoryEntity.CAMPAIGN_TYPE_COLUMN_NAME)," +
-                    "\(NotificationHistoryEntity.ACTION_TYPE_COLUMN_NAME)," +
-                    "\(NotificationHistoryEntity.ACTION_VALUE_COLUMN_NAME)" +
-                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                    "\(NotificationHistoryEntity.CLICK_AREA_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.CLICK_ACTION_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.CLICK_VALUE_COLUMN_NAME)," +
+                    "\(NotificationHistoryEntity.BUTTON_TYPE_COLUMN_NAME)" +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             
             try sharedDatabase.execute { database in
                 try database.statement(sql: query)
@@ -64,8 +66,10 @@ class DefaultNotificationRepository: NotificationRepository {
                         try statement.bindInt(index: 10, value: data.journeyKey)
                         try statement.bindInt(index: 11, value: data.journeyNodeId)
                         try statement.bindString(index: 12, value: data.campaignType)
-                        try statement.bindString(index: 13, value: data.clickAction.rawValue)
-                        try statement.bindString(index: 14, value: data.link ?? "")
+                        try statement.bindString(index: 13, value: data.clickArea.rawValue)
+                        try statement.bindString(index: 14, value: data.clickAction.rawValue)
+                        try statement.bindString(index: 15, value: data.link)
+                        try statement.bindString(index: 16, value: data.buttonType)
                         try statement.execute()
                     }
             }
