@@ -344,6 +344,31 @@ class ApplicationUrlHandlerSpecs: QuickSpec {
                     }
                 }
 
+                context("setPolicy") {
+                    it("정책을 바꾸면 이후 링크에 적용된다") {
+                        waitUntil { done in
+                            DispatchQueue.main.async {
+                                let mock = MockUserActivityHandler()
+                                mock.sceneSupported = true
+                                let handler = ApplicationUrlHandler(
+                                    policy: .applinksOnly,
+                                    entitlements: { Entitlements(applinks: []) },
+                                    userActivityHandler: mock
+                                )
+                                handler.open(url: url, channel: .push)
+                                NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+                                expect(mock.sceneUrls).to(beEmpty())
+
+                                handler.setPolicy(.forwardAll)
+                                handler.open(url: url, channel: .push)
+                                NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+                                expect(mock.sceneUrls) == [url]
+                                done()
+                            }
+                        }
+                    }
+                }
+
                 context("커스텀 스킴") {
                     it("정책·매칭 여부와 무관하게 delegate를 호출하지 않는다") {
                         waitUntil { done in

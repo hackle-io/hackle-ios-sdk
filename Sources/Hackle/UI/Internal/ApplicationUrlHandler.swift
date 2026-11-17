@@ -10,12 +10,14 @@ import UIKit
 /// scene/app delegate as universal links and opens everything else with `UIApplication`.
 /// Universal links received while the app is inactive are deferred until it becomes active.
 final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
+    static let shared = ApplicationUrlHandler()
+
     private enum Route {
         case openLink
         case continueUserActivity(includingScene: Bool)
     }
 
-    private let policy: UniversalLinkPolicy
+    private let policy: AtomicReference<UniversalLinkPolicy>
     private let entitlements: @Sendable () -> Entitlements
     private let userActivityHandler: any UserActivityHandler
     @MainActor private var pending: (url: URL, includingScene: Bool)?
@@ -25,10 +27,14 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
         entitlements: @escaping @Sendable () -> Entitlements = { Entitlements.main },
         userActivityHandler: UserActivityHandler? = nil
     ) {
-        self.policy = policy
+        self.policy = AtomicReference(value: policy)
         self.entitlements = entitlements
         self.userActivityHandler = userActivityHandler ?? ApplicationUserActivityHandler()
         super.init()
+    }
+
+    func setPolicy(_ policy: UniversalLinkPolicy) {
+        self.policy.set(newValue: policy)
     }
 
     deinit {
@@ -62,7 +68,7 @@ final class ApplicationUrlHandler: NSObject, UrlHandler, @unchecked Sendable {
     }
 
     @MainActor private func route(_ url: URL) -> Route {
-        switch policy {
+        switch policy.get() {
         case .forwardAll:
             return .continueUserActivity(includingScene: true)
         case .applinksOnly:

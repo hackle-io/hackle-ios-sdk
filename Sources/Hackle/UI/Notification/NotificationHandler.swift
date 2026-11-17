@@ -11,6 +11,7 @@ class NotificationHandler: @unchecked Sendable {
     )
 
     private var receiver: NotificationDataReceiver
+    private let deferPushLinkUntilInitialized: Bool
     let storage = PendingUrlStorage()
     @MainActor private var urlDispatcher: HackleUrlDispatcher?
 
@@ -19,6 +20,7 @@ class NotificationHandler: @unchecked Sendable {
             dispatchQueue: dispatchQueue,
             repository: DefaultNotificationRepository(sharedDatabase: SharedDatabase.shared)
         )
+        self.deferPushLinkUntilInitialized = Bundle.main.hackleInfoBool(forKey: "HackleDeferPushLinkUntilInitialized")
     }
 
     func setNotificationDataReceiver(receiver: NotificationDataReceiver) {
@@ -79,9 +81,20 @@ extension NotificationHandler {
 
             Task { @MainActor in
                 if let dispatcher = self.urlDispatcher {
+                    // 1. 초기화 후
+                    //   - dispatcher가 delegate 또는 기본 핸들러로 넘긴다.
                     dispatcher.open(url: url, channel: .push)
                 } else {
-                    self.storage.store(url: url)
+                    // 2. 초기화 전
+                    if self.deferPushLinkUntilInitialized {
+                        // 2-1. HackleDeferPushLinkUntilInitialized가 YES: 보관
+                        //    - 초기화될 때 setUrlDispatcher가 꺼내 1번과 같은 경로로 처리한다.
+                        self.storage.store(url: url)
+                    } else {
+                        // 2-2. HackleDeferPushLinkUntilInitialized가 없음: 즉시 열기
+                        //    - 초기화 전이라 HackleConfig와 HackleDelegate는 적용되지 않는다.
+                        ApplicationUrlHandler.shared.open(url: url, channel: .push)
+                    }
                 }
             }
         }

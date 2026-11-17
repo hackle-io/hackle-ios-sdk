@@ -27,6 +27,11 @@ import Foundation
 /// Register it with ``HackleConfigBuilder/delegate(_:)`` or ``Hackle/setDelegate(_:)``.
 /// The SDK does not open links passed to the delegate.
 /// The SDK keeps a strong reference to the registered delegate until nil is passed.
+///
+/// A push link tapped before the SDK is initialized is opened by the SDK right away and is not
+/// passed to the delegate. To pass it to the delegate instead, add `HackleDeferPushLinkUntilInitialized`
+/// to Info.plist as a Boolean set to `YES`; a String value is ignored. The SDK then holds the link and
+/// replays it once the SDK is initialized.
 @objc public protocol HackleDelegate: AnyObject {
     /// Called on the main thread when a link should be opened.
     ///

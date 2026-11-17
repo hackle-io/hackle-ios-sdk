@@ -22,8 +22,8 @@ class BundleInfoImpl: BundleInfo {
     init() {
         bundleId = Bundle.main.bundleIdentifier ?? ""
         versionInfo = BundleVersionInfo(
-            version: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
-            build: (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "").toInt()
+            version: Bundle.main.hackleInfoString(forKey: "CFBundleShortVersionString") ?? "",
+            build: (Bundle.main.hackleInfoString(forKey: "CFBundleVersion") ?? "").toInt()
         )
     }
 }

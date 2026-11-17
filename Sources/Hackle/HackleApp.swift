@@ -661,9 +661,8 @@ extension HackleApp {
 
         // - InAppMessage
 
-        let applicationUrlHandler = ApplicationUrlHandler(
-            policy: config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll
-        )
+        let applicationUrlHandler = ApplicationUrlHandler.shared
+        applicationUrlHandler.setPolicy(config.universalLinkDomainCheckEnabled ? .applinksOnly : .forwardAll)
         let urlDispatcher = HackleUrlDispatcher(defaultHandler: applicationUrlHandler)
         urlDispatcher.setDelegate(config.delegate.getAndSet(newValue: nil))
         let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [
