@@ -699,7 +699,8 @@ extension HackleApp {
         let inAppMessageUI = HackleInAppMessageUI(
             clock: clock,
             eventProcessor: inAppMessageViewEventProcessor,
-            htmlContentResolverFactory: inAppMessageHtmlContentResolverFactory
+            htmlContentResolverFactory: inAppMessageHtmlContentResolverFactory,
+            htmlEnabled: config.htmlInAppMessageEnabled
         )
 
         let inAppMessageRecorder = DefaultInAppMessageRecorder(

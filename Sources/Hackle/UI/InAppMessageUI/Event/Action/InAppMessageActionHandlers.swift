@@ -26,6 +26,10 @@ final class InAppMessageLinkActionHandler: InAppMessageActionHandler, Sendable {
             Log.error("Invalid url: \(action.value.orNil)")
             return
         }
+        guard InAppMessageLinkPolicy.isAllowed(url) else {
+            Log.warn("Not allowed url scheme: \(url.scheme.orNil)")
+            return
+        }
         Task { @MainActor in
             urlDispatcher.open(url: url, channel: .inAppMessage)
         }
@@ -46,6 +50,10 @@ final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable
     func handle(view: InAppMessageView, action: InAppMessage.Action) {
         guard let value = action.value, let url = URL(string: value) else {
             Log.error("Invalid url: \(action.value.orNil)")
+            return
+        }
+        guard InAppMessageLinkPolicy.isAllowed(url) else {
+            Log.warn("Not allowed url scheme: \(url.scheme.orNil)")
             return
         }
         view.dismiss()
