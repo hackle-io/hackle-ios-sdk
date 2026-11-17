@@ -37,18 +37,6 @@ import UserNotifications
         notificationContent: UNMutableNotificationContent,
         completion: @escaping (UNMutableNotificationContent) -> Void
     ) -> Bool {
-        resolveRichNotificationContent(
-            notificationContent: notificationContent,
-            center: UNUserNotificationCenter.current(),
-            completion: completion
-        )
-    }
-
-    static func resolveRichNotificationContent(
-        notificationContent: UNMutableNotificationContent,
-        center: @autoclosure @escaping () -> NotificationCategoryCenter,
-        completion: @escaping (UNMutableNotificationContent) -> Void
-    ) -> Bool {
         guard let notificationData = NotificationData.from(data: notificationContent.userInfo) else {
             return false
         }
@@ -80,7 +68,7 @@ import UserNotifications
         NotificationImageHandler.handlePushImage(notificationData: notificationData) { attachment in
             resolve { resolvedAttachment = attachment }
         }
-        NotificationCategoryHandler.handlePushCategory(notificationData: notificationData, center: center()) { categoryId in
+        NotificationCategoryHandler.handlePushCategory(notificationData: notificationData) { categoryId in
             resolve { resolvedCategoryId = categoryId }
         }
 

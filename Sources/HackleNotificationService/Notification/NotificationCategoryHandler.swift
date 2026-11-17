@@ -1,13 +1,6 @@
 import Foundation
 import UserNotifications
 
-protocol NotificationCategoryCenter {
-    func getNotificationCategories(completionHandler: @escaping @Sendable (Set<UNNotificationCategory>) -> Void)
-    func setNotificationCategories(_ categories: Set<UNNotificationCategory>)
-}
-
-extension UNUserNotificationCenter: NotificationCategoryCenter {}
-
 enum NotificationCategoryHandler {
     static let ACTION_IDENTIFIER_PREFIX = "hackle_action_"
 
@@ -31,7 +24,6 @@ enum NotificationCategoryHandler {
 
     static func handlePushCategory(
         notificationData: NotificationData,
-        center: @autoclosure () -> NotificationCategoryCenter,
         completion: @escaping (String?) -> Void
     ) {
         Log.info("handle push category action")
@@ -41,7 +33,7 @@ enum NotificationCategoryHandler {
         }
         let categoryId = category.identifier
         let box = UncheckedSendableBox(category)
-        let center = UncheckedSendableBox(center())
+        let center = UncheckedSendableBox(UNUserNotificationCenter.current())
         let sink = UncheckedSendableBox(completion)
         center.value.getNotificationCategories { existing in
             center.value.setNotificationCategories(merge(categories: existing, category: box.value))

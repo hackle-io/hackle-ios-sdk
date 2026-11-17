@@ -9,36 +9,11 @@ import Foundation
 import UserNotifications
 @testable import HackleNotificationService
 
-final class MockNotificationCategoryCenter: NotificationCategoryCenter {
-    var categories: Set<UNNotificationCategory>
-    var getCount = 0
-    var setCount = 0
-
-    init(categories: Set<UNNotificationCategory> = []) {
-        self.categories = categories
-    }
-
-    func getNotificationCategories(completionHandler: @escaping @Sendable (Set<UNNotificationCategory>) -> Void) {
-        getCount += 1
-        completionHandler(categories)
-    }
-
-    func setNotificationCategories(_ categories: Set<UNNotificationCategory>) {
-        setCount += 1
-        self.categories = categories
-    }
-}
-
 private func makeCategory(identifier: String, titles: [String]) -> UNNotificationCategory {
     let actions = titles.enumerated().map { index, title in
         UNNotificationAction(identifier: "action_\(index)", title: title, options: [])
     }
     return UNNotificationCategory(identifier: identifier, actions: actions, intentIdentifiers: [], options: [])
-}
-
-private func unexpectedCenter() -> NotificationCategoryCenter {
-    fail("center must not be evaluated")
-    return MockNotificationCategoryCenter()
 }
 
 class NotificationCategoryHandlerSpecs: QuickSpec {
@@ -95,28 +70,10 @@ class NotificationCategoryHandlerSpecs: QuickSpec {
         }
 
         describe("handlePushCategory") {
-            it("registers merged categories and completes with categoryId") {
-                let mock = MockNotificationCategoryCenter(categories: [existing()])
-                let data = NotificationData(imageUrl: nil, categoryId: "hackle_a", buttonTitles: ["a"])
-                var results: [String?] = []
-
-                NotificationCategoryHandler.handlePushCategory(notificationData: data, center: mock) { categoryId in
-                    results.append(categoryId)
-                }
-
-                expect(results) == ["hackle_a"]
-                expect(mock.setCount) == 1
-                expect(Set(mock.categories.map(\.identifier))) == ["app_category", "hackle_a"]
-                expect(mock.getCount) == 2
-            }
-
             it("skips registration when there are no buttons") {
                 var results: [String?] = []
 
-                NotificationCategoryHandler.handlePushCategory(
-                    notificationData: NotificationData(imageUrl: nil),
-                    center: unexpectedCenter()
-                ) { categoryId in
+                NotificationCategoryHandler.handlePushCategory(notificationData: NotificationData(imageUrl: nil)) { categoryId in
                     results.append(categoryId)
                 }
 
