@@ -13,18 +13,15 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
     let clock: Clock
     let eventProcessor: InAppMessageViewEventProcessor
     let htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory
-    private let htmlEnabled: Bool
 
     init(
         clock: Clock,
         eventProcessor: InAppMessageViewEventProcessor,
-        htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory,
-        htmlEnabled: Bool
+        htmlContentResolverFactory: InAppMessageHtmlContentResolverFactory
     ) {
         self.clock = clock
         self.eventProcessor = eventProcessor
         self.htmlContentResolverFactory = htmlContentResolverFactory
-        self.htmlEnabled = htmlEnabled
         super.init()
     }
 
@@ -47,9 +44,6 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
     }
 
     @MainActor private func presentNow(context: InAppMessagePresentationContext) -> InAppMessagePresentResponse {
-        guard enabled(context: context) else {
-            return InAppMessagePresentResponse.of(code: .htmlDisabled, context: context)
-        }
         guard applicationActive() else {
             return InAppMessagePresentResponse.of(code: .applicationNotActive, context: context)
         }
@@ -83,11 +77,6 @@ class HackleInAppMessageUI: NSObject, InAppMessagePresenter, InAppMessageViewPro
         // Display
         window.isHidden = false
         return InAppMessagePresentResponse.of(code: .present, context: context)
-    }
-
-    /// An HTML in-app message is presented only when it is enabled by `HackleConfigBuilder.htmlInAppMessageEnabled(_:)`.
-    private func enabled(context: InAppMessagePresentationContext) -> Bool {
-        return htmlEnabled || context.message.layout.displayType != .html
     }
 
     // 백그라운드에서는 노출하지 않는다. checkRootViewController는 activeWindowScene의 fallback 때문에

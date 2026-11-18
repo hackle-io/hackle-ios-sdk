@@ -30,7 +30,6 @@ public final class HackleConfig: NSObject, Sendable {
     let eventFlushThreshold: Int
     let exposureEventDedupInterval: TimeInterval
     let optOutTracking: Bool
-    let htmlInAppMessageEnabled: Bool
     let delegate: AtomicReference<HackleDelegate?>
     let extra: [String: String]
 
@@ -53,7 +52,6 @@ public final class HackleConfig: NSObject, Sendable {
         eventFlushThreshold = builder.eventFlushThreshold
         exposureEventDedupInterval = builder.exposureEventDedupInterval
         optOutTracking = builder.optOutTracking
-        htmlInAppMessageEnabled = builder.htmlInAppMessageEnabled
         delegate = AtomicReference(value: builder.delegate)
         extra = builder.extra
         super.init()
@@ -110,8 +108,6 @@ public class HackleConfigBuilder: NSObject {
     var exposureEventDedupInterval: TimeInterval = HackleConfig.DEFAULT_EXPOSURE_EVENT_DEDUP_INTERVAL
 
     var optOutTracking: Bool = false
-
-    var htmlInAppMessageEnabled: Bool = true
 
     var delegate: HackleDelegate?
 
@@ -275,19 +271,6 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func optOutTracking(_ optOutTracking: Bool) -> HackleConfigBuilder {
         self.optOutTracking = optOutTracking
-        return self
-    }
-
-    /// Enables or disables HTML in-app messages.
-    ///
-    /// An HTML in-app message runs the HTML and JavaScript delivered from the server in a web view.
-    /// When disabled, HTML in-app messages are not presented and no impression is recorded for them.
-    /// Other types of in-app messages are unaffected.
-    ///
-    /// - Parameter enabled: Whether to present HTML in-app messages (default: true)
-    /// - Returns: This builder instance for method chaining
-    @objc public func htmlInAppMessageEnabled(_ enabled: Bool) -> HackleConfigBuilder {
-        self.htmlInAppMessageEnabled = enabled
         return self
     }
 

@@ -118,7 +118,6 @@ extension InAppMessageEntity {
     static func message(
         variationKey: String? = nil,
         lang: String = "ko",
-        layout: Message.Layout = Message.Layout(displayType: .modal, layoutType: .imageOnly, alignment: nil),
         images: [Message.Image] = [image()],
         imageAutoScroll: Message.ImageAutoScroll? = nil,
         text: Message.Text? = text(),
@@ -128,7 +127,11 @@ extension InAppMessageEntity {
         Message(
             variationKey: variationKey,
             lang: lang,
-            layout: layout,
+            layout: Message.Layout(
+                displayType: .modal,
+                layoutType: .imageOnly,
+                alignment: nil
+            ),
             images: images,
             imageAutoScroll: imageAutoScroll,
             text: text,

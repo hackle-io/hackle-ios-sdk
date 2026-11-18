@@ -2,7 +2,7 @@ import Foundation
 @testable import Hackle
 
 /// 모든 HackleApp SUT 배선이 공유하는 inAppMessage UI 체인.
-func makeInAppMessageUI(core: HackleCore, htmlEnabled: Bool = true) -> HackleInAppMessageUI {
+func makeInAppMessageUI(core: HackleCore) -> HackleInAppMessageUI {
     let inAppMessageActionHandlerFactory = DefaultInAppMessageActionHandlerFactory(handlers: [])
     let inAppMessageViewEventActorFactory = DefaultInAppMessageViewEventActorFactory(actors: [
         InAppMessageViewImpressionEventActor(),
@@ -26,8 +26,7 @@ func makeInAppMessageUI(core: HackleCore, htmlEnabled: Bool = true) -> HackleInA
     return HackleInAppMessageUI(
         clock: SystemClock.shared,
         eventProcessor: inAppMessageViewEventProcessor,
-        htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory(),
-        htmlEnabled: htmlEnabled
+        htmlContentResolverFactory: MockInAppMessageHtmlContentResolverFactory()
     )
 }
 

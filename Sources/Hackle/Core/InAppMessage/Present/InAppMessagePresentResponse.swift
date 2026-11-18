@@ -16,7 +16,6 @@ final class InAppMessagePresentResponse: Sendable {
         case rootViewControllerNotFound
         case alreadyPresented
         case unsupportedOrientation
-        case htmlDisabled
         case inProgress
         case exception
     }
