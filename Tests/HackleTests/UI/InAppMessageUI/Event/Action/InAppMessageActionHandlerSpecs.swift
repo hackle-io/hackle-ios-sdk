@@ -230,7 +230,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 expect(urlHandler.channels) == [.inAppMessage]
             }
 
-            it("허용되지 않는 스킴의 링크는 닫지도 열지도 않는다") {
+            it("허용되지 않는 스킴의 링크는 열지 않고 닫기만 한다") {
                 // given
                 let view = MockInAppMessageView(presented: true)
                 let action = InAppMessageEntity.action(type: .linkAndClose, value: "javascript:alert(1)")
@@ -244,7 +244,7 @@ class InAppMessageActionHandlerSpecs: QuickSpec {
                 RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
                 expect(urlHandler.openedUrls.map { $0.absoluteString }) == []
                 MainActor.assumeIsolated {
-                    expect(view.presented).to(beTrue())
+                    expect(view.presented).to(beFalse())
                 }
             }
 

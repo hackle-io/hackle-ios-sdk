@@ -52,11 +52,11 @@ final class InAppMessageLinkAndCloseHandler: InAppMessageActionHandler, Sendable
             Log.error("Invalid url: \(action.value.orNil)")
             return
         }
+        view.dismiss()
         guard InAppMessageLinkPolicy.isAllowed(url) else {
             Log.warn("Not allowed url scheme: \(url.scheme.orNil)")
             return
         }
-        view.dismiss()
         Task { @MainActor in
             urlDispatcher.open(url: url, channel: .inAppMessage)
         }
