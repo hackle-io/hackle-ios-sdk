@@ -3,6 +3,13 @@ import WebKit
 
 extension HackleInAppMessageUI {
     class WebView: WKWebView {
+        /// Website data store of in-app message web views.
+        ///
+        /// Kept apart from `WKWebsiteDataStore.default()`, which the web views of the host app share,
+        /// so that an HTML in-app message cannot reach the cookies and storage of the app.
+        /// A single store is reused so that resources stay cached while the app is running.
+        static let websiteDataStore = WKWebsiteDataStore.nonPersistent()
+
         init(configuration: WKWebViewConfiguration) {
             super.init(frame: .zero, configuration: configuration)
 
