@@ -194,6 +194,7 @@ extension HackleInAppMessageUI {
             let configuration = WKWebViewConfiguration()
             configuration.suppressesIncrementalRendering = true
             configuration.allowsInlineMediaPlayback = true
+            configuration.websiteDataStore = WebView.websiteDataStore
             configuration.setURLSchemeHandler(handler: WebViewSchemeHandler(scheme: WebViewResourceLoader.scheme, loader: WebViewResourceLoader()))
 
             let webView = WebView(configuration: configuration)
