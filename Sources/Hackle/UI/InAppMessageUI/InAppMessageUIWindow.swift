@@ -9,7 +9,7 @@ extension HackleInAppMessageUI {
             }
 
             if let htmlView = messageViewController?.messageView as? HtmlView {
-                return htmlView.presented ? view : nil
+                return htmlView.presented || htmlView.isDismissed ? view : nil
             }
 
             let isInAppMessageView = view is InAppMessageView || view.responders.lazy.contains(where: { $0 is InAppMessageView })

@@ -26,7 +26,7 @@ let package = Package(
                 "HackleNotification.m"
             ],
             resources: [
-                .process("Resources/hackle-javascript-sdk-12.1.1.min.js"),
+                .process("Resources/hackle-javascript-sdk-12.2.2.min.js"),
                 .process("Resources/Images/hackle_banner.png"),
                 .process("Resources/Images/hackle_banner@2x.png"),
                 .process("Resources/Images/hackle_banner@3x.png"),
