@@ -10,15 +10,18 @@ permissions:
 
 jobs:
   ios-sdk-release-test:
-    runs-on: macos-26
+    name: Xcode ${{ matrix.xcode-version }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - xcode-version: '26.3'
-            simulator-os: '26.2'
-          - xcode-version: '26.6'
+          - runner: macos-latest
+            xcode-version: '26.6'
             simulator-os: '26.5'
+          - runner: xcode-27
+            xcode-version: '27.2'
+            simulator-os: '27.2'
     steps:
       - uses: actions/checkout@v7
 

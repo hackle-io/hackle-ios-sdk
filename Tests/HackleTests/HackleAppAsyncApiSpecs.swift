@@ -68,6 +68,21 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
             sut = built.sut
         }
 
+        it("initialize") {
+            let count = AtomicReference(value: 0)
+            await withCheckedContinuation { continuation in
+                sut.initialize(user: nil) {
+                    count.set(newValue: count.get() + 1)
+                    continuation.resume()
+                }
+                expect(count.get()) == 0
+            }
+            expect(count.get()) == 1
+
+            expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
+            expect(platformManager.device.properties.count) == 13
+        }
+
         it("setUser async — 반환 시 유저 갱신과 sync가 모두 완료된다") {
             let user = User.builder().id("async-user").build()
             await awaitCompletion {
