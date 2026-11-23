@@ -10,15 +10,15 @@ permissions:
 
 jobs:
   ios-sdk-release-test:
-    runs-on: macos-26
+    runs-on: xenoci-macos
     strategy:
       fail-fast: false
       matrix:
         include:
-          - xcode-version: '26.3'
-            simulator-os: '26.2'
           - xcode-version: '26.6'
             simulator-os: '26.5'
+          - xcode-version: '27.0'
+            simulator-os: '27.0'
     steps:
       - uses: actions/checkout@v7
 
