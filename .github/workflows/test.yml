@@ -10,15 +10,18 @@ permissions:
 
 jobs:
   ios-sdk-release-test:
-    runs-on: xenoci-macos
+    name: ${{ matrix.simulator-os }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - xcode-version: '26.6'
+          - runner: macos-latest
+            xcode-version: '26.6'
             simulator-os: '26.5'
-          - xcode-version: '27.0'
-            simulator-os: '27.0'
+          - runner: xcode-27
+            xcode-version: '27.2'
+            simulator-os: '27.2'
     steps:
       - uses: actions/checkout@v7
 
@@ -85,6 +88,6 @@ jobs:
         if: success() || failure()
         with:
           files: build/reports/junit.xml
-          check_name: Test Results (Xcode ${{ matrix.xcode-version }})
-          comment_title: Test Results (Xcode ${{ matrix.xcode-version }})
+          check_name: Test Results (${{ matrix.simulator-os }})
+          comment_title: Test Results (${{ matrix.simulator-os }})
           comment_mode: changes
