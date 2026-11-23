@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   ios-sdk-release-test:
-    name: ${{ matrix.simulator-os }}
+    name: Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -88,6 +88,6 @@ jobs:
         if: success() || failure()
         with:
           files: build/reports/junit.xml
-          check_name: Test Results (${{ matrix.simulator-os }})
-          comment_title: Test Results (${{ matrix.simulator-os }})
+          check_name: Test Results (Xcode ${{ matrix.xcode-version }})
+          comment_title: Test Results (Xcode ${{ matrix.xcode-version }})
           comment_mode: changes
