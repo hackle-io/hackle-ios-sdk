@@ -27,10 +27,6 @@ class HackleCoreStub: HackleCore {
         fatalError("featureFlag(featureKey:user:) has not been implemented")
     }
 
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
-        fatalError("featureFlags(user:) has not been implemented")
-    }
-
     func track(event: Event, user: HackleUser) {
         tracked.append((event, user, Date()))
     }

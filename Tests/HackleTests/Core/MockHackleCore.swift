@@ -22,12 +22,6 @@ class MockHackleCore: Mock, HackleCore {
         try call(featureFlagMock, args: (featureKey, user))
     }
 
-    lazy var featureFlagsMock = MockFunction.throwable(self, featureFlags)
-
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
-        try call(featureFlagsMock, args: user)
-    }
-
     func track(event: Event, user: HackleUser) {
         track(event: event, user: user, timestamp: Date())
     }

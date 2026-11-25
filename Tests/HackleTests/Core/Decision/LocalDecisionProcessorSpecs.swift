@@ -13,14 +13,14 @@ class LocalDecisionProcessorSpecs: QuickSpec {
         func workspace(user: HackleUser) -> WorkspaceConfig? { workspace }
     }
 
-    static func processor(workspace: WorkspaceConfig, eventProcessor: UserEventProcessor) -> LocalDecisionProcessor {
+    static func evaluateProcessor(eventProcessor: UserEventProcessor) -> EvaluateProcessor {
         let context = HackleCoreContext()
         let impressionStorage = DefaultInAppMessageImpressionStorage(keyValueRepository: MemoryKeyValueRepository())
         let hiddenStorage = DefaultInAppMessageHiddenStorage(keyValueRepository: MemoryKeyValueRepository())
         context.register(impressionStorage)
         context.register(hiddenStorage)
 
-        let evaluateProcessor = EvaluateProcessor.create(
+        return EvaluateProcessor.create(
             context: context,
             clock: SystemClock.shared,
             eventProcessor: eventProcessor,
@@ -28,9 +28,19 @@ class LocalDecisionProcessorSpecs: QuickSpec {
             impressionStorage: impressionStorage,
             hiddenStorage: hiddenStorage
         )
-        return LocalDecisionProcessor(
+    }
+
+    static func processor(workspace: WorkspaceConfig, eventProcessor: UserEventProcessor) -> LocalDecisionProcessor {
+        LocalDecisionProcessor(
             workspaceFetcher: StubWorkspaceConfigFetcher(workspace),
-            evaluateProcessor: evaluateProcessor
+            evaluateProcessor: evaluateProcessor(eventProcessor: eventProcessor)
+        )
+    }
+
+    static func devToolsProcessor(workspace: WorkspaceConfig, eventProcessor: UserEventProcessor) -> LocalDevToolsDecisionProcessor {
+        LocalDevToolsDecisionProcessor(
+            workspaceFetcher: StubWorkspaceConfigFetcher(workspace),
+            evaluateProcessor: evaluateProcessor(eventProcessor: eventProcessor)
         )
     }
 
@@ -102,11 +112,37 @@ class LocalDecisionProcessorSpecs: QuickSpec {
                     workspace.featureFlags.first { $0.key == key }
                 }
                 let eventProcessor = InMemoryUserEventProcessor()
-                let sut = processor(workspace: workspace, eventProcessor: eventProcessor)
+                let sut = devToolsProcessor(workspace: workspace, eventProcessor: eventProcessor)
 
                 let decisions = try sut.featureFlags(user: user)
 
                 expect(decisions.count) == 3
+                expect(eventProcessor.processedEvents.count) == 0
+            }
+
+            it("bulk remoteConfigs(user) evaluates every parameter with its own type and records nothing") {
+                let p1 = RemoteConfigParameterEntity(id: 1, key: "a", type: .string, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 11, rawValue: .string("x")))
+                let p2 = RemoteConfigParameterEntity(id: 2, key: "b", type: .number, identifierType: "$id", targetRules: [], defaultValue: RemoteConfigParameter.Value(id: 22, rawValue: .double(3)))
+                let workspace = MockWorkspace(remoteConfigParameters: [p1, p2])
+                let eventProcessor = InMemoryUserEventProcessor()
+                let sut = devToolsProcessor(workspace: workspace, eventProcessor: eventProcessor)
+
+                let evaluations = try sut.remoteConfigs(user: user)
+
+                expect(evaluations.map { $0.parameter.key }) == ["a", "b"]
+                expect(evaluations.map { $0.remoteConfigResult.value?.id }) == [11, 22]
+                expect(eventProcessor.processedEvents.count) == 0
+            }
+
+            it("bulk inAppMessages(user, timestamp) judges every message in trigger scope and records nothing") {
+                let workspace = MockWorkspace(inAppMessages: [InAppMessageEntity.create(id: 1, key: 1), InAppMessageEntity.create(id: 2, key: 2, status: .pause)])
+                let eventProcessor = InMemoryUserEventProcessor()
+                let sut = devToolsProcessor(workspace: workspace, eventProcessor: eventProcessor)
+
+                let evaluations = try sut.inAppMessages(user: user, timestamp: Date())
+
+                expect(evaluations.map { $0.inAppMessage.key }) == [1, 2]
+                expect(evaluations[1].eligibilityResult.isEligible) == false
                 expect(eventProcessor.processedEvents.count) == 0
             }
         }

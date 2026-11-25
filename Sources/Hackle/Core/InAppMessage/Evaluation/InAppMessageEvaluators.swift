@@ -9,7 +9,8 @@ extension EvaluateProcessor {
         inAppMessage: InAppMessageConfig,
         user: HackleUser,
         scope: InAppMessageEvaluateScope,
-        timestamp: Date
+        timestamp: Date,
+        record: Bool = true
     ) throws -> InAppMessageEligibilityEvaluateResponse {
         let request = InAppMessageEligibilityLocalEvaluateRequest.of(
             workspace: workspace,
@@ -17,7 +18,8 @@ extension EvaluateProcessor {
             user: user,
             scope: scope,
             platformType: .ios,
-            timestamp: timestamp
+            timestamp: timestamp,
+            record: record
         )
         return try self.inAppMessage(request)
     }

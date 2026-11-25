@@ -16,7 +16,6 @@ class HackleAppSpecs: QuickSpec {
         var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
         var pushTokenRegistry = DefaultPushTokenRegistry()
-        var userExplorer: HackleUserExplorer!
         var inAppMessageUI: HackleInAppMessageUI!
 
         var sut: HackleApp!
@@ -39,14 +38,6 @@ class HackleAppSpecs: QuickSpec {
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
-            userExplorer = DefaultHackleUserExplorer(
-                core: core,
-                userManager: userManager,
-                pushTokenManager: MockPushTokenManager(),
-                abTestOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                featureFlagOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                devToolsAPI: MockDevToolsAPI()
-            )
             inAppMessageUI = makeInAppMessageUI(core: core)
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
@@ -61,7 +52,6 @@ class HackleAppSpecs: QuickSpec {
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
                 platformManager: platformManager,
-                userExplorer: userExplorer,
                 inAppMessageUI: inAppMessageUI,
                 throttler: throttler
             )
@@ -85,34 +75,6 @@ class HackleAppSpecs: QuickSpec {
 
         it("showUserExplorer") {
             sut.showUserExplorer()
-        }
-
-        it("showUserExplorer는 REMOTE 모드에서 무시된다") {
-            let registry = CumulativeMetricRegistry()
-            Metrics.addRegistry(registry: registry)
-            let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
-
-            let built = makeHackleApp(
-                core: core,
-                evaluationMode: .remote,
-                coreQueue: coreQueue,
-                synchronizer: synchronizer,
-                userManager: userManager,
-                workspaceManager: workspaceManager,
-                sessionManager: sessionManager,
-                screenManager: screenManager,
-                eventProcessor: eventProcessor,
-                pushTokenRegistry: pushTokenRegistry,
-                notificationManager: notificationManager,
-                platformManager: platformManager,
-                userExplorer: userExplorer,
-                inAppMessageUI: inAppMessageUI,
-                throttler: throttler
-            )
-
-            built.sut.showUserExplorer()
-
-            expect(registry.counter(name: "user.explorer.show").count()) == 0
         }
 
         it("hideUserExplorer") {
@@ -718,7 +680,6 @@ class HackleAppSpecs: QuickSpec {
                     pushTokenRegistry: pushTokenRegistry,
                     notificationManager: notificationManager,
                     platformManager: platformManager,
-                    userExplorer: userExplorer,
                     inAppMessageUI: inAppMessageUI,
                     throttler: RejectingThrottler()
                 )

@@ -9,6 +9,7 @@ class RemoteDecisionProcessorSpecs: QuickSpec {
         var fetcher: MockWorkspaceEvaluationFetcher!
         var eventProcessor: MockUserEventProcessor!
         var sut: RemoteDecisionProcessor!
+        var devToolsSut: RemoteDevToolsDecisionProcessor!
 
         beforeEach {
             fetcher = MockWorkspaceEvaluationFetcher()
@@ -22,6 +23,7 @@ class RemoteDecisionProcessorSpecs: QuickSpec {
                 hiddenStorage: DefaultInAppMessageHiddenStorage.create(suiteName: "RemoteDecisionProcessorSpecs")
             )
             sut = RemoteDecisionProcessor(workspaceFetcher: fetcher, evaluateProcessor: evaluateProcessor)
+            devToolsSut = RemoteDevToolsDecisionProcessor(workspaceFetcher: fetcher, evaluateProcessor: evaluateProcessor)
         }
 
         describe("experiment") {
@@ -107,7 +109,7 @@ class RemoteDecisionProcessorSpecs: QuickSpec {
         describe("featureFlags (bulk)") {
             it("returns empty when workspace evaluation is absent") {
                 fetcher.returns = nil
-                expect(try sut.featureFlags(user: HackleUser.builder().build()).count).to(equal(0))
+                expect(try devToolsSut.featureFlags(user: HackleUser.builder().build()).count).to(equal(0))
             }
 
             it("evaluates all results with record=false") {
@@ -118,7 +120,7 @@ class RemoteDecisionProcessorSpecs: QuickSpec {
                 ]
                 fetcher.returns = workspace
 
-                let decisions = try sut.featureFlags(user: HackleUser.builder().build())
+                let decisions = try devToolsSut.featureFlags(user: HackleUser.builder().build())
 
                 expect(decisions.count).to(equal(2))
                 verify(exactly: 0) {
@@ -150,6 +152,48 @@ class RemoteDecisionProcessorSpecs: QuickSpec {
 
                 expect(decision.value.stringOrNil).to(equal("v"))
                 expect(decision.reason).to(equal(DecisionReason.TARGET_RULE_MATCH))
+            }
+        }
+
+        describe("remoteConfigs (bulk)") {
+            it("returns empty when workspace evaluation is absent") {
+                fetcher.returns = nil
+                expect(try devToolsSut.remoteConfigs(user: HackleUser.builder().build()).count).to(equal(0))
+            }
+
+            it("evaluates all results with record=false") {
+                let workspace = MockWorkspaceEvaluation()
+                workspace.remoteConfigParameterResults = [remoteConfigRemoteResult()]
+                fetcher.returns = workspace
+
+                let evaluations = try devToolsSut.remoteConfigs(user: HackleUser.builder().build())
+
+                expect(evaluations.count).to(equal(1))
+                expect(evaluations[0].remoteConfigResult.value?.id).to(equal(7))
+                verify(exactly: 0) {
+                    eventProcessor.processMock
+                }
+            }
+        }
+
+        describe("inAppMessages (bulk)") {
+            it("returns empty when workspace evaluation is absent") {
+                fetcher.returns = nil
+                expect(try devToolsSut.inAppMessages(user: HackleUser.builder().build(), timestamp: Date()).count).to(equal(0))
+            }
+
+            it("evaluates all results with record=false") {
+                let workspace = MockWorkspaceEvaluation()
+                workspace.inAppMessageResults = [inAppMessageEligibilityRemoteResult(isEligible: false, reason: DecisionReason.IN_APP_MESSAGE_TARGET)]
+                fetcher.returns = workspace
+
+                let evaluations = try devToolsSut.inAppMessages(user: HackleUser.builder().build(), timestamp: Date())
+
+                expect(evaluations.count).to(equal(1))
+                expect(evaluations[0].eligibilityResult.isEligible).to(equal(false))
+                verify(exactly: 0) {
+                    eventProcessor.processMock
+                }
             }
         }
     }

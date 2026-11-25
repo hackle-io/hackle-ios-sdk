@@ -31,6 +31,7 @@ public final class HackleConfig: NSObject, Sendable {
     let exposureEventDedupInterval: TimeInterval
     let optOutTracking: Bool
     let delegate: AtomicReference<HackleDelegate?>
+    let devToolsEnabled: Bool
     let extra: [String: String]
 
     init(builder: HackleConfigBuilder) {
@@ -53,6 +54,7 @@ public final class HackleConfig: NSObject, Sendable {
         exposureEventDedupInterval = builder.exposureEventDedupInterval
         optOutTracking = builder.optOutTracking
         delegate = AtomicReference(value: builder.delegate)
+        devToolsEnabled = builder.devToolsEnabled
         extra = builder.extra
         super.init()
     }
@@ -110,6 +112,8 @@ public class HackleConfigBuilder: NSObject {
     var optOutTracking: Bool = false
 
     var delegate: HackleDelegate?
+
+    var devToolsEnabled: Bool = false
 
     var extra: [String: String] = [:]
 
@@ -295,6 +299,18 @@ public class HackleConfigBuilder: NSObject {
     /// - Returns: This builder instance for method chaining
     @objc public func delegate(_ delegate: HackleDelegate) -> HackleConfigBuilder {
         self.delegate = delegate
+        return self
+    }
+
+    /// Enables Hackle DevTools, which stream SDK events and state to a browser viewer.
+    ///
+    /// Also call `HackleDevTools.start()`. Call it before ``Hackle/initialize(sdkKey:config:)`` to see events from app launch.
+    /// The DevTools server is open while ``HackleApp/showUserExplorer()`` is active.
+    ///
+    /// - Parameter enabled: `true` to enable DevTools. Defaults to `false`
+    /// - Returns: This builder instance for method chaining
+    @objc public func devToolsEnabled(_ enabled: Bool) -> HackleConfigBuilder {
+        self.devToolsEnabled = enabled
         return self
     }
 

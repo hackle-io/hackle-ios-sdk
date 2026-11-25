@@ -16,7 +16,6 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
         var screenManager: MockScreeManager!
         var eventProcessor: MockUserEventProcessor!
         var pushTokenRegistry = DefaultPushTokenRegistry()
-        var userExplorer: HackleUserExplorer!
         var inAppMessageUI: HackleInAppMessageUI!
 
         var sut: HackleApp!
@@ -39,14 +38,6 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
             screenManager = MockScreeManager()
             eventProcessor = MockUserEventProcessor()
             pushTokenRegistry = DefaultPushTokenRegistry()
-            userExplorer = DefaultHackleUserExplorer(
-                core: core,
-                userManager: userManager,
-                pushTokenManager: MockPushTokenManager(),
-                abTestOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                featureFlagOverrideStorage: DefaultExperimentManualOverrideStorage(keyValueRepository: MemoryKeyValueRepository()),
-                devToolsAPI: MockDevToolsAPI()
-            )
             inAppMessageUI = makeInAppMessageUI(core: core)
             let throttler = DefaultThrottler(limiter: ScopingThrottleLimiter(interval: 10, limit: 1, clock: SystemClock.shared))
             let built = makeHackleApp(
@@ -61,7 +52,6 @@ class HackleAppAsyncApiSpecs: AsyncSpec {
                 pushTokenRegistry: pushTokenRegistry,
                 notificationManager: notificationManager,
                 platformManager: platformManager,
-                userExplorer: userExplorer,
                 inAppMessageUI: inAppMessageUI,
                 throttler: throttler
             )

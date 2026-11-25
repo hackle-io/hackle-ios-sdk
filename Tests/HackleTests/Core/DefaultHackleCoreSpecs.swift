@@ -144,32 +144,6 @@ class DefaultHackleCoreSpecs: QuickSpec {
             }
         }
 
-        describe("featureFlags") {
-
-            it("Workspace 가 없으면 emptyList") {
-                let sut = core(workspace: nil, eventProcessor: InMemoryUserEventProcessor())
-                let actual = try sut.featureFlags(user: user)
-                expect(actual.count) == 0
-            }
-
-            it("모든 기능플래그에 대한 분배 결과를 리턴하고 노출 이벤트를 기록하지 않는다") {
-                let workspace = MockWorkspace(featureFlags: [
-                    experiment(id: 1, key: 1, type: .featureFlag, status: .draft),
-                    experiment(id: 3, key: 3, type: .featureFlag, status: .draft)
-                ])
-                every(workspace.getFeatureFlagOrNilMock).answers { key in
-                    workspace.featureFlags.first { $0.key == key }
-                }
-                let eventProcessor = InMemoryUserEventProcessor()
-                let sut = core(workspace: workspace, eventProcessor: eventProcessor)
-
-                let actual = try sut.featureFlags(user: user)
-
-                expect(actual.count) == 2
-                expect(eventProcessor.processedEvents.count) == 0
-            }
-        }
-
         describe("remoteConfig") {
 
             it("단일 remoteConfig 조회 시 이벤트를 기록한다") {

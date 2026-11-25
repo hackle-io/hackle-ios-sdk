@@ -12,23 +12,40 @@ class Log {
     }
 
     static func debug(_ msg: @autoclosure () -> String) {
-        os_log("%@", log: .hackle, type: .debug, msg())
+        let message = msg()
+        os_log("%@", log: .hackle, type: .debug, message)
         increment(.debug)
+        devTools(level: "log", message: message)
     }
 
     static func info(_ msg: @autoclosure () -> String) {
-        os_log("%{public}@", log: .hackle, type: .default, msg())
+        let message = msg()
+        os_log("%{public}@", log: .hackle, type: .default, message)
         increment(.info)
+        devTools(level: "log", message: message)
     }
 
     static func warn(_ msg: @autoclosure () -> String) {
-        os_log("%{public}@", log: .hackle, type: .default, msg())
+        let message = msg()
+        os_log("%{public}@", log: .hackle, type: .default, message)
         increment(.warn)
+        devTools(level: "warn", message: message)
     }
 
     static func error(_ msg: @autoclosure () -> String) {
-        os_log("%{public}@", log: .hackle, type: .error, msg())
+        let message = msg()
+        os_log("%{public}@", log: .hackle, type: .error, message)
         increment(.error)
+        devTools(level: "error", message: message)
+    }
+
+    private static func devTools(level: String, message: String) {
+        DevToolsRegistry.eventListener()?.onLog(
+            insertId: UUID().uuidString,
+            level: level,
+            timestamp: Date().epochMillis,
+            message: message
+        )
     }
 
     static func increment(_ level: LogLevel) {

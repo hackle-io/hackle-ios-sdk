@@ -35,6 +35,20 @@
                ReferencedContainer = "container:Hackle.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Hackle::HackleDevTools"
+               BuildableName = "HackleDevTools.framework"
+               BlueprintName = "HackleDevTools"
+               ReferencedContainer = "container:Hackle.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

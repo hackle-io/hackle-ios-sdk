@@ -64,24 +64,6 @@ final class LocalDecisionProcessor: DecisionProcessor {
         return response.experimentEvaluation.toFeatureFlagDecision()
     }
 
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
-        var decisions = [(Experiment, FeatureFlagDecision)]()
-        guard let workspace = workspaceFetcher.workspace(user: user) else {
-            return decisions
-        }
-        for featureFlagConfig in workspace.featureFlagConfigs {
-            let request = ExperimentLocalEvaluateRequest(
-                workspace: workspace,
-                entity: featureFlagConfig,
-                user: user,
-                record: false
-            )
-            let response = try evaluateProcessor.experiment(request)
-            decisions.append((featureFlagConfig, response.experimentEvaluation.toFeatureFlagDecision()))
-        }
-        return decisions
-    }
-
     func remoteConfig(parameterKey: String, user: HackleUser, defaultValue: HackleValue) throws -> RemoteConfigDecision {
         guard let workspace = workspaceFetcher.workspace(user: user) else {
             return RemoteConfigDecision(value: defaultValue, reason: DecisionReason.SDK_NOT_READY)

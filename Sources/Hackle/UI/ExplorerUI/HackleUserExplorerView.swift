@@ -7,17 +7,12 @@
 
 import Foundation
 import UIKit
-import SwiftUI
 
 
 @MainActor
 class HackleUserExplorerView {
-    private let hackleUserExplorer: HackleUserExplorer
     private var button: HackleUserExplorerButton? = nil
-
-    init(hackleUserExplorer: HackleUserExplorer) {
-        self.hackleUserExplorer = hackleUserExplorer
-    }
+    private var urlView: UIView? = nil
 
     func attach() {
         guard let window = UIUtils.keyWindow else {
@@ -42,6 +37,7 @@ class HackleUserExplorerView {
             return
         }
 
+        self.hideUrl()
         self.button?.removeFromSuperview()
         self.button = nil
     }
@@ -83,19 +79,93 @@ class HackleUserExplorerView {
 
         button.center = CGPoint(x: newX, y: newY)
         sender.setTranslation(CGPoint(x: 0, y: 0), in: button)
+        layoutUrl()
     }
 
     @objc func onClick() {
-        guard self.button != nil,
-              let topViewController = UIUtils.topViewController
-        else {
+        guard self.button != nil else {
             return
         }
-        let viewModel = ExplorerViewModel(explorer: hackleUserExplorer)
-        let rootView = ExplorerRootView(viewModel: viewModel)
-        let hostingController = HackleHostingController(rootView: rootView)
-        hostingController.modalPresentationStyle = .fullScreen
-        topViewController.present(hostingController, animated: true)
+        if urlView == nil {
+            showUrl()
+        } else {
+            hideUrl()
+        }
+    }
+
+    private func showUrl() {
+        guard let button = self.button,
+              let superview = button.superview else {
+            return
+        }
+        let url = DevToolsRegistry.url()
+        let label = UILabel()
+        label.text = url ?? "DevTools is not running"
+        label.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.lineBreakMode = .byCharWrapping
+
+        let container = UIView()
+        container.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        container.layer.cornerRadius = 8
+        container.addSubview(label)
+        if url != nil {
+            let copyButton = UIButton(type: .system)
+            copyButton.tintColor = .white
+            copyButton.setImage(UIImage(systemName: "doc.on.doc"), for: .normal)
+            copyButton.addTarget(self, action: #selector(onCopyClick), for: .touchUpInside)
+            container.addSubview(copyButton)
+        }
+        superview.addSubview(container)
+        urlView = container
+        layoutUrl()
+    }
+
+    @objc func onCopyClick(sender: UIButton) {
+        guard let url = DevToolsRegistry.url() else {
+            return
+        }
+        UIPasteboard.general.string = url
+        sender.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak sender] in
+            sender?.setImage(UIImage(systemName: "doc.on.doc"), for: .normal)
+        }
+    }
+
+    private func hideUrl() {
+        urlView?.removeFromSuperview()
+        urlView = nil
+    }
+
+    private func layoutUrl() {
+        guard let button = self.button,
+              let superview = button.superview,
+              let container = urlView,
+              let label = container.subviews.first(where: { $0 is UILabel }) else {
+            return
+        }
+        let copyButton = container.subviews.first(where: { $0 is UIButton })
+        let padding: CGFloat = 10
+        let margin: CGFloat = 16
+        let spacing: CGFloat = 8
+        let copySize: CGFloat = copyButton == nil ? 0 : 24
+        let copySpacing: CGFloat = copyButton == nil ? 0 : 8
+        let maxLabelWidth = superview.bounds.width - margin * 2 - padding * 2 - copySize - copySpacing
+        let labelSize = label.sizeThatFits(CGSize(width: maxLabelWidth, height: .greatestFiniteMagnitude))
+        let labelWidth = min(labelSize.width, maxLabelWidth)
+        let width = labelWidth + copySpacing + copySize + padding * 2
+        let height = max(labelSize.height, copySize) + padding * 2
+
+        var x = button.center.x - width / 2
+        x = max(margin, min(x, superview.bounds.width - margin - width))
+        let y = button.center.y > superview.bounds.height / 2
+            ? button.frame.minY - spacing - height
+            : button.frame.maxY + spacing
+
+        container.frame = CGRect(x: x, y: y, width: width, height: height)
+        label.frame = CGRect(x: padding, y: (height - labelSize.height) / 2, width: labelWidth, height: labelSize.height)
+        copyButton?.frame = CGRect(x: width - padding - copySize, y: (height - copySize) / 2, width: copySize, height: copySize)
     }
 
     private func barHeight() -> CGFloat {

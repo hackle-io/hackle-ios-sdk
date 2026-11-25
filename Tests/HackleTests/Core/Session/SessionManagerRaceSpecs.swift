@@ -374,10 +374,6 @@ private final class RecordingCore: HackleCore {
         fatalError("not used")
     }
 
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
-        fatalError("not used")
-    }
-
     func track(event: Event, user: HackleUser) {
         track(event: event, user: user, timestamp: Date())
     }

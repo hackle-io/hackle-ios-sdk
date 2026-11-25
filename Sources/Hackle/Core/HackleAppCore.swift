@@ -71,7 +71,6 @@ protocol HackleAppCore: AnyObject {
 
 class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let core: HackleCore
-    private let evaluationMode: EvaluationMode
     private let coreQueue: DispatchQueue
     private let synchronizer: Synchronizer
     private let applicationLifecycleObserver: ApplicationLifecycleObserver
@@ -87,8 +86,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let platformManager: PlatformManager
     private let inAppMessageUI: HackleInAppMessageUI
     private let applicationInstallStateManager: ApplicationInstallStateManager
-    private let userExplorer: HackleUserExplorer
     private let optOutManager: OptOutManager
+    private let devToolsEnabled: Bool
     private let onInitializedRef = AtomicReference<(@Sendable () -> ())?>(value: nil)
 
     @MainActor private var userExplorerView: HackleUserExplorerView? = nil
@@ -115,7 +114,6 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
 
     init(
         core: HackleCore,
-        evaluationMode: EvaluationMode,
         coreQueue: DispatchQueue,
         synchronizer: Synchronizer,
         applicationLifecycleObserver: ApplicationLifecycleObserver,
@@ -131,11 +129,10 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         platformManager: PlatformManager,
         inAppMessageUI: HackleInAppMessageUI,
         applicationInstallStateManager: ApplicationInstallStateManager,
-        userExplorer: HackleUserExplorer,
-        optOutManager: OptOutManager
+        optOutManager: OptOutManager,
+        devToolsEnabled: Bool
     ) {
         self.core = core
-        self.evaluationMode = evaluationMode
         self.coreQueue = coreQueue
         self.synchronizer = synchronizer
         self.applicationLifecycleObserver = applicationLifecycleObserver
@@ -151,8 +148,8 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         self.platformManager = platformManager
         self.inAppMessageUI = inAppMessageUI
         self.applicationInstallStateManager = applicationInstallStateManager
-        self.userExplorer = userExplorer
         self.optOutManager = optOutManager
+        self.devToolsEnabled = devToolsEnabled
     }
 
     func initialize(user: User?, completion: @escaping @Sendable () -> ()) {
@@ -200,19 +197,16 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     }
 
     func showUserExplorer() {
-        if evaluationMode == .remote {
-            Log.info("UserExplorer is not supported in EvaluationMode.REMOTE")
-            return
-        }
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }
             if self.userExplorerView == nil {
-                self.userExplorerView = HackleUserExplorerView(
-                    hackleUserExplorer: self.userExplorer
-                )
+                self.userExplorerView = HackleUserExplorerView()
             }
             self.userExplorerView?.attach()
+            if self.devToolsEnabled {
+                DevToolsRegistry.userExplorerHandler()?(true)
+            }
         }
         Metrics.counter(name: "user.explorer.show").increment()
     }
@@ -220,7 +214,11 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     func hideUserExplorer() {
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
-            self?.userExplorerView?.detach()
+            guard let self else { return }
+            self.userExplorerView?.detach()
+            if self.devToolsEnabled {
+                DevToolsRegistry.userExplorerHandler()?(false)
+            }
         }
     }
 

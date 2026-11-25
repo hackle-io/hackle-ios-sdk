@@ -8,8 +8,6 @@ protocol HackleCore {
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision
 
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)]
-
     func track(event: Event, user: HackleUser)
 
     func track(event: Event, user: HackleUser, timestamp: Date)
@@ -46,10 +44,6 @@ class DefaultHackleCore: HackleCore {
 
     func featureFlag(featureKey: Experiment.Key, user: HackleUser) throws -> FeatureFlagDecision {
         try decisionProcessor.featureFlag(featureKey: featureKey, user: user)
-    }
-
-    func featureFlags(user: HackleUser) throws -> [(Experiment, FeatureFlagDecision)] {
-        try decisionProcessor.featureFlags(user: user)
     }
 
     func track(event: Event, user: HackleUser) {

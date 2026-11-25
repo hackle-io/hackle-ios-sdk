@@ -526,6 +526,9 @@ extension HackleApp {
         let optOutManager = OptOutManager(
             configOptOutTracking: config.optOutTracking
         )
+        if config.devToolsEnabled {
+            eventPublisher.addListener(listener: DevToolsUserEventListener(optOutManager: optOutManager))
+        }
 
         let sessionUserEventDecorator = SessionUserEventDecorator(userDecorator: sessionUserDecorator)
         eventDecorators.append(sessionUserEventDecorator)
@@ -818,18 +821,43 @@ extension HackleApp {
         )
         NotificationHandler.shared.setNotificationDataReceiver(receiver: notificationManager)
 
-        // - UserExplorer
-
-        let devToolsAPI = DefaultDevToolsAPI(sdk: sdk, url: config.apiUrl, httpClient: httpClient)
-
-        let userExplorer = DefaultHackleUserExplorer(
-            core: core,
-            userManager: userManager,
-            pushTokenManager: pushTokenManager,
-            abTestOverrideStorage: abOverrideStorage,
-            featureFlagOverrideStorage: ffOverrideStorage,
-            devToolsAPI: devToolsAPI
-        )
+        if config.devToolsEnabled {
+            let devToolsDecisionProcessor: DevToolsDecisionProcessor = switch workspaceMode {
+            case .local(let workspaceConfigManager):
+                LocalDevToolsDecisionProcessor(
+                    workspaceFetcher: workspaceConfigManager,
+                    evaluateProcessor: evaluateProcessor
+                )
+            case .remote(let workspaceEvaluationManager):
+                RemoteDevToolsDecisionProcessor(
+                    workspaceFetcher: workspaceEvaluationManager,
+                    evaluateProcessor: evaluateProcessor
+                )
+            }
+            DevToolsRegistry.setWorkspaceStateProvider(
+                DevToolsWorkspaceStateProvider(
+                    userManager: userManager,
+                    pushTokenManager: pushTokenManager,
+                    decisionProcessor: decisionProcessor,
+                    devToolsDecisionProcessor: devToolsDecisionProcessor,
+                    abTestOverrideStorage: abOverrideStorage,
+                    featureFlagOverrideStorage: ffOverrideStorage,
+                    workspaceManager: workspaceMode.manager,
+                    evaluationMode: config.evaluationMode,
+                    clock: clock
+                )
+            )
+            DevToolsRegistry.setManualOverrideManager(
+                DevToolsManualOverrideManager(
+                    userManager: userManager,
+                    workspaceManager: workspaceMode.manager,
+                    evaluationMode: config.evaluationMode,
+                    abTestOverrideStorage: abOverrideStorage,
+                    featureFlagOverrideStorage: ffOverrideStorage,
+                    devToolsAPI: DefaultDevToolsAPI(sdk: sdk, url: config.apiUrl, httpClient: httpClient)
+                )
+            )
+        }
 
         // - Metrics
         if config.monitoringEnabled {
@@ -862,7 +890,6 @@ extension HackleApp {
 
         let hackleAppCore = DefaultHackleAppCore(
             core: core,
-            evaluationMode: config.evaluationMode,
             coreQueue: coreQueue,
             synchronizer: pollingSynchronizer,
             applicationLifecycleObserver: ApplicationLifecycleObserver.shared,
@@ -878,8 +905,8 @@ extension HackleApp {
             platformManager: platformManager,
             inAppMessageUI: inAppMessageUI,
             applicationInstallStateManager: applicationInstallStateManager,
-            userExplorer: userExplorer,
-            optOutManager: optOutManager
+            optOutManager: optOutManager,
+            devToolsEnabled: config.devToolsEnabled
         )
 
         let invocationHandlerFactory = DefaultInvocationHandlerFactory(core: hackleAppCore)
