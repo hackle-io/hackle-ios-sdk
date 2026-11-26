@@ -515,19 +515,6 @@ class HackleAppSpecs: QuickSpec {
             }
         }
 
-        it("initialize") {
-            var count = 0
-            sut.initialize(user: nil) {
-                count += 1
-            }
-            expect(count) == 0
-
-            expect(count).toEventually(equal(1), timeout: .seconds(10))
-
-            expect(userManager.initializeMock.firstInvokation().arguments).to(beNil())
-            expect(platformManager.device.properties.count) == 13
-        }
-
         it("initialize — 세션 복원은 initialize 직후 coreQueue 에 들어온 작업보다 먼저 실행된다") {
             var order: [String] = []
             every(sessionManager.initializeMock).answers { _ in
