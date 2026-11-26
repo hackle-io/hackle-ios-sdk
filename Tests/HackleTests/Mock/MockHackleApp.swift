@@ -34,14 +34,14 @@ class MockHackleAppCore: Mock, HackleAppCore {
         call(getInAppMessageViewRef, args: viewId)
     }
 
-    lazy var showUserExplorerRef = MockFunction(self, showUserExplorer)
-    func showUserExplorer() {
-        call(showUserExplorerRef, args: ())
+    lazy var showDevToolsRef = MockFunction(self, showDevTools)
+    func showDevTools() {
+        call(showDevToolsRef, args: ())
     }
 
-    lazy var hideUserExplorerRef = MockFunction(self, hideUserExplorer)
-    func hideUserExplorer() {
-        call(hideUserExplorerRef, args: ())
+    lazy var hideDevToolsRef = MockFunction(self, hideDevTools)
+    func hideDevTools() {
+        call(hideDevToolsRef, args: ())
     }
 
     lazy var setDeviceIdRef = MockFunction(self, setDeviceId)

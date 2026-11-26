@@ -66,6 +66,10 @@ class DefaultInvocationHandlerFactorySpecs: QuickSpec {
                         expect(handler).to(beAnInstanceOf(ShowUserExplorerInvocationHandler.self))
                     case .hideUserExplorer:
                         expect(handler).to(beAnInstanceOf(HideUserExplorerInvocationHandler.self))
+                    case .showDevTools:
+                        expect(handler).to(beAnInstanceOf(ShowDevToolsInvocationHandler.self))
+                    case .hideDevTools:
+                        expect(handler).to(beAnInstanceOf(HideDevToolsInvocationHandler.self))
                 }
             }
         }

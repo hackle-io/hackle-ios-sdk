@@ -1,5 +1,5 @@
 //
-//  HackleUserExplorerButton.swift
+//  HackleDevToolsButton.swift
 //  Hackle
 //
 //  Created by yong on 2023/03/24.
@@ -8,7 +8,7 @@
 import UIKit
 
 
-class HackleUserExplorerButton: UIView {
+class HackleDevToolsButton: UIView {
 
     private let imageView: UIImageView = {
         let iv = UIImageView()

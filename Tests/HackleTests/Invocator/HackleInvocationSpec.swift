@@ -902,7 +902,7 @@ class HackleInvocationSpec: QuickSpec {
                     let jsonString = createJsonString(command: "showUserExplorer", parameters: [:])
                     let result = sut.invoke(string: jsonString)
                     
-                    expect(core.showUserExplorerRef.invokations().count) == 1
+                    expect(core.showDevToolsRef.invokations().count) == 1
                     
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == true
@@ -914,7 +914,40 @@ class HackleInvocationSpec: QuickSpec {
                     let jsonString = createJsonString(command: "hideUserExplorer", parameters: [:])
                     let result = sut.invoke(string: jsonString)
 
-                    expect(core.hideUserExplorerRef.invokations().count) == 1
+                    expect(core.hideDevToolsRef.invokations().count) == 1
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+            }
+            describe("dev tools") {
+                it("show") {
+                    let core = MockHackleAppCore()
+                    let sut = DefaultHackleInvocator(
+                        processor: DefaultInvocationProcessor(handlerFactory: DefaultInvocationHandlerFactory(core: core))
+                    )
+                    let jsonString = createJsonString(command: "showDevTools", parameters: [:])
+                    let result = sut.invoke(string: jsonString)
+
+                    expect(core.showDevToolsRef.invokations().count) == 1
+
+                    let dict = result.jsonObject()!
+                    expect(dict["success"] as? Bool) == true
+                    expect(dict["message"] as? String) == "OK"
+                    expect(dict["data"]).to(beNil())
+                }
+
+                it("hide") {
+                    let core = MockHackleAppCore()
+                    let sut = DefaultHackleInvocator(
+                        processor: DefaultInvocationProcessor(handlerFactory: DefaultInvocationHandlerFactory(core: core))
+                    )
+                    let jsonString = createJsonString(command: "hideDevTools", parameters: [:])
+                    let result = sut.invoke(string: jsonString)
+
+                    expect(core.hideDevToolsRef.invokations().count) == 1
 
                     let dict = result.jsonObject()!
                     expect(dict["success"] as? Bool) == true

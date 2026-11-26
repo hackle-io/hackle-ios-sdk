@@ -305,7 +305,7 @@ public class HackleConfigBuilder: NSObject {
     /// Enables Hackle DevTools, which stream SDK events and state to a browser viewer.
     ///
     /// Also call `HackleDevTools.start()`. Call it before ``Hackle/initialize(sdkKey:config:)`` to see events from app launch.
-    /// The DevTools server is open while ``HackleApp/showUserExplorer()`` is active.
+    /// The DevTools server is open between ``HackleApp/showDevTools()`` and ``HackleApp/hideDevTools()``.
     ///
     /// - Parameter enabled: `true` to enable DevTools. Defaults to `false`
     /// - Returns: This builder instance for method chaining

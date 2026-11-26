@@ -30,7 +30,7 @@ class HtmlViewBridgeScriptSpecs: QuickSpec {
 
                 // Check InvocationCommand
                 InvocationCommand.allCases
-                    .filter { $0 != .setCurrentScreen } // Not supported yet
+                    .filter { ![.setCurrentScreen, .showDevTools, .hideDevTools].contains($0) } // Not supported yet
                     .forEach {
                         expect(script).to(contain($0.rawValue))
                     }

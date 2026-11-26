@@ -81,6 +81,44 @@ class HackleAppSpecs: QuickSpec {
             sut.hideUserExplorer()
         }
 
+        it("showDevTools") {
+            let appCore = MockHackleAppCore()
+            let sut = HackleApp(
+                hackleAppCore: appCore,
+                sdk: appCore.sdk,
+                config: HackleConfig.DEFAULT,
+                hackleInvocator: DefaultHackleInvocator(
+                    processor: DefaultInvocationProcessor(
+                        handlerFactory: DefaultInvocationHandlerFactory(core: appCore)
+                    )
+                ),
+                urlDispatcher: HackleUrlDispatcher(defaultHandler: ApplicationUrlHandler())
+            )
+
+            sut.showDevTools()
+
+            expect(appCore.showDevToolsRef.invokations().count) == 1
+        }
+
+        it("hideDevTools") {
+            let appCore = MockHackleAppCore()
+            let sut = HackleApp(
+                hackleAppCore: appCore,
+                sdk: appCore.sdk,
+                config: HackleConfig.DEFAULT,
+                hackleInvocator: DefaultHackleInvocator(
+                    processor: DefaultInvocationProcessor(
+                        handlerFactory: DefaultInvocationHandlerFactory(core: appCore)
+                    )
+                ),
+                urlDispatcher: HackleUrlDispatcher(defaultHandler: ApplicationUrlHandler())
+            )
+
+            sut.hideDevTools()
+
+            expect(appCore.hideDevToolsRef.invokations().count) == 1
+        }
+
         describe("setUser") {
             it("set and sync") {
                 let user = User.builder().id("42").build()

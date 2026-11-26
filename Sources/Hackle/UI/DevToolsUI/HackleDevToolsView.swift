@@ -1,5 +1,5 @@
 //
-//  HackleUserExplorerView.swift
+//  HackleDevToolsView.swift
 //  Hackle
 //
 //  Created by yong on 2023/03/24.
@@ -10,8 +10,8 @@ import UIKit
 
 
 @MainActor
-class HackleUserExplorerView {
-    private var button: HackleUserExplorerButton? = nil
+class HackleDevToolsView {
+    private var button: HackleDevToolsButton? = nil
     private var urlView: UIView? = nil
 
     func attach() {
@@ -20,7 +20,7 @@ class HackleUserExplorerView {
         }
 
         if window.subviews.contains(where: { view in
-            view is HackleUserExplorerButton
+            view is HackleDevToolsButton
         }) {
             return
         }
@@ -42,11 +42,11 @@ class HackleUserExplorerView {
         self.button = nil
     }
 
-    private func createButton(in window: UIWindow) -> HackleUserExplorerButton {
+    private func createButton(in window: UIWindow) -> HackleDevToolsButton {
         let width = window.bounds.width
         let height = window.bounds.height
         let offset = offset()
-        let button = HackleUserExplorerButton(frame: CGRect(
+        let button = HackleDevToolsButton(frame: CGRect(
             x: width - 50,
             y: height - 50 - offset,
             width: 35,

@@ -529,7 +529,7 @@ class ShowUserExplorerInvocationHandler: InvocationHandler {
     }
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
-        core.showUserExplorer()
+        core.showDevTools()
         return .success()
     }
 }
@@ -543,7 +543,35 @@ class HideUserExplorerInvocationHandler: InvocationHandler {
     }
 
     func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
-        core.hideUserExplorer()
+        core.hideDevTools()
+        return .success()
+    }
+}
+
+class ShowDevToolsInvocationHandler: InvocationHandler {
+    typealias T = Void
+
+    private let core: HackleAppCore
+    init(core: HackleAppCore) {
+        self.core = core
+    }
+
+    func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
+        core.showDevTools()
+        return .success()
+    }
+}
+
+class HideDevToolsInvocationHandler: InvocationHandler {
+    typealias T = Void
+
+    private let core: HackleAppCore
+    init(core: HackleAppCore) {
+        self.core = core
+    }
+
+    func invoke(request: InvocationRequest) throws -> InvocationResponse<Void> {
+        core.hideDevTools()
         return .success()
     }
 }

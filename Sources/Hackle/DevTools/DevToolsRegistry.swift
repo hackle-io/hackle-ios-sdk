@@ -20,7 +20,7 @@ package enum DevToolsOverrideResult: Sendable {
 package enum DevToolsRegistry {
 
     private static let eventListenerReference = AtomicReference<DevToolsEventListener?>(value: nil)
-    private static let userExplorerHandlerReference = AtomicReference<(@MainActor @Sendable (Bool) -> Void)?>(value: nil)
+    private static let visibilityHandlerReference = AtomicReference<(@MainActor @Sendable (Bool) -> Void)?>(value: nil)
     private static let urlProviderReference = AtomicReference<(@Sendable () -> String?)?>(value: nil)
     private static let workspaceStateProviderReference = AtomicReference<DevToolsWorkspaceStateProvider?>(value: nil)
     private static let manualOverrideManagerReference = AtomicReference<DevToolsManualOverrideManager?>(value: nil)
@@ -33,8 +33,8 @@ package enum DevToolsRegistry {
         eventListenerReference.set(newValue: listener)
     }
 
-    package static func setUserExplorerHandler(_ handler: (@MainActor @Sendable (Bool) -> Void)?) {
-        userExplorerHandlerReference.set(newValue: handler)
+    package static func setVisibilityHandler(_ handler: (@MainActor @Sendable (Bool) -> Void)?) {
+        visibilityHandlerReference.set(newValue: handler)
     }
 
     package static func setUrlProvider(_ provider: (@Sendable () -> String?)?) {
@@ -64,8 +64,8 @@ package enum DevToolsRegistry {
         eventListenerReference.get()
     }
 
-    static func userExplorerHandler() -> (@MainActor @Sendable (Bool) -> Void)? {
-        userExplorerHandlerReference.get()
+    static func visibilityHandler() -> (@MainActor @Sendable (Bool) -> Void)? {
+        visibilityHandlerReference.get()
     }
 
     static func url() -> String? {

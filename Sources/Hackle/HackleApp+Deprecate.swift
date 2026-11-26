@@ -102,4 +102,26 @@ extension HackleApp {
     @objc public func updatePushSubscriptionStatus(status: HacklePushSubscriptionStatus) {
         Log.error("updatePushSubscriptionStatus does nothing. Use updatePushSubscriptions(operations) instead.")
     }
+
+    /// Shows the user explorer UI button.
+    @available(*, deprecated, message: "Use showDevTools() instead.")
+    @objc public func showUserExplorer() {
+        Log.warn("showUserExplorer() is deprecated. Use showDevTools() instead.")
+        hackleAppCore.showDevTools()
+    }
+
+    /// Hides the user explorer UI button.
+    @available(*, deprecated, message: "Use hideDevTools() instead.")
+    @objc public func hideUserExplorer() {
+        Log.warn("hideUserExplorer() is deprecated. Use hideDevTools() instead.")
+        hackleAppCore.hideDevTools()
+    }
+
+    /// Decide the variations for all experiments and returns a map of decision results.
+    ///
+    /// - Returns: a dictionary where key is experimentKey and value is ``Decision`` result
+    @available(*, deprecated, message: "Use variationDetail(experimentKey:) instead.")
+    @objc public func allVariationDetails() -> [Int: Decision] {
+        hackleAppCore.allVariationDetails(hackleAppContext: .default)
+    }
 }

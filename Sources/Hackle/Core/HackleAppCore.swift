@@ -17,9 +17,9 @@ protocol HackleAppCore: AnyObject {
 
     @MainActor func getInAppMessageView(viewId: String) -> InAppMessageView?
 
-    func showUserExplorer()
+    func showDevTools()
 
-    func hideUserExplorer()
+    func hideDevTools()
 
     @discardableResult
     func setUser(user: User, hackleAppContext: HackleAppContext) -> Task<Void, Never>
@@ -90,7 +90,7 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
     private let devToolsEnabled: Bool
     private let onInitializedRef = AtomicReference<(@Sendable () -> ())?>(value: nil)
 
-    @MainActor private var userExplorerView: HackleUserExplorerView? = nil
+    @MainActor private var devToolsView: HackleDevToolsView? = nil
 
     var deviceId: String {
         platformManager.device.id
@@ -196,28 +196,28 @@ class DefaultHackleAppCore: HackleAppCore, @unchecked Sendable {
         return inAppMessageUI.getView(viewId: viewId)
     }
 
-    func showUserExplorer() {
+    func showDevTools() {
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }
-            if self.userExplorerView == nil {
-                self.userExplorerView = HackleUserExplorerView()
+            if self.devToolsView == nil {
+                self.devToolsView = HackleDevToolsView()
             }
-            self.userExplorerView?.attach()
+            self.devToolsView?.attach()
             if self.devToolsEnabled {
-                DevToolsRegistry.userExplorerHandler()?(true)
+                DevToolsRegistry.visibilityHandler()?(true)
             }
         }
         Metrics.counter(name: "user.explorer.show").increment()
     }
 
-    func hideUserExplorer() {
+    func hideDevTools() {
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 100_000_000)
             guard let self else { return }
-            self.userExplorerView?.detach()
+            self.devToolsView?.detach()
             if self.devToolsEnabled {
-                DevToolsRegistry.userExplorerHandler()?(false)
+                DevToolsRegistry.visibilityHandler()?(false)
             }
         }
     }

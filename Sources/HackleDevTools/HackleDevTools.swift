@@ -7,20 +7,20 @@ import Hackle
 /// Developer tools that stream Hackle SDK events and user state to a browser viewer on the same network.
 ///
 /// Call ``start()`` and enable `HackleConfigBuilder.devToolsEnabled(_:)`. Events are collected from ``start()``,
-/// and the server is open while the user explorer is shown.
+/// and the server is open between `HackleApp.showDevTools()` and `HackleApp.hideDevTools()`.
 ///
 /// Available only in DEBUG builds. In other builds every member is a no-op.
 @objc public final class HackleDevTools: NSObject {
 
     private override init() {}
 
-    /// Starts collecting events and lets the user explorer open and close the DevTools server.
+    /// Starts collecting events and lets `HackleApp.showDevTools()` and `HackleApp.hideDevTools()` open and close the DevTools server.
     @MainActor
     @objc public static func start() {
         #if DEBUG
         prepareServer()
         DevToolsRegistry.setUrlProvider { url }
-        DevToolsRegistry.setUserExplorerHandler { shown in
+        DevToolsRegistry.setVisibilityHandler { shown in
             if shown {
                 openServer()
             } else {

@@ -81,14 +81,14 @@ import WebKit
         hackleAppCore.setOptOutTracking(optOut: optOut)
     }
 
-    /// Shows the user explorer UI button.
-    @objc public func showUserExplorer() {
-        hackleAppCore.showUserExplorer()
+    /// Shows the DevTools UI button.
+    @objc public func showDevTools() {
+        hackleAppCore.showDevTools()
     }
 
-    /// Hides the user explorer UI button.
-    @objc public func hideUserExplorer() {
-        hackleAppCore.hideUserExplorer()
+    /// Hides the DevTools UI button.
+    @objc public func hideDevTools() {
+        hackleAppCore.hideDevTools()
     }
 
     /// Sets or replaces the current user with completion.
@@ -212,13 +212,6 @@ import WebKit
     /// - Returns: a ``Decision`` object
     @objc public func variationDetail(experimentKey: Int) -> Decision {
         hackleAppCore.variationDetail(experimentKey: experimentKey, hackleAppContext: .default)
-    }
-
-    /// Decide the variations for all experiments and returns a map of decision results.
-    ///
-    /// - Returns: a dictionary where key is experimentKey and value is ``Decision`` result
-    @objc public func allVariationDetails() -> [Int: Decision] {
-        hackleAppCore.allVariationDetails(hackleAppContext: .default)
     }
 
     /// Decide whether the feature is turned on to the user.
@@ -853,8 +846,7 @@ extension HackleApp {
                     workspaceManager: workspaceMode.manager,
                     evaluationMode: config.evaluationMode,
                     abTestOverrideStorage: abOverrideStorage,
-                    featureFlagOverrideStorage: ffOverrideStorage,
-                    devToolsAPI: DefaultDevToolsAPI(sdk: sdk, url: config.apiUrl, httpClient: httpClient)
+                    featureFlagOverrideStorage: ffOverrideStorage
                 )
             )
         }

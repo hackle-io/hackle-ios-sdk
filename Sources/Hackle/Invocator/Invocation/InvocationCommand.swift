@@ -55,4 +55,6 @@ enum InvocationCommand: String, CaseIterable {
     // DevTools
     case showUserExplorer
     case hideUserExplorer
+    case showDevTools
+    case hideDevTools
 }

@@ -79,6 +79,10 @@ class DefaultInvocationHandlerFactory: InvocationHandlerFactory {
                 return ShowUserExplorerInvocationHandler(core: core)
             case .hideUserExplorer:
                 return HideUserExplorerInvocationHandler(core: core)
+            case .showDevTools:
+                return ShowDevToolsInvocationHandler(core: core)
+            case .hideDevTools:
+                return HideDevToolsInvocationHandler(core: core)
         }
     }
 }
