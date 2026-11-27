@@ -41,12 +41,35 @@ import UserNotifications
             return false
         }
 
-        NotificationImageHandler.handlePushImage(notificationData: notificationData) { attachment in
-            if let attachment = attachment {
-                notificationContent.attachments = [attachment]
+        let lock = NSLock()
+        var remaining = 2
+        var resolvedAttachment: UNNotificationAttachment?
+        var resolvedCategoryId: String?
+
+        func resolve(_ update: () -> Void) {
+            lock.lock()
+            update()
+            remaining -= 1
+            let isResolved = remaining == 0
+            lock.unlock()
+            guard isResolved else {
+                return
             }
 
+            if let attachment = resolvedAttachment {
+                notificationContent.attachments = [attachment]
+            }
+            if let categoryId = resolvedCategoryId {
+                notificationContent.categoryIdentifier = categoryId
+            }
             completion(notificationContent)
+        }
+
+        NotificationImageHandler.handlePushImage(notificationData: notificationData) { attachment in
+            resolve { resolvedAttachment = attachment }
+        }
+        NotificationCategoryHandler.handlePushCategory(notificationData: notificationData) { categoryId in
+            resolve { resolvedCategoryId = categoryId }
         }
 
         return true

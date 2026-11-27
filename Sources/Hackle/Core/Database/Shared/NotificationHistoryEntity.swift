@@ -15,6 +15,10 @@ class NotificationHistoryEntity {
     let journeyKey: Int64?
     let journeyNodeId: Int64?
     let campaignType: String?
+    let clickArea: String?
+    let clickAction: String?
+    let clickValue: String?
+    let buttonType: String?
     
     let timestamp: Date
     let debug: Bool
@@ -32,7 +36,11 @@ class NotificationHistoryEntity {
         journeyId: Int64?,
         journeyKey: Int64?,
         journeyNodeId: Int64?,
-        campaignType: String?
+        campaignType: String?,
+        clickArea: String? = nil,
+        clickAction: String? = nil,
+        clickValue: String? = nil,
+        buttonType: String? = nil
     ) {
         self.historyId = historyId
         self.workspaceId = workspaceId
@@ -47,6 +55,10 @@ class NotificationHistoryEntity {
         self.journeyKey = journeyKey
         self.journeyNodeId = journeyNodeId
         self.campaignType = campaignType
+        self.clickArea = clickArea
+        self.clickAction = clickAction
+        self.clickValue = clickValue
+        self.buttonType = buttonType
     }
 }
 
@@ -66,6 +78,10 @@ extension NotificationHistoryEntity {
     static let JOURNEY_KEY_COLUMN_NAME = "journey_key"
     static let JOURNEY_NODE_ID_COLUMN_NAME = "journey_node_id"
     static let CAMPAIGN_TYPE_COLUMN_NAME = "campaign_type"
+    static let CLICK_AREA_COLUMN_NAME = "click_area"
+    static let CLICK_ACTION_COLUMN_NAME = "click_action"
+    static let CLICK_VALUE_COLUMN_NAME = "click_value"
+    static let BUTTON_TYPE_COLUMN_NAME = "button_type"
     
     static let DDL_LIST = [
         DatabaseDDL(
@@ -92,7 +108,16 @@ extension NotificationHistoryEntity {
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(JOURNEY_NODE_ID_COLUMN_NAME) INTEGER",
                 "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CAMPAIGN_TYPE_COLUMN_NAME) TEXT"
             ]
-         )
+         ),
+        DatabaseDDL(
+            version: 3,
+            statements: [
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CLICK_AREA_COLUMN_NAME) TEXT",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CLICK_ACTION_COLUMN_NAME) TEXT",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(CLICK_VALUE_COLUMN_NAME) TEXT",
+                "ALTER TABLE \(TABLE_NAME) ADD COLUMN \(BUTTON_TYPE_COLUMN_NAME) TEXT"
+            ]
+        )
     ]
 
     static let DROP_TABLE =
@@ -112,7 +137,11 @@ extension NotificationHistoryEntity {
             journeyId: cursor.getInt64OrNil(9),
             journeyKey: cursor.getInt64OrNil(10),
             journeyNodeId: cursor.getInt64OrNil(11),
-            campaignType: cursor.getStringOrNil(12)
+            campaignType: cursor.getStringOrNil(12),
+            clickArea: cursor.getStringOrNil(13),
+            clickAction: cursor.getStringOrNil(14),
+            clickValue: cursor.getStringOrNil(15),
+            buttonType: cursor.getStringOrNil(16)
         )
     }
 }

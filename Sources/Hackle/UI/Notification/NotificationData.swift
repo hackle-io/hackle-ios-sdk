@@ -19,7 +19,6 @@ final class NotificationData: HackleNotification, Sendable {
     let journeyNodeId: Int64?
     
     let campaignType: String?
-    let debug: Bool
     
     var actionType: HackleNotificationClickActionType {
         switch clickAction {
@@ -42,6 +41,11 @@ final class NotificationData: HackleNotification, Sendable {
     }
     
     private let _link: String?
+
+    let buttons: [NotificationButton]
+    let clickArea: NotificationClickArea
+    let buttonType: String?
+    let debug: Bool
     
     init(
         workspaceId: Int64,
@@ -58,6 +62,9 @@ final class NotificationData: HackleNotification, Sendable {
         journeyKey: Int64?,
         journeyNodeId: Int64?,
         campaignType: String?,
+        buttons: [NotificationButton] = [],
+        clickArea: NotificationClickArea = .message,
+        buttonType: String? = nil,
         debug: Bool
     ) {
         self.workspaceId = workspaceId
@@ -74,6 +81,9 @@ final class NotificationData: HackleNotification, Sendable {
         self.journeyKey = journeyKey
         self.journeyNodeId = journeyNodeId
         self.campaignType = campaignType
+        self.buttons = buttons
+        self.clickArea = clickArea
+        self.buttonType = buttonType
         self.debug = debug
     }
 }
@@ -94,13 +104,34 @@ extension NotificationData {
     static let KEY_JOURNEY_KEY = "journeyKey"
     static let KEY_JOURNEY_NODE_ID = "journeyNodeId"
     static let KEY_CAMPAIGN_TYPE = "campaignType"
+    static let KEY_BUTTONS = "buttons"
+    static let KEY_ITEMS = "items"
+    static let KEY_TYPE = "type"
     static let KEY_DEBUG = "debug"
+    static let ACTION_IDENTIFIER_PREFIX = "hackle_action_"
     
-    static func from(data: [AnyHashable: Any]) -> NotificationData? {
+    static func from(data: [AnyHashable: Any], actionIdentifier: String? = nil) -> NotificationData? {
         guard let hackle = data[KEY_HACKLE] as? [AnyHashable: Any] else {
             return nil
         }
-        
+
+        let buttons = parseButtons(hackle[KEY_BUTTONS])
+        let clickAction: NotificationClickAction
+        let link: String?
+        let clickArea: NotificationClickArea
+        let buttonType: String?
+        if let button = clickedButton(buttons: buttons, actionIdentifier: actionIdentifier) {
+            clickAction = button.clickAction
+            link = button.link
+            clickArea = .button
+            buttonType = button.type
+        } else {
+            clickAction = NotificationClickAction.from(rawValue: hackle[KEY_CLICK_ACTION] as? String)
+            link = hackle[KEY_LINK] as? String
+            clickArea = .message
+            buttonType = nil
+        }
+
         do {
             return NotificationData(
                 workspaceId: try (hackle[KEY_WORKSPACE_ID].asIntOrNil()).requireNotNil(),
@@ -111,18 +142,44 @@ extension NotificationData {
                 pushMessageDeliveryId: hackle[KEY_PUSH_MESSAGE_DELIVERY_ID].asIntOrNil(),
                 showForeground: hackle[KEY_SHOW_FOREGROUND] as? Bool ?? false,
                 imageUrl: hackle[KEY_IMAGE_URL] as? String,
-                clickAction: NotificationClickAction.from(
-                    rawValue: hackle[KEY_CLICK_ACTION] as? String
-                ),
-                link: hackle[KEY_LINK] as? String,
+                clickAction: clickAction,
+                link: link,
                 journeyId: hackle[KEY_JOURNEY_ID].asIntOrNil(),
                 journeyKey: hackle[KEY_JOURNEY_KEY].asIntOrNil(),
                 journeyNodeId: hackle[KEY_JOURNEY_NODE_ID].asIntOrNil(),
                 campaignType: hackle[KEY_CAMPAIGN_TYPE] as? String,
+                buttons: buttons,
+                clickArea: clickArea,
+                buttonType: buttonType,
                 debug: hackle[KEY_DEBUG] as? Bool ?? false
             )
         } catch {
             return nil
         }
+    }
+
+    private static func parseButtons(_ value: Any?) -> [NotificationButton] {
+        guard let buttons = value as? [AnyHashable: Any],
+              let items = buttons[KEY_ITEMS] as? [Any] else {
+            return []
+        }
+        return items.map { item in
+            let item = item as? [AnyHashable: Any]
+            return NotificationButton(
+                clickAction: NotificationClickAction.from(rawValue: item?[KEY_CLICK_ACTION] as? String),
+                link: item?[KEY_LINK] as? String,
+                type: item?[KEY_TYPE] as? String
+            )
+        }
+    }
+
+    private static func clickedButton(buttons: [NotificationButton], actionIdentifier: String?) -> NotificationButton? {
+        guard let actionIdentifier,
+              actionIdentifier.hasPrefix(ACTION_IDENTIFIER_PREFIX),
+              let index = Int(actionIdentifier.dropFirst(ACTION_IDENTIFIER_PREFIX.count)),
+              buttons.indices.contains(index) else {
+            return nil
+        }
+        return buttons[index]
     }
 }

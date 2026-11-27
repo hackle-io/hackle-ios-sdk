@@ -439,6 +439,59 @@ class NotificationManagerSpec: QuickSpec {
             }
         }
         
+        it("save click area, action, value and button type") {
+            let core = HackleCoreStub()
+            let workspaceManager = MockWorkspaceManager()
+            let userManager = MockUserManager()
+            let repository = MockNotificationRepository()
+            let manager = DefaultNotificationManager(
+                core: core,
+                coreQueue: dispatchQueue,
+                workspaceManager: workspaceManager,
+                userManager: userManager,
+                repository: repository
+            )
+            every(workspaceManager.metadataMock)
+                .returns(WorkspaceMetadata(id: 123, environmentId: 222))
+            let hackleUser = HackleUser.builder()
+                .identifier(.id, "user")
+                .build()
+            every(userManager.hackleUserMock).returns(hackleUser)
+
+            manager.onNotificationDataReceived(
+                data: NotificationData(
+                    workspaceId: 123,
+                    environmentId: 456,
+                    pushMessageId: 1,
+                    pushMessageKey: 2,
+                    pushMessageExecutionId: 3,
+                    pushMessageDeliveryId: 4,
+                    showForeground: true,
+                    imageUrl: nil,
+                    clickAction: .deepLink,
+                    link: "myapp://settings/marketing",
+                    journeyId: nil,
+                    journeyKey: nil,
+                    journeyNodeId: nil,
+                    campaignType: "PUSH_MESSAGE",
+                    clickArea: .button,
+                    buttonType: "UNSUBSCRIBE",
+                    debug: true
+                ),
+                timestamp: Date()
+            )
+
+            dispatchQueue.sync {
+                expect(core.tracked.count) == 0
+                let entities = repository.getEntities(workspaceId: 123, environmentId: 456)
+                expect(entities.count) == 1
+                expect(entities[0].clickArea) == "BUTTON"
+                expect(entities[0].clickAction) == "DEEP_LINK"
+                expect(entities[0].clickValue) == "myapp://settings/marketing"
+                expect(entities[0].buttonType) == "UNSUBSCRIBE"
+            }
+        }
+
         it("check null column") {
             let manager = DefaultNotificationManager(
                 core: core,
@@ -511,6 +564,10 @@ class NotificationManagerSpec: QuickSpec {
                 expect(entity.journeyKey).to(beNil())
                 expect(entity.journeyNodeId).to(beNil())
                 expect(entity.campaignType).to(beNil())
+                expect(entity.clickArea) == "MESSAGE"
+                expect(entity.clickAction) == "APP_OPEN"
+                expect(entity.clickValue).to(beNil())
+                expect(entity.buttonType).to(beNil())
                 expect(entity.debug) == true
                 expect(entity.workspaceId) == 123
                 expect(entity.environmentId) == 456

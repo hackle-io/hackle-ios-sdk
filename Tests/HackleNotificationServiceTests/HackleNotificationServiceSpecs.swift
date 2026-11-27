@@ -104,5 +104,34 @@ class HackleNotificationServiceSpecs: QuickSpec {
                 expect(callCount).toEventually(equal(1), timeout: .seconds(5))
             }
         }
+
+        describe("buttons") {
+            func buttonsPayload(_ buttons: Any) -> [AnyHashable: Any] {
+                ["hackle": ["workspaceId": 123, "environmentId": 456, "buttons": buttons]]
+            }
+
+            it("keeps categoryIdentifier untouched without buttons") {
+                let notificationContent = content(userInfo: hacklePayload())
+                notificationContent.categoryIdentifier = "app_category"
+                var received: [UNMutableNotificationContent] = []
+                let handled = HackleNotificationService.resolveRichNotificationContent(notificationContent: notificationContent) { result in
+                    received.append(result)
+                }
+                expect(handled).to(beTrue())
+                expect(received.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(received.first?.categoryIdentifier).to(equal("app_category"))
+            }
+
+            it("calls back once with malformed buttons") {
+                let notificationContent = content(userInfo: buttonsPayload("x"))
+                var received: [UNMutableNotificationContent] = []
+                let handled = HackleNotificationService.resolveRichNotificationContent(notificationContent: notificationContent) { result in
+                    received.append(result)
+                }
+                expect(handled).to(beTrue())
+                expect(received.count).toEventually(equal(1), timeout: .seconds(5))
+                expect(received.first?.categoryIdentifier).to(equal(""))
+            }
+        }
     }
 }

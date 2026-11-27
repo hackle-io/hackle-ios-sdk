@@ -39,6 +39,33 @@ class NotificationEventSpecs: QuickSpec {
             expect(event.properties?["push_message_delivery_id"].asIntOrNil()) == 4
             expect(event.properties?["campaign_type"] as? String) == "JOURNEY"
             expect(event.properties?["debug"] as? Bool) == true
+            expect(event.properties?["push_message_click_area"] as? String) == "MESSAGE"
+            expect(event.properties?["push_message_click_action"] as? String) == "DEEP_LINK"
+            expect(event.properties?["push_message_click_value"] as? String) == "foo://bar"
+            expect(event.properties?["push_message_button_type"]).to(beNil())
+        }
+        it("notification data to event with app open") {
+            let data = NotificationData(
+                workspaceId: 123,
+                environmentId: 456,
+                pushMessageId: 1,
+                pushMessageKey: 2,
+                pushMessageExecutionId: 3,
+                pushMessageDeliveryId: 4,
+                showForeground: true,
+                imageUrl: nil,
+                clickAction: NotificationClickAction.appOpen,
+                link: "foo://bar",
+                journeyId: 5,
+                journeyKey: 6,
+                journeyNodeId: 7,
+                campaignType: "JOURNEY",
+                debug: true
+            )
+            let event = data.toTrackEvent()
+            expect(event.properties?["push_message_click_area"] as? String) == "MESSAGE"
+            expect(event.properties?["push_message_click_action"] as? String) == "APP_OPEN"
+            expect(event.properties?["push_message_click_value"]).to(beNil())
         }
         it("notification history entity to event") {
             let timestamp = Date()
@@ -65,6 +92,36 @@ class NotificationEventSpecs: QuickSpec {
             expect(event.properties?["push_message_delivery_id"].asIntOrNil()) == 6
             expect(event.properties?["campaign_type"] as? String) == "PUSH_MESSAGE"
             expect(event.properties?["debug"] as? Bool) == true
+            expect(event.properties?["push_message_click_area"]).to(beNil())
+            expect(event.properties?["push_message_click_action"]).to(beNil())
+            expect(event.properties?["push_message_click_value"]).to(beNil())
+            expect(event.properties?["push_message_button_type"]).to(beNil())
+        }
+        it("notification history entity to event with button click") {
+            let entity = NotificationHistoryEntity(
+                historyId: 0,
+                workspaceId: 1,
+                environmentId: 2,
+                pushMessageId: 3,
+                pushMessageKey: 4,
+                pushMessageExecutionId: 5,
+                pushMessageDeliveryId: 6,
+                timestamp: Date(),
+                debug: true,
+                journeyId: 7,
+                journeyKey: 8,
+                journeyNodeId: 9,
+                campaignType: "PUSH_MESSAGE",
+                clickArea: "BUTTON",
+                clickAction: "DEEP_LINK",
+                clickValue: "foo://bar",
+                buttonType: "UNSUBSCRIBE"
+            )
+            let event = entity.toTrackEvent()
+            expect(event.properties?["push_message_click_area"] as? String) == "BUTTON"
+            expect(event.properties?["push_message_click_action"] as? String) == "DEEP_LINK"
+            expect(event.properties?["push_message_click_value"] as? String) == "foo://bar"
+            expect(event.properties?["push_message_button_type"] as? String) == "UNSUBSCRIBE"
         }
     }
 }
