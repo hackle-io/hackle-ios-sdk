@@ -166,9 +166,9 @@ extension NotificationData {
         return items.map { item in
             let item = item as? [AnyHashable: Any]
             return NotificationButton(
-                type: item?[KEY_TYPE] as? String,
                 clickAction: NotificationClickAction.from(rawValue: item?[KEY_CLICK_ACTION] as? String),
-                link: item?[KEY_LINK] as? String
+                link: item?[KEY_LINK] as? String,
+                type: item?[KEY_TYPE] as? String
             )
         }
     }
