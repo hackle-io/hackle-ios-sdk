@@ -474,9 +474,9 @@ class NotificationManagerSpec: QuickSpec {
                     journeyKey: nil,
                     journeyNodeId: nil,
                     campaignType: "PUSH_MESSAGE",
-                    debug: true,
                     clickArea: .button,
-                    buttonType: "UNSUBSCRIBE"
+                    buttonType: "UNSUBSCRIBE",
+                    debug: true
                 ),
                 timestamp: Date()
             )

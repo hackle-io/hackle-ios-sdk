@@ -27,11 +27,11 @@ extension NotificationData {
             .property("journey_key", journeyKey)
             .property("journey_node_id", journeyNodeId)
             .property("campaign_type", campaignType)
-            .property("debug", debug)
             .property("push_message_click_area", clickArea.rawValue)
             .property("push_message_click_action", clickAction.rawValue)
             .property("push_message_click_value", link)
             .property("push_message_button_type", buttonType)
+            .property("debug", debug)
             .build()
     }
 }

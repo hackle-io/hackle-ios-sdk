@@ -19,7 +19,6 @@ final class NotificationData: HackleNotification, Sendable {
     let journeyNodeId: Int64?
     
     let campaignType: String?
-    let debug: Bool
     
     var actionType: HackleNotificationClickActionType {
         switch clickAction {
@@ -46,6 +45,7 @@ final class NotificationData: HackleNotification, Sendable {
     let buttons: [NotificationButton]
     let clickArea: NotificationClickArea
     let buttonType: String?
+    let debug: Bool
     
     init(
         workspaceId: Int64,
@@ -62,10 +62,10 @@ final class NotificationData: HackleNotification, Sendable {
         journeyKey: Int64?,
         journeyNodeId: Int64?,
         campaignType: String?,
-        debug: Bool,
         buttons: [NotificationButton] = [],
         clickArea: NotificationClickArea = .message,
-        buttonType: String? = nil
+        buttonType: String? = nil,
+        debug: Bool
     ) {
         self.workspaceId = workspaceId
         self.environmentId = environmentId
@@ -81,10 +81,10 @@ final class NotificationData: HackleNotification, Sendable {
         self.journeyKey = journeyKey
         self.journeyNodeId = journeyNodeId
         self.campaignType = campaignType
-        self.debug = debug
         self.buttons = buttons
         self.clickArea = clickArea
         self.buttonType = buttonType
+        self.debug = debug
     }
 }
 
@@ -104,10 +104,10 @@ extension NotificationData {
     static let KEY_JOURNEY_KEY = "journeyKey"
     static let KEY_JOURNEY_NODE_ID = "journeyNodeId"
     static let KEY_CAMPAIGN_TYPE = "campaignType"
-    static let KEY_DEBUG = "debug"
     static let KEY_BUTTONS = "buttons"
     static let KEY_ITEMS = "items"
     static let KEY_TYPE = "type"
+    static let KEY_DEBUG = "debug"
     static let ACTION_IDENTIFIER_PREFIX = "hackle_action_"
     
     static func from(data: [AnyHashable: Any], actionIdentifier: String? = nil) -> NotificationData? {
@@ -148,10 +148,10 @@ extension NotificationData {
                 journeyKey: hackle[KEY_JOURNEY_KEY].asIntOrNil(),
                 journeyNodeId: hackle[KEY_JOURNEY_NODE_ID].asIntOrNil(),
                 campaignType: hackle[KEY_CAMPAIGN_TYPE] as? String,
-                debug: hackle[KEY_DEBUG] as? Bool ?? false,
                 buttons: buttons,
                 clickArea: clickArea,
-                buttonType: buttonType
+                buttonType: buttonType,
+                debug: hackle[KEY_DEBUG] as? Bool ?? false
             )
         } catch {
             return nil
