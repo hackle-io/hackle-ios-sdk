@@ -110,11 +110,28 @@ extension NotificationData {
     static let KEY_TYPE = "type"
     static let ACTION_IDENTIFIER_PREFIX = "hackle_action_"
     
-    static func from(data: [AnyHashable: Any]) -> NotificationData? {
+    static func from(data: [AnyHashable: Any], actionIdentifier: String? = nil) -> NotificationData? {
         guard let hackle = data[KEY_HACKLE] as? [AnyHashable: Any] else {
             return nil
         }
-        
+
+        let buttons = parseButtons(hackle[KEY_BUTTONS])
+        let clickAction: NotificationClickAction
+        let link: String?
+        let clickArea: NotificationClickArea
+        let buttonType: String?
+        if let button = clickedButton(buttons: buttons, actionIdentifier: actionIdentifier) {
+            clickAction = button.clickAction
+            link = button.link
+            clickArea = .button
+            buttonType = button.type
+        } else {
+            clickAction = NotificationClickAction.from(rawValue: hackle[KEY_CLICK_ACTION] as? String)
+            link = hackle[KEY_LINK] as? String
+            clickArea = .message
+            buttonType = nil
+        }
+
         do {
             return NotificationData(
                 workspaceId: try (hackle[KEY_WORKSPACE_ID].asIntOrNil()).requireNotNil(),
@@ -125,16 +142,16 @@ extension NotificationData {
                 pushMessageDeliveryId: hackle[KEY_PUSH_MESSAGE_DELIVERY_ID].asIntOrNil(),
                 showForeground: hackle[KEY_SHOW_FOREGROUND] as? Bool ?? false,
                 imageUrl: hackle[KEY_IMAGE_URL] as? String,
-                clickAction: NotificationClickAction.from(
-                    rawValue: hackle[KEY_CLICK_ACTION] as? String
-                ),
-                link: hackle[KEY_LINK] as? String,
+                clickAction: clickAction,
+                link: link,
                 journeyId: hackle[KEY_JOURNEY_ID].asIntOrNil(),
                 journeyKey: hackle[KEY_JOURNEY_KEY].asIntOrNil(),
                 journeyNodeId: hackle[KEY_JOURNEY_NODE_ID].asIntOrNil(),
                 campaignType: hackle[KEY_CAMPAIGN_TYPE] as? String,
                 debug: hackle[KEY_DEBUG] as? Bool ?? false,
-                buttons: parseButtons(hackle[KEY_BUTTONS])
+                buttons: buttons,
+                clickArea: clickArea,
+                buttonType: buttonType
             )
         } catch {
             return nil
@@ -156,32 +173,13 @@ extension NotificationData {
         }
     }
 
-    func clicked(actionIdentifier: String) -> NotificationData {
-        guard actionIdentifier.hasPrefix(NotificationData.ACTION_IDENTIFIER_PREFIX),
-              let index = Int(actionIdentifier.dropFirst(NotificationData.ACTION_IDENTIFIER_PREFIX.count)),
+    private static func clickedButton(buttons: [NotificationButton], actionIdentifier: String?) -> NotificationButton? {
+        guard let actionIdentifier,
+              actionIdentifier.hasPrefix(ACTION_IDENTIFIER_PREFIX),
+              let index = Int(actionIdentifier.dropFirst(ACTION_IDENTIFIER_PREFIX.count)),
               buttons.indices.contains(index) else {
-            return self
+            return nil
         }
-        let button = buttons[index]
-        return NotificationData(
-            workspaceId: workspaceId,
-            environmentId: environmentId,
-            pushMessageId: pushMessageId,
-            pushMessageKey: pushMessageKey,
-            pushMessageExecutionId: pushMessageExecutionId,
-            pushMessageDeliveryId: pushMessageDeliveryId,
-            showForeground: showForeground,
-            imageUrl: imageUrl,
-            clickAction: button.clickAction,
-            link: button.link,
-            journeyId: journeyId,
-            journeyKey: journeyKey,
-            journeyNodeId: journeyNodeId,
-            campaignType: campaignType,
-            debug: debug,
-            buttons: buttons,
-            clickArea: .button,
-            buttonType: button.type
-        )
+        return buttons[index]
     }
 }

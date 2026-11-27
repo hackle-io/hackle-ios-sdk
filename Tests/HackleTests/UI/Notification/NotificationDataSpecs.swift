@@ -167,11 +167,9 @@ class NotificationDataSpecs: QuickSpec {
             }
         }
 
-        describe("clicked") {
+        describe("from with actionIdentifier") {
             it("applies the tapped button action") {
-                let data = NotificationData.from(data: payload(buttons: makeButtons()))!
-
-                let result = data.clicked(actionIdentifier: "hackle_action_0")
+                let result = NotificationData.from(data: payload(buttons: makeButtons()), actionIdentifier: "hackle_action_0")!
 
                 expect(result.clickAction) == NotificationClickAction.deepLink
                 expect(result.actionType) == HackleNotificationClickActionType.link
@@ -188,9 +186,7 @@ class NotificationDataSpecs: QuickSpec {
                 expect(event.properties?["push_message_button_type"] as? String) == "UNSUBSCRIBE"
             }
             it("applies an APP_OPEN button") {
-                let data = NotificationData.from(data: payload(buttons: makeButtons()))!
-
-                let result = data.clicked(actionIdentifier: "hackle_action_1")
+                let result = NotificationData.from(data: payload(buttons: makeButtons()), actionIdentifier: "hackle_action_1")!
 
                 expect(result.actionType) == HackleNotificationClickActionType.appOpen
                 expect(result.link).to(beNil())
@@ -198,17 +194,13 @@ class NotificationDataSpecs: QuickSpec {
                 expect(result.buttonType).to(beNil())
             }
             it("keeps the body action for the default identifier") {
-                let data = NotificationData.from(data: payload(buttons: makeButtons()))!
+                let result = NotificationData.from(data: payload(buttons: makeButtons()), actionIdentifier: UNNotificationDefaultActionIdentifier)!
 
-                let result = data.clicked(actionIdentifier: UNNotificationDefaultActionIdentifier)
-
-                expect(result === data) == true
                 expect(result.link) == "myapp://home"
                 expect(result.clickArea) == NotificationClickArea.message
                 expect(result.buttonType).to(beNil())
             }
             it("falls back to the body action for other identifiers") {
-                let data = NotificationData.from(data: payload(buttons: makeButtons()))!
                 let identifiers = [
                     "hackle_action_2",
                     "hackle_action_-1",
@@ -219,7 +211,9 @@ class NotificationDataSpecs: QuickSpec {
                 ]
 
                 for identifier in identifiers {
-                    expect(data.clicked(actionIdentifier: identifier).link) == "myapp://home"
+                    let result = NotificationData.from(data: payload(buttons: makeButtons()), actionIdentifier: identifier)!
+                    expect(result.link) == "myapp://home"
+                    expect(result.clickArea) == NotificationClickArea.message
                 }
             }
         }
